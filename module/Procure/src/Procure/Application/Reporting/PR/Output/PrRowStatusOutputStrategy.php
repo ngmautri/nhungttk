@@ -40,13 +40,14 @@ abstract class PrRowStatusOutputStrategy
         $dto->token = $entity->getToken();
         $dto->checksum = $entity->getChecksum();
         $dto->priority = $entity->getPriority();
-        $dto->rowName = $entity->getRowName();
+        $dto->rowName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$entity->getRowName());
         $dto->rowDescription = $entity->getRowDescription();
-        $dto->rowCode = $entity->getRowCode();
+        $dto->rowCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$entity->getRowCode());
         $dto->rowUnit = $entity->getRowUnit();
         $dto->conversionFactor = $entity->getConversionFactor();
         $dto->conversionText = $entity->getConversionText();
-        $dto->quantity = $entity->getQuantity();
+        $dto->quantity =  number_format($entity->getQuantity(),2);
+        ;
         $dto->edt = $entity->getEdt();
         $dto->isDraft = $entity->getIsDraft();
         $dto->isActive = $entity->getIsActive();

@@ -31,18 +31,18 @@ class PrRowStatusInHTMLTable extends PrRowStatusOutputStrategy
 			<td><b>Pr Date</b></td>
 	       <td><b>SKU</b></td>
             <td><b>Item Name</b></td>
-			<td><b>Need<br>Q\'ty</b></td>
+			<td><b>PR<br>Q\'ty</b></td>
 			<td><b>PO<br>Q\'ty</b></td>
-            <td><b>Posted PO<br>Q\'ty</b></td>
+            <td><b>Posted<br>PO<br>Q\'ty</b></td>
 		
             <td><b>GR<br>Q\'ty</b></td>
-            <td><b>Posted GR<br>Q\'ty</b></td>
+            <td><b>Posted<br>GR<br>Q\'ty</b></td>
 		
-            <td><b>Stocked<br>Q\'ty</b></td>
-            <td><b>Posted<br>Stocked<br>Q\'ty</b></td>
+            <td><b>Stock<br>GR<br>Q\'ty</b></td>
+            <td><b>Posted<br>Stock<br>GR<br>Q\'ty</b></td>
 		
             <td><b>AP<br>Q\'ty</b></td>
-            <td><b>Posted AP<br>Q\'ty</b></td>
+            <td><b>Posted <br>AP<br>Q\'ty</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>

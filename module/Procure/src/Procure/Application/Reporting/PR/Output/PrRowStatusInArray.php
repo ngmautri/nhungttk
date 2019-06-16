@@ -27,7 +27,7 @@ class PrRowStatusInArray extends PrRowStatusOutputStrategy
             /**@var \Application\Entity\NmtProcurePrRow $pr_row_entity ;*/
             $pr_row_entity = $a[0];
 
-            if ($pr_row_entity->getPr() == null) {
+            if ($pr_row_entity->getPr() == null || $pr_row_entity->getItem() == null) {
                 continue;
             }
 
@@ -37,24 +37,30 @@ class PrRowStatusInArray extends PrRowStatusOutputStrategy
                 continue;
             }
 
-            $dto->poQuantity = $a['po_qty'];
-            $dto->postedPoQuantity = $a['posted_po_qty'];
+            $dto->poQuantity = number_format($a['po_qty'], 2);
+            $dto->postedPoQuantity = number_format($a['posted_po_qty'], 2);
 
-            $dto->grQuantity = $a['gr_qty'];
-            $dto->postedGrQuantity = $a['posted_gr_qty'];
+            $dto->grQuantity = number_format($a['gr_qty'], 2);
+            $dto->postedGrQuantity = number_format($a['posted_gr_qty'], 2);
 
-            $dto->stockGrQuantity = $a['stock_gr_qty'];
-            $dto->postedStockGrQuantity = $a['posted_stock_gr_qty'];
+            $dto->stockGrQuantity = number_format($a['stock_gr_qty'], 2);
+            $dto->postedStockGrQuantity = number_format($a['posted_stock_gr_qty'], 2);
 
-            $dto->apQuantity = $a['ap_qty'];
-            $dto->postedApQuantity = $a['posted_ap_qty'];
+            $dto->apQuantity = number_format($a['ap_qty'], 2);
+            $dto->postedApQuantity = number_format($a['posted_ap_qty'], 2);
 
             $dto->prAutoNumber = $pr_row_entity->getPr()->getPrAutoNumber();
             $dto->prNumber = $pr_row_entity->getPr()->getPrNumber();
             $dto->prName = $pr_row_entity->getPr()->getPrName();
-            $dto->prSubmittedOn = $pr_row_entity->getPr()->getSubmittedOn();
+
+            if ($pr_row_entity->getPr()->getSubmittedOn() !== null) {
+                $dto->prSubmittedOn = date_format($pr_row_entity->getPr()->getSubmittedOn(), "d-m-y");
+            } else {
+                $dto->prSubmittedOn = null;
+            }
             $dto->prYear = $a['pr_year'];
             $dto->itemName = $a['item_name'];
+            $dto->itemSKU = $pr_row_entity->getItem()->getItemSku();
 
             $output[] = $dto;
         }

@@ -68,6 +68,8 @@ class PrRowStatusInExcel extends PrRowStatusOutputStrategy
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $header, "Posted AP Qty");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $header, "PR#");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "Row ID");
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Row name");
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Row Code");
         
         foreach ($result as $r) {
 
@@ -107,13 +109,16 @@ class PrRowStatusInExcel extends PrRowStatusOutputStrategy
             
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, $a->getPr()->getPrAutoNumber());
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowIdentifer());
+     
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRowName());
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowCode());
             
         }
 
         //Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
         
-        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:O3");
+        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:R3");
         
 
         // Redirect output to a client's web browser (Excel2007)

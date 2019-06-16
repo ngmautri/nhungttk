@@ -1,25 +1,42 @@
 <?php
 use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 ?>
+
+<?php
+
+$output1 = PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
+$title1 = "Gird View";
+
+if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
+    $output1 = PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE;
+    $title1 = "HTML View";
+endif;
+
+$link = "/procure/pr-row/status-report?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
+$url = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $output1);
+
+
+$link1 = "/procure/pr-row/status-report-gird?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
+$url1 = $this->baseUrl . sprintf($link1, $pr_year, $balance, $is_active, $sort_by, $sort);
+
+
+$filtered1 = "Year=%s, Balance=%s, Sorted By=%s %s, Display=%s";
+$filtered = sprintf($filtered1, $pr_year, $balance, $sort_by, $sort, $output1);
+
+?>
+
+
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;PR
 				Row</a></li>
 	</ul>
-
-
 	<div id="general" style="font-size: 9pt">
-
-
-
-
-
 		<div>
 			<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
 				style="font-size: 9.5pt" href="#transaction" class=""
 				data-toggle="collapse">FILTER</a>
 		</div>
-
 
 		<div id="transaction" class="collapse">
 
@@ -113,6 +130,21 @@ use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 
 						</div>
 					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag">Display</label>
+						<div class="col-sm-3">
+							<select class="form-control input-sm" name="output">
+								<option
+									<?php echo $output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY ? "selected='selected'":"";?>
+									value="<?php echo PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY; ?>">Gird</option>
+
+								<option
+									<?php echo $output==PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE ? "selected='selected'":"";?>
+									value="<?php echo PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE; ?>">HTML</option>
+							</select>
+						</div>
+					</div>
 					<div class="form-group margin-bottom">
 						<div class="col-sm-offset-2 col-sm-10">
 							<a class="btn btn-default btn-sm" href="javascript:;"
@@ -125,16 +157,22 @@ use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 		</div>
 
 		<div style="position: relative; float: right; margin-bottom: 3px">
-			<a class="btn btn-default btn-sm" href="javascript:;"
-				onclick="showJqueryDialog('All Pr Row: <?php echo "Year= ".$pr_year;?>. <?php echo "Balance= ".$balance ?> ','1800',$(window).height()-50,'/procure/pr-row/all1?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>','j_loaded_data',true);"><i
-				class="fa fa-window-maximize" aria-hidden="true"></i> Full Screen</a>
 			<a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/procure/pr-row/status-report?output=<?php echo PrRowStatusOutputStrategy::OUTPUT_IN_EXCEL;?>&pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"><i
 				class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
 		</div>
 
 		<hr>
-		<div style="color: gray; font-size: 9pt; margin-top: 8px"><?php echo "Sorted by = ".$sort_by;?>. <?php echo "Sort = ".$sort ?></div>
+
+
+
+		<div style="color: gray; font-size: 9pt; margin-top: 8px"><?php echo $filtered; ?>
+
+&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm"
+				style="color: black; padding: 1pt 5pt 1pt 5pt; margin: 1pt 5pt 5pt 1pt;"
+				title="<?php echo $title1; ?>" href="<?php echo $url;?>"> <i
+				class="fa fa-th" aria-hidden="true"></i></a>
+		</div>
 
 <?php
 if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE) :
@@ -145,7 +183,7 @@ if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE) :
 
         // change it only
         $link = "/procure/pr-row/status-report?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
-        $base = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort,$output);
+        $base = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $output);
 
         $_connector_symbol = '&';
 
@@ -192,7 +230,7 @@ endif;
 
 <?php
 if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
-?>
+    ?>
 
 <div id="pr_row_gird" style="margin: 1px; font-size: 9pt"></div>
 
@@ -201,157 +239,43 @@ if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
 
 <script>
 
-   	 //to check whether any row is currently being edited.
-    function isEditing($grid) {
-        var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
-        if (rows.length > 0) {
-            //focus on editor if any 
-            $grid.find(".pq-editor-focus").focus();
-            return true;
-        }
-        return false;
-    }
-
-     
-	  //called by add button in toolbar.
-    function addRow($grid) {
-    	 if (isEditing($grid)) {
-    	        return false;
-    	    }
-    	  
-    	//append empty row in the first row.                            
-        var rowData = { Item: "", Quantity: 0, Received: 0, Balance: 0}; //empty row template
-        $grid.pqGrid("addRow", { rowIndxPage: 0, rowData: rowData });
-
-        var $tr = $grid.pqGrid("getRow", { rowIndxPage: 0 });
-        if ($tr) {
-            //simulate click on edit button.
-            $tr.find("button.edit_btn").click();
-        }
-    }
-
-    var autoCompleteEditor = function (ui) {
-        var $inp = ui.$cell.find("input");
-        var rowData = ui.rowData;
-      
-        //initialize the editor
-        $inp.autocomplete({
-        	source: "/bp/vendor-search/auto-complete",
-            minLength: 3,
-            select: function( event, ui ) {
-          	  //$( "#vendor_id" ).val(ui.item.id);
-              //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
-          	  //alert($( "#vendor_id" ).val());
-          	  //alert(ui.item.id);
-          	  rowData.vendor_id = ui.item.id;
-
-          	 	$('#global-notice').show();
-          		$('#global-notice').html('"' + ui.item.value + '" selected');
-          		$('#global-notice').fadeOut(5000);
-          		//$("#jquery_dialog").dialog("close");
-            }
-            })
-            .autocomplete( "instance" )._renderItem = function( ul, item ) {
-            return $( "<li>" )
-              .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
-              .appendTo( ul );
-          };
-    }
-
-    var dateEditor = function (ui) {
-        var $inp = ui.$cell.find("input"),
-            $grid = $(this),
-            validate = function (that) {
-                var valid = $grid.pqGrid("isValid", { dataIndx: ui.dataIndx, value: $inp.val() }).valid;
-                if (!valid) {
-                    that.firstOpen = false;
-                }
-            };
-
-        //initialize the editor
-        $inp
-        .on("input", function (evt) {
-            validate(this);
-        })
-        .datepicker({
-        	dateFormat: 'yy-mm-dd',closeText: 'X',
-        	changeMonth: true,
-            changeYear: true,
-            showAnim: '',
-            onSelect: function () {
-                this.firstOpen = true;
-                validate(this);
-            },
-            beforeShow: function (input, inst) {
-                return !this.firstOpen;
-            },
-            onClose: function () {
-                this.focus();
-            }
-        });
-    }
-
     var columns = [
-       	/* { title: "Receip Date", dataIndx: "receipt_date", width:100,editable: true,
-          	editor: {
-            type: 'textbox',
-            init: dateEditor
-        }, 
-
-        render: function (ui) {
-            //return "hello";
-            var cellData = ui.cellData;
-            if (cellData) {
-                return $.datepicker.formatDate('yy-mm-dd', new Date(cellData));
-            }
-            else {
-                return "";
-            }
-        },
-        validations: [
-           { type: 'regexp', value: '^[0-9]{4}-[0-9]{2}-[0-9]{2}$', msg: 'Not in mm/dd/yyyy format' }
-        ] 
-        }, */
-        
-    	 /*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
-              editor: {
-              type: "textbox",
-              init: autoCompleteEditor
-              //type: function (ui) { return dropdowneditor(this, ui); }
-          },},
-          
-        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
-         
-        //{ title: "#", dataType: "string", dataIndx: "row_number", width: 1,editable: false },
-        { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-        { title: "PR Number", dataType: "string", dataIndx: "pr_number", width: 130,editable: false },
-        { title: "PR Date", dataType: "string", dataIndx: "pr_submitted_on", width: 70,editable: false },
-    	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-       	{ title: "Item", dataType: "string", dataIndx: "item_name", width: 230,editable: false },
+      
+        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+        { title: "PR Number", dataType: "string", dataIndx: "prNumber", width: 130,editable: false },
+        { title: "PR Date", dataType: "string", dataIndx: "prSubmittedOn", width: 60,editable: false },
+    	{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+       	{ title: "Item", dataType: "string", dataIndx: "itemName", width: 250,editable: false },
+      	{ title: "Row name", dataType: "string", dataIndx: "rowName", width: 100,editable: false },
+     	{ title: "Row name", dataType: "string", dataIndx: "rowCode", width: 100,editable: false },
+            
         { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false,editable: false},
-        { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
-        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
-        { title: "buying", dataType: "integer", dataIndx: "buying", width: 70,align: 'right',editable: false},
+        { title: "PO", dataType: "string", dataIndx: "poQuantity", width:70, align: 'right',editable: false},
+        { title: "Posted PO", dataType: "string", dataIndx: "postedPoQuantity", width:70, align: 'right',editable: false},
+
+        { title: "GR", dataType: "string", dataIndx: "grQuantity", width:70, align: 'right',editable: false},
+        { title: "Posted GR", dataType: "string", dataIndx: "postedGrQuantity", width:70, align: 'right',editable: false},
+
+        { title: "GR", dataType: "string", dataIndx: "stockGrQuantity", width:70, align: 'right',editable: false},
+        { title: "Posted GR", dataType: "string", dataIndx: "postedStockGrQuantity", width:70, align: 'right',editable: false},
+
+        { title: "AP", dataType: "string", dataIndx: "apQuantity", width:70, align: 'right',editable: false},
+        { title: "Posted AP", dataType: "string", dataIndx: "postedApQuantity", width:70, align: 'right',editable: false},
+    
         
         { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 80,align: 'left',editable: false},
         { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 100,align: 'right', hidden: false,editable: false},
         { title: "Curr", dataType: "string", dataIndx: "currency", width: 3,align: 'center', hidden: false,editable: false},
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-                  
-        { title: "", editable: false, minWidth: 90, sortable: false,
-            render: function (ui) {
-                //return "<button type='button' class='receive_btn'>Receive</button><button type='button' class='receive1_btn'>Receive</button>";
-            	return "<button type='button' class='receive1_btn'>Receive</button>";
-	           }
-        },
    ];
 
-    var url = "/procure/pr-row/gird-all1?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>";
-	//var url = "/procure/pr-row/gird-all";
-	//var url = "/procure/pr-row/gird-all?pr_year=2017&balance=0&is_active=&sort_by=currency&sort=ASC";
-	
-	//alert(url);
-	 var dataModel = {
+    <?php
+    $link = "/procure/pr-row/status-report-gird?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
+    $url = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $output);
+
+    ?>
+    var url = "<?php echo $url;?>";
+    var dataModel = {
     		  dataType: "JSON",
               location: "remote",
               method: "GET",
@@ -360,15 +284,9 @@ if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              },
-            
-       	
     };
 
-	
-
-    //var container_height = $('#main_container').height();
-    //alert(container_height);
-	var obj = { width: "auto", height: $(window).height()-190, showTitle : true,
+	var obj = { width: "auto", height: $(window).height()-300, showTitle : true,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -476,55 +394,11 @@ if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
 
     var $grid = $("#pr_row_gird").pqGrid(obj);
 
-    $grid.on('pqgridrefresh pqgridrefreshrow', function () {
-        //debugger;
-        var $grid = $(this);
-
-        //receive button
-        $grid.find("button.receive_btn").button({})
-        .unbind("click")
-        .bind("click", function (evt) {
-
-            var $tr = $(this).closest("tr"),
-            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-
-            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-    
-            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
-          	//alert(rowData['item_name']);
-
-          	//window.open(redirectUrl,'_blank');
-          	window.location.href = redirectUrl;
-        });
-
-        //receive button
-        $grid.find("button.receive1_btn").button({})
-        .unbind("click")
-        .bind("click", function (evt) {
-
-            var $tr = $(this).closest("tr"),
-            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-
-            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-    
-            redirectUrl="/inventory/item-transaction/gr1?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
-          	//alert(rowData['item_name']);
-          	
-          	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
-          	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
-          	//window.open(redirectUrl,'_blank');
-          	
-        });
-
-      });
-    
-
     $("#main_container").height() = $(window).height()-190;
 </script>
 
 <?php
 endif;
+
 ?>
 

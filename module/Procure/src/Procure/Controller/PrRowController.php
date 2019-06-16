@@ -426,7 +426,7 @@ class PrRowController extends AbstractActionController
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
         $pr_year = $this->params()->fromQuery('pr_year');
-       
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 30;
         } else {
@@ -443,7 +443,7 @@ class PrRowController extends AbstractActionController
 
         if ($output == null) :
             // $sort_by = "prNumber";
-            $output = PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE;
+            $output = PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
         endif;
 
         if ($sort_by == null) :
@@ -462,8 +462,7 @@ class PrRowController extends AbstractActionController
 
             // $n = new NmtInventoryItem();
         if ($pr_year == null) :
-            // $pr_year = date('Y');
-            $pr_year = 0;
+            $pr_year = date('Y');            
         endif;
 
         if ($sort == null) :
@@ -472,10 +471,9 @@ class PrRowController extends AbstractActionController
 
         $paginator = null;
         $result = null;
-        
+
         $total_records = $this->getPrRowStatusReporter()->getPrRowStatusTotal($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
-        
-         
+
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
@@ -497,8 +495,7 @@ class PrRowController extends AbstractActionController
             'pr_year' => $pr_year,
             'output' => $output,
             'result' => $result,
-            'paginator' => $paginator,
-            
+            'paginator' => $paginator
         ));
     }
 
@@ -2037,7 +2034,7 @@ class PrRowController extends AbstractActionController
                 if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
                     $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
                 } else {
-                    $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                    $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
                 }
 
                 $a_json_row["quantity"] = $pr_row_entity->getQuantity();
@@ -2093,6 +2090,79 @@ class PrRowController extends AbstractActionController
             }
 
             $a_json_final['data'] = $a_json;
+            $a_json_final['totalRecords'] = $total_records;
+            $a_json_final['curPage'] = $pq_curPage;
+        }
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function statusReportGirdAction()
+    {
+        if (isset($_GET['sort_by'])) {
+            $sort_by = $_GET['sort_by'];
+        } else {
+            $sort_by = "itemName";
+        }
+
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "ASC";
+        }
+
+        if (isset($_GET['balance'])) {
+            $balance = $_GET['balance'];
+        } else {
+            $balance = 1;
+        }
+
+        if (isset($_GET['is_active'])) {
+            $is_active = (int) $_GET['is_active'];
+        } else {
+            $is_active = 1;
+        }
+
+        if (isset($_GET['pr_year'])) {
+
+            $pr_year = $_GET['pr_year'];
+        } else {
+            $pr_year = date('Y');
+        }
+
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        } else {
+            $pq_curPage = 1;
+        }
+
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        } else {
+            $pq_rPP = 1;
+        }
+        $output = PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
+        $total_records = $this->getPrRowStatusReporter()->getPrRowStatusTotal($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
+
+        $a_json_final = array();
+
+        if ($total_records > 0) {
+
+            if ($total_records > $pq_rPP) {
+                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
+                $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+            } else {
+                $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
+            }
+
+            $a_json_final['data'] = $result;
             $a_json_final['totalRecords'] = $total_records;
             $a_json_final['curPage'] = $pq_curPage;
         }

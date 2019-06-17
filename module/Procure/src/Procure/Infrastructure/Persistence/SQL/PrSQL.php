@@ -8,7 +8,6 @@ namespace Procure\Infrastructure\Persistence\SQL;
  */
 class PrSQL
 {
-
     const PR_ROW_SQL = "
 SELECT
 	nmt_procure_pr.pr_name,
@@ -29,7 +28,11 @@ SELECT
     IFNULL(nmt_inventory_trx.posted_stock_gr_qty,0) AS posted_stock_gr_qty,
         
     IFNULL(fin_vendor_invoice_row.ap_qty,0) AS ap_qty,
-    IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty
+    IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty,
+    
+    last_ap.vendor_name as vendor_name,
+    last_ap.unit_price as unit_price,
+    last_ap.currency_iso3 as currency_iso3   
         
 FROM nmt_procure_pr_row
 
@@ -103,6 +106,39 @@ LEFT JOIN
 )
 AS nmt_inventory_trx
 ON nmt_inventory_trx.pr_row_id = nmt_procure_pr_row.id
+
+
+left  join
+(
+	SELECT
+	fin_vendor_invoice_row.item_id,
+	fin_vendor_invoice_row.unit_price,
+	fin_vendor_invoice.vendor_name,
+	 fin_vendor_invoice.currency_iso3
+	FROM
+	fin_vendor_invoice_row
+
+	INNER JOIN
+	(
+	SELECT
+		MAX(fin_vendor_invoice_row.id) AS max_id,
+		fin_vendor_invoice_row.item_id AS item_id
+		FROM fin_vendor_invoice_row
+
+	INNER JOIN fin_vendor_invoice ON
+	fin_vendor_invoice_row.invoice_id = fin_vendor_invoice.id
+	WHERE fin_vendor_invoice.doc_status='posted'
+	GROUP BY fin_vendor_invoice_row.item_id
+	)
+	AS last_ap
+	ON last_ap.max_id = fin_vendor_invoice_row.id AND fin_vendor_invoice_row.item_id = last_ap.item_id
+
+	LEFT JOIN fin_vendor_invoice
+	ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+)
+as last_ap
+on last_ap.item_id = nmt_procure_pr_row.item_id
+
 WHERE 1 %s
 ";
 }

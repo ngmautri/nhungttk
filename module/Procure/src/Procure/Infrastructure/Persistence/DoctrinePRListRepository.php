@@ -94,7 +94,10 @@ class DoctrinePRListRepository extends AbstractDoctrineRepository implements PRL
             $rsm->addScalarResult("pr_year", "pr_year");
 
             $rsm->addScalarResult("item_name", "item_name");
-
+            $rsm->addScalarResult("vendor_name", "vendor_name");
+            $rsm->addScalarResult("unit_price", "unit_price");
+            $rsm->addScalarResult("currency_iso3", "currency_iso3");
+            
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;

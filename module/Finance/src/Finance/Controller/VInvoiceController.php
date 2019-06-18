@@ -546,7 +546,7 @@ class VInvoiceController extends AbstractActionController
                     $viewModel = new ViewModel(array(
                         'action' => \Application\Model\Constants::FORM_ACTION_AP_FROM_PO,
                         'redirectUrl' => $redirectUrl,
-                        'errors' => null,
+                        'errors' => $errors,
                         'entity' => null,
                         'target' => null,
                         'nmtPlugin' => $nmtPlugin

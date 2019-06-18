@@ -1,7 +1,7 @@
 <?php
-namespace Procure\Infrastructure\Persistence\Factory;
+namespace Procure\Infrastructure\Persistence\Doctrine\Factory;
 
-use Procure\Infrastructure\Persistence\DoctrinePOListRepository;
+use Procure\Infrastructure\Persistence\Doctrine\POListRepository;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri
  *
  */
-class DoctrinePOListRepositoryFactory implements FactoryInterface
+class POListRepositoryFactory implements FactoryInterface
 {
     
     /**
@@ -23,7 +23,7 @@ class DoctrinePOListRepositoryFactory implements FactoryInterface
     {
         $container = $serviceLocator;
         
-        $controller = new DoctrinePOListRepository();
+        $controller = new POListRepository();
         
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);

@@ -79,16 +79,7 @@ return array(
                 'icon' => 'glyphicon glyphicon-list',
                 
             ),
-            
-            array(
-                'label' => 'PR Row',
-                'route' => 'procure/default',
-                'controller' => 'pr-row',
-                'action' => 'all',
-                'icon' => 'glyphicon glyphicon-list'
-            
-            ),
-            
+              
             array(
                 'label' => 'PR Row Report',
                 'route' => 'procure/default',

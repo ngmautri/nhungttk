@@ -1,14 +1,15 @@
 <?php
-namespace Procure\Infrastructure\Persistence;
+namespace Procure\Infrastructure\Persistence\Doctrine;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
+use Procure\Infrastructure\Persistence\POListRepositoryInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class DoctrinePOListRepository extends AbstractDoctrineRepository implements POListRepositoryInterface
+class POListRepository extends AbstractDoctrineRepository implements POListRepositoryInterface
 {
     /**
      * 
@@ -34,6 +35,15 @@ class DoctrinePOListRepository extends AbstractDoctrineRepository implements POL
      */
     public function getPoOfItem($item_id, $token)
     {}
+    public function getPoRowOfVendor($vendor_id = null, $vendor_token = null, $sort_by = null, $order = 'DESC', $limit = 0, $offset = 0)
+    {}
+
+    public function getOpenPoAP($id, $token)
+    {}
+
+    public function getOpenPoGr($id, $token)
+    {}
+
 
     
 }

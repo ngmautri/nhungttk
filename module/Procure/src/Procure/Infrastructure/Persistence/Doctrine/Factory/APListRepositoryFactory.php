@@ -1,18 +1,18 @@
 <?php
-namespace Procure\Infrastructure\Persistence\Factory;
+namespace Procure\Infrastructure\Persistence\Doctrine\Factory;
 
-use Procure\Infrastructure\Persistence\DoctrinePOListRepository;
+use Procure\Infrastructure\Persistence\Doctrine\DoctrineAPListRepository;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri
- *
+ *        
  */
-class DoctrinePOListRepositoryFactory implements FactoryInterface
+class APListRepositoryFactory implements FactoryInterface
 {
-    
+
     /**
      *
      * {@inheritdoc}
@@ -23,11 +23,11 @@ class DoctrinePOListRepositoryFactory implements FactoryInterface
     {
         $container = $serviceLocator;
         
-        $controller = new DoctrinePOListRepository();
-        
+        $controller = new DoctrineAPListRepository();
+
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        $controller->setDoctrineEM($sv);
-        return $controller;
-    }
-    
+		$controller->setDoctrineEM($sv);
+		return $controller;
+	}	
+	
 }

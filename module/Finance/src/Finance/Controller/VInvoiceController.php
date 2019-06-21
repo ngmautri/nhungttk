@@ -580,7 +580,7 @@ class VInvoiceController extends AbstractActionController
             try {
                 $this->apService->copyFromPO($entity, $target, $u, TRUE);
             } catch (\Exception $e) {
-                $errors = $e->getMessage();
+                $errors[] = $e->getMessage();
             }
 
             if (count($errors) > 0) {

@@ -19,9 +19,10 @@ Interface PRListRepositoryInterface
      * @param int $offset
      */
     public function getAllPrRow($is_active = 1, $pr_year, $balance = null, $sort_by = null, $sort = "ASC", $limit, $offset);
-   
-    
+       
     public function getAllPrRowTotal($is_active = 1, $pr_year, $balance = null, $sort_by = null, $sort = "ASC", $limit, $offset);
+    
+    public function getPrStatus($prId, $balance, $sort_by = null, $sort = "ASC");
     
     
 }

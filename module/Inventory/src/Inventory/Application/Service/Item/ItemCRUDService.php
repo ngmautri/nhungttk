@@ -85,11 +85,11 @@ class ItemCRUDService extends AbstractService
             $itemId = $rep->store($item, $generateSysNumber);
 
             // event
-            $event = new ItemCreatedEvent($item);
+            /* $event = new ItemCreatedEvent($item);
             $dispatcher = new EventDispatcher();
             $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
             $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
-
+             */
             $m = sprintf("[OK] Item # %s created", $itemId);
 
             $this->getEventManager()->trigger(ItemCreatedEvent::EVENT_NAME, $trigger, array(
@@ -196,11 +196,11 @@ class ItemCRUDService extends AbstractService
 
             $rep->store($newItem, False);
 
-            $event = new ItemUpdatedEvent($newItem);
+          /*   $event = new ItemUpdatedEvent($newItem);
 
             $dispatcher = new EventDispatcher();
             $dispatcher->addSubscriber(new ItemUpdatedEventHandler($newItem));
-            $dispatcher->dispatch(ItemUpdatedEvent::EVENT_NAME, $event);
+            $dispatcher->dispatch(ItemUpdatedEvent::EVENT_NAME, $event); */
 
             $m = sprintf("Item #%s updated", $itemId);
             $changeOn = new \DateTime();

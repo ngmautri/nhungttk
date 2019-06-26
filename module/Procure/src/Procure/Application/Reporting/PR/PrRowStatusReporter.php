@@ -20,7 +20,7 @@ class PrRowStatusReporter extends AbstractService
 
     /**
      *
-     * @var DoctrinePRListRepository;
+     * @var DoctrinePRListRepository $prListRespository;
      */
     private $prListRespository;
 
@@ -55,13 +55,52 @@ class PrRowStatusReporter extends AbstractService
             default:
                 $factory = new PrRowStatusInArray();
                 break;
-                
         }
 
         $result = $this->getPrListRespository()->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, $limit, $offset);
         return $factory->createOutput($result);
     }
 
+    /**
+     *
+     * @param int $prId
+     * @param int $balance
+     * @param string $sort_by
+     * @param string $sort
+     * @param string $outputStrategy
+     * @return NULL|NULL[]|\Procure\Application\DTO\Pr\PrRowStatusDTO[]
+     */
+    public function getPrStatus($prId = null, $balance = 1, $sort_by, $sort, $outputStrategy)
+    {
+        $factory = null;
+        switch ($outputStrategy) {
+            case \Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY:
+                $factory = new PrRowStatusInArray();
+                break;
+            case PrRowStatusOutputStrategy::OUTPUT_IN_EXCEL:
+                // download all
+                $factory = new PrRowStatusInExcel();
+                break;
+
+            case PrRowStatusOutputStrategy::OUTPUT_IN_OPEN_OFFICE:
+                // download all
+                $factory = new PrRowStatusInOpenOffice();
+                break;
+
+            case PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE:
+                $factory = new PrRowStatusInHTMLTable();
+                break;
+
+            default:
+                $factory = new PrRowStatusInArray();
+                break;
+        }
+
+        $result = $this->prListRespository->getPrStatus($prId, $balance);
+        return $factory->createOutput($result);
+    }
+
+    
     public function getPrRowStatusTotal($is_active = 1, $pr_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
     {
         $result = $this->getPrListRespository()->getAllPrRowTotal($is_active, $pr_year, $balance, $sort_by, $sort, $limit, $offset);
@@ -69,6 +108,10 @@ class PrRowStatusReporter extends AbstractService
     }
     
  
+    /**
+     * 
+     * @return \Procure\Application\Reporting\PR\DoctrinePRListRepository;
+     */
     public function getPrListRespository()
     {
         return $this->prListRespository;

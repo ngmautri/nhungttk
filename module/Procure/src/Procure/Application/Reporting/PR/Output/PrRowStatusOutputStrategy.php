@@ -12,14 +12,17 @@ use Procure\Application\DTO\Pr\PrRowStatusDTO;
  */
 abstract class PrRowStatusOutputStrategy
 {
+
     const OUTPUT_IN_ARRAY = "1";
+
     const OUTPUT_IN_EXCEL = "2";
+
     const OUTPUT_IN_HMTL_TABLE = "3";
+
     const OUTPUT_IN_OPEN_OFFICE = "4";
-    
-    
+
     abstract public function createOutput($result);
-    
+
     /**
      *
      * @param NmtProcurePrRow $entity
@@ -41,13 +44,13 @@ abstract class PrRowStatusOutputStrategy
         $dto->token = $entity->getToken();
         $dto->checksum = $entity->getChecksum();
         $dto->priority = $entity->getPriority();
-        $dto->rowName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$entity->getRowName());
+        $dto->rowName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $entity->getRowName());
         $dto->rowDescription = $entity->getRowDescription();
-        $dto->rowCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$entity->getRowCode());
+        $dto->rowCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $entity->getRowCode());
         $dto->rowUnit = $entity->getRowUnit();
         $dto->conversionFactor = $entity->getConversionFactor();
         $dto->conversionText = $entity->getConversionText();
-        $dto->quantity =  number_format($entity->getQuantity(),2);
+        $dto->quantity = number_format($entity->getQuantity(), 2);
         ;
         $dto->edt = $entity->getEdt();
         $dto->isDraft = $entity->getIsDraft();

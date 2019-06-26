@@ -203,65 +203,55 @@ class DoctrinePRListRepository extends AbstractDoctrineRepository implements PRL
     public function getPrStatus($prId, $balance, $sort_by = null, $sort = "ASC")
     {
         $sql1 = PrSQL::PR_ROW_SQL_1;
-        $sql1 = sprintf($sql1,$prId,$prId,$prId,$prId);
-        
-        $sql_tmp1='';
-                
-        if ($balance == 0) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr_row.quantity -  IFNULL(nmt_procure_gr_row.posted_gr_qty,0)) <= 0";
-        }
-        if ($balance == 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr_row.quantity -  IFNULL(nmt_procure_gr_row.posted_gr_qty,0)) > 0";
-        }
-        if ($balance == - 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr_row.quantity -  IFNULL(nmt_procure_gr_row.posted_gr_qty,0)) < 0";
-        }
-        
+
+        $sql_tmp1 = ' AND nmt_procure_pr_row.pr_id=' . $prId;
+
         switch ($sort_by) {
             case "itemName":
                 $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
                 break;
-                
+
             case "prNumber":
                 $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_procure_pr.pr_number " . $sort;
                 break;
-                
+
             case "balance":
                 $sql_tmp1 = $sql_tmp1 . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.posted_gr_qty,0) " . $sort;
                 break;
         }
-         
-        $sql = sprintf($sql1,$sql_tmp1);
+
+        $sql = sprintf($sql1, $prId, $prId, $prId, $prId, $sql_tmp1);
+
         $sql = $sql . ";";
-        
-        //echo $sql;
-        
+
+        echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            
+
             $rsm->addScalarResult("pr_qty", "pr_qty");
-            
+
             $rsm->addScalarResult("po_qty", "po_qty");
             $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
-            
+
             $rsm->addScalarResult("gr_qty", "gr_qty");
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
-            
+
             $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
             $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
-            
+
             $rsm->addScalarResult("ap_qty", "ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-            
+
             $rsm->addScalarResult("pr_name", "pr_name");
             $rsm->addScalarResult("pr_year", "pr_year");
-            
+
             $rsm->addScalarResult("item_name", "item_name");
             $rsm->addScalarResult("vendor_name", "vendor_name");
             $rsm->addScalarResult("unit_price", "unit_price");
             $rsm->addScalarResult("currency_iso3", "currency_iso3");
-            
+
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;

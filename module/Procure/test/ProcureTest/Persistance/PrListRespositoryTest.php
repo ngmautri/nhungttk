@@ -40,7 +40,7 @@ class PrListRespository extends PHPUnit_Framework_TestCase
             $rep = new DoctrinePRListRepository();
             $rep->setDoctrineEM($em);
             
-            $result = $rep->getAllPrRow();
+            $result = $rep->getPrStatus(835, 1);
             var_dump(count($result));
 
            } catch (InvalidArgumentException $e) {

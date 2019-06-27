@@ -224,7 +224,7 @@ class DoctrinePRListRepository extends AbstractDoctrineRepository implements PRL
 
         $sql = $sql . ";";
 
-        echo $sql;
+        //echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());

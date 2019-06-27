@@ -39,7 +39,7 @@ class PrRowStatusReportTest extends PHPUnit_Framework_TestCase
             $reporter = new PrRowStatusReporter();
             $reporter->setPrListRespository($rep);
             $reporter->setDoctrineEM($doctrineEM);
-            $results = $reporter->getPrRowStatus(1, 2019, 0, "itemName", "ASC",10,1,PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE);
+            $results = $reporter->getPrStatus(835, 1, "itemName", "ASC",PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY);
             var_dump($results);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

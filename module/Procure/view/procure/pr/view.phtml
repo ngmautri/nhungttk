@@ -32,7 +32,7 @@
 
 		<div style="position: relative; float: right;">
 
-			
+
 			<a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
 					class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a> <a
@@ -137,17 +137,17 @@
 							class="glyphicon glyphicon-folder-open"></i>
 						</a>
 					</div>
-					
+
 					<div class="form-group margin-bottom required">
 
-									<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
-									<div class="col-sm-3">
-										<select tabindex="9" name="target_wh_id" id="target_wh_id"
-											class="form-control input-sm">
-											<option value=""><?php echo $this->translate("Select Warehouse");?></option>
+						<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+						<div class="col-sm-3">
+							<select tabindex="9" name="target_wh_id" id="target_wh_id"
+								class="form-control input-sm">
+								<option value=""><?php echo $this->translate("Select Warehouse");?></option>
    	    							<?php
             $wh_list = $nmtPlugin->warehouseList();
-            
+
             if ($wh_list !== null) :
                 foreach ($wh_list as $gl) :
 
@@ -172,8 +172,8 @@
 
             ?>
    					</select>
-									</div>
-								</div>
+						</div>
+					</div>
 
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Remarks:</label>
@@ -200,22 +200,30 @@
 					<div style="font-size: 9pt">
 
 						<div class="dropdown">
-							<button style="font-size: 9.5pt; margin-bottom: 2pt; padding:3pt 5pt 3pt 5pt;"
-								title=""
-								class="btn btn-default dropdown-toggle btn-sm" type="button"
-								id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-								aria-expanded="true">
+							<button
+								style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+								title="" class="btn btn-default dropdown-toggle btn-sm"
+								type="button" id="dropdownMenu1" data-toggle="dropdown"
+								aria-haspopup="true" aria-expanded="true">
 								<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span
 									class="caret"></span>
 							</button>
-							<a style="font-size: 9.5pt; margin-bottom: 2pt; padding:3pt 5pt 3pt 5pt;" title="<?php echo $this->translate("Refresh");?>" class="btn btn-default btn-sm" href="javascript:;"
-				onclick="refreshGird();">&nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;</a>
-				
-				<a style="font-size: 9.5pt; margin-bottom: 2pt; padding:3pt 5pt 3pt 5pt;" title="<?php echo $this->translate("Full Screen");?>" class="btn btn-default btn-sm" href="javascript:;"
-				onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1850',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);">&nbsp;<i
-				class="fa fa-window-maximize" aria-hidden="true"></i>&nbsp;</a>
-				
-							<ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<a
+								style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+								title="<?php echo $this->translate("Refresh");?>"
+								class="btn btn-default btn-sm" href="javascript:;"
+								onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
+								aria-hidden="true"></i>&nbsp;
+							</a> <a
+								style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+								title="<?php echo $this->translate("Full Screen");?>"
+								class="btn btn-default btn-sm" href="javascript:;"
+								onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1850',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);">&nbsp;<i
+								class="fa fa-window-maximize" aria-hidden="true"></i>&nbsp;
+							</a>
+
+							<ul style="font-size: 9.5pt;" class="dropdown-menu"
+								aria-labelledby="dropdownMenu1">
 								<li><a target="_blank" class=""
 									href="<?php echo $this->baseUrl ?>/procure/pr-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 										<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;PDF
@@ -230,12 +238,6 @@
 										<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 										&nbsp;Open Office (*.ods)
 								</a></li>
-								
-									<li><a target="_blank" class=""
-									href="<?php echo $this->baseUrl ?>/procure/pr/view?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-										<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;Status
-								</a></li>
-						
 							</ul>
 						</div>
 
@@ -510,59 +512,32 @@
 	};
 
     obj.colModel = [
-    	/*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
-             editor: {
-             type: "textbox",
-             init: autoCompleteEditor
-             //type: function (ui) { return dropdowneditor(this, ui); }
-         },},
-         
-       { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
-       { title: "", editable: false, minWidth: 70, sortable: false,
-           render: function (ui) {
-               //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
-        		return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
-	           
-	           }
-       },
-       
-       { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-       { title: "Identifer", dataType: "string", dataIndx: "row_identifer",width: 85,align: 'left',editable: false},	
-       { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
-  		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-       { title: "Item", dataType: "string", dataIndx: "item_name", width:250,editable: false },
-
-       { title: "Name", dataType: "string", dataIndx: "row_name", width:100,editable: false },
-       { title: "Code", dataType: "string", dataIndx: "row_code", width:100,editable: false },
-       //{ title: ".", dataType: "string", dataIndx: "price_comparison", width:1,editable: false},
-
-       
-       { title: " ", dataType: "string", dataIndx: "price_comparison", width:10,editable: false,
-           render: function(ui){
-        	  	 var rowData = ui.rowData,
-               	dataIndx = ui.dataIndx;
-           		return rowData['price_comparison'];
-       	   },
-
-       },
-
-              
-         { title: "Unit", dataType: "integer", dataIndx: "row_unit", width: 70,align: 'right',editable: false},
-       
-       { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: true},
-       { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
-       { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
-       { title: "buying", dataType: "integer", dataIndx: "buying", width: 70,align: 'right',editable: false},
-       { title: "Standard Qty", dataType: "integer", dataIndx: "standard_qty", width: 70,align: 'right',editable: false},
-       { title: "Standard Unit", dataType: "integer", dataIndx: "standard_unit", width: 70,align: 'right',editable: false},
+    	 { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+         { title: "PR Number", dataType: "string", dataIndx: "prNumber", width: 130,editable: false },
+         { title: "PR Date", dataType: "string", dataIndx: "prSubmittedOn", width: 60,editable: false },
+     	{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+        	{ title: "Item", dataType: "string", dataIndx: "itemName", width: 250,editable: false },
+       	{ title: "Row name", dataType: "string", dataIndx: "rowName", width: 100,editable: false },
+      	{ title: "Row name", dataType: "string", dataIndx: "rowCode", width: 100,editable: false },
              
-       { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
-       { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
-       { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
-       { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
-            
-       { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-        
+         { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false,editable: false},
+         { title: "PO", dataType: "string", dataIndx: "poQuantity", width:70, align: 'right',editable: false},
+         { title: "Posted PO", dataType: "string", dataIndx: "postedPoQuantity", width:70, align: 'right',editable: false},
+
+         { title: "GR", dataType: "string", dataIndx: "grQuantity", width:70, align: 'right',editable: false},
+         { title: "Posted GR", dataType: "string", dataIndx: "postedGrQuantity", width:70, align: 'right',editable: false},
+
+         { title: "GR", dataType: "string", dataIndx: "stockGrQuantity", width:70, align: 'right',editable: false},
+         { title: "Posted GR", dataType: "string", dataIndx: "postedStockGrQuantity", width:70, align: 'right',editable: false},
+
+         { title: "AP", dataType: "string", dataIndx: "apQuantity", width:70, align: 'right',editable: false},
+         { title: "Posted AP", dataType: "string", dataIndx: "postedApQuantity", width:70, align: 'right',editable: false},
+     
+         
+         { title: "Vendor", dataType: "string", dataIndx: "lastVendor", width: 150,align: 'left',editable: false},
+         { title: "Unit Price", dataType: "float", dataIndx: "lastUP", width: 80,align: 'right', hidden: false,editable: false},
+         { title: "Curr", dataType: "string", dataIndx: "lastCurrency", width: 3,align: 'center', hidden: false,editable: false},
+         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},        
        
    ];
 
@@ -571,7 +546,7 @@
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/pr-row/gird1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
+              url: "/procure/pr-row/pr-gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }

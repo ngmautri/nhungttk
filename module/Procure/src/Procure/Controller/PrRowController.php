@@ -34,6 +34,10 @@ class PrRowController extends AbstractActionController
 
     protected $cacheService;
 
+    /**
+     *
+     * @var PrRowStatusReporter $prRowStatusReporter ;
+     */
     protected $prRowStatusReporter;
 
     /**
@@ -497,6 +501,61 @@ class PrRowController extends AbstractActionController
             'result' => $result,
             'paginator' => $paginator
         ));
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function prGirdAction()
+    {
+        if (isset($_GET['sort_by'])) {
+            $sort_by = $_GET['sort_by'];
+        } else {
+            $sort_by = "itemName";
+        }
+
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "ASC";
+        }
+
+        if (isset($_GET['balance'])) {
+            $balance = $_GET['balance'];
+        } else {
+            $balance = 1;
+        }
+
+        if (isset($_GET['target_id'])) {
+            $prId = (int) $_GET['target_id'];
+        }
+
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        } else {
+            $pq_curPage = 1;
+        }
+
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        } else {
+            $pq_rPP = 1;
+        }
+        $output = PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
+
+        $a_json_final = array();
+
+        $result = $this->getPrRowStatusReporter()->getPrStatus($prId, $balance, $sort_by, $sort, $output);
+
+        $a_json_final['data'] = $result;
+        $a_json_final['totalRecords'] = count($result);
+        $a_json_final['curPage'] = $pq_curPage;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
     }
 
     /**

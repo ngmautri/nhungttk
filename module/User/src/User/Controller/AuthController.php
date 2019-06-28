@@ -45,7 +45,7 @@ class AuthController extends AbstractActionController
         $redirect = $this->params()->fromQuery('redirect');
         
         if ($redirect == null) {
-            $redirect = '/inventory/dashboard';
+            $redirect = '/inventory/item/list2';
         }
         $this->layout("User/login");
         

@@ -41,7 +41,7 @@ class TransactionServiceTest extends PHPUnit_Framework_TestCase
         $data["movementType"] = TransactionType::GI_FOR_COST_CENTER;
         $data["warehouse"] = 6;
         $data["company"] = 1;
-        $data["currency"] = 9;
+        $data["docCurrency"] = 9;
         $data["localCurrency"] = 1;
 
         $dto= TransactionDTOAssembler::createDTOFromArray($data);

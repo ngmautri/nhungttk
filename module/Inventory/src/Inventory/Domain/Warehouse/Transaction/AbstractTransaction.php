@@ -195,13 +195,13 @@ abstract class AbstractTransaction extends AbstractEntity
         $this->sourceLocation = $snapshot->sourceLocation;
         $this->tartgetLocation = $snapshot->tartgetLocation;
         $this->company = $snapshot->company;
-        
+        $this->uuid = $snapshot->uuid;
+
         // set default value
         $this->specify();
     }
-    
+
     abstract public function specify();
-    
 
     public function getId()
     {
@@ -457,7 +457,9 @@ abstract class AbstractTransaction extends AbstractEntity
     {
         return $this->tartgetLocation;
     }
+
     /**
+     *
      * @param mixed $id
      */
     protected function setId($id)
@@ -466,6 +468,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $token
      */
     protected function setToken($token)
@@ -474,6 +477,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $currencyIso3
      */
     protected function setCurrencyIso3($currencyIso3)
@@ -482,6 +486,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $exchangeRate
      */
     protected function setExchangeRate($exchangeRate)
@@ -490,6 +495,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $remarks
      */
     protected function setRemarks($remarks)
@@ -498,6 +504,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $createdOn
      */
     protected function setCreatedOn($createdOn)
@@ -506,6 +513,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $currentState
      */
     protected function setCurrentState($currentState)
@@ -514,6 +522,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isActive
      */
     protected function setIsActive($isActive)
@@ -522,6 +531,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $trxType
      */
     protected function setTrxType($trxType)
@@ -530,6 +540,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $lastchangeBy
      */
     protected function setLastchangeBy($lastchangeBy)
@@ -538,6 +549,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $lastchangeOn
      */
     protected function setLastchangeOn($lastchangeOn)
@@ -546,6 +558,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $postingDate
      */
     protected function setPostingDate($postingDate)
@@ -554,6 +567,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $sapDoc
      */
     protected function setSapDoc($sapDoc)
@@ -562,6 +576,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $contractNo
      */
     protected function setContractNo($contractNo)
@@ -570,6 +585,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $contractDate
      */
     protected function setContractDate($contractDate)
@@ -578,6 +594,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $quotationNo
      */
     protected function setQuotationNo($quotationNo)
@@ -586,6 +603,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $quotationDate
      */
     protected function setQuotationDate($quotationDate)
@@ -594,6 +612,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $sysNumber
      */
     protected function setSysNumber($sysNumber)
@@ -602,6 +621,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $revisionNo
      */
     protected function setRevisionNo($revisionNo)
@@ -610,6 +630,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $deliveryMode
      */
     protected function setDeliveryMode($deliveryMode)
@@ -618,6 +639,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $incoterm
      */
     protected function setIncoterm($incoterm)
@@ -626,6 +648,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $incotermPlace
      */
     protected function setIncotermPlace($incotermPlace)
@@ -634,6 +657,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $paymentTerm
      */
     protected function setPaymentTerm($paymentTerm)
@@ -642,6 +666,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $paymentMethod
      */
     protected function setPaymentMethod($paymentMethod)
@@ -650,6 +675,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docStatus
      */
     protected function setDocStatus($docStatus)
@@ -658,6 +684,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isDraft
      */
     protected function setIsDraft($isDraft)
@@ -666,6 +693,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $workflowStatus
      */
     protected function setWorkflowStatus($workflowStatus)
@@ -674,6 +702,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $transactionStatus
      */
     protected function setTransactionStatus($transactionStatus)
@@ -682,6 +711,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $movementType
      */
     protected function setMovementType($movementType)
@@ -690,6 +720,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $movementDate
      */
     protected function setMovementDate($movementDate)
@@ -698,6 +729,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $journalMemo
      */
     protected function setJournalMemo($journalMemo)
@@ -706,6 +738,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $movementFlow
      */
     protected function setMovementFlow($movementFlow)
@@ -714,6 +747,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $movementTypeMemo
      */
     protected function setMovementTypeMemo($movementTypeMemo)
@@ -722,6 +756,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isPosted
      */
     protected function setIsPosted($isPosted)
@@ -730,6 +765,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isReversed
      */
     protected function setIsReversed($isReversed)
@@ -738,6 +774,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $reversalDate
      */
     protected function setReversalDate($reversalDate)
@@ -746,6 +783,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $reversalDoc
      */
     protected function setReversalDoc($reversalDoc)
@@ -754,6 +792,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $reversalReason
      */
     protected function setReversalReason($reversalReason)
@@ -762,6 +801,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isReversable
      */
     protected function setIsReversable($isReversable)
@@ -770,6 +810,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docType
      */
     protected function setDocType($docType)
@@ -778,6 +819,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isTransferTransaction
      */
     protected function setIsTransferTransaction($isTransferTransaction)
@@ -786,6 +828,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $reversalBlocked
      */
     protected function setReversalBlocked($reversalBlocked)
@@ -794,6 +837,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $createdBy
      */
     protected function setCreatedBy($createdBy)
@@ -802,6 +846,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $warehouse
      */
     protected function setWarehouse($warehouse)
@@ -810,6 +855,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $postingPeriod
      */
     protected function setPostingPeriod($postingPeriod)
@@ -818,6 +864,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $currency
      */
     protected function setCurrency($currency)
@@ -826,6 +873,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docCurrency
      */
     protected function setDocCurrency($docCurrency)
@@ -834,6 +882,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $localCurrency
      */
     protected function setLocalCurrency($localCurrency)
@@ -842,6 +891,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $targetWarehouse
      */
     protected function setTargetWarehouse($targetWarehouse)
@@ -850,6 +900,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $sourceLocation
      */
     protected function setSourceLocation($sourceLocation)
@@ -858,6 +909,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $tartgetLocation
      */
     protected function setTartgetLocation($tartgetLocation)
@@ -866,6 +918,7 @@ abstract class AbstractTransaction extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $company
      */
     protected function setCompany($company)

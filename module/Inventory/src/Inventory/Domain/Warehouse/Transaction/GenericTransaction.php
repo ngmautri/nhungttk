@@ -41,6 +41,26 @@ abstract class GenericTransaction extends AbstractTransaction
      * @var ValuationServiceInterface
      */
     protected $valuationService;
+    
+    public $transtionRowsOutput;
+
+   
+
+    /**
+     * @return mixed
+     */
+    public function getTranstionRowsOutput()
+    {
+        return $this->transtionRowsOutput;
+    }
+
+    /**
+     * @param mixed $transtionRowsOutput
+     */
+    public function setTranstionRowsOutput($transtionRowsOutput)
+    {
+        $this->transtionRowsOutput = $transtionRowsOutput;
+    }
 
     abstract public function prePost();
 
@@ -222,7 +242,7 @@ abstract class GenericTransaction extends AbstractTransaction
             }
         }
 
-        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->currency))
+        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->docCurrency))
             $notification->addError("Currency is empty or invalid");
 
         // check movement type

@@ -17,11 +17,7 @@ abstract class AbstractEntity
 
     protected $versionNo;
     
-    public function __construct(){
-        $this->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-    }
    
-
     public function compare(AbstractEntity $o2)
     {
         $o1 = $this;

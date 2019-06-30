@@ -10,6 +10,13 @@ use Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Ramsey;
 use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
+use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
+use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowOutputStrategy;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInArray;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInExcel;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInOpenOffice;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInHTMLTable;
 
 /**
  *
@@ -42,7 +49,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::getById()
      */
-    public function getById($id)
+    public function getById($id, $outputStrategy = null)
     {
         $criteria = array(
             "id" => $id
@@ -50,19 +57,74 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
 
         /**
          *
-         * @var \Application\Entity\NmtInventoryItem $entity ;
+         * @var \Application\Entity\NmtInventoryMv $entity ;
          */
-        $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryItem")->findOneBy($criteria);
+        $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryMv")->findOneBy($criteria);
         if ($entity == null)
             return null;
 
-        $itemSnapshot = $this->createItemSnapshot($entity);
+        /**
+         *
+         * @var TransactionSnapshot $snapshot ;
+         */
+        $snapshot = $this->createSnapshot($entity);
+        if ($snapshot == null)
+            return null;
 
-        $factory = AbstractItemFactory::getItemFacotory($itemSnapshot->itemTypeId);
+        $trx = TransactionFactory::createTransaction($snapshot->movementType);
+        // var_dump($trx->getMovementDate());
+        if ($trx == null)
+            return null;
 
-        $item = $factory->createItem();
-        $item->makeItemFrom($itemSnapshot);
-        return $item;
+        $trx->makeFromSnapshot($snapshot);
+
+        // get rows;
+        $criteria = array(
+            'movement' => $entity
+        );
+        $sort = array();
+
+        $rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria, $sort);
+
+        if (count($rows) == 0)
+            return $trx;
+
+ 
+        switch ($outputStrategy) {
+            case TransactionRowOutputStrategy::OUTPUT_IN_ARRAY:
+                $factory = new TransactionRowInArray();
+                break;
+            case TransactionRowOutputStrategy::OUTPUT_IN_EXCEL:
+                $factory = new TransactionRowInExcel();
+                break;
+            case TransactionRowOutputStrategy::OUTPUT_IN_OPEN_OFFICE:
+                $factory = new TransactionRowInOpenOffice();
+                break;
+
+            case TransactionRowOutputStrategy::OUTPUT_IN_HMTL_TABLE:
+                break;
+
+            default:
+                $factory = new TransactionRowInArray();
+                break;
+        }
+        
+        foreach ($rows as $r) {
+
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+            $snapshot = $this->createRowSnapshot($r);
+            $transactionRow = new TransactionRow();
+            $transactionRow->makeFromSnapshot($snapshot);
+            $trx->addRow($transactionRow);
+
+            $factory->createOutput($r);
+        }
+
+        $trx->setTranstionRowsOutput($factory->getOutput());
+        return $trx;
     }
 
     /**
@@ -252,14 +314,6 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
 
     /**
      *
-     * @param \Application\Entity\NmtInventoryItem $entity
-     *
-     */
-    private function createsSnapshot($entity)
-    {}
-
-    /**
-     *
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::storeHeader()
      */
@@ -291,7 +345,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
             }
         } else {
             $entity = new \Application\Entity\NmtInventoryMv();
-            $entity->setUuid($snapshot->uuid);
+            $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
             $entity->setToken($entity->getUuid());
 
             if ($snapshot->createdBy > 0) {
@@ -453,5 +507,230 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
         return $entity->getId();
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     *
+     */
+    private function createSnapshot($entity)
+    {
+        if ($entity == null)
+            return null;
+
+        $snapshot = new TransactionSnapshot();
+
+        // mapping referrence
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+
+        if ($entity->getLastChangeBy() !== null) {
+            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+
+        if ($entity->getCompany() !== null) {
+            $snapshot->company = $entity->getCompany()->getId();
+        }
+
+        if ($entity->getPostingPeriod() !== null) {
+            $snapshot->postingPeriod = $entity->getPostingPeriod()->getId();
+        }
+
+        if ($entity->getLocalCurrency() !== null) {
+            $snapshot->localCurrency = $entity->getLocalCurrency()->getId();
+        }
+
+        if ($entity->getDocCurrency() !== null) {
+            $snapshot->docCurrency = $entity->getDocCurrency()->getId();
+        }
+
+        if ($entity->getCurrency() !== null) {
+            $snapshot->currency = $entity->getCurrency()->getId();
+        }
+
+        if ($entity->getWarehouse() !== null) {
+            $snapshot->warehouse = $entity->getWarehouse()->getId();
+        }
+
+        if ($entity->getTargetWarehouse() !== null) {
+            $snapshot->targetWarehouse = $entity->getTargetWarehouse()->getId();
+        }
+
+        if ($entity->getSourceLocation() !== null) {
+            $snapshot->sourceLocation = $entity->getSourceLocation()->getId();
+        }
+
+        if ($entity->getTartgetLocation() !== null) {
+            $snapshot->tartgetLocation = $entity->getTartgetLocation()->getId();
+        }
+
+        // $snapshot->postingPeriod;
+        // $snapshot->localCurrency;
+        // $snapshot->warehouse;
+        // $snapshot->targetWarehouse;
+        // $snapshot->sourceLocation;
+        // $snapshot->tartgetLocation;
+
+        // Mapping Date
+        // =====================
+
+        if ($entity->getMovementDate()) {
+            $snapshot->movementDate = $entity->getMovementDate()->format("Y-m-d");
+        }
+
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (! is_object($property->getValue($entity))) {
+
+                if (property_exists($snapshot, $propertyName)) {
+                    $snapshot->$propertyName = $property->getValue($entity);
+                }
+            }
+        }
+
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     *
+     */
+    private function createRowSnapshot($entity)
+    {
+        if ($entity == null)
+            return null;
+
+        $snapshot = new TransactionRowSnapshot();
+
+        // mapping referrence
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+
+        if ($entity->getLastChangeBy() !== null) {
+            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+
+        if ($entity->getCostCenter() !== null) {
+            $snapshot->costCenter = $entity->getCostCenter()->getId();
+        }
+
+        if ($entity->getPostingPeriod() !== null) {
+            $snapshot->postingPeriod = $entity->getPostingPeriod()->getId();
+        }
+
+        if ($entity->getLocalCurrency() !== null) {
+            $snapshot->localCurrency = $entity->getLocalCurrency()->getId();
+        }
+
+        if ($entity->getCurrency() !== null) {
+            $snapshot->currency = $entity->getCurrency()->getId();
+        }
+
+        if ($entity->getWh() !== null) {
+            $snapshot->wh = $entity->getWh()->getId();
+        }
+
+        if ($entity->getWhLocation() !== null) {
+            $snapshot->whLocation = $entity->getWhLocation()->getId();
+        }
+
+        if ($entity->getGr() !== null) {
+            $snapshot->gr = $entity->getGr()->getId();
+        }
+
+        if ($entity->getInvoiceRow() !== null) {
+            $snapshot->invoiceRow = $entity->getInvoiceRow()->getId();
+        }
+
+        if ($entity->getIssueFor() !== null) {
+            $snapshot->issueFor = $entity->getIssueFor()->getId();
+        }
+
+        if ($entity->getItem() !== null) {
+            $snapshot->item = $entity->getItem()->getId();
+        }
+
+        if ($entity->getMovement() !== null) {
+            $snapshot->movement = $entity->getMovement()->getId();
+        }
+
+        if ($entity->getPo() !== null) {
+            $snapshot->po = $entity->getPo()->getId();
+        }
+
+        if ($entity->getPoRow() !== null) {
+            $snapshot->poRow = $entity->getPoRow()->getId();
+        }
+
+        if ($entity->getPr() !== null) {
+            $snapshot->pr = $entity->getPr()->getId();
+        }
+
+        if ($entity->getPrRow() !== null) {
+            $snapshot->getPrRow = $entity->getPrRow()->getId();
+        }
+
+        if ($entity->getProject() !== null) {
+            $snapshot->pr = $entity->getProject()->getId();
+        }
+
+        if ($entity->getVendor() !== null) {
+            $snapshot->vendor = $entity->getVendor()->getId();
+        }
+
+        if ($entity->getVendorInvoice() !== null) {
+            $snapshot->vendorInvoice = $entity->getVendorInvoice()->getId();
+        }
+
+        // $snapshot->changeBy;
+        // $snapshot->costCenter;
+        // $snapshot->currency;
+        // $snapshot->gr;
+        // $snapshot->grRow;
+        // $snapshot->invoiceRow;
+        // $snapshot->issueFor;
+        // $snapshot->item;
+        // $snapshot->localCurrency;
+        // $snapshot->movement;
+        // $snapshot->po;
+        // $snapshot->poRow;
+        // $snapshot->postingPeriod;
+        // $snapshot->pr;
+        // $snapshot->prRow;
+        // $snapshot->project;
+        // $snapshot->vendor;
+        // $snapshot->vendorInvoice;
+        // $snapshot->wh;
+        // $snapshot->whLocation;
+
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (! is_object($property->getValue($entity))) {
+
+                if (property_exists($snapshot, $propertyName)) {
+                    $snapshot->$propertyName = $property->getValue($entity);
+                }
+            }
+        }
+
+        return $snapshot;
     }
 }

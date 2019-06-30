@@ -13,6 +13,7 @@ use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use PHPUnit_Framework_TestCase;
 use Inventory\Application\Service\Warehouse\TransactionService;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowOutputStrategy;
 
 class TransactionRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -37,7 +38,15 @@ class TransactionRepositoryTest extends PHPUnit_Framework_TestCase
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $rep = new DoctrineTransactionRepository($em);
-        $rep->getById(684);        
+        $trx = $rep->getById(677, TransactionRowOutputStrategy::OUTPUT_IN_ARRAY);        
+        var_dump($trx->getTranstionRowsOutput());
+        
+        $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
+        $trx->setDomainSpecificationFactory($domainSpecificationFactory);
+        
+        $sharedSpecificationFactory = new ZendSpecificationFactory($em);
+        $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
+       
         
     }
 }

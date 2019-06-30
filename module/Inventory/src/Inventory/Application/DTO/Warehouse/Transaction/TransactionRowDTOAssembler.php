@@ -43,15 +43,14 @@ class TransactionRowDTOAssembler
         $specFactory = new ZendSpecificationFactory();
 
         // check if assigned to transaction.
-        
+
         if ($specFactory->getNullorBlankSpecification()->isSatisfiedBy($dto->movement)) {
             $notification->addError("Transaction is not found!");
         } else {
             if (! $specFactory->getPositiveNumberSpecification()->isSatisfiedBy($dto->movement))
                 $notification->addError("Quantity is not valid!");
         }
-        
-        
+
         if ($specFactory->getNullorBlankSpecification()->isSatisfiedBy($dto->docQuantity)) {
             $notification->addError("Quantity is not given!");
         } else {
@@ -74,7 +73,7 @@ class TransactionRowDTOAssembler
             if ($specFactory1->getItemExitsSpecification()->isSatisfiedBy($dto->item) == False)
                 $notification->addError(sprintf("Item #%s not exits...", $dto->item));
         }
-     
+
         if ($notification->hasErrors())
             throw new InvalidArgumentException($notification->errorMessage());
 
@@ -159,7 +158,7 @@ class TransactionRowDTOAssembler
             print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
     }
-    
+
     /**
      *
      * @return array;
@@ -179,5 +178,20 @@ class TransactionRowDTOAssembler
             }
         }
         return $missingProperties;
+    }
+
+    /**
+     * generete Mapping.
+     */
+    public static function createMapping()
+    {
+        $entity = new \Application\Entity\NmtInventoryTrx();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "\$dto->" . $propertyName . "=\$entity->get" . ucfirst($propertyName) . "();";
+        }
     }
 }

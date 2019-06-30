@@ -332,7 +332,7 @@ if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
              },
     };
 
-	var obj = { width: "auto", height: $(window).height()-300, showTitle : true,
+	var obj = { width: "auto", height: $(window).height()-250, showTitle : true,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -440,7 +440,7 @@ if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
 
     var $grid = $("#pr_row_gird").pqGrid(obj);
 
-    $("#main_container").height() = $(window).height()-190;
+    $("#main_container").height() = $(window).height()-300;
 
     function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )

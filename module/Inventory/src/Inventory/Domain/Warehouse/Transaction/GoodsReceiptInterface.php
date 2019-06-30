@@ -1,4 +1,4 @@
- <?php
+<?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
 

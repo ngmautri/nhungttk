@@ -70,11 +70,10 @@ class TransactionService extends AbstractService
         
          
         $snapshot = TransactionSnapshotAssembler::createSnapshotFromDTO($dto);
-        var_dump($snapshot);
         
         $trx = TransactionFactory::createTransaction($snapshot->movementType);
         if ($trx == null) {
-            $notification->addError("Can not create transation ." . $snapshot->movementType);
+            $notification->addError("Transaction type is empty or not supported. " . $snapshot->movementType);
             return $notification;
         }
 

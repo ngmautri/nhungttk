@@ -3,6 +3,7 @@ namespace Inventory\Controller;
 
 use Application\Entity\NmtInventoryTrx;
 use Doctrine\ORM\EntityManager;
+use Inventory\Application\Service\Warehouse\TransactionService;
 use Inventory\Service\ItemSearchService;
 use MLA\Paginator;
 use Zend\Math\Rand;
@@ -11,6 +12,9 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtInventoryGi;
 use Application\Entity\NmtInventoryMv;
+use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 
 /**
  * Goods Issue
@@ -28,6 +32,8 @@ class GIController extends AbstractActionController
     protected $giService;
 
     protected $inventoryTransactionService;
+
+    protected $transactionService;
 
     /**
      *
@@ -118,7 +124,7 @@ class GIController extends AbstractActionController
             $m = sprintf("WH GI #%s reversed", $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
-            //$redirectUrl = "/inventory/gi/list";
+            // $redirectUrl = "/inventory/gi/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -491,21 +497,17 @@ class GIController extends AbstractActionController
             $errors = array();
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
-            
-            
+
             $movementType = $data['movementType'];
-            switch ($movementType){
-                case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE: 
-                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'],$data['source_wh_id'], $data['movementDate']);
+            switch ($movementType) {
+                case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
+                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
                     return $this->redirect()->toUrl($redirectUrl);
-                    
+
                 case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
-                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'],$data['source_wh_id'], $data['movementDate']);
+                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
                     return $this->redirect()->toUrl($redirectUrl);
-                    
             }
-            
-            
 
             $entity = new NmtInventoryMv();
             $entity->setLocalCurrency($default_cur);
@@ -566,6 +568,117 @@ class GIController extends AbstractActionController
 
         $viewModel->setTemplate("inventory/item-transaction/crud");
         return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function createAction()
+    {
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $isAllowed = true;
+
+        $transactionType = TransactionFactory::getGoodIssueTransactions($nmtPlugin->getTranslator());
+
+        $prg = $this->prg('/inventory/gi/create', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $redirectUrl = null;
+
+            /*
+             * if ($request->getHeader('Referer') !== null) {
+             * $redirectUrl = $this->getRequest()
+             * ->getHeader('Referer')
+             * ->getUri();
+             * }
+             */
+            $dto = new TransactionDTO();
+            $dto->isActive = 1;
+
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                'form_action' => '/inventory/gi/create',
+                'form_title' => $nmtPlugin->translate("Create Good Issue"),
+
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'transactionType' => $transactionType,
+                'isAllowed' => $isAllowed
+            ));
+
+            $viewModel->setTemplate("inventory/gi/crud");
+            return $viewModel;
+        }
+
+        // Is Posting
+        // ++++++++++++++++++++++++++++++
+
+        $data = $prg;
+
+        $movementType = $data['movementType'];
+        switch ($movementType) {
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
+                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
+                return $this->redirect()->toUrl($redirectUrl);
+
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
+                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
+                return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+
+        $dto = TransactionDTOAssembler::createDTOFromArray($data);
+        $dto->currency = $default_cur->getId();
+        $dto->docCurrency = $default_cur->getId();
+        $dto->localCurrency = $default_cur->getId();
+        
+        $userId = $u->getId();
+
+        $notification = $this->transactionService->createHeader($dto, $u->getCompany()
+            ->getId(), $userId, __METHOD__);
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/gi/create",
+                'form_title' => "Create Good Issue",
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                'transactionType' => $transactionType
+            ));
+
+            $viewModel->setTemplate("inventory/gi/crud");
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/inventory/item-transaction/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
@@ -1219,5 +1332,23 @@ class GIController extends AbstractActionController
     public function setGiService(\Inventory\Service\GIService $giService)
     {
         $this->giService = $giService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Warehouse\TransactionService
+     */
+    public function getTransactionService()
+    {
+        return $this->transactionService;
+    }
+
+    /**
+     *
+     * @param TransactionService $transactionService
+     */
+    public function setTransactionService(TransactionService $transactionService)
+    {
+        $this->transactionService = $transactionService;
     }
 }

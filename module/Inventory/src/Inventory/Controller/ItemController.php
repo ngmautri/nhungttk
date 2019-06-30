@@ -354,7 +354,7 @@ class ItemController extends AbstractActionController
         $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n'.$tk);
         $redirectUrl = "/inventory/item/list2";
 
-          return $this->redirect()->toUrl($redirectUrl);
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**

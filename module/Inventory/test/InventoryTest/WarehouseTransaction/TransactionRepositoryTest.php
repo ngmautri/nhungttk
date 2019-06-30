@@ -47,6 +47,7 @@ class TransactionRepositoryTest extends PHPUnit_Framework_TestCase
         $sharedSpecificationFactory = new ZendSpecificationFactory($em);
         $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
        
+        //var_dump($trx->validate());
         
     }
 }

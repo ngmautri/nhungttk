@@ -51,8 +51,9 @@ class TransactionServiceTest extends PHPUnit_Framework_TestCase
          */
         $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Warehouse\TransactionService');
         
-        var_dump($sv->createHeader($dto, 1, 39));
+        //var_dump($sv->createHeader($dto, 1, 39));
         
+        var_dump(TransactionFactory::getGoodIssueTransactions());
         
     }
 }

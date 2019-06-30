@@ -33,6 +33,7 @@ class TransactionType
 
     const GI_FOR_DISPOSAL = 'GI999';
 
+    
     // ========================================
     const GR_FROM_OPENNING_BALANCE = 'GR000';
 

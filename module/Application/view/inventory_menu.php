@@ -15,6 +15,9 @@
 				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Item Transaction</a></li>
 	<li><a href="/inventory/gi/add"><small><span
 				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Issue");?></a></li>
+					<li><a href="/inventory/gi/create"><small><span
+				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Issue") ;?>(new)</a></li>
+				
 	<li><a href="/inventory/gr/add"><small><span
 				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Receipt");?></a></li>
 	<li><a href="/inventory/transfer/add"><small><span

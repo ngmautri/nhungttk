@@ -24,4 +24,17 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
 
     public function addTransactionRow($transactionRowDTO)
     {}
+
+    public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
+    {}
+
+    public function afterPost()
+    {}
+
+    public function prePost()
+    {}
+
+    public function specificRowValidation($row, $notification = null, $isPosting = false)
+    {}
+
 }

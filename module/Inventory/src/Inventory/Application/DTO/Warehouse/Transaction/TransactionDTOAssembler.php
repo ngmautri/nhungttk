@@ -16,7 +16,7 @@ use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
 class TransactionDTOAssembler
 {
 
-    public static function createDTOFromArray($data, $doctrineEM = null)
+    public static function createDTOFromArray($data)
     {
         $dto = new TransactionDTO();
 

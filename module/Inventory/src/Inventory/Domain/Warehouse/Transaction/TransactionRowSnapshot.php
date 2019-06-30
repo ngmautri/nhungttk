@@ -302,4 +302,6 @@ class TransactionRowSnapshot
     public $pmtMethod;
 
     public $invoiceRow;
+    
+    public $mvUuid;
 }

@@ -195,7 +195,13 @@ abstract class AbstractTransaction extends AbstractEntity
         $this->sourceLocation = $snapshot->sourceLocation;
         $this->tartgetLocation = $snapshot->tartgetLocation;
         $this->company = $snapshot->company;
+        
+        // set default value
+        $this->specify();
     }
+    
+    abstract public function specify();
+    
 
     public function getId()
     {

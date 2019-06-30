@@ -17,6 +17,9 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
     {}
     public function specificRowValidation($row, $notification = null, $isPosting = false)
     {}
+    public function afterPost()
+    {}
 
-
+    public function prePost()
+    {}
 }

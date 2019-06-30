@@ -173,5 +173,6 @@ class TransactionSnapshot
     
     public $company;
     
+    public $uuid;
     
 }

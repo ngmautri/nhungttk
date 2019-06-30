@@ -1,6 +1,8 @@
 <?php
 namespace Application\Domain\Shared;
 
+use Ramsey;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -13,8 +15,11 @@ abstract class AbstractEntity
 
     protected $uuid;
 
-    protected $verison;
-
+    protected $versionNo;
+    
+    public function __construct(){
+        $this->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+    }
    
 
     public function compare(AbstractEntity $o2)

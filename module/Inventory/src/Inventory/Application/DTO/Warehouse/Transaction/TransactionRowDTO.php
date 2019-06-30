@@ -302,5 +302,7 @@ class TransactionRowDTO
 
     public $invoiceRow;
     
+    public $mvUuid;
+    
     
 }

@@ -435,6 +435,13 @@ class NmtInventoryTrx
     private $reversalBlocked;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="mv_uuid", type="string", length=36, nullable=true)
+     */
+    private $mvUuid;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2130,6 +2137,30 @@ class NmtInventoryTrx
     public function getReversalBlocked()
     {
         return $this->reversalBlocked;
+    }
+
+    /**
+     * Set mvUuid
+     *
+     * @param string $mvUuid
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setMvUuid($mvUuid)
+    {
+        $this->mvUuid = $mvUuid;
+
+        return $this;
+    }
+
+    /**
+     * Get mvUuid
+     *
+     * @return string
+     */
+    public function getMvUuid()
+    {
+        return $this->mvUuid;
     }
 
     /**

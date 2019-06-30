@@ -159,4 +159,25 @@ class TransactionRowDTOAssembler
             print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
     }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingProperties()
+    {
+        $missingProperties = array();
+        $entity = new \Application\Entity\NmtInventoryTrx();
+        $dto = new TransactionRowDTO();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
 }

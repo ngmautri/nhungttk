@@ -8,6 +8,7 @@ use Application\Domain\Shared\Specification\AbstractSpecification;
 use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
 use Inventory\Application\Specification\Doctrine\OnhandQuantitySpecification;
 use Inventory\Domain\Service\ValuationServiceInterface;
+use Inventory\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -40,41 +41,60 @@ abstract class GenericTransaction extends AbstractTransaction
      * @var ValuationServiceInterface
      */
     protected $valuationService;
-    
 
     abstract public function prePost();
-    
+
     abstract public function afterPost();
-    
+
     abstract public function post();
 
     abstract public function specificValidation($notification = null);
 
-    /**
-     *
-     * @param TransactionRow $row
-     * @param Notification $notification
-     * @param boolean $isPosting
-     */
+    abstract public function specificHeaderValidation($notification = null);
+
     abstract public function specificRowValidation($row, $notification = null, $isPosting = false);
 
-    /**
-     *
-     * @param TransactionRow $row
-     * @param Notification $notification
-     * @param boolean $isPosting
-     */
     abstract public function specificRowValidationByFlow($row, $notification = null, $isPosting = false);
 
     abstract public function addTransactionRow($transactionRow);
 
     /**
      *
-     * @param TransactionRowDTO $transactionRowDTO
+     * @param TransactionRow $transactionRow
      */
-    public function addRow($transactionRow)
+    public function addRow(TransactionRow $transactionRow)
     {
         $this->transactionRows[] = $transactionRow;
+    }
+
+    /**
+     *
+     * @param TransactionRow $transactionRow
+     */
+    public function addRowFromSnapshot(TransactionRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof TransactionRowSnapshot)
+            return;
+
+        $snapshot->mvUuid = $this->uuid;
+
+        $row = new TransactionRow();
+        $row->makeFromSnapshot($snapshot);
+
+        $ckResult = $this->validateRow($row, null, false);
+        if ($ckResult->hasErrors())
+            throw new InvalidArgumentException($ckResult->errorMessage());
+
+        $this->transactionRows[] = $row;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRows()
+    {
+        return $this->transactionRows;
     }
 
     /**
@@ -106,7 +126,7 @@ abstract class GenericTransaction extends AbstractTransaction
         if ($notification == null)
             $notification = new Notification();
 
-        $notification = $this->generalValidation($notification);
+        $notification = $this->validateHeader($notification);
 
         if ($notification->hasErrors())
             return $notification;
@@ -117,6 +137,11 @@ abstract class GenericTransaction extends AbstractTransaction
 
         if ($notification->hasErrors())
             return $notification;
+
+        if (count($this->transactionRows) == 0) {
+            $notification->addError("Transaction has no lines");
+            return $notification;
+        }
 
         foreach ($this->transactionRows as $row) {
 
@@ -130,11 +155,36 @@ abstract class GenericTransaction extends AbstractTransaction
     }
 
     /**
+     * validation header
+     *
+     * @return Notification
+     */
+    public function validateHeader($notification = null, $isPosting = false)
+    {
+        if ($notification == null)
+            $notification = new Notification();
+
+        $notification = $this->generalHeaderValidation($notification);
+
+        if ($notification->hasErrors())
+            return $notification;
+
+        $specificHeaderValidationResult = $this->specificHeaderValidation($notification);
+        if ($specificHeaderValidationResult instanceof Notification)
+            $notification = $specificHeaderValidationResult;
+
+        if ($notification->hasErrors())
+            return $notification;
+
+        return $notification;
+    }
+
+    /**
      *
      * @param Notification $notification
      * @return string|\Application\Notification
      */
-    protected function generalValidation($notification = null, $isPosting = false)
+    protected function generalHeaderValidation($notification = null, $isPosting = false)
     {
         if ($notification == null)
             $notification = new Notification();
@@ -145,9 +195,6 @@ abstract class GenericTransaction extends AbstractTransaction
          */
         if ($this->domainSpecificationFactory == null || $this->sharedSpecificationFactory == null)
             $notification->addError("Validators is not found");
-
-        if (count($this->transactionRows) == 0)
-            $notification->addError("Transaction has no line");
 
         if ($notification->hasErrors())
             return $notification;
@@ -243,6 +290,7 @@ abstract class GenericTransaction extends AbstractTransaction
     /**
      *
      * @param TransactionRow $row
+     *            ;
      * @param Notification $notification
      * @param boolean $isPosting
      * @return string|\Application\Notification
@@ -261,6 +309,11 @@ abstract class GenericTransaction extends AbstractTransaction
          */
         if ($this->sharedSpecificationFactory == null) {
             $notification->addError("Validators is not found");
+            return $notification;
+        }
+
+        if ($row->getMvUuid() !== $this->uuid) {
+            $notification->addError("transaction id not match");
             return $notification;
         }
 
@@ -315,7 +368,9 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->domainSpecificationFactory = $domainSpecificationFactory;
     }
+
     /**
+     *
      * @return \Inventory\Domain\Service\ValuationServiceInterface
      */
     public function getValuationService()
@@ -324,11 +379,11 @@ abstract class GenericTransaction extends AbstractTransaction
     }
 
     /**
+     *
      * @param \Inventory\Domain\Service\ValuationServiceInterface $valuationService
      */
     public function setValuationService($valuationService)
     {
         $this->valuationService = $valuationService;
     }
-
 }

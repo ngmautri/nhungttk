@@ -1,8 +1,9 @@
 <?php
-namespace Inventory\Domain\Warehouse\Factory;
+namespace Inventory\Domain\Warehouse\Transaction\Factory;
 
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use Inventory\Domain\Warehouse\Transaction\GI\GIforCostCenter;
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 
 /**
  *
@@ -23,6 +24,10 @@ class TransactionFactory
                 $trx = null;
                 break;
         }
+         
+        if($trx instanceof GenericTransaction)
+            $trx->specify();
+        
 
         return $trx;
     }

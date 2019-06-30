@@ -181,6 +181,7 @@ return array(
             
 
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
+            'Inventory\Application\Service\Warehouse\TransactionService' => 'Inventory\Application\Service\Warehouse\TransactionServiceFactory',
             
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemUpdatedEventListener' => 'Inventory\Application\Event\Listener\ItemUpdatedEventListenerFactory',

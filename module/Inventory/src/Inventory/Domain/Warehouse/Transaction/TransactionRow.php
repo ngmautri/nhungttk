@@ -185,6 +185,18 @@ class TransactionRow extends AbstractEntity
     protected $pmtMethod;
 
     protected $invoiceRow;
+    
+    protected $mvUuid;
+    
+    
+
+    /**
+     * @return mixed
+     */
+    public function getMvUuid()
+    {
+        return $this->mvUuid;
+    }
 
     /**
      *
@@ -300,6 +312,8 @@ class TransactionRow extends AbstractEntity
         $this->currency = $snapshot->currency;
         $this->pmtMethod = $snapshot->pmtMethod;
         $this->invoiceRow = $snapshot->invoiceRow;
+        $this->mvUuid = $snapshot->mvUuid;
+        
     }
     /**
      * @return mixed

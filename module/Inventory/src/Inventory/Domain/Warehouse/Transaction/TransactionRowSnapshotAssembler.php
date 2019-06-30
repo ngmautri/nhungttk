@@ -117,4 +117,25 @@ class TransactionRowSnapshotAssembler
 
         return $snapShot;
     }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingProperties()
+    {
+        $missingProperties = array();
+        $entity = new \Application\Entity\NmtInventoryTrx();
+        $dto = new TransactionRowSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
 }

@@ -5,6 +5,8 @@ use Application\Notification;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
+use Inventory\Domain\Warehouse\Transaction\TransactionType;
+use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 
 /**
  *
@@ -13,6 +15,18 @@ use Inventory\Domain\Warehouse\Transaction\TransactionRow;
  */
 class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 {
+    
+    /**
+     * \
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specify()
+     */
+    public function specify()
+    {
+        $this->movementType =  TransactionType::GI_FOR_COST_CENTER;
+        $this->movementFlow =  TransactionFlow::WH_TRANSACTION_OUT;
+    }
+    
 
     /**
      *
@@ -37,16 +51,18 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
      */
     public function specificValidation($notification = null)
     {
-        // empty
+        // no need
     }
-
+    
     /**
      *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::addTransactionRow()
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificHeaderValidation()
      */
-    public function addTransactionRow($transactionRowDTO)
+    public function specificHeaderValidation($notification = null)
     {}
+    
+    
 
     /**
      * It require Cost Center.
@@ -85,5 +101,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
            return $notification;
     }
+    
+  
    
 }

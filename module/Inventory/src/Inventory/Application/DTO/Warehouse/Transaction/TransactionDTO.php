@@ -193,4 +193,6 @@ class TransactionDTO
     public $tartgetLocation;
     
     public $company;
+    
+    public $uuid;
 }

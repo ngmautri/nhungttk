@@ -1,9 +1,6 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Domain\Item\GenericItem;
-use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
 
 /**
@@ -45,14 +42,19 @@ class TransactionSnapshotAssembler
             $property->setAccessible(true);
             $propertyName = $property->getName();
             if (property_exists($snapShot, $propertyName)) {
-                $dto->$propertyName = $property->getValue($dto);
+                
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
             }
         }
         return $snapShot;
     }
 
     /**
-     * 
+     *
      * @param array $data
      * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
      */
@@ -61,13 +63,68 @@ class TransactionSnapshotAssembler
         if ($data == null)
             return null;
 
-            $snapShot = new TransactionSnapshot();
+        $snapShot = new TransactionSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
                 $snapShot->$property = $value;
             }
         }
+        return $snapShot;
+    }
+
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingProperties()
+    {
+        $missingProperties = array();
+        $entity = new \Application\Entity\NmtInventoryMv();
+        $dto = new TransactionSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    /**
+     *
+     * @param GenericTransaction $obj
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+     */
+    public static function createSnapshotFrom($obj)
+    {
+        if (! $obj instanceof GenericTransaction) {
+            return null;
+        }
+
+        $snapShot = new TransactionSnapshot();
+
+        // should uss reflection object
+        $reflectionClass = new \ReflectionObject($obj);
+        $itemProperites = $reflectionClass->getProperties();
+
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($snapShot, $propertyName)) {
+
+                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($obj);
+                }
+            }
+        }
+
         return $snapShot;
     }
 }

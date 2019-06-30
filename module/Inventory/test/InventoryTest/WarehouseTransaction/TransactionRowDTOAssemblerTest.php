@@ -41,8 +41,9 @@ class TransactionRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 
 //        var_dump(TransactionRowDTOAssembler::createDTOProperities());
 
-        var_dump(TransactionRowDTOAssembler::createDTOFromArray($data, $em));
+        //var_dump(TransactionRowDTOAssembler::createDTOFromArray($data, $em));
         
+        var_dump(TransactionRowDTOAssembler::findMissingProperties());
         
        /*  echo($dto->itemName);
         $missing = ItemAssembler::checkItemDTO();

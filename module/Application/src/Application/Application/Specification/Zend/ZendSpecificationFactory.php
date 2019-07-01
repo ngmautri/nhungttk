@@ -3,6 +3,7 @@ namespace Application\Application\Specification\Zend;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Doctrine\ORM\EntityManager;
+use User\Infrastructure\Persistence\DoctrineUserRepository;
 
 /**
  *
@@ -127,25 +128,54 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getUserExitsSpecification()
      */
     public function getUserExitsSpecification()
     {
         return new UserExitsSpecification($this->doctrineEM);
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getMeasureUnitExitsSpecification()
      */
     public function getMeasureUnitExitsSpecification()
     {
         return new MeasureUnitExitsSpecification($this->doctrineEM);
     }
-    
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getIsParentSpecification()
+     */
+    public function getIsParentSpecification()
+    {
+        $spec = new IsParentSpecification($this->doctrineEM);
+
+        $userRep = new DoctrineUserRepository();
+        $userRep->setDoctrineEM($this->doctrineEM);
+        $spec->setUserRepository($userRep);
+        return $spec;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getWarehouseACLSpecification()
+     */
+    public function getWarehouseACLSpecification()
+    {
+        $spec = new WarehouseACLSpecification($this->doctrineEM);
+
+        $userRep = new DoctrineUserRepository();
+        $userRep->setDoctrineEM($this->doctrineEM);
+        $spec->setUserRepository($userRep);
+        return $spec;
+    }
 
     /**
      *
@@ -164,6 +194,10 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         $this->doctrineEM = $doctrineEM;
     }
+    
+    
+   
+
    
    
   

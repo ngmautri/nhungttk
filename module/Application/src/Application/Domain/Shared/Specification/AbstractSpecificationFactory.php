@@ -20,4 +20,7 @@ abstract class AbstractSpecificationFactory
     abstract function getUserExitsSpecification();
     abstract function getCostCenterExitsSpecification();
     abstract function getMeasureUnitExitsSpecification();
+    abstract function getIsParentSpecification();
+    abstract function getWarehouseACLSpecification();
+    
 }

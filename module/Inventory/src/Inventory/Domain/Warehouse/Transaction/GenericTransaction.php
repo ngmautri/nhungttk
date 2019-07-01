@@ -41,12 +41,11 @@ abstract class GenericTransaction extends AbstractTransaction
      * @var ValuationServiceInterface
      */
     protected $valuationService;
-    
+
     public $transtionRowsOutput;
 
-   
-
     /**
+     *
      * @return mixed
      */
     public function getTranstionRowsOutput()
@@ -55,6 +54,7 @@ abstract class GenericTransaction extends AbstractTransaction
     }
 
     /**
+     *
      * @param mixed $transtionRowsOutput
      */
     public function setTranstionRowsOutput($transtionRowsOutput)
@@ -260,10 +260,15 @@ abstract class GenericTransaction extends AbstractTransaction
             $notification->addError("Source warehouse is not set");
         } else {
 
-            $spec1 = $this->sharedSpecificationFactory->getWarehouseExitsSpecification();
-            $spec1->setCompanyId($this->company);
-            if (! $spec1->isSatisfiedBy($this->warehouse))
-                $notification->addError("Source Warehouse not exits..." . $this->warehouse);
+            $spec1 = $this->sharedSpecificationFactory->getWarehouseACLSpecification();
+            $subject = array(
+                "companyId" => $this->company,
+                "warehouseId" => $this->warehouse,
+                "userId" => $this->createdBy,
+            );
+            
+            if (! $spec1->isSatisfiedBy($subject))
+                $notification->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $this->company, $this->warehouse, $this->createdBy));
         }
 
         // check local currency

@@ -1,10 +1,10 @@
 <?php
 namespace ApplicationTest\Model;
 
-use Ramsey\Uuid\Uuid;
-use PHPUnit_Framework_TestCase;
-use Doctrine\ORM\EntityManager;
 use ApplicationTest\Bootstrap;
+use Doctrine\ORM\EntityManager;
+use User\Infrastructure\Persistence\DoctrineUserRepository;
+use PHPUnit_Framework_TestCase;
 
 class SpecficationTest extends PHPUnit_Framework_TestCase
 {
@@ -28,11 +28,13 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
     {
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-         $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
-        $spec = $factory->getUserExitsSpecification();
-        $spec->setCompanyId(1);
-        var_dump($spec->isSatisfiedBy(45)); 
-        
-        
+        $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
+        $spec = $factory->getWarehouseACLSpecification();
+        $subject = array(
+            "companyId" => 1,
+            "warehouseId" => 6,
+            "userId" => 46,
+        );
+        var_dump($spec->isSatisfiedBy($subject)); 
     }
 }

@@ -611,7 +611,7 @@ class PoRowController extends AbstractActionController
 
                     // $a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());
 
-                    $a_json_row["row_identifer"] = $a->getRowIdentifer();
+                    $a_json_row["row_identifer"] = '<span style="font-size:8pt; color: graytext">'. $a->getRowIdentifer() .'</span>' ;
 
                     $a_json_row["row_id"] = $a->getId();
                     $a_json_row["row_token"] = $a->getToken();
@@ -647,9 +647,8 @@ class PoRowController extends AbstractActionController
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
 
-                            $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $a->getPrRow()
-                                ->getPr()
-                                ->getPrName(), $a->getPrRow()
+                            $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', 
+                                $a->getPrRow()->getRowIdentifer(), $a->getPrRow()
                                 ->getPr()
                                 ->getToken(), $a->getPrRow()
                                 ->getPr()
@@ -657,7 +656,7 @@ class PoRowController extends AbstractActionController
                                 ->getPr()
                                 ->getChecksum());
 
-                            $a_json_row["pr_number"] = $a->getPrRow()->getRowIdentifer() . $link;
+                            $a_json_row["pr_number"] = '<span style="font-size:8pt; color: graytext">'. $a->getPrRow()->getPr()->getPrName() .'</span>' . $link;
                         }
                     }
 

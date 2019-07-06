@@ -74,6 +74,7 @@ class PrRowStatusInExcel extends PrRowStatusOutputStrategy
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Last Vendor");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "Last UP");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('U' . $header, "Curr");
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('V' . $header, "ItemCode");
         
         foreach ($result as $r) {
 
@@ -121,6 +122,9 @@ class PrRowStatusInExcel extends PrRowStatusOutputStrategy
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $r['unit_price']);
             
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('U' . $l, $r['currency_iso3']);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('V' . $l, $a->getItem()
+                ->getSysNumber());
+            
          }
 
         //Set active sheet index to the first sheet, so Excel opens this as the first sheet

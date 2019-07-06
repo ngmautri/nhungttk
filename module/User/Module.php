@@ -115,6 +115,7 @@ class Module
             'test_console',
             'user_register_confirmation',
             'access_denied',
+            'not_found',
             'order_suggestion_console',
             'pr_rest',
             'pr_console'

@@ -611,7 +611,9 @@ class PoRowController extends AbstractActionController
 
                     // $a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());
 
-                    $a_json_row["row_identifer"] = '<span style="font-size:8pt; color: graytext">'. $a->getRowIdentifer() .'</span>' ;
+                    //$a_json_row["row_identifer"] = '<span style="font-size:8pt; color: graytext">'. $a->getRowIdentifer() .'</span>' ;
+                    
+                    $a_json_row["row_identifer"] = $a->getRowIdentifer() ;
 
                     $a_json_row["row_id"] = $a->getId();
                     $a_json_row["row_token"] = $a->getToken();

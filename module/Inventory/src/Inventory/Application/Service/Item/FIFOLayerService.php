@@ -20,7 +20,7 @@ class FIFOLayerService extends AbstractService implements ValuationServiceInterf
      *
      * @param GenericTransaction $trx
      * @param TransactionRow $row
-     *            
+     *
      * {@inheritdoc}
      * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::calculateCOGS()
      */
@@ -29,6 +29,11 @@ class FIFOLayerService extends AbstractService implements ValuationServiceInterf
         $cogs = 0;
         if ($this->getDoctrineEM() == null || $trx == null || $row == null)
             return $cogs;
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'id' => $trx->getCreatedBy()
+        ));
 
         $sql = "SELECT * FROM nmt_inventory_fifo_layer WHERE 1 %s ORDER BY nmt_inventory_fifo_layer.posting_date ASC";
 
@@ -113,7 +118,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
 
                 // $fifo_consume->setInventoryTrx($trx); // important
                 $fifo_consume->setCreatedOn($trx->getMovementDate());
-                $fifo_consume->setCreatedBy($trx->getCreatedBy());
+                $fifo_consume->setCreatedBy($u);
 
                 $fifo_consume->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 

@@ -55,7 +55,6 @@ class PrRowStatusInArray extends PrRowStatusOutputStrategy
             $dto->prAutoNumber = $pr_row_entity->getPr()->getPrAutoNumber();
 
             $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $pr_row_entity->getPr()->getPrAutoNumber(), $pr_row_entity->getPr()->getToken(), $pr_row_entity->getPr()->getId(), $pr_row_entity->getPr()->getChecksum());
-
             $dto->prNumber = $pr_row_entity->getPr()->getPrNumber() . $link;
             $dto->prName = $pr_row_entity->getPr()->getPrName() . $link;
 
@@ -80,6 +79,9 @@ class PrRowStatusInArray extends PrRowStatusOutputStrategy
             } else {
                 $dto->itemName = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
             }
+            
+            $dto->itemSysNumber = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $pr_row_entity->getItem()->getSysNumber());
+            
             
             $decimalNo =0;
             $curency = array("USD","THB","EUR");

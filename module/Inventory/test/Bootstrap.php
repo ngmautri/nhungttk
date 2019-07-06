@@ -45,7 +45,8 @@ class Bootstrap
                 'DoctrineModule',
                 'DoctrineORMModule',
                 'Application',
-                'Inventory',               
+                'Inventory',    
+                'User',    
             ),
 
             'module_listener_options' => array(

@@ -47,6 +47,43 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
     /**
      *
      * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::getHeaderById()
+     */
+    public function getHeaderById($trxId, $token = null)
+    {
+        $criteria = array(
+            "id" => $trxId,
+            "token" => $token
+        );
+
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryMv $entity ;
+         */
+        $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryMv")->findOneBy($criteria);
+        if ($entity == null)
+            return null;
+
+        /**
+         *
+         * @var TransactionSnapshot $snapshot ;
+         */
+        $snapshot = $this->createSnapshot($entity);
+        if ($snapshot == null)
+            return null;
+
+        $trx = TransactionFactory::createTransaction($snapshot->movementType);
+
+        if ($trx == null)
+            return null;
+
+        $trx->makeFromSnapshot($snapshot);
+        return $trx;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::getById()
      */
     public function getById($id, $outputStrategy = null)
@@ -72,13 +109,11 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
             return null;
 
         $trx = TransactionFactory::createTransaction($snapshot->movementType);
-        // var_dump($trx->getMovementDate());
         if ($trx == null)
             return null;
 
         $trx->makeFromSnapshot($snapshot);
 
-        // get rows;
         $criteria = array(
             'movement' => $entity
         );
@@ -89,7 +124,6 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         if (count($rows) == 0)
             return $trx;
 
- 
         switch ($outputStrategy) {
             case TransactionRowOutputStrategy::OUTPUT_IN_ARRAY:
                 $factory = new TransactionRowInArray();
@@ -108,7 +142,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
                 $factory = new TransactionRowInArray();
                 break;
         }
-        
+
         foreach ($rows as $r) {
 
             /** @var \Application\Entity\NmtInventoryTrx $r */

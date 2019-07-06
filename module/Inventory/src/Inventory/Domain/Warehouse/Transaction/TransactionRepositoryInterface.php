@@ -13,6 +13,9 @@ Interface TransactionRepositoryInterface
 
     public function getById($id,$outputStragegy=null);
 
+    public function getHeaderById($trxId, $token = null);
+    
+    
     public function getByUUID($uuid);
 
     public function store(GenericTransaction $trx, $generateSysNumber = True);

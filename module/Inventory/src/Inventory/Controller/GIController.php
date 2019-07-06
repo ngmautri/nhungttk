@@ -242,7 +242,7 @@ class GIController extends AbstractActionController
         $gi = $res->getMovement($id, $token);
 
         if ($gi == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         $entity = null;
@@ -251,7 +251,7 @@ class GIController extends AbstractActionController
         }
 
         if ($entity == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         $movementTypeInfo = '';

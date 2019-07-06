@@ -40,15 +40,17 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data["movementType"] = TransactionType::GI_FOR_COST_CENTER;
         $data["warehouse"] = 6;
         $data["company"] = 1;
-        $data["currency"] = 9;
+        $data["currency"] = 1;
+        $data["docCurrency"] = 1;
         $data["localCurrency"] = 1;
-
+        $data["createdBy"] = 46;
+     
         // create new transaction.
         $dto = TransactionDTOAssembler::createDTOFromArray($data);
         // var_dump($dto);
 
         $snapshot = TransactionSnapshotAssembler::createSnapshotFromArray($data);
-
+        
         $trx = TransactionFactory::createTransaction(TransactionType::GI_FOR_COST_CENTER);
 
         $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
@@ -58,7 +60,8 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
 
         $trx->makeFromSnapshot($snapshot);
-
+        
+        
         $data = array();
 
         $data["item"] = 1010;
@@ -72,6 +75,7 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data["docQuantity"] = 4;
         $data["costCenter"] = 5;
         $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
+        
 
         $trx->addRowFromSnapshot($rowSnapshot);
 

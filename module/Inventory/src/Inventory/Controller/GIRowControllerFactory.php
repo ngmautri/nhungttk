@@ -28,14 +28,19 @@ class GIRowControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $sm->get('Inventory\Service\GIService' );
-		$controller->setGiService($sv );
-	
-		$sv = $sm->get('Inventory\Service\Report\ItemReportService' );
-		$controller->setItemReportService($sv );
+        $sv = $sm->get('Inventory\Service\GIService');
+        $controller->setGiService($sv);
+
+        $sv = $sm->get('Inventory\Service\Report\ItemReportService');
+        $controller->setItemReportService($sv);
+
+        $sv = $sm->get('Inventory\Service\InventoryTransactionService');
+        $controller->setInventoryTransactionService($sv);
+
+        $sv = $sm->get('Inventory\Application\Service\Warehouse\TransactionService');
 		
-		$sv =  $sm->get('Inventory\Service\InventoryTransactionService');
-		$controller->setInventoryTransactionService($sv);
+		$controller->setTransactionService($sv);
+		
 		
 			return $controller;
 	}

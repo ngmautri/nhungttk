@@ -41,6 +41,7 @@ class PrRowStatusDTO extends PrRowDTO
     public $lastVendor;
     public $lastUP;
     public $lastCurrency;
+    public $itemSysNumber;
     
     
 }

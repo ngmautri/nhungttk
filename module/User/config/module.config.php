@@ -84,6 +84,17 @@ return array(
                 )
             ),
             
+            'not_found' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/user/index/notFound',
+                    'defaults' => array(
+                        'module' => 'User',
+                        'controller' => 'User\Controller\Index',
+                        'action' => 'notFound'
+                    )
+                )
+            ),
             'user_register_confirmation' => array(
                 'type' => 'literal',
                 'options' => array(

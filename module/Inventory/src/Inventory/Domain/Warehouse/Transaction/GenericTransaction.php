@@ -44,6 +44,20 @@ abstract class GenericTransaction extends AbstractTransaction
 
     /**
      *
+     * @var TransactionRepositoryInterface
+     */
+    protected $transactionRepository;
+
+    /**
+     * @return array
+     */
+    public function getTransactionRows()
+    {
+        return $this->transactionRows;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getTotalActiveRows()
@@ -117,7 +131,7 @@ abstract class GenericTransaction extends AbstractTransaction
         $snapshot->flow = $this->movementFlow;
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->wh = $this->warehouse;
-        
+
         $row = new TransactionRow();
         $row->makeFromSnapshot($snapshot);
 
@@ -448,4 +462,22 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->valuationService = $valuationService;
     }
+
+    /**
+     *
+     * @return \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface
+     */
+    public function getTransactionRepository()
+    {
+        return $this->transactionRepository;
+    }
+    
+    /**
+     * @param \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface $transactionRepository
+     */
+    public function setTransactionRepository($transactionRepository)
+    {
+        $this->transactionRepository = $transactionRepository;
+    }
+    
 }

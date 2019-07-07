@@ -40,9 +40,11 @@ abstract class GoodsIssue extends GenericTransaction
              *
              * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
              */
-
             $cogs = $this->getValuationService()->calculateCOGS($this, $row);
-            var_dump($cogs);
+
+            $snapshot = $row->makeSnapshot();
+            $snapshot->cogsLocal = $cogs;
+            $row->makeFromSnapshot($snapshot);
         }
 
         /**

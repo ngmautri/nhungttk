@@ -2,6 +2,7 @@
 namespace Inventory\Infrastructure\Doctrine;
 
 use Application\Entity\NmtInventoryItem;
+use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Item\GenericItem;
@@ -15,27 +16,10 @@ use Ramsey;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DoctrineItemRepository implements ItemRepositoryInterface
+class DoctrineItemRepository extends AbstractDoctrineRepository implements ItemRepositoryInterface
 {
 
-    /**
-     *
-     * @var EntityManager
-     */
-    private $doctrineEM;
-
-    /**
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        if ($em == null)
-            throw new InvalidArgumentException("Doctrine Entity manager not found!");
-
-        $this->doctrineEM = $em;
-    }
-
+  
     /**
      *
      * {@inheritdoc}

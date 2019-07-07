@@ -881,7 +881,7 @@ class GIController extends AbstractActionController
                 $movementTypeInfo = $giType['type_description'];
             }
 
-            $errors = $this->inventoryTransactionService->post($entity, $data, $u, true, true, __METHOD__);
+            $errors = $this->transactionService->post($entity_id, __METHOD__);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
@@ -922,7 +922,7 @@ class GIController extends AbstractActionController
         $gi = $res->getMovement($id, $token);
 
         if ($gi == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         $entity = null;
@@ -931,7 +931,7 @@ class GIController extends AbstractActionController
         }
 
         if ($entity == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         $movementTypeInfo = '';

@@ -1,48 +1,27 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
-use Doctrine\ORM\EntityManager;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTOAssembler;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Inventory\Domain\Item\Factory\AbstractItemFactory;
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
-use Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface;
-use Inventory\Domain\Warehouse\Transaction\TransactionRow;
-use Ramsey;
-use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
-use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
-use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot;
-use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowOutputStrategy;
+use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInArray;
 use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInExcel;
 use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInOpenOffice;
-use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowInHTMLTable;
+use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowOutputStrategy;
+use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
+use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot;
+use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
+use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
+use Ramsey;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DoctrineTransactionRepository implements TransactionRepositoryInterface
+class DoctrineTransactionRepository extends AbstractDoctrineRepository implements TransactionRepositoryInterface
 {
-
-    /**
-     *
-     * @var EntityManager
-     */
-    private $doctrineEM;
-
-    /**
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        if ($em == null) {
-            throw new InvalidArgumentException("Doctrine Entity manager not found!");
-        }
-        $this->doctrineEM = $em;
-    }
 
     /**
      *
@@ -92,6 +71,9 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
      */
     public function getById($id, $outputStrategy = null)
     {
+        if ($id == null)
+            return null;
+
         $criteria = array(
             "id" => $id
         );
@@ -143,7 +125,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
                 break;
 
             default:
-                $factory = new TransactionRowInArray();
+                $factory = null;
                 break;
         }
 
@@ -158,10 +140,12 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
             $transactionRow->makeFromSnapshot($snapshot);
             $trx->addRow($transactionRow);
 
-            $factory->createOutput($r);
+            if (! $factory == null)
+                $factory->createOutput($r);
         }
 
-        $trx->setTranstionRowsOutput($factory->getOutput());
+        if (! $factory == null)
+            $trx->setTranstionRowsOutput($factory->getOutput());
         return $trx;
     }
 
@@ -559,7 +543,54 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::post()
      */
     public function post(GenericTransaction $trx, $generateSysNumber = True)
-    {}
+    {
+        if ($trx == null)
+            throw new InvalidArgumentException("Transaction not retrieved.");
+
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryMv $entity ;
+         */
+        $entity = $this->doctrineEM->find("\Application\Entity\NmtInventoryMv", $trx->getId());
+
+        if ($entity == null)
+            throw new InvalidArgumentException("Transction Entity not retrieved.");
+
+        $entity->setSysNumber($this->generateSysNumber($entity));
+        $entity->setLastChangeOn(new \DateTime());
+        $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
+        $entity->setIsDraft(0);
+        $entity->setIsPosted(1);
+
+        $rows = $trx->getTransactionRows();
+        $n = 0;
+        foreach ($rows as $row) {
+
+            /** @var TransactionRow $row ; */
+
+            /** @var \Application\Entity\NmtInventoryTrx $r ; */
+            $r = $this->doctrineEM->find("\Application\Entity\NmtInventoryTrx", $row->getId());
+
+            if ($r == null) {
+                continue;
+            }
+
+            $n ++;
+
+            // update transaction row
+            $r->setTrxDate($entity->getMovementDate());
+            $r->setDocStatus($entity->getDocStatus());
+            $r->setDocType($entity->getDocStatus());
+            $r->setTransactionType($entity->getMovementType());
+            $r->setCogsLocal($r->getCogsLocal());
+
+            $r->setSysNumber($entity->getSysNumber() . '-' . $n);
+            $this->doctrineEM->persist($r);
+        }
+
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
 
     /**
      *

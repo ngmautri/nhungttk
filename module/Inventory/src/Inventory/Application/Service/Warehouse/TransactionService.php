@@ -37,6 +37,39 @@ class TransactionService extends AbstractService
 
     /**
      *
+     * @param int $trxId
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\GenericTransaction
+     */
+    public function post($trxId, $trxToken, $trigger = null)
+    {
+        $notification = new Notification();
+
+        try {
+
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
+            $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
+
+            $trx = $rep->getById($trxId);
+            $notification = $trx->post();
+
+            $rep->store($trx);
+        } catch (\Exception $e) {
+
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->rollBack();
+            $this->getDoctrineEM()->close();
+            $notification->addError($e->getMessage());
+        }
+
+        return $notification;
+    }
+
+    /**
+     *
      * @param \Inventory\Application\DTO\Item\ItemDTO $dto
      * @param string $userId
      * @param boolean $isNew
@@ -47,8 +80,6 @@ class TransactionService extends AbstractService
     {
         $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
 
-        
-        
         /**
          *
          * @var GenericItem $item
@@ -90,6 +121,7 @@ class TransactionService extends AbstractService
         $dto->createdBy = $userId;
 
         $snapshot = TransactionSnapshotAssembler::createSnapshotFromDTO($dto);
+        $snapshot->docStatus = \Application\Domain\Shared\Constants::DOC_STATUS_DRAFT;
 
         $trx = TransactionFactory::createTransaction($snapshot->movementType);
         if ($trx == null) {
@@ -172,13 +204,12 @@ class TransactionService extends AbstractService
 
         $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
         $trx = $rep->getHeaderById($trxId, $trxToken);
-        
+
         var_dump($trxId);
-        
 
         if ($trx == null)
             $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $trxId . $trxToken));
-  
+
         if ($notification->hasErrors())
             return $notification;
 
@@ -285,9 +316,8 @@ class TransactionService extends AbstractService
             return $notification;
 
         try {
-            
+
             $rowDTO->createdBy = $userId;
-            
 
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
             $header->setDomainSpecificationFactory($domainSpecificationFactory);

@@ -11,6 +11,8 @@ use Application\Domain\Exception\InvalidArgumentException;
 class AbstractDoctrineRepository
 {
 
+    protected $doctrineEM;
+
     public function __construct(\Doctrine\ORM\EntityManager $doctrineEM)
     {
         if ($doctrineEM == null)
@@ -19,8 +21,6 @@ class AbstractDoctrineRepository
         $this->doctrineEM = $doctrineEM;
     }
 
-    protected $doctrineEM;
-
     /**
      *
      * @return \Doctrine\ORM\EntityManager
@@ -28,5 +28,49 @@ class AbstractDoctrineRepository
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
+    }
+
+    /**
+     *
+     * @param object $obj
+     * @return string|NULL
+     */
+    public function generateSysNumber($obj)
+    {
+        $criteria = array(
+            'isActive' => 1,
+            'subjectClass' => get_class($obj)
+        );
+
+        /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+        $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+
+        if ($docNumber instanceof \Application\Entity\NmtApplicationDocNumber) {
+
+            $maxLen = strlen($docNumber->getToNumber());
+            $currentLen = 1;
+            $currentDoc = $docNumber->getPrefix();
+            $current_no = $docNumber->getCurrentNumber();
+
+            if ($current_no == null) {
+                $current_no = $docNumber->getFromNumber();
+            } else {
+                $current_no ++;
+                $currentLen = strlen($current_no);
+            }
+
+            $docNumber->setCurrentNumber($current_no);
+
+            $tmp = "";
+            for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+
+                $tmp = $tmp . "0";
+            }
+
+            $currentDoc = $currentDoc . $tmp . $current_no;
+            return $currentDoc;
+        }
+
+        return null;
     }
 }

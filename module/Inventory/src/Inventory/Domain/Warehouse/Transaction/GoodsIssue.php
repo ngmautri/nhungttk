@@ -26,10 +26,10 @@ abstract class GoodsIssue extends GenericTransaction
 
         if ($notification->hasErrors())
             return $notification;
-        
+
         /**
-         *  Template Method
-         *  ===============
+         * Template Method
+         * ===============
          */
         $this->prePost();
 
@@ -46,13 +46,13 @@ abstract class GoodsIssue extends GenericTransaction
         }
 
         /**
-         *  Template Method
-         *  ==============
+         * Template Method
+         * ==============
          */
         $this->afterPost();
-        
+
         // 4. store transaction
-        
+
         return $notification;
     }
 
@@ -97,7 +97,7 @@ abstract class GoodsIssue extends GenericTransaction
         $specDomain->setIssueQuantity($row->getDocQuantity());
 
         if (! $specDomain->isSatisfiedBy($row->getItem()))
-            $notification->addError("Can not issue this quantity " . $row->getDocQuantity());
+            $notification->addError(sprintf("Can not issue this quantity %s (W #%s ,  Item #%s)", $this->warehouse, $row->getDocQuantity(), $row->getItem()));
 
         return $notification;
     }

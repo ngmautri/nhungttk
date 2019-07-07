@@ -115,6 +115,16 @@ abstract class AbstractTransaction extends AbstractEntity
     protected $tartgetLocation;
 
     protected $company;
+    
+    protected $uuid;
+
+    /**
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
 
     /**
      *

@@ -12,6 +12,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtInventoryTransfer;
 use Inventory\Application\Service\Warehouse\TransactionService;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTOAssembler;
+use Zend\Session\Container;
 
 /**
  * Good Receipt PO or PR or AP
@@ -38,14 +40,15 @@ class GIRowController extends AbstractActionController
      */
     public function createAction()
     {
+        $this->layout("Inventory/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
-        $request = $this->getRequest();
-        $this->layout("Inventory/layout-fullscreen");
-
         $prg = $this->prg('/inventory/gi-row/create', true);
+
+        // create new session
+        $session = new Container('MLA_FORM');
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -56,22 +59,34 @@ class GIRowController extends AbstractActionController
 
             $target_id = (int) $this->params()->fromQuery('target_id');
             $token = $this->params()->fromQuery('token');
-            $headerDTO = $this->transactionService->getHeader($target_id, $token);
 
-            if ($headerDTO == null) {
+            $header = $this->transactionService->getHeader($target_id, $token);
+
+            if ($header == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
+            $headerDTO = $header->makeDTO();
+
+            $errors = $session->offsetGet('errors');
+            $rowDTO = $session->offsetGet('rowDTO');
+
+            // var_dump($rowDTO);
+
             $viewModel = new ViewModel(array(
-                'errors' => null,
+                'errors' => $errors,
                 'redirectUrl' => null,
-                'rowDTO' => null,
+                'rowDTO' => $rowDTO,
                 'headerDTO' => $headerDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => "/inventory/gi-row/create",
-                'form_title' => "Create Item",
+                'form_title' => "Create transaction row",
                 'action' => \Application\Model\Constants::FORM_ACTION_ADD
             ));
+
+            $session->getManager()
+                ->getStorage()
+                ->clear('MLA_FORM');
 
             $viewModel->setTemplate("/inventory/gi-row/crud" . $headerDTO->movementType);
             return $viewModel;
@@ -79,178 +94,44 @@ class GIRowController extends AbstractActionController
 
         $data = $prg;
 
+        $trxId = $data['target_id'];
+        $token = $data['target_token'];
+        $header = $this->transactionService->getHeader($trxId, $token);
+
+        if ($header == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $headerDTO = $header->makeDTO();
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        $dto = ItemAssembler::createItemDTOFromArray($data);
 
-        $userId = $u->getId();
+        $userId = null;
+        if (! $u == null)
+            $userId = $u->getId();
 
-        $notification = $this->itemCRUDService->create($dto, 1, $userId, __METHOD__, true);
+        $rowDTO = TransactionRowDTOAssembler::createDTOFromArray($data);
+
+        $notification = $this->transactionService->createRow($header, $rowDTO, $userId, __METHOD__);
         if ($notification->hasErrors()) {
 
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->errorMessage(),
-                'redirectUrl' => null,
-                'entity_id' => null,
-                'dto' => $dto,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => "/inventory/item/create",
-                'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'form_token' => $tk
-            ));
-
-            $viewModel->setTemplate("inventory/item/crud");
-            return $viewModel;
+            $session->offsetSet('rowDTO', $rowDTO);
+            $session->offsetSet('errors', $notification->getErrors());
+            
+            
+            $url = sprintf("/inventory/gi-row/create?token=%s&target_id=%s", $token, $trxId);
+            return $this->redirect()->toUrl($url);
         }
 
         $session->getManager()
             ->getStorage()
             ->clear('MLA_FORM');
 
-        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n' . $tk);
-        $redirectUrl = "/inventory/item/list2";
-
+        $redirectUrl = "/inventory/item-transaction/list";
         return $this->redirect()->toUrl($redirectUrl);
-
-        $request = $this->getRequest();
-        $this->layout("Inventory/layout-fullscreen");
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
-
-        // Is Posting .................
-        // ============================
-        if ($request->isPost()) {
-            $errors = array();
-
-            $data = $this->params()->fromPost();
-            $redirectUrl = $data['redirectUrl'];
-
-            $target_id = $data['target_id'];
-            $target_token = $data['target_token'];
-
-            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-            $mv = $res->getMovement($target_id, $target_token);
-
-            if ($mv == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
-            $target = null;
-            if ($mv[0] instanceof NmtInventoryMv) {
-                /**@var \Application\Entity\NmtInventoryMv $target ;*/
-                $target = $mv[0];
-            }
-
-            if ($target == null) {
-
-                $errors[] = 'Inventory Movement object can\'t be empty. Or token key is not valid!';
-
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'target' => null,
-                    'entity' => null,
-                    'issueType' => $issueType,
-                    'nmtPlugin' => $nmtPlugin
-                ));
-
-                $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
-                return $viewModel;
-            }
-
-            $entity = new NmtInventoryTrx();
-            $errors = $this->inventoryTransactionService->saveRow($target, $entity, $data, $u, true, False, __METHOD__);
-
-            if (count($errors) > 0) {
-
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'target' => $target,
-                    'issueType' => $issueType,
-
-                    'nmtPlugin' => $nmtPlugin
-                ));
-
-                $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
-                return $viewModel;
-            }
-
-            $redirectUrl = "/inventory/gi-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-            $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
-            $this->flashMessenger()->addMessage($m);
-
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        // NO POST
-        // Initiate.....................
-        // ==============================
-
-        $redirectUrl = Null;
-
-        /*
-         * if ($request->getHeader('Referer') == null) {
-         * return $this->redirect()->toRoute('access_denied');
-         * }
-         *
-         * $redirectUrl = $this->getRequest()
-         * ->getHeader('Referer')
-         * ->getUri();
-         */
-
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $gi = $res->getMovement($id, $token);
-
-        if ($gi == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $target = null;
-        if ($gi[0] instanceof NmtInventoryMv) {
-            $target = $gi[0];
-        }
-
-        if ($target == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        /**@var \Application\Entity\NmtInventoryMv $target ;*/
-
-        $entity = new NmtInventoryTrx();
-
-        // set null
-        $entity->setIsActive(1);
-        $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-            'redirectUrl' => $redirectUrl,
-            'errors' => null,
-            'entity' => $entity,
-            'target' => $target,
-            'issueType' => $issueType,
-            'nmtPlugin' => $nmtPlugin
-        ));
-
-        $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType()); // important
-        return $viewModel;
     }
 
     /**
@@ -410,7 +291,7 @@ class GIRowController extends AbstractActionController
         }
 
         if ($target == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         /**@var \Application\Entity\NmtInventoryMv $target ;*/
@@ -1040,10 +921,10 @@ class GIRowController extends AbstractActionController
         return $this->transactionService;
     }
     
-    /**
-     *
-     * @param TransactionService $transactionService
-     */
+  /**
+   * 
+   * @param TransactionService $transactionService
+   */
     public function setTransactionService(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;

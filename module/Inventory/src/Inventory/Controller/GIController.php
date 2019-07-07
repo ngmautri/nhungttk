@@ -15,6 +15,7 @@ use Application\Entity\NmtInventoryMv;
 use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
+use Zend\Session\Container;
 
 /**
  * Goods Issue
@@ -652,7 +653,7 @@ class GIController extends AbstractActionController
         $dto->currency = $default_cur->getId();
         $dto->docCurrency = $default_cur->getId();
         $dto->localCurrency = $default_cur->getId();
-        
+
         $userId = $u->getId();
 
         $notification = $this->transactionService->createHeader($dto, $u->getCompany()
@@ -674,6 +675,133 @@ class GIController extends AbstractActionController
             $viewModel->setTemplate("inventory/gi/crud");
             return $viewModel;
         }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/inventory/item-transaction/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function updateAction()
+    {
+        // create new session
+        $session = new Container('MLA_FORM');
+         
+
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $isAllowed = true;
+
+        $transactionType = TransactionFactory::getGoodIssueTransactions($nmtPlugin->getTranslator());
+
+        $prg = $this->prg('/inventory/gi/update', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $redirectUrl = null;
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('token');
+
+            $header = $this->transactionService->getHeader($entity_id, $token);
+
+            if ($header == null)
+                return $this->redirect()->toRoute('not_found');
+
+            $hasDTO = $session->offsetExists('dto');
+
+            if ($hasDTO) {
+                $headerDTO = $session->offsetGet('dto');
+            } else {
+                $headerDTO = $header->makeDTO();
+            }
+
+            $errors = $session->offsetGet('errors');
+
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                'form_action' => '/inventory/gi/update',
+                'form_title' => $nmtPlugin->translate("Edit Good Issue"),
+                'redirectUrl' => $redirectUrl,
+                'errors' => $errors,
+                'entity_id' => $entity_id,
+                'entity_token' => $token,
+                'dto' => $headerDTO,
+                'nmtPlugin' => $nmtPlugin,
+                'transactionType' => $transactionType,
+                'isAllowed' => $isAllowed,
+                'n' => 0
+            ));
+
+            $viewModel->setTemplate("inventory/gi/crud");
+            return $viewModel;
+        }
+
+        // Is Posting
+        // ++++++++++++++++++++++++++++++
+
+        $data = $prg;
+
+        $movementType = $data['movementType'];
+        switch ($movementType) {
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
+                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
+                return $this->redirect()->toUrl($redirectUrl);
+
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
+                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
+                return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        $entity_id = $data['entity_id'];
+        $token = $data['entity_token'];
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $userId = null;
+        if (! $u == null)
+            $userId = $u->getId();
+
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+
+        $dto = TransactionDTOAssembler::createDTOFromArray($data);
+        $dto->currency = $default_cur->getId();
+        $dto->docCurrency = $default_cur->getId();
+        $dto->localCurrency = $default_cur->getId();
+
+        $userId = $u->getId();
+
+        $notification = $this->transactionService->updateHeader($entity_id, $token, $dto,$userId, __METHOD__);
+
+        if ($notification->hasErrors()) {
+
+            $session->offsetSet('errors', $notification->getErrors());
+            $session->offsetSet('dto', $dto);
+
+            $url = sprintf("/inventory/gi/update?token=%s&entity_id=%s", $token, $entity_id);
+            return $this->redirect()->toUrl($url);
+        }
+
+        $session->getManager()
+            ->getStorage()
+            ->clear('MLA_FORM');
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/inventory/item-transaction/list";

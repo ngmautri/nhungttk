@@ -1,14 +1,10 @@
 <?php
-use Inventory\Domain\Item\ItemType;
-use Inventory\Domain\Item\MonitorMethod;
 
 /**
  *
- * @var \Application\Entity\NmtInventoryItem $entity ;
  * @var \Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
-
 ?>
 
 
@@ -63,6 +59,18 @@ if (count($errors) > 0) {
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" />
+							
+			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+			<input type="hidden" name="n" value="<?php echo $n;?>" />
+			<?php endif;?>
+			
+							<input type="hidden" id="entity_id" name="entity_id"
+							value="<?php if (!$dto == null): echo $entity_id;endif;?>" /> <input
+							type="hidden" id="token" name="entity_token"
+							value="<?php if (!$dto == null): echo $entity_token;endif;?>" />
+
+
+
 						<fieldset>
 							<legend style="font-size: 9.5pt; color: gray;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -78,7 +86,7 @@ if (count($errors) > 0) {
    	    							<?php
             if ($transactionType !== null) :
                 foreach ($transactionType as $k => $v) :
-                if (dto !== null) :
+                    if ($dto !== null) :
                         if ($dto->movementType == $k) :
                             echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
                         else :

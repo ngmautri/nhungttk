@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
 
 /**
  *
@@ -11,6 +11,67 @@ use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
  */
 class TransactionRowSnapshotAssembler
 {
+
+    /**
+     *
+     * @param TransactionSnapshot $snapShot
+     * @param TransactionDTO $dto
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+     */
+    public static function updateSnapshotFromDTO($snapShot, $dto)
+    {
+        if (! $dto instanceof TransactionDTO || ! $snapShot instanceof TransactionSnapshot)
+            return null;
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $properites = $reflectionClass->getProperties();
+
+        /**
+         * Fields, that are update automatically
+         *
+         * @var array $excludedProperties
+         */
+        $excludedProperties = array(
+            "id",
+            "uuid",
+            "token",
+            "checksum",
+            "createdBy",
+            "createdOn",
+            "lastChangeOn",
+            "lastChangeBy",
+            "sysNumber",
+            "company",
+            "revisionNo"
+        );
+
+        $changeableProperties = array(
+            "movementType",
+            "movementDate",
+            "warehouse",
+            "remarks"
+        );
+
+        $dto->movementType;
+        $dto->movementDate;
+        $dto->warehouse;
+        $dto->remarks;
+
+        foreach ($properites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $changeableProperties)) {
+
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
+            }
+        }
+        return $snapShot;
+    }
+
     /**
      *
      * @param array $data
@@ -20,19 +81,19 @@ class TransactionRowSnapshotAssembler
     {
         if ($data == null)
             return null;
-            
-            $snapShot = new TransactionRowSnapshot();
-            
-            foreach ($data as $property => $value) {
-                if (property_exists($snapShot, $property)) {
-                    $snapShot->$property = $value;
-                }
+
+        $snapShot = new TransactionRowSnapshot();
+
+        foreach ($data as $property => $value) {
+            if (property_exists($snapShot, $property)) {
+                $snapShot->$property = $value;
             }
-            return $snapShot;
+        }
+        return $snapShot;
     }
-    
+
     /**
-     * 
+     *
      * @param TransactionRowDTO $dto
      * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot
      */
@@ -40,23 +101,25 @@ class TransactionRowSnapshotAssembler
     {
         if (! $dto instanceof TransactionRowDTO)
             return null;
-            
-            $snapShot = new TransactionRowSnapshot();
-            
-            $reflectionClass = new \ReflectionClass(get_class($dto));
-            $properites = $reflectionClass->getProperties();
-            
-            foreach ($properites as $property) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                if (property_exists($snapShot, $propertyName)) {
-                    $dto->$propertyName = $property->getValue($dto);
-                }
+
+        $snapShot = new TransactionRowSnapshot();
+
+        $reflectionClass = new \ReflectionClass(get_class($dto));
+        $properites = $reflectionClass->getProperties();
+
+        foreach ($properites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                $snapShot->$propertyName = null;
+            } else {
+                $snapShot->$propertyName = $property->getValue($dto);
             }
-            return $snapShot;
+        }
+        return $snapShot;
     }
 
-  
     public static function createFromSnapshotCode()
     {
         $itemSnapshot = new TransactionRowSnapshot();
@@ -68,7 +131,7 @@ class TransactionRowSnapshotAssembler
             print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
         }
     }
-    
+
     /**
      * generete Mapping.
      */
@@ -83,13 +146,12 @@ class TransactionRowSnapshotAssembler
             print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
     }
-    
-    
-   /**
-    * 
-    * @param TransactionRow $obj
-    * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot
-    */
+
+    /**
+     *
+     * @param TransactionRow $obj
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot
+     */
     public static function createSnapshotFrom($obj)
     {
         if (! $obj instanceof TransactionRow)
@@ -117,7 +179,7 @@ class TransactionRowSnapshotAssembler
 
         return $snapShot;
     }
-    
+
     /**
      *
      * @return array;

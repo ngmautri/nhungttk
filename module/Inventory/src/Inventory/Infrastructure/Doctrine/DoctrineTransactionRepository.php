@@ -51,6 +51,9 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
      */
     public function getHeaderById($trxId, $token = null)
     {
+        if ($trxId == null)
+            return null;
+
         $criteria = array(
             "id" => $trxId,
             "token" => $token
@@ -69,6 +72,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
          * @var TransactionSnapshot $snapshot ;
          */
         $snapshot = $this->createSnapshot($entity);
+
         if ($snapshot == null)
             return null;
 
@@ -195,6 +199,9 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         if ($row == null)
             throw new InvalidArgumentException("Inventory transaction row is empty");
 
+        if ($trx == null)
+            throw new InvalidArgumentException("Inventory transaction is empty");
+
         // create snapshot
         $snapshot = $row->makeSnapshot();
 
@@ -203,7 +210,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
          * @var ItemSnapshot $item ;
          */
         if ($snapshot == null)
-            throw new InvalidArgumentException("Inventory transaction  can be created");
+            throw new InvalidArgumentException("Transaction snapshot can not be created");
 
         /**
          *
@@ -212,34 +219,43 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         if ($row->getId() > 0) {
             $entity = $this->doctrineEM->find("\Application\Entity\NmtInventoryTrx", $row->getId());
 
-            if ($entity == null) {
-                throw new InvalidArgumentException("Transaction can't be retrieved.");
-            }
+            if ($entity == null)
+                throw new InvalidArgumentException("Transaction row can't be retrieved.");
 
-            $entity->setLastChangeOn($item->lastChangeOn);
+            $entity->setLastChangeOn($row->lastChangeOn);
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
             }
         } else {
+
             $entity = new \Application\Entity\NmtInventoryTrx();
             $entity->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
 
-            if ($item->createdBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryMv $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->find($trx->getId());
+            $entity->setMovement($obj);
+            $entity->setMvUuid($trx->getUuid());
+
+            if ($snapshot->createdBy > 0) {
 
                 /**
                  *
                  * @var \Application\Entity\MlaUsers $u ;
                  */
-                $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->createdBy);
+                $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $snapshot->createdBy);
                 if ($u !== null)
                     $entity->setCreatedBy($u);
             }
             $entity->setCreatedOn(new \DateTime());
         }
 
-        $entity->setId($snapshot->id);
-        $entity->setToken($snapshot->token);
-        $entity->setChecksum($snapshot->checksum);
+        // $entity->setId($snapshot->id);
+        // $entity->setToken($snapshot->token);
+        // $entity->setChecksum($snapshot->checksum);
+
         $entity->setTrxDate($snapshot->trxDate);
         $entity->setTrxTypeId($snapshot->trxTypeId);
         $entity->setFlow($snapshot->flow);
@@ -249,7 +265,9 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         $entity->setIsLocked($snapshot->isLocked);
         $entity->setIsDraft($snapshot->isDraft);
         $entity->setIsActive($snapshot->isActive);
-        $entity->setLastChangeOn($snapshot->lastChangeOn);
+
+        // $entity->setLastChangeOn($snapshot->lastChangeOn);
+
         $entity->setIsPreferredVendor($snapshot->isPreferredVendor);
         $entity->setVendorItemUnit($snapshot->vendorItemUnit);
         $entity->setVendorItemCode($snapshot->vendorItemCode);
@@ -267,9 +285,11 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         $entity->setSourceId($snapshot->sourceId);
         $entity->setSourceClass($snapshot->sourceClass);
         $entity->setDocStatus($snapshot->docStatus);
-        $entity->setSysNumber($snapshot->sysNumber);
-        $entity->setChangeOn($snapshot->changeOn);
-        $entity->setChangeBy($snapshot->changeBy);
+
+        // $entity->setSysNumber($snapshot->sysNumber);
+        // $entity->setChangeOn($snapshot->changeOn);
+        // $entity->setChangeBy($snapshot->changeBy);
+
         $entity->setRevisionNumber($snapshot->revisionNumber);
         $entity->setIsPosted($snapshot->isPosted);
         $entity->setActualQuantity($snapshot->actualQuantity);
@@ -281,6 +301,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         $entity->setCogsLocal($snapshot->cogsLocal);
         $entity->setCogsDoc($snapshot->cogsDoc);
         $entity->setExchangeRate($snapshot->exchangeRate);
+
         $entity->setConvertedStandardQuantity($snapshot->convertedStandardQuantity);
         $entity->setConvertedStandardUnitPrice($snapshot->convertedStandardUnitPrice);
         $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
@@ -297,41 +318,235 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         $entity->setDocType($snapshot->docType);
         $entity->setLocalUnitPrice($snapshot->localUnitPrice);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
-        $entity->setCreatedBy($snapshot->createdBy);
-        $entity->setLastChangeBy($snapshot->lastChangeBy);
-        $entity->setItem($snapshot->item);
-        $entity->setPr($snapshot->pr);
-        $entity->setPo($snapshot->po);
-        $entity->setVendorInvoice($snapshot->vendorInvoice);
-        $entity->setPoRow($snapshot->poRow);
-        $entity->setGrRow($snapshot->grRow);
-        $entity->setInventoryGi($snapshot->inventoryGi);
-        $entity->setInventoryGr($snapshot->inventoryGr);
-        $entity->setInventoryTransfer($snapshot->inventoryTransfer);
-        $entity->setWh($snapshot->wh);
-        $entity->setGr($snapshot->gr);
-        $entity->setMovement($snapshot->movement);
-        $entity->setIssueFor($snapshot->issueFor);
-        $entity->setDocCurrency($snapshot->docCurrency);
-        $entity->setLocalCurrency($snapshot->localCurrency);
-        $entity->setProject($snapshot->project);
-        $entity->setCostCenter($snapshot->costCenter);
-        $entity->setDocUom($snapshot->docUom);
-        $entity->setPostingPeriod($snapshot->postingPeriod);
-        $entity->setWhLocation($snapshot->whLocation);
-        $entity->setPrRow($snapshot->prRow);
-        $entity->setVendor($snapshot->vendor);
-        $entity->setCurrency($snapshot->currency);
-        $entity->setPmtMethod($snapshot->pmtMethod);
-        $entity->setInvoiceRow($snapshot->invoiceRow);
 
-        // Need check one more time.
-        $dto = TransactionRowDTOAssembler::createDTOFrom($entity);
+        // $entity->setCreatedBy($snapshot->createdBy);
+        // $entity->setLastChangeBy($snapshot->lastChangeBy);
 
-        $factory = AbstractItemFactory::getItemFacotory($dto->itemTypeId);
+        if ($snapshot->item > 0) {
 
-        // will throw exception if false.
-        $item = $factory->createItemFromDTO($dto);
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItem $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->item);
+            $entity->setItem($obj);
+        }
+
+        if ($snapshot->pr > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePr $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->find($snapshot->pr);
+            $entity->setPr($obj);
+        }
+
+        if ($snapshot->po > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePo $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo')->find($snapshot->po);
+            $entity->setPo($obj);
+        }
+
+        if ($snapshot->vendorInvoice > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\FinVendorInvoice $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->find($snapshot->vendorInvoice);
+            $entity->setVendorInvoice($obj);
+        }
+
+        if ($snapshot->poRow > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePoRow $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($snapshot->poRow);
+            $entity->setPoRow($obj);
+        }
+
+        if ($snapshot->grRow > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtProcureGrRow $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->find($snapshot->grRow);
+            $entity->setGrRow($obj);
+        }
+
+        if ($snapshot->wh > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouse$obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($snapshot->wh);
+            $entity->setWh($obj);
+        }
+
+        if ($snapshot->issueFor > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItem $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->issueFor);
+            $entity->setIssueFor($obj);
+        }
+
+        if ($snapshot->docCurrency > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationCurrency $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->docCurrency);
+            $entity->setDocCurrency($obj);
+        }
+
+        if ($snapshot->localCurrency > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationCurrency $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->localCurrency);
+            $entity->setLocalCurrency($obj);
+        }
+
+        if ($snapshot->project > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtPmProject $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->project);
+            $entity->setProject($obj);
+        }
+
+        if ($snapshot->costCenter > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\FinCostCenter $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($snapshot->costCenter);
+            $entity->setCostCenter($obj);
+        }
+
+        if ($snapshot->docUom > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationUom $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->docUom);
+            $entity->setDocUom($obj);
+        }
+
+        if ($snapshot->postingPeriod > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtFinPostingPeriod $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->find($snapshot->postingPeriod);
+            $entity->setPostingPeriod($obj);
+        }
+
+        if ($snapshot->whLocation > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouseLocation $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->find($snapshot->whLocation);
+            $entity->setWhLocation($obj);
+        }
+
+        if ($snapshot->prRow > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePrRow $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->find($snapshot->prRow);
+            $entity->setPrRow($obj);
+        }
+
+        if ($snapshot->setVendor > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtVendor $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtVendor')->find($snapshot->setVendor);
+            $entity->setVendor($obj);
+        }
+
+        if ($snapshot->currency > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationCurrency $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->currency);
+            $entity->setCurrency($obj);
+        }
+
+        if ($snapshot->pmtMethod > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationPmtMethod $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->pmtMethod);
+            $entity->setPmtMethod($obj);
+        }
+
+        if ($snapshot->invoiceRow > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\FinVendorInvoiceRow $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->find($snapshot->invoiceRow);
+            $entity->setInvoiceRow($obj);
+        }
+
+        // $entity->setItem($snapshot->item);
+        // $entity->setPr($snapshot->pr);
+        // $entity->setPo($snapshot->po);
+        // $entity->setVendorInvoice($snapshot->vendorInvoice);
+        // $entity->setPoRow($snapshot->poRow);
+        // $entity->setGrRow($snapshot->grRow);
+        // $entity->setInventoryGi($snapshot->inventoryGi);
+        // $entity->setInventoryGr($snapshot->inventoryGr);
+        // $entity->setInventoryTransfer($snapshot->inventoryTransfer);
+        // $entity->setWh($snapshot->wh);
+        // $entity->setGr($snapshot->gr);
+        // $entity->setMovement($snapshot->movement);
+        // $entity->setIssueFor($snapshot->issueFor);
+        // $entity->setDocCurrency($snapshot->docCurrency);
+        // $entity->setLocalCurrency($snapshot->localCurrency);
+        // $entity->setProject($snapshot->project);
+        // $entity->setCostCenter($snapshot->costCenter);
+        // $entity->setDocUom($snapshot->docUom);
+        // $entity->setPostingPeriod($snapshot->postingPeriod);
+        // $entity->setWhLocation($snapshot->whLocation);
+        // $entity->setPrRow($snapshot->prRow);
+        // $entity->setVendor($snapshot->vendor);
+        // $entity->setCurrency($snapshot->currency);
+        // $entity->setPmtMethod($snapshot->pmtMethod);
+        // $entity->setInvoiceRow($snapshot->invoiceRow);
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();

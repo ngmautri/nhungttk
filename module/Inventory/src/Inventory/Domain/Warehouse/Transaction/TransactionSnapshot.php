@@ -1,13 +1,15 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
+use Application\Domain\Shared\AbstractValueObject;
+
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TransactionSnapshot
+class TransactionSnapshot extends AbstractValueObject
 {
     /**
      * @system_genereted

@@ -428,7 +428,7 @@ $( "#vendor_name_1" ).autocomplete({
                                 var $grid = $(this).closest('.pq-grid');
                                 //addRow($grid);
                                 
-   		     redirectUrl="/inventory/gi-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+   		     redirectUrl="/inventory/gi-row/create?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
               window.location.href= redirectUrl;
                                  
                                 //debugger;

@@ -3,12 +3,8 @@ namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Notification;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
-use Application\Domain\Shared\Specification\AbstractSpecification;
-use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
-use Inventory\Application\Specification\Doctrine\OnhandQuantitySpecification;
-use Inventory\Domain\Service\ValuationServiceInterface;
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Service\ValuationServiceInterface;
 
 /**
  *
@@ -42,7 +38,27 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     protected $valuationService;
 
+    public $totalActiveRows;
+
     public $transtionRowsOutput;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalActiveRows()
+    {
+        return $this->totalActiveRows;
+    }
+
+    /**
+     *
+     * @param mixed $totalActiveRows
+     */
+    public function setTotalActiveRows($totalActiveRows)
+    {
+        $this->totalActiveRows = $totalActiveRows;
+    }
 
     /**
      *
@@ -94,10 +110,14 @@ abstract class GenericTransaction extends AbstractTransaction
     public function addRowFromSnapshot(TransactionRowSnapshot $snapshot)
     {
         if (! $snapshot instanceof TransactionRowSnapshot)
-            return;
+            return null;
 
         $snapshot->mvUuid = $this->uuid;
-
+        $snapshot->docType = $this->movementType;
+        $snapshot->flow = $this->movementFlow;
+        $snapshot->quantity = $snapshot->docQuantity;
+        $snapshot->wh = $this->warehouse;
+        
         $row = new TransactionRow();
         $row->makeFromSnapshot($snapshot);
 
@@ -106,6 +126,8 @@ abstract class GenericTransaction extends AbstractTransaction
             throw new InvalidArgumentException($ckResult->errorMessage());
 
         $this->transactionRows[] = $row;
+
+        return $row;
     }
 
     /**
@@ -253,6 +275,21 @@ abstract class GenericTransaction extends AbstractTransaction
             if (! in_array($this->movementType, $supportedType)) {
                 $notification->addError("Transaction Type is not supported");
             }
+
+            // check if transactition type is consistent - when change header
+
+            if (count($this->transactionRows) > 0) {
+                foreach ($this->transactionRows as $row) {
+                    /**
+                     *
+                     * @var TransactionRow $row ;
+                     */
+                    if ($row->getDocType() !== $this->movementType) {
+                        $notification->addError("Transaction Type is inconsistent, Because at least one row has different type");
+                        break;
+                    }
+                }
+            }
         }
 
         // check warehouse currency
@@ -264,9 +301,9 @@ abstract class GenericTransaction extends AbstractTransaction
             $subject = array(
                 "companyId" => $this->company,
                 "warehouseId" => $this->warehouse,
-                "userId" => $this->createdBy,
+                "userId" => $this->createdBy
             );
-            
+
             if (! $spec1->isSatisfiedBy($subject))
                 $notification->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $this->company, $this->warehouse, $this->createdBy));
         }
@@ -353,7 +390,7 @@ abstract class GenericTransaction extends AbstractTransaction
         // Check quantity.
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         if (! $spec->isSatisfiedBy($row->getDocQuantity()))
-            $notification->addError("Quantity is not valid!");
+            $notification->addError("Quantity is not valid! " . $row->getDocQuantity());
 
         return $notification;
     }

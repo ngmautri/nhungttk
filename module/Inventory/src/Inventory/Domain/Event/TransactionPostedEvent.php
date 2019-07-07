@@ -8,16 +8,11 @@ use Symfony\Component\Workflow\Event\Event;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TransactionCreatedEvent extends Event{
+class TransactionPostedEvent extends Event
+{
 
-    const EVENT_NAME = "inventory.transaction.created";
+    const EVENT_NAME = "inventory.transaction.posted";
 
-    protected $transactionId;
-
-    
     public function __construct()
-    {
-    }
-
-  
+    {}
 }

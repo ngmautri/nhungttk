@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Service\AbstractService;
 use Inventory\Application\DTO\Item\ItemAssembler;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
 use Inventory\Application\Event\Handler\ItemCreatedEventHandler;
 use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
 use Inventory\Application\Event\Listener\ItemLoggingListener;
@@ -21,6 +22,10 @@ use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
 use Inventory\Domain\Event\TransactionCreatedEvent;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Event\TransactionRowCreatedEvent;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
+use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
+use Inventory\Domain\Event\TransactionUpdatedEvent;
 
 /**
  *
@@ -42,6 +47,8 @@ class TransactionService extends AbstractService
     {
         $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
 
+        
+        
         /**
          *
          * @var GenericItem $item
@@ -57,22 +64,13 @@ class TransactionService extends AbstractService
     /**
      *
      * @param int $trxId
-     * @return NULL|NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO
+     * @param string $token
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\GenericTransaction
      */
     public function getHeader($trxId, $token = null)
     {
         $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
-
-        /**
-         *
-         * @var GenericTransaction $trx
-         */
-        $trx = $rep->getHeaderById($trxId, $token);
-
-        if ($trx == null)
-            return null;
-
-        return $trx->makeDTO();
+        return $rep->getHeaderById($trxId, $token);
     }
 
     /**
@@ -162,102 +160,93 @@ class TransactionService extends AbstractService
      * @param string $trigger
      * @return \Application\Notification
      */
-    public function updateHeader($itemId, $data, $userId, $trigger = null)
+    public function updateHeader($trxId, $trxToken, $dto, $userId, $trigger = null)
     {
         $notification = new Notification();
 
-        if ($itemId == null) {
-            $notification->addError("ItemId is Empty");
-        }
+        if ($dto == null)
+            $notification->addError("Transaction is Empty");
 
-        if ($userId == null) {
+        if ($userId == null)
             $notification->addError("User is not identified for this action");
-        }
 
-        if ($notification->hasErrors()) {
+        $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
+        $trx = $rep->getHeaderById($trxId, $trxToken);
+        
+        var_dump($trxId);
+        
+
+        if ($trx == null)
+            $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $trxId . $trxToken));
+  
+        if ($notification->hasErrors())
             return $notification;
-        }
-
-        $this->getDoctrineEM()
-            ->getConnection()
-            ->beginTransaction(); // suspend auto-commit
 
         try {
 
-            $rep = new DoctrineItemRepository($this->getDoctrineEM());
-            $item = $rep->getById($itemId);
-
-            if ($item == null) {
-                $notification->addError(sprintf("Item %s can not be retrieved", $itemId));
-                return $notification;
-            }
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
 
             /**
              *
-             * @var ItemSnapshot $itemSnapshot ;
+             * @var TransactionSnapshot $snapshot ;
              */
-            $itemSnapshot = $item->createSnapshot();
-            $newItemSnapshot = clone ($itemSnapshot);
+            $snapshot = $trx->makeSnapshot();
+            $newSnapshot = clone ($snapshot);
 
-            $dto = ItemAssembler::createItemDTOFromArray($data);
+            $newSnapshot = TransactionSnapshotAssembler::updateSnapshotFromDTO($newSnapshot, $dto);
 
-            $newItemSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTO($newItemSnapshot, $dto);
-
-            $changeArray = $itemSnapshot->compare($newItemSnapshot);
+            $changeArray = $snapshot->compare($newSnapshot);
 
             if ($changeArray == null) {
-                $notification->addError("Nothing change on Item #" . $itemId);
+                $notification->addError("Nothing change on Transaction #" . $trxId);
                 return $notification;
             }
 
             // do change
-            $newItemSnapshot->lastChangeBy = $userId;
-            $newItemSnapshot->lastChangeOn = new \DateTime();
-            $newItemSnapshot->revisionNo ++;
+            $newSnapshot->lastChangeBy = $userId;
+            $newSnapshot->lastChangeOn = new \DateTime();
+            $newSnapshot->revisionNo ++;
 
-            $newItem = ItemFactory::createItem($newItemSnapshot->itemTypeId);
-            $newItem->makeFromSnapshot($newItemSnapshot);
+            $newTrx = TransactionFactory::createTransaction($newSnapshot->movementType);
+            $newTrx->makeFromSnapshot($newSnapshot);
+
+            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
+            $newTrx->setDomainSpecificationFactory($domainSpecificationFactory);
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-            $newItem->setSharedSpecificationFactory($sharedSpecificationFactory);
+            $newTrx->setSharedSpecificationFactory($sharedSpecificationFactory);
 
-            // Validate
-            $notification = $newItem->validate($notification);
+            $notification = $newTrx->validateHeader($notification);
 
             if ($notification->hasErrors()) {
                 return $notification;
             }
 
-            $rep->store($newItem, False);
+            $rep->storeHeader($newTrx, False);
 
+            $m = sprintf("Transaction #%s updated", $trxId);
+
+            $this->getEventManager()->trigger(TransactionUpdatedEvent::EVENT_NAME, $trigger, array(
+                'transactionId' => $trxId
+            ));
             /*
-             * $event = new ItemUpdatedEvent($newItem);
+             * $changeOn = new \DateTime();
              *
-             * $dispatcher = new EventDispatcher();
-             * $dispatcher->addSubscriber(new ItemUpdatedEventHandler($newItem));
-             * $dispatcher->dispatch(ItemUpdatedEvent::EVENT_NAME, $event);
+             * $this->getEventManager()->trigger(ItemLoggingListener::ITEM_UPDATED_LOG, $trigger, array(
+             * 'priority' => \Zend\Log\Logger::INFO,
+             * 'message' => $m,
+             * 'objectId' => $itemId,
+             * 'objectToken' => $newItem->getToken(),
+             * 'changeArray' => $changeArray,
+             * 'changeBy' => $userId,
+             * 'changeOn' => $changeOn,
+             * 'revisionNumber' => $newItem->getRevisionNo(),
+             * 'changeDate' => $changeOn,
+             * 'changeValidFrom' => $changeOn
+             * ));
              */
-
-            $m = sprintf("Item #%s updated", $itemId);
-            $changeOn = new \DateTime();
-
-            $this->getEventManager()->trigger(ItemUpdatedEvent::EVENT_NAME, $trigger, array(
-                'itemId' => $itemId
-            ));
-
-            $this->getEventManager()->trigger(ItemLoggingListener::ITEM_UPDATED_LOG, $trigger, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'objectId' => $itemId,
-                'objectToken' => $newItem->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $userId,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $newItem->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
@@ -273,52 +262,56 @@ class TransactionService extends AbstractService
 
     /**
      *
-     * @param object $dto
-     * @param int $companyId
+     * @param GenericTransaction $header
+     * @param TransactionRowDTO $rowDTO
      * @param int $userId
-     * @param int $trigger
+     * @param string $trigger
+     * @return \Application\Notification
      */
-    public function createRow($trxId, $token, $data, $userId, $trigger = null)
+    public function createRow(GenericTransaction $header, $rowDTO, $userId, $trigger = null)
     {
         $notification = new Notification();
 
-        $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
+        if (! $header instanceof GenericTransaction)
+            $notification->addError(sprintf("Transaction header not valid! %s", ""));
 
-        /**
-         *
-         * @var GenericTransaction $trx
-         */
-        $trx = $rep->getHeaderById($trxId, $token);
+        if (! $rowDTO instanceof TransactionRowDTO)
+            $notification->addError(sprintf("No Row Input given! %s", ""));
 
-        if ($trx == null) {
-            $notification->addError("Nothing change on Item #");
+        if ($userId == null)
+            $notification->addError(sprintf("No user identified for this transaction %s", ""));
+
+        if ($notification->hasErrors())
             return $notification;
-        }
-
-        $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
-        $trx->addRowFromSnapshot($rowSnapshot);
-
-        $notification = $trx->validateRow($row, $notification);
-
-        if ($notification->hasErrors()) {
-            return $notification;
-        }
-
-        $this->getDoctrineEM()
-            ->getConnection()
-            ->beginTransaction(); // suspend auto-commit
 
         try {
+            
+            $rowDTO->createdBy = $userId;
+            
+
+            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
+            $header->setDomainSpecificationFactory($domainSpecificationFactory);
+
+            $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+            $header->setSharedSpecificationFactory($sharedSpecificationFactory);
 
             $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
-            $trxId = $rep->storeRow($trx);
-            
-            $m = sprintf("[OK] WH Transacion # %s created", $trxId);
-            
-            $this->getEventManager()->trigger(TransactionCreatedEvent::EVENT_NAME, $trigger, array(
-                'trxId' => $trxId
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
+            $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromDTO($rowDTO);
+
+            $row = $header->addRowFromSnapshot($rowSnapshot);
+
+            $rowId = $rep->storeRow($header, $row);
+
+            $m = sprintf("[OK] WH Transacion row # %s created", $rowId);
+
+            $this->getEventManager()->trigger(TransactionRowCreatedEvent::EVENT_NAME, $trigger, array(
+                'rowId' => $rowId
             ));
-            
+
             /*
              * $this->getEventManager()->trigger(ItemLoggingListener::ITEM_CREATED_LOG, __METHOD__, array(
              * 'priority' => \Zend\Log\Logger::INFO,
@@ -327,25 +320,24 @@ class TransactionService extends AbstractService
              * 'createdOn' => new \DateTime()
              * ));
              */
-            
+
             $notification->addSuccess($m);
-            
+
             $this->getDoctrineEM()
-            ->getConnection()
-            ->commit();
+                ->getConnection()
+                ->commit();
         } catch (\Exception $e) {
-            
+
             $this->getDoctrineEM()
-            ->getConnection()
-            ->rollBack();
+                ->getConnection()
+                ->rollBack();
             $this->getDoctrineEM()->close();
             $notification->addError($e->getMessage());
         }
-        
+
         return $notification;
     }
-    
-    public function updateRow($dto, $companyId, $userId, $trigger = null){
-        
-    }
+
+    public function updateRow($dto, $companyId, $userId, $trigger = null)
+    {}
 }

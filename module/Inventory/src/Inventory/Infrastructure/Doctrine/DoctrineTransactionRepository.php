@@ -43,8 +43,6 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
          * @var \Application\Entity\NmtInventoryMv $entity ;
          */
         $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryMv")->findOneBy($criteria);
-        if ($entity == null)
-            return null;
 
         /**
          *
@@ -83,8 +81,6 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
          * @var \Application\Entity\NmtInventoryMv $entity ;
          */
         $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryMv")->findOneBy($criteria);
-        if ($entity == null)
-            return null;
 
         /**
          *
@@ -206,7 +202,7 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
             if ($entity == null)
                 throw new InvalidArgumentException("Transaction row can't be retrieved.");
 
-            $entity->setLastChangeOn($row->lastChangeOn);
+            $entity->setLastChangeOn(new \Datetime());
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
             }
@@ -240,12 +236,17 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
         // $entity->setToken($snapshot->token);
         // $entity->setChecksum($snapshot->checksum);
 
-        $entity->setTrxDate($snapshot->trxDate);
+        if ($snapshot->trxDate !== null) {
+            $entity->setTrxDate(new \DateTime($snapshot->trxDate));
+        }
+
         $entity->setTrxTypeId($snapshot->trxTypeId);
         $entity->setFlow($snapshot->flow);
         $entity->setQuantity($snapshot->quantity);
         $entity->setRemarks($snapshot->remarks);
-        $entity->setCreatedOn($snapshot->createdOn);
+
+        // $entity->setCreatedOn($snapshot->createdOn);
+
         $entity->setIsLocked($snapshot->isLocked);
         $entity->setIsDraft($snapshot->isDraft);
         $entity->setIsActive($snapshot->isActive);
@@ -580,10 +581,9 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
             // update transaction row
             $r->setTrxDate($entity->getMovementDate());
             $r->setDocStatus($entity->getDocStatus());
-            $r->setDocType($entity->getDocStatus());
+            $r->setDocType($entity->getMovementType());
             $r->setTransactionType($entity->getMovementType());
-            $r->setCogsLocal($r->getCogsLocal());
-
+            $r->setCogsLocal($row->getCogsLocal());
             $r->setSysNumber($entity->getSysNumber() . '-' . $n);
             $this->doctrineEM->persist($r);
         }
@@ -619,7 +619,7 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
             if ($entity == null)
                 throw new InvalidArgumentException("Transction not retrieved.");
 
-            $entity->setLastChangeOn($snapshot->lastChangeOn);
+            $entity->setLastChangeOn(new \DateTime());
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
             }
@@ -727,13 +727,20 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
         // $entity->setLastchangeBy($snapshot->lastchangeBy);
         // $entity->setLastchangeOn($snapshot->lastchangeOn);
 
-        $entity->setPostingDate($snapshot->postingDate);
-
         $entity->setSapDoc($snapshot->sapDoc);
+
         $entity->setContractNo($snapshot->contractNo);
-        $entity->setContractDate($snapshot->contractDate);
+
+        if ($snapshot->contractDate !== null) {
+            $entity->setContractDate(new \DateTime($snapshot->contractDate));
+        }
+
         $entity->setQuotationNo($snapshot->quotationNo);
-        $entity->setQuotationDate($snapshot->quotationDate);
+
+        if ($snapshot->quotationDate !== null) {
+            $entity->setQuotationDate(new \DateTime($snapshot->quotationDate));
+        }
+
         $entity->setSysNumber($snapshot->sysNumber);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setDeliveryMode($snapshot->deliveryMode);
@@ -753,6 +760,7 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
 
         if ($snapshot->movementDate !== null) {
             $entity->setMovementDate(new \DateTime($snapshot->movementDate));
+            $entity->setPostingDate(new \DateTime($snapshot->movementDate));
         }
 
         $entity->setJournalMemo($snapshot->journalMemo);
@@ -760,26 +768,22 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
         $entity->setMovementTypeMemo($snapshot->movementTypeMemo);
         $entity->setIsPosted($snapshot->isPosted);
         $entity->setIsReversed($snapshot->isReversed);
-        $entity->setReversalDate($snapshot->reversalDate);
+        // $entity->setReversalDate($snapshot->reversalDate);
         $entity->setReversalDoc($snapshot->reversalDoc);
         $entity->setReversalReason($snapshot->reversalReason);
         $entity->setIsReversable($snapshot->isReversable);
         $entity->setDocType($snapshot->docType);
         $entity->setIsTransferTransaction($snapshot->isTransferTransaction);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
+
         // $entity->setUuid($snapshot->uuid);
         // $entity->setCreatedBy($snapshot->createdBy);
         // $entity->setCompany($snapshot->company);
-
         // $entity->setWarehouse($snapshot->warehouse);
-
         // $entity->setPostingPeriod($snapshot->postingPeriod);
-
         // $entity->setCurrency($snapshot->currency);
-
         // $entity->setDocCurrency($snapshot->docCurrency);
         // $entity->setLocalCurrency($snapshot->localCurrency);
-
         // $entity->setTargetWarehouse($snapshot->targetWarehouse);
         // $entity->setSourceLocation($snapshot->sourceLocation);
         // $entity->setTartgetLocation($snapshot->tartgetLocation);
@@ -857,8 +861,12 @@ class DoctrineTransactionRepository extends AbstractDoctrineRepository implement
         // Mapping Date
         // =====================
 
-        if ($entity->getMovementDate()) {
+        if (! $entity->getMovementDate() == null) {
             $snapshot->movementDate = $entity->getMovementDate()->format("Y-m-d");
+        }
+
+        if (! $entity->getPostingDate() == null) {
+            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d");
         }
 
         $reflectionClass = new \ReflectionClass($entity);

@@ -53,9 +53,29 @@ class TransactionService extends AbstractService
             $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
 
             $trx = $rep->getById($trxId);
+            // var_dump($trx);
+
+            $cogsService = new \Inventory\Application\Service\Item\FIFOLayerService();
+            $cogsService->setDoctrineEM($this->doctrineEM);
+            $trx->setValuationService($cogsService);
+
+            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->doctrineEM);
+            $trx->setDomainSpecificationFactory($domainSpecificationFactory);
+
+            $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
+            $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
+
             $notification = $trx->post();
 
-            $rep->store($trx);
+            if ($notification->hasErrors()) {
+                return $notification;
+            }
+
+            $rep->post($trx);
+
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->commit();
         } catch (\Exception $e) {
 
             $this->getDoctrineEM()

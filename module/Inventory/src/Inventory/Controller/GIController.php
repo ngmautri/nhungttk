@@ -881,7 +881,7 @@ class GIController extends AbstractActionController
                 $movementTypeInfo = $giType['type_description'];
             }
 
-            $errors = $this->transactionService->post($entity_id, __METHOD__);
+            $errors = $this->transactionService->post($entity_id,$entity_token, __METHOD__);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
@@ -894,7 +894,7 @@ class GIController extends AbstractActionController
                 ));
             }
 
-            $m = sprintf("[OK] Goods Movement: %s posted!", $entity->getSysNumber());
+            $m = sprintf("[OK] Goods Movement: %s posted!");
             $this->flashMessenger()->addMessage($m);
 
             $redirectUrl = "/inventory/item-transaction/list";

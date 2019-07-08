@@ -24,7 +24,7 @@ class FIFOLayerService extends AbstractService implements ValuationServiceInterf
      * {@inheritdoc}
      * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::calculateCOGS()
      */
-    public function calculateCOGS($trx, $row)
+    public function calculateCOGS($trx,  $row)
     {
         $cogs = 0;
         if ($this->getDoctrineEM() == null || $trx == null || $row == null)
@@ -82,7 +82,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
 
                 $layer->setOnhandQuantity(0);
                 $layer->setIsClosed(1);
-                $layer->setClosedOn($trx->getMovementDate());
+                $layer->setClosedOn(new \DateTime($trx->getMovementDate()));
 
                 $issuedQuantity = $issuedQuantity - $consumpted_qty;
             } else {
@@ -117,7 +117,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
                 $fifo_consume->setTotalValue($fifo_consume->getDocTotalValue() * $fifo_consume->getExchangeRate());
 
                 // $fifo_consume->setInventoryTrx($trx); // important
-                $fifo_consume->setCreatedOn($trx->getMovementDate());
+                $fifo_consume->setCreatedOn(new \DateTime($trx->getMovementDate()));
                 $fifo_consume->setCreatedBy($u);
 
                 $fifo_consume->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));

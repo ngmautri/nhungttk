@@ -16,13 +16,23 @@ class ItemExitsSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-        if ($this->doctrineEM == null || $subject == null || $subject == "" || $this->getCompanyId() == null) {
+        $companyId = null;
+        if (isset($subject["companyId"])) {
+            $companyId = $subject["companyId"];
+        }
+
+        $itemId = null;
+        if (isset($subject["itemId"])) {
+            $itemId = $subject["itemId"];
+        }
+
+        if ($this->doctrineEM == null || $itemId == null || $companyId == null) {
             return false;
         }
 
         $criteria = array(
             "id" => $subject,
-            "company" => $this->getCompanyId()
+            "company" => $companyId
         );
 
         /**
@@ -30,6 +40,6 @@ class ItemExitsSpecification extends DoctrineSpecification
          * @var \Application\Entity\NmtInventoryItem $entiy ;
          */
         $entiy = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryItem")->findOneBy($criteria);
-         return (! $entiy == null);
+        return (! $entiy == null);
     }
 }

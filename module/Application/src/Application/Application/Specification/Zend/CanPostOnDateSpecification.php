@@ -23,11 +23,21 @@ class CanPostOnDateSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-        if ($this->doctrineEM == null || $this->getCompanyId() == null)
+        $companyId = null;
+        if (isset($subject["companyId"])) {
+            $companyId = $subject["companyId"];
+        }
+
+        $movementDate = null;
+        if (isset($subject["movementDate"])) {
+            $movementDate = $subject["movementDate"];
+        }
+
+        if ($this->doctrineEM == null || $companyId == null || $movementDate == null)
             return false;
 
         $spec = new DateSpecification();
-        if (! $spec->isSatisfiedBy($subject))
+        if (! $spec->isSatisfiedBy($movementDate))
             return false;
 
         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod ;*/
@@ -39,7 +49,7 @@ WHERE nmt_fin_posting_period.posting_from_date <= '%s'
 AND nmt_fin_posting_period.posting_to_date >= '%s' 
 AND company_id=%s";
 
-        $sql = sprintf($sql_tmp, $subject, $subject, $this->getCompanyId());
+        $sql = sprintf($sql_tmp, $movementDate, $movementDate, $companyId);
 
         try {
             $rsm = new ResultSetMappingBuilder($this->doctrineEM);
@@ -61,43 +71,6 @@ AND company_id=%s";
         } catch (NoResultException $e) {
             return false;
         }
-    }
-
-    /**
-     *
-     * @deprecated
-     * @param string $subject
-     * @return boolean
-     */
-    public function isSatisfiedBy1($subject)
-    {
-        if ($this->doctrineEM == null || $this->getCompanyId() == null)
-            return false;
-
-        $spec = new DateSpecification();
-        if (! $spec->isSatisfiedBy($subject))
-            return false;
-
-        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod ;*/
-        $postingPeriod = null;
-
-        $query = $this->doctrineEM->createQuery('SELECT p
-        FROM Application\Entity\NmtFinPostingPeriod p
-        WHERE p.postingFromDate <= :date AND p.postingToDate >= :date')->setParameter('date', $subject);
-        $result = $query->getResult();
-
-        if (count($result) == 1) {
-            $postingPeriod = $result[0];
-            // var_dump($postingPeriod->getPeriodName());
-        }
-
-        if ($postingPeriod == null)
-            return false;
-
-        if ($postingPeriod->getPeriodStatus() == PostingPeriodstatus::PERIOD_STATUS_CLOSED)
-            return false;
-
-        return true;
     }
 
 }

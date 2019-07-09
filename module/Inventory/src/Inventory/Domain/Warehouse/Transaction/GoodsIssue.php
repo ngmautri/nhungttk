@@ -94,12 +94,16 @@ abstract class GoodsIssue extends GenericTransaction
          * @var OnhandQuantitySpecification $specDomain
          */
         $specDomain = $this->domainSpecificationFactory->getOnhandQuantitySpecification();
-        $specDomain->setWarehouseId($this->warehouse);
-        $specDomain->setTransactionDate($this->movementDate);
-        $specDomain->setIssueQuantity($row->getDocQuantity());
 
-        if (! $specDomain->isSatisfiedBy($row->getItem()))
-            $notification->addError(sprintf("Can not issue this quantity %s (W #%s ,  Item #%s)", $this->warehouse, $row->getDocQuantity(), $row->getItem()));
+        $subject = array(
+            "warehouseId" => $this->warehouse,
+            "itemId" => $row->getItem(),
+            "movementDate" => $this->movementDate,
+            "docQuantity" => $row->getDocQuantity()
+        );
+         
+        if (! $specDomain->isSatisfiedBy($subject))
+            $notification->addError(sprintf("Can not issue this quantity %s on %s (WH #%s ,  Item #%s)", $row->getDocQuantity(), $this->movementDate, $this->warehouse, $row->getItem()));
 
         return $notification;
     }

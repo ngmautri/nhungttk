@@ -261,6 +261,12 @@ class TransactionService extends AbstractService
             $newSnapshot->revisionNo ++;
 
             $newTrx = TransactionFactory::createTransaction($newSnapshot->movementType);
+            
+            if($newTrx == null){
+                $notification->addError("Cant not create transaction type " . $newSnapshot->movementType);
+                return $notification;                
+            }
+            
             $newTrx->makeFromSnapshot($newSnapshot);
 
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());

@@ -29,6 +29,24 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
 
     /**
      *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    /**
+     *
+     * @param \Doctrine\ORM\EntityManager $doctrineEM
+     */
+    public function setDoctrineEM($doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+    }
+
+    /**
+     *
      * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getEmailSpecification()
      */
@@ -179,21 +197,24 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
 
     /**
      *
-     * @return \Doctrine\ORM\EntityManager
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getIsFixedAssetSpecification()
      */
-    public function getDoctrineEM()
+    public function getIsFixedAssetSpecification()
     {
-        return $this->doctrineEM;
+        return new IsFixedAssetSpecification($this->doctrineEM);
     }
 
     /**
      *
-     * @param \Doctrine\ORM\EntityManager $doctrineEM
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getIsInventorySpecification()
      */
-    public function setDoctrineEM($doctrineEM)
+    public function getIsInventorySpecification()
     {
-        $this->doctrineEM = $doctrineEM;
+        return new IsInventoryItemSpecification($this->doctrineEM);
     }
+
     
     
    

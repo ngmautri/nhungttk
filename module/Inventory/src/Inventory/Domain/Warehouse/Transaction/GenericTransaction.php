@@ -48,49 +48,6 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     protected $transactionRepository;
 
-    /**
-     * @return array
-     */
-    public function getTransactionRows()
-    {
-        return $this->transactionRows;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTotalActiveRows()
-    {
-        return $this->totalActiveRows;
-    }
-
-    /**
-     *
-     * @param mixed $totalActiveRows
-     */
-    public function setTotalActiveRows($totalActiveRows)
-    {
-        $this->totalActiveRows = $totalActiveRows;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTranstionRowsOutput()
-    {
-        return $this->transtionRowsOutput;
-    }
-
-    /**
-     *
-     * @param mixed $transtionRowsOutput
-     */
-    public function setTranstionRowsOutput($transtionRowsOutput)
-    {
-        $this->transtionRowsOutput = $transtionRowsOutput;
-    }
 
     abstract public function prePost();
 
@@ -263,27 +220,9 @@ abstract class GenericTransaction extends AbstractTransaction
             $notification->addError("Company not exits. #" . $this->company);
         }
 
-        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate)) {
-            $notification->addError("Transaction date is not correct or empty");
-        } else {
-
-            /**
-             *
-             * @var CanPostOnDateSpecification $spec ;
-             */
-            $spec1 = $this->sharedSpecificationFactory->getCanPostOnDateSpecification();
-            $spec1->setCompanyId($this->company);
-            if (! $spec1->isSatisfiedBy($this->movementDate)) {
-                $notification->addError("Can not post on this date. Period is not created or closed.");
-            }
-        }
-
-        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->docCurrency))
-            $notification->addError("Currency is empty or invalid");
-
         // check movement type
         if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->movementType)) {
-            $notification->addError("Transaction Type is not correct or empty");
+            $notification->addError("Transaction Type is not set.");
         } else {
             $supportedType = TransactionType::getSupportedTransaction();
             if (! in_array($this->movementType, $supportedType)) {
@@ -306,6 +245,28 @@ abstract class GenericTransaction extends AbstractTransaction
             }
         }
 
+        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate)) {
+            $notification->addError("Transaction date is not correct or empty");
+        } else {
+
+            /**
+             *
+             * @var CanPostOnDateSpecification $spec ;
+             */
+            $spec1 = $this->sharedSpecificationFactory->getCanPostOnDateSpecification();
+            $subject = array(
+                "companyId" => $this->company,
+                "movementDate" => $this->movementDate
+            );
+
+            if (! $spec1->isSatisfiedBy($subject)) {
+                $notification->addError("Can not post on this date. Period is not created or closed." . $this->movementDate);
+            }
+        }
+
+        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->docCurrency))
+            $notification->addError("Currency is empty or invalid");
+
         // check warehouse currency
         if ($this->warehouse == null) {
             $notification->addError("Source warehouse is not set");
@@ -317,7 +278,6 @@ abstract class GenericTransaction extends AbstractTransaction
                 "warehouseId" => $this->warehouse,
                 "userId" => $this->createdBy
             );
-
             if (! $spec1->isSatisfiedBy($subject))
                 $notification->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $this->company, $this->warehouse, $this->createdBy));
         }
@@ -398,7 +358,13 @@ abstract class GenericTransaction extends AbstractTransaction
         // check item exits
         $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
         $spec->setCompanyId($this->company);
-        if (! $spec->isSatisfiedBy($row->getItem()))
+        
+        $subject = array(
+            "companyId" => $this->company,
+            "itemId" => $row->getItem(),
+        );
+        
+        if (! $spec->isSatisfiedBy($subject))
             $notification->addError("Item not exits in the company #" . $this->company);
 
         // Check quantity.
@@ -478,6 +444,52 @@ abstract class GenericTransaction extends AbstractTransaction
     public function setTransactionRepository($transactionRepository)
     {
         $this->transactionRepository = $transactionRepository;
+    }
+    
+    
+    /**
+     *
+     * @return array
+     */
+    public function getTransactionRows()
+    {
+        return $this->transactionRows;
+    }
+    
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalActiveRows()
+    {
+        return $this->totalActiveRows;
+    }
+    
+    /**
+     *
+     * @param mixed $totalActiveRows
+     */
+    public function setTotalActiveRows($totalActiveRows)
+    {
+        $this->totalActiveRows = $totalActiveRows;
+    }
+    
+    /**
+     *
+     * @return mixed
+     */
+    public function getTranstionRowsOutput()
+    {
+        return $this->transtionRowsOutput;
+    }
+    
+    /**
+     *
+     * @param mixed $transtionRowsOutput
+     */
+    public function setTranstionRowsOutput($transtionRowsOutput)
+    {
+        $this->transtionRowsOutput = $transtionRowsOutput;
     }
     
 }

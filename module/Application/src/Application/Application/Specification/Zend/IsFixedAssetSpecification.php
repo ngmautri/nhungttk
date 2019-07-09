@@ -6,7 +6,7 @@ namespace Application\Application\Specification\Zend;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CostCenterExitsSpecification extends DoctrineSpecification
+class IsFixedAssetSpecification extends DoctrineSpecification
 {
 
     /**
@@ -21,12 +21,12 @@ class CostCenterExitsSpecification extends DoctrineSpecification
             $companyId = $subject["companyId"];
         }
 
-        $costCenter = null;
-        if (isset($subject["costCenter"])) {
-            $costCenter = $subject["costCenter"];
+        $itemId = null;
+        if (isset($subject["itemId"])) {
+            $itemId = $subject["itemId"];
         }
 
-        if ($this->doctrineEM == null || $costCenter == null || $companyId == null) {
+        if ($this->doctrineEM == null || $itemId == null || $companyId == null) {
             return false;
         }
 
@@ -37,9 +37,9 @@ class CostCenterExitsSpecification extends DoctrineSpecification
 
         /**
          *
-         * @var \Application\Entity\FinCostCenter $entity ;
+         * @var \Application\Entity\NmtInventoryItem $entiy ;
          */
-        $entity = $this->doctrineEM->getRepository("\Application\Entity\FinCostCenter")->findOneBy($criteria);
-        return (! $entity == null);
+        $entiy = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryItem")->findOneBy($criteria);
+        return (! $entiy->getIsFixedAsset() == 1);
     }
 }

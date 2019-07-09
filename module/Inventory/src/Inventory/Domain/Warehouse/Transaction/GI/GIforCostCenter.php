@@ -15,18 +15,18 @@ use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
  */
 class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 {
-    
+
     /**
      * \
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specify()
      */
     public function specify()
     {
-        $this->movementType =  TransactionType::GI_FOR_COST_CENTER;
-        $this->movementFlow =  TransactionFlow::WH_TRANSACTION_OUT;
+        $this->movementType = TransactionType::GI_FOR_COST_CENTER;
+        $this->movementFlow = TransactionFlow::WH_TRANSACTION_OUT;
     }
-    
 
     /**
      *
@@ -53,16 +53,14 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
     {
         // no need
     }
-    
+
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificHeaderValidation()
      */
     public function specificHeaderValidation($notification = null)
     {}
-    
-    
 
     /**
      * It require Cost Center.
@@ -94,14 +92,16 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
             $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
             $spec->setCompanyId($this->company);
 
-            if (! $spec->isSatisfiedBy($row->getCostCenter())) {
+            $subject = array(
+                "companyId" => $this->company,
+                "costCenter" => $row->getCostCenter()
+            );
+
+            if (! $spec->isSatisfiedBy($subject)) {
                 $notification->addError("Cost Center not exits #" . $row->getCostCenter());
             }
         }
 
-           return $notification;
+        return $notification;
     }
-    
-  
-   
 }

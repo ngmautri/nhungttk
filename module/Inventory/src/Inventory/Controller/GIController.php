@@ -743,6 +743,10 @@ class GIController extends AbstractActionController
                 'isAllowed' => $isAllowed,
                 'n' => 0
             ));
+            
+            $session->getManager()
+            ->getStorage()
+            ->clear('MLA_FORM');
 
             $viewModel->setTemplate("inventory/gi/crud");
             return $viewModel;

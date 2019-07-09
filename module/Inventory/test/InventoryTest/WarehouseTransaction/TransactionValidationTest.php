@@ -38,7 +38,7 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data = array();
         $data["movementDate"] = "2019-06-14";
         $data["movementType"] = TransactionType::GI_FOR_COST_CENTER;
-        $data["warehouse"] = 6;
+        $data["warehouse"] = 5;
         $data["company"] = 1;
         $data["currency"] = 1;
         $data["docCurrency"] = 1;
@@ -69,9 +69,9 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data["costCenter"] = 4;
         $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
 
-        $trx->addRowFromSnapshot($rowSnapshot);
+//        $trx->addRowFromSnapshot($rowSnapshot);
 
-        $data["item"] = 1013;
+        $data["item"] = 2427;
         $data["docQuantity"] = 4;
         $data["costCenter"] = 5;
         $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
@@ -86,7 +86,7 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
             $cogsService->setDoctrineEM($em);
             $trx->setValuationService($cogsService);
             var_dump($trx->validate());
-            var_dump($trx->post());
+            //var_dump($trx->post());
             
         } catch (\Exception $e) {
             echo $e->getMessage();

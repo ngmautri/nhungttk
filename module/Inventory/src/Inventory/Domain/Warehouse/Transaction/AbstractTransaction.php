@@ -115,10 +115,13 @@ abstract class AbstractTransaction extends AbstractEntity
     protected $tartgetLocation;
 
     protected $company;
-    
+
     protected $uuid;
 
+    abstract public function specify();
+
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -210,8 +213,6 @@ abstract class AbstractTransaction extends AbstractEntity
         // set default value
         $this->specify();
     }
-
-    abstract public function specify();
 
     public function getId()
     {

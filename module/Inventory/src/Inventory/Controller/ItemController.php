@@ -98,7 +98,7 @@ class ItemController extends AbstractActionController
         $item = $res->getItem($entity_id, $token);
 
         if ($item == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         $entity = null;
@@ -132,7 +132,7 @@ class ItemController extends AbstractActionController
             ));
         }
 
-        return $this->redirect()->toRoute('access_denied');
+        return $this->redirect()->toRoute('not_found');
     }
 
     /**

@@ -533,7 +533,7 @@ class PoController extends AbstractActionController
         $request = $this->getRequest();
 
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -554,7 +554,7 @@ class PoController extends AbstractActionController
         $po = $res->getPo($id, $token);
 
         if ($po == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
 
         $entity = null;
@@ -563,7 +563,7 @@ class PoController extends AbstractActionController
         }
 
         if ($entity == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_SHOW,

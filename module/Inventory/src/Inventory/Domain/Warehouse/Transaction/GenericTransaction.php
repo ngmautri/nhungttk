@@ -48,7 +48,6 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     protected $transactionRepository;
 
-
     abstract public function prePost();
 
     abstract public function afterPost();
@@ -138,6 +137,9 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         if ($notification == null)
             $notification = new Notification();
+
+        if (!$this->transactionRepository instanceof TransactionRepositoryInterface)
+            $notification->addError("No repository is set");
 
         $notification = $this->validateHeader($notification);
 
@@ -358,12 +360,12 @@ abstract class GenericTransaction extends AbstractTransaction
         // check item exits
         $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
         $spec->setCompanyId($this->company);
-        
+
         $subject = array(
             "companyId" => $this->company,
-            "itemId" => $row->getItem(),
+            "itemId" => $row->getItem()
         );
-        
+
         if (! $spec->isSatisfiedBy($subject))
             $notification->addError("Item not exits in the company #" . $this->company);
 
@@ -437,16 +439,16 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         return $this->transactionRepository;
     }
-    
+
     /**
+     *
      * @param \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface $transactionRepository
      */
     public function setTransactionRepository($transactionRepository)
     {
         $this->transactionRepository = $transactionRepository;
     }
-    
-    
+
     /**
      *
      * @return array
@@ -455,7 +457,7 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         return $this->transactionRows;
     }
-    
+
     /**
      *
      * @return mixed
@@ -464,7 +466,7 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         return $this->totalActiveRows;
     }
-    
+
     /**
      *
      * @param mixed $totalActiveRows
@@ -473,7 +475,7 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->totalActiveRows = $totalActiveRows;
     }
-    
+
     /**
      *
      * @return mixed

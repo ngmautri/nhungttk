@@ -24,7 +24,17 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
     }
 
     public function afterPost()
-    {}
+    {
+        // returning items
+        
+        // check if warehouse has returning location
+        
+        // create new transaction
+        $newTransaction = clone(this);
+              
+        
+        
+    }
 
     public function prePost()
     {}

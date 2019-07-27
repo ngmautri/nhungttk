@@ -44,6 +44,8 @@ class TransactionType
     const GR_FROM_TRANSFER_LOCATION = 'GR102';
 
     const GR_FROM_PURCHASING_REVERSAL = 'GR100-1';
+    
+    
 
     public static function getSupportedTransaction()
     {

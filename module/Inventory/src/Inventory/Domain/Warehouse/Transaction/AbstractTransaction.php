@@ -210,7 +210,7 @@ abstract class AbstractTransaction extends AbstractEntity
         $this->company = $snapshot->company;
         $this->uuid = $snapshot->uuid;
 
-        // set default value
+        // set default value.
         $this->specify();
     }
 

@@ -7,6 +7,9 @@ use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use Application\Notification;
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
+use Inventory\Domain\Warehouse\Transaction\GR\GRFromTransferLocation;
 
 /**
  * Machine ID is required, exchange part.
@@ -23,6 +26,11 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_OUT;
     }
 
+    
+
+    public function prePost()
+    {}
+    
     public function afterPost()
     {
         // returning items
@@ -30,14 +38,18 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         // check if warehouse has returning location
         
         // create new transaction
-        $newTransaction = clone(this);
-              
         
+        /**
+         *
+         * @var TransactionSnapshot $newSnapshot
+         */
+        $newSnapshot = clone($this->makeSnapshot());
+        $newSnapshot->remarks ="automatically generated.";
+        
+        $newTrx = new GRFromTransferLocation();
+        $newTrx->makeFromSnapshot($newSnapshot);
         
     }
-
-    public function prePost()
-    {}
 
     public function specificValidation($notification = null)
     {}

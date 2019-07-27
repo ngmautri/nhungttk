@@ -64,7 +64,8 @@ class TransactionService extends AbstractService
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
             $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
-
+            $trx->setTransactionRepository($rep);
+            
             $notification = $trx->post();
 
             if ($notification->hasErrors()) {

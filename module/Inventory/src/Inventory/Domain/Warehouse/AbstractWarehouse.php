@@ -1,11 +1,12 @@
 <?php
-namespace Inventory\Domain\Warehouse;
+namespace Inventory\Domain\Item;
 
 use Inventory\Application\DTO\Item\ItemAssembler;
 use Inventory\Domain\Exception\InvalidArgumentException;
-use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
-use Inventory\Domain\Item\ItemType;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
+use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
+use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
 
 /**
  *
@@ -17,251 +18,99 @@ abstract class AbstractWarehouse
 
     protected $id;
 
-    protected $warehouseId;
+    protected $whCode;
 
-    protected $itemSku;
+    protected $whName;
 
-    protected $itemName;
+    protected $whAddress;
 
-    protected $itemNameForeign;
+    protected $whContactPerson;
 
-    protected $itemDescription;
+    protected $whTelephone;
 
-    protected $itemType;
+    protected $whEmail;
 
-    protected $itemCategory;
+    protected $isLocked;
 
-    protected $keywords;
-
-    protected $isActive;
-
-    protected $isStocked;
-
-    protected $isSaleItem;
-
-    protected $isPurchased;
-
-    protected $isFixedAsset;
-
-    protected $isSparepart;
-
-    protected $uom;
-
-    protected $barcode;
-
-    protected $barcode39;
-
-    protected $barcode128;
-
-    protected $status;
-
-    protected $createdOn;
-
-    protected $manufacturer;
-
-    protected $manufacturerCode;
-
-    protected $manufacturerCatalog;
-
-    protected $manufacturerModel;
-
-    protected $manufacturerSerial;
-
-    protected $origin;
-
-    protected $serialNumber;
-
-    protected $lastPurchasePrice;
-
-    protected $lastPurchaseCurrency;
-
-    protected $lastPurchaseDate;
-
-    protected $leadTime;
-
-    protected $validFromDate;
-
-    protected $validToDate;
-
-    protected $location;
-
-    protected $itemInternalLabel;
-
-    protected $assetLabel;
-
-    protected $sparepartLabel;
+    protected $whStatus;
 
     protected $remarks;
 
-    protected $localAvailabiliy;
+    protected $isDefault;
 
-    protected $lastChangeOn;
-
-    protected $token;
-
-    protected $checksum;
-
-    protected $currentState;
-
-    protected $docNumber;
-
-    protected $monitoredBy;
+    protected $createdOn;
 
     protected $sysNumber;
 
-    protected $remarksText;
+    protected $token;
+
+    protected $lastChangeOn;
 
     protected $revisionNo;
 
-    protected $itemSku1;
-
-    protected $itemSku2;
-
-    protected $assetGroup;
-
-    protected $assetClass;
-
-    protected $stockUomConvertFactor;
-
-    protected $purchaseUomConvertFactor;
-
-    protected $salesUomConvertFactor;
-
-    protected $capacity;
-
-    protected $avgUnitPrice;
-
-    protected $standardPrice;
-
     protected $uuid;
-
-    protected $itemTypeId;
 
     protected $createdBy;
 
-    protected $itemGroup;
+    protected $company;
 
-    protected $stockUom;
-
-    protected $cogsAccount;
-
-    protected $purchaseUom;
-
-    protected $salesUom;
-
-    protected $inventoryAccount;
-
-    protected $expenseAccount;
-
-    protected $revenueAccount;
-
-    protected $defaultWarehouse;
+    protected $whCountry;
 
     protected $lastChangeBy;
 
-    protected $standardUom;
+    protected $stockkeeper;
 
-    protected $company;
+    protected $whController;
 
-    protected $lastPrRow;
-
-    protected $lastPoRow;
-
-    protected $lastApInvoiceRow;
-
-    protected $lastTrxRow;
-
-    protected $lastPurchasing;
+    protected $location;
+    
+    /**
+     *
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+     */
+    public function makeSnapshot()
+    {
+        return WarehouseSnapshotAssembler::createSnapshotFrom($this);
+    }
+    
+    public function makeDTO()
+    {
+        return WarehouseDTOAssembler::createDTOFrom($this);
+    }
 
     /**
      *
-     * @param ItemSnapshot $itemSnapshot
+     * @param WarehouseSnapshot $snapshot
      */
-    public function makeFromSnapshot($itemSnapshot)
+    public function makeFromSnapshot($snapshot)
     {
-        if (! $itemSnapshot instanceof ItemSnapshot)
+        if (! $snapshot instanceof WarehouseSnapshot)
             return;
 
-        $this->id = $itemSnapshot->id;
-        $this->warehouseId = $itemSnapshot->warehouseId;
-        $this->itemSku = $itemSnapshot->itemSku;
-        $this->itemName = $itemSnapshot->itemName;
-        $this->itemNameForeign = $itemSnapshot->itemNameForeign;
-        $this->itemDescription = $itemSnapshot->itemDescription;
-        $this->itemType = $itemSnapshot->itemType;
-        $this->itemCategory = $itemSnapshot->itemCategory;
-        $this->keywords = $itemSnapshot->keywords;
-        $this->isActive = $itemSnapshot->isActive;
-        $this->isStocked = $itemSnapshot->isStocked;
-        $this->isSaleItem = $itemSnapshot->isSaleItem;
-        $this->isPurchased = $itemSnapshot->isPurchased;
-        $this->isFixedAsset = $itemSnapshot->isFixedAsset;
-        $this->isSparepart = $itemSnapshot->isSparepart;
-        $this->uom = $itemSnapshot->uom;
-        $this->barcode = $itemSnapshot->barcode;
-        $this->barcode39 = $itemSnapshot->barcode39;
-        $this->barcode128 = $itemSnapshot->barcode128;
-        $this->status = $itemSnapshot->status;
-        $this->createdOn = $itemSnapshot->createdOn;
-        $this->manufacturer = $itemSnapshot->manufacturer;
-        $this->manufacturerCode = $itemSnapshot->manufacturerCode;
-        $this->manufacturerCatalog = $itemSnapshot->manufacturerCatalog;
-        $this->manufacturerModel = $itemSnapshot->manufacturerModel;
-        $this->manufacturerSerial = $itemSnapshot->manufacturerSerial;
-        $this->origin = $itemSnapshot->origin;
-        $this->serialNumber = $itemSnapshot->serialNumber;
-        $this->lastPurchasePrice = $itemSnapshot->lastPurchasePrice;
-        $this->lastPurchaseCurrency = $itemSnapshot->lastPurchaseCurrency;
-        $this->lastPurchaseDate = $itemSnapshot->lastPurchaseDate;
-        $this->leadTime = $itemSnapshot->leadTime;
-        $this->validFromDate = $itemSnapshot->validFromDate;
-        $this->validToDate = $itemSnapshot->validToDate;
-        $this->location = $itemSnapshot->location;
-        $this->itemInternalLabel = $itemSnapshot->itemInternalLabel;
-        $this->assetLabel = $itemSnapshot->assetLabel;
-        $this->sparepartLabel = $itemSnapshot->sparepartLabel;
-        $this->remarks = $itemSnapshot->remarks;
-        $this->localAvailabiliy = $itemSnapshot->localAvailabiliy;
-        $this->lastChangeOn = $itemSnapshot->lastChangeOn;
-        $this->token = $itemSnapshot->token;
-        $this->checksum = $itemSnapshot->checksum;
-        $this->currentState = $itemSnapshot->currentState;
-        $this->docNumber = $itemSnapshot->docNumber;
-        $this->monitoredBy = $itemSnapshot->monitoredBy;
-        $this->sysNumber = $itemSnapshot->sysNumber;
-        $this->remarksText = $itemSnapshot->remarksText;
-        $this->revisionNo = $itemSnapshot->revisionNo;
-        $this->itemSku1 = $itemSnapshot->itemSku1;
-        $this->itemSku2 = $itemSnapshot->itemSku2;
-        $this->assetGroup = $itemSnapshot->assetGroup;
-        $this->assetClass = $itemSnapshot->assetClass;
-        $this->stockUomConvertFactor = $itemSnapshot->stockUomConvertFactor;
-        $this->purchaseUomConvertFactor = $itemSnapshot->purchaseUomConvertFactor;
-        $this->salesUomConvertFactor = $itemSnapshot->salesUomConvertFactor;
-        $this->capacity = $itemSnapshot->capacity;
-        $this->avgUnitPrice = $itemSnapshot->avgUnitPrice;
-        $this->standardPrice = $itemSnapshot->standardPrice;
-        $this->uuid = $itemSnapshot->uuid;
-        $this->createdBy = $itemSnapshot->createdBy;
-        $this->itemGroup = $itemSnapshot->itemGroup;
-        $this->stockUom = $itemSnapshot->stockUom;
-        $this->cogsAccount = $itemSnapshot->cogsAccount;
-        $this->purchaseUom = $itemSnapshot->purchaseUom;
-        $this->salesUom = $itemSnapshot->salesUom;
-        $this->inventoryAccount = $itemSnapshot->inventoryAccount;
-        $this->expenseAccount = $itemSnapshot->expenseAccount;
-        $this->revenueAccount = $itemSnapshot->revenueAccount;
-        $this->defaultWarehouse = $itemSnapshot->defaultWarehouse;
-        $this->lastChangeBy = $itemSnapshot->lastChangeBy;
-        $this->standardUom = $itemSnapshot->standardUom;
-        $this->company = $itemSnapshot->company;
-        $this->lastPrRow = $itemSnapshot->lastPrRow;
-        $this->lastPoRow = $itemSnapshot->lastPoRow;
-        $this->lastApInvoiceRow = $itemSnapshot->lastApInvoiceRow;
-        $this->lastTrxRow = $itemSnapshot->lastTrxRow;
-        $this->lastPurchasing = $itemSnapshot->lastPurchasing;
-        $this->itemTypeId = $itemSnapshot->itemTypeId;
-        
+        $this->id = $snapshot->id;
+        $this->whCode = $snapshot->whCode;
+        $this->whName = $snapshot->whName;
+        $this->whAddress = $snapshot->whAddress;
+        $this->whContactPerson = $snapshot->whContactPerson;
+        $this->whTelephone = $snapshot->whTelephone;
+        $this->whEmail = $snapshot->whEmail;
+        $this->isLocked = $snapshot->isLocked;
+        $this->whStatus = $snapshot->whStatus;
+        $this->remarks = $snapshot->remarks;
+        $this->isDefault = $snapshot->isDefault;
+        $this->createdOn = $snapshot->createdOn;
+        $this->sysNumber = $snapshot->sysNumber;
+        $this->token = $snapshot->token;
+        $this->lastChangeOn = $snapshot->lastChangeOn;
+        $this->revisionNo = $snapshot->revisionNo;
+        $this->createdBy = $snapshot->createdBy;
+        $this->company = $snapshot->company;
+        $this->whCountry = $snapshot->whCountry;
+        $this->lastChangeBy = $snapshot->lastChangeBy;
+        $this->stockkeeper = $snapshot->stockkeeper;
+        $this->whController = $snapshot->whController;
+        $this->location = $snapshot->location;
+        $this->uuid = $snapshot->uuid;
     }
 
     /**
@@ -283,12 +132,11 @@ abstract class AbstractWarehouse
         $itemSnapshot = ItemSnapshotAssembler::createSnapshotFrom($this);
         return $itemSnapshot;
     }
-    
+
     protected function setItemType($itemType)
     {
         $this->itemType = $itemType;
     }
-    
 
     /**
      *
@@ -688,7 +536,9 @@ abstract class AbstractWarehouse
     {
         return $this->lastPurchasing;
     }
+
     /**
+     *
      * @param mixed $warehouseId
      */
     protected function setWarehouseId($warehouseId)
@@ -697,6 +547,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemSku
      */
     protected function setItemSku($itemSku)
@@ -705,6 +556,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemName
      */
     protected function setItemName($itemName)
@@ -713,6 +565,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemNameForeign
      */
     protected function setItemNameForeign($itemNameForeign)
@@ -721,6 +574,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemDescription
      */
     protected function setItemDescription($itemDescription)
@@ -729,6 +583,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemCategory
      */
     protected function setItemCategory($itemCategory)
@@ -737,6 +592,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $keywords
      */
     protected function setKeywords($keywords)
@@ -745,6 +601,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $isActive
      */
     protected function setIsActive($isActive)
@@ -753,6 +610,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $isStocked
      */
     protected function setIsStocked($isStocked)
@@ -761,6 +619,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $isSaleItem
      */
     protected function setIsSaleItem($isSaleItem)
@@ -769,6 +628,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $isPurchased
      */
     protected function setIsPurchased($isPurchased)
@@ -777,6 +637,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $isFixedAsset
      */
     protected function setIsFixedAsset($isFixedAsset)
@@ -785,6 +646,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $isSparepart
      */
     protected function setIsSparepart($isSparepart)
@@ -793,6 +655,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $uom
      */
     protected function setUom($uom)
@@ -801,6 +664,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $barcode
      */
     protected function setBarcode($barcode)
@@ -809,6 +673,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $barcode39
      */
     protected function setBarcode39($barcode39)
@@ -817,6 +682,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $barcode128
      */
     protected function setBarcode128($barcode128)
@@ -825,6 +691,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $status
      */
     protected function setStatus($status)
@@ -833,6 +700,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $createdOn
      */
     protected function setCreatedOn($createdOn)
@@ -841,6 +709,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $manufacturer
      */
     protected function setManufacturer($manufacturer)
@@ -849,6 +718,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $manufacturerCode
      */
     protected function setManufacturerCode($manufacturerCode)
@@ -857,6 +727,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $manufacturerCatalog
      */
     protected function setManufacturerCatalog($manufacturerCatalog)
@@ -865,6 +736,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $manufacturerModel
      */
     protected function setManufacturerModel($manufacturerModel)
@@ -873,6 +745,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $manufacturerSerial
      */
     protected function setManufacturerSerial($manufacturerSerial)
@@ -881,6 +754,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $origin
      */
     protected function setOrigin($origin)
@@ -889,6 +763,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $serialNumber
      */
     protected function setSerialNumber($serialNumber)
@@ -897,6 +772,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastPurchasePrice
      */
     protected function setLastPurchasePrice($lastPurchasePrice)
@@ -905,6 +781,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastPurchaseCurrency
      */
     protected function setLastPurchaseCurrency($lastPurchaseCurrency)
@@ -913,6 +790,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastPurchaseDate
      */
     protected function setLastPurchaseDate($lastPurchaseDate)
@@ -921,6 +799,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $leadTime
      */
     protected function setLeadTime($leadTime)
@@ -929,6 +808,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $validFromDate
      */
     protected function setValidFromDate($validFromDate)
@@ -937,6 +817,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $validToDate
      */
     protected function setValidToDate($validToDate)
@@ -945,6 +826,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $location
      */
     protected function setLocation($location)
@@ -953,6 +835,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemInternalLabel
      */
     protected function setItemInternalLabel($itemInternalLabel)
@@ -961,6 +844,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $assetLabel
      */
     protected function setAssetLabel($assetLabel)
@@ -969,6 +853,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $sparepartLabel
      */
     protected function setSparepartLabel($sparepartLabel)
@@ -977,6 +862,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $remarks
      */
     protected function setRemarks($remarks)
@@ -985,6 +871,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $localAvailabiliy
      */
     protected function setLocalAvailabiliy($localAvailabiliy)
@@ -993,6 +880,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastChangeOn
      */
     protected function setLastChangeOn($lastChangeOn)
@@ -1001,6 +889,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $token
      */
     protected function setToken($token)
@@ -1009,6 +898,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $checksum
      */
     protected function setChecksum($checksum)
@@ -1017,6 +907,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $currentState
      */
     protected function setCurrentState($currentState)
@@ -1025,6 +916,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $docNumber
      */
     protected function setDocNumber($docNumber)
@@ -1033,6 +925,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $monitoredBy
      */
     protected function setMonitoredBy($monitoredBy)
@@ -1041,6 +934,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $sysNumber
      */
     protected function setSysNumber($sysNumber)
@@ -1049,6 +943,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $remarksText
      */
     protected function setRemarksText($remarksText)
@@ -1057,6 +952,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $revisionNo
      */
     protected function setRevisionNo($revisionNo)
@@ -1065,6 +961,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemSku1
      */
     protected function setItemSku1($itemSku1)
@@ -1073,6 +970,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemSku2
      */
     protected function setItemSku2($itemSku2)
@@ -1081,6 +979,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $assetGroup
      */
     protected function setAssetGroup($assetGroup)
@@ -1089,6 +988,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $assetClass
      */
     protected function setAssetClass($assetClass)
@@ -1097,6 +997,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $stockUomConvertFactor
      */
     protected function setStockUomConvertFactor($stockUomConvertFactor)
@@ -1105,6 +1006,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $purchaseUomConvertFactor
      */
     protected function setPurchaseUomConvertFactor($purchaseUomConvertFactor)
@@ -1113,6 +1015,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $salesUomConvertFactor
      */
     protected function setSalesUomConvertFactor($salesUomConvertFactor)
@@ -1121,6 +1024,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $capacity
      */
     protected function setCapacity($capacity)
@@ -1129,6 +1033,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $avgUnitPrice
      */
     protected function setAvgUnitPrice($avgUnitPrice)
@@ -1137,6 +1042,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $standardPrice
      */
     protected function setStandardPrice($standardPrice)
@@ -1145,6 +1051,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $uuid
      */
     protected function setUuid($uuid)
@@ -1153,6 +1060,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemTypeId
      */
     protected function setItemTypeId($itemTypeId)
@@ -1161,6 +1069,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $createdBy
      */
     protected function setCreatedBy($createdBy)
@@ -1169,6 +1078,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $itemGroup
      */
     protected function setItemGroup($itemGroup)
@@ -1177,6 +1087,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $stockUom
      */
     protected function setStockUom($stockUom)
@@ -1185,6 +1096,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $cogsAccount
      */
     protected function setCogsAccount($cogsAccount)
@@ -1193,6 +1105,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $purchaseUom
      */
     protected function setPurchaseUom($purchaseUom)
@@ -1201,6 +1114,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $salesUom
      */
     protected function setSalesUom($salesUom)
@@ -1209,6 +1123,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $inventoryAccount
      */
     protected function setInventoryAccount($inventoryAccount)
@@ -1217,6 +1132,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $expenseAccount
      */
     protected function setExpenseAccount($expenseAccount)
@@ -1225,6 +1141,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $revenueAccount
      */
     protected function setRevenueAccount($revenueAccount)
@@ -1233,6 +1150,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $defaultWarehouse
      */
     protected function setDefaultWarehouse($defaultWarehouse)
@@ -1241,6 +1159,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastChangeBy
      */
     protected function setLastChangeBy($lastChangeBy)
@@ -1249,6 +1168,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $standardUom
      */
     protected function setStandardUom($standardUom)
@@ -1257,6 +1177,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $company
      */
     protected function setCompany($company)
@@ -1265,6 +1186,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastPrRow
      */
     protected function setLastPrRow($lastPrRow)
@@ -1273,6 +1195,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastPoRow
      */
     protected function setLastPoRow($lastPoRow)
@@ -1281,6 +1204,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastApInvoiceRow
      */
     protected function setLastApInvoiceRow($lastApInvoiceRow)
@@ -1289,6 +1213,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastTrxRow
      */
     protected function setLastTrxRow($lastTrxRow)
@@ -1297,6 +1222,7 @@ abstract class AbstractWarehouse
     }
 
     /**
+     *
      * @param mixed $lastPurchasing
      */
     protected function setLastPurchasing($lastPurchasing)

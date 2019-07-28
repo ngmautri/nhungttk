@@ -1,12 +1,9 @@
 <?php
-namespace Inventory\Domain\Item;
+namespace Inventory\Domain\Warehouse;
 
-use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Inventory\Domain\Warehouse\WarehouseSnapshot;
-use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
-use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
 use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
 
 /**
  *
@@ -48,8 +45,6 @@ abstract class AbstractWarehouse
 
     protected $revisionNo;
 
-    protected $uuid;
-
     protected $createdBy;
 
     protected $company;
@@ -63,7 +58,9 @@ abstract class AbstractWarehouse
     protected $whController;
 
     protected $location;
-    
+
+    protected $uuid;
+
     /**
      *
      * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
@@ -72,7 +69,7 @@ abstract class AbstractWarehouse
     {
         return WarehouseSnapshotAssembler::createSnapshotFrom($this);
     }
-    
+
     public function makeDTO()
     {
         return WarehouseDTOAssembler::createDTOFrom($this);
@@ -115,1119 +112,237 @@ abstract class AbstractWarehouse
 
     /**
      *
-     * @return ItemDTO;
+     * @return WarehouseDTO;
      */
     public function createDTO()
     {
-        $itemDTO = ItemAssembler::createItemDTO($this);
-        return $itemDTO;
+        $dto = WarehouseDTOAssembler::createDTOFrom($this);
+        return $dto;
     }
 
     /**
      *
-     * @return ItemSnapshot;
+     * @return WarehouseSnapshot;
      */
     public function createSnapshot()
     {
-        $itemSnapshot = ItemSnapshotAssembler::createSnapshotFrom($this);
-        return $itemSnapshot;
-    }
-
-    protected function setItemType($itemType)
-    {
-        $this->itemType = $itemType;
+        $snapshot = WarehouseSnapshotAssembler::createSnapshotFrom($this);
+        return $snapshot;
     }
 
     /**
      *
-     * @return string
+     * @return mixed
      */
-    public function getItemType()
-    {
-        return ItemType::UNKNOWN_ITEM_TYPE;
-    }
-
     public function getId()
     {
         return $this->id;
     }
 
-    public function getWarehouseId()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhCode()
     {
-        return $this->warehouseId;
+        return $this->whCode;
     }
 
-    public function getItemSku()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhName()
     {
-        return $this->itemSku;
+        return $this->whName;
     }
 
-    public function getItemName()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhAddress()
     {
-        return $this->itemName;
+        return $this->whAddress;
     }
 
-    public function getItemNameForeign()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhContactPerson()
     {
-        return $this->itemNameForeign;
+        return $this->whContactPerson;
     }
 
-    public function getItemDescription()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhTelephone()
     {
-        return $this->itemDescription;
+        return $this->whTelephone;
     }
 
-    public function getItemCategory()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhEmail()
     {
-        return $this->itemCategory;
+        return $this->whEmail;
     }
 
-    public function getKeywords()
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsLocked()
     {
-        return $this->keywords;
+        return $this->isLocked;
     }
 
-    public function getIsActive()
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhStatus()
     {
-        return $this->isActive;
+        return $this->whStatus;
     }
 
-    public function getIsStocked()
-    {
-        return $this->isStocked;
-    }
-
-    public function getIsSaleItem()
-    {
-        return $this->isSaleItem;
-    }
-
-    public function getIsPurchased()
-    {
-        return $this->isPurchased;
-    }
-
-    public function getIsFixedAsset()
-    {
-        return $this->isFixedAsset;
-    }
-
-    public function getIsSparepart()
-    {
-        return $this->isSparepart;
-    }
-
-    public function getUom()
-    {
-        return $this->uom;
-    }
-
-    public function getBarcode()
-    {
-        return $this->barcode;
-    }
-
-    public function getBarcode39()
-    {
-        return $this->barcode39;
-    }
-
-    public function getBarcode128()
-    {
-        return $this->barcode128;
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function getCreatedOn()
-    {
-        return $this->createdOn;
-    }
-
-    public function getManufacturer()
-    {
-        return $this->manufacturer;
-    }
-
-    public function getManufacturerCode()
-    {
-        return $this->manufacturerCode;
-    }
-
-    public function getManufacturerCatalog()
-    {
-        return $this->manufacturerCatalog;
-    }
-
-    public function getManufacturerModel()
-    {
-        return $this->manufacturerModel;
-    }
-
-    public function getManufacturerSerial()
-    {
-        return $this->manufacturerSerial;
-    }
-
-    public function getOrigin()
-    {
-        return $this->origin;
-    }
-
-    public function getSerialNumber()
-    {
-        return $this->serialNumber;
-    }
-
-    public function getLastPurchasePrice()
-    {
-        return $this->lastPurchasePrice;
-    }
-
-    public function getLastPurchaseCurrency()
-    {
-        return $this->lastPurchaseCurrency;
-    }
-
-    public function getLastPurchaseDate()
-    {
-        return $this->lastPurchaseDate;
-    }
-
-    public function getLeadTime()
-    {
-        return $this->leadTime;
-    }
-
-    public function getValidFromDate()
-    {
-        return $this->validFromDate;
-    }
-
-    public function getValidToDate()
-    {
-        return $this->validToDate;
-    }
-
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    public function getItemInternalLabel()
-    {
-        return $this->itemInternalLabel;
-    }
-
-    public function getAssetLabel()
-    {
-        return $this->assetLabel;
-    }
-
-    public function getSparepartLabel()
-    {
-        return $this->sparepartLabel;
-    }
-
+    /**
+     *
+     * @return mixed
+     */
     public function getRemarks()
     {
         return $this->remarks;
     }
 
-    public function getLocalAvailabiliy()
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsDefault()
     {
-        return $this->localAvailabiliy;
+        return $this->isDefault;
     }
 
-    public function getLastChangeOn()
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedOn()
     {
-        return $this->lastChangeOn;
+        return $this->createdOn;
     }
 
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    public function getChecksum()
-    {
-        return $this->checksum;
-    }
-
-    public function getCurrentState()
-    {
-        return $this->currentState;
-    }
-
-    public function getDocNumber()
-    {
-        return $this->docNumber;
-    }
-
-    public function getMonitoredBy()
-    {
-        return $this->monitoredBy;
-    }
-
+    /**
+     *
+     * @return mixed
+     */
     public function getSysNumber()
     {
         return $this->sysNumber;
     }
 
-    public function getRemarksText()
+    /**
+     *
+     * @return mixed
+     */
+    public function getToken()
     {
-        return $this->remarksText;
+        return $this->token;
     }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getRevisionNo()
     {
         return $this->revisionNo;
     }
 
-    public function getItemSku1()
-    {
-        return $this->itemSku1;
-    }
-
-    public function getItemSku2()
-    {
-        return $this->itemSku2;
-    }
-
-    public function getAssetGroup()
-    {
-        return $this->assetGroup;
-    }
-
-    public function getAssetClass()
-    {
-        return $this->assetClass;
-    }
-
-    public function getStockUomConvertFactor()
-    {
-        return $this->stockUomConvertFactor;
-    }
-
-    public function getPurchaseUomConvertFactor()
-    {
-        return $this->purchaseUomConvertFactor;
-    }
-
-    public function getSalesUomConvertFactor()
-    {
-        return $this->salesUomConvertFactor;
-    }
-
-    public function getCapacity()
-    {
-        return $this->capacity;
-    }
-
-    public function getAvgUnitPrice()
-    {
-        return $this->avgUnitPrice;
-    }
-
-    public function getStandardPrice()
-    {
-        return $this->standardPrice;
-    }
-
+    /**
+     *
+     * @return mixed
+     */
     public function getUuid()
     {
         return $this->uuid;
     }
 
-    public function getItemTypeId()
-    {
-        return $this->itemTypeId;
-    }
-
+    /**
+     *
+     * @return mixed
+     */
     public function getCreatedBy()
     {
         return $this->createdBy;
     }
 
-    public function getItemGroup()
-    {
-        return $this->itemGroup;
-    }
-
-    public function getStockUom()
-    {
-        return $this->stockUom;
-    }
-
-    public function getCogsAccount()
-    {
-        return $this->cogsAccount;
-    }
-
-    public function getPurchaseUom()
-    {
-        return $this->purchaseUom;
-    }
-
-    public function getSalesUom()
-    {
-        return $this->salesUom;
-    }
-
-    public function getInventoryAccount()
-    {
-        return $this->inventoryAccount;
-    }
-
-    public function getExpenseAccount()
-    {
-        return $this->expenseAccount;
-    }
-
-    public function getRevenueAccount()
-    {
-        return $this->revenueAccount;
-    }
-
-    public function getDefaultWarehouse()
-    {
-        return $this->defaultWarehouse;
-    }
-
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
-    }
-
-    public function getStandardUom()
-    {
-        return $this->standardUom;
-    }
-
+    /**
+     *
+     * @return mixed
+     */
     public function getCompany()
     {
         return $this->company;
     }
 
-    public function getLastPrRow()
-    {
-        return $this->lastPrRow;
-    }
-
-    public function getLastPoRow()
-    {
-        return $this->lastPoRow;
-    }
-
-    public function getLastApInvoiceRow()
-    {
-        return $this->lastApInvoiceRow;
-    }
-
-    public function getLastTrxRow()
-    {
-        return $this->lastTrxRow;
-    }
-
-    public function getLastPurchasing()
-    {
-        return $this->lastPurchasing;
-    }
-
-    /**
-     *
-     * @param mixed $warehouseId
-     */
-    protected function setWarehouseId($warehouseId)
-    {
-        $this->warehouseId = $warehouseId;
-    }
-
-    /**
-     *
-     * @param mixed $itemSku
-     */
-    protected function setItemSku($itemSku)
-    {
-        $this->itemSku = $itemSku;
-    }
-
-    /**
-     *
-     * @param mixed $itemName
-     */
-    protected function setItemName($itemName)
-    {
-        $this->itemName = $itemName;
-    }
-
-    /**
-     *
-     * @param mixed $itemNameForeign
-     */
-    protected function setItemNameForeign($itemNameForeign)
-    {
-        $this->itemNameForeign = $itemNameForeign;
-    }
-
-    /**
-     *
-     * @param mixed $itemDescription
-     */
-    protected function setItemDescription($itemDescription)
-    {
-        $this->itemDescription = $itemDescription;
-    }
-
-    /**
-     *
-     * @param mixed $itemCategory
-     */
-    protected function setItemCategory($itemCategory)
-    {
-        $this->itemCategory = $itemCategory;
-    }
-
-    /**
-     *
-     * @param mixed $keywords
-     */
-    protected function setKeywords($keywords)
-    {
-        $this->keywords = $keywords;
-    }
-
-    /**
-     *
-     * @param mixed $isActive
-     */
-    protected function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $isStocked
-     */
-    protected function setIsStocked($isStocked)
-    {
-        $this->isStocked = $isStocked;
-    }
-
-    /**
-     *
-     * @param mixed $isSaleItem
-     */
-    protected function setIsSaleItem($isSaleItem)
-    {
-        $this->isSaleItem = $isSaleItem;
-    }
-
-    /**
-     *
-     * @param mixed $isPurchased
-     */
-    protected function setIsPurchased($isPurchased)
-    {
-        $this->isPurchased = $isPurchased;
-    }
-
-    /**
-     *
-     * @param mixed $isFixedAsset
-     */
-    protected function setIsFixedAsset($isFixedAsset)
-    {
-        $this->isFixedAsset = $isFixedAsset;
-    }
-
-    /**
-     *
-     * @param mixed $isSparepart
-     */
-    protected function setIsSparepart($isSparepart)
-    {
-        $this->isSparepart = $isSparepart;
-    }
-
-    /**
-     *
-     * @param mixed $uom
-     */
-    protected function setUom($uom)
-    {
-        $this->uom = $uom;
-    }
-
-    /**
-     *
-     * @param mixed $barcode
-     */
-    protected function setBarcode($barcode)
-    {
-        $this->barcode = $barcode;
-    }
-
-    /**
-     *
-     * @param mixed $barcode39
-     */
-    protected function setBarcode39($barcode39)
-    {
-        $this->barcode39 = $barcode39;
-    }
-
-    /**
-     *
-     * @param mixed $barcode128
-     */
-    protected function setBarcode128($barcode128)
-    {
-        $this->barcode128 = $barcode128;
-    }
-
-    /**
-     *
-     * @param mixed $status
-     */
-    protected function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     *
-     * @param mixed $createdOn
-     */
-    protected function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
-    }
-
-    /**
-     *
-     * @param mixed $manufacturer
-     */
-    protected function setManufacturer($manufacturer)
-    {
-        $this->manufacturer = $manufacturer;
-    }
-
-    /**
-     *
-     * @param mixed $manufacturerCode
-     */
-    protected function setManufacturerCode($manufacturerCode)
-    {
-        $this->manufacturerCode = $manufacturerCode;
-    }
-
-    /**
-     *
-     * @param mixed $manufacturerCatalog
-     */
-    protected function setManufacturerCatalog($manufacturerCatalog)
-    {
-        $this->manufacturerCatalog = $manufacturerCatalog;
-    }
-
-    /**
-     *
-     * @param mixed $manufacturerModel
-     */
-    protected function setManufacturerModel($manufacturerModel)
-    {
-        $this->manufacturerModel = $manufacturerModel;
-    }
-
-    /**
-     *
-     * @param mixed $manufacturerSerial
-     */
-    protected function setManufacturerSerial($manufacturerSerial)
-    {
-        $this->manufacturerSerial = $manufacturerSerial;
-    }
-
-    /**
-     *
-     * @param mixed $origin
-     */
-    protected function setOrigin($origin)
-    {
-        $this->origin = $origin;
-    }
-
-    /**
-     *
-     * @param mixed $serialNumber
-     */
-    protected function setSerialNumber($serialNumber)
-    {
-        $this->serialNumber = $serialNumber;
-    }
-
-    /**
-     *
-     * @param mixed $lastPurchasePrice
-     */
-    protected function setLastPurchasePrice($lastPurchasePrice)
-    {
-        $this->lastPurchasePrice = $lastPurchasePrice;
-    }
-
-    /**
-     *
-     * @param mixed $lastPurchaseCurrency
-     */
-    protected function setLastPurchaseCurrency($lastPurchaseCurrency)
-    {
-        $this->lastPurchaseCurrency = $lastPurchaseCurrency;
-    }
-
-    /**
-     *
-     * @param mixed $lastPurchaseDate
-     */
-    protected function setLastPurchaseDate($lastPurchaseDate)
-    {
-        $this->lastPurchaseDate = $lastPurchaseDate;
-    }
-
-    /**
-     *
-     * @param mixed $leadTime
-     */
-    protected function setLeadTime($leadTime)
-    {
-        $this->leadTime = $leadTime;
-    }
-
-    /**
-     *
-     * @param mixed $validFromDate
-     */
-    protected function setValidFromDate($validFromDate)
-    {
-        $this->validFromDate = $validFromDate;
-    }
-
-    /**
-     *
-     * @param mixed $validToDate
-     */
-    protected function setValidToDate($validToDate)
-    {
-        $this->validToDate = $validToDate;
-    }
-
-    /**
-     *
-     * @param mixed $location
-     */
-    protected function setLocation($location)
-    {
-        $this->location = $location;
-    }
-
-    /**
-     *
-     * @param mixed $itemInternalLabel
-     */
-    protected function setItemInternalLabel($itemInternalLabel)
-    {
-        $this->itemInternalLabel = $itemInternalLabel;
-    }
-
-    /**
-     *
-     * @param mixed $assetLabel
-     */
-    protected function setAssetLabel($assetLabel)
-    {
-        $this->assetLabel = $assetLabel;
-    }
-
-    /**
-     *
-     * @param mixed $sparepartLabel
-     */
-    protected function setSparepartLabel($sparepartLabel)
-    {
-        $this->sparepartLabel = $sparepartLabel;
-    }
-
-    /**
-     *
-     * @param mixed $remarks
-     */
-    protected function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     *
-     * @param mixed $localAvailabiliy
-     */
-    protected function setLocalAvailabiliy($localAvailabiliy)
-    {
-        $this->localAvailabiliy = $localAvailabiliy;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeOn
-     */
-    protected function setLastChangeOn($lastChangeOn)
-    {
-        $this->lastChangeOn = $lastChangeOn;
-    }
-
-    /**
-     *
-     * @param mixed $token
-     */
-    protected function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
-     *
-     * @param mixed $checksum
-     */
-    protected function setChecksum($checksum)
-    {
-        $this->checksum = $checksum;
-    }
-
-    /**
-     *
-     * @param mixed $currentState
-     */
-    protected function setCurrentState($currentState)
-    {
-        $this->currentState = $currentState;
-    }
-
-    /**
-     *
-     * @param mixed $docNumber
-     */
-    protected function setDocNumber($docNumber)
-    {
-        $this->docNumber = $docNumber;
-    }
-
-    /**
-     *
-     * @param mixed $monitoredBy
-     */
-    protected function setMonitoredBy($monitoredBy)
-    {
-        $this->monitoredBy = $monitoredBy;
-    }
-
-    /**
-     *
-     * @param mixed $sysNumber
-     */
-    protected function setSysNumber($sysNumber)
-    {
-        $this->sysNumber = $sysNumber;
-    }
-
-    /**
-     *
-     * @param mixed $remarksText
-     */
-    protected function setRemarksText($remarksText)
-    {
-        $this->remarksText = $remarksText;
-    }
-
-    /**
-     *
-     * @param mixed $revisionNo
-     */
-    protected function setRevisionNo($revisionNo)
-    {
-        $this->revisionNo = $revisionNo;
-    }
-
-    /**
-     *
-     * @param mixed $itemSku1
-     */
-    protected function setItemSku1($itemSku1)
-    {
-        $this->itemSku1 = $itemSku1;
-    }
-
-    /**
-     *
-     * @param mixed $itemSku2
-     */
-    protected function setItemSku2($itemSku2)
-    {
-        $this->itemSku2 = $itemSku2;
-    }
-
-    /**
-     *
-     * @param mixed $assetGroup
-     */
-    protected function setAssetGroup($assetGroup)
-    {
-        $this->assetGroup = $assetGroup;
-    }
-
-    /**
-     *
-     * @param mixed $assetClass
-     */
-    protected function setAssetClass($assetClass)
-    {
-        $this->assetClass = $assetClass;
-    }
-
-    /**
-     *
-     * @param mixed $stockUomConvertFactor
-     */
-    protected function setStockUomConvertFactor($stockUomConvertFactor)
-    {
-        $this->stockUomConvertFactor = $stockUomConvertFactor;
-    }
-
-    /**
-     *
-     * @param mixed $purchaseUomConvertFactor
-     */
-    protected function setPurchaseUomConvertFactor($purchaseUomConvertFactor)
-    {
-        $this->purchaseUomConvertFactor = $purchaseUomConvertFactor;
-    }
-
-    /**
-     *
-     * @param mixed $salesUomConvertFactor
-     */
-    protected function setSalesUomConvertFactor($salesUomConvertFactor)
-    {
-        $this->salesUomConvertFactor = $salesUomConvertFactor;
-    }
-
-    /**
-     *
-     * @param mixed $capacity
-     */
-    protected function setCapacity($capacity)
-    {
-        $this->capacity = $capacity;
-    }
-
-    /**
-     *
-     * @param mixed $avgUnitPrice
-     */
-    protected function setAvgUnitPrice($avgUnitPrice)
-    {
-        $this->avgUnitPrice = $avgUnitPrice;
-    }
-
-    /**
-     *
-     * @param mixed $standardPrice
-     */
-    protected function setStandardPrice($standardPrice)
-    {
-        $this->standardPrice = $standardPrice;
-    }
-
-    /**
-     *
-     * @param mixed $uuid
-     */
-    protected function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    /**
-     *
-     * @param mixed $itemTypeId
-     */
-    protected function setItemTypeId($itemTypeId)
-    {
-        $this->itemTypeId = $itemTypeId;
-    }
-
-    /**
-     *
-     * @param mixed $createdBy
-     */
-    protected function setCreatedBy($createdBy)
-    {
-        $this->createdBy = $createdBy;
-    }
-
-    /**
-     *
-     * @param mixed $itemGroup
-     */
-    protected function setItemGroup($itemGroup)
-    {
-        $this->itemGroup = $itemGroup;
-    }
-
-    /**
-     *
-     * @param mixed $stockUom
-     */
-    protected function setStockUom($stockUom)
-    {
-        $this->stockUom = $stockUom;
-    }
-
-    /**
-     *
-     * @param mixed $cogsAccount
-     */
-    protected function setCogsAccount($cogsAccount)
-    {
-        $this->cogsAccount = $cogsAccount;
-    }
-
-    /**
-     *
-     * @param mixed $purchaseUom
-     */
-    protected function setPurchaseUom($purchaseUom)
-    {
-        $this->purchaseUom = $purchaseUom;
-    }
-
-    /**
-     *
-     * @param mixed $salesUom
-     */
-    protected function setSalesUom($salesUom)
-    {
-        $this->salesUom = $salesUom;
-    }
-
-    /**
-     *
-     * @param mixed $inventoryAccount
-     */
-    protected function setInventoryAccount($inventoryAccount)
-    {
-        $this->inventoryAccount = $inventoryAccount;
-    }
-
-    /**
-     *
-     * @param mixed $expenseAccount
-     */
-    protected function setExpenseAccount($expenseAccount)
-    {
-        $this->expenseAccount = $expenseAccount;
-    }
-
-    /**
-     *
-     * @param mixed $revenueAccount
-     */
-    protected function setRevenueAccount($revenueAccount)
-    {
-        $this->revenueAccount = $revenueAccount;
-    }
-
-    /**
-     *
-     * @param mixed $defaultWarehouse
-     */
-    protected function setDefaultWarehouse($defaultWarehouse)
-    {
-        $this->defaultWarehouse = $defaultWarehouse;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeBy
-     */
-    protected function setLastChangeBy($lastChangeBy)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-    }
-
-    /**
-     *
-     * @param mixed $standardUom
-     */
-    protected function setStandardUom($standardUom)
-    {
-        $this->standardUom = $standardUom;
-    }
-
     /**
      *
-     * @param mixed $company
+     * @return mixed
      */
-    protected function setCompany($company)
+    public function getWhCountry()
     {
-        $this->company = $company;
+        return $this->whCountry;
     }
 
     /**
      *
-     * @param mixed $lastPrRow
+     * @return mixed
      */
-    protected function setLastPrRow($lastPrRow)
+    public function getLastChangeBy()
     {
-        $this->lastPrRow = $lastPrRow;
+        return $this->lastChangeBy;
     }
 
     /**
      *
-     * @param mixed $lastPoRow
+     * @return mixed
      */
-    protected function setLastPoRow($lastPoRow)
+    public function getStockkeeper()
     {
-        $this->lastPoRow = $lastPoRow;
+        return $this->stockkeeper;
     }
 
     /**
      *
-     * @param mixed $lastApInvoiceRow
+     * @return mixed
      */
-    protected function setLastApInvoiceRow($lastApInvoiceRow)
+    public function getWhController()
     {
-        $this->lastApInvoiceRow = $lastApInvoiceRow;
+        return $this->whController;
     }
 
     /**
      *
-     * @param mixed $lastTrxRow
+     * @return mixed
      */
-    protected function setLastTrxRow($lastTrxRow)
+    public function getLocation()
     {
-        $this->lastTrxRow = $lastTrxRow;
+        return $this->location;
     }
-
-    /**
-     *
-     * @param mixed $lastPurchasing
-     */
-    protected function setLastPurchasing($lastPurchasing)
-    {
-        $this->lastPurchasing = $lastPurchasing;
-    }
-
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Warehouse;
+namespace Inventory\Domain\Item;
 
 use Inventory\Application\DTO\Item\ItemAssembler;
 use Inventory\Domain\Exception\InvalidArgumentException;
@@ -12,7 +12,7 @@ use Inventory\Domain\Item\ItemType;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractWarehouse
+abstract class AbstractItem
 {
 
     protected $id;

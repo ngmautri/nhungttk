@@ -214,6 +214,17 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new IsInventoryItemSpecification($this->doctrineEM);
     }
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getWarehouseCodeExitsSpecification()
+     */
+    public function getWarehouseCodeExitsSpecification()
+    {
+        return new WarehouseCodeExitsSpecification($this->doctrineEM);
+        
+    }
+
 
     
     

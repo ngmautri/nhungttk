@@ -6,7 +6,7 @@ namespace Application\Application\Specification\Zend;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UserExitsSpecification extends DoctrineSpecification
+class WarehouseCodeExitsSpecification extends DoctrineSpecification
 {
 
     /**
@@ -16,31 +16,30 @@ class UserExitsSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-        
         $companyId = null;
         if (isset($subject["companyId"])) {
             $companyId = $subject["companyId"];
         }
-        
-        $userId = null;
-        if (isset($subject["userId"])) {
-            $userId = $subject["userId"];
+
+        $whCode = null;
+        if (isset($subject["whCode"])) {
+            $whCode = $subject["whCode"];
         }
-        
-        if ($this->doctrineEM == null || $userId == null || $companyId == null) {
+
+        if ($this->doctrineEM == null || $whCode == null || $companyId == null) {
             return false;
         }
-     
+
         $criteria = array(
-            "id" => $userId,
+            "whCode" => $whCode,
             "company" => $companyId
         );
 
         /**
          *
-         * @var \Application\Entity\MlaUsers $entiy ;
+         * @var \Application\Entity\NmtInventoryWarehouse $wh ;
          */
-        $entiy = $this->doctrineEM->getRepository("\Application\Entity\MlaUsers")->findOneBy($criteria);
-        return (! $entiy == null);
+        $wh = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryWarehouse")->findOneBy($criteria);
+        return (! $wh == null);
     }
 }

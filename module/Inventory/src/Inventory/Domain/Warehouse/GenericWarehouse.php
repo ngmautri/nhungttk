@@ -1,17 +1,16 @@
 <?php
-namespace Inventory\Domain\Item;
+namespace Inventory\Domain\Warehouse;
 
 use Application\Notification;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericWarehouse extends AbstractWarehouse
+class GenericWarehouse extends AbstractWarehouse
 {
 
     /**
@@ -19,19 +18,6 @@ abstract class GenericWarehouse extends AbstractWarehouse
      * @var AbstractSpecificationFactory
      */
     protected $sharedSpecificationFactory;
-
-    public function __construct()
-    {
-        $this->specifyItem();
-    }
-
-    /**
-     *
-     * @param Notification $notification
-     */
-    abstract public function specificValidation(Notification $notification = null);
-
-    abstract public function specifyItem();
 
     /**
      *
@@ -52,15 +38,7 @@ abstract class GenericWarehouse extends AbstractWarehouse
         if ($notification == null)
             $notification = new Notification();
 
-        // overview some property
-        $this->specifyItem();
-
         $notification = $this->generalValidation($notification);
-
-        $specificValidationResult = $this->specificValidation($notification);
-
-        if ($specificValidationResult !== null)
-            $notification = $specificValidationResult;
 
         return $notification;
     }
@@ -82,8 +60,7 @@ abstract class GenericWarehouse extends AbstractWarehouse
 
         /**
          *
-         * @var AbstractSpecification $spec
-         * @var AbstractSpecificationForCompany $spec1
+         * @var AbstractSpecification $spec ;
          */
 
         // company
@@ -92,21 +69,58 @@ abstract class GenericWarehouse extends AbstractWarehouse
             $notification->addError("Company not exits. #" . $this->company);
         }
 
-        $spec1 = $this->sharedSpecificationFactory->getUserExitsSpecification();
-        $spec1->setCompanyId($this->company);
-        if (! $spec1->isSatisfiedBy($this->createdBy)) {
+        $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
+
+        if ($spec->isSatisfiedBy($this->getWhName())) {
+            $notification->addError("WH name is null or empty.");
+        } else {
+
+            if (preg_match('/[#$%@=+^]/', $this->getWhName()) == 1) {
+                $err = "Warehouse Name contains invalid character (e.g. #,%,&,*)";
+                $notification->addError($err);
+            }
+        }
+
+        if ($spec->isSatisfiedBy($this->getWhCode())) {
+            $notification->addError("WH code is null or empty.");
+        } else {
+
+            if (preg_match('/[#$%@=+^]/', $this->getWhCode()) == 1) {
+                $err = "Warehouse Code contains invalid character (e.g. #,%,&,*)";
+                $notification->addError($err);
+            }
+
+            $spec = $this->sharedSpecificationFactory->getWarehouseCodeExitsSpecification();
+            $subject = array(
+                "companyId" => $this->company,
+                "whCode" => $this->whCode
+            );
+
+            if ($spec->isSatisfiedBy($subject)) {
+                $notification->addError("Warehouse Code exits! #" . $this->whCode);
+            }
+        }
+
+        $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+        $subject = array(
+            "companyId" => $this->company,
+            "userId" => $this->createdBy
+        );
+
+        if (! $spec->isSatisfiedBy($subject)) {
             $notification->addError("User is not identified for this transaction. #" . $this->createdBy);
         }
 
-        
-        $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();        
-        if ($spec->isSatisfiedBy($this->getItemName())) {
-            $notification->addError("Item name is null or empty. It is required for any item.");
-        } else {
+        // Controller
+        if ($this->whController > 0) {
 
-            if (preg_match('/[#$%@=+^]/', $this->getItemName()) == 1) {
-                $err = "Item name contains invalid character (e.g. #,%,&,*)";
-                $notification->addError($err);
+            $subject = array(
+                "companyId" => $this->company,
+                "userId" => $this->whController
+            );
+
+            if (! $spec->isSatisfiedBy($subject)) {
+                $notification->addError("Controller can not be identified. #" . $this->whController);
             }
         }
 

@@ -1,8 +1,6 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
-
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -18,15 +16,25 @@ class WarehouseExitsSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-        if ($this->doctrineEM == null || $subject == null || $subject == "" || $this->getCompanyId() == null) {
+        $companyId = null;
+        if (isset($subject["companyId"])) {
+            $companyId = $subject["companyId"];
+        }
+
+        $warehouseId = null;
+        if (isset($subject["warehouseId"])) {
+            $warehouseId = $subject["warehouseId"];
+        }
+
+        if ($this->doctrineEM == null || $warehouseId == null || $companyId == null) {
             return false;
         }
-        
+
         $criteria = array(
-            "id" => $subject,
-            "company" => $this->getCompanyId()
+            "id" => $warehouseId,
+            "company" => $companyId
         );
-        
+
         /**
          *
          * @var \Application\Entity\NmtInventoryWarehouse $wh ;

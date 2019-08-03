@@ -83,7 +83,6 @@ abstract class GenericItem extends AbstractItem
         /**
          *
          * @var AbstractSpecification $spec
-         * @var AbstractSpecificationForCompany $spec1
          */
 
         // company
@@ -92,14 +91,17 @@ abstract class GenericItem extends AbstractItem
             $notification->addError("Company not exits. #" . $this->company);
         }
 
-        $spec1 = $this->sharedSpecificationFactory->getUserExitsSpecification();
-        $spec1->setCompanyId($this->company);
-        if (! $spec1->isSatisfiedBy($this->createdBy)) {
+        $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
+        $subject = array(
+            "companyId" => $this->company,
+            "userId" => $this->createdBy
+        );
+
+        if (! $spec->isSatisfiedBy($subject)) {
             $notification->addError("User is not identified for this transaction. #" . $this->createdBy);
         }
 
-        
-        $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();        
+        $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
         if ($spec->isSatisfiedBy($this->getItemName())) {
             $notification->addError("Item name is null or empty. It is required for any item.");
         } else {

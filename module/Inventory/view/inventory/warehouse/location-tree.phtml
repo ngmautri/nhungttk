@@ -20,10 +20,38 @@
 </ul>
 </div>
 
+
+<div id="html1" class="demo">
+	<ul>
+	
+	<li data-jstree='{ "opened" : true}'>branch-6
+<ul>
+<li data-jstree='{ "opened" : true}'>branch-3
+<ul>
+<li data-jstree='{}'>leaf</li>
+<li data-jstree='{}'>leaf</li>
+</ul>
+</li>
+<li data-jstree='{ "opened" : true}'>branch-2
+<ul>
+<li data-jstree='{}'>leaf</li>
+</ul>
+</li>
+</ul>
+</li>
+	
+	</ul>
+</li>
+
+	</ul>
+</div>
+
 </div>
 
 <script>	
 // html demo
+	$('#html1').jstree({});
+
 	$('#html').jstree({
 		"core" : {
 		       // so that create works

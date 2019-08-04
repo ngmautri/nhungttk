@@ -187,7 +187,10 @@ return array(
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemUpdatedEventListener' => 'Inventory\Application\Event\Listener\ItemUpdatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemLoggingListener' => 'Inventory\Application\Event\Listener\ItemLoggingListenerFactory',
-
+            'Inventory\Application\Event\Listener\WarehouseLoggingListener' => 'Inventory\Application\Event\Listener\WarehouseLoggingListenerFactory',
+            
+            
+            
             'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
 
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',

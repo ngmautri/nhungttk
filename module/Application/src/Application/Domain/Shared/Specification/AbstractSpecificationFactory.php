@@ -27,6 +27,8 @@ abstract class AbstractSpecificationFactory
     
     abstract function getWarehouseCodeExitsSpecification();    
 
+    abstract function getWarehouseLocationExitsSpecification();
+    
     abstract function getItemExitsSpecification();
 
     abstract function getUserExitsSpecification();

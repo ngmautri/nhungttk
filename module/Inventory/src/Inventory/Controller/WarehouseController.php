@@ -8,6 +8,7 @@ use Application\Entity\NmtInventoryWarehouse;
 use Ramsey;
 use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
 use Inventory\Application\Service\Warehouse\WarehouseService;
+use Inventory\Application\DTO\Warehouse\WarehouseDTO;
 
 /**
  *
@@ -95,6 +96,11 @@ class WarehouseController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
         $prg = $this->prg('/inventory/warehouse/create', true);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -104,11 +110,17 @@ class WarehouseController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
 
+            $dto = new WarehouseDTO();
+            $dto->whCountry = $u->getCompany()
+                ->getCountry()
+                ->getId();
+            $dto->whStatus = 1;
+
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'dto' => null,
+                'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => "/inventory/warehouse/create",
                 'form_title' => "Create Warehouse",
@@ -120,11 +132,6 @@ class WarehouseController extends AbstractActionController
         }
 
         $data = $prg;
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
 
         $dto = WarehouseDTOAssembler::createDTOFromArray($data);
         $userId = $u->getId();
@@ -150,6 +157,84 @@ class WarehouseController extends AbstractActionController
         $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n');
         $redirectUrl = "/inventory/warehouse/list";
 
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function updateAction()
+    {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $prg = $this->prg('/inventory/warehouse/update', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('token');
+            $dto = $this->whService->getHeader($entity_id, $token);
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/warehouse/update",
+                'form_title' => "Edit Item",
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                'n' => 0
+            ));
+
+            $viewModel->setTemplate("inventory/warehouse/crud2");
+            return $viewModel;
+        }
+
+        $data = $prg;
+
+        $redirectUrl = $data['redirectUrl'];
+        $entity_id = (int) $data['entity_id'];
+        $nTry = $data['n'];
+
+        $dto = WarehouseDTOAssembler::createDTOFromArray($data);
+
+        $userId = $u->getId();
+
+        $notification = $this->whService->updateHeader($entity_id, "", $dto, $userId, __METHOD__);
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->errorMessage(),
+                'redirectUrl' => $redirectUrl,
+                'entity_id' => $entity_id,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/warehouse/update",
+                'form_title' => "Edit Warehouse",
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                'n' => $nTry
+            ));
+
+            $viewModel->setTemplate("inventory/warehouse/crud2");
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/inventory/warehouse/list";
         return $this->redirect()->toUrl($redirectUrl);
     }
 

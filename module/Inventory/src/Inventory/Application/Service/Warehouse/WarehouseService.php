@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Service\AbstractService;
 use Inventory\Application\DTO\Warehouse\WarehouseDTO;
+use Inventory\Application\Event\Listener\WarehouseLoggingListener;
 use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
 use Inventory\Domain\Event\TransactionRowCreatedEvent;
 use Inventory\Domain\Event\WarehouseCreatedEvent;
@@ -15,7 +16,6 @@ use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshotAssembler;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
-use Inventory\Domain\Warehouse\WarehouseSnapshot;
 
 /**
  *
@@ -57,7 +57,7 @@ class WarehouseService extends AbstractService
 
         $aggregate = new GenericWarehouse();
         $aggregate->makeFromSnapshot($snapshot);
-      
+
         $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $aggregate->setSharedSpecificationFactory($sharedSpecificationFactory);
 
@@ -98,7 +98,9 @@ class WarehouseService extends AbstractService
 
             $notification->addSuccess($m);
 
-            $this->getDoctrineEM()->getConnection()->commit();
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->commit();
         } catch (\Exception $e) {
 
             $this->getDoctrineEM()
@@ -193,22 +195,22 @@ class WarehouseService extends AbstractService
             $this->getEventManager()->trigger(WarehouseUpdatedEvent::EVENT_NAME, $trigger, array(
                 'warehouseId' => $id
             ));
-            /*
-             * $changeOn = new \DateTime();
-             *
-             * $this->getEventManager()->trigger(ItemLoggingListener::ITEM_UPDATED_LOG, $trigger, array(
-             * 'priority' => \Zend\Log\Logger::INFO,
-             * 'message' => $m,
-             * 'objectId' => $itemId,
-             * 'objectToken' => $newItem->getToken(),
-             * 'changeArray' => $changeArray,
-             * 'changeBy' => $userId,
-             * 'changeOn' => $changeOn,
-             * 'revisionNumber' => $newItem->getRevisionNo(),
-             * 'changeDate' => $changeOn,
-             * 'changeValidFrom' => $changeOn
-             * ));
-             */
+
+            $changeOn = new \DateTime();
+
+            $this->getEventManager()->trigger(WarehouseLoggingListener::WH_UPDATED_LOG, $trigger, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'objectId' => $id,
+                'objectToken' => $newAggregate->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $userId,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $newAggregate->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
             $notification->addSuccess($m);
             $this->getDoctrineEM()
                 ->getConnection()

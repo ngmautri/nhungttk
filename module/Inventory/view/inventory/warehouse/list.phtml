@@ -78,7 +78,7 @@ if ($total_records <= 0) {
 			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
 
 			<td>
-<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/edit?token=213214314dfds&entity_id=<?php echo $a->getID();?>&checksum=dfdfdfeedfds"><?php echo $this->translate("Edit");?>
+<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/update?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>"><?php echo $this->translate("Edit");?>
 </a>
 			
 			</td>

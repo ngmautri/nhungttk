@@ -31,13 +31,13 @@ class WarehouseServiceFactory implements FactoryInterface
 
         $eventManager = $container->get('EventManager');
 
-        $l = $container->get('Inventory\Application\Event\Listener\ItemCreatedEventListener');
+     /*    $l = $container->get('Inventory\Application\Event\Listener\ItemCreatedEventListener');
         $eventManager->attachAggregate($l);
 
         $l = $container->get('Inventory\Application\Event\Listener\ItemUpdatedEventListener');
         $eventManager->attachAggregate($l);
-
-        $l = $container->get('Inventory\Application\Event\Listener\ItemLoggingListener');
+ */
+        $l = $container->get('Inventory\Application\Event\Listener\WarehouseLoggingListener');
         $eventManager->attachAggregate($l);
         
         $service->setEventManager($eventManager);

@@ -1,25 +1,19 @@
 <?php
-namespace Inventory\Application\DTO\Warehouse;
+namespace Inventory\Application\DTO\Warehouse\Location;
 
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
-use Inventory\Domain\Warehouse\Transaction\TransactionType;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Application\Notification;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
-use Inventory\Domain\Item\GenericWarehouse;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseDTOAssembler
+class LocationDTOAssembler
 {
 
     public static function createDTOFromArray($data)
     {
-        $dto = new WarehouseDTO();
+        $dto = new LocationDTO();
 
         foreach ($data as $property => $value) {
             if (property_exists($dto, $property)) {
@@ -35,15 +29,15 @@ class WarehouseDTOAssembler
 
     /**
      *
-     * @param GenericWarehouse $obj
-     * @return NULL|\Inventory\Application\DTO\Warehouse\WarehouseDTO
+     * @param GenericLocation $obj
+     * @return NULL|\Inventory\Application\DTO\Warehouse\Location\LocationDTO
      */
     public static function createDTOFrom($obj)
     {
-        if (! $obj instanceof GenericWarehouse)
+        if (! $obj instanceof GenericLocation)
             return null;
 
-        $dto = new WarehouseDTO();
+        $dto = new LocationDTO();
 
         $reflectionClass = new \ReflectionClass($obj);
         $itemProperites = $reflectionClass->getProperties();
@@ -69,7 +63,7 @@ class WarehouseDTOAssembler
      */
     public static function createDTOProperities()
     {
-        $entity = new \Application\Entity\NmtInventoryWarehouse();
+        $entity = new \Application\Entity\NmtInventoryWarehouseLocation();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {

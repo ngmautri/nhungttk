@@ -29,6 +29,7 @@ abstract class AbstractCategory {
 	{
 	
 		if (isset($this->index[$parent_id])) {
+		    
 			foreach ($this->index[$parent_id] as $id) {
 	
 				//pre-order travesal
@@ -59,21 +60,7 @@ abstract class AbstractCategory {
 		return $this;
 	}
 	
-	/**
-	 * 
-	 * @param unknown $parent_id
-	 * @return unknown[]
-	 */
-	public function getChildNodes($parent_id){
-		$children = array();
-		if (isset($this->index[$parent_id])) {
-			foreach ($this->index[$parent_id] as $id) {
-				$children[] = $id;
-				$children = array_merge($children, $this->getChildNodes($id));
-			}
-		}
-		return $children;
-	}
+	
 	
 	
 	/**
@@ -142,6 +129,22 @@ abstract class AbstractCategory {
 	 */
 	public function get($cat) {
 		return $this->categories [$cat];
+	}
+	
+	/**
+	 *
+	 * @param unknown $parent_id
+	 * @return unknown[]
+	 */
+	public function getChildNodes($parent_id){
+	    $children = array();
+	    if (isset($this->index[$parent_id])) {
+	        foreach ($this->index[$parent_id] as $id) {
+	            $children[] = $id;
+	            $children = array_merge($children, $this->getChildNodes($id));
+	        }
+	    }
+	    return $children;
 	}
 	
 	/**

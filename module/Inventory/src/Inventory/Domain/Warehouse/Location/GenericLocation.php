@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Warehouse;
+namespace Inventory\Domain\Warehouse\Location;
 
 use Application\Notification;
 
@@ -8,7 +8,7 @@ use Application\Notification;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GenericWarehouse extends AbstractWarehouse
+class GenericLocation extends \AbstractLocation
 {
 
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
+use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
@@ -60,6 +61,59 @@ abstract class AbstractWarehouse
     protected $location;
 
     protected $uuid;
+    
+    /**
+     *
+     * @var AbstractSpecificationFactory $sharedSpecificationFactory;
+     */
+    protected $sharedSpecificationFactory;
+    
+    /**
+     *
+     * @var WarehouseCmdRepositoryInterface $cmdRepository;
+     */
+    protected $cmdRepository;
+    
+    /**
+     *
+     * @var WarehouseQueryRepositoryInterface $queryRepository;
+     */
+    protected $queryRepository;
+    
+    /**
+     *
+     * @return \Inventory\Domain\Warehouse\WarehouseCmdRepositoryInterface
+     */
+    public function getCmdRepository()
+    {
+        return $this->cmdRepository;
+    }
+    
+    /**
+     *
+     * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
+     */
+    public function getQueryRepository()
+    {
+        return $this->queryRepository;
+    }
+    
+    /**
+     *
+     * @param WarehouseCmdRepositoryInterface $cmdRepository ;
+     */
+    public function setCmdRepository(WarehouseCmdRepositoryInterface $cmdRepository)
+    {
+        $this->cmdRepository = $cmdRepository;
+    }
+    
+    /**
+     * @param mixed $queryRepository
+     */
+    public function setQueryRepository(WarehouseQueryRepositoryInterface $queryRepository)
+    {
+        $this->queryRepository = $queryRepository;
+    }
 
     /**
      *
@@ -345,4 +399,23 @@ abstract class AbstractWarehouse
     {
         return $this->location;
     }
+    
+    /**
+     *
+     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
+     */
+    public function getSharedSpecificationFactory()
+    {
+        return $this->sharedSpecificationFactory;
+    }
+    
+    /**
+     *
+     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
+     */
+    public function setSharedSpecificationFactory($sharedSpecificationFactory)
+    {
+        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
+    }
+    
 }

@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use InventoryTest\Bootstrap;
 use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
+use Inventory\Application\DTO\Warehouse\Location\LocationDTOAssembler;
 
 class WarehouseDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -30,6 +31,6 @@ class WarehouseDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
        
         //var_dump(WarehouseDTOAssembler::findMissingProperties());
-        WarehouseDTOAssembler::createGetMapping();
+        LocationDTOAssembler::createDTOProperities();
     }
 }

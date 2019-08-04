@@ -1,0 +1,241 @@
+<?php
+/**
+ *
+ * @var \Application\Entity\NmtInventoryItem $entity ;
+ * @var \Inventory\Application\DTO\Warehouse\WarehouseDTO $dto ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+?>
+
+
+
+
+<div id="tabs" style="font-size: 10pt">
+	<ul>
+		<li><a href="#general"><?php echo $form_title;?></a></li>
+					
+		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+        <li><a title="<?php echo $this->translate("Change Logs");?>"
+			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+
+   		 <li><a title="<?php echo $this->translate("location");?>"
+			href="<?php echo $this->baseUrl ?>/inventory/warehouse/location-tree?id=<?php echo (!$entity == null)? $entity->getId():"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Location</a></li>
+
+        <?php endif;?>
+        
+	
+				
+				</ul>
+
+	<div id="general" style="font-size: 9pt">
+		<!-- Tab1 -->
+    	
+ 	<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+    echo '<p>' . $errors;
+    echo '</p></div>';
+}
+?>
+    
+					<form id="New_Invoice_Row" class="form-horizontal"
+			action="<?php echo $form_action;?>" method="post"
+			enctype="multipart/form-data">
+
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				id="entity_id" name="entity_id"
+				value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+					
+							
+            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
+            			
+            			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Warehouse Code");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whCode" placeholder="" name="whCode"
+						value="<?php echo (!$dto == null)? $dto->whCode:"";?>">
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Warehouse Name");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whName" placeholder="" name="whName"
+						value="<?php echo (!$dto == null)? $dto->whName:"";?>">
+				</div>
+
+				<div class="col-sm-3">
+					<input
+					<?php if(!$dto== null): echo ($dto->whStatus=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="whStatus" value="1"><?php echo $this->translate("Status");?> &nbsp;&nbsp;&nbsp;
+
+									</div>
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Address");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whAddress" placeholder="" name="whAddress"
+						value="<?php echo (!$dto == null)? $dto->whAddress:"";?>">
+				</div>
+			</div>
+
+					<div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("Country");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="country_id" id="country_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select Country");?></option>
+   	    							<?php
+   	    							$country_list = $nmtPlugin->countryList();
+   	    							
+   	    	 if ($country_list !== null) :
+   	    	 foreach ($country_list as $gl) :
+
+                    /**@var \Application\Entity\NmtApplicationCountry $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWhCountry() !== null) :
+                        if ($entity->getWhCountry()->getId() == $gl->getId()) :
+                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getCountryName() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getCountryName() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getCountryName() . '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getCountryName()  . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+
+							
+
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Contract Person");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whContactPerson" placeholder="" name="whContactPerson"
+						value="<?php echo (!$dto == null)? $dto->whContactPerson:"";?>">
+				</div>
+			</div>
+						
+						<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Contract Person Email");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whEmail" placeholder="" name="whEmail"
+						value="<?php echo (!$dto == null)? $dto->whEmail:"";?>">
+				</div>
+			</div>
+						
+			
+			
+			
+				
+			<div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("Warehouse Controller");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="wh_controller_id" id="wh_controller_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select User");?></option>
+   	    							<?php
+   	    							
+   	    							$user_list = $nmtPlugin->getUserList();
+   	    							
+   	    							
+   	    	 if ($user_list !== null) :
+   	    	 foreach ($user_list as $gl) :
+
+                    /**@var \Application\Entity\MlaUsers $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWhController() !== null) :
+                        if ($entity->getWhController()->getId() == $gl->getId()) :
+                        echo '<option selected value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname().'</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname(). '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname(). '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+
+							
+
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Contract Person Email");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whContactPerson" placeholder="" name="whContactPerson"
+						value="<?php echo (!$dto == null)? $dto->whContactPerson:"";?>">
+				</div>
+			</div>
+			
+				<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Remarks");?>: </label>
+				<div class="col-sm-5">
+					<textarea class="form-control input-sm" type="text" rows="6"
+						placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$dto == null)? $dto->remarks:"";?></textarea>
+
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom"></div>
+
+
+
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+			<div class="form-group margin-bottom" style="margin-top: 10pt">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<a tabindex="11" class="btn btn-default btn-sm"
+						onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
+							class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate("Save");?></a>
+					<a tabindex="12" class="btn btn-default btn-sm"
+						href="<?php echo $this->baseUrl ?>/inventory/warehouse/list"><small><i
+							class="glyphicon glyphicon-remove"></i></small>&nbsp;<?php echo $this->translate("Cancel");?></a>
+
+				</div>
+
+
+			</div>
+		</form>
+
+
+	</div>
+
+	<!-- end tab -->
+</div>
+

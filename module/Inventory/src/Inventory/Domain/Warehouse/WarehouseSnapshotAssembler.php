@@ -1,10 +1,9 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
+use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\DTO\Warehouse\WarehouseDTO;
-use ReflectionProperty;
-use Inventory\Domain\Item\AbstractWarehouse;
-use Inventory\Domain\Item\GenericWarehouse;
+use Inventory\Domain\Item\ItemSnapshot;
 
 /**
  *
@@ -112,17 +111,12 @@ class WarehouseSnapshotAssembler
      */
     public static function updateSnapshotFromDTO($snapShot, $dto)
     {
-        if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
+        if (! $dto instanceof WarehouseDTO || ! $snapShot instanceof WarehouseSnapshot)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
         $itemProperites = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
         $excludedProperties = array(
             "id",
             "uuid",
@@ -134,13 +128,15 @@ class WarehouseSnapshotAssembler
             "lastChangeBy",
             "sysNumber",
             "company",
-            "itemType",
+            "location",
             "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId",
-            
+        );
+        
+        $changeableProperties = array(
+            "movementType",
+            "movementDate",
+            "warehouse",
+            "remarks"
         );
 
         //$dto->isSparepart;
@@ -156,6 +152,17 @@ class WarehouseSnapshotAssembler
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
             }
+            
+            
+           /*  if (property_exists($snapShot, $propertyName) && in_array($propertyName, $changeableProperties)) {
+                
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
+            } */
+            
         }
         return $snapShot;
     }

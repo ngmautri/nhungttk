@@ -236,7 +236,7 @@ class TransactionService extends AbstractService
         $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
         $trx = $rep->getHeaderById($trxId, $trxToken);
 
-        var_dump($trxId);
+        //var_dump($trxId);
 
         if ($trx == null)
             $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $trxId . $trxToken));

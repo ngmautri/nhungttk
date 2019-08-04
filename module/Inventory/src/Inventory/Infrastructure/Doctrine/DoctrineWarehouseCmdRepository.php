@@ -7,6 +7,7 @@ use Inventory\Domain\Warehouse\AbstractWarehouse;
 use Inventory\Domain\Warehouse\WarehouseCmdRepositoryInterface;
 use Inventory\Domain\Warehouse\Location\DefaultLocation;
 use Ramsey;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
 
 /**
  *
@@ -39,6 +40,8 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
          *
          * @var \Application\Entity\NmtInventoryWarehouse $entity ;
          */
+        $entity = null;
+
         if ($wh->getId() > 0) {
 
             /**
@@ -54,30 +57,43 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
             }
+
+            if ($entity->getUuid() == null) {
+                $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
+            }
         } else {
 
             $entity = new \Application\Entity\NmtInventoryWarehouse();
             $entity->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
             $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
+        }
 
-            if ($snapshot->createdBy > 0) {
+        /**
+         * Mapping
+         */
+        $entity = $this->mapSnapshotEntity($snapshot, $entity);
 
-                /**
-                 *
-                 * @var \Application\Entity\MlaUsers $u ;
-                 */
-                $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $snapshot->createdBy);
-                if ($u !== null)
-                    $entity->setCreatedBy($u);
-            }
-
-            $createdOn = new \DateTime();
-            $entity->setCreatedOn($createdOn);
+        if ($wh->getId() == null) {
 
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
 
-            // create default location:
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $u ;
+             */
+            $u = null;
+
+            if ($snapshot->createdBy > 0) {
+                $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $snapshot->createdBy);
+                if ($u !== null) {
+                    var_dump($u->getFirstname());
+                    $entity->setCreatedBy($u);
+                }
+            }
+
+            $createdOn = new \DateTime();
+            $entity->setCreatedOn($createdOn);
 
             $rootLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
             $rootLocation->setWarehouse($entity);
@@ -128,7 +144,6 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             $scrapLocation->setCreatedOn($createdOn);
             $scrapLocation->setIsActive(1);
             $scrapLocation->setIsRootLocation(0);
-            $scrapLocation->setIsSystemLocation(0);
             $scrapLocation->setIsReturnLocation(0);
             $scrapLocation->setIsScrapLocation(1);
             $scrapLocation->setParentId($rootLocation->getId()); // important
@@ -142,7 +157,51 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             $scrapLocation->setPathDepth($rootLocation->getPathDepth() + 1);
             $this->doctrineEM->persist($scrapLocation);
             $this->doctrineEM->flush();
+        } else {
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
         }
+
+        return $entity->getId();
+    }
+
+    /**
+     *
+     * @param WarehouseSnapshot $snapshot
+     * @param \Application\Entity\NmtInventoryWarehouse $entity
+     * @return NULL|\Application\Entity\NmtInventoryWarehouse
+     */
+    private function mapSnapshotEntity(WarehouseSnapshot $snapshot, \Application\Entity\NmtInventoryWarehouse $entity)
+    {
+        if ($snapshot == null || $entity == null)
+            return null;
+
+        /*
+         * $entity->setId($snapshot->id);
+         * $entity->setWhCode($snapshot->whCode);
+         * $entity->setWhName($snapshot->whName);
+         * $entity->setWhAddress($snapshot->whAddress);
+         * $entity->setWhContactPerson($snapshot->whContactPerson);
+         * $entity->setWhTelephone($snapshot->whTelephone);
+         * $entity->setWhEmail($snapshot->whEmail);
+         * $entity->setIsLocked($snapshot->isLocked);
+         * $entity->setWhStatus($snapshot->whStatus);
+         * $entity->setRemarks($snapshot->remarks);
+         * $entity->setIsDefault($snapshot->isDefault);
+         * $entity->setCreatedOn($snapshot->createdOn);
+         * $entity->setSysNumber($snapshot->sysNumber);
+         * $entity->setToken($snapshot->token);
+         * $entity->setLastChangeOn($snapshot->lastChangeOn);
+         * $entity->setRevisionNo($snapshot->revisionNo);
+         * $entity->setUuid($snapshot->uuid);
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setCompany($snapshot->company);
+         * $entity->setWhCountry($snapshot->whCountry);
+         * $entity->setLastChangeBy($snapshot->lastChangeBy);
+         * $entity->setStockkeeper($snapshot->stockkeeper);
+         * $entity->setWhController($snapshot->whController);
+         * $entity->setLocation($snapshot->location);
+         */
 
         $entity->setWhCode($snapshot->whCode);
         $entity->setWhName($snapshot->whName);
@@ -153,7 +212,8 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
         $entity->setIsLocked($snapshot->isLocked);
         $entity->setWhStatus($snapshot->whStatus);
         $entity->setRemarks($snapshot->remarks);
-        // $entity->setIsDefault($snapshot->isDefault);
+        $entity->setIsDefault($snapshot->isDefault);
+        $entity->setRevisionNo($snapshot->revisionNo);
 
         if ($snapshot->company > 0) {
             /**
@@ -171,6 +231,15 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
              */
             $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->find($snapshot->whCountry);
             $entity->setWhCountry($obj);
+        }
+        
+        if ($snapshot->createdBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
+            $entity->setCreatedBy($obj);
         }
 
         if ($snapshot->stockkeeper > 0) {
@@ -191,9 +260,6 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             $entity->setWhController($obj);
         }
 
-        $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
-        
-        return $entity->getId();
+        return $entity;
     }
 }

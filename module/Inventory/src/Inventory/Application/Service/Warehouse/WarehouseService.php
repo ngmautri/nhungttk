@@ -4,39 +4,18 @@ namespace Inventory\Application\Service\Warehouse;
 use Application\Notification;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Service\AbstractService;
-use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
-use Inventory\Application\Event\Handler\ItemCreatedEventHandler;
-use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
-use Inventory\Application\Event\Listener\ItemLoggingListener;
-use Inventory\Domain\Event\ItemCreatedEvent;
-use Inventory\Domain\Event\ItemUpdatedEvent;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
-use Inventory\Domain\Item\Factory\ItemFactory;
-use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshotAssembler;
-use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
-use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
-use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
-use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
-use Inventory\Domain\Event\TransactionCreatedEvent;
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
-use Inventory\Domain\Event\TransactionRowCreatedEvent;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
-use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
-use Inventory\Domain\Event\TransactionUpdatedEvent;
-use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
-use Inventory\Infrastructure\Doctrine\DoctrineTransactionCmdRepository;
-use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
 use Inventory\Application\DTO\Warehouse\WarehouseDTO;
-use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
-use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
-use Inventory\Domain\Warehouse\GenericWarehouse;
-use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
+use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
+use Inventory\Domain\Event\TransactionRowCreatedEvent;
 use Inventory\Domain\Event\WarehouseCreatedEvent;
-use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Domain\Event\WarehouseUpdatedEvent;
+use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
+use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshotAssembler;
+use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
+use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
+use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
 
 /**
  *
@@ -55,7 +34,7 @@ class WarehouseService extends AbstractService
     public function getHeader($warehouseId, $token = null)
     {
         $rep = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
-        return $rep->getById($warehouseId, $token);
+        return $rep->getById($warehouseId)->makeDTO();
     }
 
     /**
@@ -78,12 +57,15 @@ class WarehouseService extends AbstractService
 
         $aggregate = new GenericWarehouse();
         $aggregate->makeFromSnapshot($snapshot);
-
-        $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-        $aggregate->setDomainSpecificationFactory($domainSpecificationFactory);
-
+      
         $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $aggregate->setSharedSpecificationFactory($sharedSpecificationFactory);
+
+        $cmdRepository = new DoctrineWarehouseCmdRepository($this->getDoctrineEM());
+        $aggregate->setCmdRepository($cmdRepository);
+
+        $queryRepository = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
+        $aggregate->setQueryRepository($queryRepository);
 
         $notification = $aggregate->validateHeader($notification);
 
@@ -97,8 +79,7 @@ class WarehouseService extends AbstractService
 
         try {
 
-            $rep = new DoctrineWarehouseCmdRepository($this->getDoctrineEM());
-            $whId = $rep->store($aggregate);
+            $whId = $cmdRepository->store($aggregate);
 
             $m = sprintf("[OK] Warehouse # %s created", $whId);
 
@@ -117,9 +98,7 @@ class WarehouseService extends AbstractService
 
             $notification->addSuccess($m);
 
-            $this->getDoctrineEM()
-                ->getConnection()
-                ->commit();
+            $this->getDoctrineEM()->getConnection()->commit();
         } catch (\Exception $e) {
 
             $this->getDoctrineEM()
@@ -151,11 +130,11 @@ class WarehouseService extends AbstractService
         if ($userId == null)
             $notification->addError("User is not identified for this action");
 
-        $rep = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
-        $aggregate = $rep->getById($id, $token);
+        $queryRepository = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
+        $aggregate = $queryRepository->getById($id);
 
         if ($aggregate == null)
-            $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $id . $token));
+            $notification->addError(sprintf("Warehouse %s can not be retrieved or empty", $id . $token));
 
         if ($notification->hasErrors())
             return $notification;
@@ -171,6 +150,7 @@ class WarehouseService extends AbstractService
              * @var WarehouseSnapshot $snapshot ;
              */
             $snapshot = $aggregate->makeSnapshot();
+
             $newSnapshot = clone ($snapshot);
 
             $newSnapshot = WarehouseSnapshotAssembler::updateSnapshotFromDTO($newSnapshot, $dto);
@@ -182,6 +162,8 @@ class WarehouseService extends AbstractService
                 return $notification;
             }
 
+            // var_dump($newSnapshot);
+
             // do change
             $newSnapshot->lastChangeBy = $userId;
             $newSnapshot->lastChangeOn = new \DateTime();
@@ -190,11 +172,13 @@ class WarehouseService extends AbstractService
             $newAggregate = new GenericWarehouse();
             $newAggregate->makeFromSnapshot($newSnapshot);
 
-            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-            $newAggregate->setDomainSpecificationFactory($domainSpecificationFactory);
-
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
             $newAggregate->setSharedSpecificationFactory($sharedSpecificationFactory);
+
+            $cmdRepository = new DoctrineWarehouseCmdRepository($this->getDoctrineEM());
+
+            $newAggregate->setCmdRepository($cmdRepository);
+            $newAggregate->setQueryRepository($queryRepository);
 
             $notification = $newAggregate->validateHeader($notification);
 
@@ -202,8 +186,7 @@ class WarehouseService extends AbstractService
                 return $notification;
             }
 
-            $cmdRep = new DoctrineWarehouseCmdRepository($this->getDoctrineEM());
-            $cmdRep->store($newAggregate);
+            $cmdRepository->store($newAggregate);
 
             $m = sprintf("Warehouse #%s updated", $id);
 
@@ -227,7 +210,9 @@ class WarehouseService extends AbstractService
              * ));
              */
             $notification->addSuccess($m);
-            $this->getDoctrineEM()->commit(); // now commit
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->commit();
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());
@@ -254,7 +239,7 @@ class WarehouseService extends AbstractService
         if (! $header instanceof GenericWarehouse)
             $notification->addError(sprintf("Warehouse header not valid! %s", ""));
 
-            if (! $rowDTO instanceof WarehouseDTO)
+        if (! $rowDTO instanceof WarehouseDTO)
             $notification->addError(sprintf("No location Input given! %s", ""));
 
         if ($userId == null)

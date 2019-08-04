@@ -139,7 +139,8 @@ class GenericWarehouse extends AbstractWarehouse
             $spec = $this->sharedSpecificationFactory->getWarehouseCodeExitsSpecification();
             $subject = array(
                 "companyId" => $this->company,
-                "whCode" => $this->whCode
+                "whCode" => $this->whCode,
+                "warehouseId" => $this->id, // in case of warehouse update.
             );
 
             if ($spec->isSatisfiedBy($subject)) {

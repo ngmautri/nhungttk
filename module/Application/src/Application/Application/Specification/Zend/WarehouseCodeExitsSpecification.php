@@ -26,6 +26,11 @@ class WarehouseCodeExitsSpecification extends DoctrineSpecification
             $whCode = $subject["whCode"];
         }
 
+        $warehouseId = null;
+        if (isset($subject["warehouseId"])) {
+            $warehouseId = $subject["warehouseId"];
+        }
+
         if ($this->doctrineEM == null || $whCode == null || $companyId == null) {
             return false;
         }
@@ -40,6 +45,13 @@ class WarehouseCodeExitsSpecification extends DoctrineSpecification
          * @var \Application\Entity\NmtInventoryWarehouse $wh ;
          */
         $wh = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryWarehouse")->findOneBy($criteria);
-        return (! $wh == null);
+
+        if ($wh == null)
+            return false;
+
+        if ($wh->getId() == $warehouseId)
+            return false;
+
+        return true;
     }
 }

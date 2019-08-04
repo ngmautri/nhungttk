@@ -5,6 +5,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtInventoryWarehouse;
+use Ramsey;
+use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
+use Inventory\Application\Service\Warehouse\WarehouseService;
 
 /**
  *
@@ -15,12 +18,15 @@ class WarehouseController extends AbstractActionController
 {
 
     protected $warehouseService;
+
     protected $warehouseLocationService;
 
     protected $doctrineEM;
-    
+
+    protected $whService;
+
     /**
-     * 
+     *
      * @return \Inventory\Service\WarehouseLocationService
      */
     public function getWarehouseLocationService()
@@ -28,49 +34,50 @@ class WarehouseController extends AbstractActionController
         return $this->warehouseLocationService;
     }
 
-  /**
-   * 
-   * @param \Inventory\Service\WarehouseLocationService $warehouseLocationService
-   */
-    public function setWarehouseLocationService(\Inventory\Service\WarehouseLocationService  $warehouseLocationService)
+    /**
+     *
+     * @param \Inventory\Service\WarehouseLocationService $warehouseLocationService
+     */
+    public function setWarehouseLocationService(\Inventory\Service\WarehouseLocationService $warehouseLocationService)
     {
         $this->warehouseLocationService = $warehouseLocationService;
     }
 
     /**
      */
-    public function locationTreeAction() {
-        
-        $this->layout ( "layout/user/ajax" );
+    public function locationTreeAction()
+    {
+        $this->layout("layout/user/ajax");
         $id = (int) $this->params()->fromQuery('id');
         $criteria = array(
             'id' => $id
         );
-        
-        
+
         /** @var \Application\Entity\NmtInventoryWarehouse $entity ; */
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy($criteria);
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         /** @var \Application\Entity\NmtInventoryWarehouse $root ; */
-        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->findOneBy(array("locationCode"=>$entity->getId()."-ROOT-LOCATION"));
-        
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->findOneBy(array(
+            "locationCode" => $entity->getId() . "-ROOT-LOCATION"
+        ));
+
         $this->warehouseLocationService->initCategory();
-        $this->warehouseLocationService->updateCategory($root->getId(),0);
-        $jsTree = $this->warehouseLocationService->generateJSTreeNew($root->getId(),false);
-        
-        
-        /* if ($request->isXmlHttpRequest ()) {
-         $this->layout ( "layout/user/ajax" );
-         }
-         
+        $this->warehouseLocationService->updateCategory($root->getId(), 0);
+        $jsTree = $this->warehouseLocationService->generateJSTreeNew($root->getId(), false);
+
+        /*
+         * if ($request->isXmlHttpRequest ()) {
+         * $this->layout ( "layout/user/ajax" );
+         * }
+         *
          */
-        //$jsTree = $this->tree;
-        return new ViewModel ( array (
+        // $jsTree = $this->tree;
+        return new ViewModel(array(
             'jsTree' => $jsTree
-        ) );
+        ));
     }
 
     /*
@@ -78,6 +85,73 @@ class WarehouseController extends AbstractActionController
      */
     public function indexAction()
     {}
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function createAction()
+    {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg('/inventory/warehouse/create', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/warehouse/create",
+                'form_title' => "Create Warehouse",
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD
+            ));
+
+            $viewModel->setTemplate("inventory/warehouse/crud2");
+            return $viewModel;
+        }
+
+        $data = $prg;
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $dto = WarehouseDTOAssembler::createDTOFromArray($data);
+        $userId = $u->getId();
+
+        $notification = $this->whService->createHeader($dto, $u->getCompany(), $userId, __METHOD__);
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->errorMessage(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/warehouse/create",
+                'form_title' => "Create Warehouse",
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD
+            ));
+
+            $viewModel->setTemplate("inventory/warehouse/crud2");
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n');
+        $redirectUrl = "/inventory/warehouse/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
 
     /**
      *
@@ -173,7 +247,7 @@ class WarehouseController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
@@ -182,7 +256,6 @@ class WarehouseController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
-     
         // Is Posing
         // =============================
 
@@ -220,7 +293,7 @@ class WarehouseController extends AbstractActionController
                 return $viewModel;
             }
 
-            $errors = $this->warehouseService->saveEntity($entity, $data,$u);
+            $errors = $this->warehouseService->saveEntity($entity, $data, $u);
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "Warehouse. %s"?', $entity->getId());
             }
@@ -280,7 +353,7 @@ class WarehouseController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-             'n' => 0,
+            'n' => 0,
             'nmtPlugin' => $nmtPlugin
         ));
 
@@ -416,9 +489,25 @@ class WarehouseController extends AbstractActionController
      * @param \Inventory\Service\WarehouseService $warehouseService
      */
     public function setWarehouseService(\Inventory\Service\WarehouseService $warehouseService)
-	{
-	    $this->warehouseService = $warehouseService;
-	}
-	
-	
+    {
+        $this->warehouseService = $warehouseService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Warehouse\WarehouseService
+     */
+    public function getWhService()
+    {
+        return $this->whService;
+    }
+
+    /**
+     *
+     * @param WarehouseService $whService
+     */
+    public function setWhService(WarehouseService $whService)
+    {
+        $this->whService = $whService;
+    }
 }

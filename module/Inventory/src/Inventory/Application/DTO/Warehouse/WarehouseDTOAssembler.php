@@ -1,13 +1,7 @@
 <?php
 namespace Inventory\Application\DTO\Warehouse;
 
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
-use Inventory\Domain\Warehouse\Transaction\TransactionType;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Application\Notification;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
-use Inventory\Domain\Item\GenericWarehouse;
+use Inventory\Domain\Warehouse\GenericWarehouse;
 
 /**
  *

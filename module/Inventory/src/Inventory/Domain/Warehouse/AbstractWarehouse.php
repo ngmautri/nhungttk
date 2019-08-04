@@ -162,7 +162,7 @@ abstract class AbstractWarehouse
         $this->whController = $snapshot->whController;
         $this->location = $snapshot->location;
         $this->uuid = $snapshot->uuid;
-    }
+   }
 
     /**
      *

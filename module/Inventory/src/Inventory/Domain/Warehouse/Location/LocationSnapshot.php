@@ -8,7 +8,7 @@ use Application\Domain\Shared\AbstractValueObject;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class LocaltionSnapshot extends AbstractValueObject
+class LocationSnapshot extends AbstractValueObject
 {
 
     public $id;

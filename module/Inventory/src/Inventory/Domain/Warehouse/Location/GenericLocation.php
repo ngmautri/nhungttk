@@ -8,7 +8,7 @@ use Application\Notification;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GenericLocation extends \AbstractLocation
+class GenericLocation extends AbstractLocation
 {
 
     /**
@@ -48,7 +48,7 @@ class GenericLocation extends \AbstractLocation
             $notification->addError("Shared Specification not found");
 
         if ($this->cmdRepository == null)
-            $notification->addError("Cmd Repository for aggregate root not found!");
+            $notification->addError("Command Repository for aggregate root not found!");
 
         if ($this->queryRepository == null)
             $notification->addError("Query Repository for aggregate root not found!");

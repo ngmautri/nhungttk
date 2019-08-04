@@ -1,10 +1,12 @@
 <?php
 namespace Inventory\Domain\Warehouse\Location;
 
+use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\DTO\Warehouse\WarehouseDTO;
-use ReflectionProperty;
-use Inventory\Domain\Item\AbstractWarehouse;
-use Inventory\Domain\Item\GenericWarehouse;
+use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Application\DTO\Warehouse\Location\LocationDTO;
 
 /**
  *
@@ -16,11 +18,11 @@ class LocationSnapshotAssembler
 
     /**
      *
-     * @return ItemSnapshot;
+     * @return LocationSnapshot;
      */
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new WarehouseSnapshot();
+        $itemSnapshot = new LocationSnapshot;
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -33,14 +35,14 @@ class LocationSnapshotAssembler
     /**
      *
      * @param array $data
-     * @return \Inventory\Domain\Item\ItemSnapshot
+     * @return LocationSnapshot
      */
     public static function createSnapshotFromArray($data)
     {
         if ($data == null)
             return null;
 
-            $snapShot = new WarehouseSnapshot();
+            $snapShot = new LocationSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
@@ -55,41 +57,18 @@ class LocationSnapshotAssembler
         return $snapShot;
     }
 
-    /**
-     *
-     * @param \Inventory\Domain\Warehouse\WarehouseSnapshot $snapShot
-     * @param array $data
-     * @return NULL|\Inventory\Domain\Warehouse\WarehouseSnapshot
-     */
-    public static function updateSnapshotFromArray($snapShot, $data)
+   
+   /**
+    * 
+    * @param LocationDTO $dto
+    * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
+    */
+    public static function createSnapshotFromDTO(LocationDTO $dto)
     {
-        if ($data == null || ! $snapShot instanceof WarehouseSnapshot)
+        if (! $dto instanceof LocationDTO)
             return null;
 
-        $excludedProperties = array(
-            "id",
-            "uuid"
-        );
-
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property) && ! in_array($property, $excludedProperties)) {
-                $snapShot->$property = $value;
-            }
-        }
-        return $snapShot;
-    }
-
-    /**
-     *
-     * @param WarehouseDTO $dto
-     * @return \Inventory\Domain\Warehouse\WarehouseSnapshot
-     */
-    public static function createSnapshotFromDTO($dto)
-    {
-        if (! $dto instanceof WarehouseDTO)
-            return null;
-
-            $snapShot = new WarehouseSnapshot();
+            $snapShot = new LocationSnapshot();
 
         $reflectionClass = new \ReflectionClass(get_class($dto));
         $itemProperites = $reflectionClass->getProperties();
@@ -105,14 +84,14 @@ class LocationSnapshotAssembler
     }
 
     /**
-     *
-     * @param \Inventory\Domain\Item\ItemSnapshot $snapShot
-     * @param ItemDTO $dto
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     * 
+     * @param LocationDTO $snapShot
+     * @param LocationSnapshot $dto
+     * @return NULL|\Inventory\Application\DTO\Warehouse\Location\LocationDTO|\Inventory\Domain\Warehouse\Location\LocationSnapshot
      */
-    public static function updateSnapshotFromDTO($snapShot, $dto)
+    public static function updateSnapshotFromDTO(LocationDTO $snapShot, LocationSnapshot $dto)
     {
-        if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
+        if (! $dto instanceof LocationDTO || ! $snapShot instanceof LocationSnapshot)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
@@ -161,17 +140,17 @@ class LocationSnapshotAssembler
     }
 
     /**
-     *
-     * @param GenericWarehouse $obj
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     * 
+     * @param GenericLocation $obj
+     * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
      */
-    public static function createSnapshotFrom($obj)
+    public static function createSnapshotFrom(GenericLocation $obj)
     {
-        if (! $obj instanceof GenericWarehouse) {
+        if (! $obj instanceof GenericLocation) {
             return null;
         }
 
-        $snapShot = new WarehouseSnapshot();
+        $snapShot = new LocationSnapshot();
 
         // should uss reflection object
         $reflectionClass = new \ReflectionObject($obj);

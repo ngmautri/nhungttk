@@ -1,13 +1,8 @@
 <?php
 namespace InventoryTest\Warehouse;
 
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
-use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
-use Inventory\Domain\Warehouse\GenericWarehouse;
-use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
-use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use PHPUnit_Framework_TestCase;
 

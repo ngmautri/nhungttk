@@ -18,7 +18,9 @@
 		"ramsey/uuid" : "~3.8",
 		"moneyphp/money" : "~3.2",
 		"endroid/qr-code" : "2.5.1",
-		"nesbot/carbon" : "1.37.1"
+		"nesbot/carbon" : "1.37.1",
+		"forked/mailreader" : "~1.0",
+		"php-mime-mail-parser/php-mime-mail-parser" : "3.0.4"
 	},
 	"minimum-stability" : "stable",
 	"autoload" : {

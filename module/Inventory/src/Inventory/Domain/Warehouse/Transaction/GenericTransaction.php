@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Service\ValuationServiceInterface;
+use Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface;
 
 /**
  *
@@ -13,18 +14,11 @@ use Inventory\Domain\Service\ValuationServiceInterface;
  */
 abstract class GenericTransaction extends AbstractTransaction
 {
-
     /**
-     *
-     * @var AbstractSpecificationFactory
+     * 
+     * @var WarehouseQueryRepositoryInterface $warehouseQueryRepository;
      */
-    protected $sharedSpecificationFactory;
-
-    /**
-     *
-     * @var \Inventory\Domain\AbstractSpecificationFactory
-     */
-    protected $domainSpecificationFactory;
+    protected $warehouseQueryRepository;
 
     /**
      *
@@ -38,16 +32,21 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     protected $valuationService;
 
+    /**
+     * 
+     * @var int
+     */
     public $totalActiveRows;
 
+    
+    /**
+     * 
+     * @var string
+     */
     public $transtionRowsOutput;
 
-    /**
-     *
-     * @var TransactionRepositoryInterface
-     */
-    protected $transactionRepository;
-
+    
+  
     abstract public function prePost();
 
     abstract public function afterPost();
@@ -138,9 +137,13 @@ abstract class GenericTransaction extends AbstractTransaction
         if ($notification == null)
             $notification = new Notification();
 
-        if (!$this->transactionRepository instanceof TransactionRepositoryInterface)
-            $notification->addError("No repository is set");
-
+        if (!$this->cmdRepository instanceof TransactionCmdRepositoryInterface)
+            $notification->addError("Cmd repository is set");
+        
+        if (!$this->queryRepository instanceof TransactionQueryRepositoryInterface)
+                $notification->addError("Query repository is set");
+                
+            
         $notification = $this->validateHeader($notification);
 
         if ($notification->hasErrors())
@@ -377,41 +380,7 @@ abstract class GenericTransaction extends AbstractTransaction
         return $notification;
     }
 
-    /**
-     *
-     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
-     */
-    public function getSharedSpecificationFactory()
-    {
-        return $this->sharedSpecificationFactory;
-    }
-
-    /**
-     *
-     * @return \Inventory\Domain\AbstractSpecificationFactory
-     */
-    public function getDomainSpecificationFactory()
-    {
-        return $this->domainSpecificationFactory;
-    }
-
-    /**
-     *
-     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
-     */
-    public function setSharedSpecificationFactory($sharedSpecificationFactory)
-    {
-        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
-    }
-
-    /**
-     *
-     * @param \Inventory\Domain\AbstractSpecificationFactory $domainSpecificationFactory
-     */
-    public function setDomainSpecificationFactory($domainSpecificationFactory)
-    {
-        $this->domainSpecificationFactory = $domainSpecificationFactory;
-    }
+  
 
     /**
      *
@@ -430,25 +399,7 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->valuationService = $valuationService;
     }
-
-    /**
-     *
-     * @return \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface
-     */
-    public function getTransactionRepository()
-    {
-        return $this->transactionRepository;
-    }
-
-    /**
-     *
-     * @param \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface $transactionRepository
-     */
-    public function setTransactionRepository($transactionRepository)
-    {
-        $this->transactionRepository = $transactionRepository;
-    }
-
+    
     /**
      *
      * @return array
@@ -493,5 +444,24 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->transtionRowsOutput = $transtionRowsOutput;
     }
+    
+    /**
+     * 
+     * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
+     */
+    public function getWarehouseQueryRepository()
+    {
+        return $this->warehouseQueryRepository;
+    }
+
+    /**
+     * 
+     * @param WarehouseQueryRepositoryInterface $warehouseQueryRepository
+     */
+    public function setWarehouseQueryRepository(WarehouseQueryRepositoryInterface $warehouseQueryRepository)
+    {
+        $this->warehouseQueryRepository = $warehouseQueryRepository;
+    }
+
     
 }

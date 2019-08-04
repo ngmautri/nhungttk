@@ -1,11 +1,6 @@
 <?php
 namespace Inventory\Domain\Warehouse\Location;
 
-use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Application\DTO\Warehouse\WarehouseDTO;
-use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Warehouse\GenericWarehouse;
-use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Application\DTO\Warehouse\Location\LocationDTO;
 
 /**

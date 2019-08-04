@@ -191,6 +191,9 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             $entity->setWhController($obj);
         }
 
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+        
         return $entity->getId();
     }
 }

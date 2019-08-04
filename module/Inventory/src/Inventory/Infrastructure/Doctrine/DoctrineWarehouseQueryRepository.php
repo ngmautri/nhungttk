@@ -6,6 +6,9 @@ use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Domain\Warehouse\GenericWarehouse;
+use Application\Entity\NmtInventoryWarehouseLocation;
+use Inventory\Domain\Warehouse\Location\LocationSnapshot;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 
 /**
  *
@@ -45,20 +48,38 @@ class DoctrineWarehouseQueryRepository extends AbstractDoctrineRepository implem
 
         $wh = new GenericWarehouse();
         $wh->makeFromSnapshot($snapshot);
-        
+
         $criteria = array(
             'warehouse' => $entity
         );
-        $sort = array();        
+        $sort = array();
         $locations = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->findBy($criteria, $sort);
-        
+
         foreach ($locations as $r) {
-            
+
             /** @var \Application\Entity\NmtInventoryWarehouseLocation $r */
-             echo $r->getLocationCode() ."\n";   
-            
+            $locationSnapshot = $this->createLocationSnapshot($r);
+
+            if ($locationSnapshot == null)
+                continue;
+
+            $location = new GenericLocation();
+            $location->makeFromSnapshot($locationSnapshot);
+            $wh->addLocation($location);
+
+            if ($location->getIsRootLocation() == 1) {
+                $wh->setRootLocation($location);
+            }
+
+            if ($location->getIsReturnLocation() == 1) {
+                $wh->setReturnLocation($location);
+            }
+
+            if ($location->getIsScrapLocation() == 1) {
+                $wh->setScrapLocation($location);
+            }
         }
-        
+
         return $wh;
     }
 
@@ -142,6 +163,62 @@ class DoctrineWarehouseQueryRepository extends AbstractDoctrineRepository implem
             $snapshot->location = $entity->getLocation()->getId();
         }
 
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param NmtInventoryWarehouseLocation $entity
+     * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
+     */
+    private function createLocationSnapshot(NmtInventoryWarehouseLocation $entity)
+    {
+        if ($entity == null)
+            return null;
+
+        $snapshot = new LocationSnapshot();
+
+        $snapshot->id = $entity->getId();
+
+        $snapshot->sysNumber = $entity->getSysNumber();
+        $snapshot->token = $entity->getToken();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->isSystemLocation = $entity->getIsSystemLocation();
+        $snapshot->isReturnLocation = $entity->getIsReturnLocation();
+        $snapshot->isScrapLocation = $entity->getIsScrapLocation();
+        $snapshot->isRootLocation = $entity->getIsRootLocation();
+        $snapshot->locationName = $entity->getLocationName();
+        $snapshot->locationCode = $entity->getLocationCode();
+        $snapshot->parentId = $entity->getParentId();
+        $snapshot->locationType = $entity->getLocationType();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->isLocked = $entity->getIsLocked();
+        $snapshot->path = $entity->getPath();
+        $snapshot->pathDepth = $entity->getPathDepth();
+        $snapshot->hasMember = $entity->getHasMember();
+        $snapshot->uuid = $entity->getUuid();
+
+        // $snapshot->createdBy = $entity->getCreatedBy();
+        // $snapshot->lastChangeBy = $entity->getLastChangeBy();
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
+        }
+
+        if ($entity->getWarehouse() !== null) {
+            $snapshot->warehouse = $entity->getWarehouse()->getId();
+        }
+
+           
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+        
+        if ($entity->getLastChangeBy() !== null) {
+            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+        
         return $snapshot;
     }
 }

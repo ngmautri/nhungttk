@@ -2,22 +2,13 @@
 namespace InventoryTest\Warehouse;
 
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
-use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
-use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
-use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshotAssembler;
-use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
-use Inventory\Domain\Warehouse\Transaction\TransactionType;
-use PHPUnit_Framework_TestCase;
-use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
-use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
+use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
-use Inventory\Infrastructure\Doctrine\DoctrineWarehouseRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
+use PHPUnit_Framework_TestCase;
 
 /**
  *
@@ -49,9 +40,9 @@ class WarehouseValidationAssemblerTest extends PHPUnit_Framework_TestCase
 
         $data = array();
         $data["whName"] = "NMT";
-        $data["whCode"] = "WH1";
+        $data["whCode"] = "WH12";
         $data["company"] = 1;
-        $data["createdBy"] = 390;
+        $data["createdBy"] = 39;
      
         // create new transaction.
         $dto = WarehouseDTOAssembler::createDTOFromArray($data);

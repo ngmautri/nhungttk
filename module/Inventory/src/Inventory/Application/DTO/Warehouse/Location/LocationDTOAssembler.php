@@ -94,7 +94,7 @@ class LocationDTOAssembler
      */
     public static function createGetMapping()
     {
-        $entity = new \Application\Entity\NmtInventoryWarehouse();
+        $entity = new \Application\Entity\NmtInventoryWarehouseLocation();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {

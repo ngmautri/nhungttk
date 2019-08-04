@@ -29,115 +29,38 @@ use Inventory\Domain\Event\TransactionUpdatedEvent;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
+use Inventory\Application\DTO\Warehouse\WarehouseDTO;
+use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
+use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
+use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
+use Inventory\Domain\Event\WarehouseCreatedEvent;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Event\WarehouseUpdatedEvent;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TransactionService extends AbstractService
+class WarehouseService extends AbstractService
 {
 
     /**
      *
-     * @param int $trxId
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\GenericTransaction
-     */
-    public function post($trxId, $trxToken, $trigger = null)
-    {
-        $notification = new Notification();
-
-        try {
-
-            $this->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
-
-            $rep = new DoctrineTransactionQueryRepository($this->getDoctrineEM());
-            $whQueryRep = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
-
-            $trx = $rep->getById($trxId);
-            // var_dump($trx);
-
-            $rep = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
-            $trx->setQueryRepository($rep);
-
-            $rep = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
-            $trx->setCmdRepository($rep);
-            $trx->setWarehouseQueryRepository($whQueryRep);
-
-            $cogsService = new \Inventory\Application\Service\Item\FIFOLayerService();
-            $cogsService->setDoctrineEM($this->doctrineEM);
-            $trx->setValuationService($cogsService);
-
-            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->doctrineEM);
-            $trx->setDomainSpecificationFactory($domainSpecificationFactory);
-
-            $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
-            $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
-
-            $notification = $trx->post();
-
-            if ($notification->hasErrors()) {
-                return $notification;
-            }
-
-            $rep->post($trx);
-
-            $this->getDoctrineEM()
-                ->getConnection()
-                ->commit();
-        } catch (\Exception $e) {
-
-            $this->getDoctrineEM()
-                ->getConnection()
-                ->rollBack();
-            $this->getDoctrineEM()->close();
-            $notification->addError($e->getMessage());
-        }
-
-        return $notification;
-    }
-
-    /**
-     *
-     * @param \Inventory\Application\DTO\Item\ItemDTO $dto
-     * @param string $userId
-     * @param boolean $isNew
-     * @param string $trigger
-     * @return
-     */
-    public function show($itemId, $itemToken)
-    {
-        $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
-
-        /**
-         *
-         * @var GenericItem $item
-         */
-        $item = $rep->getById($itemId);
-
-        if ($item == null)
-            return null;
-
-        return $item->createDTO();
-    }
-
-    /**
-     *
-     * @param int $trxId
+     * @param int $warehouseId
      * @param string $token
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\GenericTransaction
+     * @return NULL|\Inventory\Domain\Warehouse\GenericWarehouse
      */
-    public function getHeader($trxId, $token = null)
+    public function getHeader($warehouseId, $token = null)
     {
-        $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
-        return $rep->getHeaderById($trxId, $token);
+        $rep = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
+        return $rep->getById($warehouseId, $token);
     }
 
     /**
      *
-     * @param \Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO $dto
+     * @param \Inventory\Application\DTO\Warehouse\WarehouseDTO $dto
      *            ;
      * @param string $userId
      * @param boolean $isNew
@@ -151,24 +74,18 @@ class TransactionService extends AbstractService
         $dto->company = $companyId;
         $dto->createdBy = $userId;
 
-        $snapshot = TransactionSnapshotAssembler::createSnapshotFromDTO($dto);
-        $snapshot->docStatus = \Application\Domain\Shared\Constants::DOC_STATUS_DRAFT;
+        $snapshot = WarehouseSnapshotAssembler::createSnapshotFromDTO($dto);
 
-        $trx = TransactionFactory::createTransaction($snapshot->movementType);
-        if ($trx == null) {
-            $notification->addError("Transaction type is empty or not supported. " . $snapshot->movementType);
-            return $notification;
-        }
-
-        $trx->makeFromSnapshot($snapshot);
+        $aggregate = new GenericWarehouse();
+        $aggregate->makeFromSnapshot($snapshot);
 
         $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-        $trx->setDomainSpecificationFactory($domainSpecificationFactory);
+        $aggregate->setDomainSpecificationFactory($domainSpecificationFactory);
 
         $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
+        $aggregate->setSharedSpecificationFactory($sharedSpecificationFactory);
 
-        $notification = $trx->validateHeader($notification);
+        $notification = $aggregate->validateHeader($notification);
 
         if ($notification->hasErrors()) {
             return $notification;
@@ -180,13 +97,13 @@ class TransactionService extends AbstractService
 
         try {
 
-            $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
-            $trxId = $rep->storeHeader($trx);
+            $rep = new DoctrineWarehouseCmdRepository($this->getDoctrineEM());
+            $whId = $rep->store($aggregate);
 
-            $m = sprintf("[OK] WH Transacion # %s created", $trxId);
+            $m = sprintf("[OK] Warehouse # %s created", $whId);
 
-            $this->getEventManager()->trigger(TransactionCreatedEvent::EVENT_NAME, $trigger, array(
-                'trxId' => $trxId
+            $this->getEventManager()->trigger(WarehouseCreatedEvent::EVENT_NAME, $trigger, array(
+                'warehouseId' => $whId
             ));
 
             /*
@@ -217,29 +134,28 @@ class TransactionService extends AbstractService
 
     /**
      *
-     * @param int $itemId
-     * @param array $data
+     * @param int $id
+     * @param string $token
+     * @param WarehouseDTO $dto
      * @param int $userId
      * @param string $trigger
      * @return \Application\Notification
      */
-    public function updateHeader($trxId, $trxToken, $dto, $userId, $trigger = null)
+    public function updateHeader($id, $token, $dto, $userId, $trigger = null)
     {
         $notification = new Notification();
 
         if ($dto == null)
-            $notification->addError("Transaction is Empty");
+            $notification->addError("Warehouse is Empty");
 
         if ($userId == null)
             $notification->addError("User is not identified for this action");
 
-        $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
-        $trx = $rep->getHeaderById($trxId, $trxToken);
+        $rep = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
+        $aggregate = $rep->getById($id, $token);
 
-        var_dump($trxId);
-
-        if ($trx == null)
-            $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $trxId . $trxToken));
+        if ($aggregate == null)
+            $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $id . $token));
 
         if ($notification->hasErrors())
             return $notification;
@@ -252,17 +168,17 @@ class TransactionService extends AbstractService
 
             /**
              *
-             * @var TransactionSnapshot $snapshot ;
+             * @var WarehouseSnapshot $snapshot ;
              */
-            $snapshot = $trx->makeSnapshot();
+            $snapshot = $aggregate->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = TransactionSnapshotAssembler::updateSnapshotFromDTO($newSnapshot, $dto);
+            $newSnapshot = WarehouseSnapshotAssembler::updateSnapshotFromDTO($newSnapshot, $dto);
 
             $changeArray = $snapshot->compare($newSnapshot);
 
             if ($changeArray == null) {
-                $notification->addError("Nothing change on Transaction #" . $trxId);
+                $notification->addError("Nothing change on Warehouse #" . $id);
                 return $notification;
             }
 
@@ -271,33 +187,28 @@ class TransactionService extends AbstractService
             $newSnapshot->lastChangeOn = new \DateTime();
             $newSnapshot->revisionNo ++;
 
-            $newTrx = TransactionFactory::createTransaction($newSnapshot->movementType);
-
-            if ($newTrx == null) {
-                $notification->addError("Cant not create transaction type " . $newSnapshot->movementType);
-                return $notification;
-            }
-
-            $newTrx->makeFromSnapshot($newSnapshot);
+            $newAggregate = new GenericWarehouse();
+            $newAggregate->makeFromSnapshot($newSnapshot);
 
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-            $newTrx->setDomainSpecificationFactory($domainSpecificationFactory);
+            $newAggregate->setDomainSpecificationFactory($domainSpecificationFactory);
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-            $newTrx->setSharedSpecificationFactory($sharedSpecificationFactory);
+            $newAggregate->setSharedSpecificationFactory($sharedSpecificationFactory);
 
-            $notification = $newTrx->validateHeader($notification);
+            $notification = $newAggregate->validateHeader($notification);
 
             if ($notification->hasErrors()) {
                 return $notification;
             }
 
-            $rep->storeHeader($newTrx, False);
+            $cmdRep = new DoctrineWarehouseCmdRepository($this->getDoctrineEM());
+            $cmdRep->store($newAggregate);
 
-            $m = sprintf("Transaction #%s updated", $trxId);
+            $m = sprintf("Warehouse #%s updated", $id);
 
-            $this->getEventManager()->trigger(TransactionUpdatedEvent::EVENT_NAME, $trigger, array(
-                'transactionId' => $trxId
+            $this->getEventManager()->trigger(WarehouseUpdatedEvent::EVENT_NAME, $trigger, array(
+                'warehouseId' => $id
             ));
             /*
              * $changeOn = new \DateTime();
@@ -330,21 +241,21 @@ class TransactionService extends AbstractService
 
     /**
      *
-     * @param GenericTransaction $header
-     * @param TransactionRowDTO $rowDTO
+     * @param GenericWarehouse $header
+     * @param WarehouseDTO $rowDTO
      * @param int $userId
      * @param string $trigger
      * @return \Application\Notification
      */
-    public function createRow(GenericTransaction $header, $rowDTO, $userId, $trigger = null)
+    public function createLocation(GenericWarehouse $header, $rowDTO, $userId, $trigger = null)
     {
         $notification = new Notification();
 
-        if (! $header instanceof GenericTransaction)
-            $notification->addError(sprintf("Transaction header not valid! %s", ""));
+        if (! $header instanceof GenericWarehouse)
+            $notification->addError(sprintf("Warehouse header not valid! %s", ""));
 
-        if (! $rowDTO instanceof TransactionRowDTO)
-            $notification->addError(sprintf("No Row Input given! %s", ""));
+            if (! $rowDTO instanceof WarehouseDTO)
+            $notification->addError(sprintf("No location Input given! %s", ""));
 
         if ($userId == null)
             $notification->addError(sprintf("No user identified for this transaction %s", ""));

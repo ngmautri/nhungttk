@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 
 /**
@@ -117,6 +118,31 @@ abstract class AbstractTransaction extends AbstractEntity
     protected $company;
 
     protected $uuid;
+
+    // ========================
+    /**
+     *
+     * @var AbstractSpecificationFactory
+     */
+    protected $sharedSpecificationFactory;
+
+    /**
+     *
+     * @var \Inventory\Domain\AbstractSpecificationFactory
+     */
+    protected $domainSpecificationFactory;
+
+    /**
+     *
+     * @var TransactionCmdRepositoryInterface $cmdRepository;
+     */
+    protected $cmdRepository;
+
+    /**
+     *
+     * @var TransactionQueryRepositoryInterface $queryRepository;
+     */
+    protected $queryRepository;
 
     abstract public function specify();
 
@@ -936,5 +962,78 @@ abstract class AbstractTransaction extends AbstractEntity
     {
         $this->company = $company;
     }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
+     */
+    public function getSharedSpecificationFactory()
+    {
+        return $this->sharedSpecificationFactory;
+    }
+
+    /**
+     *
+     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
+     */
+    public function setSharedSpecificationFactory(AbstractSpecificationFactory $sharedSpecificationFactory)
+    {
+        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\AbstractSpecificationFactory
+     */
+    public function getDomainSpecificationFactory()
+    {
+        return $this->domainSpecificationFactory;
+    }
+
+    /**
+     *
+     * @param \Inventory\Domain\AbstractSpecificationFactory $domainSpecificationFactory
+     */
+    public function setDomainSpecificationFactory(AbstractSpecificationFactory $domainSpecificationFactory)
+    {
+        $this->domainSpecificationFactory = $domainSpecificationFactory;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCmdRepository()
+    {
+        return $this->cmdRepository;
+    }
+
+    /**
+     *
+     * @param TransactionCmdRepositoryInterface $cmdRepository
+     */
+    public function setCmdRepository(TransactionCmdRepositoryInterface $cmdRepository)
+    {
+        $this->cmdRepository = $cmdRepository;
+    }
+
+   /**
+    * 
+    * @return \Inventory\Domain\Warehouse\Transaction\TransactionQueryRepositoryInterface
+    */
+    public function getQueryRepository()
+    {
+        return $this->queryRepository;
+    }
+
+    /**
+     * 
+     * @param TransactionQueryRepositoryInterface $queryRepository
+     */
+    public function setQueryRepository(TransactionQueryRepositoryInterface $queryRepository)
+    {
+        $this->queryRepository = $queryRepository;
+    }
+
 
 }

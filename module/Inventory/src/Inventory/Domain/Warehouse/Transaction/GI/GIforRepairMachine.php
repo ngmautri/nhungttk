@@ -10,6 +10,7 @@ use Application\Notification;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
 use Inventory\Domain\Warehouse\Transaction\GR\GRFromTransferLocation;
+use Inventory\Domain\Warehouse\GenericWarehouse;
 
 /**
  * Machine ID is required, exchange part.
@@ -40,11 +41,20 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         // create new transaction
         
         /**
+         * 
+         * @var GenericWarehouse $wh
+         */
+        $wh = $this->getWarehouseQueryRepository()->getById($this->targetWarehouse);
+        
+        
+        /**
          *
          * @var TransactionSnapshot $newSnapshot
          */
         $newSnapshot = clone($this->makeSnapshot());
         $newSnapshot->remarks ="automatically generated.";
+        $newSnapshot->tartgetLocation = $wh->getReturnLocation();
+                
         
         $newTrx = new GRFromTransferLocation();
         $newTrx->makeFromSnapshot($newSnapshot);

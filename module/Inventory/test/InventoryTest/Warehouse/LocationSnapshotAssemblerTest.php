@@ -7,6 +7,11 @@ use Inventory\Domain\Warehouse\Transaction\GI\GIforRepairMachine;
 use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
 use Inventory\Domain\Warehouse\Location\LocationSnapshotAssembler;
 
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
 class WarehouseSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
 

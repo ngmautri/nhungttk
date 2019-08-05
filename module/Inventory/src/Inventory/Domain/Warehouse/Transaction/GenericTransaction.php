@@ -14,8 +14,9 @@ use Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface;
  */
 abstract class GenericTransaction extends AbstractTransaction
 {
+
     /**
-     * 
+     *
      * @var WarehouseQueryRepositoryInterface $warehouseQueryRepository;
      */
     protected $warehouseQueryRepository;
@@ -33,20 +34,17 @@ abstract class GenericTransaction extends AbstractTransaction
     protected $valuationService;
 
     /**
-     * 
+     *
      * @var int
      */
     public $totalActiveRows;
 
-    
     /**
-     * 
+     *
      * @var string
      */
     public $transtionRowsOutput;
 
-    
-  
     abstract public function prePost();
 
     abstract public function afterPost();
@@ -137,13 +135,12 @@ abstract class GenericTransaction extends AbstractTransaction
         if ($notification == null)
             $notification = new Notification();
 
-        if (!$this->cmdRepository instanceof TransactionCmdRepositoryInterface)
+        if (! $this->cmdRepository instanceof TransactionCmdRepositoryInterface)
             $notification->addError("Cmd repository is set");
-        
-        if (!$this->queryRepository instanceof TransactionQueryRepositoryInterface)
-                $notification->addError("Query repository is set");
-                
-            
+
+        if (! $this->queryRepository instanceof TransactionQueryRepositoryInterface)
+            $notification->addError("Query repository is set");
+
         $notification = $this->validateHeader($notification);
 
         if ($notification->hasErrors())
@@ -380,8 +377,6 @@ abstract class GenericTransaction extends AbstractTransaction
         return $notification;
     }
 
-  
-
     /**
      *
      * @return \Inventory\Domain\Service\ValuationServiceInterface
@@ -399,7 +394,7 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->valuationService = $valuationService;
     }
-    
+
     /**
      *
      * @return array
@@ -435,7 +430,7 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         return $this->transtionRowsOutput;
     }
-    
+
     /**
      *
      * @param mixed $transtionRowsOutput
@@ -444,9 +439,9 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->transtionRowsOutput = $transtionRowsOutput;
     }
-    
+
     /**
-     * 
+     *
      * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
      */
     public function getWarehouseQueryRepository()

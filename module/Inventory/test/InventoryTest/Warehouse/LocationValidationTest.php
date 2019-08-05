@@ -10,13 +10,17 @@ use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use PHPUnit_Framework_TestCase;
+use Inventory\Domain\Warehouse\Location\DefaultLocation;
+use Inventory\Application\DTO\Warehouse\Location\LocationDTOAssembler;
+use Inventory\Domain\Warehouse\Location\LocationSnapshotAssembler;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseValidationAssemblerTest extends PHPUnit_Framework_TestCase
+class ValidationAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -38,30 +42,41 @@ class WarehouseValidationAssemblerTest extends PHPUnit_Framework_TestCase
     {
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-
-        $data = array();
-        $data["whName"] = "NMT";
-        $data["whCode"] = "";
-        $data["company"] = 2;
-        $data["createdBy"] = 391;
-     
-        // create new transaction.
-        $dto = WarehouseDTOAssembler::createDTOFromArray($data);
-        // var_dump($dto);
-
-        $snapshot = WarehouseSnapshotAssembler::createSnapshotFromArray($data);
         
-        $wh = new GenericWarehouse();
+        /** @var EntityManager $em ; */
+        $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        
+        $repository = new DoctrineWarehouseQueryRepository($em);
+        $wh = $repository->getById(13);
+        
         $repository = new DoctrineWarehouseCmdRepository($em);
         $wh->setCmdRepository($repository);
         
         $repository = new DoctrineWarehouseQueryRepository($em);
         $wh->setQueryRepository($repository);
+   
         $sharedSpecificationFactory = new ZendSpecificationFactory($em);
         $wh->setSharedSpecificationFactory($sharedSpecificationFactory);
         
-        $wh->makeFromSnapshot($snapshot);
-        var_dump($wh->validate());
+        //var_dump($wh->makeDTO());
+        
+        
+        $data = array();
+        //
+        $data["locationName"] = DefaultLocation::ROOT_LOCATION;
+        $data["locationName"] = "asddsaf";
+        $data["createdBy"] = 39;
+        $data["parentId"] = 47;
+        
+        // create new transaction.
+        $dto = LocationDTOAssembler::createDTOFromArray($data);
+        // var_dump($dto);
+
+        $snapshot = LocationSnapshotAssembler::createSnapshotFromArray($data);
+        $location = new GenericLocation();
+        $location->makeFromSnapshot($snapshot);
+        var_dump($wh->validateLocation($location));
+     
         
       
         

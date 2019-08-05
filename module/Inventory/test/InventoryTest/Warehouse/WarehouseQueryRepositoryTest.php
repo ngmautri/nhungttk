@@ -35,7 +35,7 @@ class WarehouseQueryRepositoryAssemblerTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $repository = new DoctrineWarehouseQueryRepository($em);
-        var_dump($repository->getById(12));      
+        var_dump($repository->getById(12)->validate());      
         
         
     }

@@ -17,7 +17,7 @@ class LocationSnapshotAssembler
      */
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new LocationSnapshot;
+        $itemSnapshot = new LocationSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -37,7 +37,7 @@ class LocationSnapshotAssembler
         if ($data == null)
             return null;
 
-            $snapShot = new LocationSnapshot();
+        $snapShot = new LocationSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
@@ -52,18 +52,17 @@ class LocationSnapshotAssembler
         return $snapShot;
     }
 
-   
-   /**
-    * 
-    * @param LocationDTO $dto
-    * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
-    */
+    /**
+     *
+     * @param LocationDTO $dto
+     * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
+     */
     public static function createSnapshotFromDTO(LocationDTO $dto)
     {
         if (! $dto instanceof LocationDTO)
             return null;
 
-            $snapShot = new LocationSnapshot();
+        $snapShot = new LocationSnapshot();
 
         $reflectionClass = new \ReflectionClass(get_class($dto));
         $itemProperites = $reflectionClass->getProperties();
@@ -79,7 +78,7 @@ class LocationSnapshotAssembler
     }
 
     /**
-     * 
+     *
      * @param LocationDTO $snapShot
      * @param LocationSnapshot $dto
      * @return NULL|\Inventory\Application\DTO\Warehouse\Location\LocationDTO|\Inventory\Domain\Warehouse\Location\LocationSnapshot
@@ -113,12 +112,11 @@ class LocationSnapshotAssembler
             "isStocked",
             "isFixedAsset",
             "isSparepart",
-            "itemTypeId",
-            
+            "itemTypeId"
         );
 
-        //$dto->isSparepart;
-        
+        // $dto->isSparepart;
+
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
@@ -135,7 +133,7 @@ class LocationSnapshotAssembler
     }
 
     /**
-     * 
+     *
      * @param GenericLocation $obj
      * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
      */
@@ -162,10 +160,9 @@ class LocationSnapshotAssembler
                 } else {
                     $snapShot->$propertyName = $property->getValue($obj);
                 }
-                
             }
         }
-          
+
         return $snapShot;
     }
 }

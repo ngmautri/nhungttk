@@ -1,15 +1,10 @@
 <?php
 namespace EmailTest\ParserTest;
 
-use PHPUnit_Framework_TestCase;
-use Doctrine\ORM\EntityManager;
-use InventoryTest\Bootstrap;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Ramsey\Uuid\Uuid;
-use Inventory\Domain\Item\Factory\InventoryItemFactory;
-use Inventory\Application\Service\Item\ItemCRUDService;
-use Inventory\Domain\Item\ItemType;
 use Mail\MailParser;
+use PHPUnit_Framework_TestCase;
+use PhpMimeMailParser\Parser;
+use PhpMimeMailParser\Charset;
 
 class EmailParserTest extends PHPUnit_Framework_TestCase
 {
@@ -33,9 +28,26 @@ class EmailParserTest extends PHPUnit_Framework_TestCase
     {
             $root = realpath(dirname(dirname(dirname(__FILE__))));
         
-            $file = $root . '/Email/DKSH Lao account.msg';
-            $email = new MailParser(file_get_contents($file));
-            //var_dump($email);
+            $file = $root . '/Email/1.msg';
+            //echo $file;
+            $parser = new Parser(new Charset("utf-8"));
+            // 1. Specify a file path (string)
+            //$parser->setPath($file);
+            
+            $parser->setText(file_get_contents($file));
+             
+            var_dump($parser->getRawHeader("subject"));       
+            
+            $text = $parser->getMessageBody('text');
+            //var_dump($text);
         
+            $attachments = $parser->getAttachments();
+            
+            foreach ($attachments as $attachment) {
+                //echo 'Filename : '.$attachment->getFilename().'<br />';
+                // return logo.jpg
+               
+            }
+            
     }
 }

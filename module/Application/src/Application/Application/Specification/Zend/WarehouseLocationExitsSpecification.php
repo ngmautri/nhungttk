@@ -16,18 +16,15 @@ class WarehouseLocationExitsSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-       
         $warehouseId = null;
         if (isset($subject["warehouseId"])) {
             $warehouseId = $subject["warehouseId"];
         }
-        
+
         $locationId = null;
         if (isset($subject["locationId"])) {
             $locationId = $subject["locationId"];
         }
-        
-
         if ($this->doctrineEM == null || $warehouseId == null || $locationId == null) {
             return false;
         }

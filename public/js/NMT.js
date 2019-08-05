@@ -5,11 +5,16 @@
 
 
 function submitForm(form_id){
+	
 	var form_id_tmp;
 	$('#b_modal_no_header').modal();
 	form_id_tmp = '#' + form_id;
 	$(form_id_tmp).submit();
+	//$(form_id_tmp)[0].reset();
+	//document.getElementById(form_id).reset();
+	
 }
+
 
 function submitAjaxForm(url, form_id){
 	var form_id_tmp;

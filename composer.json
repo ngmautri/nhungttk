@@ -20,7 +20,8 @@
 		"endroid/qr-code" : "2.5.1",
 		"nesbot/carbon" : "1.37.1",
 		"forked/mailreader" : "~1.0",
-		"php-mime-mail-parser/php-mime-mail-parser" : "3.0.4"
+		"php-mime-mail-parser/php-mime-mail-parser" : "3.0.4",
+		"hfig/mapi" : "1.0.3"
 	},
 	"minimum-stability" : "stable",
 	"autoload" : {

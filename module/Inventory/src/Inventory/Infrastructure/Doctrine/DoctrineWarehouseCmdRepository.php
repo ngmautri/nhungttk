@@ -6,8 +6,10 @@ use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Warehouse\AbstractWarehouse;
 use Inventory\Domain\Warehouse\WarehouseCmdRepositoryInterface;
 use Inventory\Domain\Warehouse\Location\DefaultLocation;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Ramsey;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 
 /**
  *
@@ -167,6 +169,64 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
 
     /**
      *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\WarehouseCmdRepositoryInterface::storeLocation()
+     */
+    public function storeLocation(GenericLocation $location)
+    {
+        if ($location == null)
+            throw new InvalidArgumentException("Location is empty");
+
+        /**
+         *
+         * @var LocationSnapshot $snapshot ;
+         */
+        $snapshot = $location->makeSnapshot();
+
+        if ($snapshot == null)
+            throw new InvalidArgumentException("LocationSnapshotcan not be created");
+
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryWarehouseLocation $entity ;
+         */
+        $entity = null;
+
+        if ($location->getId() > 0) {
+
+            $entity = $this->doctrineEM->find("\Application\Entity\NmtInventoryWarehouseLocation", $location->getId());
+
+            if ($entity == null)
+                throw new InvalidArgumentException("Location can't be retrieved.");
+
+            $entity->setLastChangeOn(new \Datetime());
+            if ($entity->getToken() == null) {
+                $entity->setToken($entity->getUuid());
+            }
+
+            if ($entity->getUuid() == null) {
+                $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
+            }
+        } else {
+
+            $entity = new \Application\Entity\NmtInventoryWarehouseLocation();
+            $entity->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
+            $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
+        }
+
+        /**
+         * Mapping
+         */
+        $entity = $this->mapSnapshotEntity($snapshot, $entity);
+
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+
+        return $entity->getId();
+    }
+
+    /**
+     *
      * @param WarehouseSnapshot $snapshot
      * @param \Application\Entity\NmtInventoryWarehouse $entity
      * @return NULL|\Application\Entity\NmtInventoryWarehouse
@@ -232,7 +292,7 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->find($snapshot->whCountry);
             $entity->setWhCountry($obj);
         }
-        
+
         if ($snapshot->createdBy > 0) {
             /**
              *
@@ -262,4 +322,74 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
 
         return $entity;
     }
+
+    /**
+     *
+     * @param LocationSnapshot $snapshot
+     * @param \Application\Entity\NmtInventoryWarehouseLocation $entity
+     * @return NULL|\Application\Entity\NmtInventoryWarehouseLocation
+     */
+    private function mapLocationSnapshotEntity(LocationSnapshot $snapshot, \Application\Entity\NmtInventoryWarehouseLocation $entity)
+    {
+        if ($snapshot == null || $entity == null)
+            return null;
+
+        $entity->setId($snapshot->id);
+        
+        $entity->setCreatedOn($snapshot->createdOn);
+
+        $entity->setSysNumber($snapshot->sysNumber);
+        $entity->setToken($snapshot->token);
+        $entity->setLastChangeOn($snapshot->lastChangeOn);
+        $entity->setRevisionNo($snapshot->revisionNo);
+        $entity->setRemarks($snapshot->remarks);
+        $entity->setIsSystemLocation($snapshot->isSystemLocation);
+        $entity->setIsReturnLocation($snapshot->isReturnLocation);
+        $entity->setIsScrapLocation($snapshot->isScrapLocation);
+        $entity->setIsRootLocation($snapshot->isRootLocation);
+        $entity->setLocationName($snapshot->locationName);
+        $entity->setLocationCode($snapshot->locationCode);
+        $entity->setParentId($snapshot->parentId);
+        $entity->setLocationType($snapshot->locationType);
+        $entity->setIsActive($snapshot->isActive);
+        $entity->setIsLocked($snapshot->isLocked);
+        $entity->setPath($snapshot->path);
+        $entity->setPathDepth($snapshot->pathDepth);
+        $entity->setHasMember($snapshot->hasMember);
+        $entity->setUuid($snapshot->uuid);
+
+        if ($snapshot->createdBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
+            $entity->setCreatedBy($obj);
+        }
+
+        if ($snapshot->lastChangeBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastChangeBy);
+            $entity->setLastChangeBy($obj);
+        }
+
+        if ($snapshot->warehouse > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouse $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($snapshot->warehouse);
+            $entity->setWarehouse($obj);
+        }
+
+        // $entity->setCreatedBy($snapshot->createdBy);
+        // $entity->setLastChangeBy($snapshot->lastChangeBy);
+        // $entity->setWarehouse($snapshot->warehouse);
+
+        return $entity;
+    }
 }
+  

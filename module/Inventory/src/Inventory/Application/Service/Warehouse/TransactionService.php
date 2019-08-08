@@ -76,7 +76,10 @@ class TransactionService extends AbstractService
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
             $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
 
-            $notification = $trx->post();
+            $sourceWH = $whQueryRep->getById($trx->getWarehouse());
+            $targetWH = $whQueryRep->getById($trx->getTargetWarehouse());
+
+            $notification = $trx->post($sourceWH, $targetWH);
 
             if ($notification->hasErrors()) {
                 return $notification;
@@ -236,7 +239,7 @@ class TransactionService extends AbstractService
         $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
         $trx = $rep->getHeaderById($trxId, $trxToken);
 
-        //var_dump($trxId);
+        // var_dump($trxId);
 
         if ($trx == null)
             $notification->addError(sprintf("Transaction %s can not be retrieved or empty", $trxId . $trxToken));

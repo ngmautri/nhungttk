@@ -2,9 +2,9 @@
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Notification;
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Service\ValuationServiceInterface;
+use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface;
 
 /**
@@ -45,11 +45,11 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     public $transtionRowsOutput;
 
-    abstract public function prePost();
+    abstract protected function prePost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh =null);
 
-    abstract public function afterPost();
+    abstract protected function afterPost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh =null);
 
-    abstract public function post();
+    abstract public function post(GenericWarehouse $sourceWh, GenericWarehouse $targetWh =null);
 
     abstract public function specificValidation($notification = null);
 

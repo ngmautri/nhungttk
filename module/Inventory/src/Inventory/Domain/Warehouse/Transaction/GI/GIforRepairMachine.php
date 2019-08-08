@@ -11,6 +11,7 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
 use Inventory\Domain\Warehouse\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 
 /**
  * Machine ID is required, exchange part.
@@ -27,12 +28,12 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_OUT;
     }
 
-    
-
-    public function prePost()
-    {}
-    
-    public function afterPost()
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
+     */
+    protected function afterPost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
     {
         // returning items
         
@@ -41,23 +42,38 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         // create new transaction
         
         /**
-         * 
-         * @var GenericWarehouse $wh
+         *
+         * @var GenericLocation $location
          */
-        $wh = $this->getWarehouseQueryRepository()->getById($this->targetWarehouse);
-        
-        
+        $location = $sourceWh->getReturnLocation();
+                
         /**
          *
          * @var TransactionSnapshot $newSnapshot
          */
         $newSnapshot = clone($this->makeSnapshot());
         $newSnapshot->remarks ="automatically generated.";
-        $newSnapshot->tartgetLocation = $wh->getReturnLocation();
+        $newSnapshot->tartgetLocation = $location->getId();
                 
-        
         $newTrx = new GRFromTransferLocation();
         $newTrx->makeFromSnapshot($newSnapshot);
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
+     */
+    protected function prePost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
+    {}
+    
+
+    public function prePost1()
+    {}
+    
+    public function afterPost1()
+    {
+       
         
     }
 
@@ -111,4 +127,5 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
 
         return $notification;
     }
+ 
 }

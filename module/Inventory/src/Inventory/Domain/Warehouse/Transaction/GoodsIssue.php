@@ -1,7 +1,9 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-use Application\Notification;
+use Inventory\Domain\Warehouse\GenericWarehouse;
+use Doctrine\DBAL\Driver\AbstractDriverException;
+use Inventory\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -16,8 +18,16 @@ abstract class GoodsIssue extends GenericTransaction
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::post()
      */
-    public function post()
+    public function post(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
     {
+        if($sourceWh == null){
+            throw new InvalidArgumentException("Source WH invalid");
+        }
+        
+        if($sourceWh->getId() != $this->warehouse){
+            throw new InvalidArgumentException("Source WH invalid");
+        }
+        
         // 1.validate header
         $notification = $this->validate();
 
@@ -31,7 +41,7 @@ abstract class GoodsIssue extends GenericTransaction
          * Template Method
          * ===============
          */
-        $this->prePost();
+            $this->prePost($sourceWh,$targetWh);
 
         // 2. caculate cogs
         foreach ($this->transactionRows as $row) {
@@ -51,7 +61,7 @@ abstract class GoodsIssue extends GenericTransaction
          * Template Method
          * ==============
          */
-        $this->afterPost();
+        $this->afterPost($sourceWh,$targetWh);
 
         // 4. store transaction
 
@@ -101,7 +111,7 @@ abstract class GoodsIssue extends GenericTransaction
             "movementDate" => $this->movementDate,
             "docQuantity" => $row->getDocQuantity()
         );
-         
+
         if (! $specDomain->isSatisfiedBy($subject))
             $notification->addError(sprintf("Can not issue this quantity %s on %s (WH #%s ,  Item #%s)", $row->getDocQuantity(), $this->movementDate, $this->warehouse, $row->getItem()));
 

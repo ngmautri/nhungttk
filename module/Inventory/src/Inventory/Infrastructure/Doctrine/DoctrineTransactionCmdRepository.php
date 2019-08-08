@@ -24,21 +24,35 @@ use Ramsey;
 class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implements TransactionCmdRepositoryInterface
 {
 
-  
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::store()
+     * @see \Inventory\Domain\Warehouse\Transaction\TransactionCmdRepositoryInterface::store()
      */
-    public function store(GenericTransaction $transactionAggregate, $generateSysNumber = True)
-    {}
+    public function store(GenericTransaction $transactionAggregate, $generateSysNumber = false, $isPosting = false)
+    {
+        // save header.
+        $id = $this->storeHeader($transactionAggregate, $generateSysNumber, $isPosting);
+
+        foreach ($transactionAggregate->getRows() as $row) {
+            /**
+             *
+             * @var TransactionRow $row
+             */
+            $snapshot = $row->makeSnapshot();
+            $snapshot->movement = $id;
+
+            $row->makeFromSnapshot($snapshot);
+            $this->storeRow($transactionAggregate, $row, $isPosting);
+        }
+    }
 
     /**
      *
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::storeRow()
      */
-    public function storeRow(GenericTransaction $trx, TransactionRow $row)
+    public function storeRow(GenericTransaction $trx, TransactionRow $row, $isPosting = false)
     {
         if ($row == null)
             throw new InvalidArgumentException("Inventory transaction row is empty");
@@ -95,7 +109,14 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             }
             $entity->setCreatedOn(new \DateTime());
         }
-
+        
+        if ($isPosting) {
+            $entity->setLastChangeOn(new \DateTime());
+            $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
+            $entity->setIsDraft(0);
+            $entity->setIsPosted(1);
+        }
+      
         // $entity->setId($snapshot->id);
         // $entity->setToken($snapshot->token);
         // $entity->setChecksum($snapshot->checksum);
@@ -421,7 +442,10 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
         if ($entity == null)
             throw new InvalidArgumentException("Transction Entity not retrieved.");
 
-        $entity->setSysNumber($this->generateSysNumber($entity));
+        if ($generateSysNumber) {
+            $entity->setSysNumber($this->generateSysNumber($entity));
+        }
+
         $entity->setLastChangeOn(new \DateTime());
         $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
         $entity->setIsDraft(0);
@@ -461,7 +485,7 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::storeHeader()
      */
-    public function storeHeader(GenericTransaction $trxAggregate)
+    public function storeHeader(GenericTransaction $trxAggregate, $generateSysNumber = false, $isPosting = false)
     {
         if ($trxAggregate == null)
             throw new InvalidArgumentException("Transaction is empty");
@@ -504,6 +528,17 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
                 }
             }
             $entity->setCreatedOn(new \DateTime());
+        }
+
+        if ($isPosting) {
+            $entity->setLastChangeOn(new \DateTime());
+            $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
+            $entity->setIsDraft(0);
+            $entity->setIsPosted(1);
+        }
+
+        if ($generateSysNumber) {
+            $entity->setSysNumber($this->generateSysNumber($entity));
         }
 
         if ($snapshot->warehouse > 0) {

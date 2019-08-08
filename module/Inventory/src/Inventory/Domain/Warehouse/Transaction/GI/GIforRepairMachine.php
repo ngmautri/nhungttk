@@ -12,6 +12,8 @@ use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
 use Inventory\Domain\Warehouse\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
+use Inventory\Domain\Warehouse\Transaction\GR\GRFromExchange;
+use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot;
 
 /**
  * Machine ID is required, exchange part.
@@ -55,8 +57,27 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         $newSnapshot->remarks ="automatically generated.";
         $newSnapshot->tartgetLocation = $location->getId();
                 
-        $newTrx = new GRFromTransferLocation();
+        $newTrx = new GRFromExchange();
         $newTrx->makeFromSnapshot($newSnapshot);
+        
+        // create row
+        foreach ($this->getRows() as $row){
+            /**
+             *
+             * @var TransactionRowSnapshot $newRowSnapshot ;
+             */
+            $newRowSnapshot = clone($row->makeSnapshot());
+            $newRowSnapshot->whLocation =  $location->getId();
+            $newRowSnapshot->cogsDoc=0;
+            $newRowSnapshot->cogsLocal=0;
+            $newRowSnapshot->flow = TransactionFlow::WH_TRANSACTION_IN;
+            
+            $newTransactionRow = new TransactionRow();
+            $newTransactionRow->makeFromSnapshot($newRowSnapshot);
+            $newTrx->addRow($newTransactionRow);            
+        }
+        
+        $this->cmdRepository->store($newTrx,true, true);
     }
     
     /**

@@ -8,12 +8,12 @@ namespace Inventory\Domain\Warehouse\Transaction;
  */
 Interface TransactionCmdRepositoryInterface
 {
-    public function store(GenericTransaction $trx, $generateSysNumber = True);
-  
+
+    public function store(GenericTransaction $trx, $generateSysNumber = false, $isPosting = false);
+
     public function post(GenericTransaction $trx, $generateSysNumber = True);
-    
-    public function storeHeader(GenericTransaction $trxAggregate);
-    
-    public function storeRow(GenericTransaction $trx, TransactionRow $row);
-    
+
+    public function storeHeader(GenericTransaction $trxAggregate, $generateSysNumber = false, $isPosting = false);
+
+    public function storeRow(GenericTransaction $trx, TransactionRow $row, $isPosting = false);
 }

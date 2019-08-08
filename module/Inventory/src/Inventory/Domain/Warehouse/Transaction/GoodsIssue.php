@@ -4,6 +4,7 @@ namespace Inventory\Domain\Warehouse\Transaction;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Doctrine\DBAL\Driver\AbstractDriverException;
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Application\Notification;
 
 /**
  *
@@ -56,6 +57,9 @@ abstract class GoodsIssue extends GenericTransaction
             $snapshot->cogsLocal = $cogs;
             $row->makeFromSnapshot($snapshot);
         }
+        
+        $this->cmdRepository->post($this,true);
+        
 
         /**
          * Template Method

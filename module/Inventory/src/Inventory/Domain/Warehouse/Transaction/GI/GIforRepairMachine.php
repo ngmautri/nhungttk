@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
+use Inventory\Domain\Service\TransactionPostingService;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
@@ -31,72 +32,69 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
      */
-    protected function afterPost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
+    protected function afterPost(TransactionPostingService $postingService = null)
     {
         // returning items
-        
+
         // check if warehouse has returning location
-        
+
         // create new transaction
-        
+        $sourceWH = $postingService->getWhQueryRepository()->getById($this->getWarehouse());
+
         /**
          *
          * @var GenericLocation $location
          */
-        $location = $sourceWh->getReturnLocation();
-                
+        $location = $sourceWH->getReturnLocation();
+
         /**
          *
          * @var TransactionSnapshot $newSnapshot
          */
-        $newSnapshot = clone($this->makeSnapshot());
-        $newSnapshot->remarks ="automatically generated.";
+        $newSnapshot = clone ($this->makeSnapshot());
+        $newSnapshot->remarks = "automatically generated.";
         $newSnapshot->tartgetLocation = $location->getId();
-                
+
         $newTrx = new GRFromExchange();
         $newTrx->makeFromSnapshot($newSnapshot);
-        
+
         // create row
-        foreach ($this->getRows() as $row){
+        foreach ($this->getRows() as $row) {
             /**
              *
              * @var TransactionRowSnapshot $newRowSnapshot ;
              */
-            $newRowSnapshot = clone($row->makeSnapshot());
-            $newRowSnapshot->whLocation =  $location->getId();
-            $newRowSnapshot->cogsDoc=0;
-            $newRowSnapshot->cogsLocal=0;
+            $newRowSnapshot = clone ($row->makeSnapshot());
+            $newRowSnapshot->whLocation = $location->getId();
+            $newRowSnapshot->cogsDoc = 0;
+            $newRowSnapshot->cogsLocal = 0;
             $newRowSnapshot->flow = TransactionFlow::WH_TRANSACTION_IN;
-            
+
             $newTransactionRow = new TransactionRow();
             $newTransactionRow->makeFromSnapshot($newRowSnapshot);
-            $newTrx->addRow($newTransactionRow);            
+            $newTrx->addRow($newTransactionRow);
         }
-        
-        $this->cmdRepository->store($newTrx,true, true);
+
+        $postingService->getTransactionCmdRepository()->store($newTrx, true, true);
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
      */
     protected function prePost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
     {}
-    
 
     public function prePost1()
     {}
-    
+
     public function afterPost1()
-    {
-       
-        
-    }
+    {}
 
     public function specificValidation($notification = null)
     {}

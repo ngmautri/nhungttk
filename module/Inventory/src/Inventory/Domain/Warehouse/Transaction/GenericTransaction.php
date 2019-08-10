@@ -6,6 +6,7 @@ use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Service\ValuationServiceInterface;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface;
+use Inventory\Domain\Service\TransactionPostingService;
 
 /**
  *
@@ -34,10 +35,19 @@ abstract class GenericTransaction extends AbstractTransaction
     protected $valuationService;
 
     /**
+     * 
+     * @var array
+     */
+    protected $recoredEvents;
+    
+    
+    /**
      *
      * @var int
      */
     public $totalActiveRows;
+    
+    
 
     /**
      *
@@ -45,11 +55,11 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     public $transtionRowsOutput;
 
-    abstract protected function prePost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh =null);
+    abstract protected function prePost(TransactionPostingService $postingService = null);
 
-    abstract protected function afterPost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh =null);
+    abstract protected function afterPost(TransactionPostingService $postingService = null);
 
-    abstract public function post(GenericWarehouse $sourceWh, GenericWarehouse $targetWh =null);
+    abstract public function post(TransactionPostingService $postingService = null);
 
     abstract public function specificValidation($notification = null);
 
@@ -457,6 +467,14 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->warehouseQueryRepository = $warehouseQueryRepository;
     }
+    /**
+     * @return \Inventory\Domain\Warehouse\Transaction\arrau
+     */
+    public function getRecoredEvents()
+    {
+        return $this->recoredEvents;
+    }
+
 
     
 }

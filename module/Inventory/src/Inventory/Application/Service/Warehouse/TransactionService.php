@@ -29,6 +29,8 @@ use Inventory\Domain\Event\TransactionUpdatedEvent;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
+use Inventory\Domain\Event\TransactionPostedEvent;
+use Inventory\Domain\Service\TransactionPostingService;
 
 /**
  *
@@ -76,16 +78,27 @@ class TransactionService extends AbstractService
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
             $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
 
-            $sourceWH = $whQueryRep->getById($trx->getWarehouse());
-            $targetWH = $whQueryRep->getById($trx->getTargetWarehouse());
+            $postingService = new TransactionPostingService($rep, $whQueryRep);
 
-            $notification = $trx->post($sourceWH, $targetWH);
+            $notification = $trx->post($postingService);
 
             if ($notification->hasErrors()) {
                 return $notification;
             }
 
             $rep->post($trx);
+
+            // event
+
+            if (count($trx->getRecoredEvents() > 0)) {
+
+                $dispatcher = new EventDispatcher();
+
+                foreach ($trx->getRecoredEvents() as $event) {
+                    $dispatcher->addSubscriber(new ItemCreatedEventHandler());
+                    $dispatcher->dispatch(TransactionPostedEvent::EVENT_NAME, $event);
+                }
+            }
 
             $this->getDoctrineEM()
                 ->getConnection()

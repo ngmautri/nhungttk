@@ -13,7 +13,6 @@ use Inventory\Domain\Warehouse\Validation\GeneralLocationValidation;
  */
 class GenericWarehouse extends AbstractWarehouse
 {
-
     protected $locations;
 
     protected $rootLocation;
@@ -21,6 +20,8 @@ class GenericWarehouse extends AbstractWarehouse
     protected $returnLocation;
 
     protected $scrapLocation;
+    
+    
 
     /**
      *

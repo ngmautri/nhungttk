@@ -1,10 +1,12 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
+use Inventory\Domain\Service\TransactionPostingService;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Doctrine\DBAL\Driver\AbstractDriverException;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Application\Notification;
+use Inventory\Domain\Event\TransactionPostedEvent;
 
 /**
  *
@@ -19,16 +21,13 @@ abstract class GoodsIssue extends GenericTransaction
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::post()
      */
-    public function post(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
+    public function post(TransactionPostingService $postingService = null)
     {
-        if($sourceWh == null){
-            throw new InvalidArgumentException("Source WH invalid");
+        if($postingService == null){
+            throw new InvalidArgumentException("Posting service not found");
         }
         
-        if($sourceWh->getId() != $this->warehouse){
-            throw new InvalidArgumentException("Source WH invalid");
-        }
-        
+         
         // 1.validate header
         $notification = $this->validate();
 
@@ -42,7 +41,7 @@ abstract class GoodsIssue extends GenericTransaction
          * Template Method
          * ===============
          */
-            $this->prePost($sourceWh,$targetWh);
+            $this->prePost($postingService);
 
         // 2. caculate cogs
         foreach ($this->transactionRows as $row) {
@@ -58,17 +57,21 @@ abstract class GoodsIssue extends GenericTransaction
             $row->makeFromSnapshot($snapshot);
         }
         
-        $this->cmdRepository->post($this,true);
+        //$this->cmdRepository->post($this,true);
         
 
         /**
          * Template Method
          * ==============
          */
-        $this->afterPost($sourceWh,$targetWh);
+        $this->afterPost($postingService);
 
         // 4. store transaction
-
+        
+        
+        // Recording Events
+        $this->recoredEvents[] = new TransactionPostedEvent($this);
+        
         return $notification;
     }
 

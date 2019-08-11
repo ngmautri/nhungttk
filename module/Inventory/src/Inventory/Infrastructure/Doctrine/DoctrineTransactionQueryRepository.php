@@ -346,27 +346,81 @@ class DoctrineTransactionQueryRepository extends AbstractDoctrineRepository impl
         if ($entity->getVendorInvoice() !== null) {
             $snapshot->vendorInvoice = $entity->getVendorInvoice()->getId();
         }
-
-        // $snapshot->changeBy;
-        // $snapshot->costCenter;
-        // $snapshot->currency;
-        // $snapshot->gr;
-        // $snapshot->grRow;
-        // $snapshot->invoiceRow;
-        // $snapshot->issueFor;
-        // $snapshot->item;
-        // $snapshot->localCurrency;
-        // $snapshot->movement;
-        // $snapshot->po;
-        // $snapshot->poRow;
-        // $snapshot->postingPeriod;
-        // $snapshot->pr;
-        // $snapshot->prRow;
-        // $snapshot->project;
-        // $snapshot->vendor;
-        // $snapshot->vendorInvoice;
-        // $snapshot->wh;
-        // $snapshot->whLocation;
+        
+        if ($entity->getGrRow() !== null) {
+            $snapshot->grRow = $entity->getGrRow()->getId();
+        }
+        
+        if ($entity->getDocCurrency() !== null) {
+            $snapshot->docCurrency = $entity->getDocCurrency()->getId();
+        }
+        
+        if ($entity->getProject() !== null) {
+            $snapshot->project = $entity->getProject()->getId();
+        }
+        
+        if ($entity->getDocUom() !== null) {
+            $snapshot->docUom = $entity->getDocUom()->getId();
+        }
+        
+        
+        if ($entity->getPrRow() !== null) {
+            $snapshot->prRow = $entity->getPrRow()->getId();
+        }
+        
+        if ($entity->getPmtMethod() !== null) {
+            $snapshot->pmtMethod = $entity->getPmtMethod()->getId();
+        }
+        //$snapshot->createdBy= $entity->getCreatedBy();
+        //$snapshot->lastChangeBy= $entity->getLastChangeBy();
+        //$snapshot->item= $entity->getItem();
+        //$snapshot->pr= $entity->getPr();
+        //$snapshot->po= $entity->getPo();
+        //$snapshot->vendorInvoice= $entity->getVendorInvoice();
+        //$snapshot->poRow= $entity->getPoRow();
+        //$snapshot->grRow= $entity->getGrRow();
+        //$snapshot->inventoryGi= $entity->getInventoryGi();
+        //$snapshot->inventoryGr= $entity->getInventoryGr();
+        //$snapshot->inventoryTransfer= $entity->getInventoryTransfer();
+        //$snapshot->wh= $entity->getWh();
+        //$snapshot->gr= $entity->getGr();
+        //$snapshot->movement= $entity->getMovement();
+        //$snapshot->issueFor= $entity->getIssueFor();
+        //$snapshot->docCurrency= $entity->getDocCurrency();
+        //$snapshot->localCurrency= $entity->getLocalCurrency();
+        //$snapshot->project= $entity->getProject();
+        //$snapshot->costCenter= $entity->getCostCenter();
+        //$snapshot->docUom= $entity->getDocUom();
+        
+        //$snapshot->postingPeriod= $entity->getPostingPeriod();
+        //$snapshot->whLocation= $entity->getWhLocation();
+        //$snapshot->prRow= $entity->getPrRow();
+        //$snapshot->vendor= $entity->getVendor();
+        //$snapshot->currency= $entity->getCurrency();
+        //$snapshot->pmtMethod= $entity->getPmtMethod();
+        //$snapshot->invoiceRow= $entity->getInvoiceRow();
+        
+        
+        // Mapping Date
+        // =====================
+        
+        if (! $entity->getTrxDate() == null) {
+            $snapshot->trxDate = $entity->getTrxDate()->format("Y-m-d");
+        }
+        
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
+        }
+        
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
+        }
+        
+        
+        if (! $entity->getChangeOn() == null) {
+            $snapshot->changeOn = $entity->getChangeOn()->format("Y-m-d");
+        }
+              
 
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();

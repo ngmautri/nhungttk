@@ -14,6 +14,7 @@ use PHPUnit_Framework_TestCase;
 use Inventory\Application\Service\Warehouse\TransactionService;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
 use Inventory\Application\DTO\Warehouse\Transaction\Output\TransactionRowOutputStrategy;
+use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
 
 class TransactionRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -37,9 +38,9 @@ class TransactionRepositoryTest extends PHPUnit_Framework_TestCase
     {
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-        $rep = new DoctrineTransactionRepository($em);
-        $trx = $rep->getById(699);        
-        var_dump($trx);
+        $rep = new DoctrineTransactionQueryRepository($em);
+        $trx = $rep->getById(760);        
+        var_dump($trx->getRows());
         
        /*  $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
         $trx->setDomainSpecificationFactory($domainSpecificationFactory);

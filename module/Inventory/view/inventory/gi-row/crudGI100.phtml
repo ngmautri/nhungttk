@@ -2,8 +2,6 @@
 use Inventory\Domain\Item\ItemType;
 use Inventory\Domain\Item\MonitorMethod;
 
-
-
 /**
  *
  * @var \Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO $headerDTO ;
@@ -130,9 +128,9 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
 								<div class="col-sm-3">
 									<input tabindex="2" class="form-control" type="text"
 										id="item_name" placeholder="Enter keyword to search item..."
-										name="item_name" value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>"> 
-										<input type="hidden" id="itemID"
-										placeholder="" name="item"
+										name="item_name"
+										value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>">
+									<input type="hidden" id="itemID" placeholder="" name="item"
 										value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>">
 
 									<div id="item_url" style="display: none;"></div>
@@ -172,19 +170,19 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
 										value="<?php echo (!$rowDTO == null)? $rowDTO->docQuantity:"";?>">
 								</div>
 							</div>
-							
+
 							<div class="form-group margin-bottom  required">
 
-								<label class="control-label col-sm-2">Item: </label>
+								<label class="control-label col-sm-2">Issue For: </label>
 								<div class="col-sm-3">
 									<input tabindex="2" class="form-control" type="text"
-										id="item_name" placeholder="Enter keyword to search item..."
-										name="item_name" value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>"> 
-										<input type="hidden" id="itemID"
-										placeholder="" name="item"
-										value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>">
+										id="issueFor_name" placeholder="Enter keyword to search item..."
+										name="issueFor_name"
+										value="<?php if (!$rowDTO== null): echo $rowDTO->issueFor;endif;?>">
+									<input type="hidden" id="issueFor" placeholder="" name="issueFor"
+										value="<?php if (!$rowDTO== null): echo $rowDTO->issueFor;endif;?>">
 
-									<div id="item_url" style="display: none;"></div>
+									<div id="issueFor_url" style="display: none;"></div>
 
 
 								</div>
@@ -192,9 +190,9 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
 
 								<div class="col-sm-1" style="margin: 0px">
 									<span title="<?php echo $this->translate("Item Detail");?>"
-										id="item_detail" style="display: none;"> &nbsp;&nbsp;<a
+										id="issueFor_detail" style="display: none;"> &nbsp;&nbsp;<a
 										style="color: #0080ff;" href="javascript:;"
-										onclick="showSelectedItem();"><i style="color: navy"
+										onclick="showSelectedIssueFor();"><i style="color: navy"
 											class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a>
 										<br>
 									</span>
@@ -212,8 +210,8 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
 										class="glyphicon glyphicon-new-window"></i></small>
 								</div>
 							</div>
-							
-							
+
+
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
 
@@ -335,6 +333,53 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
       	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
     }
 
+
+
+	 
+
+    $( "#issueFor_name" ).autocomplete({
+        source: "/inventory/item-search/auto-complete",
+        minLength: 2,
+        select: function( event, ui ) {
+        	 $( "#issueFor" ).val(ui.item.id);
+        	    
+             $('#issueFor_url').text('/inventory/item/show1?tab_idx=0&entity_id='+ui.item.id+'&token='+ui.item.token);
+             
+           
+         	 	$('#global-notice').show();
+         		$('#global-notice').html('"' + ui.item.value + '" selected');
+         		$('#global-notice').fadeOut(5000);
+         		//$("#jquery_dialog").dialog("close");
+   
+          	$('#issueFor_detail').show();
+        }
+       
+      })
+      .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    	  var serial_no = "";
+    	  if(item.item_serial!=""){
+    		  serial_no = " : " + item.item_serial;
+    	  }
+    	   
+         return $( "<li>" )
+           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+           .appendTo( ul );
+       };
+
+    $('#quantity').bind('change', function() {
+         });
+
+    function showSelectedItem(){
+    	//var url= '/inventory/item/show1?tab_idx=7&entity_id=<?php echo $headerDTO->id;?>&token=<?php echo $headerDTO->token?>';
+    	var url=  $('#item_url').text();
+      	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
+    }
+
+    function showSelectedIssueFor(){
+    	//var url= '/inventory/item/show1?tab_idx=7&entity_id=<?php echo $headerDTO->id;?>&token=<?php echo $headerDTO->token?>';
+    	var url=  $('#issueFor_url').text();
+      	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
+    }
    
 
  </script>

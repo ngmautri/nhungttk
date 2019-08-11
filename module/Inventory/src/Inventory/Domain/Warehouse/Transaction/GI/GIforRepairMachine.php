@@ -66,6 +66,9 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
 
         // create row
         foreach ($this->getRows() as $row) {
+            
+            //var_dump($row);
+            
             /**
              *
              * @var TransactionRowSnapshot $newRowSnapshot ;
@@ -81,14 +84,18 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
             $newRowSnapshot->cogsLocal = 0;
             $newRowSnapshot->flow = TransactionFlow::WH_TRANSACTION_IN;
             $newRowSnapshot->transactionType = TransactionType::GR_FROM_EXCHANGE;
+            $newRowSnapshot->docType = TransactionType::GR_FROM_EXCHANGE;
             
-
             $newTransactionRow = new TransactionRow();
             $newTransactionRow->makeFromSnapshot($newRowSnapshot);
             $newTrx->addRow($newTransactionRow);
-        }
+             
+            
+         }
 
         $postingService->getTransactionCmdRepository()->store($newTrx, true, true);
+        
+         
         
         // Recording Events
         $this->recoredEvents[] = new GoodsExchangePostedEvent($newTrx);

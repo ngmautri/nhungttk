@@ -16,6 +16,7 @@ use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 use Zend\Session\Container;
+use Application\Notification;
 
 /**
  * Goods Issue
@@ -816,7 +817,6 @@ class GIController extends AbstractActionController
     /**
      * Review and Post GR.
      * Document can't be changed.
-     *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function reviewAction()
@@ -885,12 +885,16 @@ class GIController extends AbstractActionController
                 $movementTypeInfo = $giType['type_description'];
             }
 
-            $errors = $this->transactionService->post($entity_id,$entity_token, __METHOD__);
+            /**
+             * 
+             * @var Notification $notification
+             */
+            $notification = $this->transactionService->post($entity_id,$entity_token, __METHOD__);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
+                    'errors' => $notification->getErrors(),
                     'entity' => $entity,
                     'issueType' => $issueType,
                     'movementTypeInfo' => $movementTypeInfo,

@@ -91,9 +91,11 @@ abstract class GenericTransaction extends AbstractTransaction
 
         $snapshot->mvUuid = $this->uuid;
         $snapshot->docType = $this->movementType;
+        $snapshot->transactionType = $this->movementType;        
         $snapshot->flow = $this->movementFlow;
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->wh = $this->warehouse;
+        $snapshot->trxDate = $this->movementDate;
 
         $row = new TransactionRow();
         $row->makeFromSnapshot($snapshot);

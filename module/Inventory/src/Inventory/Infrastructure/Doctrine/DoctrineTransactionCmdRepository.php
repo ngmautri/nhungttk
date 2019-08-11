@@ -37,7 +37,7 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             $n ++;
             $snapshot = $row->makeSnapshot();
             $snapshot->movement = $trxId;
-            $snapshot->sysNumber= $n;
+            $snapshot->sysNumber = $n;
             $row->makeFromSnapshot($snapshot);
 
             $this->createRow($trxId, $row, $isPosting);
@@ -78,8 +78,8 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
 
         $entity->setMovement($obj);
         $entity->setMvUuid($obj->getUuid());
-        
-        $snapshot->sysNumber = $obj->getSysNumber().'-'.$snapshot->sysNumber;
+
+        $snapshot->sysNumber = $obj->getSysNumber() . '-' . $snapshot->sysNumber;
 
         if ($snapshot->createdBy > 0) {
 
@@ -91,9 +91,8 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             if ($u !== null)
                 $entity->setCreatedBy($u);
         }
-        
+
         $this->mapRowEntity($snapshot, $entity);
-        
 
         $entity->setCreatedOn(new \DateTime());
         if ($isPosting) {
@@ -103,7 +102,6 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             $entity->setIsPosted(1);
         }
 
-    
         // $entity->setId($snapshot->id);
         // $entity->setToken($snapshot->token);
         // $entity->setChecksum($snapshot->checksum);
@@ -301,16 +299,7 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             $entity->setCreatedOn(new \DateTime());
         }
 
-        if ($isPosting) {
-            $entity->setLastChangeOn(new \DateTime());
-            $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
-            $entity->setIsDraft(0);
-            $entity->setIsPosted(1);
-        }
-
-        if ($generateSysNumber) {
-            $entity->setSysNumber($this->generateSysNumber($entity));
-        }
+     
 
         if ($snapshot->warehouse > 0) {
 
@@ -411,7 +400,6 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             $entity->setQuotationDate(new \DateTime($snapshot->quotationDate));
         }
 
-        $entity->setSysNumber($snapshot->sysNumber);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setDeliveryMode($snapshot->deliveryMode);
 
@@ -457,6 +445,17 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
         // $entity->setTargetWarehouse($snapshot->targetWarehouse);
         // $entity->setSourceLocation($snapshot->sourceLocation);
         // $entity->setTartgetLocation($snapshot->tartgetLocation);
+        
+        if ($isPosting) {
+            $entity->setLastChangeOn(new \DateTime());
+            $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
+            $entity->setIsDraft(0);
+            $entity->setIsPosted(1);
+        }
+        
+        if ($generateSysNumber) {
+            $entity->setSysNumber($this->generateSysNumber($entity));
+        }
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
@@ -474,69 +473,15 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
         if ($snapshot == null || $entity == null)
             return null;
 
-        if ($snapshot->trxDate !== null) {
-            $entity->setTrxDate(new \DateTime($snapshot->trxDate));
+        if ($snapshot->createdBy > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
+            $entity->setCreatedBy($obj);
         }
-
-        $entity->setTrxTypeId($snapshot->trxTypeId);
-        $entity->setFlow($snapshot->flow);
-        $entity->setQuantity($snapshot->quantity);
-        $entity->setRemarks($snapshot->remarks);
-
-        $entity->setIsLocked($snapshot->isLocked);
-        $entity->setIsDraft($snapshot->isDraft);
-        $entity->setIsActive($snapshot->isActive);
-
-        $entity->setIsPreferredVendor($snapshot->isPreferredVendor);
-        $entity->setVendorItemUnit($snapshot->vendorItemUnit);
-        $entity->setVendorItemCode($snapshot->vendorItemCode);
-        $entity->setConversionFactor($snapshot->conversionFactor);
-        $entity->setConversionText($snapshot->conversionText);
-        $entity->setVendorUnitPrice($snapshot->vendorUnitPrice);
-        $entity->setPmtTermId($snapshot->pmtTermId);
-        $entity->setDeliveryTermId($snapshot->deliveryTermId);
-        $entity->setLeadTime($snapshot->leadTime);
-        $entity->setTaxRate($snapshot->taxRate);
-        $entity->setCurrentState($snapshot->currentState);
-        $entity->setCurrentStatus($snapshot->currentStatus);
-        $entity->setTargetId($snapshot->targetId);
-        $entity->setTargetClass($snapshot->targetClass);
-        $entity->setSourceId($snapshot->sourceId);
-        $entity->setSourceClass($snapshot->sourceClass);
-        $entity->setDocStatus($snapshot->docStatus);
-
-        $entity->setRevisionNumber($snapshot->revisionNumber);
-        $entity->setIsPosted($snapshot->isPosted);
-        $entity->setActualQuantity($snapshot->actualQuantity);
-        $entity->setTransactionStatus($snapshot->transactionStatus);
-        $entity->setStockRemarks($snapshot->stockRemarks);
-        $entity->setTransactionType($snapshot->transactionType);
-        $entity->setItemSerialId($snapshot->itemSerialId);
-        $entity->setItemBatchId($snapshot->itemBatchId);
-        $entity->setCogsLocal($snapshot->cogsLocal);
-        $entity->setCogsDoc($snapshot->cogsDoc);
-        $entity->setExchangeRate($snapshot->exchangeRate);
-
-        $entity->setConvertedStandardQuantity($snapshot->convertedStandardQuantity);
-        $entity->setConvertedStandardUnitPrice($snapshot->convertedStandardUnitPrice);
-        $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
-        $entity->setConvertedStockUnitPrice($snapshot->convertedStockUnitPrice);
-        $entity->setConvertedPurchaseQuantity($snapshot->convertedPurchaseQuantity);
-        $entity->setDocQuantity($snapshot->docQuantity);
-        $entity->setDocUnitPrice($snapshot->docUnitPrice);
-        $entity->setDocUnit($snapshot->docUnit);
-        $entity->setIsReversed($snapshot->isReversed);
-        $entity->setReversalDate($snapshot->reversalDate);
-        $entity->setReversalDoc($snapshot->reversalDoc);
-        $entity->setReversalReason($snapshot->reversalReason);
-        $entity->setIsReversable($snapshot->isReversable);
-        $entity->setDocType($snapshot->docType);
-        $entity->setLocalUnitPrice($snapshot->localUnitPrice);
-        $entity->setReversalBlocked($snapshot->reversalBlocked);
-        $entity->setSysNumber($snapshot->sysNumber);
-
-        // $entity->setCreatedBy($snapshot->createdBy);
-        // $entity->setLastChangeBy($snapshot->lastChangeBy);
 
         if ($snapshot->item > 0) {
 
@@ -738,31 +683,120 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             $entity->setInvoiceRow($obj);
         }
 
-        // $entity->setItem($snapshot->item);
-        // $entity->setPr($snapshot->pr);
-        // $entity->setPo($snapshot->po);
-        // $entity->setVendorInvoice($snapshot->vendorInvoice);
-        // $entity->setPoRow($snapshot->poRow);
-        // $entity->setGrRow($snapshot->grRow);
-        // $entity->setInventoryGi($snapshot->inventoryGi);
-        // $entity->setInventoryGr($snapshot->inventoryGr);
-        // $entity->setInventoryTransfer($snapshot->inventoryTransfer);
-        // $entity->setWh($snapshot->wh);
-        // $entity->setGr($snapshot->gr);
-        // $entity->setMovement($snapshot->movement);
-        // $entity->setIssueFor($snapshot->issueFor);
-        // $entity->setDocCurrency($snapshot->docCurrency);
-        // $entity->setLocalCurrency($snapshot->localCurrency);
-        // $entity->setProject($snapshot->project);
-        // $entity->setCostCenter($snapshot->costCenter);
-        // $entity->setDocUom($snapshot->docUom);
-        // $entity->setPostingPeriod($snapshot->postingPeriod);
-        // $entity->setWhLocation($snapshot->whLocation);
-        // $entity->setPrRow($snapshot->prRow);
-        // $entity->setVendor($snapshot->vendor);
-        // $entity->setCurrency($snapshot->currency);
-        // $entity->setPmtMethod($snapshot->pmtMethod);
-        // $entity->setInvoiceRow($snapshot->invoiceRow);
+        // / Date
+
+        if ($snapshot->createdOn !== null) {
+            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
+        }
+
+        if ($snapshot->trxDate !== null) {
+            $entity->setTrxDate(new \DateTime($snapshot->trxDate));
+        }
+
+        if ($snapshot->lastChangeOn !== null) {
+            $entity->setLastChangeOn(new \DateTime($snapshot->lastChangeOn));
+        }
+
+        if ($snapshot->changeOn !== null) {
+            $entity->setChangeOn(new \DateTime($snapshot->changeOn));
+        }
+
+        // $entity->setToken($snapshot->token);
+        // $entity->setChecksum($snapshot->checksum);
+
+        // $entity->setTrxDate($snapshot->trxDate);
+        // $entity->setCreatedOn($snapshot->createdOn);
+        // $entity->setLastChangeOn($snapshot->lastChangeOn);
+        // $entity->setChangeOn($snapshot->changeOn);
+
+        $entity->setTrxTypeId($snapshot->trxTypeId);
+        $entity->setFlow($snapshot->flow);
+        $entity->setQuantity($snapshot->quantity);
+        $entity->setRemarks($snapshot->remarks);
+
+        $entity->setIsLocked($snapshot->isLocked);
+        $entity->setIsDraft($snapshot->isDraft);
+        $entity->setIsActive($snapshot->isActive);
+
+        $entity->setIsPreferredVendor($snapshot->isPreferredVendor);
+        $entity->setVendorItemUnit($snapshot->vendorItemUnit);
+        $entity->setVendorItemCode($snapshot->vendorItemCode);
+        $entity->setConversionFactor($snapshot->conversionFactor);
+        $entity->setConversionText($snapshot->conversionText);
+        $entity->setVendorUnitPrice($snapshot->vendorUnitPrice);
+        $entity->setPmtTermId($snapshot->pmtTermId);
+        $entity->setDeliveryTermId($snapshot->deliveryTermId);
+        $entity->setLeadTime($snapshot->leadTime);
+        $entity->setTaxRate($snapshot->taxRate);
+        $entity->setCurrentState($snapshot->currentState);
+        $entity->setCurrentStatus($snapshot->currentStatus);
+        $entity->setTargetId($snapshot->targetId);
+        $entity->setTargetClass($snapshot->targetClass);
+        $entity->setSourceId($snapshot->sourceId);
+        $entity->setSourceClass($snapshot->sourceClass);
+        $entity->setDocStatus($snapshot->docStatus);
+        $entity->setSysNumber($snapshot->sysNumber);
+
+        // $entity->setChangeBy($snapshot->changeBy);
+
+        $entity->setRevisionNumber($snapshot->revisionNumber);
+        $entity->setIsPosted($snapshot->isPosted);
+        $entity->setActualQuantity($snapshot->actualQuantity);
+        $entity->setTransactionStatus($snapshot->transactionStatus);
+        $entity->setStockRemarks($snapshot->stockRemarks);
+        $entity->setTransactionType($snapshot->transactionType);
+        $entity->setItemSerialId($snapshot->itemSerialId);
+        $entity->setItemBatchId($snapshot->itemBatchId);
+        $entity->setCogsLocal($snapshot->cogsLocal);
+        $entity->setCogsDoc($snapshot->cogsDoc);
+        $entity->setExchangeRate($snapshot->exchangeRate);
+        $entity->setConvertedStandardQuantity($snapshot->convertedStandardQuantity);
+        $entity->setConvertedStandardUnitPrice($snapshot->convertedStandardUnitPrice);
+        $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
+        $entity->setConvertedStockUnitPrice($snapshot->convertedStockUnitPrice);
+        $entity->setConvertedPurchaseQuantity($snapshot->convertedPurchaseQuantity);
+        $entity->setDocQuantity($snapshot->docQuantity);
+        $entity->setDocUnitPrice($snapshot->docUnitPrice);
+        $entity->setDocUnit($snapshot->docUnit);
+        $entity->setIsReversed($snapshot->isReversed);
+        $entity->setReversalDate($snapshot->reversalDate);
+        $entity->setReversalDoc($snapshot->reversalDoc);
+        $entity->setReversalReason($snapshot->reversalReason);
+        $entity->setIsReversable($snapshot->isReversable);
+        $entity->setDocType($snapshot->docType);
+        $entity->setLocalUnitPrice($snapshot->localUnitPrice);
+        $entity->setReversalBlocked($snapshot->reversalBlocked);
+        $entity->setMvUuid($snapshot->mvUuid);
+
+        //$entity->setCreatedBy($snapshot->createdBy);
+        //$entity->setLastChangeBy($snapshot->lastChangeBy);
+
+        /* 
+         $entity->setItem($snapshot->item);
+        $entity->setPr($snapshot->pr);
+        $entity->setPo($snapshot->po);
+        $entity->setVendorInvoice($snapshot->vendorInvoice);
+        $entity->setPoRow($snapshot->poRow);
+        $entity->setGrRow($snapshot->grRow);
+        $entity->setInventoryGi($snapshot->inventoryGi);
+        $entity->setInventoryGr($snapshot->inventoryGr);
+        $entity->setInventoryTransfer($snapshot->inventoryTransfer);
+        $entity->setWh($snapshot->wh);
+        $entity->setGr($snapshot->gr);
+        $entity->setMovement($snapshot->movement);
+        $entity->setIssueFor($snapshot->issueFor);
+        $entity->setDocCurrency($snapshot->docCurrency);
+        $entity->setLocalCurrency($snapshot->localCurrency);
+        $entity->setProject($snapshot->project);
+        $entity->setCostCenter($snapshot->costCenter);
+        $entity->setDocUom($snapshot->docUom);
+        $entity->setPostingPeriod($snapshot->postingPeriod);
+        $entity->setWhLocation($snapshot->whLocation);
+        $entity->setPrRow($snapshot->prRow);
+        $entity->setVendor($snapshot->vendor);
+        $entity->setCurrency($snapshot->currency);
+        $entity->setPmtMethod($snapshot->pmtMethod);
+        $entity->setInvoiceRow($snapshot->invoiceRow); */
 
         return $entity;
     }

@@ -105,7 +105,7 @@ class TransactionRowDTOAssembler
      */
     public static function createStoreMapping()
     {
-        $entity = new \Application\Entity\NmtInventoryMv();
+        $entity = new \Application\Entity\NmtInventoryTrx();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -150,4 +150,20 @@ class TransactionRowDTOAssembler
             print "\n" . "\$dto->" . $propertyName . "=\$entity->get" . ucfirst($propertyName) . "();";
         }
     }
+    
+    /**
+     * generete Get Mapping File.
+     */
+    public static function createGetMapping()
+    {
+        $entity = new \Application\Entity\NmtInventoryTrx();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" .  "\$snapshot->" . $propertyName . "= " . "\$entity->get" . ucfirst($propertyName) . "();" ;
+        }
+    }
+    
 }

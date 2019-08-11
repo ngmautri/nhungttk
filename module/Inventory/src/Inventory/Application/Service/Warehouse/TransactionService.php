@@ -41,11 +41,6 @@ use Inventory\Application\Event\Handler\EventHandlerFactory;
 class TransactionService extends AbstractService
 {
 
-    /**
-     *
-     * @param int $trxId
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\GenericTransaction
-     */
     public function post($trxId, $trxToken, $trigger = null)
     {
         $notification = new Notification();
@@ -378,7 +373,7 @@ class TransactionService extends AbstractService
         try {
 
             $rowDTO->createdBy = $userId;
-
+    
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
             $header->setDomainSpecificationFactory($domainSpecificationFactory);
 

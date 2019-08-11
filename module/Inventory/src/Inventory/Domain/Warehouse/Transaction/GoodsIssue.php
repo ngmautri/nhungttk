@@ -1,12 +1,10 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-use Inventory\Domain\Service\TransactionPostingService;
-use Inventory\Domain\Warehouse\GenericWarehouse;
-use Doctrine\DBAL\Driver\AbstractDriverException;
-use Inventory\Domain\Exception\InvalidArgumentException;
 use Application\Notification;
-use Inventory\Domain\Event\TransactionPostedEvent;
+use Inventory\Domain\Event\GoodsIssuePostedEvent;
+use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Service\TransactionPostingService;
 
 /**
  *
@@ -23,11 +21,10 @@ abstract class GoodsIssue extends GenericTransaction
      */
     public function post(TransactionPostingService $postingService = null)
     {
-        if($postingService == null){
+        if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-        
-         
+
         // 1.validate header
         $notification = $this->validate();
 
@@ -41,7 +38,7 @@ abstract class GoodsIssue extends GenericTransaction
          * Template Method
          * ===============
          */
-            $this->prePost($postingService);
+        $this->prePost($postingService);
 
         // 2. caculate cogs
         foreach ($this->transactionRows as $row) {
@@ -51,27 +48,23 @@ abstract class GoodsIssue extends GenericTransaction
              * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
              */
             $cogs = $this->getValuationService()->calculateCOGS($this, $row);
-
+            echo ($cogs);
             $snapshot = $row->makeSnapshot();
             $snapshot->cogsLocal = $cogs;
             $row->makeFromSnapshot($snapshot);
         }
-        
-        //$this->cmdRepository->post($this,true);
-        
+
+        $postingService->getTransactionCmdRepository()->post($this, true);
+
+        // Recording Events
+        $this->recoredEvents[] = new GoodsIssuePostedEvent($this);
 
         /**
          * Template Method
          * ==============
          */
         $this->afterPost($postingService);
-
-        // 4. store transaction
-        
-        
-        // Recording Events
-        $this->recoredEvents[] = new TransactionPostedEvent($this);
-        
+   
         return $notification;
     }
 

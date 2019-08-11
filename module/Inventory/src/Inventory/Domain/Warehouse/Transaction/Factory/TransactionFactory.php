@@ -7,6 +7,7 @@ use Inventory\Domain\Warehouse\Transaction\GI\GIforCostCenter;
 use Inventory\Domain\Warehouse\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceipt;
+use Inventory\Domain\Warehouse\Transaction\GI\GIforRepairMachine;
 
 /**
  *
@@ -23,6 +24,11 @@ class TransactionFactory
             case TransactionType::GI_FOR_COST_CENTER:
                 $trx = new GIforCostCenter();
                 break;
+                
+            case TransactionType::GI_FOR_REPAIR_MACHINE_WITH_EX:
+                $trx = new GIforRepairMachine();
+                break;
+                
             case TransactionType::GR_FROM_PURCHASING:
                 $trx = new GRFromPurchasing();
                 break;

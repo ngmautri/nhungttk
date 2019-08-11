@@ -249,8 +249,8 @@ abstract class GenericTransaction extends AbstractTransaction
                      *
                      * @var TransactionRow $row ;
                      */
-                    if ($row->getDocType() !== $this->movementType) {
-                        $notification->addError("Transaction Type is inconsistent, Because at least one row has different type");
+                    if ($row->getTransactionType() !== $this->movementType) {
+                        $notification->addError("Transaction Type is inconsistent, because at least one row has different type");
                         break;
                     }
                 }

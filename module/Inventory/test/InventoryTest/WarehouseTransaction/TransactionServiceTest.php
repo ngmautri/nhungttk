@@ -1,17 +1,11 @@
 <?php
 namespace InventoryTest\WarehouseTransaction;
 
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
-use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
-use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
-use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshotAssembler;
-use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use PHPUnit_Framework_TestCase;
-use Inventory\Application\Service\Warehouse\TransactionService;
 
 class TransactionServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -38,7 +32,7 @@ class TransactionServiceTest extends PHPUnit_Framework_TestCase
 
         $data = array();
         $data["movementDate"] = "2019-06-14";
-        $data["movementType"] = TransactionType::GI_FOR_COST_CENTER;
+        $data["movementType"] = TransactionType::GI_FOR_REPAIR_MACHINE_WITH_EX;
         $data["warehouse"] = 6;
         $data["company"] = 1;
         $data["docCurrency"] = 9;

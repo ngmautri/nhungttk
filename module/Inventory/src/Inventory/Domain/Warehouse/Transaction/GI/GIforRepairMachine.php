@@ -15,6 +15,8 @@ use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Inventory\Domain\Warehouse\Transaction\GR\GRFromExchange;
 use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshot;
+use Inventory\Domain\Event\GoodsIssuePostedEvent;
+use Inventory\Domain\Event\GoodsExchangePostedEvent;
 
 /**
  * Machine ID is required, exchange part.
@@ -38,11 +40,7 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
      */
     protected function afterPost(TransactionPostingService $postingService = null)
     {
-        // returning items
-
-        // check if warehouse has returning location
-
-        // create new transaction
+    
         $sourceWH = $postingService->getWhQueryRepository()->getById($this->getWarehouse());
 
         /**
@@ -56,6 +54,10 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
          * @var TransactionSnapshot $newSnapshot
          */
         $newSnapshot = clone ($this->makeSnapshot());
+        
+        $newSnapshot->id=null;
+        $newSnapshot->uuid=null;
+        
         $newSnapshot->remarks = "automatically generated.";
         $newSnapshot->tartgetLocation = $location->getId();
 
@@ -69,10 +71,17 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
              * @var TransactionRowSnapshot $newRowSnapshot ;
              */
             $newRowSnapshot = clone ($row->makeSnapshot());
+            
+            $newRowSnapshot->id=null;
+            $newRowSnapshot->token=null;
+            $newRowSnapshot->mvUuid=null;
+            
             $newRowSnapshot->whLocation = $location->getId();
             $newRowSnapshot->cogsDoc = 0;
             $newRowSnapshot->cogsLocal = 0;
             $newRowSnapshot->flow = TransactionFlow::WH_TRANSACTION_IN;
+            $newRowSnapshot->transactionType = TransactionType::GR_FROM_EXCHANGE;
+            
 
             $newTransactionRow = new TransactionRow();
             $newTransactionRow->makeFromSnapshot($newRowSnapshot);
@@ -80,6 +89,10 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
         }
 
         $postingService->getTransactionCmdRepository()->store($newTrx, true, true);
+        
+        // Recording Events
+        $this->recoredEvents[] = new GoodsExchangePostedEvent($newTrx);
+        
     }
 
     /**
@@ -87,15 +100,9 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
      */
-    protected function prePost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
+    protected function prePost(TransactionPostingService $postingService = null)
     {}
-
-    public function prePost1()
-    {}
-
-    public function afterPost1()
-    {}
-
+ 
     public function specificValidation($notification = null)
     {}
 
@@ -129,7 +136,7 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
              *
              * @var AbstractSpecificationForCompany $spec ;
              */
-            $spec = $this->sharedSpecificationFactory->getIsFixedAssetSpecification();
+            $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
             $subject = array(
                 "companyId" => $this->company,
                 "itemId" => $row->getIssueFor()

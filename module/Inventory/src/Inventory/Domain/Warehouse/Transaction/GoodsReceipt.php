@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
+use Inventory\Domain\Service\TransactionPostingService;
 
 /**
  *
@@ -9,13 +10,12 @@ namespace Inventory\Domain\Warehouse\Transaction;
  */
 abstract class GoodsReceipt extends GenericTransaction
 {
+
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::post()
      */
-    public function post(){
-        
-    }
-   
+    public function post(TransactionPostingService $postingService = null)
+    {}
 }

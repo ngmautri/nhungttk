@@ -126,10 +126,7 @@ abstract class AbstractTransaction extends AbstractEntity
      */
     protected $sharedSpecificationFactory;
 
-    /**
-     *
-     * @var \Inventory\Domain\AbstractSpecificationFactory
-     */
+    
     protected $domainSpecificationFactory;
 
     /**
@@ -990,11 +987,11 @@ abstract class AbstractTransaction extends AbstractEntity
         return $this->domainSpecificationFactory;
     }
 
-    /**
-     *
-     * @param \Inventory\Domain\AbstractSpecificationFactory $domainSpecificationFactory
-     */
-    public function setDomainSpecificationFactory(AbstractSpecificationFactory $domainSpecificationFactory)
+   /**
+    * 
+    * @param \Inventory\Domain\AbstractSpecificationFactory $domainSpecificationFactory
+    */
+    public function setDomainSpecificationFactory(\Inventory\Domain\AbstractSpecificationFactory $domainSpecificationFactory)
     {
         $this->domainSpecificationFactory = $domainSpecificationFactory;
     }

@@ -9,12 +9,12 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GoodIssuePostedEvent extends Event
+class GoodsExchangePostedEvent extends Event
 {
     
     protected $trx;
 
-    const EVENT_NAME = "inventory.good_issue.posted";
+    const EVENT_NAME = "inventory.goods_exchange.posted";
 
     /**
      * 

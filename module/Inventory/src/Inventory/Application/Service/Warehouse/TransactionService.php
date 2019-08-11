@@ -31,6 +31,7 @@ use Inventory\Infrastructure\Doctrine\DoctrineTransactionCmdRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
 use Inventory\Domain\Event\TransactionPostedEvent;
 use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Application\Event\Handler\EventHandlerFactory;
 
 /**
  *
@@ -61,7 +62,7 @@ class TransactionService extends AbstractService
             $trx = $rep->getById($trxId);
             // var_dump($trx);
 
-            $rep = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
+            $rep = new DoctrineTransactionQueryRepository($this->getDoctrineEM());
             $trx->setQueryRepository($rep);
 
             $rep = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
@@ -86,8 +87,6 @@ class TransactionService extends AbstractService
                 return $notification;
             }
 
-            $rep->post($trx);
-
             // event
 
             if (count($trx->getRecoredEvents() > 0)) {
@@ -95,8 +94,16 @@ class TransactionService extends AbstractService
                 $dispatcher = new EventDispatcher();
 
                 foreach ($trx->getRecoredEvents() as $event) {
-                    $dispatcher->addSubscriber(new ItemCreatedEventHandler());
-                    $dispatcher->dispatch(TransactionPostedEvent::EVENT_NAME, $event);
+
+                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event));
+
+                    if (count($subcribers) > 0) {
+                        foreach ($subcribers as $subcriber) {
+                            $dispatcher->addSubscriber($subcriber);
+                        }
+                    }
+
+                    $dispatcher->dispatch(get_class($event), $event);
                 }
             }
 

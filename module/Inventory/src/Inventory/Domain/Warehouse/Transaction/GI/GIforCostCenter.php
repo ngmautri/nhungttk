@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
 use Application\Notification;
+use Inventory\Domain\Service\TransactionPostingService;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
@@ -90,25 +91,14 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
         return $notification;
     }
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
-     */
-    protected function afterPost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
+    protected function afterPost(TransactionPostingService $postingService = null)
+    {}
+
+    protected function prePost(TransactionPostingService $postingService = null)
     {}
 
     
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
-     */
-    protected function prePost(GenericWarehouse $sourceWh, GenericWarehouse $targetWh = null)
-    {}
-
-    
+   
     
 
 }

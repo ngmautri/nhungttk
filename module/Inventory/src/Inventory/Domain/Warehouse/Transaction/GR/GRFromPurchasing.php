@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GR;
 
+use Inventory\Domain\Service\TransactionPostingService;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceipt;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceiptInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
@@ -41,16 +42,18 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
     public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
     {}
 
-    public function afterPost()
-    {}
 
-    public function prePost()
-    {}
 
     public function specificRowValidation($row, $notification = null, $isPosting = false)
     {}
     public function specificHeaderValidation($notification = null)
     {}
+    protected function afterPost(TransactionPostingService $postingService = null)
+    {}
+
+    protected function prePost(TransactionPostingService $postingService = null)
+    {}
+
 
     
 

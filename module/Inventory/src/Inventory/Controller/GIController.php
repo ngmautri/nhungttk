@@ -890,8 +890,10 @@ class GIController extends AbstractActionController
              * @var Notification $notification
              */
             $notification = $this->transactionService->post($entity_id,$entity_token, __METHOD__);
+            
+            
 
-            if (count($errors) > 0) {
+            if ($notification->hasErrors()) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $notification->getErrors(),

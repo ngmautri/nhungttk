@@ -101,7 +101,7 @@ class ItemLoggingListener implements ListenerAggregateInterface
      */
     public function onItemUpdatedLog(EventInterface $e)
     {
-        var_dump($e->getParams());
+        //var_dump($e->getParams());
         $log_priority = 6;
         $log_message = $e->getParam('message');
         $objectId = $e->getParam('objectId');

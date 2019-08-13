@@ -24,12 +24,12 @@ class FIFOLayerService extends AbstractService implements ValuationServiceInterf
      * {@inheritdoc}
      * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::calculateCOGS()
      */
-    public function calculateCOGS($trx,  $row)
+    public function calculateCOGS($trx, $row)
     {
         $cogs = 0;
         if ($this->getDoctrineEM() == null || $trx == null || $row == null)
             return $cogs;
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'id' => $trx->getCreatedBy()

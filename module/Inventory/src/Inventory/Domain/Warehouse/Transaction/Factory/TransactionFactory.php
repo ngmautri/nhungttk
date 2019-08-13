@@ -8,6 +8,10 @@ use Inventory\Domain\Warehouse\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceipt;
 use Inventory\Domain\Warehouse\Transaction\GI\GIforRepairMachine;
+use Inventory\Domain\Warehouse\Transaction\GR\GRFromExchange;
+use Inventory\Domain\Warehouse\Transaction\GR\GRWithInvoice;
+use Inventory\Domain\Warehouse\Transaction\GR\GRWithoutInvoice;
+use Inventory\Domain\Warehouse\Transaction\GR\GRFromOpeningBalance;
 
 /**
  *
@@ -24,13 +28,24 @@ class TransactionFactory
             case TransactionType::GI_FOR_COST_CENTER:
                 $trx = new GIforCostCenter();
                 break;
-                
+
             case TransactionType::GI_FOR_REPAIR_MACHINE_WITH_EX:
                 $trx = new GIforRepairMachine();
                 break;
-                
-            case TransactionType::GR_FROM_PURCHASING:
-                $trx = new GRFromPurchasing();
+
+            case TransactionType::GR_WITH_INVOICE:
+                $trx = new GRWithInvoice();
+                break;
+
+            case TransactionType::GR_WITHOUT_INVOICE:
+                $trx = new GRWithoutInvoice();
+                break;
+
+            case TransactionType::GR_FROM_EXCHANGE:
+                $trx = new GRFromExchange();
+                break;
+            case TransactionType::GR_FROM_OPENNING_BALANCE:
+                $trx = new GRFromOpeningBalance();
                 break;
 
             default:
@@ -53,6 +68,8 @@ class TransactionFactory
         $list = array();
         $list[] = TransactionType::GI_FOR_COST_CENTER;
         $list[] = TransactionType::GR_FROM_PURCHASING;
+        $list[] = TransactionType::GR_FROM_EXCHANGE;
+        $list[] = TransactionType::GI_FOR_REPAIR_MACHINE;
         return $list;
     }
 
@@ -206,6 +223,11 @@ class TransactionFactory
                 TransactionType::GR_FROM_PURCHASING => array(
                     "type_name" => $translator->translate("Goods receipt from purchase"),
                     "type_description" => $translator->translate("Goods receipt from purchase")
+                ),
+
+                TransactionType::GR_FROM_EXCHANGE => array(
+                    "type_name" => $translator->translate("Goods receipt from exchange part"),
+                    "type_description" => $translator->translate("Goods receipt from exchange part. This is normally posted automaticaly")
                 )
             );
         } else {
@@ -214,6 +236,11 @@ class TransactionFactory
                 TransactionType::GR_FROM_PURCHASING => array(
                     "type_name" => $translator->translate("Goods receipt from purchase"),
                     "type_description" => $translator->translate("Goods receipt from purchase")
+                ),
+
+                TransactionType::GR_FROM_EXCHANGE => array(
+                    "type_name" => $translator->translate("Goods receipt from exchange part"),
+                    "type_description" => $translator->translate("Goods receipt from exchange part. This is normally posted automaticaly")
                 )
             );
         }

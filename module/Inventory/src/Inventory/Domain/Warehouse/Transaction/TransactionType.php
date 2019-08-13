@@ -47,6 +47,10 @@ class TransactionType
     
     const GR_FROM_EXCHANGE = 'GR103';
     
+    const GR_WITH_INVOICE = 'GR104';
+    
+    const GR_WITHOUT_INVOICE = 'GR105';
+    
     
 
     public static function getSupportedTransaction()

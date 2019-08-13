@@ -1,10 +1,8 @@
 <?php
 namespace Inventory\Application\Event\Handler;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Inventory\Domain\Event\ItemCreatedEvent;
-use Inventory\Domain\Event\GoodsIssuePostedEvent;
 use Inventory\Domain\Event\GoodsExchangePostedEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  *
@@ -21,16 +19,16 @@ class GoodsExchangePostedEventHandler implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            GoodsExchangePostedEvent::class => 'onGoodseExchangePosted'
+            GoodsExchangePostedEvent::class => 'onGoodsExchangePosted'
         ];
     }
 
     /**
      *
-     * @param ItemCreatedEvent $event
+     * @param GoodsExchangePostedEvent $event
      */
-    public function onGoodseExchangePosted(GoodsExchangePostedEvent $event)
+    public function onGoodsExchangePosted(GoodsExchangePostedEvent $event)
     {
-        echo "I am Goods Exchange handler";
+        // throw new \Exception( "I am Goods Exchange handler");
     }
 }

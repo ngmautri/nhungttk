@@ -7,13 +7,14 @@ use Inventory\Domain\Service\ValuationServiceInterface;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Zend\Math\Rand;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
+use Inventory\Domain\Service\FIFOLayerServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FIFOLayerService extends AbstractService implements ValuationServiceInterface
+class FIFOLayerService extends AbstractService implements ValuationServiceInterface, FIFOLayerServiceInterface
 {
 
     /**
@@ -138,4 +139,76 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
 
         return $cogs;
     }
+    
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::closeLayer()
+     */
+    public function closeLayer($trx, $row)
+    {
+        $criteria = array(
+            'item' => $row->getItem()
+        );
+     
+        $layers = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFifoLayer')->findBy($criteria);
+        if (count($layers > 0)) {
+            
+            foreach ($layers as $l) {
+                /** @var \Application\Entity\NmtInventoryFifoLayer $l ; */
+                $l->setIsClosed(1);
+                
+                // @todo
+                $l->setClosedOn();
+                $this->getDoctrineEM()->persist($l);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::createLayer()
+     */
+
+    public function createLayer($trx, $row)
+    {
+        // Create new FIFO.
+        
+        /**
+         *
+         * @todo: Create FIFO Layer
+         */
+        $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+        
+        $fifoLayer->setIsClosed(0);
+        $fifoLayer->setIsOpenBalance(1);
+        $fifoLayer->setItem($row->getItem());
+        $fifoLayer->setQuantity($row->getQuantity());
+        
+        // will be changed uppon inventory transaction.
+        $fifoLayer->setOnhandQuantity($row->getQuantity());
+        $fifoLayer->setDocUnitPrice($row->getUnitPrice());
+        $fifoLayer->setLocalCurrency($row->getCurrency());
+        $fifoLayer->setExchangeRate($row->getExchangeRate());
+        
+        $fifoLayer->setPostingDate($entity->getPostingDate());
+        
+        $fifoLayer->setSourceClass(get_class($row));
+        $fifoLayer->setSourceId($row->getID());
+        $fifoLayer->setSourceToken($$row->getToken());
+        
+        $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
+        $fifoLayer->setCreatedBy($u);
+        $fifoLayer->setCreatedOn($row->getCreatedOn());
+        $fifoLayer->setRemarks("Opening Balance");
+        $this->doctrineEM->persist($fifoLayer);
+        
+    }
+    
+
+
+    
+
 }

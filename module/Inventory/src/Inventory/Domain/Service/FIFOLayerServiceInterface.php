@@ -1,6 +1,8 @@
 <?php
 namespace Inventory\Domain\Service;
 
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 
 /**
  *
@@ -12,9 +14,15 @@ Interface FIFOLayerServiceInterface
 
     /**
      *
-     * @param int $transactionId
-     * @param int $itemId
-     * @param string $issuedQuantity
+     * @param GenericTransaction $trx
+     * @param TransactionRow $row
      */
-    public function calculateCOGS($transactionId, $itemId, $issuedQuantity);
+    public function createLayer(GenericTransaction $trx, TransactionRow $row);
+
+    /**
+     *
+     * @param GenericTransaction $trx
+     * @param TransactionRow $row
+     */
+    public function closeLayer(GenericTransaction $trx, TransactionRow $row);
 }

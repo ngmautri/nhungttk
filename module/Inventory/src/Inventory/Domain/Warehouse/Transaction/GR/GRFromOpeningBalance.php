@@ -47,26 +47,14 @@ class GRFromOpeningBalance extends GoodsReceipt implements GoodsReceiptInterface
 
     public function specificHeaderValidation($notification = null)
     {}
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
-     */
-    protected function afterPost(TransactionPostingService $postingService = null)
-    {
-        
-        
-    }
-
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
-     */
-    protected function prePost(TransactionPostingService $postingService = null)
+    protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
     {}
+
+    protected function prePost(TransactionPostingService $postingService = null, $notification = null)
+    {}
+
+
+   
 
 
 }

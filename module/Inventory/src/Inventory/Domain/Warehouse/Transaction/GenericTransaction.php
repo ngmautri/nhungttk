@@ -55,12 +55,10 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     public $transtionRowsOutput;
 
-    abstract protected function prePost(TransactionPostingService $postingService = null);
-
-    abstract protected function afterPost(TransactionPostingService $postingService = null);
-
-    abstract public function post(TransactionPostingService $postingService = null);
-
+    abstract protected function prePost(TransactionPostingService $postingService = null, $notification=null);
+    abstract protected function doPost(TransactionPostingService $postingService = null, $notification=null);
+    abstract protected function afterPost(TransactionPostingService $postingService = null, $notification=null);
+   
     abstract public function specificValidation($notification = null);
 
     abstract public function specificHeaderValidation($notification = null);
@@ -70,6 +68,29 @@ abstract class GenericTransaction extends AbstractTransaction
     abstract public function specificRowValidationByFlow($row, $notification = null, $isPosting = false);
 
     abstract public function addTransactionRow($transactionRow);
+    
+    
+    /**
+     * 
+     * @param TransactionPostingService $postingService
+     * @throws InvalidArgumentException
+     */
+    public function post(TransactionPostingService $postingService = null, $notification=null){
+        
+        if ($postingService == null) {
+            throw new InvalidArgumentException("Posting service not found");
+        }
+        
+        if($notification==null){
+            $notification = new Notification();
+        }
+        
+        $notification = $this->prePost($postingService, $notification);
+        $notification = $this->doPost($postingService, $notification);
+        $notification= $this->afterPost($postingService);
+        
+        return $notification;
+    }
 
     /**
      *
@@ -469,9 +490,8 @@ abstract class GenericTransaction extends AbstractTransaction
     {
         $this->warehouseQueryRepository = $warehouseQueryRepository;
     }
-    /**
-     * @return \Inventory\Domain\Warehouse\Transaction\arrau
-     */
+   
+    
     public function getRecoredEvents()
     {
         return $this->recoredEvents;

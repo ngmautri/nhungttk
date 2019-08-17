@@ -3,7 +3,6 @@ namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Notification;
 use Inventory\Domain\Event\GoodsIssuePostedEvent;
-use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Service\TransactionPostingService;
 
 /**
@@ -17,13 +16,10 @@ abstract class GoodsIssue extends GenericTransaction
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::post()
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::doPost()
      */
-    public function post(TransactionPostingService $postingService = null)
+    protected function doPost(TransactionPostingService $postingService = null, $notification = null)
     {
-        if ($postingService == null) {
-            throw new InvalidArgumentException("Posting service not found");
-        }
 
         // 1.validate header
         $notification = $this->validate();
@@ -33,12 +29,6 @@ abstract class GoodsIssue extends GenericTransaction
 
         if ($notification->hasErrors())
             return $notification;
-
-        /**
-         * Template Method
-         * ===============
-         */
-        $this->prePost($postingService);
 
         // 2. caculate cogs
         foreach ($this->transactionRows as $row) {
@@ -59,12 +49,6 @@ abstract class GoodsIssue extends GenericTransaction
         // Recording Events
         $this->recoredEvents[] = new GoodsIssuePostedEvent($this);
 
-        /**
-         * Template Method
-         * ==============
-         */
-        $this->afterPost($postingService);
-   
         return $notification;
     }
 

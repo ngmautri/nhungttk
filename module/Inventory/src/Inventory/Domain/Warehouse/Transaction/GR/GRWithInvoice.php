@@ -48,13 +48,11 @@ class GRWithInvoice extends GoodsReceipt implements GoodsReceiptInterface
     {}
     public function specificHeaderValidation($notification = null)
     {}
-    protected function afterPost(TransactionPostingService $postingService = null)
+    protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
     {}
 
-    protected function prePost(TransactionPostingService $postingService = null)
+    protected function prePost(TransactionPostingService $postingService = null, $notification = null)
     {}
-
 
     
-
 }

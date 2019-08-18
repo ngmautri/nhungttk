@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Warehouse\Transaction\Validation;
 
 use Application\Notification;
+use Inventory\Domain\Service\TransactionSpecificationService;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 
@@ -13,16 +14,27 @@ use Inventory\Domain\Warehouse\Transaction\TransactionType;
 class GeneralHeaderValidation
 {
 
-    public function doValidation(Notification $notification = null, GenericWarehouse $wh)
+    /**
+     *
+     * @param TransactionSpecificationService $specificationService
+     * @param Notification $notification
+     * @return \Application\Notification
+     */
+    public function doValidation(TransactionSpecificationService $specificationService, Notification $notification)
     {
-        if ($notification == null)
-            $notification = new Notification();
+        /**
+         *
+         * @var TransactionSpecificationService $specificationService ;
+         */
+        if ($specificationService == null) {
+            $notification->addError("Specification factory is not found");
+        }
 
         /**
          *
          * @var AbstractSpecification $spec ;
          */
-        if ($this->domainSpecificationFactory == null || $this->sharedSpecificationFactory == null)
+        if ($specificationService->getDomainSpecificationFactory() == null || $specificationService->getSharedSpecificationFactory() == null)
             $notification->addError("Validators is not found");
 
         if ($notification->hasErrors())
@@ -31,13 +43,15 @@ class GeneralHeaderValidation
         // do verification now
 
         // company
-        $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
+        $spec = $specificationService->getSharedSpecificationFactory()->getCompanyExitsSpecification();
         if (! $spec->isSatisfiedBy($this->company)) {
             $notification->addError("Company not exits. #" . $this->company);
         }
 
         // check movement type
-        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->movementType)) {
+        if ($specificationService->getSharedSpecificationFactory()
+            ->getNullorBlankSpecification()
+            ->isSatisfiedBy($this->movementType)) {
             $notification->addError("Transaction Type is not set.");
         } else {
             $supportedType = TransactionType::getSupportedTransaction();
@@ -53,15 +67,17 @@ class GeneralHeaderValidation
                      *
                      * @var TransactionRow $row ;
                      */
-                    if ($row->getDocType() !== $this->movementType) {
-                        $notification->addError("Transaction Type is inconsistent, Because at least one row has different type");
+                    if ($row->getTransactionType() !== $this->movementType) {
+                        $notification->addError("Transaction Type is inconsistent, because at least one row has different type");
                         break;
                     }
                 }
             }
         }
 
-        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate)) {
+        if (! $specificationService->getSharedSpecificationFactory()
+            ->getDateSpecification()
+            ->isSatisfiedBy($this->movementDate)) {
             $notification->addError("Transaction date is not correct or empty");
         } else {
 
@@ -69,7 +85,7 @@ class GeneralHeaderValidation
              *
              * @var CanPostOnDateSpecification $spec ;
              */
-            $spec1 = $this->sharedSpecificationFactory->getCanPostOnDateSpecification();
+            $spec1 = $specificationService->getSharedSpecificationFactory()->getCanPostOnDateSpecification();
             $subject = array(
                 "companyId" => $this->company,
                 "movementDate" => $this->movementDate
@@ -80,7 +96,9 @@ class GeneralHeaderValidation
             }
         }
 
-        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->docCurrency))
+        if (! $specificationService->getSharedSpecificationFactory()
+            ->getCurrencyExitsSpecification()
+            ->isSatisfiedBy($this->docCurrency))
             $notification->addError("Currency is empty or invalid");
 
         // check warehouse currency
@@ -88,7 +106,7 @@ class GeneralHeaderValidation
             $notification->addError("Source warehouse is not set");
         } else {
 
-            $spec1 = $this->sharedSpecificationFactory->getWarehouseACLSpecification();
+            $spec1 = $specificationService->getSharedSpecificationFactory()->getWarehouseACLSpecification();
             $subject = array(
                 "companyId" => $this->company,
                 "warehouseId" => $this->warehouse,
@@ -102,11 +120,11 @@ class GeneralHeaderValidation
         if ($this->localCurrency == null) {
             $notification->addError("Local currency is not set");
         } else {
-            $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
+            $spec = $specificationService->getSharedSpecificationFactory()->getCurrencyExitsSpecification();
             if (! $spec->isSatisfiedBy($this->localCurrency))
                 $notification->addError("Local currency not exits..." . $this->localCurrency);
-        }
-                        
-         return $notification;
+                    }
+                    
+                    return $notification;
     }
 }

@@ -57,13 +57,7 @@ class GRFromExchange extends GoodsReceipt implements GoodsReceiptInterface
     protected function prePost(TransactionPostingService $postingService = null, $notification = null)
     {}
     
-    /**
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GoodsReceipt::doPost()
-     */
-    protected function doPost(\Inventory\Domain\Service\TransactionPostingService $postingService = null, $notification)
-    {
-    }
+  
 
     /**
      * {@inheritDoc}
@@ -71,6 +65,14 @@ class GRFromExchange extends GoodsReceipt implements GoodsReceiptInterface
      */
     protected function raiseEvent()
     {
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GoodsReceipt::doPost()
+     */
+    protected function doPost(\Inventory\Domain\Service\TransactionPostingService $postingService = null, $notification = null)
+    {   
     }
 
 

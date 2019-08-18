@@ -20,6 +20,8 @@ use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Inventory\Domain\Service\TransactionSpecificationService;
+use Inventory\Domain\Service\TransactionValuationService;
 
 /**
  *
@@ -39,39 +41,27 @@ class TransactionService extends AbstractService
                 ->getConnection()
                 ->beginTransaction(); // suspend auto-commit
 
-            $rep = new DoctrineTransactionQueryRepository($this->getDoctrineEM());
-            $whQueryRep = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
+            $transactionQueryRepository = new DoctrineTransactionQueryRepository($this->getDoctrineEM());
+            $trx = $transactionQueryRepository->getById($trxId);
 
-            $trx = $rep->getById($trxId);
-            // var_dump($trx);
+            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->doctrineEM);
+            $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
+            $specService = new TransactionSpecificationService($sharedSpecificationFactory, $domainSpecificationFactory);
 
-            $rep = new DoctrineTransactionQueryRepository($this->getDoctrineEM());
-            $trx->setQueryRepository($rep);
+            $fifoService = new \Inventory\Application\Service\Item\FIFOService();
+            $fifoService->setDoctrineEM($this->doctrineEM);
+            $valuationService = new TransactionValuationService($fifoService);
 
-            $rep = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
-            $trx->setCmdRepository($rep);
-            $trx->setWarehouseQueryRepository($whQueryRep);
-
-            $cogsService = new \Inventory\Application\Service\Item\FIFOLayerService();
-            $cogsService->setDoctrineEM($this->doctrineEM);
-            $trx->setValuationService($cogsService);
-
-            
             $fifoService = new \Inventory\Application\Service\Item\FIFOService();
             $fifoService->setDoctrineEM($this->doctrineEM);
             $trx->setFifoService($fifoService);
-            
-            
-            $domainSpecificationFactory = new DoctrineSpecificationFactory($this->doctrineEM);
-            $trx->setDomainSpecificationFactory($domainSpecificationFactory);
 
-            $sharedSpecificationFactory = new ZendSpecificationFactory($this->doctrineEM);
-            $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
+            $whQueryRepository = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
+            $transactionCmdRepository = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
 
-            $postingService = new TransactionPostingService($rep, $whQueryRep);
-            $fifoService = new TransactionPostingService($rep, $whQueryRep);
-            
-            $notification = $trx->post($postingService);
+            $postingService = new TransactionPostingService($transactionCmdRepository, $transactionQueryRepository, $whQueryRepository);
+
+            $notification = $trx->post($specService, $valuationService, $postingService);
 
             if ($notification->hasErrors()) {
                 return $notification;
@@ -79,11 +69,11 @@ class TransactionService extends AbstractService
 
             // event
 
-            if (count($trx->getRecoredEvents() > 0)) {
+            if (count($trx->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
 
-                foreach ($trx->getRecoredEvents() as $event) {
+                foreach ($trx->getRecordedEvents() as $event) {
 
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event));
 
@@ -92,7 +82,6 @@ class TransactionService extends AbstractService
                             $dispatcher->addSubscriber($subcriber);
                         }
                     }
-
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
@@ -368,7 +357,7 @@ class TransactionService extends AbstractService
         try {
 
             $rowDTO->createdBy = $userId;
-    
+
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
             $header->setDomainSpecificationFactory($domainSpecificationFactory);
 

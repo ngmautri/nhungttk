@@ -17,6 +17,8 @@ class TransactionPostingService
 
     protected $transactionCmdRepository;
 
+    protected $transactionQueryRepository;
+
     protected $whQueryRepository;
 
     /**
@@ -25,10 +27,14 @@ class TransactionPostingService
      * @param WarehouseQueryRepositoryInterface $whQueryRepository
      * @throws InvalidArgumentException
      */
-    public function __construct(TransactionCmdRepositoryInterface $transactionCmdRepository, WarehouseQueryRepositoryInterface $whQueryRepository)
+    public function __construct(TransactionCmdRepositoryInterface $transactionCmdRepository, TransactionQueryRepositoryInterface $transactionQueryRepository, WarehouseQueryRepositoryInterface $whQueryRepository)
     {
         if ($transactionCmdRepository == null) {
             throw new InvalidArgumentException("Transaction cmd repository not set!");
+        }
+
+        if ($transactionQueryRepository == null) {
+            throw new InvalidArgumentException("Transaction query repository not set!");
         }
 
         if ($whQueryRepository == null) {
@@ -36,6 +42,7 @@ class TransactionPostingService
         }
 
         $this->transactionCmdRepository = $transactionCmdRepository;
+        $this->transactionQueryRepository = $transactionCmdRepository;
         $this->whQueryRepository = $whQueryRepository;
     }
 
@@ -50,15 +57,15 @@ class TransactionPostingService
 
     /**
      *
-     * @param TransactionCmdRepositoryInterface $transactionCmdRepository
+     * @return \Inventory\Domain\Warehouse\Transaction\TransactionCmdRepositoryInterface
      */
-    public function setTransactionCmdRepository(TransactionCmdRepositoryInterface $transactionCmdRepository)
+    public function getTransactionQueryRepository()
     {
-        $this->transactionCmdRepository = $transactionCmdRepository;
+        return $this->transactionQueryRepository;
     }
 
     /**
-     *
+     * 
      * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
      */
     public function getWhQueryRepository()
@@ -66,14 +73,6 @@ class TransactionPostingService
         return $this->whQueryRepository;
     }
 
-   /**
-    * 
-    * @param WarehouseQueryRepositoryInterface $whQueryRepository
-    */
-    public function setWhQueryRepository(WarehouseQueryRepositoryInterface $whQueryRepository)
-    {
-        $this->whQueryRepository = $whQueryRepository;
-    }
 
-
+    
 }

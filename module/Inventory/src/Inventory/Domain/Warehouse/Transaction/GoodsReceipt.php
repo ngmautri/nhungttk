@@ -1,9 +1,11 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-use Inventory\Domain\Service\TransactionPostingService;
-use Inventory\Domain\Exception\InvalidArgumentException;
+use Application\Notification;
 use Inventory\Domain\Event\GoodsReceiptPostedEvent;
+use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Domain\Service\TransactionSpecificationService;
+use Inventory\Domain\Service\TransactionValuationService;
 
 /**
  *
@@ -18,23 +20,32 @@ abstract class GoodsReceipt extends GenericTransaction
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::doPost()
      */
-    protected function doPost(TransactionPostingService $postingService = null, $notification)
+    protected function doPost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {
         try {
-            // 1.validate header
-            if ($this->getFifoService() == null) {
-                $notification->addError("FIFO service (COGS) not found!");
-            }
 
-            $notification = $this->validate();
+            if ($notification == null)
+                $notification = new Notification();
 
-            if ($this->getFifoService() == null)
-                $notification->addError("FIFO service (COGS) not found!");
+            if ($specificationService == null)
+                $notification->addError("Specification service (COGS) not found!");
+
+            if ($valuationService == null)
+                $notification->addError("Valuation service (COGS) not found!");
+
+            if ($postingService == null)
+                $notification->addError("Posting service  not found!");
 
             if ($notification->hasErrors())
                 return $notification;
 
-            $this->fifoService->createLayers($this);
+            // 1.validate transaction
+            $notification = $this->validate($specificationService, $notification, true);
+
+            if ($notification->hasErrors())
+                return $notification;
+
+            $valuationService->getFifoService()->createLayersFor($this);
         } catch (\Exception $e) {
             $notification->addError($e->getMessage());
         }

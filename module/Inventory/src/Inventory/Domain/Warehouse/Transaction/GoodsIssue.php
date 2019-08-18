@@ -4,6 +4,8 @@ namespace Inventory\Domain\Warehouse\Transaction;
 use Application\Notification;
 use Inventory\Domain\Event\GoodsIssuePostedEvent;
 use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Domain\Service\TransactionSpecificationService;
+use Inventory\Domain\Service\TransactionValuationService;
 
 /**
  *
@@ -18,14 +20,27 @@ abstract class GoodsIssue extends GenericTransaction
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::doPost()
      */
-    protected function doPost(TransactionPostingService $postingService = null, $notification = null)
+    protected function doPost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {
         try {
-            // 1.validate header
-            $notification = $this->validate($notification);
 
-            if ($this->getFifoService() == null)
-                $notification->addError("FIFO service (COGS) not found!");
+            if ($notification == null)
+                $notification = new Notification();
+
+            if ($specificationService == null)
+                $notification->addError("Specification service (COGS) not found!");
+
+            if ($valuationService == null)
+                $notification->addError("Valuation service (COGS) not found!");
+
+            if ($postingService == null)
+                $notification->addError("Posting service  not found!");
+
+            if ($notification->hasErrors())
+                return $notification;
+
+            // 1.validate transaction
+            $notification = $this->validate($specificationService, $notification, true);
 
             if ($notification->hasErrors())
                 return $notification;
@@ -37,7 +52,8 @@ abstract class GoodsIssue extends GenericTransaction
                  *
                  * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
                  */
-                $cogs = $this->getFifoService()->calculateCOGS($this, $row);
+                $cogs = $valuationService->getFifoService()->calculateCOGS($this, $row);
+
                 echo ($cogs);
                 $snapshot = $row->makeSnapshot();
                 $snapshot->cogsLocal = $cogs;
@@ -45,7 +61,6 @@ abstract class GoodsIssue extends GenericTransaction
             }
 
             $postingService->getTransactionCmdRepository()->post($this, true);
-            
         } catch (\Exception $e) {
             $notification->addError($e->getMessage());
         }
@@ -75,17 +90,17 @@ abstract class GoodsIssue extends GenericTransaction
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificRowValidationByFlow()
      */
-    protected function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
+    protected function specificRowValidationByFlow(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {
         if ($notification == null)
             $notification = new Notification();
 
-        if ($this->domainSpecificationFactory == null)
-            $notification->addError("No Domain Validator found");
+        if ($specificationService == null)
+            $notification->addError("Specification service (COGS) not found!");
 
         if ($row == null)
             $notification->addError("Row is empty");
@@ -99,7 +114,7 @@ abstract class GoodsIssue extends GenericTransaction
          *
          * @var OnhandQuantitySpecification $specDomain
          */
-        $specDomain = $this->domainSpecificationFactory->getOnhandQuantitySpecification();
+        $specDomain = $specificationService->getDomainSpecificationFactory()->getOnhandQuantitySpecification();
 
         $subject = array(
             "warehouseId" => $this->warehouse,

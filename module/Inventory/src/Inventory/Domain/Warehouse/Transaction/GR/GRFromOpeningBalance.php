@@ -25,36 +25,34 @@ class GRFromOpeningBalance extends GoodsReceipt implements GoodsReceiptInterface
         $this->movementType = TransactionType::GR_FROM_OPENNING_BALANCE;
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
     }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
-     */
-    public function specificValidation($notification = null)
-    {
-        // empty
-    }
-
-    public function addTransactionRow($transactionRowDTO)
+    
+    protected function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
     {}
 
-    public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
-    {}
-
-    public function specificRowValidation($row, $notification = null, $isPosting = false)
-    {}
-
-    public function specificHeaderValidation($notification = null)
-    {}
     protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
     {}
 
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
+     */
     protected function prePost(TransactionPostingService $postingService = null, $notification = null)
+    {
+        // Need to implemented.
+        
+    }
+
+    protected function specificValidation($notification = null)
     {}
 
+    protected function specificHeaderValidation($notification = null)
+    {}
 
-   
+    protected function specificRowValidation($row, $notification = null, $isPosting = false)
+    {}
 
+    public function addTransactionRow($transactionRow)
+    {}
 
 }

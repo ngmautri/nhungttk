@@ -31,7 +31,7 @@ Interface FIFOServiceInterface
      *
      * @param GenericTransaction $trx
      */
-    public function createLayers(GenericTransaction $trx);
+    public function createLayersFor(GenericTransaction $trx);
 
     /**
      *
@@ -39,4 +39,10 @@ Interface FIFOServiceInterface
      * @param TransactionRow $row
      */
     public function closeLayers(GenericTransaction $trx, TransactionRow $row);
+    
+    /**
+     * 
+     * @param GenericTransaction $trx
+     */
+    public function closeLayersOf(GenericTransaction $trx);
 }

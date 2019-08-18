@@ -23,7 +23,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specify()
      */
-    protected function specify()
+    public function specify()
     {
         $this->movementType = TransactionType::GI_FOR_COST_CENTER;
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_OUT;
@@ -86,10 +86,23 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
         return $notification;
     }
-
-    protected function afterPost(TransactionPostingService $postingService = null)
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
+     */
+    protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
     {}
 
-    protected function prePost(TransactionPostingService $postingService = null)
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
+     */
+    protected function prePost(TransactionPostingService $postingService = null, $notification = null)
     {}
+
+
+   
 }

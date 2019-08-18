@@ -41,6 +41,10 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
     protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
     {
         try {
+            
+            if ($notification == null)
+                $notification = new Notification();
+                
             $sourceWH = $postingService->getWhQueryRepository()->getById($this->getWarehouse());
 
             /**

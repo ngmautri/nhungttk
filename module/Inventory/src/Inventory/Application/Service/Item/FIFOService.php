@@ -119,8 +119,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
                 $fifo_consume->setCreatedOn(new \DateTime($trx->getMovementDate()));
                 $fifo_consume->setCreatedBy($u);
 
-                $fifo_consume->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
+                $fifo_consume->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
                 $this->getDoctrineEM()->persist($fifo_consume);
             }
         }
@@ -233,7 +232,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
      * {@inheritdoc}
      * @see \Inventory\Domain\Service\FIFOServiceInterface::createLayers()
      */
-    public function createLayers(GenericTransaction $trx)
+    public function createLayersFor(GenericTransaction $trx)
     {
         if ($trx == null) {
             throw new InvalidArgumentException("Transaction not found");
@@ -295,6 +294,48 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
             $fifoLayer->setRemarks("Opening Balance");
 
             $this->getDoctrineEM()->persist($fifoLayer);
+        }
+
+        $this->getDoctrineEM()->flush();
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Service\FIFOServiceInterface::closeLayersOf()
+     */
+    public function closeLayersOf(GenericTransaction $trx)
+    {
+        if ($trx == null) {
+            throw new InvalidArgumentException("Transaction not found");
+        }
+
+        $rows = $trx->getRows();
+
+        if (count($rows) == 0) {
+            throw new InvalidArgumentException("Transaction have no lines");
+        }
+
+        foreach ($rows as $row) {
+            
+            /** @var TransactionRow $row ; */
+            
+            $criteria = array(
+                'item' => $row->getItem()
+            );
+
+            $layers = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFifoLayer')->findBy($criteria);
+            if (count($layers > 0)) {
+
+                foreach ($layers as $l) {
+                    /** @var \Application\Entity\NmtInventoryFifoLayer $l ; */
+                    $l->setIsClosed(1);
+
+                    // @todo
+                    $l->setClosedOn();
+                    $this->getDoctrineEM()->persist($l);
+                }
+            }
         }
 
         $this->getDoctrineEM()->flush();

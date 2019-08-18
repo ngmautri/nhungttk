@@ -83,26 +83,26 @@ class TransactionSpecificationService
 
         // company
         $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
-        if (! $spec->isSatisfiedBy($this->company)) {
-            $notification->addError("Company not exits. #" . $this->company);
+        if (! $spec->isSatisfiedBy($trx->getCompany())) {
+            $notification->addError("Company not exits. #" . $trx->getCompany());
         }
 
         // check movement type
-        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->movementType)) {
+        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($trx->getMovementType())) {
             $notification->addError("Transaction Type is not set.");
         } else {
             $supportedType = TransactionType::getSupportedTransaction();
-            if (! in_array($this->movementType, $supportedType)) {
+            if (! in_array($trx->getMovementType(), $supportedType)) {
                 $notification->addError("Transaction Type is not supported");
             }
             // check if transactition type is consistent - when change header
-            if (count($this->transactionRows) > 0) {
-                foreach ($this->transactionRows as $row) {
+            if (count($trx->getTransactionRows()) > 0) {
+                foreach ($trx->getTransactionRows() as $row) {
                     /**
                      *
                      * @var TransactionRow $row ;
                      */
-                    if ($row->getTransactionType() !== $this->movementType) {
+                    if ($row->getTransactionType() !== $trx->getMovementType()) {
                         $notification->addError("Transaction Type is inconsistent, because at least one row has different type");
                         break;
                     }
@@ -110,7 +110,7 @@ class TransactionSpecificationService
             }
         }
 
-        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate)) {
+        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($trx->getMovementDate())) {
             $notification->addError("Transaction date is not correct or empty");
         } else {
             /**
@@ -119,49 +119,50 @@ class TransactionSpecificationService
              */
             $spec1 = $this->sharedSpecificationFactory->getCanPostOnDateSpecification();
             $subject = array(
-                "companyId" => $this->company,
-                "movementDate" => $this->movementDate
+                "companyId" => $trx->getCompany(),
+                "movementDate" => $trx->getMovementDate()
             );
             if (! $spec1->isSatisfiedBy($subject)) {
-                $notification->addError("Can not post on this date. Period is not created or closed." . $this->movementDate);
+                $notification->addError("Can not post on this date. Period is not created or closed." . $trx->getMovementDate());
             }
         }
 
-        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->docCurrency))
+        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($trx->getDocCurrency()))
             $notification->addError("Currency is empty or invalid");
 
-        // check warehouse currency
-        if ($this->warehouse == null) {
+        // check warehouse
+        if ($trx->getWarehouse() == null) {
             $notification->addError("Source warehouse is not set");
         } else {
             $spec1 = $this->sharedSpecificationFactory->getWarehouseACLSpecification();
             $subject = array(
-                "companyId" => $this->company,
-                "warehouseId" => $this->warehouse,
-                "userId" => $this->createdBy
+                "companyId" => $trx->getCompany(),
+                "warehouseId" => $trx->getWarehouse(),
+                "userId" => $trx->getCreatedBy()
             );
             if (! $spec1->isSatisfiedBy($subject))
-                $notification->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $this->company, $this->warehouse, $this->createdBy));
+                $notification->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $trx->getCompany(), $trx->getWarehouse(), $trx->getCreatedBy()));
         }
 
         // check local currency
-        if ($this->localCurrency == null) {
+        if ($trx->getLocalCurrency() == null) {
             $notification->addError("Local currency is not set");
         } else {
             $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
-            if (! $spec->isSatisfiedBy($this->localCurrency))
-                $notification->addError("Local currency not exits..." . $this->localCurrency);
+            if (! $spec->isSatisfiedBy($trx->getLocalCurrency()))
+                $notification->addError("Local currency not exits..." . $trx->getLocalCurrency());
         }
         return $notification;
     }
 
     /**
      *
+     * @param GenericTransaction $trx
      * @param TransactionRow $row
      * @param Notification $notification
      * @return \Application\Notification
      */
-    public function doGeneralRowValiation(TransactionRow $row, Notification $notification)
+    public function doGeneralRowValiation(GenericTransaction $trx, TransactionRow $row, Notification $notification)
     {
         if ($notification == null)
             $notification = new Notification();
@@ -173,7 +174,7 @@ class TransactionSpecificationService
          *
          * @var AbstractSpecificationForCompany $spec ;
          */
-        if ($row->getMvUuid() !== $this->uuid) {
+        if ($row->getMvUuid() !== $trx->getUuid()) {
             $notification->addError("transaction id not match");
             return $notification;
         }
@@ -182,15 +183,14 @@ class TransactionSpecificationService
 
         // check item exits
         $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
-        $spec->setCompanyId($this->company);
 
         $subject = array(
-            "companyId" => $this->company,
+            "companyId" => $trx->getCompany(),
             "itemId" => $row->getItem()
         );
 
         if (! $spec->isSatisfiedBy($subject))
-            $notification->addError("Item not exits in the company #" . $this->company);
+            $notification->addError("Item not exits in the company #" . $trx->getCompany());
 
         // Check quantity.
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();

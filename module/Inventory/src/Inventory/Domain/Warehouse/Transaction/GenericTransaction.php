@@ -60,9 +60,7 @@ abstract class GenericTransaction extends AbstractTransaction
     /**
      *
      * @param TransactionPostingService $postingService
-     *            *
      * @param Notification $notification
-     *            *
      * @throws InvalidArgumentException
      * @return Notification
      */
@@ -120,7 +118,7 @@ abstract class GenericTransaction extends AbstractTransaction
      *
      * @param TransactionRow $transactionRow
      */
-    public function addRowFromSnapshot(TransactionRowSnapshot $snapshot)
+    public function addRowFromSnapshot(TransactionSpecificationService $specificationService, TransactionRowSnapshot $snapshot, Notification $notification)
     {
         if (! $snapshot instanceof TransactionRowSnapshot)
             return null;
@@ -136,7 +134,7 @@ abstract class GenericTransaction extends AbstractTransaction
         $row = new TransactionRow();
         $row->makeFromSnapshot($snapshot);
 
-        $ckResult = $this->validateRow($row, null, false);
+        $ckResult = $this->validateRow($specificationService, $row, $notification, false);
         if ($ckResult->hasErrors())
             throw new InvalidArgumentException($ckResult->errorMessage());
 
@@ -337,7 +335,7 @@ abstract class GenericTransaction extends AbstractTransaction
          *
          * @var TransactionSpecificationService $specificationService ;
          */
-        $notification = $specificationService->doGeneralRowValiation($row, $notification);
+        $notification = $specificationService->doGeneralRowValiation($this, $row, $notification);
 
         return $notification;
     }

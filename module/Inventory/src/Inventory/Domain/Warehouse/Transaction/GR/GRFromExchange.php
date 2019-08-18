@@ -1,10 +1,14 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GR;
 
+use Application\Notification;
 use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Domain\Service\TransactionSpecificationService;
+use Inventory\Domain\Service\TransactionValuationService;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceipt;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceiptInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 
 /**
@@ -14,68 +18,39 @@ use Inventory\Domain\Warehouse\Transaction\TransactionType;
  */
 class GRFromExchange extends GoodsReceipt implements GoodsReceiptInterface
 {
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\AbstractTransaction::specify()
-     */
-    public function specify()
-    {
-        $this->movementType =  TransactionType::GR_FROM_EXCHANGE;
-        $this->movementFlow =  TransactionFlow::WH_TRANSACTION_IN;
-    }
-    
 
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
+     * @see \Inventory\Domain\Warehouse\Transaction\AbstractTransaction::specify()
      */
-    public function specificValidation($notification = null)
+    public function specify()
     {
-        // empty
+        $this->movementType = TransactionType::GR_FROM_EXCHANGE;
+        $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
     }
 
-    public function addTransactionRow($transactionRowDTO)
+    protected function specificRowValidationByFlow(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {}
 
-    public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
+    protected function afterPost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {}
 
-    public function specificRowValidation($row, $notification = null, $isPosting = false)
+    protected function prePost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {}
-    public function specificHeaderValidation($notification = null)
+
+    protected function specificValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
     {}
-    
-    
-    
-    protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
+
+    protected function specificHeaderValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
     {}
-    
-    
 
-    protected function prePost(TransactionPostingService $postingService = null, $notification = null)
+    protected function specificRowValidation(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {}
+
+    public function addTransactionRow(TransactionRow $transactionRow)
+    {}
+
     
-  
-
-    /**
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GoodsReceipt::raiseEvent()
-     */
-    protected function raiseEvent()
-    {
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GoodsReceipt::doPost()
-     */
-    protected function doPost(\Inventory\Domain\Service\TransactionPostingService $postingService = null, $notification = null)
-    {   
-    }
-
-
-  
 
 }

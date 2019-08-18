@@ -939,6 +939,14 @@ abstract class AbstractTransaction extends AbstractEntity
     {
         $this->company = $company;
     }
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
 
     
 }

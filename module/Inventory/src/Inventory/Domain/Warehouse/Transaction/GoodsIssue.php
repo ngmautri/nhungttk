@@ -78,17 +78,7 @@ abstract class GoodsIssue extends GenericTransaction
         // Recording Events
         $this->recordedEvents[] = new GoodsIssuePostedEvent($this);
     }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::addTransactionRow()
-     */
-    public function addTransactionRow($transactionRowDTO)
-    {
-        // TODO Auto-generated method stub
-    }
-
+   
     /**
      *
      * {@inheritdoc}

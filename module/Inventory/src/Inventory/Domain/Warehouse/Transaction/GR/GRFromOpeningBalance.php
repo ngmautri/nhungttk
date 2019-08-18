@@ -1,10 +1,14 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GR;
 
+use Application\Notification;
 use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Domain\Service\TransactionSpecificationService;
+use Inventory\Domain\Service\TransactionValuationService;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceipt;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceiptInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 
 /**
@@ -25,34 +29,50 @@ class GRFromOpeningBalance extends GoodsReceipt implements GoodsReceiptInterface
         $this->movementType = TransactionType::GR_FROM_OPENNING_BALANCE;
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
     }
-    
-    protected function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
+
+    protected function specificRowValidationByFlow(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {}
 
-    protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
+    protected function afterPost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
      */
-    protected function prePost(TransactionPostingService $postingService = null, $notification = null)
+    protected function prePost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {
-        // Need to implemented.
-        
+        try {
+
+            if ($notification == null)
+                $notification = new Notification();
+
+            if ($valuationService == null) {
+                $notification->addError("Valuation service not set");
+            }
+
+            if ($notification->hasErrors())
+                return $notification;
+
+            $valuationService->getFifoService()->closeLayersOf($this);
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
+        }
+
+        return $notification;
     }
 
-    protected function specificValidation($notification = null)
+    protected function specificValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
     {}
 
-    protected function specificHeaderValidation($notification = null)
+    protected function specificHeaderValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
     {}
 
-    protected function specificRowValidation($row, $notification = null, $isPosting = false)
+    protected function specificRowValidation(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {}
 
-    public function addTransactionRow($transactionRow)
+    public function addTransactionRow(TransactionRow $transactionRow)
     {}
 
 }

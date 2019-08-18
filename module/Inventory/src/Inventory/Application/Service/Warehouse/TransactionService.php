@@ -52,13 +52,8 @@ class TransactionService extends AbstractService
             $fifoService->setDoctrineEM($this->doctrineEM);
             $valuationService = new TransactionValuationService($fifoService);
 
-            $fifoService = new \Inventory\Application\Service\Item\FIFOService();
-            $fifoService->setDoctrineEM($this->doctrineEM);
-            $trx->setFifoService($fifoService);
-
             $whQueryRepository = new DoctrineWarehouseQueryRepository($this->getDoctrineEM());
             $transactionCmdRepository = new DoctrineTransactionCmdRepository($this->getDoctrineEM());
-
             $postingService = new TransactionPostingService($transactionCmdRepository, $transactionQueryRepository, $whQueryRepository);
 
             $notification = $trx->post($specService, $valuationService, $postingService);
@@ -165,12 +160,10 @@ class TransactionService extends AbstractService
         $trx->makeFromSnapshot($snapshot);
 
         $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-        $trx->setDomainSpecificationFactory($domainSpecificationFactory);
-
         $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
+        $specService = new TransactionSpecificationService($sharedSpecificationFactory, $domainSpecificationFactory);
 
-        $notification = $trx->validateHeader($notification);
+        $notification = $trx->validateHeader($specService, $notification);
 
         if ($notification->hasErrors()) {
             return $notification;
@@ -283,12 +276,10 @@ class TransactionService extends AbstractService
             $newTrx->makeFromSnapshot($newSnapshot);
 
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-            $newTrx->setDomainSpecificationFactory($domainSpecificationFactory);
-
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-            $newTrx->setSharedSpecificationFactory($sharedSpecificationFactory);
+            $specService = new TransactionSpecificationService($sharedSpecificationFactory, $domainSpecificationFactory);
 
-            $notification = $newTrx->validateHeader($notification);
+            $notification = $trx->validateHeader($specService, $notification);
 
             if ($notification->hasErrors()) {
                 return $notification;
@@ -359,10 +350,8 @@ class TransactionService extends AbstractService
             $rowDTO->createdBy = $userId;
 
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->getDoctrineEM());
-            $header->setDomainSpecificationFactory($domainSpecificationFactory);
-
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-            $header->setSharedSpecificationFactory($sharedSpecificationFactory);
+            $specService = new TransactionSpecificationService($sharedSpecificationFactory, $domainSpecificationFactory);
 
             $rep = new DoctrineTransactionRepository($this->getDoctrineEM());
             $this->getDoctrineEM()
@@ -371,7 +360,7 @@ class TransactionService extends AbstractService
 
             $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromDTO($rowDTO);
 
-            $row = $header->addRowFromSnapshot($rowSnapshot);
+            $row = $header->addRowFromSnapshot($specService, $rowSnapshot, $notification);
 
             $rowId = $rep->storeRow($header, $row);
 

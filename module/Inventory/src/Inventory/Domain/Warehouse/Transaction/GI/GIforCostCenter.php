@@ -3,6 +3,8 @@ namespace Inventory\Domain\Warehouse\Transaction\GI;
 
 use Application\Notification;
 use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Domain\Service\TransactionSpecificationService;
+use Inventory\Domain\Service\TransactionValuationService;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
@@ -18,7 +20,6 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 {
 
     /**
-     * \
      *
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specify()
@@ -32,29 +33,9 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
-     */
-    protected function specificValidation($notification = null)
-    {
-        // no need
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificHeaderValidation()
-     */
-    protected function specificHeaderValidation($notification = null)
-    {}
-
-    /**
-     * It require Cost Center.
-     *
-     * @param TransactionRow $row
-     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificRowValidation()
      */
-    protected function specificRowValidation($row, $notification = null, $isPosting = false)
+    protected function specificRowValidation(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {
         if ($notification == null) {
             $notification = new Notification();
@@ -63,7 +44,16 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
         if ($row == null)
             $notification->addError("Row is empty");
 
-        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($row->getCostCenter())) {
+        if ($specificationService == null) {
+            $notification->addError("Speficification not set");
+        }
+
+        if ($notification->hasErrors())
+            return $notification;
+
+        if ($specificationService->getDomainSpecificationFactory()
+            ->getNullorBlankSpecification()
+            ->isSatisfiedBy($row->getCostCenter())) {
             $notification->addError("Cost Center is required!");
         } else {
 
@@ -71,7 +61,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
              *
              * @var AbstractSpecificationForCompany $spec ;
              */
-            $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
+            $spec = $specificationService->getSharedSpecificationFactory()->getCostCenterExitsSpecification();
             $spec->setCompanyId($this->company);
 
             $subject = array(
@@ -86,23 +76,18 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
         return $notification;
     }
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
-     */
-    protected function afterPost(TransactionPostingService $postingService = null, $notification = null)
+
+    protected function afterPost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
-     */
-    protected function prePost(TransactionPostingService $postingService = null, $notification = null)
+    protected function prePost(TransactionSpecificationService $specificationService, TransactionValuationService $valuationService, TransactionPostingService $postingService, Notification $notification = null)
     {}
 
+    protected function specificValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
+    {}
 
-   
+    protected function specificHeaderValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
+    {}
+
+  
 }

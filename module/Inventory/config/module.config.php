@@ -181,6 +181,9 @@ return array(
             
 
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
+            'Inventory\Application\Service\Item\FIFOService' => 'Inventory\Application\Service\Item\FIFOServiceFactory',
+            
+            
             'Inventory\Application\Service\Warehouse\TransactionService' => 'Inventory\Application\Service\Warehouse\TransactionServiceFactory',
             'Inventory\Application\Service\Warehouse\WarehouseService' => 'Inventory\Application\Service\Warehouse\WarehouseServiceFactory',
             

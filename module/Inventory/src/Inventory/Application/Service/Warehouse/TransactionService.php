@@ -56,6 +56,12 @@ class TransactionService extends AbstractService
             $cogsService->setDoctrineEM($this->doctrineEM);
             $trx->setValuationService($cogsService);
 
+            
+            $fifoService = new \Inventory\Application\Service\Item\FIFOService();
+            $fifoService->setDoctrineEM($this->doctrineEM);
+            $trx->setFifoService($fifoService);
+            
+            
             $domainSpecificationFactory = new DoctrineSpecificationFactory($this->doctrineEM);
             $trx->setDomainSpecificationFactory($domainSpecificationFactory);
 
@@ -63,7 +69,8 @@ class TransactionService extends AbstractService
             $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
 
             $postingService = new TransactionPostingService($rep, $whQueryRep);
-
+            $fifoService = new TransactionPostingService($rep, $whQueryRep);
+            
             $notification = $trx->post($postingService);
 
             if ($notification->hasErrors()) {

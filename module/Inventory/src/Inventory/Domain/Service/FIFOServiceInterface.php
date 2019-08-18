@@ -9,8 +9,16 @@ use Inventory\Domain\Warehouse\Transaction\TransactionRow;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface FIFOLayerServiceInterface
+Interface FIFOServiceInterface
 {
+
+    /**
+     *
+     * @param GenericTransaction $trx
+     * @param TransactionRow $itemId
+     * @param string $issuedQuantity
+     */
+    public function calculateCOGS($trx, $row);
 
     /**
      *
@@ -22,7 +30,13 @@ Interface FIFOLayerServiceInterface
     /**
      *
      * @param GenericTransaction $trx
+     */
+    public function createLayers(GenericTransaction $trx);
+
+    /**
+     *
+     * @param GenericTransaction $trx
      * @param TransactionRow $row
      */
-    public function closeLayer(GenericTransaction $trx, TransactionRow $row);
+    public function closeLayers(GenericTransaction $trx, TransactionRow $row);
 }

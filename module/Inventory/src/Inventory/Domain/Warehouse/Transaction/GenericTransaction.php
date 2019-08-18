@@ -2,11 +2,14 @@
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Notification;
+use Inventory\Application\Service\Item\FIFOService;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Service\ValuationServiceInterface;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface;
 use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Service\FIFOLayerServiceFactory;
+use Inventory\Domain\Service\FIFOServiceInterface;
 
 /**
  *
@@ -35,19 +38,22 @@ abstract class GenericTransaction extends AbstractTransaction
     protected $valuationService;
 
     /**
-     * 
+     *
+     * @var FIFOServiceInterface $fifoService;
+     */
+    protected $fifoService;
+
+    /**
+     *
      * @var array
      */
-    protected $recoredEvents;
-    
-    
+    protected $recordedEvents;
+
     /**
      *
      * @var int
      */
     public $totalActiveRows;
-    
-    
 
     /**
      *
@@ -55,40 +61,53 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     public $transtionRowsOutput;
 
-    abstract protected function prePost(TransactionPostingService $postingService = null, $notification=null);
-    abstract protected function doPost(TransactionPostingService $postingService = null, $notification=null);
-    abstract protected function afterPost(TransactionPostingService $postingService = null, $notification=null);
-   
-    abstract public function specificValidation($notification = null);
+    abstract protected function prePost(TransactionPostingService $postingService = null, $notification = null);
 
-    abstract public function specificHeaderValidation($notification = null);
+    abstract protected function doPost(TransactionPostingService $postingService = null, $notification = null);
 
-    abstract public function specificRowValidation($row, $notification = null, $isPosting = false);
+    abstract protected function afterPost(TransactionPostingService $postingService = null, $notification = null);
 
-    abstract public function specificRowValidationByFlow($row, $notification = null, $isPosting = false);
+    abstract protected function raiseEvent();
+
+    abstract protected function specificValidation($notification = null);
+
+    abstract protected function specificHeaderValidation($notification = null);
+
+    abstract protected function specificRowValidation($row, $notification = null, $isPosting = false);
+
+    abstract protected function specificRowValidationByFlow($row, $notification = null, $isPosting = false);
 
     abstract public function addTransactionRow($transactionRow);
-    
-    
+
     /**
-     * 
+     *
      * @param TransactionPostingService $postingService
-     * @throws InvalidArgumentException
+     *            ;
+     * @param Notification $notification
+     *            ;
+     * @throws InvalidArgumentException ;
+     * @return Notification ;
      */
-    public function post(TransactionPostingService $postingService = null, $notification=null){
-        
+    public function post(TransactionPostingService $postingService = null, Notification $notification = null)
+    {
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-        
-        if($notification==null){
+
+        if ($notification == null) {
             $notification = new Notification();
         }
-        
+
+        $this->recordedEvents = array();
+
         $notification = $this->prePost($postingService, $notification);
         $notification = $this->doPost($postingService, $notification);
-        $notification= $this->afterPost($postingService);
+        $notification = $this->afterPost($postingService);
         
+        if(!$notification->hasErrors()){
+            $this->raiseEvent();            
+        }
+    
         return $notification;
     }
 
@@ -112,7 +131,7 @@ abstract class GenericTransaction extends AbstractTransaction
 
         $snapshot->mvUuid = $this->uuid;
         $snapshot->docType = $this->movementType;
-        $snapshot->transactionType = $this->movementType;        
+        $snapshot->transactionType = $this->movementType;
         $snapshot->flow = $this->movementFlow;
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->wh = $this->warehouse;
@@ -159,7 +178,7 @@ abstract class GenericTransaction extends AbstractTransaction
     }
 
     /**
-     * validation header
+     * validation all
      *
      * @return Notification
      */
@@ -212,11 +231,13 @@ abstract class GenericTransaction extends AbstractTransaction
         if ($notification == null)
             $notification = new Notification();
 
+        // always done
         $notification = $this->generalHeaderValidation($notification);
 
         if ($notification->hasErrors())
             return $notification;
 
+        // specific
         $specificHeaderValidationResult = $this->specificHeaderValidation($notification);
         if ($specificHeaderValidationResult instanceof Notification)
             $notification = $specificHeaderValidationResult;
@@ -336,6 +357,13 @@ abstract class GenericTransaction extends AbstractTransaction
      */
     public function validateRow($row, $notification, $isPosting = false)
     {
+        
+        if ($this->sharedSpecificationFactory == null) {
+            $notification->addError("Validators is not found");
+            return $notification;
+        }
+        
+        
         if ($notification == null)
             $notification = new Notification();
 
@@ -345,8 +373,10 @@ abstract class GenericTransaction extends AbstractTransaction
         if ($notification->hasErrors())
             return $notification;
 
+        // validation by flow    
         $specificRowValidationByFlowResult = $this->specificRowValidationByFlow($row, $notification, $isPosting);
 
+        // specifict validation
         if ($specificRowValidationByFlowResult != null) {
             $notification = $specificRowValidationByFlowResult;
         }
@@ -359,9 +389,9 @@ abstract class GenericTransaction extends AbstractTransaction
     }
 
     /**
-     *
+     * Default - can be overwritten.
+     * 
      * @param TransactionRow $row
-     *            ;
      * @param Notification $notification
      * @param boolean $isPosting
      * @return string|\Application\Notification
@@ -378,11 +408,7 @@ abstract class GenericTransaction extends AbstractTransaction
          *
          * @var AbstractSpecificationForCompany $spec ;
          */
-        if ($this->sharedSpecificationFactory == null) {
-            $notification->addError("Validators is not found");
-            return $notification;
-        }
-
+        
         if ($row->getMvUuid() !== $this->uuid) {
             $notification->addError("transaction id not match");
             return $notification;
@@ -483,19 +509,37 @@ abstract class GenericTransaction extends AbstractTransaction
     }
 
     /**
-     * 
+     *
      * @param WarehouseQueryRepositoryInterface $warehouseQueryRepository
      */
     public function setWarehouseQueryRepository(WarehouseQueryRepositoryInterface $warehouseQueryRepository)
     {
         $this->warehouseQueryRepository = $warehouseQueryRepository;
     }
-   
-    
-    public function getRecoredEvents()
+
+    public function getRecordedEvents()
     {
         return $this->recoredEvents;
     }
+    
+   /**
+    * 
+    * @return \Inventory\Domain\Service\FIFOServiceInterface
+    */
+    public function getFifoService()
+    {
+        return $this->fifoService;
+    }
+
+    /**
+     * 
+     * @param FIFOServiceInterface $fifoService
+     */
+    public function setFifoService(FIFOServiceInterface $fifoService)
+    {
+        $this->fifoService = $fifoService;
+    }
+
 
 
     

@@ -141,7 +141,7 @@ abstract class AbstractTransaction extends AbstractEntity
      */
     protected $queryRepository;
 
-    abstract public function specify();
+    abstract protected function specify();
 
     /**
      *
@@ -1031,6 +1031,14 @@ abstract class AbstractTransaction extends AbstractEntity
     {
         $this->queryRepository = $queryRepository;
     }
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
 
 
 }

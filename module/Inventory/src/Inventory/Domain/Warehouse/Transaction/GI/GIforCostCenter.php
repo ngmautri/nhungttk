@@ -3,12 +3,11 @@ namespace Inventory\Domain\Warehouse\Transaction\GI;
 
 use Application\Notification;
 use Inventory\Domain\Service\TransactionPostingService;
-use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
+use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
-use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 
 /**
  *
@@ -24,19 +23,18 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specify()
      */
-    public function specify()
+    protected function specify()
     {
         $this->movementType = TransactionType::GI_FOR_COST_CENTER;
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_OUT;
     }
 
-  
     /**
      *
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
      */
-    public function specificValidation($notification = null)
+    protected function specificValidation($notification = null)
     {
         // no need
     }
@@ -46,7 +44,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificHeaderValidation()
      */
-    public function specificHeaderValidation($notification = null)
+    protected function specificHeaderValidation($notification = null)
     {}
 
     /**
@@ -56,7 +54,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificRowValidation()
      */
-    public function specificRowValidation($row, $notification = null, $isPosting = false)
+    protected function specificRowValidation($row, $notification = null, $isPosting = false)
     {
         if ($notification == null) {
             $notification = new Notification();
@@ -64,9 +62,6 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
         if ($row == null)
             $notification->addError("Row is empty");
-
-        if ($this->sharedSpecificationFactory == null)
-            $notification->addError("Validator is not found");
 
         if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($row->getCostCenter())) {
             $notification->addError("Cost Center is required!");
@@ -91,14 +86,10 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
         return $notification;
     }
+
     protected function afterPost(TransactionPostingService $postingService = null)
     {}
 
     protected function prePost(TransactionPostingService $postingService = null)
     {}
-
-    
-   
-    
-
 }

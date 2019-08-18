@@ -18,37 +18,39 @@ abstract class GoodsReceipt extends GenericTransaction
      * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::doPost()
      */
-    protected function doPost(TransactionPostingService $postingService = null)
+    protected function doPost(TransactionPostingService $postingService = null, $notification)
     {
-      
-        // 1.validate header
-        $notification = $this->validate();
+        try {
+            // 1.validate header
+            if ($this->getFifoService() == null) {
+                $notification->addError("FIFO service (COGS) not found!");
+            }
 
-        if ($this->getValuationService() == null)
-            $notification->addError("Valuation service (COGS) not found!");
+            $notification = $this->validate();
 
-        if ($notification->hasErrors())
-            return $notification;
+            if ($this->getFifoService() == null)
+                $notification->addError("FIFO service (COGS) not found!");
 
-        // 2. caculate cogs
-        foreach ($this->transactionRows as $row) {
+            if ($notification->hasErrors())
+                return $notification;
 
-            /**
-             *
-             * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
-             */
-            $cogs = $this->getValuationService()->calculateCOGS($this, $row);
-            echo ($cogs);
-            $snapshot = $row->makeSnapshot();
-            $snapshot->cogsLocal = $cogs;
-            $row->makeFromSnapshot($snapshot);
+            $this->fifoService->createLayers($this);
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
         }
 
-        $postingService->getTransactionCmdRepository()->post($this, true);
-
-        // Recording Events
-        $this->recoredEvents[] = new GoodsReceiptPostedEvent($this);
-                  
-                return $notification;
+        return $notification;
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::raiseEvent()
+     */
+    protected function raiseEvent()
+    {
+        // Recording Events
+        $this->recordedEvents[] = new GoodsReceiptPostedEvent($this);
+    }
+    
 }

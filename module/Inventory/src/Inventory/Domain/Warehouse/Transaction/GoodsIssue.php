@@ -20,36 +20,48 @@ abstract class GoodsIssue extends GenericTransaction
      */
     protected function doPost(TransactionPostingService $postingService = null, $notification = null)
     {
+        try {
+            // 1.validate header
+            $notification = $this->validate($notification);
 
-        // 1.validate header
-        $notification = $this->validate();
+            if ($this->getFifoService() == null)
+                $notification->addError("FIFO service (COGS) not found!");
 
-        if ($this->getValuationService() == null)
-            $notification->addError("Valuation service (COGS) not found!");
+            if ($notification->hasErrors())
+                return $notification;
 
-        if ($notification->hasErrors())
-            return $notification;
+            // 2. caculate cogs
+            foreach ($this->transactionRows as $row) {
 
-        // 2. caculate cogs
-        foreach ($this->transactionRows as $row) {
+                /**
+                 *
+                 * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
+                 */
+                $cogs = $this->getFifoService()->calculateCOGS($this, $row);
+                echo ($cogs);
+                $snapshot = $row->makeSnapshot();
+                $snapshot->cogsLocal = $cogs;
+                $row->makeFromSnapshot($snapshot);
+            }
 
-            /**
-             *
-             * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
-             */
-            $cogs = $this->getValuationService()->calculateCOGS($this, $row);
-            echo ($cogs);
-            $snapshot = $row->makeSnapshot();
-            $snapshot->cogsLocal = $cogs;
-            $row->makeFromSnapshot($snapshot);
+            $postingService->getTransactionCmdRepository()->post($this, true);
+            
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
         }
 
-        $postingService->getTransactionCmdRepository()->post($this, true);
-
-        // Recording Events
-        $this->recoredEvents[] = new GoodsIssuePostedEvent($this);
-
         return $notification;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::raiseEvent()
+     */
+    protected function raiseEvent()
+    {
+        // Recording Events
+        $this->recordedEvents[] = new GoodsIssuePostedEvent($this);
     }
 
     /**
@@ -63,11 +75,11 @@ abstract class GoodsIssue extends GenericTransaction
     }
 
     /**
-     *
-     * {@inheritdoc}
+     * 
+     * {@inheritDoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificRowValidationByFlow()
      */
-    public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
+    protected function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
     {
         if ($notification == null)
             $notification = new Notification();

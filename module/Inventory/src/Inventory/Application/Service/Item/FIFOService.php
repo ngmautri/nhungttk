@@ -3,26 +3,25 @@ namespace Inventory\Application\Service\Item;
 
 use Application\Service\AbstractService;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Inventory\Domain\Service\FIFOLayerServiceInterface;
+use Inventory\Domain\Service\FIFOServiceInterface;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Zend\Math\Rand;
+use Inventory\Domain\Exception\InvalidArgumentException;
+use Ramsey;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FIFOLayerService extends AbstractService implements FIFOLayerServiceInterface
+class FIFOService extends AbstractService implements FIFOServiceInterface
 {
 
     /**
      *
-     * @param GenericTransaction $trx
-     * @param TransactionRow $row
-     *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::calculateCOGS()
+     * @see \Inventory\Domain\Service\FIFOServiceInterface::calculateCOGS()
      */
     public function calculateCOGS($trx, $row)
     {
@@ -142,9 +141,74 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::closeLayers()
+     * @see \Inventory\Domain\Service\FIFOServiceInterface::createLayer()
      */
-    public function closeLayers($trx, $row)
+    public function createLayer(GenericTransaction $trx, TransactionRow $row)
+    {
+        if ($trx == null) {
+            throw new InvalidArgumentException("Transaction not found");
+        }
+
+        if ($row == null) {
+            throw new InvalidArgumentException("Transaction row not found");
+        }
+
+        // Create new FIFO.
+        /**
+         *
+         * @todo: Create FIFO Layer
+         */
+        $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+
+        $fifoLayer->setIsClosed(0);
+        $fifoLayer->setIsOpenBalance(1);
+
+        if ($row->getItem() > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItem $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($row->getItem());
+            $fifoLayer->setItem($obj);
+        }
+
+        if ($row->getCreatedBy() > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->find($row->getCreatedBy());
+            $fifoLayer->setCreatedBy($obj);
+        }
+
+        $fifoLayer->setQuantity($row->getQuantity());
+
+        // will be changed uppon inventory transaction.
+        $fifoLayer->setOnhandQuantity($row->getQuantity());
+        $fifoLayer->setDocUnitPrice($row->getUnitPrice());
+        $fifoLayer->setLocalCurrency($row->getCurrency());
+        $fifoLayer->setExchangeRate($row->getExchangeRate());
+        $fifoLayer->setSourceClass(get_class($row));
+        $fifoLayer->setSourceId($row->getID());
+        $fifoLayer->setSourceToken($$row->getToken());
+
+        $fifoLayer->setPostingDate($trx->getPostingDate());
+        $fifoLayer->setCreatedOn($row->getCreatedOn());
+
+        $fifoLayer->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
+        $fifoLayer->setRemarks("Opening Balance");
+
+        $this->doctrineEM->persist($fifoLayer);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Service\FIFOServiceInterface::closeLayers()
+     */
+    public function closeLayers(GenericTransaction $trx, TransactionRow $row)
     {
         $criteria = array(
             'item' => $row->getItem()
@@ -167,39 +231,72 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOLayerServiceInterface::createLayer()
+     * @see \Inventory\Domain\Service\FIFOServiceInterface::createLayers()
      */
-    public function createLayer($trx, $row)
+    public function createLayers(GenericTransaction $trx)
     {
-        // Create new FIFO.
+        if ($trx == null) {
+            throw new InvalidArgumentException("Transaction not found");
+        }
 
-        /**
-         *
-         * @todo: Create FIFO Layer
-         */
-        $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+        $rows = $trx->getRows();
 
-        $fifoLayer->setIsClosed(0);
-        $fifoLayer->setIsOpenBalance(1);
-        $fifoLayer->setItem($row->getItem());
-        $fifoLayer->setQuantity($row->getQuantity());
+        if (count($rows) == 0) {
+            throw new InvalidArgumentException("Transaction have no lines");
+        }
 
-        // will be changed uppon inventory transaction.
-        $fifoLayer->setOnhandQuantity($row->getQuantity());
-        $fifoLayer->setDocUnitPrice($row->getUnitPrice());
-        $fifoLayer->setLocalCurrency($row->getCurrency());
-        $fifoLayer->setExchangeRate($row->getExchangeRate());
+        foreach ($rows as $row) {
 
-        $fifoLayer->setPostingDate($entity->getPostingDate());
+            $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
 
-        $fifoLayer->setSourceClass(get_class($row));
-        $fifoLayer->setSourceId($row->getID());
-        $fifoLayer->setSourceToken($$row->getToken());
+            $fifoLayer->setIsClosed(0);
+            $fifoLayer->setIsOpenBalance(1);
 
-        $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
-        $fifoLayer->setCreatedBy($u);
-        $fifoLayer->setCreatedOn($row->getCreatedOn());
-        $fifoLayer->setRemarks("Opening Balance");
-        $this->doctrineEM->persist($fifoLayer);
+            /**
+             *
+             * @var TransactionRow $row
+             */
+
+            if ($row->getItem() > 0) {
+
+                /**
+                 *
+                 * @var \Application\Entity\NmtInventoryItem $obj ;
+                 */
+                $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($row->getItem());
+                $fifoLayer->setItem($obj);
+            }
+
+            if ($row->getCreatedBy() > 0) {
+
+                /**
+                 *
+                 * @var \Application\Entity\MlaUsers $obj ;
+                 */
+                $obj = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->find($row->getCreatedBy());
+                $fifoLayer->setCreatedBy($obj);
+            }
+
+            $fifoLayer->setQuantity($row->getQuantity());
+
+            // will be changed uppon inventory transaction.
+            $fifoLayer->setOnhandQuantity($row->getQuantity());
+            $fifoLayer->setDocUnitPrice($row->getUnitPrice());
+            $fifoLayer->setLocalCurrency($row->getCurrency());
+            $fifoLayer->setExchangeRate($row->getExchangeRate());
+            $fifoLayer->setSourceClass(get_class($row));
+            $fifoLayer->setSourceId($row->getId());
+            $fifoLayer->setSourceToken($row->getToken());
+
+            $fifoLayer->setPostingDate($trx->getPostingDate());
+            $fifoLayer->setCreatedOn($row->getCreatedOn());
+
+            $fifoLayer->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
+            $fifoLayer->setRemarks("Opening Balance");
+
+            $this->getDoctrineEM()->persist($fifoLayer);
+        }
+
+        $this->getDoctrineEM()->flush();
     }
 }

@@ -12,6 +12,7 @@ use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use PHPUnit_Framework_TestCase;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
+use Inventory\Domain\Service\TransactionSpecificationService;
 
 class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -37,8 +38,8 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $data = array();
-        $data["movementDate"] = "2019-06-14";
-        $data["movementType"] = TransactionType::GI_FOR_COST_CENTER;
+        $data["movementDate"] = "2019-07-14";
+        $data["movementType"] = TransactionType::GI_FOR_REPAIR_MACHINE_WITH_EX;
         $data["warehouse"] = 5;
         $data["company"] = 1;
         $data["currency"] = 1;
@@ -52,23 +53,18 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
 
         $snapshot = TransactionSnapshotAssembler::createSnapshotFromArray($data);
         
-        $trx = TransactionFactory::createTransaction(TransactionType::GI_FOR_COST_CENTER);
+        $trx = TransactionFactory::createTransaction(TransactionType::GI_FOR_REPAIR_MACHINE_WITH_EX);
 
-        $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
-        $trx->setDomainSpecificationFactory($domainSpecificationFactory);
-
-        $sharedSpecificationFactory = new ZendSpecificationFactory($em);
-        $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
-
+   
         $trx->makeFromSnapshot($snapshot);
         
         
         $data = array();
 
-        $data["item"] = 1010;
+      /*   $data["item"] = 1010;
         $data["docQuantity"] = 1;
         $data["costCenter"] = 4;
-        $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
+        $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data); */
 
 //        $trx->addRowFromSnapshot($rowSnapshot);
 
@@ -76,21 +72,19 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data["docQuantity"] = 4;
         $data["costCenter"] = 5;
         $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
+
+        $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
+        $sharedSpecificationFactory = new ZendSpecificationFactory($em);
+        $specService = new TransactionSpecificationService($sharedSpecificationFactory, $domainSpecificationFactory);
         
 
-        $trx->addRowFromSnapshot($rowSnapshot);
+        $trx->addRowFromSnapshot($specService, $rowSnapshot);
 
         $em->getConnection()->beginTransaction(); // suspend auto-commit
         try{
             
-            $cogsService = new \Inventory\Application\Service\Item\FIFOLayerService();
-            $cogsService->setDoctrineEM($em);
-            $trx->setValuationService($cogsService);
-            
-            $rep = new DoctrineTransactionRepository($em);
-            $trx->setTransactionRepository($rep);
-            
-            var_dump($trx->validate());
+               
+            var_dump($trx->validate($specService));
             //var_dump($trx->post());
             
         } catch (\Exception $e) {

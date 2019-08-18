@@ -3,6 +3,8 @@ namespace Inventory\Application\Service\Upload\Transaction;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
+use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
+use Inventory\Domain\Warehouse\Transaction\TransactionType;
 
 /**
  *
@@ -22,6 +24,9 @@ class OpenBalanceUpload extends AbstractUploadStrategy
         $objPHPExcel = IOFactory::load($file);
 
         try {
+            
+            $trx = TransactionFactory::createTransaction(TransactionType::GR_FROM_OPENNING_BALANCE);
+            
 
             foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
                 // echo $worksheet->getTitle();

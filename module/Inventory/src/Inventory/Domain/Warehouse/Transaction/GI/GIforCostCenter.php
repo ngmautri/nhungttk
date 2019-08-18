@@ -51,8 +51,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
         if ($notification->hasErrors())
             return $notification;
 
-        if ($specificationService->getDomainSpecificationFactory()
-            ->getNullorBlankSpecification()
+        if ($specificationService->getSharedSpecificationFactory()->getNullorBlankSpecification()
             ->isSatisfiedBy($row->getCostCenter())) {
             $notification->addError("Cost Center is required!");
         } else {
@@ -88,6 +87,7 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 
     protected function specificHeaderValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
     {}
+    public function addTransactionRow(TransactionRow $transactionRow)
+    {}
 
-  
 }

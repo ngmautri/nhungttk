@@ -76,7 +76,7 @@ class OpeningBalanceController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'target' => null,
+                    'target' => null
                 ));
 
                 // $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
@@ -90,11 +90,10 @@ class OpeningBalanceController extends AbstractActionController
                 $file_type = $_FILES['uploaded_file']['type'];
 
                 $file_ext = strtolower(end(explode('.', $file_name)));
-                
+
                 // continue:
-                
+
                 echo ($file_name);
-                
 
                 // attachement required?
                 if ($file_tmp == "" or $file_tmp === null) {
@@ -103,12 +102,10 @@ class OpeningBalanceController extends AbstractActionController
                     $this->flashMessenger()->addMessage('Something wrong!');
                     return new ViewModel(array(
                         'errors' => $errors,
-                        'target' => $target,
-                        
+                        'target' => $target
                     ));
                 }
 
-            
                 $ext = '';
                 if (preg_match('/(jpg|jpeg)$/', $file_type)) {
                     $ext = 'jpg';
@@ -150,8 +147,7 @@ class OpeningBalanceController extends AbstractActionController
                     $this->flashMessenger()->addMessage('Something wrong!');
                     return new ViewModel(array(
                         'errors' => $errors,
-                        'target' => $target,
-                        
+                        'target' => $target
                     ));
                 }
                 ;
@@ -206,17 +202,16 @@ class OpeningBalanceController extends AbstractActionController
                                 $entity->setIsActive(1);
                                 $entity->setToken(md5(microtime()));
                                 $entity->setGlAccount($target->getGlAccount());
-                                
 
                                 switch ($col) {
                                     case 1:
-                                        // item id                                        
-                                        
+                                        // item id
+
                                         /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/
                                         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
-                                        "id" => $val,
-                                         ));
-                                        
+                                            "id" => $val
+                                        ));
+
                                         $entity->setItem($item);
                                         break;
                                     case 2:
@@ -233,7 +228,7 @@ class OpeningBalanceController extends AbstractActionController
                                         break;
                                 }
                             }
-                     
+
                             $this->doctrineEM->persist($entity);
 
                             if ($row % 100 == 0 or $row == $highestRow) {
@@ -250,14 +245,14 @@ class OpeningBalanceController extends AbstractActionController
                 } catch (\Exception $e) {
                     echo $e->getMessage();
                 }
-                
+
                 $viewModel = new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                     'target' => $target,
+                    'target' => $target,
                     'gl_list' => $gl_list
                 ));
-                
+
                 return $viewModel;
             }
         }
@@ -300,7 +295,277 @@ class OpeningBalanceController extends AbstractActionController
             'gl_list' => $gl_list
         ));
 
-          return $viewModel;
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @deprecated php.ini
+     *             memory_limit=512M
+     *            
+     *             import fingerscan data
+     */
+    public function import1Action()
+    {
+
+        // take long time
+        set_time_limit(2500);
+
+        $request = $this->getRequest();
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $gl_list = $nmtPlugin->glAccountList();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        // Is Posing
+        // =============================
+
+        if ($request->isPost()) {
+
+            $target_id = (int) $request->getPost('target_id');
+            $target_token = $request->getPost('token');
+            $redirectUrl = $request->getPost('redirectUrl');
+
+            /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
+                "id" => $target_id,
+                "token" => $target_token
+            ));
+            $errors = array();
+
+            if ($target == null) {
+
+                $errors[] = 'Opening Balance object can\'t be empty. Or token key is not valid!';
+
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => null
+                ));
+
+                // $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
+                return $viewModel;
+            }
+
+            if (isset($_FILES['uploaded_file'])) {
+                $file_name = $_FILES['uploaded_file']['name'];
+                $file_size = $_FILES['uploaded_file']['size'];
+                $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                $file_type = $_FILES['uploaded_file']['type'];
+
+                $file_ext = strtolower(end(explode('.', $file_name)));
+
+                // continue:
+
+                echo ($file_name);
+
+                // attachement required?
+                if ($file_tmp == "" or $file_tmp === null) {
+
+                    $errors[] = 'Attachment can\'t be empty!';
+                    $this->flashMessenger()->addMessage('Something wrong!');
+                    return new ViewModel(array(
+                        'errors' => $errors,
+                        'target' => $target
+                    ));
+                }
+
+                $ext = '';
+                if (preg_match('/(jpg|jpeg)$/', $file_type)) {
+                    $ext = 'jpg';
+                } else if (preg_match('/(gif)$/', $file_type)) {
+                    $ext = 'gif';
+                } else if (preg_match('/(png)$/', $file_type)) {
+                    $ext = 'png';
+                } else if (preg_match('/(pdf)$/', $file_type)) {
+                    $ext = 'pdf';
+                } else if (preg_match('/(vnd.ms-excel)$/', $file_type)) {
+                    $ext = 'xls';
+                } else if (preg_match('/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type)) {
+                    $ext = 'xlsx';
+                } else if (preg_match('/(msword)$/', $file_type)) {
+                    $ext = 'doc';
+                } else if (preg_match('/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type)) {
+                    $ext = 'docx';
+                } else if (preg_match('/(x-zip-compressed)$/', $file_type)) {
+                    $ext = 'zip';
+                } else if (preg_match('/(octet-stream)$/', $file_type)) {
+                    $ext = $file_ext;
+                }
+
+                $expensions = array(
+                    "xlsx",
+                    "xls",
+                    "csv"
+                );
+
+                if (in_array($ext, $expensions) === false) {
+                    $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "xlsx","xlx", "csv"!';
+                }
+
+                if ($file_size > 4097152) {
+                    $errors[] = 'File size must be  4 MB';
+                }
+
+                if (count($errors) > 0) {
+                    $this->flashMessenger()->addMessage('Something wrong!');
+                    return new ViewModel(array(
+                        'errors' => $errors,
+                        'target' => $target
+                    ));
+                }
+                ;
+
+                // NO ERROR
+                // Saving into Database..........
+                // ++++++++++++++++++++++++++++++
+
+                $folder = ROOT . "/data/temp";
+
+                if (! is_dir($folder)) {
+                    mkdir($folder, 0777, true); // important
+                }
+
+                // echo ("$folder/$name");
+                move_uploaded_file($file_tmp, "$folder/$file_name");
+
+                $objPHPExcel = IOFactory::load("$folder/$file_name");
+
+                try {
+
+                    foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+                        // echo $worksheet->getTitle();
+
+                        // $worksheetTitle = $worksheet->getTitle();
+
+                        $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                        $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+                        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+                        $nrColumns = ord($highestColumn) - 64;
+
+                        // echo $worksheetTitle;
+                        // echo $highestRow;
+                        // echo $highestColumn;
+
+                        $createdOn = new \DateTime();
+
+                        for ($row = 2; $row <= $highestRow; ++ $row) {
+
+                            $entity = new NmtInventoryOpeningBalanceRow();
+
+                            // new A=1
+                            for ($col = 1; $col < $highestColumnIndex; ++ $col) {
+
+                                $cell = $worksheet->getCellByColumnAndRow($col, $row);
+                                $val = $cell->getValue();
+                                // echo $val . ';';
+
+                                $entity->setOpeningBalance($target);
+                                $entity->setCreatedBy($u);
+                                $entity->setCreatedOn(new \Datetime());
+                                $entity->setIsActive(1);
+                                $entity->setToken(md5(microtime()));
+                                $entity->setGlAccount($target->getGlAccount());
+
+                                switch ($col) {
+                                    case 1:
+                                        // item id
+
+                                        /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/
+                                        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
+                                            "id" => $val
+                                        ));
+
+                                        $entity->setItem($item);
+                                        break;
+                                    case 2:
+                                        $entity->setQuantity($val);
+                                        break;
+                                    case 3:
+                                        $entity->setUnitPrice($val);
+                                        break;
+                                    case 4:
+                                        $entity->setNetAmount($val);
+                                        break;
+                                    case 5:
+                                        $entity->setGrossAmount($val);
+                                        break;
+                                }
+                            }
+
+                            $this->doctrineEM->persist($entity);
+
+                            if ($row % 100 == 0 or $row == $highestRow) {
+                                $this->doctrineEM->flush();
+                            }
+
+                            // echo "<br>";
+                        }
+                    }
+
+                    $m = sprintf("[OK] %s uploaded !", $file_name);
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                } catch (\Exception $e) {
+                    echo $e->getMessage();
+                }
+
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'gl_list' => $gl_list
+                ));
+
+                return $viewModel;
+            }
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+
+        $redirectUrl = Null;
+
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         *
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         */
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
+            "id" => $id,
+            "token" => $token
+        ));
+
+        if ($target == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity = new NmtInventoryOpeningBalanceRow();
+        $entity->setIsActive(1);
+
+        $viewModel = new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'entity' => $entity,
+            'target' => $target,
+            'gl_list' => $gl_list
+        ));
+
+        return $viewModel;
     }
 
     /**

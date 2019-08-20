@@ -1,8 +1,7 @@
 <?php
-Namespace Inventory\Application\DTO\Warehouse\Transaction\Output;
+Namespace Procure\Application\DTO\Ap\Output;
 
 use Zend\Escaper\Escaper;
-use Zend\Validator\InArray;
 
 /**
  * PR Row Service.
@@ -10,14 +9,14 @@ use Zend\Validator\InArray;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TransactionRowInExcel extends TransactionRowOutputStrategy
+class ApInvoiceRowInOpenOffice extends APInvoiceRowOutputStrategy
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy::createOutput()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Application\DTO\Ap\Output\APInvoiceRowOutputStrategy::createOutput()
+    */
     public function createOutput($result)
     {
         if (count($result) == 0)

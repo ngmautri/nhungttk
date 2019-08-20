@@ -12,6 +12,18 @@ use Procure\Domain\Service\APInvoicePostingService;
  */
 abstract class GenericAPInvoice extends AbstractAPInvoice
 {
+    
+    /**
+     *
+     * @var array
+     */
+    protected $invoiceRows;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $rowsOutput;
 
     /**
      *
@@ -56,6 +68,16 @@ abstract class GenericAPInvoice extends AbstractAPInvoice
     {}
 
     /**
+     * 
+     * @param APInvoiceRow $row
+     */
+    public function addRow(APInvoiceRow $row)
+    {
+        $this->invoiceRows[] = $row;
+    }
+    
+
+    /**
      *
      * @return array
      */
@@ -63,4 +85,21 @@ abstract class GenericAPInvoice extends AbstractAPInvoice
     {
         return $this->recordedEvents;
     }
+    /**
+     * @return string
+     */
+    public function getRowsOutput()
+    {
+        return $this->rowsOutput;
+    }
+    /**
+     * @param string $rowsOutput
+     */
+    public function setRowsOutput($rowsOutput)
+    {
+        $this->rowsOutput = $rowsOutput;
+    }
+
+
+    
 }

@@ -30,7 +30,7 @@ class ApInvoiceRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            APInvoiceRowDTOAssembler::createDTOProperities();
+            APInvoiceRowDTOAssembler::createGetMapping();
 
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

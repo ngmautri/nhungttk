@@ -13,7 +13,7 @@ Interface APInvoiceQueryRepositoryInterface
 
     public function getById($id, $outputStragegy = null);
 
-    public function getHeaderById($trxId, $token = null);
+    public function getHeaderById($id, $token = null);
 
     public function getByUUID($uuid);
 }

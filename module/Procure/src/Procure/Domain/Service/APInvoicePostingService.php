@@ -1,9 +1,11 @@
 <?php
 namespace Procure\Domain\Service;
 
+use Application\Notification;
 use Procure\Domain\APInvoice\APInvoiceCmdRepositoryInterface;
 use Procure\Domain\APInvoice\APInvoiceQueryRepositoryInterface;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\APInvoice\GenericAPInvoice;
 
 /**
  * Transaction Domain Service
@@ -31,4 +33,6 @@ class APInvoicePostingService
         $this->transactionCmdRepository = $apInvoiceCmdRepository;
         $this->transactionQueryRepository = $apInvoiceQueryRepository;
     }
+
+   
 }

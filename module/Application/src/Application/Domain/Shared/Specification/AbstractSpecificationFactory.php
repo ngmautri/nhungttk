@@ -44,4 +44,9 @@ abstract class AbstractSpecificationFactory
     abstract function getIsFixedAssetSpecification();
 
     abstract function getIsInventorySpecification();
+    
+    abstract function getVendorExitsSpecification();
+    
+    abstract function getIncotermSpecification();
+    abstract function getPaymentTermSpecification();
 }

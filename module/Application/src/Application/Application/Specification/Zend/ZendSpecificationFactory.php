@@ -234,19 +234,23 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new WarehouseLocationExitsSpecification($this->doctrineEM);
     }
-
-
-
     
-    
-   
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getVendorExitsSpecification()
+     */
+    public function getVendorExitsSpecification()
+    {
+        return new VendorExitsSpecification($this->doctrineEM);
+        
+    }
+    public function getIncotermSpecification()
+    {
+        return new IncotermSpecification($this->doctrineEM);
+    }
 
-   
-   
-  
-    
 
-   
    
 
   

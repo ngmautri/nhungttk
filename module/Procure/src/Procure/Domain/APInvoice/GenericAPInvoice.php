@@ -24,13 +24,7 @@ abstract class GenericAPInvoice extends AbstractAPInvoice
      * @var string
      */
     protected $rowsOutput;
-
-    /**
-     *
-     * @var array
-     */
-    protected $recordedEvents;
-
+   
     abstract protected function prePost(APInvoiceSpecificationService $specificationService, APInvoicePostingService $postingService, Notification $notification = null);
 
     abstract protected function doPost(APInvoiceSpecificationService $specificationService, APInvoicePostingService $postingService, Notification $notification = null);
@@ -77,14 +71,7 @@ abstract class GenericAPInvoice extends AbstractAPInvoice
     }
     
 
-    /**
-     *
-     * @return array
-     */
-    public function getRecordedEvents()
-    {
-        return $this->recordedEvents;
-    }
+ 
     /**
      * @return string
      */

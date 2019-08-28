@@ -212,7 +212,7 @@ class ItemPictureController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
+            //'checksum' => $checksum,
             'token' => $token
         );
         

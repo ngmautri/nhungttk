@@ -5,6 +5,7 @@ use Mail\MailParser;
 use PHPUnit_Framework_TestCase;
 use PhpMimeMailParser\Parser;
 use PhpMimeMailParser\Charset;
+use Faker\Factory;
 
 class EmailParser1Test extends PHPUnit_Framework_TestCase
 {
@@ -28,11 +29,17 @@ class EmailParser1Test extends PHPUnit_Framework_TestCase
     {
             $root = realpath(dirname(dirname(dirname(__FILE__))));
         
-            $file = $root . '/Email/1.msg';
-            //echo $file;
-            $emailPath = $root . '/Email/1.msg';
-            $emailParser = new MailParser(file_get_contents($emailPath));
-          var_dump( $emailParser->getTo());
+          $faker = Factory::create();
+          
+          $values = array();
+          
+          
+          for ($i = 0; $i < 10; $i++) {
+              // get a random digit, but also null sometimes
+              $values []= $faker->city();
+          }
+          
+          var_dump($values);
             
     }
 }

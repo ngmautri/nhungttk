@@ -2,13 +2,14 @@
 namespace Procure\Domain\APInvoice;
 
 use Procure\Application\DTO\Ap\APInvoiceDTOAssembler;
+use Application\Domain\Shared\AggregateRoot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractAPInvoice
+abstract class AbstractAPInvoice extends AggregateRoot
 {
 
     protected $id;

@@ -1,8 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-use Application\Domain\Shared\AbstractEntity;
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
+use Application\Domain\Shared\AggregateRoot;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 
 /**
@@ -10,7 +9,7 @@ use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractTransaction extends AbstractEntity
+abstract class AbstractTransaction extends AggregateRoot
 {
 
     protected $id;

@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PRcreatedEvent extends Event{
+class GRIRPostedEvent extends Event{
     
    
    

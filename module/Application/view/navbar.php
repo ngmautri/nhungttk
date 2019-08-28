@@ -168,8 +168,8 @@ echo $this->cart_items;
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
 	href="#" style="padding-left: 10px; padding-right: 10px;"><span
 		class="label label-primary"> <small><span
-				class="glyphicon glyphicon-user"> </span></small>
-	</span>&nbsp;&nbsp;<?php echo $this->user?> <span class="caret"></span></a>
+				class="glyphicon glyphicon-user" title="<?php echo $this->user?>"> </span></small>
+	</span>&nbsp;&nbsp;<span class="caret"></span></a>
 							 <?php include (ROOT.'/module/Application/view/profil_menu.php'); ?>
 						</li>
 

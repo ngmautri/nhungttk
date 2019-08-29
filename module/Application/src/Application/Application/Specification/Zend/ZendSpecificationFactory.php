@@ -245,13 +245,26 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
         return new VendorExitsSpecification($this->doctrineEM);
         
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getIncotermSpecification()
+     */
     public function getIncotermSpecification()
     {
         return new IncotermSpecification($this->doctrineEM);
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getPaymentTermSpecification()
+     */
+    public function getPaymentTermSpecification()
+    {
+        return new PaymentTermSpecification($this->doctrineEM);
+    }
 
 
-   
-
-  
 }

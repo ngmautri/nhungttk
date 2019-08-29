@@ -17,7 +17,7 @@ use Procure\Domain\APInvoice\APInvoiceSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DoctrineAPInvoiceQueryRepository extends AbstractDoctrineRepository implements APInvoiceQueryRepositoryInterface
+class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements APInvoiceQueryRepositoryInterface
 {
 
     public function getHeaderById($id, $token = null)

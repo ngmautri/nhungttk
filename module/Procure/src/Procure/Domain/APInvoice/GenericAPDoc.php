@@ -10,7 +10,7 @@ use Procure\Domain\Service\APInvoicePostingService;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericAPInvoice extends AbstractAPInvoice
+abstract class GenericAPDoc extends AbstractAPDoc
 {
 
     /**

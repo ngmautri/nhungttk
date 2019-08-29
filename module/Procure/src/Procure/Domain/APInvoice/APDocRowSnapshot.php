@@ -8,7 +8,7 @@ use Application\Domain\Shared\AbstractValueObject;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceRowSnapshot extends AbstractValueObject
+class APDocRowSnapshot extends AbstractValueObject
 {
 
     public $id;

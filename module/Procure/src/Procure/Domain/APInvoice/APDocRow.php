@@ -4,12 +4,12 @@ namespace Procure\Domain\APInvoice;
 use Procure\Application\DTO\Ap\APInvoiceRowDTOAssembler;
 
 /**
- * AP Row .
+ * AP Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceRow
+class APDocRow
 {
 
     protected $id;

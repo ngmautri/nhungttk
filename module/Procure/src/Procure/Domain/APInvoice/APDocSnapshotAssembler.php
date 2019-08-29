@@ -8,7 +8,7 @@ use Procure\Application\DTO\Ap\APInvoiceDTO;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceSnapshotAssembler
+class APDocSnapshotAssembler
 {
 
     /**

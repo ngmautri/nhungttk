@@ -6,7 +6,7 @@ namespace Procure\Domain\APInvoice;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface APInvoiceQueryRepositoryInterface
+Interface APDocQueryRepositoryInterface
 {
 
     public function findAll();

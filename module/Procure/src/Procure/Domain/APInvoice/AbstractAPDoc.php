@@ -9,7 +9,7 @@ use Application\Domain\Shared\AggregateRoot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractAPInvoice extends AggregateRoot
+abstract class AbstractAPDoc extends AggregateRoot
 {
 
     protected $id;

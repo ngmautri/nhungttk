@@ -1,9 +1,7 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
-use Application\Entity\NmtInventoryItem;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;

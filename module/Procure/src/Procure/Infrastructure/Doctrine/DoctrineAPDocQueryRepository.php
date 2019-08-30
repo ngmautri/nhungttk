@@ -11,6 +11,7 @@ use Procure\Application\DTO\Ap\Output\ApDocRowInOpenOffice;
 use Procure\Domain\APInvoice\APDocRow;
 use Procure\Domain\APInvoice\APDocSnapshot;
 use Procure\Domain\APInvoice\APDocRowSnapshot;
+use Procure\Domain\APInvoice\Factory\APFactory;
 
 /**
  *
@@ -23,6 +24,11 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
     public function getHeaderById($id, $token = null)
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\APInvoice\APDocQueryRepositoryInterface::getById()
+     */
     public function getById($id, $outputStrategy = null)
     {
         if ($id == null)
@@ -40,17 +46,17 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
 
         /**
          *
-         * @var APInvoiceSnapshot $snapshot ;
+         * @var APDocSnapshot $snapshot ;
          */
         $snapshot = $this->createSnapshot($entity);
         if ($snapshot == null)
             return null;
 
-        $aggregate = new APInvoice();
-        if ($aggregate == null)
+        $rootEntity = APFactory::createAPDocument($snapshot->docType);
+        if ($rootEntity == null)
             return null;
 
-        $aggregate->makeFromSnapshot($snapshot);
+        $rootEntity->makeFromSnapshot($snapshot);
 
         $criteria = array(
             'invoice' => $entity
@@ -59,8 +65,9 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
 
         $rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria, $sort);
 
-        if (count($rows) == 0)
-            return $aggregate;
+        if (count($rows) == 0) {
+            return $rootEntity;
+        }
 
         switch ($outputStrategy) {
             case APDocRowOutputStrategy::OUTPUT_IN_ARRAY:
@@ -90,7 +97,7 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
             $snapshot = $this->createRowSnapshot($r);
             $line = new APDocRow();
             $line->makeFromSnapshot($snapshot);
-            $aggregate->addRow($line);
+            $rootEntity->addRow($line);
 
             /**
              *
@@ -100,10 +107,11 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
                 $factory->createOutput($r);
         }
 
-        if (! $factory == null)
-            $aggregate->setRowsOutput($factory->getOutput());
+        if (! $factory == null){
+            $rootEntity->setRowsOutput($factory->getOutput());
+        }
 
-        return $aggregate;
+        return $rootEntity;
     }
 
     public function getByUUID($uuid)
@@ -253,8 +261,8 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
         return $snapshot;
     }
 
-   /**
-    */
+    /**
+     */
     private function createRowSnapshot($entity)
     {
         if ($entity == null)

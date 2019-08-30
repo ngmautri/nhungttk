@@ -18,6 +18,8 @@ class APPostingService
 
     protected $apDocQueryRepository;
 
+    protected $itemQueryRepository;
+    
     public function __construct(APDocCmdRepositoryInterface $apDocCmdRepository, APDocQueryRepositoryInterface $apDocQueryRepository)
     {
         if ($apDocCmdRepository == null) {

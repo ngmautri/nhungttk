@@ -214,57 +214,68 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new IsInventoryItemSpecification($this->doctrineEM);
     }
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getWarehouseCodeExitsSpecification()
      */
     public function getWarehouseCodeExitsSpecification()
     {
         return new WarehouseCodeExitsSpecification($this->doctrineEM);
-        
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getWarehouseLocationExitsSpecification()
      */
     public function getWarehouseLocationExitsSpecification()
     {
         return new WarehouseLocationExitsSpecification($this->doctrineEM);
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getVendorExitsSpecification()
      */
     public function getVendorExitsSpecification()
     {
         return new VendorExitsSpecification($this->doctrineEM);
-        
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getIncotermSpecification()
      */
     public function getIncotermSpecification()
     {
         return new IncotermSpecification($this->doctrineEM);
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getPaymentTermSpecification()
      */
     public function getPaymentTermSpecification()
     {
         return new PaymentTermSpecification($this->doctrineEM);
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getGLAccountExitsSpecification()
+     */
+    public function getGLAccountExitsSpecification()
+    {
+        return new GLAccountExitsSpecification($this->doctrineEM);
+        
+    }
+
 
 
 }

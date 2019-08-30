@@ -24,11 +24,11 @@ abstract class AbstractSpecificationFactory
     abstract function getCompanyExitsSpecification();
 
     abstract function getWarehouseExitsSpecification();
-    
-    abstract function getWarehouseCodeExitsSpecification();    
+
+    abstract function getWarehouseCodeExitsSpecification();
 
     abstract function getWarehouseLocationExitsSpecification();
-    
+
     abstract function getItemExitsSpecification();
 
     abstract function getUserExitsSpecification();
@@ -44,9 +44,12 @@ abstract class AbstractSpecificationFactory
     abstract function getIsFixedAssetSpecification();
 
     abstract function getIsInventorySpecification();
-    
+
     abstract function getVendorExitsSpecification();
-    
+
     abstract function getIncotermSpecification();
+
     abstract function getPaymentTermSpecification();
+
+    abstract function getGLAccountExitsSpecification();
 }

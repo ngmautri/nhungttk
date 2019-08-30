@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\APInvoice;
+namespace Procure\Domain\PurchaseRequest;
 
 use Application\Notification;
 use Procure\Domain\Service\APPostingService;
@@ -11,7 +11,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericAPDoc extends AbstractAPDoc
+abstract class GenericQR extends AbstractPR
 {
 
     /**

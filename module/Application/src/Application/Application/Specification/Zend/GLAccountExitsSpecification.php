@@ -6,7 +6,7 @@ namespace Application\Application\Specification\Zend;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CostCenterExitsSpecification extends DoctrineSpecification
+class GLAccountExitsSpecification extends DoctrineSpecification
 {
 
     /**
@@ -21,25 +21,25 @@ class CostCenterExitsSpecification extends DoctrineSpecification
             $companyId = $subject["companyId"];
         }
 
-        $costCenter = null;
-        if (isset($subject["costCenter"])) {
-            $costCenter = $subject["costCenter"];
+        $glAccountId = null;
+        if (isset($subject["glAccountId"])) {
+            $glAccountId = $subject["glAccountId"];
         }
 
-        if ($this->doctrineEM == null || $costCenter == null || $companyId == null) {
+        if ($this->doctrineEM == null || $glAccountId == null || $companyId == null) {
             return false;
         }
 
         $criteria = array(
-            "id" => $costCenter,
+            "id" => $glAccountId,
             "company" => $companyId
         );
-
+  
         /**
          *
-         * @var \Application\Entity\FinCostCenter $entity ;
+         * @var \Application\Entity\FinAccount $entiy ;
          */
-        $entity = $this->doctrineEM->getRepository("\Application\Entity\FinCostCenter")->findOneBy($criteria);
-        return (! $entity == null);
+        $entiy = $this->doctrineEM->getRepository("\Application\Entity\FinAccount")->findOneBy($criteria);
+        return (! $entiy == null);
     }
 }

@@ -209,16 +209,14 @@ class APSpecificationService
 
         // do verification now
 
-     
         /**
          *
          * @var AbstractSpecification $spec ;
          */
-        
-        
-        // ======= ITEM ==========        
+
+        // ======= ITEM ==========
         $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
-        
+
         $subject = array(
             "companyId" => $rootEntity->getCompany(),
             "itemId" => $localEntity->getItem()
@@ -228,12 +226,47 @@ class APSpecificationService
             $notification->addError("Item not exits in the company #" . $localEntity->getItem());
         }
 
-        // ======= QUANTITY ==========        
+        // ======= QUANTITY ==========
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
             $notification->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
         }
 
+        // ======= UNIT PRICE ==========
+        $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
+        if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
+            $notification->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
+        }
+
+        // ======= CONVERSION FACTORY ==========
+        $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
+        if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
+            $notification->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
+        }
+
+        // ======= GL ACCOUNT ==========
+        $spec = $this->sharedSpecificationFactory->getGLAccountExitsSpecification();
+
+        $subject = array(
+            "companyId" => $rootEntity->getCompany(),
+            "glAccountId" => $localEntity->getGlAccount()
+        );
+
+        if (! $spec->isSatisfiedBy($subject)) {
+            $notification->addError("GL account is not valid! " . $localEntity->getGlAccount());
+        }
+
+        // ======= COST CENTER ==========
+        $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
+        $subject = array(
+            "companyId" => $rootEntity->getCompany(),
+            "costCenter" => $localEntity->getCostCenter()
+        );
+
+        if (! $spec->isSatisfiedBy($subject)) {
+            $notification->addError("Cost center is not valid! " . $localEntity->getCostCenter());
+        }
+        
         return $notification;
     }
     

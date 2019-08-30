@@ -1,20 +1,19 @@
 <?php
-namespace Procure\Application\DTO\Pr;
+namespace Procure\Application\DTO\Po;
 
-use Procure\Domain\PurchaseRequest\GenericPR;
-
+use Procure\Domain\PurchaseOrder\GenericPO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrDTOAssembler
+class PoDTOAssembler
 {
 
     public static function createDTOFromArray($data)
     {
-        $dto = new PrDTO();
+        $dto = new PoDTO();
 
         foreach ($data as $property => $value) {
             if (property_exists($dto, $property)) {
@@ -28,18 +27,17 @@ class PrDTOAssembler
         return $dto;
     }
 
-   
     /**
-     * 
-     * @param GenericPR $obj
-     * @return NULL|\Procure\Application\DTO\Pr\PrDTO
+     *
+     * @param GenericPO $obj
+     * @return NULL|\Procure\Application\DTO\Po\PoDTO
      */
-    public static function createDTOFrom(GenericPR $obj)
+    public static function createDTOFrom(GenericPO $obj)
     {
-        if (! $obj instanceof GenericPR)
+        if (! $obj instanceof GenericPO)
             return null;
 
-        $dto = new PrDTO();
+        $dto = new PoDTO();
 
         $reflectionClass = new \ReflectionClass($obj);
         $itemProperites = $reflectionClass->getProperties();
@@ -65,13 +63,13 @@ class PrDTOAssembler
      */
     public static function createDTOProperities()
     {
-        $entity = new \Application\Entity\NmtProcurePr();
+        $entity = new \Application\Entity\NmtProcurePo();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
+            print "\n" . "public $" . $propertyName . ";";
         }
     }
 
@@ -80,7 +78,7 @@ class PrDTOAssembler
      */
     public static function createStoreMapping()
     {
-        $entity = new \Application\Entity\NmtProcurePr();
+        $entity = new \Application\Entity\NmtProcurePo();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -95,7 +93,7 @@ class PrDTOAssembler
      */
     public static function createGetMapping()
     {
-        $entity = new \Application\Entity\NmtProcurePr();
+        $entity = new \Application\Entity\NmtProcurePo();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -113,7 +111,7 @@ class PrDTOAssembler
     {
         $missingProperties = array();
         $entity = new \Application\Entity\NmtProcurePr();
-        $dto = new PrDTO();
+        $dto = new PoDTO();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {

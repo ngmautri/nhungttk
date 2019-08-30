@@ -1,7 +1,8 @@
 <?php
 namespace Procure\Domain\APInvoice;
 
-use Procure\Application\DTO\Ap\APInvoiceRowDTO;
+use Procure\Application\DTO\Ap\APDocRowDTO;
+
 
 /**
  *
@@ -17,7 +18,7 @@ class APDocRowSnapshotAssembler
      */
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new APInvoiceRowSnapshot();
+        $itemSnapshot = new APDocRowSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -30,14 +31,14 @@ class APDocRowSnapshotAssembler
     /**
      *
      * @param array $data
-     * @return APInvoiceSnapshot
+     * @return APDocRowSnapshot
      */
     public static function createSnapshotFromArray($data)
     {
         if ($data == null)
             return null;
 
-        $snapShot = new APInvoiceRowSnapshot();
+            $snapShot = new APDocRowSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
@@ -54,15 +55,15 @@ class APDocRowSnapshotAssembler
 
     /**
      *
-     * @param APInvoiceRowDTO $dto
-     * @return NULL|\Procure\Domain\APInvoice\APInvoiceRowSnapshot
+     * @param APDocRowDTO $dto
+     * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot
      */
-    public static function createSnapshotFromDTO(APInvoiceRowDTO $dto)
+    public static function createSnapshotFromDTO(APDocRowDTO $dto)
     {
-        if (! $dto instanceof APInvoiceRowDTO)
+        if (! $dto instanceof APDocRowDTO)
             return null;
 
-        $snapShot = new APInvoiceRowSnapshot();
+            $snapShot = new APDocRowSnapshot();
 
         $reflectionClass = new \ReflectionClass(get_class($dto));
         $itemProperites = $reflectionClass->getProperties();
@@ -79,13 +80,13 @@ class APDocRowSnapshotAssembler
 
     /**
      *
-     * @param APInvoiceSnapshot $snapShot
-     * @param APInvoiceDTO $dto
-     * @return NULL|\Procure\Domain\APInvoice\APInvoiceSnapshot
+     * @param APDocRowSnapshot $snapShot
+     * @param APDocRowDTO $dto
+     * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot
      */
-    public static function updateSnapshotFromDTO(APInvoiceSnapshot $snapShot, APInvoiceRowDTO $dto)
+    public static function updateSnapshotFromDTO(APDocRowSnapshot $snapShot, APDocRowDTO $dto)
     {
-        if (! $dto instanceof APInvoiceRowDTO || ! $snapShot instanceof APInvoiceRowSnapshot)
+        if (! $dto instanceof APDocRowDTO || ! $snapShot instanceof APDocRowSnapshot)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
@@ -134,16 +135,16 @@ class APDocRowSnapshotAssembler
 
     /**
      *
-     * @param APInvoiceRow $obj
-     * @return NULL|\Procure\Domain\APInvoice\APInvoiceRowSnapshot
+     * @param APDocRow $obj
+     * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot
      */
-    public static function createSnapshotFrom(APInvoiceRow $obj)
+    public static function createSnapshotFrom(APDocRow $obj)
     {
-        if (! $obj instanceof APInvoiceRow) {
+        if (! $obj instanceof APDocRow) {
             return null;
         }
 
-        $snapShot = new APInvoiceRowSnapshot();
+        $snapShot = new APDocRowSnapshot();
 
         // should uss reflection object
         $reflectionClass = new \ReflectionObject($obj);

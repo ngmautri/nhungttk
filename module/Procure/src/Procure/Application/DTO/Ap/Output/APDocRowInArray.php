@@ -9,13 +9,13 @@ use Zend\Escaper\Escaper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceRowInArray extends APInvoiceRowOutputStrategy
+class APDocRowInArray extends APDocRowOutputStrategy
 {
 
    /**
     * 
     * {@inheritDoc}
-    * @see \Procure\Application\DTO\Ap\Output\APInvoiceRowOutputStrategy::createOutput()
+    * @see \Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy::createOutput()
     */
     public function createOutput($result)
     {

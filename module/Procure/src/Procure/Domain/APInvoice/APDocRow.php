@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Domain\APInvoice;
 
-use Procure\Application\DTO\Ap\APInvoiceRowDTOAssembler;
+use Procure\Application\DTO\Ap\APDocRowDTOAssembler;
 
 /**
  * AP Row
@@ -144,31 +144,31 @@ class APDocRow
 
     protected $grRow;
 
-    /**
-     *
-     * @return NULL|\Procure\Domain\APInvoice\APInvoiceRowSnapshot
-     */
+   /**
+    * 
+    * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot
+    */
     public function makeSnapshot()
     {
-        return APInvoiceRowSnapshotAssembler::createSnapshotFrom($this);
+        return APDocRowSnapshotAssembler::createSnapshotFrom($this);
     }
 
-    /**
-     *
-     * @return NULL|\Procure\Application\DTO\Ap\APInvoiceRowDTO
-     */
+  /**
+   * 
+   * @return NULL|\Procure\Application\DTO\Ap\APDocRowDTO
+   */
     public function makeDTO()
     {
-        return APInvoiceRowDTOAssembler::createDTOFrom($this);
+        return APDocRowDTOAssembler::createDTOFrom($this);
     }
 
     /**
-     *
-     * @param APInvoiceRowSnapshot $snapshot
+     * 
+     * @param APDocRowSnapshot $snapshot
      */
-    public function makeFromSnapshot(APInvoiceRowSnapshot $snapshot)
+    public function makeFromSnapshot(APDocRowSnapshot $snapshot)
     {
-        if (! $snapshot instanceof APInvoiceRowSnapshot)
+        if (! $snapshot instanceof APDocRowSnapshot)
             return;
 
         $this->id = $snapshot->id;

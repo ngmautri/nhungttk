@@ -32,7 +32,7 @@ class VendorExitsSpecification extends DoctrineSpecification
 
         $criteria = array(
             "id" => $vendorId,
-            "company" => $companyId
+            //"company" => $companyId
         );
 
         /**

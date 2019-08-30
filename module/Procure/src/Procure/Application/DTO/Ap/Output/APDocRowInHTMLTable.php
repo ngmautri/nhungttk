@@ -9,14 +9,14 @@ use Zend\Escaper\Escaper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceRowInHTMLTable extends APInvoiceRowOutputStrategy
+class APDocRowInHTMLTable extends APDocRowOutputStrategy
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Application\DTO\Ap\Output\APInvoiceRowOutputStrategy::createOutput()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy::createOutput()
+    */
     public function createOutput($result)
     {
         if (count($result) == 0)

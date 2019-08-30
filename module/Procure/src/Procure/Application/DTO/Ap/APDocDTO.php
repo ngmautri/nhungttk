@@ -6,7 +6,7 @@ namespace Procure\Application\DTO\Ap;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceDTO
+class APDocDTO
 {
 
     public $id;

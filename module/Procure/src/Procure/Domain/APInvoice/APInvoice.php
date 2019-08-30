@@ -2,10 +2,9 @@
 namespace Procure\Domain\APInvoice;
 
 use Application\Notification;
-use Procure\Domain\Service\APInvoicePostingService;
-use Procure\Domain\Service\APInvoiceSpecificationService;
-use Procure\Domain\Event\GRIRPostedEvent;
-
+use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\APSpecificationService;
+use Procure\Domain\APInvoice\Factory\APFactory;
 
 /**
  *
@@ -13,33 +12,60 @@ use Procure\Domain\Event\GRIRPostedEvent;
  *        
  */
 class APInvoice extends GenericAPDoc
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Procure\Domain\APInvoice\GenericAPInvoice::afterPost()
-     */
-    protected function afterPost(APInvoiceSpecificationService $specificationService, APInvoicePostingService $postingService, Notification $notification = null)
-    {}
+{
 
     /**
-     * 
-     * {@inheritDoc}
-     * @see \Procure\Domain\APInvoice\GenericAPInvoice::prePost()
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\APInvoice\AbstractAPDoc::specify()
      */
-    protected function prePost(APInvoiceSpecificationService $specificationService, APInvoicePostingService $postingService, Notification $notification = null)
-    {}
-
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Procure\Domain\APInvoice\GenericAPInvoice::raiseEvent()
-     */
-    protected function raiseEvent()
+    public function specify()
     {
-        $this->registerEvent(new GRIRPostedEvent($this));
+        $this->docType = APDocType::AP_INVOICE;
     }
 
-    protected function doPost(APInvoiceSpecificationService $specificationService, APInvoicePostingService $postingService, Notification $notification = null)
+    protected function afterPost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
     {}
+
+    protected function prePost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
+    {}
+
+    protected function specificHeaderValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    {}
+
+    protected function specificValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    {}
+
+    protected function raiseEvent()
+    {}
+
+    protected function doPost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
+    {}
+
+    protected function specificRowValidation(ApDocRow $row, APSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    {
+        // throw new \Exception("i like it");
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\APInvoice\GenericAPDoc::doReverse()
+     */
+    protected function doReverse(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
+    {
+        // create new reserval
+        $rootEntity = APFactory::createAPDocument(APDocType::AP_INVOICE_REVERSAL);
+        $rootEntity->makeSnapshot($this->makeSnapshot());
+        $postingService->getApDocCmdRepository()->store($rootEntity, True, True);        
+    }
+    
+    
+    protected function preReserve(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
+    {}
+
+    protected function afterReserve(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
+    {}
+
+
 }

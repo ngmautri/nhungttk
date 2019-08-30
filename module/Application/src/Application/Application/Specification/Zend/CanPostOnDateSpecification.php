@@ -33,12 +33,14 @@ class CanPostOnDateSpecification extends DoctrineSpecification
             $movementDate = $subject["movementDate"];
         }
 
-        if ($this->doctrineEM == null || $companyId == null || $movementDate == null)
+        if ($this->doctrineEM == null || $companyId == null || $movementDate == null) {
             return false;
+        }
 
         $spec = new DateSpecification();
-        if (! $spec->isSatisfiedBy($movementDate))
+        if (! $spec->isSatisfiedBy($movementDate)) {
             return false;
+        }
 
         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod ;*/
         $postingPeriod = null;
@@ -50,7 +52,6 @@ AND nmt_fin_posting_period.posting_to_date >= '%s'
 AND company_id=%s";
 
         $sql = sprintf($sql_tmp, $movementDate, $movementDate, $companyId);
-
         try {
             $rsm = new ResultSetMappingBuilder($this->doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtFinPostingPeriod', 'nmt_fin_posting_period');
@@ -61,11 +62,13 @@ AND company_id=%s";
                 $postingPeriod = $result[0];
             }
 
-            if ($postingPeriod == null)
-                return false;
+            if ($postingPeriod == null) {
+                 return false;
+            }
 
-            if ($postingPeriod->getPeriodStatus() == PostingPeriodstatus::PERIOD_STATUS_CLOSED)
-                return false;
+            if ($postingPeriod->getPeriodStatus() == PostingPeriodstatus::PERIOD_STATUS_CLOSED){
+                 return false;
+            }
 
             return true;
         } catch (NoResultException $e) {

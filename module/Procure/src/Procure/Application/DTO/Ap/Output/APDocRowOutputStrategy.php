@@ -2,7 +2,7 @@
 namespace Procure\Application\DTO\Ap\Output;
 
 use Application\Entity\FinVendorInvoiceRow;
-use Procure\Application\DTO\Ap\APInvoiceRowDTO;
+use Procure\Application\DTO\Ap\APDocRowDTO;
 
 /**
  * PR Row Service.
@@ -10,7 +10,7 @@ use Procure\Application\DTO\Ap\APInvoiceRowDTO;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class APInvoiceRowOutputStrategy
+abstract class APDocRowOutputStrategy
 {
 
     const OUTPUT_IN_ARRAY = "1";
@@ -51,7 +51,7 @@ abstract class APInvoiceRowOutputStrategy
     /**
      *
      * @param FinVendorInvoiceRow $entity
-     * @return NULL|\Procure\Application\DTO\Ap\APInvoiceRowDTO
+     * @return NULL|\Procure\Application\DTO\Ap\APDocRowDTO
      */
     public function createDTOFrom(FinVendorInvoiceRow $entity = null)
     {
@@ -59,7 +59,7 @@ abstract class APInvoiceRowOutputStrategy
             return null;
         }
 
-        $snapshot = new APInvoiceRowDTO();
+        $snapshot = new APDocRowDTO();
 
         // Mapping Reference
         // =====================

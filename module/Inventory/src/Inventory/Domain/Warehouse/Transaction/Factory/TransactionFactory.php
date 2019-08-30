@@ -53,8 +53,10 @@ class TransactionFactory
                 break;
         }
 
-        if ($trx instanceof GenericTransaction)
+        if ($trx instanceof GenericTransaction){
             $trx->specify();
+        }
+            
 
         return $trx;
     }

@@ -1,8 +1,8 @@
 <?php
 namespace Procure\Domain\APInvoice;
 
-use Procure\Application\DTO\Ap\APInvoiceDTOAssembler;
 use Application\Domain\Shared\AggregateRoot;
+use Procure\Application\DTO\Ap\APDocDTOAssembler;
 
 /**
  *
@@ -136,31 +136,33 @@ abstract class AbstractAPDoc extends AggregateRoot
 
     protected $inventoryGr;
 
+    abstract public function specify();
+
     /**
-     * 
-     * @return NULL|\Procure\Domain\APInvoice\APInvoiceSnapshot
+     *
+     * @return NULL|\Procure\Domain\APInvoice\APDocSnapshot
      */
     public function makeSnapshot()
     {
-        return APInvoiceSnapshotAssembler::createSnapshotFrom($this);
+        return APDocSnapshotAssembler::createSnapshotFrom($this);
     }
 
     /**
-     * 
-     * @return NULL|\Procure\Application\DTO\Ap\APInvoiceDTO
+     *
+     * @return NULL|\Procure\Application\DTO\Ap\APDocDTO
      */
     public function makeDTO()
     {
-        return APInvoiceDTOAssembler::createDTOFrom($this);
+        return APDocDTOAssembler::createDTOFrom($this);
     }
 
-   /**
-    * 
-    * @param APInvoiceSnapshot $snapshot
-    */
-    public function makeFromSnapshot(APInvoiceSnapshot $snapshot)
+    /**
+     *
+     * @param APDocSnapshot $snapshot
+     */
+    public function makeFromSnapshot(APDocSnapshot $snapshot)
     {
-        if (! $snapshot instanceof APInvoiceSnapshot)
+        if (! $snapshot instanceof APDocSnapshot)
             return;
 
         $this->id = $snapshot->id;
@@ -225,8 +227,12 @@ abstract class AbstractAPDoc extends AggregateRoot
         $this->company = $snapshot->company;
         $this->paymentMethod = $snapshot->paymentMethod;
         $this->inventoryGr = $snapshot->inventoryGr;
+
+        $this->specify();
     }
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -235,6 +241,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -243,6 +250,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorName()
@@ -251,6 +259,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceNo()
@@ -259,6 +268,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceDate()
@@ -267,6 +277,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrencyIso3()
@@ -275,6 +286,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExchangeRate()
@@ -283,6 +295,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -291,6 +304,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -299,6 +313,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -307,6 +322,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -315,6 +331,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTrxType()
@@ -323,6 +340,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -331,6 +349,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingDate()
@@ -339,6 +358,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrDate()
@@ -347,6 +367,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSapDoc()
@@ -355,6 +376,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractNo()
@@ -363,6 +385,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractDate()
@@ -371,6 +394,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationNo()
@@ -379,6 +403,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationDate()
@@ -387,6 +412,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSysNumber()
@@ -395,6 +421,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -403,6 +430,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentStatus()
@@ -411,6 +439,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -419,6 +448,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -427,6 +457,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTerm()
@@ -435,6 +466,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionType()
@@ -443,6 +475,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -451,6 +484,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -459,6 +493,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -467,6 +502,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm()
@@ -475,6 +511,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermPlace()
@@ -483,6 +520,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversed()
@@ -491,6 +529,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDate()
@@ -499,6 +538,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDoc()
@@ -507,6 +547,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalReason()
@@ -515,6 +556,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentStatus()
@@ -523,6 +565,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversable()
@@ -531,6 +574,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -539,6 +583,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocValue()
@@ -547,6 +592,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocTax()
@@ -555,6 +601,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocDiscount()
@@ -563,6 +610,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalValue()
@@ -571,6 +619,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalTax()
@@ -579,6 +628,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalDiscount()
@@ -587,6 +637,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -595,6 +646,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -603,6 +655,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -611,6 +664,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProcureGr()
@@ -619,6 +673,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrency()
@@ -627,6 +682,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrency()
@@ -635,6 +691,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingPeriod()
@@ -643,6 +700,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm2()
@@ -651,6 +709,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPmtTerm()
@@ -659,6 +718,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -667,6 +727,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -675,6 +736,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -683,6 +745,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrency()
@@ -691,6 +754,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()
@@ -699,6 +763,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
@@ -707,6 +772,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethod()
@@ -715,6 +781,7 @@ abstract class AbstractAPDoc extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInventoryGr()

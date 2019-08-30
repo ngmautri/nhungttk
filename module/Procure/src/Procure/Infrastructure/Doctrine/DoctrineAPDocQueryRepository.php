@@ -2,32 +2,27 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Procure\Application\DTO\Ap\Output\APInvoiceRowInArray;
-use Procure\Application\DTO\Ap\Output\APInvoiceRowInExcel;
-use Procure\Application\DTO\Ap\Output\APInvoiceRowOutputStrategy;
-use Procure\Application\DTO\Ap\Output\ApInvoiceRowInOpenOffice;
+use Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy;
+use Procure\Domain\APInvoice\APDocQueryRepositoryInterface;
 use Procure\Domain\APInvoice\APInvoice;
-use Procure\Domain\APInvoice\APInvoiceQueryRepositoryInterface;
-use Procure\Domain\APInvoice\APInvoiceRow;
-use Procure\Domain\APInvoice\APInvoiceRowSnapshot;
-use Procure\Domain\APInvoice\APInvoiceSnapshot;
+use Procure\Application\DTO\Ap\Output\APDocRowInArray;
+use Procure\Application\DTO\Ap\Output\APDocRowInExcel;
+use Procure\Application\DTO\Ap\Output\ApDocRowInOpenOffice;
+use Procure\Domain\APInvoice\APDocRow;
+use Procure\Domain\APInvoice\APDocSnapshot;
+use Procure\Domain\APInvoice\APDocRowSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements APInvoiceQueryRepositoryInterface
+class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements APDocQueryRepositoryInterface
 {
 
     public function getHeaderById($id, $token = null)
     {}
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\APInvoice\APInvoiceQueryRepositoryInterface::getById()
-     */
     public function getById($id, $outputStrategy = null)
     {
         if ($id == null)
@@ -68,17 +63,17 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
             return $aggregate;
 
         switch ($outputStrategy) {
-            case APInvoiceRowOutputStrategy::OUTPUT_IN_ARRAY:
-                $factory = new APInvoiceRowInArray();
+            case APDocRowOutputStrategy::OUTPUT_IN_ARRAY:
+                $factory = new APDocRowInArray();
                 break;
-            case APInvoiceRowOutputStrategy::OUTPUT_IN_EXCEL:
-                $factory = new APInvoiceRowInExcel();
+            case APDocRowOutputStrategy::OUTPUT_IN_EXCEL:
+                $factory = new APDocRowInExcel();
                 break;
-            case APInvoiceRowOutputStrategy::OUTPUT_IN_OPEN_OFFICE:
-                $factory = new ApInvoiceRowInOpenOffice();
+            case APDocRowOutputStrategy::OUTPUT_IN_OPEN_OFFICE:
+                $factory = new ApDocRowInOpenOffice();
                 break;
 
-            case APInvoiceRowOutputStrategy::OUTPUT_IN_HMTL_TABLE:
+            case APDocRowOutputStrategy::OUTPUT_IN_HMTL_TABLE:
                 break;
 
             default:
@@ -93,7 +88,7 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
                 continue;
             }
             $snapshot = $this->createRowSnapshot($r);
-            $line = new APInvoiceRow();
+            $line = new APDocRow();
             $line->makeFromSnapshot($snapshot);
             $aggregate->addRow($line);
 
@@ -105,7 +100,6 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
                 $factory->createOutput($r);
         }
 
-       
         if (! $factory == null)
             $aggregate->setRowsOutput($factory->getOutput());
 
@@ -129,7 +123,7 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
         if ($entity == null)
             return null;
 
-        $snapshot = new APInvoiceSnapshot();
+        $snapshot = new APDocSnapshot();
 
         // mapping referrence
 
@@ -259,17 +253,14 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
         return $snapshot;
     }
 
-    /**
-     *
-     * @param \Application\Entity\FinVendorInvoiceRow $entity
-     *
-     */
+   /**
+    */
     private function createRowSnapshot($entity)
     {
         if ($entity == null)
             return null;
 
-        $snapshot = new APInvoiceRowSnapshot();
+        $snapshot = new APDocRowSnapshot();
 
         // Mapping Reference
         // =====================

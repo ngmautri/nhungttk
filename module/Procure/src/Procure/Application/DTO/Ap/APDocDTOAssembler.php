@@ -1,20 +1,19 @@
 <?php
 namespace Procure\Application\DTO\Ap;
 
-use Inventory\Domain\Warehouse\GenericWarehouse;
-use Procure\Domain\APInvoice\GenericAPInvoice;
+use Procure\Domain\APInvoice\GenericAPDoc;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceDTOAssembler
+class APDocDTOAssembler
 {
 
     public static function createDTOFromArray($data)
     {
-        $dto = new APInvoiceDTO();
+        $dto = new APDocDTO();
 
         foreach ($data as $property => $value) {
             if (property_exists($dto, $property)) {
@@ -30,15 +29,15 @@ class APInvoiceDTOAssembler
 
     /**
      *
-     * @param GenericAPInvoice $obj
-     * @return NULL|\Procure\Application\DTO\Ap\APInvoiceDTO
+     * @param GenericAPDoc $obj
+     * @return NULL|\Procure\Application\DTO\Ap\APDocDTO
      */
-    public static function createDTOFrom(GenericAPInvoice $obj)
+    public static function createDTOFrom(GenericAPDoc $obj)
     {
-        if (! $obj instanceof GenericAPInvoice)
+        if (! $obj instanceof GenericAPDoc)
             return null;
 
-        $dto = new APInvoiceDTO();
+        $dto = new APDocDTO();
 
         $reflectionClass = new \ReflectionClass($obj);
         $itemProperites = $reflectionClass->getProperties();
@@ -112,7 +111,7 @@ class APInvoiceDTOAssembler
     {
         $missingProperties = array();
         $entity = new \Application\Entity\FinVendorInvoice();
-        $dto = new APInvoiceDTO();
+        $dto = new APDocDTO();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {

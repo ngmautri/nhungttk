@@ -31,10 +31,10 @@ class ItemExitsSpecification extends DoctrineSpecification
         }
 
         $criteria = array(
-            "id" => $subject,
+            "id" => $itemId,
             "company" => $companyId
         );
-
+  
         /**
          *
          * @var \Application\Entity\NmtInventoryItem $entiy ;

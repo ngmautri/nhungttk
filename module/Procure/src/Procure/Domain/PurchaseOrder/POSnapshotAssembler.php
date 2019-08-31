@@ -23,7 +23,7 @@ class POSnapshotAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
+            print "\n" . "\$apSnapshot- = \$snapshot->" . $propertyName . ";";
         }
     }
 

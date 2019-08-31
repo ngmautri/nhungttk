@@ -262,6 +262,9 @@ class DoctrineAPDocQueryRepository extends AbstractDoctrineRepository implements
     }
 
     /**
+     * 
+     * @param unknown $entity
+     * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot
      */
     private function createRowSnapshot($entity)
     {

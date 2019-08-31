@@ -17,7 +17,7 @@ class PORowSnapshotAssembler
      */
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new PORowSnapshot();
+        $itemSnapshot = new PORowDetailsSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -27,17 +27,17 @@ class PORowSnapshotAssembler
         }
     }
 
-   /**
-    * 
-    * @param array $data
-    * @return NULL|\Procure\Domain\PurchaseRequest\PORowSnapshot
-    */
+    /**
+     *
+     * @param array $data
+     * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
+     */
     public static function createSnapshotFromArray($data)
     {
         if ($data == null)
             return null;
 
-            $snapShot = new PORowSnapshot();
+        $snapShot = new PORowSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
@@ -52,11 +52,11 @@ class PORowSnapshotAssembler
         return $snapShot;
     }
 
-    /**
-     * 
-     * @param PORowDTO $dto
-     * @return NULL|\Procure\Domain\PurchaseRequest\PORowSnapshot
-     */
+   /**
+    * 
+    * @param PORowDTO $dto
+    * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
+    */
     public static function createSnapshotFromDTO(PORowDTO $dto)
     {
         if (! $dto instanceof PORowDTO)
@@ -81,7 +81,7 @@ class PORowSnapshotAssembler
     * 
     * @param PORowSnapshot $snapShot
     * @param PORowDTO $dto
-    * @return NULL|\Procure\Domain\PurchaseRequest\PORowSnapshot
+    * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
     */
     public static function updateSnapshotFromDTO(PORowSnapshot $snapShot, PORowDTO $dto)
     {
@@ -135,7 +135,7 @@ class PORowSnapshotAssembler
    /**
     * 
     * @param PORow $obj
-    * @return NULL|\Procure\Domain\PurchaseRequest\PRrowSnapshot
+    * @return NULL|\Procure\Domain\PurchaseOrder\POrowSnapshot
     */
     public static function createSnapshotFrom(PORow $obj)
     {
@@ -143,7 +143,7 @@ class PORowSnapshotAssembler
             return null;
         }
 
-        $snapShot = new PRrowSnapshot();
+        $snapShot = new POrowSnapshot();
 
         // should uss reflection object
         $reflectionClass = new \ReflectionObject($obj);

@@ -30,7 +30,7 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PORowDTOAssembler::createDTOProperities();
+            PORowDTOAssembler::createGetMapping();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

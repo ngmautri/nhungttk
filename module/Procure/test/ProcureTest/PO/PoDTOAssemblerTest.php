@@ -29,7 +29,7 @@ class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PoDTOAssembler::createDTOProperities();
+            PoDTOAssembler::createGetMapping();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

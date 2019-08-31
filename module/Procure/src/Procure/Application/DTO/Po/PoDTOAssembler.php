@@ -69,7 +69,7 @@ class PoDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
+            print "\n" . "protected $" . $propertyName . ";";
         }
     }
 

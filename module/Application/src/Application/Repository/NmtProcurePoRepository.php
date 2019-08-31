@@ -450,7 +450,6 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
             $rsm->addScalarResult("confirmed_gr_balance", "confirmed_gr_balance");
             $rsm->addScalarResult("open_gr_qty", "open_gr_qty");
-
             $rsm->addScalarResult("draft_ap_qty", "draft_ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
             $rsm->addScalarResult("confirmed_ap_balance", "confirmed_ap_balance");

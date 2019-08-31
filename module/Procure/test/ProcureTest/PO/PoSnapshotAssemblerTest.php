@@ -1,12 +1,9 @@
 <?php
 namespace ProcureTest\PR;
 
-use Procure\Application\DTO\Pr\PrDTOAssembler;
-
 use Procure\Domain\Exception\InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
-use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
+use PHPUnit_Framework_TestCase;
 
 class PoSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {

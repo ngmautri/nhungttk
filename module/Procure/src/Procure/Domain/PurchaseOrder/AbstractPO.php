@@ -13,101 +13,53 @@ abstract class AbstractPO extends AggregateRoot
 {
 
     protected $id;
-
     protected $token;
-
     protected $vendorName;
-
     protected $invoiceNo;
-
     protected $invoiceDate;
-
     protected $currencyIso3;
-
     protected $exchangeRate;
-
     protected $remarks;
-
     protected $createdOn;
-
     protected $currentState;
-
     protected $isActive;
-
     protected $trxType;
-
     protected $lastchangeOn;
-
     protected $postingDate;
-
     protected $grDate;
-
     protected $sapDoc;
-
     protected $contractNo;
-
     protected $contractDate;
-
     protected $quotationNo;
-
     protected $quotationDate;
-
     protected $sysNumber;
-
     protected $revisionNo;
-
     protected $deliveryMode;
-
     protected $incoterm;
-
     protected $incotermPlace;
-
     protected $paymentTerm;
-
     protected $docStatus;
-
     protected $workflowStatus;
-
     protected $transactionStatus;
-
     protected $docType;
-
     protected $paymentStatus;
-
     protected $totalDocValue;
-
     protected $totalDocTax;
-
     protected $totalDocDiscount;
-
     protected $totalLocalValue;
-
     protected $totalLocalTax;
-
     protected $totalLocalDiscount;
-
     protected $reversalBlocked;
-
     protected $uuid;
-
     protected $vendor;
-
     protected $pmtTerm;
-
     protected $warehouse;
-
     protected $createdBy;
-
     protected $lastchangeBy;
-
     protected $currency;
-
     protected $paymentMethod;
-
     protected $localCurrency;
-
     protected $docCurrency;
-
     protected $incoterm2;
 
     /**

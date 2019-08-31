@@ -134,7 +134,7 @@ abstract class GenericAPDoc extends AbstractAPDoc
         if (! $notification->hasErrors()) {
             $this->raiseEvent();
         }
-
+        
         return $notification;
     }
 

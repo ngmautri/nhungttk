@@ -1,12 +1,12 @@
 <?php
-namespace Procure\Domain\PurchaseRequest;
+namespace Procure\Domain\QuotationRequest;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface POQueryRepositoryInterface
+Interface QRQueryRepositoryInterface
 {
 
     public function findAll();

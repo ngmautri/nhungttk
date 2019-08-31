@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseRequest;
+namespace Procure\Domain\QuotationRequest;
 
 use Procure\Application\DTO\Ap\APDocDTO;
 

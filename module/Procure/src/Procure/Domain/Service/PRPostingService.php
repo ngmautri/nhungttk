@@ -2,8 +2,8 @@
 namespace Procure\Domain\Service;
 
 use Inventory\Domain\Service\QueryRepositoryFactoryInteface;
-use Procure\Domain\APInvoice\APDocCmdRepositoryInterface;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\PurchaseRequest\PRCmdRepositoryInterface;
 
 /**
  * Transaction Domain Service
@@ -11,25 +11,25 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APPostingService
+class PRPostingService
 {
 
     protected $cmdRepository;
 
     protected $procureQueryRepositoryFactory;
-    
+
     protected $inventoryQueryRepository;
-    
-    public function __construct(APDocCmdRepositoryInterface $cmdRepository, QueryRepositoryFactoryInteface $procureQueryRepositoryFactory, QueryRepositoryFactoryInteface $inventoryQueryRepository)
+
+    public function __construct(PRCmdRepositoryInterface $cmdRepository, QueryRepositoryFactoryInteface $procureQueryRepositoryFactory, QueryRepositoryFactoryInteface $inventoryQueryRepository)
     {
         if ($cmdRepository == null) {
-            throw new InvalidArgumentException("AP Doc cmd repository not set!");
+            throw new InvalidArgumentException("PR cmd repository not set!");
         }
 
         if ($procureQueryRepositoryFactory == null) {
             throw new InvalidArgumentException("procure query repository not set!");
         }
-        
+
         if ($inventoryQueryRepository == null) {
             throw new InvalidArgumentException("Inventory query repository not set!");
         }
@@ -37,10 +37,11 @@ class APPostingService
         $this->cmdRepository = $cmdRepository;
         $this->procureQueryRepositoryFactory = $procureQueryRepositoryFactory;
         $this->inventoryQueryRepository = $procureQueryRepositoryFactory;
-        
     }
+
     /**
-     * @return \Procure\Domain\APInvoice\APDocCmdRepositoryInterface
+     *
+     * @return \Procure\Domain\PurchaseRequest\PRCmdRepositoryInterface
      */
     public function getCmdRepository()
     {
@@ -48,6 +49,7 @@ class APPostingService
     }
 
     /**
+     *
      * @return \Inventory\Domain\Service\QueryRepositoryFactoryInteface
      */
     public function getProcureQueryRepositoryFactory()
@@ -64,5 +66,7 @@ class APPostingService
     }
 
     
+   
     
+  
 }

@@ -1,5 +1,5 @@
 <?php
-amespace Procure\Domain\PurchaseOrder;
+Namespace Procure\Domain\PurchaseOrder;
 
 /**
  *

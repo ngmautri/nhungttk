@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseRequest;
+namespace Procure\Domain\QuotationRequest;
 
 use Application\Domain\Shared\AbstractValueObject;
 

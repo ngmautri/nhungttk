@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseRequest;
+namespace Procure\Domain\QuotationRequest;
 
 
 /**
@@ -8,7 +8,7 @@ namespace Procure\Domain\PurchaseRequest;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORow
+class QRRow
 {
 
-    }
+ }

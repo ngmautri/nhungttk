@@ -4,6 +4,8 @@ namespace Procure\Domain\Service;
 use Inventory\Domain\Service\QueryRepositoryFactoryInteface;
 use Procure\Domain\APInvoice\APDocCmdRepositoryInterface;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\PurchaseRequest\PRCmdRepositoryInterface;
+use Procure\Domain\PurchaseOrder\POCmdRepositoryInterface;
 
 /**
  * Transaction Domain Service
@@ -11,7 +13,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APPostingService
+class POPostingService
 {
 
     protected $cmdRepository;
@@ -20,10 +22,10 @@ class APPostingService
     
     protected $inventoryQueryRepository;
     
-    public function __construct(APDocCmdRepositoryInterface $cmdRepository, QueryRepositoryFactoryInteface $procureQueryRepositoryFactory, QueryRepositoryFactoryInteface $inventoryQueryRepository)
+    public function __construct(POCmdRepositoryInterface $cmdRepository, QueryRepositoryFactoryInteface $procureQueryRepositoryFactory, QueryRepositoryFactoryInteface $inventoryQueryRepository)
     {
         if ($cmdRepository == null) {
-            throw new InvalidArgumentException("AP Doc cmd repository not set!");
+            throw new InvalidArgumentException("PO cmd repository not set!");
         }
 
         if ($procureQueryRepositoryFactory == null) {
@@ -40,7 +42,7 @@ class APPostingService
         
     }
     /**
-     * @return \Procure\Domain\APInvoice\APDocCmdRepositoryInterface
+     * @return \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface
      */
     public function getCmdRepository()
     {
@@ -64,5 +66,5 @@ class APPostingService
     }
 
     
-    
+  
 }

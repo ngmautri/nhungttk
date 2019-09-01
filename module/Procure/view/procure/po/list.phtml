@@ -234,6 +234,8 @@ else:
 			<td><?php echo $a->getCurrentState()?></td>
 			<td>
 <a href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a href="<?php echo $this->baseUrl ?>/procure/po/view?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;View</a>
+
 			</td>
 	<?php endforeach; ?>
  </tbody>

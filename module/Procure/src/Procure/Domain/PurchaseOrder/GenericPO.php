@@ -16,7 +16,34 @@ class GenericPO extends AbstractPO
 
     protected $rowsOutput;
 
-   
+    /**
+     *
+     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
+     */
+    public function makeDetailsDTO()
+    {
+        $dto = PoDTOAssembler::createDetailsDTOFrom($this);
+
+        if (count($this->docRows) > 0) {
+            foreach ($this->docRows as $row) {
+
+                if ($row instanceof PORow) {
+                    $dto->docRowsDTO[] = $row->makeDetailsDTO();
+                }
+            }
+        }
+        return $dto;
+    }
+
+    /**
+     *
+     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
+     */
+    public function makeHeaderDTO()
+    {
+        $dto = PoDTOAssembler::createDetailsDTOFrom($this);
+        return $dto;
+    }
 
     public function makeAPInvoice()
     {

@@ -27,7 +27,7 @@ class PoRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PORowSnapshotAssembler::createFromSnapshotCode();
+            PORowSnapshotAssembler::createFromDetailsSnapshotCode();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

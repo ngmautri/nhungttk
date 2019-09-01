@@ -111,6 +111,26 @@ abstract class AbstractPO extends AggregateRoot
     protected $incoterm2;
 
     // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
+    protected $paymentTermName;
+
+    protected $paymentTermCode;
+
+    protected $warehouseName;
+
+    protected $warehouseCode;
+
+    protected $paymentMethodName;
+
+    protected $paymentMethodCode;
+
+    protected $incotermCode;
+
+    protected $incotermName;
+
+    protected $createdByName;
+
+    protected $lastChangedByName;
+
     protected $totalRows;
 
     protected $totalActiveRows;
@@ -124,9 +144,9 @@ abstract class AbstractPO extends AggregateRoot
     protected $grossAmount;
 
     protected $discountAmount;
-    
+
     protected $billedAmount;
-    
+
     protected $completedRows;
 
     // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
@@ -149,14 +169,7 @@ abstract class AbstractPO extends AggregateRoot
         return PoDTOAssembler::createDTOFrom($this);
     }
 
-    /**
-     *
-     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
-     */
-    public function makeDetailsDTO()
-    {
-        return PoDTOAssembler::createDetailsDTOFrom($this);
-    }
+   
 
     /**
      *
@@ -226,6 +239,17 @@ abstract class AbstractPO extends AggregateRoot
     {
         if (! $snapshot instanceof PODetailsSnapshot)
             return;
+        
+        $this->paymentTermName = $snapshot->paymentTermName;
+        $this->paymentTermCode = $snapshot->paymentTermCode;
+        $this->warehouseName = $snapshot->warehouseName;
+        $this->warehouseCode = $snapshot->warehouseCode;
+        $this->paymentMethodName = $snapshot->paymentMethodName;
+        $this->paymentMethodCode = $snapshot->paymentMethodCode;
+        $this->incotermCode = $snapshot->incotermCode;
+        $this->incotermName = $snapshot->incotermName;
+        $this->createdByName = $snapshot->createdByName;
+        $this->lastChangedByName = $snapshot->lastChangedByName;
         $this->totalRows = $snapshot->totalRows;
         $this->totalActiveRows = $snapshot->totalActiveRows;
         $this->maxRowNumber = $snapshot->maxRowNumber;
@@ -235,8 +259,7 @@ abstract class AbstractPO extends AggregateRoot
         $this->discountAmount = $snapshot->discountAmount;
         $this->billedAmount = $snapshot->billedAmount;
         $this->completedRows = $snapshot->completedRows;
-        
-        
+
         $this->id = $snapshot->id;
         $this->token = $snapshot->token;
         $this->vendorName = $snapshot->vendorName;
@@ -791,20 +814,115 @@ abstract class AbstractPO extends AggregateRoot
     {
         return $this->discountAmount;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getBilledAmount()
     {
         return $this->billedAmount;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getCompletedRows()
     {
         return $this->completedRows;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPaymentTermName()
+    {
+        return $this->paymentTermName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPaymentTermCode()
+    {
+        return $this->paymentTermCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseName()
+    {
+        return $this->warehouseName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseCode()
+    {
+        return $this->warehouseCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPaymentMethodName()
+    {
+        return $this->paymentMethodName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPaymentMethodCode()
+    {
+        return $this->paymentMethodCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIncotermCode()
+    {
+        return $this->incotermCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIncotermName()
+    {
+        return $this->incotermName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedByName()
+    {
+        return $this->createdByName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastChangedByName()
+    {
+        return $this->lastChangedByName;
+    }
+
 
 
 }

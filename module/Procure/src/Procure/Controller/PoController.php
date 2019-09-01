@@ -1,14 +1,14 @@
 <?php
 namespace Procure\Controller;
 
-use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\View\Model\ViewModel;
-use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
+use Doctrine\ORM\EntityManager;
+use MLA\Paginator;
+use Zend\Math\Rand;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+use Procure\Application\Service\PO\POService;
 
 /**
  *
@@ -21,6 +21,8 @@ class PoController extends AbstractActionController
     protected $doctrineEM;
 
     protected $poService;
+
+    protected $purchaseOrderService;
 
     protected $poSearchService;
 
@@ -47,7 +49,6 @@ class PoController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();
-        
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -88,19 +89,18 @@ class PoController extends AbstractActionController
                 $this->flashMessenger()->addMessage('Something wrong!');
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    'nmtPlugin' => $nmtPlugin,
+                    'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
-                
             }
 
             $entity = new NmtProcurePo();
@@ -109,22 +109,20 @@ class PoController extends AbstractActionController
             $errors = $this->poService->validateHeader($entity, $data);
 
             if (count($errors) > 0) {
-                $viewModel =  new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    'nmtPlugin' => $nmtPlugin,
-                    
+                    'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
-                
             }
 
             // NO ERROR
@@ -146,13 +144,11 @@ class PoController extends AbstractActionController
                     'target' => $target,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    'nmtPlugin' => $nmtPlugin,
-                    
+                    'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
-                
             }
 
             $m = sprintf("[OK] PP #%s created from QO #%s", $entity->getSysNumber(), $target->getSysNumber());
@@ -203,27 +199,24 @@ class PoController extends AbstractActionController
         $entity->setContractDate(new \Datetime());
         $entity->setIncoterm2($target->getIncoterm2());
         $entity->setIncotermPlace($target->getIncotermPlace());
-        
 
         $entity->setIsActive(1);
         $entity->setRemarks("Ref." . $target->getSysNumber());
 
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
-            'nmtPlugin' => $nmtPlugin,
-            
+            'nmtPlugin' => $nmtPlugin
         ));
-        
+
         $viewModel->setTemplate("procure/po/crud");
         return $viewModel;
-        
     }
 
     /**
@@ -273,8 +266,7 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    'nmtPlugin' => $nmtPlugin,
-                    
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("procure/po/add");
@@ -300,7 +292,7 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    'nmtPlugin' => $nmtPlugin,
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("procure/po/crud");
@@ -339,7 +331,7 @@ class PoController extends AbstractActionController
             'entity' => $entity,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
-            'nmtPlugin' => $nmtPlugin,
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("procure/po/crud");
@@ -589,6 +581,53 @@ class PoController extends AbstractActionController
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
+    public function viewAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+        $request = $this->getRequest();
+
+      /*   if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        } */
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+
+        $po = $this->getPurchaseOrderService()->getPODetailsById($id);
+
+        if ($po == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+            'form_action' => "/procure/po/view",
+            'form_title' => $nmtPlugin->translate("Show PO"),
+            'redirectUrl' => null,
+            'headerDTO' => $po->makeDetailsDTO(),
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list
+        ));
+
+        $viewModel->setTemplate("procure/po/view");
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function statusAction()
     {
         $request = $this->getRequest();
@@ -694,8 +733,7 @@ class PoController extends AbstractActionController
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
                     'nmtPlugin' => $nmtPlugin,
-                    
-                    
+
                     'n' => $nTry
                 ));
 
@@ -745,8 +783,7 @@ class PoController extends AbstractActionController
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
                     'nmtPlugin' => $nmtPlugin,
-                    
-                    
+
                     'n' => $nTry
                 ));
 
@@ -779,8 +816,7 @@ class PoController extends AbstractActionController
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
                     'nmtPlugin' => $nmtPlugin,
-                    
-                    
+
                     'n' => $nTry
                 ));
 
@@ -853,8 +889,7 @@ class PoController extends AbstractActionController
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
             'nmtPlugin' => $nmtPlugin,
-            
-            
+
             'n' => 0
         ));
 
@@ -1111,5 +1146,23 @@ class PoController extends AbstractActionController
     public function setPoSearchService(\Procure\Service\PoSearchService $poSearchService)
     {
         $this->poSearchService = $poSearchService;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Service\PO\POService
+     */
+    public function getPurchaseOrderService()
+    {
+        return $this->purchaseOrderService;
+    }
+
+    /**
+     *
+     * @param POService $purchaseOrderService
+     */
+    public function setPurchaseOrderService(POService $purchaseOrderService)
+    {
+        $this->purchaseOrderService = $purchaseOrderService;
     }
 }

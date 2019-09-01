@@ -17,6 +17,18 @@ class PORowSnapshotAssembler
      */
     public static function createFromSnapshotCode()
     {
+        $itemSnapshot = new PORowSnapshot();
+        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
+        }
+    }
+    
+    public static function createFromDetailsSnapshotCode()
+    {
         $itemSnapshot = new PORowDetailsSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();

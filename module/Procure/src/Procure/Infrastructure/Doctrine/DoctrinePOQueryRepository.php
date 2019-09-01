@@ -1,17 +1,16 @@
 <?php
 namespace Procure\Infrastructure\Doctrine;
 
+use Application\Entity\NmtProcurePo;
+use Application\Entity\NmtProcurePoRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
-use Procure\Domain\PurchaseOrder\POQueryRepositoryInterface;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
-use Application\Entity\NmtProcurePoRow;
-use Application\Entity\NmtProcurePo;
-use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\GenericPO;
-use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PODetailsSnapshot;
+use Procure\Domain\PurchaseOrder\POQueryRepositoryInterface;
+use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 
 /**
  *
@@ -36,9 +35,9 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getFullDetailsById()
+     * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getPODetailsById()
      */
-    public function getFullDetailsById($id, $outputStragegy = null)
+    public function getPODetailsById($id)
     {
         $rows = $this->getPoRowsDetails($id);
 
@@ -79,8 +78,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
 
             if ($r['open_gr_qty'] == 0 and $r['open_ap_qty'] == 0) {
                 $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
-                $completedRows++;
-                
+                $completedRows ++;
             } else {
                 $completed = false;
                 $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
@@ -94,14 +92,13 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRowDetailSnapshot->postedAPQuantity = $r["posted_ap_qty"];
             $poRowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
             $poRowDetailSnapshot->billedAmount = $r["billed_amount"];
-           
+
             $totalRows ++;
             $totalActiveRows ++;
             $netAmount = $netAmount + $poRowDetailSnapshot->netAmount;
             $taxAmount = $taxAmount + $poRowDetailSnapshot->taxAmount;
             $grossAmount = $grossAmount + $poRowDetailSnapshot->grossAmount;
             $billedAmount = $billedAmount + $poRowDetailSnapshot->billedAmount;
-            
 
             $poRow = new PORow();
             $poRow->makeFromDetailsSnapshot($poRowDetailSnapshot);
@@ -127,7 +124,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         $poDetailsSnapshot->discountAmount = $discountAmount;
         $poDetailsSnapshot->billedAmount = $billedAmount;
         $poDetailsSnapshot->completedRows = $completedRows;
-        
+
         $rootEntity = new GenericPO();
         $rootEntity->makeFromDetailsSnapshot($poDetailsSnapshot);
 
@@ -142,7 +139,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
      * @param object $entity
      * @return NULL|\Procure\Domain\PurchaseOrder\PODetailsSnapshot
      */
-    private function createPODetailSnapshot($entity)
+    private function createPODetailSnapshot(NmtProcurePo $entity)
     {
         if ($entity == null)
             return null;
@@ -160,21 +157,27 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $snapshot->pmtTerm = $entity->getPmtTerm();
         if ($entity->getPmtTerm() !== null) {
             $snapshot->pmtTerm = $entity->getPmtTerm()->getId();
+            $snapshot->paymentTermName = $entity->getPmtTerm()->getPmtTermName();
+            $snapshot->paymentTermCode = $entity->getPmtTerm()->getPmtTermCode();
         }
 
         // $snapshot->warehouse = $entity->getWarehouse();
         if ($entity->getWarehouse() !== null) {
             $snapshot->warehouse = $entity->getWarehouse()->getId();
+            $snapshot->warehouseName = $entity->getWarehouse()->getWhName();
+            $snapshot->warehouseCode = $entity->getWarehouse()->getWhCode();
         }
 
         // $snapshot->createdBy = $entity->getCreatedBy();
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
+            $snapshot->createdByName = $entity->getCreatedBy()->getFirstname() . " " . $entity->getCreatedBy()->getLastname();
         }
 
         // $snapshot->lastchangeBy = $entity->getLastchangeBy();
         if ($entity->getLastchangeBy() !== null) {
             $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
+            $snapshot->lastChangedByName = $entity->getLastchangeBy()->getFirstname() . " " . $entity->getLastchangeBy()->getLastname();
         }
 
         // $snapshot->currency = $entity->getCurrency();
@@ -185,6 +188,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $snapshot->paymentMethod = $entity->getPaymentMethod();
         if ($entity->getPaymentMethod() !== null) {
             $snapshot->paymentMethod = $entity->getPaymentMethod()->getId();
+            $snapshot->paymentMethodName = $entity->getPaymentMethod()->getMethodName();
+            $snapshot->paymentMethodCode = $entity->getPaymentMethod()->getMethodCode();
         }
 
         // $snapshot->localCurrency = $entity->getLocalCurrency();
@@ -200,6 +205,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $snapshot->incoterm2 = $entity->getIncoterm2();
         if ($entity->getIncoterm2() !== null) {
             $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
+            $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
+            $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
         }
 
         // MAPPING DATE
@@ -307,6 +314,22 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $snapshot->prRow= $entity->getPrRow();
         if ($entity->getPrRow() !== null) {
             $snapshot->prRow = $entity->getPrRow()->getId();
+
+            $snapshot->prRowIndentifer = $entity->getPrRow()->getRowIdentifer();
+            $snapshot->prRowCode = $entity->getPrRow()->getRowCode();
+            $snapshot->prRowName = $entity->getPrRow()->getRowName();
+            $snapshot->prRowConvertFactor = $entity->getPrRow()->getConversionFactor();
+            $snapshot->prRowUnit = $entity->getPrRow()->getRowUnit();
+
+            if ($entity->getPrRow()->getPr() !== null) {
+                $snapshot->prSysNumber = $entity->getPrRow()
+                    ->getPr()
+                    ->getPrAutoNumber();
+
+                $snapshot->prNumber = $entity->getPrRow()
+                    ->getPr()
+                    ->getPrNumber();
+            }
         }
 
         // $snapshot->createdBy= $entity->getCreatedBy();
@@ -327,6 +350,23 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $snapshot->item= $entity->getItem();
         if ($entity->getItem() !== null) {
             $snapshot->item = $entity->getItem()->getId();
+            
+            $snapshot->itemName = $entity->getItem()->getItemName();
+            $snapshot->itemName1 = $entity->getItem()->getItemNameForeign();
+            
+            $snapshot->itemSKU = $entity->getItem()->getItemSku();
+            
+            $snapshot->itemSKU1 = $entity->getItem()->getItemSku1();
+            $snapshot->itemSKU2 = $entity->getItem()->getItemSku2();
+            
+            $snapshot->itemVersion = $entity->getItem()->getRevisionNo();
+            
+            if($entity->getItem()->getStandardUom()!=null){
+                $snapshot->itemStandardUnit = $entity->getItem()->getStandardUom()->getId();
+                $snapshot->itemStandardUnitName = $entity->getItem()->getStandardUom()->getUomCode();
+            }
+            
+            
         }
 
         $snapshot->docUom = $entity->getDocUom();

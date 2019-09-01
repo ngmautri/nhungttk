@@ -125,25 +125,58 @@ class PORow
     protected $item;
 
     protected $docUom;
-    
-    
+
     // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
-    
     protected $draftGrQuantity;
-    
+
     protected $postedGrQuantity;
-    
+
     protected $confirmedGrBalance;
-    
+
     protected $openGrBalance;
-    
+
     protected $draftAPQuantity;
-    
+
     protected $postedAPQuantity;
-    
+
     protected $openAPQuantity;
-    
+
     protected $billedAmount;
+
+    protected $prNumber;
+
+    protected $prSysNumber;
+
+    protected $prRowIndentifer;
+
+    protected $prRowCode;
+
+    protected $prRowName;
+
+    protected $prRowConvertFactor;
+
+    protected $prRowUnit;
+
+    protected $prRowVersion;
+
+    protected $itemName;
+    protected $itemName1;
+    
+    protected $itemSKU;
+
+    protected $itemSKU1;
+
+    protected $itemSKU2;
+
+    protected $itemUUID;
+
+    protected $itemSysNumber;
+
+    protected $itemStandardUnit;
+
+    protected $itemStandardUnitName;
+
+    protected $itemVersion;
 
     /**
      *
@@ -162,8 +195,7 @@ class PORow
     {
         return PORowDTOAssembler::createDTOFrom($this);
     }
-    
-    
+
     /**
      *
      * @return NULL|\Procure\Application\DTO\Po\PORowDTO
@@ -240,86 +272,106 @@ class PORow
         $this->item = $snapshot->item;
         $this->docUom = $snapshot->docUom;
     }
-    
+
     /**
-     * 
+     *
      * @param PORowDetailsSnapshot $snapshot
      */
     public function makeFromDetailsSnapshot(PORowDetailsSnapshot $snapshot)
     {
         if (! $snapshot instanceof PORowSnapshot)
             return;
-            
-            $this->id = $snapshot->id;
-            $this->rowNumber = $snapshot->rowNumber;
-            $this->token = $snapshot->token;
-            $this->quantity = $snapshot->quantity;
-            $this->unitPrice = $snapshot->unitPrice;
-            $this->netAmount = $snapshot->netAmount;
-            $this->unit = $snapshot->unit;
-            $this->itemUnit = $snapshot->itemUnit;
-            $this->conversionFactor = $snapshot->conversionFactor;
-            $this->converstionText = $snapshot->converstionText;
-            $this->taxRate = $snapshot->taxRate;
-            $this->remarks = $snapshot->remarks;
-            $this->isActive = $snapshot->isActive;
-            $this->createdOn = $snapshot->createdOn;
-            $this->lastchangeOn = $snapshot->lastchangeOn;
-            $this->currentState = $snapshot->currentState;
-            $this->vendorItemCode = $snapshot->vendorItemCode;
-            $this->traceStock = $snapshot->traceStock;
-            $this->grossAmount = $snapshot->grossAmount;
-            $this->taxAmount = $snapshot->taxAmount;
-            $this->faRemarks = $snapshot->faRemarks;
-            $this->rowIdentifer = $snapshot->rowIdentifer;
-            $this->discountRate = $snapshot->discountRate;
-            $this->revisionNo = $snapshot->revisionNo;
-            $this->targetObject = $snapshot->targetObject;
-            $this->sourceObject = $snapshot->sourceObject;
-            $this->targetObjectId = $snapshot->targetObjectId;
-            $this->sourceObjectId = $snapshot->sourceObjectId;
-            $this->docStatus = $snapshot->docStatus;
-            $this->workflowStatus = $snapshot->workflowStatus;
-            $this->transactionStatus = $snapshot->transactionStatus;
-            $this->isPosted = $snapshot->isPosted;
-            $this->isDraft = $snapshot->isDraft;
-            $this->exwUnitPrice = $snapshot->exwUnitPrice;
-            $this->totalExwPrice = $snapshot->totalExwPrice;
-            $this->convertFactorPurchase = $snapshot->convertFactorPurchase;
-            $this->convertedPurchaseQuantity = $snapshot->convertedPurchaseQuantity;
-            $this->convertedStandardQuantity = $snapshot->convertedStandardQuantity;
-            $this->convertedStockQuantity = $snapshot->convertedStockQuantity;
-            $this->convertedStandardUnitPrice = $snapshot->convertedStandardUnitPrice;
-            $this->convertedStockUnitPrice = $snapshot->convertedStockUnitPrice;
-            $this->docQuantity = $snapshot->docQuantity;
-            $this->docUnit = $snapshot->docUnit;
-            $this->docUnitPrice = $snapshot->docUnitPrice;
-            $this->convertedPurchaseUnitPrice = $snapshot->convertedPurchaseUnitPrice;
-            $this->docType = $snapshot->docType;
-            $this->descriptionText = $snapshot->descriptionText;
-            $this->vendorItemName = $snapshot->vendorItemName;
-            $this->reversalBlocked = $snapshot->reversalBlocked;
-            $this->invoice = $snapshot->invoice;
-            $this->lastchangeBy = $snapshot->lastchangeBy;
-            $this->prRow = $snapshot->prRow;
-            $this->createdBy = $snapshot->createdBy;
-            $this->warehouse = $snapshot->warehouse;
-            $this->po = $snapshot->po;
-            $this->item = $snapshot->item;
-            $this->docUom = $snapshot->docUom;
-            
-            $this->draftGrQuantity = $snapshot->draftGrQuantity;
-            $this->postedGrQuantity = $snapshot->postedGrQuantity;
-            $this->confirmedGrBalance = $snapshot->confirmedGrBalance;
-            $this->openGrBalance = $snapshot->openGrBalance;
-            $this->draftAPQuantity = $snapshot->draftAPQuantity;
-            $this->postedAPQuantity = $snapshot->postedAPQuantity;
-            $this->openAPQuantity = $snapshot->openAPQuantity;
-            $this->billedAmount = $snapshot->billedAmount;
+
+        $this->draftGrQuantity = $snapshot->draftGrQuantity;
+        $this->postedGrQuantity = $snapshot->postedGrQuantity;
+        $this->confirmedGrBalance = $snapshot->confirmedGrBalance;
+        $this->openGrBalance = $snapshot->openGrBalance;
+        $this->draftAPQuantity = $snapshot->draftAPQuantity;
+        $this->postedAPQuantity = $snapshot->postedAPQuantity;
+        $this->openAPQuantity = $snapshot->openAPQuantity;
+        $this->billedAmount = $snapshot->billedAmount;
+        $this->prNumber = $snapshot->prNumber;
+        $this->prSysNumber = $snapshot->prSysNumber;
+        $this->prRowIndentifer = $snapshot->prRowIndentifer;
+        $this->prRowCode = $snapshot->prRowCode;
+        $this->prRowName = $snapshot->prRowName;
+        $this->prRowConvertFactor = $snapshot->prRowConvertFactor;
+        $this->prRowUnit = $snapshot->prRowUnit;
+        $this->prRowVersion = $snapshot->prRowVersion;
+   
+        $this->itemName = $snapshot->itemName;
+        $this->itemName1 = $snapshot->itemName1;
+        
+        $this->itemSKU = $snapshot->itemSKU;
+        $this->itemSKU1 = $snapshot->itemSKU1;
+        $this->itemSKU2 = $snapshot->itemSKU2;
+        $this->itemUUID = $snapshot->itemUUID;
+        $this->itemSysNumber = $snapshot->itemSysNumber;
+        $this->itemStandardUnit = $snapshot->itemStandardUnit;
+        $this->itemStandardUnitName = $snapshot->itemStandardUnitName;
+        $this->itemVersion = $snapshot->itemVersion;
+
+        $this->id = $snapshot->id;
+        $this->rowNumber = $snapshot->rowNumber;
+        $this->token = $snapshot->token;
+        $this->quantity = $snapshot->quantity;
+        $this->unitPrice = $snapshot->unitPrice;
+        $this->netAmount = $snapshot->netAmount;
+        $this->unit = $snapshot->unit;
+        $this->itemUnit = $snapshot->itemUnit;
+        $this->conversionFactor = $snapshot->conversionFactor;
+        $this->converstionText = $snapshot->converstionText;
+        $this->taxRate = $snapshot->taxRate;
+        $this->remarks = $snapshot->remarks;
+        $this->isActive = $snapshot->isActive;
+        $this->createdOn = $snapshot->createdOn;
+        $this->lastchangeOn = $snapshot->lastchangeOn;
+        $this->currentState = $snapshot->currentState;
+        $this->vendorItemCode = $snapshot->vendorItemCode;
+        $this->traceStock = $snapshot->traceStock;
+        $this->grossAmount = $snapshot->grossAmount;
+        $this->taxAmount = $snapshot->taxAmount;
+        $this->faRemarks = $snapshot->faRemarks;
+        $this->rowIdentifer = $snapshot->rowIdentifer;
+        $this->discountRate = $snapshot->discountRate;
+        $this->revisionNo = $snapshot->revisionNo;
+        $this->targetObject = $snapshot->targetObject;
+        $this->sourceObject = $snapshot->sourceObject;
+        $this->targetObjectId = $snapshot->targetObjectId;
+        $this->sourceObjectId = $snapshot->sourceObjectId;
+        $this->docStatus = $snapshot->docStatus;
+        $this->workflowStatus = $snapshot->workflowStatus;
+        $this->transactionStatus = $snapshot->transactionStatus;
+        $this->isPosted = $snapshot->isPosted;
+        $this->isDraft = $snapshot->isDraft;
+        $this->exwUnitPrice = $snapshot->exwUnitPrice;
+        $this->totalExwPrice = $snapshot->totalExwPrice;
+        $this->convertFactorPurchase = $snapshot->convertFactorPurchase;
+        $this->convertedPurchaseQuantity = $snapshot->convertedPurchaseQuantity;
+        $this->convertedStandardQuantity = $snapshot->convertedStandardQuantity;
+        $this->convertedStockQuantity = $snapshot->convertedStockQuantity;
+        $this->convertedStandardUnitPrice = $snapshot->convertedStandardUnitPrice;
+        $this->convertedStockUnitPrice = $snapshot->convertedStockUnitPrice;
+        $this->docQuantity = $snapshot->docQuantity;
+        $this->docUnit = $snapshot->docUnit;
+        $this->docUnitPrice = $snapshot->docUnitPrice;
+        $this->convertedPurchaseUnitPrice = $snapshot->convertedPurchaseUnitPrice;
+        $this->docType = $snapshot->docType;
+        $this->descriptionText = $snapshot->descriptionText;
+        $this->vendorItemName = $snapshot->vendorItemName;
+        $this->reversalBlocked = $snapshot->reversalBlocked;
+        $this->invoice = $snapshot->invoice;
+        $this->lastchangeBy = $snapshot->lastchangeBy;
+        $this->prRow = $snapshot->prRow;
+        $this->createdBy = $snapshot->createdBy;
+        $this->warehouse = $snapshot->warehouse;
+        $this->po = $snapshot->po;
+        $this->item = $snapshot->item;
+        $this->docUom = $snapshot->docUom;
     }
-    
-    
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -328,6 +380,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowNumber()
@@ -336,6 +389,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -344,6 +398,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuantity()
@@ -352,6 +407,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -360,6 +416,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getNetAmount()
@@ -368,6 +425,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnit()
@@ -376,6 +434,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemUnit()
@@ -384,6 +443,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -392,6 +452,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConverstionText()
@@ -400,6 +461,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxRate()
@@ -408,6 +470,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -416,6 +479,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -424,6 +488,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -432,6 +497,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -440,6 +506,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -448,6 +515,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -456,6 +524,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTraceStock()
@@ -464,6 +533,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -472,6 +542,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -480,6 +551,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFaRemarks()
@@ -488,6 +560,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowIdentifer()
@@ -496,6 +569,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountRate()
@@ -504,6 +578,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -512,6 +587,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObject()
@@ -520,6 +596,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObject()
@@ -528,6 +605,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObjectId()
@@ -536,6 +614,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObjectId()
@@ -544,6 +623,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -552,6 +632,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -560,6 +641,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -568,6 +650,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -576,6 +659,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -584,6 +668,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExwUnitPrice()
@@ -592,6 +677,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalExwPrice()
@@ -600,6 +686,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertFactorPurchase()
@@ -608,6 +695,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -616,6 +704,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -624,6 +713,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -632,6 +722,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -640,6 +731,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -648,6 +740,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -656,6 +749,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnit()
@@ -664,6 +758,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -672,6 +767,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseUnitPrice()
@@ -680,6 +776,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -688,6 +785,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDescriptionText()
@@ -696,6 +794,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemName()
@@ -704,6 +803,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -712,6 +812,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoice()
@@ -720,6 +821,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -728,6 +830,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRow()
@@ -736,6 +839,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -744,6 +848,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -752,6 +857,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()
@@ -760,6 +866,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()
@@ -768,6 +875,7 @@ class PORow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUom()
@@ -775,4 +883,219 @@ class PORow
         return $this->docUom;
     }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getDraftGrQuantity()
+    {
+        return $this->draftGrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedGrQuantity()
+    {
+        return $this->postedGrQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getConfirmedGrBalance()
+    {
+        return $this->confirmedGrBalance;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getOpenGrBalance()
+    {
+        return $this->openGrBalance;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDraftAPQuantity()
+    {
+        return $this->draftAPQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostedAPQuantity()
+    {
+        return $this->postedAPQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getOpenAPQuantity()
+    {
+        return $this->openAPQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBilledAmount()
+    {
+        return $this->billedAmount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrNumber()
+    {
+        return $this->prNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrSysNumber()
+    {
+        return $this->prSysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowIndentifer()
+    {
+        return $this->prRowIndentifer;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowCode()
+    {
+        return $this->prRowCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowName()
+    {
+        return $this->prRowName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowConvertFactor()
+    {
+        return $this->prRowConvertFactor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowUnit()
+    {
+        return $this->prRowUnit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSKU()
+    {
+        return $this->itemSKU;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSKU1()
+    {
+        return $this->itemSKU1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSKU2()
+    {
+        return $this->itemSKU2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemUUID()
+    {
+        return $this->itemUUID;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSysNumber()
+    {
+        return $this->itemSysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardUnit()
+    {
+        return $this->itemStandardUnit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardUnitName()
+    {
+        return $this->itemStandardUnitName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemVersion()
+    {
+        return $this->itemVersion;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowVersion()
+    {
+        return $this->prRowVersion;
+    }
 }

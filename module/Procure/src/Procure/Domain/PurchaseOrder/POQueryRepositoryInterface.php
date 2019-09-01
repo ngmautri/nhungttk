@@ -17,6 +17,6 @@ Interface POQueryRepositoryInterface
 
     public function getByUUID($uuid);
     
-    public function getFullDetailsById($id, $outputStragegy = null);
+    public function getPODetailsById($id);
     
 }

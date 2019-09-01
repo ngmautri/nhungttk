@@ -13,54 +13,123 @@ abstract class AbstractPO extends AggregateRoot
 {
 
     protected $id;
+
     protected $token;
+
     protected $vendorName;
+
     protected $invoiceNo;
+
     protected $invoiceDate;
+
     protected $currencyIso3;
+
     protected $exchangeRate;
+
     protected $remarks;
+
     protected $createdOn;
+
     protected $currentState;
+
     protected $isActive;
+
     protected $trxType;
+
     protected $lastchangeOn;
+
     protected $postingDate;
+
     protected $grDate;
+
     protected $sapDoc;
+
     protected $contractNo;
+
     protected $contractDate;
+
     protected $quotationNo;
+
     protected $quotationDate;
+
     protected $sysNumber;
+
     protected $revisionNo;
+
     protected $deliveryMode;
+
     protected $incoterm;
+
     protected $incotermPlace;
+
     protected $paymentTerm;
+
     protected $docStatus;
+
     protected $workflowStatus;
+
     protected $transactionStatus;
+
     protected $docType;
+
     protected $paymentStatus;
+
     protected $totalDocValue;
+
     protected $totalDocTax;
+
     protected $totalDocDiscount;
+
     protected $totalLocalValue;
+
     protected $totalLocalTax;
+
     protected $totalLocalDiscount;
+
     protected $reversalBlocked;
+
     protected $uuid;
+
     protected $vendor;
+
     protected $pmtTerm;
+
     protected $warehouse;
+
     protected $createdBy;
+
     protected $lastchangeBy;
+
     protected $currency;
+
     protected $paymentMethod;
+
     protected $localCurrency;
+
     protected $docCurrency;
+
     protected $incoterm2;
+
+    // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
+    protected $totalRows;
+
+    protected $totalActiveRows;
+
+    protected $maxRowNumber;
+
+    protected $netAmount;
+
+    protected $taxAmount;
+
+    protected $grossAmount;
+
+    protected $discountAmount;
+    
+    protected $billedAmount;
+    
+    protected $completedRows;
+
+    // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
 
     /**
      *
@@ -78,6 +147,15 @@ abstract class AbstractPO extends AggregateRoot
     public function makeDTO()
     {
         return PoDTOAssembler::createDTOFrom($this);
+    }
+
+    /**
+     *
+     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
+     */
+    public function makeDetailsDTO()
+    {
+        return PoDTOAssembler::createDetailsDTOFrom($this);
     }
 
     /**
@@ -139,7 +217,79 @@ abstract class AbstractPO extends AggregateRoot
         $this->docCurrency = $snapshot->docCurrency;
         $this->incoterm2 = $snapshot->incoterm2;
     }
+
     /**
+     *
+     * @param PoSnapshot $snapshot
+     */
+    public function makeFromDetailsSnapshot(PODetailsSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PODetailsSnapshot)
+            return;
+        $this->totalRows = $snapshot->totalRows;
+        $this->totalActiveRows = $snapshot->totalActiveRows;
+        $this->maxRowNumber = $snapshot->maxRowNumber;
+        $this->netAmount = $snapshot->netAmount;
+        $this->taxAmount = $snapshot->taxAmount;
+        $this->grossAmount = $snapshot->grossAmount;
+        $this->discountAmount = $snapshot->discountAmount;
+        $this->billedAmount = $snapshot->billedAmount;
+        $this->completedRows = $snapshot->completedRows;
+        
+        
+        $this->id = $snapshot->id;
+        $this->token = $snapshot->token;
+        $this->vendorName = $snapshot->vendorName;
+        $this->invoiceNo = $snapshot->invoiceNo;
+        $this->invoiceDate = $snapshot->invoiceDate;
+        $this->currencyIso3 = $snapshot->currencyIso3;
+        $this->exchangeRate = $snapshot->exchangeRate;
+        $this->remarks = $snapshot->remarks;
+        $this->createdOn = $snapshot->createdOn;
+        $this->currentState = $snapshot->currentState;
+        $this->isActive = $snapshot->isActive;
+        $this->trxType = $snapshot->trxType;
+        $this->lastchangeOn = $snapshot->lastchangeOn;
+        $this->postingDate = $snapshot->postingDate;
+        $this->grDate = $snapshot->grDate;
+        $this->sapDoc = $snapshot->sapDoc;
+        $this->contractNo = $snapshot->contractNo;
+        $this->contractDate = $snapshot->contractDate;
+        $this->quotationNo = $snapshot->quotationNo;
+        $this->quotationDate = $snapshot->quotationDate;
+        $this->sysNumber = $snapshot->sysNumber;
+        $this->revisionNo = $snapshot->revisionNo;
+        $this->deliveryMode = $snapshot->deliveryMode;
+        $this->incoterm = $snapshot->incoterm;
+        $this->incotermPlace = $snapshot->incotermPlace;
+        $this->paymentTerm = $snapshot->paymentTerm;
+        $this->docStatus = $snapshot->docStatus;
+        $this->workflowStatus = $snapshot->workflowStatus;
+        $this->transactionStatus = $snapshot->transactionStatus;
+        $this->docType = $snapshot->docType;
+        $this->paymentStatus = $snapshot->paymentStatus;
+        $this->totalDocValue = $snapshot->totalDocValue;
+        $this->totalDocTax = $snapshot->totalDocTax;
+        $this->totalDocDiscount = $snapshot->totalDocDiscount;
+        $this->totalLocalValue = $snapshot->totalLocalValue;
+        $this->totalLocalTax = $snapshot->totalLocalTax;
+        $this->totalLocalDiscount = $snapshot->totalLocalDiscount;
+        $this->reversalBlocked = $snapshot->reversalBlocked;
+        $this->uuid = $snapshot->uuid;
+        $this->vendor = $snapshot->vendor;
+        $this->pmtTerm = $snapshot->pmtTerm;
+        $this->warehouse = $snapshot->warehouse;
+        $this->createdBy = $snapshot->createdBy;
+        $this->lastchangeBy = $snapshot->lastchangeBy;
+        $this->currency = $snapshot->currency;
+        $this->paymentMethod = $snapshot->paymentMethod;
+        $this->localCurrency = $snapshot->localCurrency;
+        $this->docCurrency = $snapshot->docCurrency;
+        $this->incoterm2 = $snapshot->incoterm2;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getId()
@@ -148,6 +298,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -156,6 +307,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorName()
@@ -164,6 +316,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceNo()
@@ -172,6 +325,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceDate()
@@ -180,6 +334,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrencyIso3()
@@ -188,6 +343,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExchangeRate()
@@ -196,6 +352,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -204,6 +361,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -212,6 +370,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -220,6 +379,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -228,6 +388,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTrxType()
@@ -236,6 +397,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -244,6 +406,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingDate()
@@ -252,6 +415,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrDate()
@@ -260,6 +424,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSapDoc()
@@ -268,6 +433,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractNo()
@@ -276,6 +442,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractDate()
@@ -284,6 +451,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationNo()
@@ -292,6 +460,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationDate()
@@ -300,6 +469,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSysNumber()
@@ -308,6 +478,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -316,6 +487,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDeliveryMode()
@@ -324,6 +496,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm()
@@ -332,6 +505,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermPlace()
@@ -340,6 +514,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTerm()
@@ -348,6 +523,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -356,6 +532,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -364,6 +541,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -372,6 +550,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -380,6 +559,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentStatus()
@@ -388,6 +568,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocValue()
@@ -396,6 +577,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocTax()
@@ -404,6 +586,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocDiscount()
@@ -412,6 +595,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalValue()
@@ -420,6 +604,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalTax()
@@ -428,6 +613,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalDiscount()
@@ -436,6 +622,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -444,6 +631,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -452,6 +640,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -460,6 +649,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPmtTerm()
@@ -468,6 +658,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -476,6 +667,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -484,6 +676,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -492,6 +685,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrency()
@@ -500,6 +694,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethod()
@@ -508,6 +703,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrency()
@@ -516,6 +712,7 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrency()
@@ -524,11 +721,90 @@ abstract class AbstractPO extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm2()
     {
         return $this->incoterm2;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalRows()
+    {
+        return $this->totalRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalActiveRows()
+    {
+        return $this->totalActiveRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMaxRowNumber()
+    {
+        return $this->maxRowNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getNetAmount()
+    {
+        return $this->netAmount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTaxAmount()
+    {
+        return $this->taxAmount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrossAmount()
+    {
+        return $this->grossAmount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
+    }
+    /**
+     * @return mixed
+     */
+    public function getBilledAmount()
+    {
+        return $this->billedAmount;
+    }
+    /**
+     * @return mixed
+     */
+    public function getCompletedRows()
+    {
+        return $this->completedRows;
+    }
+
 
 }

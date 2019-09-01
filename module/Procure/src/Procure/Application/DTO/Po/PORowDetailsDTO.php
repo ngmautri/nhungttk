@@ -6,7 +6,7 @@ namespace Procure\Application\DTO\Po;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORowDetailDTO extends PORowDTO
+class PORowDetailsDTO extends PORowDTO
 {
 
     public $draftGrQuantity;

@@ -17,13 +17,15 @@ class POSnapshotAssembler
      */
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new POSnapshot();
+        $itemSnapshot = new PODetailsSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$apSnapshot- = \$snapshot->" . $propertyName . ";";
+            //print "\n" . "\$apSnapshot- = \$snapshot->" . $propertyName . ";";
+            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
+            
         }
     }
 

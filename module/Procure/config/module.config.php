@@ -220,6 +220,9 @@ return array(
             
             // Reporing Service
             'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',
+   
+            // Appliation Service            
+            'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
             
         )
     ),

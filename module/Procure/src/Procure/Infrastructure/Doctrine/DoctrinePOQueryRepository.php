@@ -9,6 +9,9 @@ use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtProcurePo;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseOrder\GenericPO;
+use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\PurchaseOrder\PODetailsSnapshot;
 
 /**
  *
@@ -38,29 +41,50 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     public function getFullDetailsById($id, $outputStragegy = null)
     {
         $rows = $this->getPoRowsDetails($id);
+
         if (count($rows) == 0) {
             return;
         }
 
-        $criteria = array(
-            "id" => $id
-        );
-
         /**
          *
-         * @var \Application\Entity\NmtProcurePo $entity ;
+         * @var \Application\Entity\NmtProcurePo $po ;
          */
-        $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtProcurePo")->findOneBy($criteria);
-        var_dump($this->createPODetailSnapshot($entity));
-       echo get_class($entity);
+        $po = null;
         $completed = True;
+        $docRowsArray = array();
+        $totalRows = 0;
+        $totalActiveRows = 0;
+        $netAmount = 0;
+        $taxAmount = 0;
+        $grossAmount = 0;
+        $discountAmount = 0;
+        $billedAmount = 0;
+        $completedRows = 0;
 
         foreach ($rows as $r) {
 
             /**@var \Application\Entity\NmtProcurePoRow $poRowEntity ;*/
             $po_row = $r[0];
 
+            if ($po == null) {
+                $po = $po_row->getPo();
+            }
+
             $poRowDetailSnapshot = $this->createRowDetailSnapshot($po_row);
+
+            if ($poRowDetailSnapshot == null) {
+                continue;
+            }
+
+            if ($r['open_gr_qty'] == 0 and $r['open_ap_qty'] == 0) {
+                $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
+                $completedRows++;
+                
+            } else {
+                $completed = false;
+                $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
+            }
 
             $poRowDetailSnapshot->draftGrQuantity = $r["draft_gr_qty"];
             $poRowDetailSnapshot->postedGrQuantity = $r["posted_gr_qty"];
@@ -70,21 +94,60 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRowDetailSnapshot->postedAPQuantity = $r["posted_ap_qty"];
             $poRowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
             $poRowDetailSnapshot->billedAmount = $r["billed_amount"];
-            // var_dump($poRowDetailSnapshot);
+           
+            $totalRows ++;
+            $totalActiveRows ++;
+            $netAmount = $netAmount + $poRowDetailSnapshot->netAmount;
+            $taxAmount = $taxAmount + $poRowDetailSnapshot->taxAmount;
+            $grossAmount = $grossAmount + $poRowDetailSnapshot->grossAmount;
+            $billedAmount = $billedAmount + $poRowDetailSnapshot->billedAmount;
+            
+
+            $poRow = new PORow();
+            $poRow->makeFromDetailsSnapshot($poRowDetailSnapshot);
+            $docRowsArray[] = $poRow;
         }
+
+        $poDetailsSnapshot = $this->createPODetailSnapshot($po);
+        if ($poDetailsSnapshot == null) {
+            return null;
+        }
+
+        if ($completed == true) {
+            $poDetailsSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
+        } else {
+            $poDetailsSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
+        }
+
+        $poDetailsSnapshot->totalRows = $totalRows;
+        $poDetailsSnapshot->totalActiveRows = $totalActiveRows;
+        $poDetailsSnapshot->netAmount = $netAmount;
+        $poDetailsSnapshot->taxAmount = $taxAmount;
+        $poDetailsSnapshot->grossAmount = $grossAmount;
+        $poDetailsSnapshot->discountAmount = $discountAmount;
+        $poDetailsSnapshot->billedAmount = $billedAmount;
+        $poDetailsSnapshot->completedRows = $completedRows;
+        
+        $rootEntity = new GenericPO();
+        $rootEntity->makeFromDetailsSnapshot($poDetailsSnapshot);
+
+        $rootEntity->setDocRows($docRowsArray);
+        return $rootEntity;
     }
+
+    // +++++++++++++++++++++++++++++++++++++++++
 
     /**
      *
-     * @param NmtProcurePo $entity
-     * @return NULL|\Procure\Domain\PurchaseOrder\PORowDetailsSnapshot
+     * @param object $entity
+     * @return NULL|\Procure\Domain\PurchaseOrder\PODetailsSnapshot
      */
     private function createPODetailSnapshot($entity)
     {
         if ($entity == null)
             return null;
 
-        $snapshot = new POSnapshot();
+        $snapshot = new PODetailsSnapshot();
 
         // Mapping Reference
         // =====================
@@ -171,45 +234,48 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
         }
 
-        // Mapping Date
+        // $snapshot->contractDate= $entity->getContractDate();
+        if (! $entity->getContractDate() == null) {
+            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d");
+        }
+
+        // Mapping None-Object Field
         // =====================
 
-        $snapshot->id= $entity->getId();
-        $snapshot->token= $entity->getToken();
-        $snapshot->vendorName= $entity->getVendorName();
-        $snapshot->invoiceNo= $entity->getInvoiceNo();
-        $snapshot->invoiceDate= $entity->getInvoiceDate();
-        $snapshot->currencyIso3= $entity->getCurrencyIso3();
-        $snapshot->exchangeRate= $entity->getExchangeRate();
-        $snapshot->remarks= $entity->getRemarks();
-        $snapshot->createdOn= $entity->getCreatedOn();
-        $snapshot->currentState= $entity->getCurrentState();
-        $snapshot->isActive= $entity->getIsActive();
-        $snapshot->trxType= $entity->getTrxType();
-        $snapshot->sapDoc= $entity->getSapDoc();
-        $snapshot->contractNo= $entity->getContractNo();
-        $snapshot->contractDate= $entity->getContractDate();
-        $snapshot->quotationNo= $entity->getQuotationNo();
-        $snapshot->sysNumber= $entity->getSysNumber();
-        $snapshot->revisionNo= $entity->getRevisionNo();
-        $snapshot->deliveryMode= $entity->getDeliveryMode();
-        $snapshot->incoterm= $entity->getIncoterm();
-        $snapshot->incotermPlace= $entity->getIncotermPlace();
-        $snapshot->paymentTerm= $entity->getPaymentTerm();
-        $snapshot->docStatus= $entity->getDocStatus();
-        $snapshot->workflowStatus= $entity->getWorkflowStatus();
-        $snapshot->transactionStatus= $entity->getTransactionStatus();
-        $snapshot->docType= $entity->getDocType();
-        $snapshot->paymentStatus= $entity->getPaymentStatus();
-        $snapshot->totalDocValue= $entity->getTotalDocValue();
-        $snapshot->totalDocTax= $entity->getTotalDocTax();
-        $snapshot->totalDocDiscount= $entity->getTotalDocDiscount();
-        $snapshot->totalLocalValue= $entity->getTotalLocalValue();
-        $snapshot->totalLocalTax= $entity->getTotalLocalTax();
-        $snapshot->totalLocalDiscount= $entity->getTotalLocalDiscount();
-        $snapshot->reversalBlocked= $entity->getReversalBlocked();
-        $snapshot->uuid= $entity->getUuid();
-        
+        $snapshot->id = $entity->getId();
+        $snapshot->token = $entity->getToken();
+        $snapshot->vendorName = $entity->getVendorName();
+        $snapshot->invoiceNo = $entity->getInvoiceNo();
+
+        $snapshot->currencyIso3 = $entity->getCurrencyIso3();
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->trxType = $entity->getTrxType();
+        $snapshot->sapDoc = $entity->getSapDoc();
+        $snapshot->contractNo = $entity->getContractNo();
+        $snapshot->quotationNo = $entity->getQuotationNo();
+        $snapshot->sysNumber = $entity->getSysNumber();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->deliveryMode = $entity->getDeliveryMode();
+        $snapshot->incoterm = $entity->getIncoterm();
+        $snapshot->incotermPlace = $entity->getIncotermPlace();
+        $snapshot->paymentTerm = $entity->getPaymentTerm();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->paymentStatus = $entity->getPaymentStatus();
+        $snapshot->totalDocValue = $entity->getTotalDocValue();
+        $snapshot->totalDocTax = $entity->getTotalDocTax();
+        $snapshot->totalDocDiscount = $entity->getTotalDocDiscount();
+        $snapshot->totalLocalValue = $entity->getTotalLocalValue();
+        $snapshot->totalLocalTax = $entity->getTotalLocalTax();
+        $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->uuid = $entity->getUuid();
+
         return $snapshot;
     }
 
@@ -282,24 +348,56 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
         }
 
-        // Mapping Date
+        // Mapping None-Object Field
         // =====================
 
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (! is_object($property->getValue($entity))) {
-
-                if (property_exists($snapshot, $propertyName)) {
-                    $snapshot->$propertyName = $property->getValue($entity);
-                }
-            }
-        }
+        $snapshot->id = $entity->getId();
+        $snapshot->rowNumber = $entity->getRowNumber();
+        $snapshot->token = $entity->getToken();
+        $snapshot->quantity = $entity->getQuantity();
+        $snapshot->unitPrice = $entity->getUnitPrice();
+        $snapshot->netAmount = $entity->getNetAmount();
+        $snapshot->unit = $entity->getUnit();
+        $snapshot->itemUnit = $entity->getItemUnit();
+        $snapshot->conversionFactor = $entity->getConversionFactor();
+        $snapshot->converstionText = $entity->getConverstionText();
+        $snapshot->taxRate = $entity->getTaxRate();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->vendorItemCode = $entity->getVendorItemCode();
+        $snapshot->traceStock = $entity->getTraceStock();
+        $snapshot->grossAmount = $entity->getGrossAmount();
+        $snapshot->taxAmount = $entity->getTaxAmount();
+        $snapshot->faRemarks = $entity->getFaRemarks();
+        $snapshot->rowIdentifer = $entity->getRowIdentifer();
+        $snapshot->discountRate = $entity->getDiscountRate();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->targetObject = $entity->getTargetObject();
+        $snapshot->sourceObject = $entity->getSourceObject();
+        $snapshot->targetObjectId = $entity->getTargetObjectId();
+        $snapshot->sourceObjectId = $entity->getSourceObjectId();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->exwUnitPrice = $entity->getExwUnitPrice();
+        $snapshot->totalExwPrice = $entity->getTotalExwPrice();
+        $snapshot->convertFactorPurchase = $entity->getConvertFactorPurchase();
+        $snapshot->convertedPurchaseQuantity = $entity->getConvertedPurchaseQuantity();
+        $snapshot->convertedStandardQuantity = $entity->getConvertedStandardQuantity();
+        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
+        $snapshot->convertedStandardUnitPrice = $entity->getConvertedStandardUnitPrice();
+        $snapshot->convertedStockUnitPrice = $entity->getConvertedStockUnitPrice();
+        $snapshot->docQuantity = $entity->getDocQuantity();
+        $snapshot->docUnit = $entity->getDocUnit();
+        $snapshot->docUnitPrice = $entity->getDocUnitPrice();
+        $snapshot->convertedPurchaseUnitPrice = $entity->getConvertedPurchaseUnitPrice();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->descriptionText = $entity->getDescriptionText();
+        $snapshot->vendorItemName = $entity->getVendorItemName();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
 
         return $snapshot;
     }

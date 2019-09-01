@@ -127,7 +127,7 @@ class PORow
     protected $docUom;
     
     
-    // ======= Addtional =======
+    // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
     
     protected $draftGrQuantity;
     
@@ -161,6 +161,16 @@ class PORow
     public function makeDTO()
     {
         return PORowDTOAssembler::createDTOFrom($this);
+    }
+    
+    
+    /**
+     *
+     * @return NULL|\Procure\Application\DTO\Po\PORowDTO
+     */
+    public function makeDetailsDTO()
+    {
+        return PORowDTOAssembler::createDetailsDTOFrom($this);
     }
 
     /**

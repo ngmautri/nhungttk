@@ -59,6 +59,37 @@ class PoDTOAssembler
     }
 
     /**
+     *
+     * @param GenericPO $obj
+     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
+     */
+    public static function createDetailsDTOFrom(GenericPO $obj)
+    {
+        if (! $obj instanceof GenericPO)
+            return null;
+
+        $dto = new PoDetailsDTO();
+
+        $reflectionClass = new \ReflectionClass($obj);
+        $itemProperites = $reflectionClass->getProperties();
+
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (property_exists($dto, $propertyName)) {
+                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
+                    $dto->$propertyName = null;
+                } else {
+                    $dto->$propertyName = $property->getValue($obj);
+                }
+            }
+        }
+
+        return $dto;
+    }
+
+    /**
      * generete DTO File.
      */
     public static function createDTOProperities()

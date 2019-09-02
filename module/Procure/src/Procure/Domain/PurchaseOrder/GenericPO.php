@@ -3,6 +3,8 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Procure\Application\DTO\Po\PoDTOAssembler;
 use Procure\Domain\APInvoice\Factory\APFactory;
+use Procure\Application\DTO\Po\PoDTOForGird;
+use Procure\Application\DTO\DTOFactory;
 
 /**
  *
@@ -42,6 +44,25 @@ class GenericPO extends AbstractPO
     public function makeHeaderDTO()
     {
         $dto = PoDTOAssembler::createDetailsDTOFrom($this);
+        return $dto;
+    }
+    
+    /**
+     *
+     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
+     */
+    public function makeDTOForGrid()
+    {
+        $dto = PoDTOAssembler::createDetailsDTOFrom($this);
+        
+        if (count($this->docRows) > 0) {
+            foreach ($this->docRows as $row) {
+                
+                if ($row instanceof PORow) {
+                    $dto->docRowsDTO[] = $row->makeDTOForGrid();
+                }
+            }
+        }
         return $dto;
     }
 

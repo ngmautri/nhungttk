@@ -614,7 +614,8 @@ class PoController extends AbstractActionController
             'form_action' => "/procure/po/view",
             'form_title' => $nmtPlugin->translate("Show PO"),
             'redirectUrl' => null,
-            'headerDTO' => $po->makeDetailsDTO(),
+            'headerDTO' => $po->makeDTOForGrid(),
+            'po' => $po,
             'errors' => null,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list

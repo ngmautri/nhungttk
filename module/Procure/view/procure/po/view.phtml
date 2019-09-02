@@ -2,6 +2,7 @@
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
 
+
 ?>
 
 <div id="wrapper" class="toggled">
@@ -446,7 +447,7 @@ if (count($errors) > 0) {
 
 <script>
 
-var data = <?php echo json_encode($headerDTO->getDocRowsDTO()) ; ?>
+var data = <?php echo json_encode($po->getRowsOutPut()) ; ?>
     
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
@@ -756,10 +757,9 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
        { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
 
-       { title: "Receiving", dataType: "string", dataIndx: "draft_gr",align: 'right', width:80,editable: false },
-       { title: "Received", dataType: "string", dataIndx: "confirmed_gr", align: 'right',width:70,editable: false },
-       { title: "Balance", dataType: "integer", dataIndx: "open_gr", align: 'right',width:70,editable: false },
-       { title: "Billed qty", dataType: "integer", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
+       { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
+       { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
+       { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
        { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
 
        { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},

@@ -2,6 +2,8 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Procure\Application\DTO\Po\PORowDTOAssembler;
+use Procure\Application\DTO\Po\PORowForGridDTO;
+use Procure\Application\DTO\DTOFactory;
 
 /**
  * AP Row
@@ -142,6 +144,12 @@ class PORow
     protected $openAPQuantity;
 
     protected $billedAmount;
+    
+    protected $pr;
+    
+    protected $prToken;
+    
+    protected $prChecksum;
 
     protected $prNumber;
 
@@ -159,9 +167,14 @@ class PORow
 
     protected $prRowVersion;
 
+    protected $itemToken;
+
+    protected $itemCheckSum;
+
     protected $itemName;
+
     protected $itemName1;
-    
+
     protected $itemSKU;
 
     protected $itemSKU1;
@@ -203,6 +216,17 @@ class PORow
     public function makeDetailsDTO()
     {
         return PORowDTOAssembler::createDetailsDTOFrom($this);
+    }
+
+    /**
+     * 
+     * @return NULL|object
+     */
+    public function makeDTOForGrid()
+    {
+        $dto = new PORowForGridDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        return $dto;
     }
 
     /**
@@ -290,6 +314,11 @@ class PORow
         $this->postedAPQuantity = $snapshot->postedAPQuantity;
         $this->openAPQuantity = $snapshot->openAPQuantity;
         $this->billedAmount = $snapshot->billedAmount;
+        $this->pr = $snapshot->pr;
+        
+        $this->prToken = $snapshot->prToken;
+        $this->prChecksum = $snapshot->prChecksum;
+        
         $this->prNumber = $snapshot->prNumber;
         $this->prSysNumber = $snapshot->prSysNumber;
         $this->prRowIndentifer = $snapshot->prRowIndentifer;
@@ -298,10 +327,13 @@ class PORow
         $this->prRowConvertFactor = $snapshot->prRowConvertFactor;
         $this->prRowUnit = $snapshot->prRowUnit;
         $this->prRowVersion = $snapshot->prRowVersion;
-   
+
+        $this->itemToken = $snapshot->itemToken;
+        $this->itemCheckSum = $snapshot->itemCheckSum;
+
         $this->itemName = $snapshot->itemName;
         $this->itemName1 = $snapshot->itemName1;
-        
+
         $this->itemSKU = $snapshot->itemSKU;
         $this->itemSKU1 = $snapshot->itemSKU1;
         $this->itemSKU2 = $snapshot->itemSKU2;

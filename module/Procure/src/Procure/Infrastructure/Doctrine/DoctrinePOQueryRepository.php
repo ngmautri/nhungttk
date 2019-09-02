@@ -322,6 +322,10 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $snapshot->prRowUnit = $entity->getPrRow()->getRowUnit();
 
             if ($entity->getPrRow()->getPr() !== null) {
+                $snapshot->pr = $entity->getPrRow()
+                ->getPr()
+                ->getId();
+                
                 $snapshot->prSysNumber = $entity->getPrRow()
                     ->getPr()
                     ->getPrAutoNumber();
@@ -329,6 +333,14 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
                 $snapshot->prNumber = $entity->getPrRow()
                     ->getPr()
                     ->getPrNumber();
+
+                $snapshot->prToken = $entity->getPrRow()
+                    ->getPr()
+                    ->getToken();
+
+                $snapshot->prChecksum = $entity->getPrRow()
+                    ->getPr()
+                    ->getChecksum();
             }
         }
 
@@ -350,23 +362,28 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $snapshot->item= $entity->getItem();
         if ($entity->getItem() !== null) {
             $snapshot->item = $entity->getItem()->getId();
-            
+
+            $snapshot->itemToken = $entity->getItem()->getToken();
+            $snapshot->itemCheckSum = $entity->getItem()->getChecksum();
+
             $snapshot->itemName = $entity->getItem()->getItemName();
             $snapshot->itemName1 = $entity->getItem()->getItemNameForeign();
-            
+
             $snapshot->itemSKU = $entity->getItem()->getItemSku();
-            
+
             $snapshot->itemSKU1 = $entity->getItem()->getItemSku1();
             $snapshot->itemSKU2 = $entity->getItem()->getItemSku2();
-            
+
             $snapshot->itemVersion = $entity->getItem()->getRevisionNo();
-            
-            if($entity->getItem()->getStandardUom()!=null){
-                $snapshot->itemStandardUnit = $entity->getItem()->getStandardUom()->getId();
-                $snapshot->itemStandardUnitName = $entity->getItem()->getStandardUom()->getUomCode();
+
+            if ($entity->getItem()->getStandardUom() != null) {
+                $snapshot->itemStandardUnit = $entity->getItem()
+                    ->getStandardUom()
+                    ->getId();
+                $snapshot->itemStandardUnitName = $entity->getItem()
+                    ->getStandardUom()
+                    ->getUomCode();
             }
-            
-            
         }
 
         $snapshot->docUom = $entity->getDocUom();

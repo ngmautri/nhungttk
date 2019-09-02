@@ -25,6 +25,12 @@ class PORowDetailsSnapshot extends PORowSnapshot
 
     public $billedAmount;
 
+    public $pr;
+    
+    public $prToken;
+
+    public $prChecksum;
+
     public $prNumber;
 
     public $prSysNumber;
@@ -38,14 +44,18 @@ class PORowDetailsSnapshot extends PORowSnapshot
     public $prRowConvertFactor;
 
     public $prRowUnit;
-    
+
     public $prRowVersion;
 
+    public $itemToken;
+
+    public $itemCheckSum;
+
     public $itemName;
+
     public $itemName1;
-    
+
     public $itemSKU;
-    
 
     public $itemSKU1;
 

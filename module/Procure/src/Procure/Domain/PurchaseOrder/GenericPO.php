@@ -1,10 +1,10 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Procure\Application\DTO\Po\PoDTOAssembler;
-use Procure\Domain\APInvoice\Factory\APFactory;
-use Procure\Application\DTO\Po\PoDTOForGird;
 use Procure\Application\DTO\DTOFactory;
+use Procure\Application\DTO\Po\PoDTOAssembler;
+use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Domain\APInvoice\Factory\APFactory;
 
 /**
  *
@@ -24,7 +24,8 @@ class GenericPO extends AbstractPO
      */
     public function makeDetailsDTO()
     {
-        $dto = PoDTOAssembler::createDetailsDTOFrom($this);
+        $dto = new PoDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
 
         if (count($this->docRows) > 0) {
             foreach ($this->docRows as $row) {
@@ -43,21 +44,23 @@ class GenericPO extends AbstractPO
      */
     public function makeHeaderDTO()
     {
-        $dto = PoDTOAssembler::createDetailsDTOFrom($this);
+        $dto = new PoDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }
-    
+
     /**
      *
      * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
      */
     public function makeDTOForGrid()
     {
-        $dto = PoDTOAssembler::createDetailsDTOFrom($this);
-        
+        $dto = new PoDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+
         if (count($this->docRows) > 0) {
             foreach ($this->docRows as $row) {
-                
+
                 if ($row instanceof PORow) {
                     $dto->docRowsDTO[] = $row->makeDTOForGrid();
                 }

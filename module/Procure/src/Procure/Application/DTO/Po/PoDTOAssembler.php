@@ -1,8 +1,6 @@
 <?php
 namespace Procure\Application\DTO\Po;
 
-use Procure\Domain\PurchaseOrder\GenericPO;
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -10,84 +8,6 @@ use Procure\Domain\PurchaseOrder\GenericPO;
  */
 class PoDTOAssembler
 {
-
-    public static function createDTOFromArray($data)
-    {
-        $dto = new PoDTO();
-
-        foreach ($data as $property => $value) {
-            if (property_exists($dto, $property)) {
-                if ($value == null || $value == "") {
-                    $dto->$property = null;
-                } else {
-                    $dto->$property = $value;
-                }
-            }
-        }
-        return $dto;
-    }
-
-    /**
-     *
-     * @param GenericPO $obj
-     * @return NULL|\Procure\Application\DTO\Po\PoDTO
-     */
-    public static function createDTOFrom(GenericPO $obj)
-    {
-        if (! $obj instanceof GenericPO)
-            return null;
-
-        $dto = new PoDTO();
-
-        $reflectionClass = new \ReflectionClass($obj);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (property_exists($dto, $propertyName)) {
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $dto->$propertyName = null;
-                } else {
-                    $dto->$propertyName = $property->getValue($obj);
-                }
-            }
-        }
-
-        return $dto;
-    }
-
-    /**
-     *
-     * @param GenericPO $obj
-     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
-     */
-    public static function createDetailsDTOFrom(GenericPO $obj)
-    {
-        if (! $obj instanceof GenericPO)
-            return null;
-
-        $dto = new PoDetailsDTO();
-
-        $reflectionClass = new \ReflectionClass($obj);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (property_exists($dto, $propertyName)) {
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $dto->$propertyName = null;
-                } else {
-                    $dto->$propertyName = $property->getValue($obj);
-                }
-            }
-        }
-
-        return $dto;
-    }
 
     /**
      * generete DTO File.
@@ -100,7 +20,7 @@ class PoDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
+            print "\n" . "public $" . $propertyName . ";";
         }
     }
 

@@ -29,7 +29,7 @@ class PrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PRSnapshotAssembler::createFromSnapshotCode();
+            PRSnapshotAssembler::createProperities();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

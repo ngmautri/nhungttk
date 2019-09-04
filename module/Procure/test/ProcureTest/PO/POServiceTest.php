@@ -27,7 +27,7 @@ class POServiceTest extends PHPUnit_Framework_TestCase
             /** @var POService $sv ; */
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PO\POService');
             $results = $sv->getPODetailsById(199, PORowOutputStrategy::OUTPUT_IN_ARRAY);
-            var_dump($results->makeDTOForGrid());
+            var_dump($results);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

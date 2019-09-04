@@ -3,6 +3,7 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\AggregateRoot;
 use Procure\Application\DTO\Po\PoDTOAssembler;
+use Procure\Domain\SnapshotAssembler;
 
 /**
  *
@@ -12,6 +13,46 @@ use Procure\Application\DTO\Po\PoDTOAssembler;
 abstract class AbstractPO extends AggregateRoot
 {
 
+    // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
+    protected $paymentTermName;
+
+    protected $paymentTermCode;
+
+    protected $warehouseName;
+
+    protected $warehouseCode;
+
+    protected $paymentMethodName;
+
+    protected $paymentMethodCode;
+
+    protected $incotermCode;
+
+    protected $incotermName;
+
+    protected $createdByName;
+
+    protected $lastChangedByName;
+
+    protected $totalRows;
+
+    protected $totalActiveRows;
+
+    protected $maxRowNumber;
+
+    protected $netAmount;
+
+    protected $taxAmount;
+
+    protected $grossAmount;
+
+    protected $discountAmount;
+
+    protected $billedAmount;
+
+    protected $completedRows;
+
+    // +++++++++++++++++++ ORM MAPPING +++++++++++++++++++++
     protected $id;
 
     protected $token;
@@ -110,54 +151,13 @@ abstract class AbstractPO extends AggregateRoot
 
     protected $incoterm2;
 
-    // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
-    protected $paymentTermName;
-
-    protected $paymentTermCode;
-
-    protected $warehouseName;
-
-    protected $warehouseCode;
-
-    protected $paymentMethodName;
-
-    protected $paymentMethodCode;
-
-    protected $incotermCode;
-
-    protected $incotermName;
-
-    protected $createdByName;
-
-    protected $lastChangedByName;
-
-    protected $totalRows;
-
-    protected $totalActiveRows;
-
-    protected $maxRowNumber;
-
-    protected $netAmount;
-
-    protected $taxAmount;
-
-    protected $grossAmount;
-
-    protected $discountAmount;
-
-    protected $billedAmount;
-
-    protected $completedRows;
-
-    // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++
-
     /**
      *
      * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
      */
     public function makeSnapshot()
     {
-        return POSnapshotAssembler::createSnapshotFrom($this);
+        return SnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
     }
 
     /**
@@ -169,8 +169,6 @@ abstract class AbstractPO extends AggregateRoot
         return PoDTOAssembler::createDTOFrom($this);
     }
 
-   
-
     /**
      *
      * @param PoSnapshot $snapshot
@@ -180,55 +178,7 @@ abstract class AbstractPO extends AggregateRoot
         if (! $snapshot instanceof PoSnapshot)
             return;
 
-        $this->id = $snapshot->id;
-        $this->token = $snapshot->token;
-        $this->vendorName = $snapshot->vendorName;
-        $this->invoiceNo = $snapshot->invoiceNo;
-        $this->invoiceDate = $snapshot->invoiceDate;
-        $this->currencyIso3 = $snapshot->currencyIso3;
-        $this->exchangeRate = $snapshot->exchangeRate;
-        $this->remarks = $snapshot->remarks;
-        $this->createdOn = $snapshot->createdOn;
-        $this->currentState = $snapshot->currentState;
-        $this->isActive = $snapshot->isActive;
-        $this->trxType = $snapshot->trxType;
-        $this->lastchangeOn = $snapshot->lastchangeOn;
-        $this->postingDate = $snapshot->postingDate;
-        $this->grDate = $snapshot->grDate;
-        $this->sapDoc = $snapshot->sapDoc;
-        $this->contractNo = $snapshot->contractNo;
-        $this->contractDate = $snapshot->contractDate;
-        $this->quotationNo = $snapshot->quotationNo;
-        $this->quotationDate = $snapshot->quotationDate;
-        $this->sysNumber = $snapshot->sysNumber;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->deliveryMode = $snapshot->deliveryMode;
-        $this->incoterm = $snapshot->incoterm;
-        $this->incotermPlace = $snapshot->incotermPlace;
-        $this->paymentTerm = $snapshot->paymentTerm;
-        $this->docStatus = $snapshot->docStatus;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->docType = $snapshot->docType;
-        $this->paymentStatus = $snapshot->paymentStatus;
-        $this->totalDocValue = $snapshot->totalDocValue;
-        $this->totalDocTax = $snapshot->totalDocTax;
-        $this->totalDocDiscount = $snapshot->totalDocDiscount;
-        $this->totalLocalValue = $snapshot->totalLocalValue;
-        $this->totalLocalTax = $snapshot->totalLocalTax;
-        $this->totalLocalDiscount = $snapshot->totalLocalDiscount;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->uuid = $snapshot->uuid;
-        $this->vendor = $snapshot->vendor;
-        $this->pmtTerm = $snapshot->pmtTerm;
-        $this->warehouse = $snapshot->warehouse;
-        $this->createdBy = $snapshot->createdBy;
-        $this->lastchangeBy = $snapshot->lastchangeBy;
-        $this->currency = $snapshot->currency;
-        $this->paymentMethod = $snapshot->paymentMethod;
-        $this->localCurrency = $snapshot->localCurrency;
-        $this->docCurrency = $snapshot->docCurrency;
-        $this->incoterm2 = $snapshot->incoterm2;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
 
     /**
@@ -239,76 +189,8 @@ abstract class AbstractPO extends AggregateRoot
     {
         if (! $snapshot instanceof PODetailsSnapshot)
             return;
-        
-        $this->paymentTermName = $snapshot->paymentTermName;
-        $this->paymentTermCode = $snapshot->paymentTermCode;
-        $this->warehouseName = $snapshot->warehouseName;
-        $this->warehouseCode = $snapshot->warehouseCode;
-        $this->paymentMethodName = $snapshot->paymentMethodName;
-        $this->paymentMethodCode = $snapshot->paymentMethodCode;
-        $this->incotermCode = $snapshot->incotermCode;
-        $this->incotermName = $snapshot->incotermName;
-        $this->createdByName = $snapshot->createdByName;
-        $this->lastChangedByName = $snapshot->lastChangedByName;
-        $this->totalRows = $snapshot->totalRows;
-        $this->totalActiveRows = $snapshot->totalActiveRows;
-        $this->maxRowNumber = $snapshot->maxRowNumber;
-        $this->netAmount = $snapshot->netAmount;
-        $this->taxAmount = $snapshot->taxAmount;
-        $this->grossAmount = $snapshot->grossAmount;
-        $this->discountAmount = $snapshot->discountAmount;
-        $this->billedAmount = $snapshot->billedAmount;
-        $this->completedRows = $snapshot->completedRows;
 
-        $this->id = $snapshot->id;
-        $this->token = $snapshot->token;
-        $this->vendorName = $snapshot->vendorName;
-        $this->invoiceNo = $snapshot->invoiceNo;
-        $this->invoiceDate = $snapshot->invoiceDate;
-        $this->currencyIso3 = $snapshot->currencyIso3;
-        $this->exchangeRate = $snapshot->exchangeRate;
-        $this->remarks = $snapshot->remarks;
-        $this->createdOn = $snapshot->createdOn;
-        $this->currentState = $snapshot->currentState;
-        $this->isActive = $snapshot->isActive;
-        $this->trxType = $snapshot->trxType;
-        $this->lastchangeOn = $snapshot->lastchangeOn;
-        $this->postingDate = $snapshot->postingDate;
-        $this->grDate = $snapshot->grDate;
-        $this->sapDoc = $snapshot->sapDoc;
-        $this->contractNo = $snapshot->contractNo;
-        $this->contractDate = $snapshot->contractDate;
-        $this->quotationNo = $snapshot->quotationNo;
-        $this->quotationDate = $snapshot->quotationDate;
-        $this->sysNumber = $snapshot->sysNumber;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->deliveryMode = $snapshot->deliveryMode;
-        $this->incoterm = $snapshot->incoterm;
-        $this->incotermPlace = $snapshot->incotermPlace;
-        $this->paymentTerm = $snapshot->paymentTerm;
-        $this->docStatus = $snapshot->docStatus;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->docType = $snapshot->docType;
-        $this->paymentStatus = $snapshot->paymentStatus;
-        $this->totalDocValue = $snapshot->totalDocValue;
-        $this->totalDocTax = $snapshot->totalDocTax;
-        $this->totalDocDiscount = $snapshot->totalDocDiscount;
-        $this->totalLocalValue = $snapshot->totalLocalValue;
-        $this->totalLocalTax = $snapshot->totalLocalTax;
-        $this->totalLocalDiscount = $snapshot->totalLocalDiscount;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->uuid = $snapshot->uuid;
-        $this->vendor = $snapshot->vendor;
-        $this->pmtTerm = $snapshot->pmtTerm;
-        $this->warehouse = $snapshot->warehouse;
-        $this->createdBy = $snapshot->createdBy;
-        $this->lastchangeBy = $snapshot->lastchangeBy;
-        $this->currency = $snapshot->currency;
-        $this->paymentMethod = $snapshot->paymentMethod;
-        $this->localCurrency = $snapshot->localCurrency;
-        $this->docCurrency = $snapshot->docCurrency;
-        $this->incoterm2 = $snapshot->incoterm2;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
 
     /**
@@ -922,7 +804,4 @@ abstract class AbstractPO extends AggregateRoot
     {
         return $this->lastChangedByName;
     }
-
-
-
 }

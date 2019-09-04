@@ -12,21 +12,20 @@ class PORowSnapshotAssembler
 {
 
     /**
-     *
-     * @return LocationSnapshot;
+     * generete fields.
      */
-    public static function createFromSnapshotCode()
+    public static function createProperities()
     {
-        $itemSnapshot = new PORowSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $entity = new PORowDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
+            print "\n" . "protected $" . $propertyName . ";";
         }
     }
-    
+
     public static function createFromDetailsSnapshotCode()
     {
         $itemSnapshot = new PORowDetailsSnapshot();
@@ -64,11 +63,11 @@ class PORowSnapshotAssembler
         return $snapShot;
     }
 
-   /**
-    * 
-    * @param PORowDTO $dto
-    * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
-    */
+    /**
+     *
+     * @param PORowDTO $dto
+     * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
+     */
     public static function createSnapshotFromDTO(PORowDTO $dto)
     {
         if (! $dto instanceof PORowDTO)
@@ -89,12 +88,12 @@ class PORowSnapshotAssembler
         return $snapShot;
     }
 
-   /**
-    * 
-    * @param PORowSnapshot $snapShot
-    * @param PORowDTO $dto
-    * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
-    */
+    /**
+     *
+     * @param PORowSnapshot $snapShot
+     * @param PORowDTO $dto
+     * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
+     */
     public static function updateSnapshotFromDTO(PORowSnapshot $snapShot, PORowDTO $dto)
     {
         if (! $dto instanceof PORowDTO || ! $snapShot instanceof PORowSnapshot)
@@ -141,40 +140,6 @@ class PORowSnapshotAssembler
                 }
             }
         }
-        return $snapShot;
-    }
-
-   /**
-    * 
-    * @param PORow $obj
-    * @return NULL|\Procure\Domain\PurchaseOrder\POrowSnapshot
-    */
-    public static function createSnapshotFrom(PORow $obj)
-    {
-        if (! $obj instanceof PORow) {
-            return null;
-        }
-
-        $snapShot = new POrowSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
-                }
-            }
-        }
-
         return $snapShot;
     }
 }

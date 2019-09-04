@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\DTO\Ap\Output;
+namespace Procure\Application\DTO\Pr\Output;
 
 use Zend\Escaper\Escaper;
 
@@ -9,7 +9,7 @@ use Zend\Escaper\Escaper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApDocRowInOpenOffice extends APDocRowOutputStrategy
+class PRRowInOpenOffice extends PRRowOutputStrategy
 {
 
    

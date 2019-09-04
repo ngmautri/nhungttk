@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\DTO\Ap\Output;
+namespace Procure\Application\DTO\Pr\Output;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Zend\Escaper\Escaper;
@@ -10,7 +10,7 @@ use Zend\Escaper\Escaper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APDocRowInExcel extends APDocRowOutputStrategy
+class PRRowInExcel extends PRRowOutputStrategy
 {
 
     /**

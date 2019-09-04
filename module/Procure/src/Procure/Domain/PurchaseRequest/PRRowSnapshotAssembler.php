@@ -12,6 +12,21 @@ class PRRowSnapshotAssembler
 {
 
     /**
+     * generete fields.
+     */
+    public static function createProperities()
+    {
+        $entity = new PRRowDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "protected $" . $propertyName . ";";
+        }
+    }
+
+    /**
      *
      * @return LocationSnapshot;
      */
@@ -129,40 +144,6 @@ class PRRowSnapshotAssembler
                 }
             }
         }
-        return $snapShot;
-    }
-
-    /**
-     *
-     * @param PrRow $obj
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRrowSnapshot
-     */
-    public static function createSnapshotFrom(PrRow $obj)
-    {
-        if (! $obj instanceof GenericPR) {
-            return null;
-        }
-
-        $snapShot = new PRrowSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
-                }
-            }
-        }
-
         return $snapShot;
     }
 }

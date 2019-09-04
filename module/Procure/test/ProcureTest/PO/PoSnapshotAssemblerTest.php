@@ -1,6 +1,7 @@
 <?php
 namespace ProcureTest\PR;
 
+use Doctrine\ORM\EntityManager;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
@@ -27,7 +28,7 @@ class PoSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            POSnapshotAssembler::createFromSnapshotCode();
+            POSnapshotAssembler::createProperities();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

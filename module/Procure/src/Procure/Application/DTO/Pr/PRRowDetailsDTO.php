@@ -1,13 +1,14 @@
 <?php
 namespace Procure\Application\DTO\Pr;
 
-use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\PurchaseRequest\PRRowDetailsSnapshot;
+
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrDTO extends PRSnapshot
+class PRRowDetailsDTO extends PRRowDetailsSnapshot
 {
 }

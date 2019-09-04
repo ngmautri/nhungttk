@@ -12,20 +12,17 @@ class POSnapshotAssembler
 {
 
     /**
-     *
-     * @return LocationSnapshot;
+     * generete fields.
      */
-    public static function createFromSnapshotCode()
+    public static function createProperities()
     {
-        $itemSnapshot = new PODetailsSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $entity = new PODetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            //print "\n" . "\$apSnapshot- = \$snapshot->" . $propertyName . ";";
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
-            
+            print "\n" . "protected $" . $propertyName . ";";
         }
     }
 
@@ -136,35 +133,19 @@ class POSnapshotAssembler
 
     /**
      *
-     * @param GenericPO $obj
-     * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
+     * @deprecated
+     * @return LocationSnapshot;
      */
-    public static function createSnapshotFrom(GenericPO $obj)
+    public static function createFromSnapshotCode()
     {
-        if (! $obj instanceof GenericPO) {
-            return null;
-        }
-
-        $snapShot = new POSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
+        $itemSnapshot = new PODetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
-
         foreach ($itemProperites as $property) {
-
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
-                }
-            }
+            // print "\n" . "\$apSnapshot- = \$snapshot->" . $propertyName . ";";
+            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
         }
-
-        return $snapShot;
     }
 }

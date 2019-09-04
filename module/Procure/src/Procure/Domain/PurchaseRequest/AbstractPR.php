@@ -2,7 +2,9 @@
 namespace Procure\Domain\PurchaseRequest;
 
 use Application\Domain\Shared\AggregateRoot;
-use Procure\Application\DTO\Pr\PrDTOAssembler;
+use Procure\Domain\SnapshotAssembler;
+use Procure\Application\DTO\DTOFactory;
+use Procure\Application\DTO\Pr\PrDTO;
 
 /**
  *
@@ -11,6 +13,22 @@ use Procure\Application\DTO\Pr\PrDTOAssembler;
  */
 abstract class AbstractPR extends AggregateRoot
 {
+
+    protected $warehouseName;
+
+    protected $warehouseCode;
+
+    protected $createdByName;
+
+    protected $lastChangedByName;
+
+    protected $totalRows;
+
+    protected $totalActiveRows;
+
+    protected $maxRowNumber;
+
+    protected $completedRows;
 
     protected $id;
 
@@ -70,20 +88,20 @@ abstract class AbstractPR extends AggregateRoot
 
     /**
      *
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
+     * @return NULL|object
      */
     public function makeSnapshot()
     {
-        return PRSnapshotAssembler::createSnapshotFrom($this);
+        return SnapshotAssembler::createSnapshotFrom($this, new PRSnapshot());
     }
 
     /**
      *
-     * @return NULL|\Procure\Application\DTO\Pr\PrDTO
+     * @return NULL|object
      */
     public function makeDTO()
     {
-        return PrDTOAssembler::createDTOFrom($this);
+        return DTOFactory::createDTOFrom($this, new PrDTO());
     }
 
     /**
@@ -95,34 +113,19 @@ abstract class AbstractPR extends AggregateRoot
         if (! $snapshot instanceof PrSnapshot)
             return;
 
-        $this->id = $snapshot->id;
-        $this->prAutoNumber = $snapshot->prAutoNumber;
-        $this->prNumber = $snapshot->prNumber;
-        $this->prName = $snapshot->prName;
-        $this->keywords = $snapshot->keywords;
-        $this->remarks = $snapshot->remarks;
-        $this->createdOn = $snapshot->createdOn;
-        $this->lastChangeOn = $snapshot->lastChangeOn;
-        $this->isDraft = $snapshot->isDraft;
-        $this->isActive = $snapshot->isActive;
-        $this->status = $snapshot->status;
-        $this->token = $snapshot->token;
-        $this->checksum = $snapshot->checksum;
-        $this->submittedOn = $snapshot->submittedOn;
-        $this->currentState = $snapshot->currentState;
-        $this->totalRowManual = $snapshot->totalRowManual;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->docStatus = $snapshot->docStatus;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->docType = $snapshot->docType;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->uuid = $snapshot->uuid;
-        $this->createdBy = $snapshot->createdBy;
-        $this->lastChangeBy = $snapshot->lastChangeBy;
-        $this->department = $snapshot->department;
-        $this->company = $snapshot->company;
-        $this->warehouse = $snapshot->warehouse;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
+    }
+
+    /**
+     *
+     * @param PRDetailsSnapshot $snapshot
+     */
+    public function makeFromDetailsSnapshot(PRDetailsSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PRDetailsSnapshot)
+            return;
+
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
 
     /**
@@ -376,4 +379,76 @@ abstract class AbstractPR extends AggregateRoot
     {
         return $this->warehouse;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseName()
+    {
+        return $this->warehouseName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseCode()
+    {
+        return $this->warehouseCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedByName()
+    {
+        return $this->createdByName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastChangedByName()
+    {
+        return $this->lastChangedByName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalRows()
+    {
+        return $this->totalRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalActiveRows()
+    {
+        return $this->totalActiveRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMaxRowNumber()
+    {
+        return $this->maxRowNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompletedRows()
+    {
+        return $this->completedRows;
+    }
+
 }

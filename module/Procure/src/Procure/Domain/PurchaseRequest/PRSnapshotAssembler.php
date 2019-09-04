@@ -12,32 +12,31 @@ class PRSnapshotAssembler
 {
 
     /**
-     *
-     * @return LocationSnapshot;
+     * generete fields.
      */
-    public static function createFromSnapshotCode()
+    public static function createProperities()
     {
-        $itemSnapshot = new PRSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $entity = new PRDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
+            print "\n" . "protected $" . $propertyName . ";";
         }
     }
 
     /**
      *
      * @param array $data
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
+     * @return NULL|\Procure\Domain\PurchaseRequest\PRDetailsSnapshot
      */
     public static function createSnapshotFromArray($data)
     {
         if ($data == null)
             return null;
 
-        $snapShot = new PRSnapshot();
+        $snapShot = new PRDetailsSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
@@ -55,14 +54,14 @@ class PRSnapshotAssembler
     /**
      *
      * @param PrDTO $dto
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
+     * @return NULL|\Procure\Domain\PurchaseRequest\PRDetailsSnapshot
      */
     public static function createSnapshotFromDTO(PrDTO $dto)
     {
         if (! $dto instanceof PrDTO)
             return null;
 
-        $snapShot = new PRSnapshot();
+        $snapShot = new PRDetailsSnapshot();
 
         $reflectionClass = new \ReflectionClass(get_class($dto));
         $itemProperites = $reflectionClass->getProperties();
@@ -81,7 +80,7 @@ class PRSnapshotAssembler
      *
      * @param PRSnapshot $snapShot
      * @param PrDTO $dto
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
+     * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
      */
     public static function updateSnapshotFromDTO(PRSnapshot $snapShot, PrDTO $dto)
     {
@@ -134,35 +133,19 @@ class PRSnapshotAssembler
 
     /**
      *
-     * @param GenericPR $obj
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
+     * @deprecated
+     * @return LocationSnapshot;
      */
-    public static function createSnapshotFrom(GenericPR $obj)
+    public static function createFromSnapshotCode()
     {
-        if (! $obj instanceof GenericPR) {
-            return null;
-        }
-
-        $snapShot = new PRSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
+        $itemSnapshot = new PRDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
-
         foreach ($itemProperites as $property) {
-
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
-                }
-            }
+            // print "\n" . "\$apSnapshot- = \$snapshot->" . $propertyName . ";";
+            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
         }
-
-        return $snapShot;
     }
 }

@@ -11,59 +11,59 @@ use Application\Domain\Shared\AbstractValueObject;
 class PRSnapshot extends AbstractValueObject
 {
 
-    public $id;
+    protected $id;
 
-    public $prAutoNumber;
+    protected $prAutoNumber;
 
-    public $prNumber;
+    protected $prNumber;
 
-    public $prName;
+    protected $prName;
 
-    public $keywords;
+    protected $keywords;
 
-    public $remarks;
+    protected $remarks;
 
-    public $createdOn;
+    protected $createdOn;
 
-    public $lastChangeOn;
+    protected $lastChangeOn;
 
-    public $isDraft;
+    protected $isDraft;
 
-    public $isActive;
+    protected $isActive;
 
-    public $status;
+    protected $status;
 
-    public $token;
+    protected $token;
 
-    public $checksum;
+    protected $checksum;
 
-    public $submittedOn;
+    protected $submittedOn;
 
-    public $currentState;
+    protected $currentState;
 
-    public $totalRowManual;
+    protected $totalRowManual;
 
-    public $revisionNo;
+    protected $revisionNo;
 
-    public $docStatus;
+    protected $docStatus;
 
-    public $workflowStatus;
+    protected $workflowStatus;
 
-    public $transactionStatus;
+    protected $transactionStatus;
 
-    public $docType;
+    protected $docType;
 
-    public $reversalBlocked;
+    protected $reversalBlocked;
 
-    public $uuid;
+    protected $uuid;
 
-    public $createdBy;
+    protected $createdBy;
 
-    public $lastChangeBy;
+    protected $lastChangeBy;
 
-    public $department;
+    protected $department;
 
-    public $company;
+    protected $company;
 
-    public $warehouse;
+    protected $warehouse;
 }

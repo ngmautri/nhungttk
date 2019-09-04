@@ -16,4 +16,6 @@ Interface PRQueryRepositoryInterface
     public function getHeaderById($id, $token = null);
 
     public function getByUUID($uuid);
+
+    public function getPRDetailsById($id, $token = null);
 }

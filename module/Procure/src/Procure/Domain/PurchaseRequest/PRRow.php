@@ -1,424 +1,830 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
-use Procure\Application\DTO\Pr\PrRowDTOAssembler;
+use Procure\Application\DTO\DTOFactory;
+use Procure\Domain\SnapshotAssembler;
+use Procure\Application\DTO\Pr\PRRowDTO;
 
 /**
- * AP Row
+ * Document Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
 class PRRow
 {
-    protected $id;
-    protected $rowNumber;
-    protected $rowIdentifer;
-    protected $token;
-    protected $checksum;
-    protected $priority;
-    protected $rowName;
-    protected $rowDescription;
-    protected $rowCode;
-    protected $rowUnit;
-    protected $conversionFactor;
-    protected $conversionText;
-    protected $quantity;
-    protected $edt;
-    protected $isDraft;
-    protected $isActive;
-    protected $createdOn;
-    protected $remarks;
-    protected $lastChangeOn;
-    protected $currentState;
-    protected $faRemarks;
-    protected $revisionNo;
-    protected $docStatus;
-    protected $workflowStatus;
-    protected $transactionStatus;
-    protected $convertedStockQuantity;
-    protected $convertedStandardQuantiy;
-    protected $docQuantity;
-    protected $docUnit;
-    protected $docType;
-    protected $reversalBlocked;
-    protected $createdBy;
+
+    protected $prName;
+
+    protected $prYear;
+
+    protected $draftPOQuantity;
+
+    protected $postedPOQuantity;
+
+    protected $draftStockGRQuantity;
+
+    protected $draftPostedGRQuantity;
+
+    protected $draftGrQuantity;
+
+    protected $postedGrQuantity;
+
+    protected $confirmedGrBalance;
+
+    protected $openGrBalance;
+
+    protected $draftAPQuantity;
+
+    protected $postedAPQuantity;
+
+    protected $openAPQuantity;
+
+    protected $billedAmount;
+
     protected $pr;
+
+    protected $prToken;
+
+    protected $prChecksum;
+
+    protected $prNumber;
+
+    protected $prSysNumber;
+
+    protected $prRowIndentifer;
+
+    protected $prRowCode;
+
+    protected $prRowName;
+
+    protected $prRowConvertFactor;
+
+    protected $prRowUnit;
+
+    protected $prRowVersion;
+
+    protected $itemToken;
+
+    protected $itemCheckSum;
+
+    protected $itemName;
+
+    protected $itemName1;
+
+    protected $itemSKU;
+
+    protected $itemSKU1;
+
+    protected $itemSKU2;
+
+    protected $itemUUID;
+
+    protected $itemSysNumber;
+
+    protected $itemStandardUnit;
+
+    protected $itemStandardUnitName;
+
+    protected $itemVersion;
+
+    protected $lastVendorName;
+
+    protected $lastUnitPrice;
+
+    protected $lastCurrency;
+    
+    //==================
+
+    protected $id;
+
+    protected $rowNumber;
+
+    protected $rowIdentifer;
+
+    protected $token;
+
+    protected $checksum;
+
+    protected $priority;
+
+    protected $rowName;
+
+    protected $rowDescription;
+
+    protected $rowCode;
+
+    protected $rowUnit;
+
+    protected $conversionFactor;
+
+    protected $conversionText;
+
+    protected $quantity;
+
+    protected $edt;
+
+    protected $isDraft;
+
+    protected $isActive;
+
+    protected $createdOn;
+
+    protected $remarks;
+
+    protected $lastChangeOn;
+
+    protected $currentState;
+
+    protected $faRemarks;
+
+    protected $revisionNo;
+
+    protected $docStatus;
+
+    protected $workflowStatus;
+
+    protected $transactionStatus;
+
+    protected $convertedStockQuantity;
+
+    protected $convertedStandardQuantiy;
+
+    protected $docQuantity;
+
+    protected $docUnit;
+
+    protected $docType;
+
+    protected $reversalBlocked;
+
+    protected $createdBy;
+
     protected $item;
+
     protected $project;
+
     protected $lastChangeBy;
+
     protected $docUom;
+
     protected $warehouse;
 
     /**
      *
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRrowSnapshot
+     * @return NULL|object
      */
     public function makeSnapshot()
     {
-        return PRRowSnapshotAssembler::createSnapshotFrom($this);
+        return SnapshotAssembler::createSnapshotFrom($this, new PRRowSnapshot());
     }
 
     /**
      *
-     * @return NULL|\Procure\Application\DTO\Pr\PrRowDTO
+     * @return NULL|object
      */
     public function makeDTO()
     {
-        return PrRowDTOAssembler::createDTOFrom($this);
+        return DTOFactory::createDTOFrom($this, new PRRowDTO());
     }
 
     /**
      *
-     * @param PrRowSnapshot $snapshot
+     * @param PrSnapshot $snapshot
      */
     public function makeFromSnapshot(PrRowSnapshot $snapshot)
     {
         if (! $snapshot instanceof PrRowSnapshot)
             return;
 
-        $this->id = $snapshot->id;
-        $this->rowNumber = $snapshot->rowNumber;
-        $this->rowIdentifer = $snapshot->rowIdentifer;
-        $this->token = $snapshot->token;
-        $this->checksum = $snapshot->checksum;
-        $this->priority = $snapshot->priority;
-        $this->rowName = $snapshot->rowName;
-        $this->rowDescription = $snapshot->rowDescription;
-        $this->rowCode = $snapshot->rowCode;
-        $this->rowUnit = $snapshot->rowUnit;
-        $this->conversionFactor = $snapshot->conversionFactor;
-        $this->conversionText = $snapshot->conversionText;
-        $this->quantity = $snapshot->quantity;
-        $this->edt = $snapshot->edt;
-        $this->isDraft = $snapshot->isDraft;
-        $this->isActive = $snapshot->isActive;
-        $this->createdOn = $snapshot->createdOn;
-        $this->remarks = $snapshot->remarks;
-        $this->lastChangeOn = $snapshot->lastChangeOn;
-        $this->currentState = $snapshot->currentState;
-        $this->faRemarks = $snapshot->faRemarks;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->docStatus = $snapshot->docStatus;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->convertedStockQuantity = $snapshot->convertedStockQuantity;
-        $this->convertedStandardQuantiy = $snapshot->convertedStandardQuantiy;
-        $this->docQuantity = $snapshot->docQuantity;
-        $this->docUnit = $snapshot->docUnit;
-        $this->docType = $snapshot->docType;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->createdBy = $snapshot->createdBy;
-        $this->pr = $snapshot->pr;
-        $this->item = $snapshot->item;
-        $this->project = $snapshot->project;
-        $this->lastChangeBy = $snapshot->lastChangeBy;
-        $this->docUom = $snapshot->docUom;
-        $this->warehouse = $snapshot->warehouse;
-    }
-    
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
 
     /**
-     * @param mixed $rowNumber
+     *
+     * @param PRDetailsSnapshot $snapshot
      */
-    public function setRowNumber($rowNumber)
+    public function makeFromDetailsSnapshot(PRRowDetailsSnapshot $snapshot)
     {
-        $this->rowNumber = $rowNumber;
+        if (! $snapshot instanceof PRRowDetailsSnapshot)
+            return;
+            
+            SnapshotAssembler::makeFromSnapshot($this, $snapshot);
+    }
+    /**
+     * @return mixed
+     */
+    public function getPrName()
+    {
+        return $this->prName;
     }
 
     /**
-     * @param mixed $rowIdentifer
+     * @return mixed
      */
-    public function setRowIdentifer($rowIdentifer)
+    public function getPrYear()
     {
-        $this->rowIdentifer = $rowIdentifer;
+        return $this->prYear;
     }
 
     /**
-     * @param mixed $token
+     * @return mixed
      */
-    public function setToken($token)
+    public function getDraftPOQuantity()
     {
-        $this->token = $token;
+        return $this->draftPOQuantity;
     }
 
     /**
-     * @param mixed $checksum
+     * @return mixed
      */
-    public function setChecksum($checksum)
+    public function getPostedPOQuantity()
     {
-        $this->checksum = $checksum;
+        return $this->postedPOQuantity;
     }
 
     /**
-     * @param mixed $priority
+     * @return mixed
      */
-    public function setPriority($priority)
+    public function getDraftStockGRQuantity()
     {
-        $this->priority = $priority;
+        return $this->draftStockGRQuantity;
     }
 
     /**
-     * @param mixed $rowName
+     * @return mixed
      */
-    public function setRowName($rowName)
+    public function getDraftPostedGRQuantity()
     {
-        $this->rowName = $rowName;
+        return $this->draftPostedGRQuantity;
     }
 
     /**
-     * @param mixed $rowDescription
+     * @return mixed
      */
-    public function setRowDescription($rowDescription)
+    public function getDraftGrQuantity()
     {
-        $this->rowDescription = $rowDescription;
+        return $this->draftGrQuantity;
     }
 
     /**
-     * @param mixed $rowCode
+     * @return mixed
      */
-    public function setRowCode($rowCode)
+    public function getPostedGrQuantity()
     {
-        $this->rowCode = $rowCode;
+        return $this->postedGrQuantity;
     }
 
     /**
-     * @param mixed $rowUnit
+     * @return mixed
      */
-    public function setRowUnit($rowUnit)
+    public function getConfirmedGrBalance()
     {
-        $this->rowUnit = $rowUnit;
+        return $this->confirmedGrBalance;
     }
 
     /**
-     * @param mixed $conversionFactor
+     * @return mixed
      */
-    public function setConversionFactor($conversionFactor)
+    public function getOpenGrBalance()
     {
-        $this->conversionFactor = $conversionFactor;
+        return $this->openGrBalance;
     }
 
     /**
-     * @param mixed $conversionText
+     * @return mixed
      */
-    public function setConversionText($conversionText)
+    public function getDraftAPQuantity()
     {
-        $this->conversionText = $conversionText;
+        return $this->draftAPQuantity;
     }
 
     /**
-     * @param mixed $quantity
+     * @return mixed
      */
-    public function setQuantity($quantity)
+    public function getPostedAPQuantity()
     {
-        $this->quantity = $quantity;
+        return $this->postedAPQuantity;
     }
 
     /**
-     * @param mixed $edt
+     * @return mixed
      */
-    public function setEdt($edt)
+    public function getOpenAPQuantity()
     {
-        $this->edt = $edt;
+        return $this->openAPQuantity;
     }
 
     /**
-     * @param mixed $isDraft
+     * @return mixed
      */
-    public function setIsDraft($isDraft)
+    public function getBilledAmount()
     {
-        $this->isDraft = $isDraft;
+        return $this->billedAmount;
     }
 
     /**
-     * @param mixed $isActive
+     * @return mixed
      */
-    public function setIsActive($isActive)
+    public function getPr()
     {
-        $this->isActive = $isActive;
+        return $this->pr;
     }
 
     /**
-     * @param mixed $createdOn
+     * @return mixed
      */
-    public function setCreatedOn($createdOn)
+    public function getPrToken()
     {
-        $this->createdOn = $createdOn;
+        return $this->prToken;
     }
 
     /**
-     * @param mixed $remarks
+     * @return mixed
      */
-    public function setRemarks($remarks)
+    public function getPrChecksum()
     {
-        $this->remarks = $remarks;
+        return $this->prChecksum;
     }
 
     /**
-     * @param mixed $lastChangeOn
+     * @return mixed
      */
-    public function setLastChangeOn($lastChangeOn)
+    public function getPrNumber()
     {
-        $this->lastChangeOn = $lastChangeOn;
+        return $this->prNumber;
     }
 
     /**
-     * @param mixed $currentState
+     * @return mixed
      */
-    public function setCurrentState($currentState)
+    public function getPrSysNumber()
     {
-        $this->currentState = $currentState;
+        return $this->prSysNumber;
     }
 
     /**
-     * @param mixed $faRemarks
+     * @return mixed
      */
-    public function setFaRemarks($faRemarks)
+    public function getPrRowIndentifer()
     {
-        $this->faRemarks = $faRemarks;
+        return $this->prRowIndentifer;
     }
 
     /**
-     * @param mixed $revisionNo
+     * @return mixed
      */
-    public function setRevisionNo($revisionNo)
+    public function getPrRowCode()
     {
-        $this->revisionNo = $revisionNo;
+        return $this->prRowCode;
     }
 
     /**
-     * @param mixed $docStatus
+     * @return mixed
      */
-    public function setDocStatus($docStatus)
+    public function getPrRowName()
     {
-        $this->docStatus = $docStatus;
+        return $this->prRowName;
     }
 
     /**
-     * @param mixed $workflowStatus
+     * @return mixed
      */
-    public function setWorkflowStatus($workflowStatus)
+    public function getPrRowConvertFactor()
     {
-        $this->workflowStatus = $workflowStatus;
+        return $this->prRowConvertFactor;
     }
 
     /**
-     * @param mixed $transactionStatus
+     * @return mixed
      */
-    public function setTransactionStatus($transactionStatus)
+    public function getPrRowUnit()
     {
-        $this->transactionStatus = $transactionStatus;
+        return $this->prRowUnit;
     }
 
     /**
-     * @param mixed $convertedStockQuantity
+     * @return mixed
      */
-    public function setConvertedStockQuantity($convertedStockQuantity)
+    public function getPrRowVersion()
     {
-        $this->convertedStockQuantity = $convertedStockQuantity;
+        return $this->prRowVersion;
     }
 
     /**
-     * @param mixed $convertedStandardQuantiy
+     * @return mixed
      */
-    public function setConvertedStandardQuantiy($convertedStandardQuantiy)
+    public function getItemToken()
     {
-        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
+        return $this->itemToken;
     }
 
     /**
-     * @param mixed $docQuantity
+     * @return mixed
      */
-    public function setDocQuantity($docQuantity)
+    public function getItemCheckSum()
     {
-        $this->docQuantity = $docQuantity;
+        return $this->itemCheckSum;
     }
 
     /**
-     * @param mixed $docUnit
+     * @return mixed
      */
-    public function setDocUnit($docUnit)
+    public function getItemName()
     {
-        $this->docUnit = $docUnit;
+        return $this->itemName;
     }
 
     /**
-     * @param mixed $docType
+     * @return mixed
      */
-    public function setDocType($docType)
+    public function getItemName1()
     {
-        $this->docType = $docType;
+        return $this->itemName1;
     }
 
     /**
-     * @param mixed $reversalBlocked
+     * @return mixed
      */
-    public function setReversalBlocked($reversalBlocked)
+    public function getItemSKU()
     {
-        $this->reversalBlocked = $reversalBlocked;
+        return $this->itemSKU;
     }
 
     /**
-     * @param mixed $createdBy
+     * @return mixed
      */
-    public function setCreatedBy($createdBy)
+    public function getItemSKU1()
     {
-        $this->createdBy = $createdBy;
+        return $this->itemSKU1;
     }
 
     /**
-     * @param mixed $pr
+     * @return mixed
      */
-    public function setPr($pr)
+    public function getItemSKU2()
     {
-        $this->pr = $pr;
+        return $this->itemSKU2;
     }
 
     /**
-     * @param mixed $item
+     * @return mixed
      */
-    public function setItem($item)
+    public function getItemUUID()
     {
-        $this->item = $item;
+        return $this->itemUUID;
     }
 
     /**
-     * @param mixed $project
+     * @return mixed
      */
-    public function setProject($project)
+    public function getItemSysNumber()
     {
-        $this->project = $project;
+        return $this->itemSysNumber;
     }
 
     /**
-     * @param mixed $lastChangeBy
+     * @return mixed
      */
-    public function setLastChangeBy($lastChangeBy)
+    public function getItemStandardUnit()
     {
-        $this->lastChangeBy = $lastChangeBy;
+        return $this->itemStandardUnit;
     }
 
     /**
-     * @param mixed $docUom
+     * @return mixed
      */
-    public function setDocUom($docUom)
+    public function getItemStandardUnitName()
     {
-        $this->docUom = $docUom;
+        return $this->itemStandardUnitName;
     }
 
     /**
-     * @param mixed $warehouse
+     * @return mixed
      */
-    public function setWarehouse($warehouse)
+    public function getItemVersion()
     {
-        $this->warehouse = $warehouse;
+        return $this->itemVersion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastVendorName()
+    {
+        return $this->lastVendorName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastUnitPrice()
+    {
+        return $this->lastUnitPrice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastCurrency()
+    {
+        return $this->lastCurrency;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowNumber()
+    {
+        return $this->rowNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowIdentifer()
+    {
+        return $this->rowIdentifer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowName()
+    {
+        return $this->rowName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowDescription()
+    {
+        return $this->rowDescription;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowCode()
+    {
+        return $this->rowCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowUnit()
+    {
+        return $this->rowUnit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConversionFactor()
+    {
+        return $this->conversionFactor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConversionText()
+    {
+        return $this->conversionText;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEdt()
+    {
+        return $this->edt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFaRemarks()
+    {
+        return $this->faRemarks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConvertedStockQuantity()
+    {
+        return $this->convertedStockQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConvertedStandardQuantiy()
+    {
+        return $this->convertedStandardQuantiy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocQuantity()
+    {
+        return $this->docQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUnit()
+    {
+        return $this->docUnit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocType()
+    {
+        return $this->docType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReversalBlocked()
+    {
+        return $this->reversalBlocked;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUom()
+    {
+        return $this->docUom;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
     }
 
 }

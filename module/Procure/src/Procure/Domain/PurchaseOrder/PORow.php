@@ -4,6 +4,8 @@ namespace Procure\Domain\PurchaseOrder;
 use Procure\Application\DTO\Po\PORowDTOAssembler;
 use Procure\Application\DTO\Po\PORowForGridDTO;
 use Procure\Application\DTO\DTOFactory;
+use Procure\Domain\SnapshotAssembler;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
 
 /**
  * AP Row
@@ -144,11 +146,11 @@ class PORow
     protected $openAPQuantity;
 
     protected $billedAmount;
-    
+
     protected $pr;
-    
+
     protected $prToken;
-    
+
     protected $prChecksum;
 
     protected $prNumber;
@@ -215,11 +217,13 @@ class PORow
      */
     public function makeDetailsDTO()
     {
-        return PORowDTOAssembler::createDetailsDTOFrom($this);
+        $dto = new PORowDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        return $dto;
     }
 
     /**
-     * 
+     *
      * @return NULL|object
      */
     public function makeDTOForGrid()
@@ -238,63 +242,7 @@ class PORow
         if (! $snapshot instanceof PORowSnapshot)
             return;
 
-        $this->id = $snapshot->id;
-        $this->rowNumber = $snapshot->rowNumber;
-        $this->token = $snapshot->token;
-        $this->quantity = $snapshot->quantity;
-        $this->unitPrice = $snapshot->unitPrice;
-        $this->netAmount = $snapshot->netAmount;
-        $this->unit = $snapshot->unit;
-        $this->itemUnit = $snapshot->itemUnit;
-        $this->conversionFactor = $snapshot->conversionFactor;
-        $this->converstionText = $snapshot->converstionText;
-        $this->taxRate = $snapshot->taxRate;
-        $this->remarks = $snapshot->remarks;
-        $this->isActive = $snapshot->isActive;
-        $this->createdOn = $snapshot->createdOn;
-        $this->lastchangeOn = $snapshot->lastchangeOn;
-        $this->currentState = $snapshot->currentState;
-        $this->vendorItemCode = $snapshot->vendorItemCode;
-        $this->traceStock = $snapshot->traceStock;
-        $this->grossAmount = $snapshot->grossAmount;
-        $this->taxAmount = $snapshot->taxAmount;
-        $this->faRemarks = $snapshot->faRemarks;
-        $this->rowIdentifer = $snapshot->rowIdentifer;
-        $this->discountRate = $snapshot->discountRate;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->targetObject = $snapshot->targetObject;
-        $this->sourceObject = $snapshot->sourceObject;
-        $this->targetObjectId = $snapshot->targetObjectId;
-        $this->sourceObjectId = $snapshot->sourceObjectId;
-        $this->docStatus = $snapshot->docStatus;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->isPosted = $snapshot->isPosted;
-        $this->isDraft = $snapshot->isDraft;
-        $this->exwUnitPrice = $snapshot->exwUnitPrice;
-        $this->totalExwPrice = $snapshot->totalExwPrice;
-        $this->convertFactorPurchase = $snapshot->convertFactorPurchase;
-        $this->convertedPurchaseQuantity = $snapshot->convertedPurchaseQuantity;
-        $this->convertedStandardQuantity = $snapshot->convertedStandardQuantity;
-        $this->convertedStockQuantity = $snapshot->convertedStockQuantity;
-        $this->convertedStandardUnitPrice = $snapshot->convertedStandardUnitPrice;
-        $this->convertedStockUnitPrice = $snapshot->convertedStockUnitPrice;
-        $this->docQuantity = $snapshot->docQuantity;
-        $this->docUnit = $snapshot->docUnit;
-        $this->docUnitPrice = $snapshot->docUnitPrice;
-        $this->convertedPurchaseUnitPrice = $snapshot->convertedPurchaseUnitPrice;
-        $this->docType = $snapshot->docType;
-        $this->descriptionText = $snapshot->descriptionText;
-        $this->vendorItemName = $snapshot->vendorItemName;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->invoice = $snapshot->invoice;
-        $this->lastchangeBy = $snapshot->lastchangeBy;
-        $this->prRow = $snapshot->prRow;
-        $this->createdBy = $snapshot->createdBy;
-        $this->warehouse = $snapshot->warehouse;
-        $this->po = $snapshot->po;
-        $this->item = $snapshot->item;
-        $this->docUom = $snapshot->docUom;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
 
     /**
@@ -303,103 +251,10 @@ class PORow
      */
     public function makeFromDetailsSnapshot(PORowDetailsSnapshot $snapshot)
     {
-        if (! $snapshot instanceof PORowSnapshot)
+        if (! $snapshot instanceof PORowDetailsSnapshot)
             return;
 
-        $this->draftGrQuantity = $snapshot->draftGrQuantity;
-        $this->postedGrQuantity = $snapshot->postedGrQuantity;
-        $this->confirmedGrBalance = $snapshot->confirmedGrBalance;
-        $this->openGrBalance = $snapshot->openGrBalance;
-        $this->draftAPQuantity = $snapshot->draftAPQuantity;
-        $this->postedAPQuantity = $snapshot->postedAPQuantity;
-        $this->openAPQuantity = $snapshot->openAPQuantity;
-        $this->billedAmount = $snapshot->billedAmount;
-        $this->pr = $snapshot->pr;
-        
-        $this->prToken = $snapshot->prToken;
-        $this->prChecksum = $snapshot->prChecksum;
-        
-        $this->prNumber = $snapshot->prNumber;
-        $this->prSysNumber = $snapshot->prSysNumber;
-        $this->prRowIndentifer = $snapshot->prRowIndentifer;
-        $this->prRowCode = $snapshot->prRowCode;
-        $this->prRowName = $snapshot->prRowName;
-        $this->prRowConvertFactor = $snapshot->prRowConvertFactor;
-        $this->prRowUnit = $snapshot->prRowUnit;
-        $this->prRowVersion = $snapshot->prRowVersion;
-
-        $this->itemToken = $snapshot->itemToken;
-        $this->itemCheckSum = $snapshot->itemCheckSum;
-
-        $this->itemName = $snapshot->itemName;
-        $this->itemName1 = $snapshot->itemName1;
-
-        $this->itemSKU = $snapshot->itemSKU;
-        $this->itemSKU1 = $snapshot->itemSKU1;
-        $this->itemSKU2 = $snapshot->itemSKU2;
-        $this->itemUUID = $snapshot->itemUUID;
-        $this->itemSysNumber = $snapshot->itemSysNumber;
-        $this->itemStandardUnit = $snapshot->itemStandardUnit;
-        $this->itemStandardUnitName = $snapshot->itemStandardUnitName;
-        $this->itemVersion = $snapshot->itemVersion;
-
-        $this->id = $snapshot->id;
-        $this->rowNumber = $snapshot->rowNumber;
-        $this->token = $snapshot->token;
-        $this->quantity = $snapshot->quantity;
-        $this->unitPrice = $snapshot->unitPrice;
-        $this->netAmount = $snapshot->netAmount;
-        $this->unit = $snapshot->unit;
-        $this->itemUnit = $snapshot->itemUnit;
-        $this->conversionFactor = $snapshot->conversionFactor;
-        $this->converstionText = $snapshot->converstionText;
-        $this->taxRate = $snapshot->taxRate;
-        $this->remarks = $snapshot->remarks;
-        $this->isActive = $snapshot->isActive;
-        $this->createdOn = $snapshot->createdOn;
-        $this->lastchangeOn = $snapshot->lastchangeOn;
-        $this->currentState = $snapshot->currentState;
-        $this->vendorItemCode = $snapshot->vendorItemCode;
-        $this->traceStock = $snapshot->traceStock;
-        $this->grossAmount = $snapshot->grossAmount;
-        $this->taxAmount = $snapshot->taxAmount;
-        $this->faRemarks = $snapshot->faRemarks;
-        $this->rowIdentifer = $snapshot->rowIdentifer;
-        $this->discountRate = $snapshot->discountRate;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->targetObject = $snapshot->targetObject;
-        $this->sourceObject = $snapshot->sourceObject;
-        $this->targetObjectId = $snapshot->targetObjectId;
-        $this->sourceObjectId = $snapshot->sourceObjectId;
-        $this->docStatus = $snapshot->docStatus;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->isPosted = $snapshot->isPosted;
-        $this->isDraft = $snapshot->isDraft;
-        $this->exwUnitPrice = $snapshot->exwUnitPrice;
-        $this->totalExwPrice = $snapshot->totalExwPrice;
-        $this->convertFactorPurchase = $snapshot->convertFactorPurchase;
-        $this->convertedPurchaseQuantity = $snapshot->convertedPurchaseQuantity;
-        $this->convertedStandardQuantity = $snapshot->convertedStandardQuantity;
-        $this->convertedStockQuantity = $snapshot->convertedStockQuantity;
-        $this->convertedStandardUnitPrice = $snapshot->convertedStandardUnitPrice;
-        $this->convertedStockUnitPrice = $snapshot->convertedStockUnitPrice;
-        $this->docQuantity = $snapshot->docQuantity;
-        $this->docUnit = $snapshot->docUnit;
-        $this->docUnitPrice = $snapshot->docUnitPrice;
-        $this->convertedPurchaseUnitPrice = $snapshot->convertedPurchaseUnitPrice;
-        $this->docType = $snapshot->docType;
-        $this->descriptionText = $snapshot->descriptionText;
-        $this->vendorItemName = $snapshot->vendorItemName;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->invoice = $snapshot->invoice;
-        $this->lastchangeBy = $snapshot->lastchangeBy;
-        $this->prRow = $snapshot->prRow;
-        $this->createdBy = $snapshot->createdBy;
-        $this->warehouse = $snapshot->warehouse;
-        $this->po = $snapshot->po;
-        $this->item = $snapshot->item;
-        $this->docUom = $snapshot->docUom;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
 
     /**

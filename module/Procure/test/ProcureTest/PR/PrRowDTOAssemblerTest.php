@@ -29,7 +29,7 @@ class PrRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PrRowDTOAssembler::createDTOProperities();
+            PrRowDTOAssembler::createGetMapping();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

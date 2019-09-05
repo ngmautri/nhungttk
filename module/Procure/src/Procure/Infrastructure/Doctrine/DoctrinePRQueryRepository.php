@@ -5,121 +5,95 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
+use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\PurchaseRequest\PRQueryRepositoryInterface;
 use Procure\Domain\PurchaseRequest\PRRowDetailsSnapshot;
 use Procure\Domain\PurchaseRequest\PRDetailsSnapshot;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\GenericPR;
+use Procure\Infrastructure\Doctrine\SQL\PrSQL;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DoctrinePRQueryRepository implements PRQueryRepositoryInterface
+class DoctrinePRQueryRepository  extends AbstractDoctrineRepository implements PRQueryRepositoryInterface
 {
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseRequest\PRQueryRepositoryInterface::getPRDetailsById()
      */
     public function getPRDetailsById($id, $token = null)
     {
         $rows = $this->getPrRowsDetails($id);
-        
+
         if (count($rows) == 0) {
             return;
         }
-        
+
         /**
          *
          * @var \Application\Entity\NmtProcurePr $pr ;
          */
-        $po = null;
+        $pr = null;
         $completed = True;
         $docRowsArray = array();
         $totalRows = 0;
         $totalActiveRows = 0;
-        $netAmount = 0;
-        $taxAmount = 0;
-        $grossAmount = 0;
-        $discountAmount = 0;
-        $billedAmount = 0;
         $completedRows = 0;
-        
+
         foreach ($rows as $r) {
-            
-            /**@var \Application\Entity\NmtProcurePrRow $prRowEntity ;*/
-            $pr_row = $r[0];
-            
+
+            /**@var \Application\Entity\NmtProcurePrRow $rowEntity ;*/
+            $rowEntity = $r[0];
+
             if ($pr == null) {
-                $pr = $pr_row->getPR();
+                $pr = $rowEntity->getPR();
             }
-            
-            $rowDetailSnapshot = $this->createRowDetailSnapshot($pr_row);
-            
+
+            $rowDetailSnapshot = $this->createRowDetailsSnapshot($rowEntity);
+
             if ($rowDetailSnapshot == null) {
                 continue;
             }
-            
-            if ($r['open_gr_qty'] == 0 and $r['open_ap_qty'] == 0) {
-                $rowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
-                $completedRows ++;
-            } else {
-                $completed = false;
-                $rowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
-            }
-            
-            $rowDetailSnapshot->draftGrQuantity = $r["draft_gr_qty"];
-            $rowDetailSnapshot->postedGrQuantity = $r["posted_gr_qty"];
-            $rowDetailSnapshot->confirmedGrBalance = $r["confirmed_gr_balance"];
-            $rowDetailSnapshot->openGrBalance = $r["open_gr_qty"];
-            $rowDetailSnapshot->draftAPQuantity = $r["draft_ap_qty"];
-            $rowDetailSnapshot->postedAPQuantity = $r["posted_ap_qty"];
-            $rowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
-            $rowDetailSnapshot->billedAmount = $r["billed_amount"];
-            
+
             $totalRows ++;
             $totalActiveRows ++;
-            $netAmount = $netAmount + $rowDetailSnapshot->netAmount;
-            $taxAmount = $taxAmount + $rowDetailSnapshot->taxAmount;
-            $grossAmount = $grossAmount + $rowDetailSnapshot->grossAmount;
-            $billedAmount = $billedAmount + $rowDetailSnapshot->billedAmount;
-            
+
+            $rowDetailSnapshot->draftPOQuantity = $r['po_qty'];
+            $rowDetailSnapshot->postedPOQuantity = $r['posted_po_qty'];
+            $rowDetailSnapshot->draftGrQuantity = $r['gr_qty'];
+            $rowDetailSnapshot->postedGrQuantity = $r['posted_gr_qty'];
+            $rowDetailSnapshot->draftStockGRQuantity = $r['stock_gr_qty'];
+            $rowDetailSnapshot->postedStockGRQuantity = $r['posted_stock_gr_qty'];
+            $rowDetailSnapshot->draftAPQuantity = $r['ap_qty'];
+            $rowDetailSnapshot->postedAPQuantity = $r['posted_ap_qty'];
+            $rowDetailSnapshot->prName = $r['pr_name'];
+            $rowDetailSnapshot->prYear = $r['pr_year'];
+            $rowDetailSnapshot->itemName = $r['item_name'];
+            $rowDetailSnapshot->lastVendorName = $r['vendor_name'];
+            $rowDetailSnapshot->lastUnitPrice = $r['unit_price'];
+            $rowDetailSnapshot->lastCurrency = $r['currency_iso3'];
+
             $docRow = new PRRow();
             $docRow->makeFromDetailsSnapshot($rowDetailSnapshot);
             $docRowsArray[] = $docRow;
         }
-        
-        $poDetailsSnapshot = $this->createPODetailSnapshot($po);
-        if ($poDetailsSnapshot == null) {
+
+        $detailsSnapshot = $this->createPRDetailSnapshot($pr);
+        if ($detailsSnapshot == null) {
             return null;
         }
-        
-        if ($completed == true) {
-            $poDetailsSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
-        } else {
-            $poDetailsSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
-        }
-        
-        $poDetailsSnapshot->totalRows = $totalRows;
-        $poDetailsSnapshot->totalActiveRows = $totalActiveRows;
-        $poDetailsSnapshot->netAmount = $netAmount;
-        $poDetailsSnapshot->taxAmount = $taxAmount;
-        $poDetailsSnapshot->grossAmount = $grossAmount;
-        $poDetailsSnapshot->discountAmount = $discountAmount;
-        $poDetailsSnapshot->billedAmount = $billedAmount;
-        $poDetailsSnapshot->completedRows = $completedRows;
-        
         $rootEntity = new GenericPR();
-        $rootEntity->makeFromDetailsSnapshot($poDetailsSnapshot);
-        
+        $rootEntity->makeFromDetailsSnapshot($detailsSnapshot);
+
         $rootEntity->setDocRows($docRowsArray);
         return $rootEntity;
     }
-    
-    
+
     public function getHeaderById($id, $token = null)
     {}
 
@@ -137,14 +111,36 @@ class DoctrinePRQueryRepository implements PRQueryRepositoryInterface
      * @param int $id
      * @return array|NULL
      */
-    private function getPrRowsDetails($id)
+    private function getPrRowsDetails($prId, $sort_by = null, $sort = "ASC")
     {
-        $sql = "";
+        $sql1 = PrSQL::PR_ROW_SQL_1;
+
+        $sql_tmp1 = ' AND nmt_procure_pr_row.pr_id=' . $prId;
+
+        switch ($sort_by) {
+            case "itemName":
+                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+
+            case "prNumber":
+                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+                break;
+
+            case "balance":
+                $sql_tmp1 = $sql_tmp1 . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.posted_gr_qty,0) " . $sort;
+                break;
+        }
+
+        $sql = sprintf($sql1, $prId, $prId, $prId, $prId, $sql_tmp1);
+
+        $sql = $sql . ";";
+
+        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            
+
             $rsm->addScalarResult("pr_qty", "pr_qty");
 
             $rsm->addScalarResult("po_qty", "po_qty");
@@ -164,9 +160,7 @@ class DoctrinePRQueryRepository implements PRQueryRepositoryInterface
 
             $rsm->addScalarResult("item_name", "item_name");
             $rsm->addScalarResult("vendor_name", "vendor_name");
-            
             $rsm->addScalarResult("unit_price", "unit_price");
-            
             $rsm->addScalarResult("currency_iso3", "currency_iso3");
 
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);

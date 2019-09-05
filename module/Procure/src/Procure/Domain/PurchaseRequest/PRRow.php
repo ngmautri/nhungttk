@@ -15,159 +15,81 @@ class PRRow
 {
 
     protected $prName;
-
     protected $prYear;
-
     protected $draftPOQuantity;
-
     protected $postedPOQuantity;
-
     protected $draftStockGRQuantity;
-
-    protected $draftPostedGRQuantity;
-
+    protected $postedStockGRQuantity;
     protected $draftGrQuantity;
-
     protected $postedGrQuantity;
-
     protected $confirmedGrBalance;
-
     protected $openGrBalance;
-
     protected $draftAPQuantity;
-
     protected $postedAPQuantity;
-
     protected $openAPQuantity;
-
     protected $billedAmount;
-
     protected $pr;
-
     protected $prToken;
-
     protected $prChecksum;
-
     protected $prNumber;
-
     protected $prSysNumber;
-
     protected $prRowIndentifer;
-
     protected $prRowCode;
-
     protected $prRowName;
-
     protected $prRowConvertFactor;
-
     protected $prRowUnit;
-
     protected $prRowVersion;
-
     protected $itemToken;
-
     protected $itemCheckSum;
-
     protected $itemName;
-
     protected $itemName1;
-
     protected $itemSKU;
-
     protected $itemSKU1;
-
     protected $itemSKU2;
-
     protected $itemUUID;
-
     protected $itemSysNumber;
-
     protected $itemStandardUnit;
-
     protected $itemStandardUnitName;
-
     protected $itemVersion;
-
     protected $lastVendorName;
-
     protected $lastUnitPrice;
-
     protected $lastCurrency;
-    
-    //==================
-
     protected $id;
-
     protected $rowNumber;
-
     protected $rowIdentifer;
-
     protected $token;
-
     protected $checksum;
-
     protected $priority;
-
     protected $rowName;
-
     protected $rowDescription;
-
     protected $rowCode;
-
     protected $rowUnit;
-
     protected $conversionFactor;
-
     protected $conversionText;
-
     protected $quantity;
-
     protected $edt;
-
     protected $isDraft;
-
     protected $isActive;
-
     protected $createdOn;
-
     protected $remarks;
-
     protected $lastChangeOn;
-
     protected $currentState;
-
     protected $faRemarks;
-
     protected $revisionNo;
-
     protected $docStatus;
-
     protected $workflowStatus;
-
     protected $transactionStatus;
-
     protected $convertedStockQuantity;
-
     protected $convertedStandardQuantiy;
-
     protected $docQuantity;
-
     protected $docUnit;
-
     protected $docType;
-
     protected $reversalBlocked;
-
     protected $createdBy;
-
     protected $item;
-
     protected $project;
-
     protected $lastChangeBy;
-
     protected $docUom;
-
     protected $warehouse;
 
     /**
@@ -254,9 +176,9 @@ class PRRow
     /**
      * @return mixed
      */
-    public function getDraftPostedGRQuantity()
+    public function getPostedStockGRQuantity()
     {
-        return $this->draftPostedGRQuantity;
+        return $this->postedStockGRQuantity;
     }
 
     /**
@@ -827,4 +749,4 @@ class PRRow
         return $this->warehouse;
     }
 
-}
+  }

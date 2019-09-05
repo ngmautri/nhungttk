@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Infrastructure\Persistence\SQL;
+namespace Procure\Infrastructure\Doctrine\SQL;
 
 /**
  *
@@ -8,14 +8,15 @@ namespace Procure\Infrastructure\Persistence\SQL;
  */
 class PrSQL
 {
+
     const PR_ROW_SQL = "
 SELECT
 	nmt_procure_pr.pr_name,
    nmt_procure_pr.created_on as pr_created_on,
-  
+        
    year(nmt_procure_pr.submitted_on) as pr_year,
     nmt_inventory_item.item_name,
-
+        
 	nmt_procure_pr_row.*,
 	IFNULL(nmt_procure_pr_row.quantity,0) AS pr_qty,
     IFNULL(nmt_procure_po_row.po_qty,0) AS po_qty,
@@ -29,13 +30,13 @@ SELECT
         
     IFNULL(fin_vendor_invoice_row.ap_qty,0) AS ap_qty,
     IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty,
-    
+        
     last_ap.vendor_name as vendor_name,
     last_ap.unit_price as unit_price,
-    last_ap.currency_iso3 as currency_iso3   
+    last_ap.currency_iso3 as currency_iso3
         
 FROM nmt_procure_pr_row
-
+        
 LEFT JOIN nmt_procure_pr
 ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
         
@@ -52,7 +53,7 @@ LEFT JOIN
         
 	JOIN nmt_procure_po_row
 	ON nmt_procure_po_row.pr_row_id = nmt_procure_pr_row.id
-	WHERE 1 
+	WHERE 1
 	GROUP BY nmt_procure_po_row.pr_row_id
         
 )
@@ -106,8 +107,8 @@ LEFT JOIN
 )
 AS nmt_inventory_trx
 ON nmt_inventory_trx.pr_row_id = nmt_procure_pr_row.id
-
-
+        
+        
 left  join
 (
 	SELECT
@@ -117,14 +118,14 @@ left  join
 	 fin_vendor_invoice.currency_iso3
 	FROM
 	fin_vendor_invoice_row
-
+        
 	INNER JOIN
 	(
 	SELECT
 		MAX(fin_vendor_invoice_row.id) AS max_id,
 		fin_vendor_invoice_row.item_id AS item_id
 		FROM fin_vendor_invoice_row
-
+        
 	INNER JOIN fin_vendor_invoice ON
 	fin_vendor_invoice_row.invoice_id = fin_vendor_invoice.id
 	WHERE fin_vendor_invoice.doc_status='posted'
@@ -132,16 +133,16 @@ left  join
 	)
 	AS last_ap
 	ON last_ap.max_id = fin_vendor_invoice_row.id AND fin_vendor_invoice_row.item_id = last_ap.item_id
-
+        
 	LEFT JOIN fin_vendor_invoice
 	ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
 )
 as last_ap
 on last_ap.item_id = nmt_procure_pr_row.item_id
-
+        
 WHERE 1 %s
 ";
-    
+
     /**
      *
      * @var string

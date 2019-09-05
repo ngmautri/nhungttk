@@ -18,7 +18,7 @@ class PRRowDetailsSnapshot extends PRRowSnapshot
 
     public $draftStockGRQuantity;
 
-    public $draftPostedGRQuantity;
+    public $postedStockGRQuantity;
 
     public $draftGrQuantity;
 

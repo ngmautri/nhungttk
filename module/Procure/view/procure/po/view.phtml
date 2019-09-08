@@ -1,8 +1,7 @@
 <?php
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
-
-
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 ?>
 
 <div id="wrapper" class="toggled">
@@ -243,16 +242,16 @@ if (count($errors) > 0) {
 										<select name="currency_id" class="form-control input-sm">
 											<option value="">Select Currency</option>
    	    							<?php
+            $currency_list = $nmtPlugin->currencyList();
 
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
-                    if ($headerDTO !== null) :
-                        if ($headerDTO->getcurrency() == $curr->getId()) :
-                            echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                if ($headerDTO !== null) :
+                if ($headerDTO->getDocCurrency() == $curr->getId()) :
+                            echo sprintf('<option selected value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
                         else :
                             echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
                         endif;
-
                     else :
                         echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
                     endif;

@@ -11,6 +11,10 @@ use Procure\Application\DTO\Po\PoDTO;
 class POSnapshotAssembler
 {
 
+    const EXCLUDED_FIELDS = 1;
+
+    const EDITABLE_FIELDS = 2;
+
     /**
      * generete fields.
      */
@@ -82,7 +86,7 @@ class POSnapshotAssembler
      * @param PoDTO $dto
      * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
      */
-    public static function updateSnapshotFromDTO(POSnapshot $snapShot, PoDTO $dto)
+    public static function updateSnapshotFromDTO(PoDTO $dto, POSnapshot $snapShot, $editMode = self::EDITABLE_FIELDS)
     {
         if (! $dto instanceof PoDTO || ! $snapShot instanceof POSnapshot)
             return null;
@@ -90,11 +94,6 @@ class POSnapshotAssembler
         $reflectionClass = new \ReflectionClass($dto);
         $itemProperites = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
         $excludedProperties = array(
             "id",
             "uuid",
@@ -108,25 +107,53 @@ class POSnapshotAssembler
             "company",
             "itemType",
             "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
+            "currencyIso3",
+            "vendorName",
+            "docStatus",
+            "workflowStatus",
+            "transactionStatus",
+            "paymentStatus"
         );
 
-        // $dto->isSparepart;
+        $editableProperties = array(
+            "isActive",            
+            "vendor",
+            "contractNo",
+            "contractDate",
+            "docCurrency",
+            "exchangeRate",
+            "incoterm",
+            "incotermPlace",            
+            "paymentTerm",
+            "remarks",
+         );
 
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
 
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
+            if ($editMode == self::EXCLUDED_FIELDS) {
+                if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                        $snapShot->$propertyName = null;
+                    } else {
+                        $snapShot->$propertyName = $property->getValue($dto);
+                    }
                 }
             }
+            
+            if ($editMode == self::EDITABLE_FIELDS) {
+                if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
+                    
+                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                        $snapShot->$propertyName = null;
+                    } else {
+                        $snapShot->$propertyName = $property->getValue($dto);
+                    }
+                }
+            }
+            
         }
         return $snapShot;
     }

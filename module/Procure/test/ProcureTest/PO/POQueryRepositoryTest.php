@@ -35,7 +35,7 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $rep = new DoctrinePOQueryRepository($doctrineEM);
                         
-            $result = $rep->getFullDetailsById(199, null);
+            $result = $rep->getPODetailsById(214);
             var_dump($result);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

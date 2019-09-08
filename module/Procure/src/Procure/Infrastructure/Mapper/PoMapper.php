@@ -28,12 +28,12 @@ class PoMapper
             return null;
         }
 
-        $entity->setId($snapshot->id);
+        // $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
-        $entity->setVendorName($snapshot->vendorName);
+        
+        
         $entity->setInvoiceNo($snapshot->invoiceNo);
-        $entity->setCurrencyIso3($snapshot->currencyIso3);
-        $entity->setExchangeRate($snapshot->exchangeRate);
+         $entity->setExchangeRate($snapshot->exchangeRate);
         $entity->setRemarks($snapshot->remarks);
         $entity->setCurrentState($snapshot->currentState);
         $entity->setIsActive($snapshot->isActive);
@@ -106,7 +106,10 @@ class PoMapper
              * @var \Application\Entity\NmtBpVendor $obj ;
              */
             $obj = $doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($snapshot->vendor);
+            
             $entity->setVendor($obj);
+            $entity->setVendorName($obj->getVendorName());            
+            
         }
 
         // $entity->setPmtTerm($snapshot->pmtTerm);
@@ -150,12 +153,12 @@ class PoMapper
         }
 
         // $entity->setLastchangeBy($snapshot->lastchangeBy);
-        if ($snapshot->setLastchangeBy > 0) {
+        if ($snapshot->lastchangeBy > 0) {
             /**
              *
              * @var \Application\Entity\MlaUsers $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->setLastchangeBy);
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastchangeBy);
             $entity->setLastchangeBy($obj);
         }
         // $entity->setCurrency($snapshot->currency);
@@ -184,6 +187,7 @@ class PoMapper
              */
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->localCurrency);
             $entity->setLocalCurrency($obj);
+             
         }
         // $entity->setDocCurrency($snapshot->docCurrency);
         if ($snapshot->docCurrency > 0) {
@@ -193,6 +197,8 @@ class PoMapper
              */
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->docCurrency);
             $entity->setDocCurrency($obj);
+            $entity->setCurrencyIso3($obj->getCurrency());
+            
         }
 
         // $entity->setIncoterm2($snapshot->incoterm2);
@@ -220,7 +226,6 @@ class PoMapper
             return null;
         }
 
-        $entity->setId($snapshot->id);
         $entity->setRowNumber($snapshot->rowNumber);
         $entity->setToken($snapshot->token);
         $entity->setQuantity($snapshot->quantity);
@@ -370,10 +375,11 @@ class PoMapper
      * @param object $entity
      * @return NULL|\Procure\Domain\PurchaseOrder\PODetailsSnapshot
      */
-    public static function createDetailSnapshot(NmtProcurePo $entity)
+    public static function createDetailSnapshot(NmtProcurePo $entity = null)
     {
-        if ($entity == null)
+        if ($entity == null) {
             return null;
+        }
 
         $snapshot = new PODetailsSnapshot();
 
@@ -383,6 +389,7 @@ class PoMapper
         // $snapshot->vendor= $entity->getVendor();
         if ($entity->getVendor() !== null) {
             $snapshot->vendor = $entity->getVendor()->getId();
+            //$snapshot->vendorName = $entity->getVendor()->getVendorName();
         }
 
         // $snapshot->pmtTerm = $entity->getPmtTerm();
@@ -431,6 +438,7 @@ class PoMapper
         // $snapshot->docCurrency = $entity->getDocCurrency();
         if ($entity->getDocCurrency() !== null) {
             $snapshot->docCurrency = $entity->getDocCurrency()->getId();
+            $snapshot->currencyIso3 = $entity->getDocCurrency()->getCurrency();
         }
 
         // $snapshot->incoterm2 = $entity->getIncoterm2();
@@ -487,9 +495,10 @@ class PoMapper
         $snapshot->id = $entity->getId();
         $snapshot->token = $entity->getToken();
         $snapshot->vendorName = $entity->getVendorName();
+         
+        
         $snapshot->invoiceNo = $entity->getInvoiceNo();
 
-        $snapshot->currencyIso3 = $entity->getCurrencyIso3();
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->remarks = $entity->getRemarks();
         $snapshot->currentState = $entity->getCurrentState();

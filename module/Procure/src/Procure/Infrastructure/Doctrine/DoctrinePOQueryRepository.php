@@ -37,17 +37,22 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
      */
     public function getPODetailsById($id)
     {
+
+        $po = $this->getDoctrineEM()->getRepository('Application\Entity\NmtProcurePo')->find($id);
+        $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
+
+        if ($poDetailsSnapshot == null) {
+            return null;
+        }
+
         $rows = $this->getPoRowsDetails($id);
 
         if (count($rows) == 0) {
-            return;
+            $rootEntity = new PODoc();
+            $rootEntity->makeFromDetailsSnapshot($poDetailsSnapshot);
+            return $rootEntity;
         }
 
-        /**
-         *
-         * @var \Application\Entity\NmtProcurePo $po ;
-         */
-        $po = null;
         $completed = True;
         $docRowsArray = array();
         $totalRows = 0;
@@ -64,9 +69,6 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             /**@var \Application\Entity\NmtProcurePoRow $poRowEntity ;*/
             $po_row = $r[0];
 
-            if ($po == null) {
-                $po = $po_row->getPo();
-            }
 
             $poRowDetailSnapshot = PoMapper::createRowDetailSnapshot($po_row);
 
@@ -101,11 +103,6 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRow = new PORow();
             $poRow->makeFromDetailsSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
-        }
-
-        $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
-        if ($poDetailsSnapshot == null) {
-            return null;
         }
 
         if ($completed == true) {

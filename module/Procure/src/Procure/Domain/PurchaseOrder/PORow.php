@@ -1,11 +1,11 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Procure\Application\DTO\Po\PORowDTOAssembler;
 use Procure\Application\DTO\Po\PORowForGridDTO;
-use Procure\Application\DTO\DTOFactory;
-use Procure\Domain\SnapshotAssembler;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Application\Domain\Shared\SnapshotAssembler;
+use Procure\Application\DTO\Po\PORowDTO;
+use Application\Domain\Shared\DTOFactory;
 
 /**
  * AP Row
@@ -208,7 +208,7 @@ class PORow
      */
     public function makeDTO()
     {
-        return PORowDTOAssembler::createDTOFrom($this);
+        return \Application\Domain\Shared\DTOFactory::createDTOFrom($this, new PORowDTO());
     }
 
     /**

@@ -9,7 +9,6 @@ use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\PO\Output\PoRowInArray;
 use Procure\Application\Service\PO\Output\PoRowInExcel;
 use Procure\Application\Service\PO\Output\PoRowOutputStrategy;
-use Procure\Domain\SnapshotAssembler;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
@@ -20,6 +19,8 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Application\Service\FXService;
 use Ramsey;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
+use Application\Domain\Shared\SnapshotAssembler;
+use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 
 /**
  * PO Service.
@@ -49,16 +50,14 @@ class POService extends AbstractService
         $dto->company = $companyId;
         $dto->createdBy = $userId;
         $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
-        
+
         $companyQueryRepository = new DoctrineCompanyQueryRepository($this->getDoctrineEM());
         $company = $companyQueryRepository->getById($companyId);
-        
-        if($company==null){
+
+        if ($company == null) {
             $notification->addError("company not found");
             return $notification;
         }
-        
-        
 
         /**
          *
@@ -66,9 +65,9 @@ class POService extends AbstractService
          */
         $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
         $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-        $snapshot->token =  $snapshot->uuid;
+        $snapshot->token = $snapshot->uuid;
         $snapshot->localCurrency = $company->getDefaultCurrency();
-        
+
         $entityRoot = new PODoc();
         $entityRoot->makeFromSnapshot($snapshot);
 
@@ -83,10 +82,6 @@ class POService extends AbstractService
         if ($notification->hasErrors()) {
             return $notification;
         }
-        
-        var_dump($entityRoot);
-        
-        return;
 
         $this->getDoctrineEM()
             ->getConnection()
@@ -97,25 +92,27 @@ class POService extends AbstractService
             $rep = new DoctrinePOCmdRepository($this->getDoctrineEM());
             $rootEntityId = $rep->storeHeader($entityRoot);
 
+            /*
+             * if (count($entityRoot->getRecordedEvents() > 0)) {
+             *
+             * $dispatcher = new EventDispatcher();
+             *
+             * foreach ($entityRoot->getRecordedEvents() as $event) {
+             *
+             * $subcribers = EventHandlerFactory::createEventHandler(get_class($event));
+             *
+             * if (count($subcribers) > 0) {
+             * foreach ($subcribers as $subcriber) {
+             * $dispatcher->addSubscriber($subcriber);
+             * }
+             * }
+             * $dispatcher->dispatch(get_class($event), $event);
+             * }
+             * }
+             */
+
             $m = sprintf("[OK] PO # %s created", $rootEntityId);
             $notification->addSuccess($m);
-
-            if (count($entityRoot->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($entityRoot->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event));
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
-            }
 
             $this->getDoctrineEM()
                 ->getConnection()
@@ -126,7 +123,104 @@ class POService extends AbstractService
                 ->getConnection()
                 ->rollBack();
             $this->getDoctrineEM()->close();
+            $notification->addError($e->getTraceAsString());
+        }
+
+        return $notification;
+    }
+
+    /**
+     *
+     * @param int $rootEntityId
+     * @param PoDTO $dto
+     * @param int $companyId
+     * @param int $userId
+     * @param string $trigger
+     */
+    public function updateHeader($rootEntityId, PoDTO $dto, $companyId, $userId, $trigger = null)
+    {
+        $notification = new Notification();
+
+        if ($rootEntityId == null) {
+            $notification->addError("PO not identified for this action");
+        }
+
+        if ($dto == null) {
+            $notification->addError("DTO is Empty");
+        }
+
+        if ($userId == null) {
+            $notification->addError("User is not identified for this action");
+        }
+
+        if ($notification->hasErrors()) {
+            return $notification;
+        }
+
+        $rootEntity = $this->getQueryRepository()->getPODetailsById($rootEntityId);
+
+        if ($rootEntity == null) {
+            $notification->addError(sprintf("PO #%s can not be retrieved or empty", $rootEntityId));
+        }
+        
+        if ($notification->hasErrors()) {
+            return $notification;
+        }
+
+        try {
+
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
+            /**
+             *
+             * @var POSnapshot $snapshot ;
+             */
+            $snapshot = $rootEntity->makeSnapshot();
+            $newSnapshot = clone ($snapshot);
+
+            $newSnapshot = POSnapshotAssembler::updateSnapshotFromDTO($dto, $newSnapshot);
+            $changeArray = $snapshot->compare($newSnapshot);
+            var_dump($changeArray);
+            
+            if ($changeArray == null) {
+                $notification->addError("Nothing change on PO#" . $rootEntityId);
+                return $notification;
+            }
+
+            // do change
+            $newSnapshot->lastChangeBy = $userId;
+            $newSnapshot->lastChangeOn = new \DateTime();
+            $newSnapshot->revisionNo ++;
+
+            $newRootEntity = new PODoc();
+            $newRootEntity->makeFromSnapshot($newSnapshot);
+
+            $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+            $fxService = new FXService();
+            $fxService->setDoctrineEM($this->getDoctrineEM());
+
+            $specService = new POSpecificationService($sharedSpecificationFactory, $fxService);
+
+            $notification = $newRootEntity->validateHeader($specService, $notification);
+
+            if ($notification->hasErrors()) {
+                return $notification;
+            }
+
+            $this->getCmdRepository()->storeHeader($newRootEntity);
+
+            $m = sprintf("PO #%s updated", $rootEntityId);
+
+            $notification->addSuccess($m);
+            $this->getDoctrineEM()->commit(); // now commit
+        } catch (\Exception $e) {
+
             $notification->addError($e->getMessage());
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->rollBack();
         }
 
         return $notification;

@@ -1,5 +1,4 @@
 <?php
-use Application\Entity\NmtApplicationIncoterms;
 
 /**@var \Procure\Application\DTO\Po\PoDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -154,13 +153,15 @@ if (count($errors) > 0) {
 											<option value="">Select Currency</option>
    	    							<?php
 
+   	    							
+   	    							
             $currency_list = $nmtPlugin->currencyList();
 
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
                     if ($dto !== null) :
                         if ($dto->getDocCurrency() == $curr->getId()) :
-                            echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        echo sprintf('<option selected value="%s">%s</option>'. $curr->getId(),$curr->getCurrency());
                         else :
                             echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
                         endif;
@@ -264,7 +265,7 @@ if (count($errors) > 0) {
 									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="paymentTerm" name="paymentTerm"
-											value="<?php echo (!$dto == null)? $dto->getPaymentTerm():"";?>">
+											value="<?php echo (!$dto == null)? $dto->getPaymentTerm() :"";?>">
 									</div>
 								</div>
 
@@ -274,7 +275,7 @@ if (count($errors) > 0) {
 									<div class="col-sm-8">
 										<input class="form-control input-sm" type="text" id="remarks"
 											placeholder="" name="remarks"
-											value="<?php echo (!$dto == null)? $dto->getRemarks():"";?>">
+											value="<?php echo (!$dto == null)? $dto->getRemarks() :"";?>">
 									</div>
 								</div>
 

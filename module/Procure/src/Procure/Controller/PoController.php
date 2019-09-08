@@ -1,17 +1,17 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Domain\Shared\DTOFactory;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Reporting\PO\PoReporter;
+use Procure\Application\Service\PO\POService;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Procure\Application\Service\PO\POService;
-use Procure\Application\Reporting\PO\PoReporter;
-use Procure\Application\DTO\DTOFactory;
-use Procure\Application\DTO\Po\PoDTO;
 
 /**
  *
@@ -773,7 +773,9 @@ class PoController extends AbstractActionController
             'po' => $po,
             'errors' => null,
             'currency_list' => $currency_list,
-            'incoterm_list' => $incoterm_list
+            'incoterm_list' => $incoterm_list,
+            'nmtPlugin' => $nmtPlugin,
+            
         ));
 
         $viewModel->setTemplate("procure/po/view");

@@ -2,8 +2,8 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\AggregateRoot;
+use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PoDTOAssembler;
-use Procure\Domain\SnapshotAssembler;
 
 /**
  *

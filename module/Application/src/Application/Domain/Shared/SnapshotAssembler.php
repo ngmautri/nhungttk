@@ -83,7 +83,7 @@ class SnapshotAssembler
                 if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
                     $refProperty->setValue($snapshot, null);
                 } else {
-                    $refProperty->setValue($$snapshot, $property->getValue($obj));
+                    $refProperty->setValue($snapshot, $property->getValue($obj));
                 }
             }
         }

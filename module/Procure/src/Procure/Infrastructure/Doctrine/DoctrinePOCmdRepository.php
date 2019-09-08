@@ -132,6 +132,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
             }
         } else {
             $entity = new \Application\Entity\NmtProcurePo();
+            $entity->setCreatedOn(new \DateTime());
         }
 
         $entity = PoMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);

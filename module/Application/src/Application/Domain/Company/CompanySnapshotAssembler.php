@@ -1,7 +1,6 @@
 <?php
 namespace Application\Domain\Company;
 
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
 use Application\Application\DTO\Company\CompanyDTO;
 
 /**
@@ -12,88 +11,79 @@ use Application\Application\DTO\Company\CompanyDTO;
 class CompanySnapshotAssembler
 {
 
-    /**
-     *
-     * @param CompanyDTO $dto
-     * @return NULL|\Application\Domain\Company\CompanySnapshot
+   
+     /**
+     * generete fields.
      */
-    public static function createSnapshotFromDTO(CompanyDTO $dto)
+    public static function createProperities()
     {
-        if (! $dto instanceof CompanyDTO)
-            return null;
-
-        $snapShot = new CompanySnapshot();
-
-        $reflectionClass = new \ReflectionClass(get_class($dto));
-        $properites = $reflectionClass->getProperties();
-
-        foreach ($properites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-                $snapShot->$propertyName = $property->getValue($dto);
-            }
-        }
-        return $snapShot;
-    }
-
-    public static function createFromSnapshotCode()
-    {
-        $snapshot = new CompanySnapshot();
-        $reflectionClass = new \ReflectionClass($snapshot);
-        $properites = $reflectionClass->getProperties();
-        foreach ($properites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
-        }
-    }
-
-    /**
-     * generete Mapping.
-     */
-    public static function createStoreMapping()
-    {
-        $entity = new \Application\Entity\NmtApplicationCompany();
+        $entity = new CompanyDetailsSnapshot();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
+            print "\n" . "protected $" . $propertyName . ";";
         }
     }
 
+   
+
     /**
-     *
-     * @param GenericCompany $obj
+     * 
+     * @param CompanySnapshot $snapShot
+     * @param CompanyDTO $dto
      * @return NULL|\Application\Domain\Company\CompanySnapshot
      */
-    public static function createSnapshotFrom($obj)
+    public static function updateSnapshotFromDTO(CompanySnapshot $snapShot, CompanyDTO $dto)
     {
-        if (! $obj instanceof GenericCompany)
+        if (! $dto instanceof CompanyDTO || ! $snapShot instanceof CompanySnapshot)
             return null;
 
-        $snapShot = new CompanySnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
+        $reflectionClass = new \ReflectionClass($dto);
         $itemProperites = $reflectionClass->getProperties();
 
-        foreach ($itemProperites as $property) {
+        /**
+         * Fields, that are update automatically
+         *
+         * @var array $excludedProperties
+         */
+        $excludedProperties = array(
+            "id",
+            "uuid",
+            "token",
+            "checksum",
+            "createdBy",
+            "createdOn",
+            "lastChangeOn",
+            "lastChangeBy",
+            "sysNumber",
+            "company",
+            "itemType",
+            "revisionNo",
+            "isStocked",
+            "isFixedAsset",
+            "isSparepart",
+            "itemTypeId"
+        );
 
+        // $dto->isSparepart;
+
+        foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
+            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
 
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                     $snapShot->$propertyName = null;
                 } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
+                    $snapShot->$propertyName = $property->getValue($dto);
                 }
             }
         }
-
         return $snapShot;
     }
+
+   
+   
 }

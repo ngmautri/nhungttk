@@ -1,0 +1,352 @@
+<?php
+use Application\Entity\NmtApplicationIncoterms;
+
+/**@var \Procure\Application\DTO\Po\PoDTO $dto ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+?>
+
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php
+    $current_step = "STEP1";
+    include (ROOT . '/module/Procure/view/procure/create-wizard.php');
+    ?>
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general"><?php echo $form_title;?>:</a></li>
+		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+ 	 	<li><a
+						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$dto == null)? $dto->getToken():"";?>&object_id=<?php echo (!$dto == null)? $dto->getId():"";?>&class_name=<?php echo (!$dto == null)? get_class($dto):"";?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		<?php endif;?>			
+	
+				</ul>
+
+				<div id="general" style="font-size: 9pt">
+					<!-- Tab1 -->
+		
+	<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+	<form id="Creating_Form" class="form-horizontal"
+						action="<?php echo $form_action;?>" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							id="entity_id" name="entity_id"
+							value="<?php if (!$dto == null): echo $dto->getId();endif;?>" />
+						<input type="hidden" id="entity_token" name="entity_token"
+							value="<?php if (!$dto == null): echo $dto->getToken();endif;?>" />
+
+							
+            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
+            			
+           			<?php
+
+            if ($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO) :
+                ?>
+             	
+          			<?php endif;?>
+            			
+            			
+            			
+            			<fieldset>
+							<legend style="font-size: 9.5pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+							</legend>
+							<div id="invoice_header" class="collapse in">
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Current State:</label>
+									<div class="col-sm-3">
+										<select name="currentState" class="form-control input-sm">
+											<option value="">Please Select</option>
+											<option
+												<?php if($dto!==null): if($dto->getCurrentState()=="draftPo"): echo "selected"; endif;endif; ?>
+												value="draftPo">Draft</option>
+											<option
+												<?php if($dto!==null): if($dto->getCurrentState()=="finalPo"): echo "selected"; endif;endif; ?>
+												value="finalPo">Final</option>
+										</select>
+									</div>
+
+									<div class="col-sm-3">
+										<input
+											<?php if(!$dto== null): echo ($dto->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Is
+										Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2 ">Vendor:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											id="vendor_name_1" placeholder="Enter term to search vendor"
+											name="vendorName"
+											value="<?php if (!$dto == null): echo $dto->getVendorName();endif;?>">
+
+										<input type="hidden" id="vendor_id" placeholder=""
+											name="vendor"
+											value="<?php if (!$dto == null): echo $dto->getVendor();endif;?>">
+									</div>
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt;"
+											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Contract /PO No.:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="contractNo" name="contractNo"
+											value="<?php echo (!$dto == null)? $dto->getContractNo():"";?>">
+									</div>
+									<label class="control-label col-sm-2">Contract /PO Date:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="contractDate" name="contractDate"
+											value="<?php if(!$dto == null):echo $dto->getContractDate(); endif;?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2">Currency:</label>
+									<div class="col-sm-3">
+										<select name="docCurrency" class="form-control input-sm">
+											<option value="">Select Currency</option>
+   	    							<?php
+
+            $currency_list = $nmtPlugin->currencyList();
+
+            if ($currency_list !== null) :
+                foreach ($currency_list as $curr) :
+                    if ($dto !== null) :
+                        if ($dto->getDocCurrency() == $curr->getId()) :
+                            echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+									</div>
+
+									<label class="control-label col-sm-2">Exchange Rate:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="exchangeRate" name="exchangeRate"
+											value="<?php echo (!$dto == null)? $dto->getExchangeRate():"";?>">
+									</div>
+								</div>
+
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+									<div class="col-sm-3">
+										<select name="incoterm2" class="form-control input-sm">
+											<option value="">---</option>
+       	    							<?php
+                $incoterm_list = $nmtPlugin->incotermList();
+                $incoterm_list = $nmtPlugin->incotermList();
+
+                if ($incoterm_list !== null) :
+                    foreach ($incoterm_list as $l) :
+                        /**
+                         *
+                         * @var \Application\Entity\NmtApplicationIncoterms $l ;
+                         */
+
+                        if ($dto !== null) :
+                            if ($dto->getPmtTerm() == $l->getId()) :
+                                echo sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+                            else :
+                                echo sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+                            endif;
+                        else :
+                            echo sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+                        endif;
+                    endforeach
+                    ;
+       	    							endif;
+
+                ?>
+       					</select>
+									</div>
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="incotermPlace" name="incotermPlace"
+											value="<?php echo (!$dto == null)? $dto->getIncotermPlace():"";?>">
+									</div>
+
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<div class="col-sm-3">
+										<select name="payment_term_id" class="form-control input-sm">
+											<option value=""><?php echo $this->translate("---");?></option>
+       	    							<?php
+                $pmtTerm_list = $nmtPlugin->getPaymentTerms();
+
+                if ($pmtTerm_list !== null) :
+                    foreach ($pmtTerm_list as $l) :
+                        if ($dto !== null) :
+                            if ($dto->getPmtTerm() == $l->getId()) :
+                                echo '<option selected value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                            else :
+                                echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                        endif;
+                    endforeach
+                    ;
+       	    							endif;
+
+                ?>
+       					</select>
+									</div>
+
+
+								</div>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
+									<div class="col-sm-5">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="paymentTerm" name="paymentTerm"
+											value="<?php echo (!$dto == null)? $dto->getPaymentTerm():"";?>">
+									</div>
+								</div>
+
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Description</label>
+									<div class="col-sm-8">
+										<input class="form-control input-sm" type="text" id="remarks"
+											placeholder="" name="remarks"
+											value="<?php echo (!$dto == null)? $dto->getRemarks():"";?>">
+									</div>
+								</div>
+
+
+							</div>
+
+							<hr>
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2" for="inputTag"></label>
+								<div class="col-sm-3">
+									<button id="submit" onclick="submitForm('Creating_Form');"
+										class="btn btn-default btn-sm">
+										<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+									</button>
+									<a class="btn btn-default btn-sm"
+										href="<?php echo $redirectUrl; ?>"><small><i
+											class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+								</div>
+							</div>
+						</fieldset>
+					</form>
+
+				</div>
+
+				<!-- end tab -->
+			</div>
+		</div>
+	</div>
+	<!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<script>
+
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+
+<?php
+if ($dto !== null) :
+
+    if ($dto->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) :
+        ?>
+$("#Creating_Form :input").attr("disabled", "disabled");
+$("#remarks").attr("disabled", false);
+$("#entity_id").attr("disabled", false);
+$("#entity_token").attr("disabled", false);
+$("#submit").attr("disabled", false);
+ <?php endif;endif;?>
+
+  
+</script>

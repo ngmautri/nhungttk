@@ -10,6 +10,5 @@ class GenericCompany extends AbstractCompany
 {
    protected $warehouses;
    protected $departments;
-   protected $postingPeriods;
-      
+   protected $postingPeriods;      
 }

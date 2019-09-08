@@ -1,17 +1,17 @@
 <?php
 namespace Application\Domain\Company;
 
-use Application\Domain\Shared\AbstractEntity;
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Application\Application\DTO\Company\CompanyDTOAssembler;
-use Application\Notification;
+use Application\Application\DTO\Company\CompanyDTO;
+use Application\Domain\Shared\AggregateRoot;
+use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class AbstractCompany extends AbstractEntity
+class AbstractCompany extends AggregateRoot
 {
 
     protected $id;
@@ -48,126 +48,39 @@ class AbstractCompany extends AbstractEntity
 
     protected $defaultWarehouse;
 
-    // ============
     /**
      *
-     * @var AbstractSpecificationFactory
-     */
-    protected $sharedSpecificationFactory;
-
-    /**
-     *
-     * @return boolean
-     */
-    public function isValid()
-    {
-        /**
-         *
-         * @var Notification $notification
-         */
-        $notification = $this->validate();
-
-        if ($notification == null)
-            return false;
-
-        return ! $notification->hasErrors();
-    }
-
-    /**
-     *
-     * @param Notification $notification
-     * @return string|\Application\Notification
-     */
-    public function validate($notification = null)
-    {
-        if ($notification == null)
-            $notification = new Notification();
-
-        if ($this->sharedSpecificationFactory == null) {
-            $notification->addError("Validators is not found");
-            return $notification;
-        }
-
-        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->defaultCurrency)) {
-            $notification->addError("Default currency is empty");
-        } else {
-            $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
-            if (! $spec->isSatisfiedBy($this->defaultCurrency))
-                $notification->addError("Default currency not exits..." . $this->defaultCurrency);
-        }
-
-        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->defaultWarehouse)) {
-            $notification->addError("Default warehouse is empty");
-        } else {
-            $spec = $this->sharedSpecificationFactory->getWarehouseExitsSpecification();
-            if (! $spec->isSatisfiedBy($this->defaultWarehouse))
-                $notification->addError("Default warehouse not exits..." . $this->defaultWarehouse);
-        }
-        return $notification;
-    }
-
-    /**
-     *
-     * @return NULL|\Application\Application\DTO\Company\CompanyDTO
-     */
-    public function makeDTO()
-    {
-        return CompanyDTOAssembler::createDTOFrom($this);
-    }
-
-    /**
-     *
-     * @return NULL|\Application\Domain\Company\CompanySnapshot
+     * @return NULL|object
      */
     public function makeSnapshot()
     {
-        return CompanySnapshotAssembler::createSnapshotFrom($this);
+        return SnapshotAssembler::createSnapshotFrom($this, new CompanySnapshot());
     }
 
     /**
      *
-     * @param CompanySnapshot $snapshot
+     * @return NULL|object
      */
-    public function makeFromSnapshot($snapshot)
+    public function makeDetailsSnapshot()
     {
-        if (! $snapshot instanceof CompanySnapshot)
+        return SnapshotAssembler::createSnapshotFrom($this, new CompanyDetailsSnapshot());
+    }
+
+    public function makeDTO()
+    {
+        return DTOFactory::createDTOFrom($this, new CompanyDTO());
+    }
+
+    /**
+     * 
+     * @param CompanyDetailsSnapshot $snapshot
+     */
+    public function makeFromDetailsSnapshot(CompanyDetailsSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof CompanyDetailsSnapshot)
             return;
 
-        $this->id = $snapshot->id;
-        $this->companyCode = $snapshot->companyCode;
-        $this->companyName = $snapshot->companyName;
-        $this->defaultLogoId = $snapshot->defaultLogoId;
-        $this->status = $snapshot->status;
-        $this->createdOn = $snapshot->createdOn;
-        $this->isDefault = $snapshot->isDefault;
-        $this->token = $snapshot->token;
-        $this->lastChangeOn = $snapshot->lastChangeOn;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->uuid = $snapshot->uuid;
-        $this->defaultCurrency = $snapshot->defaultCurrency;
-        $this->createdBy = $snapshot->createdBy;
-        $this->country = $snapshot->country;
-        $this->defaultAddress = $snapshot->defaultAddress;
-        $this->lastChangeBy = $snapshot->lastChangeBy;
-        $this->defaultWarehouse = $snapshot->defaultWarehouse;
-    }
-
-    /**
-     *
-     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
-     */
-    public function getSharedSpecificationFactory()
-    {
-        return $this->sharedSpecificationFactory;
-    }
-
-    /**
-     *
-     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
-     */
-    public function setSharedSpecificationFactory($sharedSpecificationFactory)
-    {
-        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
+        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
     /**
      * @return mixed
@@ -304,6 +217,5 @@ class AbstractCompany extends AbstractEntity
     {
         return $this->defaultWarehouse;
     }
-
 
 }

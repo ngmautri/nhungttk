@@ -7,8 +7,12 @@ use Doctrine\ORM\EntityManager;
 use ApplicationTest\Bootstrap;
 use Application\Application\DTO\Company\CompanyDTOAssembler;
 use Application\Domain\Company\CompanySnapshotAssembler;
+use Application\Domain\Company\GenericCompany;
+use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Infrastructure\AggregateRepository\DoctrineCompanyRepository;
+use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 
-class CompanySnapshotTest extends PHPUnit_Framework_TestCase
+class CompanyQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -29,7 +33,10 @@ class CompanySnapshotTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-
-        CompanySnapshotAssembler::createProperities();
-    }
+        $rep = new DoctrineCompanyQueryRepository($em);
+        $companySN = $rep->getById(1);
+        var_dump($companySN);
+        
+        
+      }
 }

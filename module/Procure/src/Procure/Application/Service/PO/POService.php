@@ -18,6 +18,8 @@ use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Application\Service\FXService;
+use Ramsey;
+use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 
 /**
  * PO Service.
@@ -32,6 +34,14 @@ class POService extends AbstractService
 
     private $queryRepository;
 
+    /**
+     *
+     * @param PoDTO $dto
+     * @param int $companyId
+     * @param int $userId
+     * @param string $trigger
+     * @return void|\Application\Notification
+     */
     public function createHeader(PoDTO $dto, $companyId, $userId, $trigger = null)
     {
         $notification = new Notification();
@@ -39,12 +49,26 @@ class POService extends AbstractService
         $dto->company = $companyId;
         $dto->createdBy = $userId;
         $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
+        
+        $companyQueryRepository = new DoctrineCompanyQueryRepository($this->getDoctrineEM());
+        $company = $companyQueryRepository->getById($companyId);
+        
+        if($company==null){
+            $notification->addError("company not found");
+            return $notification;
+        }
+        
+        
 
         /**
          *
          * @var POSnapshot $snapshot ;
          */
         $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
+        $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+        $snapshot->token =  $snapshot->uuid;
+        $snapshot->localCurrency = $company->getDefaultCurrency();
+        
         $entityRoot = new PODoc();
         $entityRoot->makeFromSnapshot($snapshot);
 
@@ -59,8 +83,9 @@ class POService extends AbstractService
         if ($notification->hasErrors()) {
             return $notification;
         }
-
-        var_dump($notification);
+        
+        var_dump($entityRoot);
+        
         return;
 
         $this->getDoctrineEM()
@@ -70,9 +95,9 @@ class POService extends AbstractService
         try {
 
             $rep = new DoctrinePOCmdRepository($this->getDoctrineEM());
-            $trxId = $rep->storeHeader($entityRoot);
+            $rootEntityId = $rep->storeHeader($entityRoot);
 
-            $m = sprintf("[OK] WH Transacion # %s created", $trxId);
+            $m = sprintf("[OK] PO # %s created", $rootEntityId);
             $notification->addSuccess($m);
 
             if (count($entityRoot->getRecordedEvents() > 0)) {

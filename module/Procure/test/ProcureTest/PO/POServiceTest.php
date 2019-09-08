@@ -28,10 +28,10 @@ class POServiceTest extends PHPUnit_Framework_TestCase
             
             $data =  array();
             $data["vendor"] = 229;
-            $data["contractDate"] = "2019-012-08";
+            $data["contractDate"] = "2019-08-08";
             $data["contractNo"] = "2019-08-08";
             $data["docCurrency"] = 1;
-            $data["localCurrency"] = 10000;
+            $data["localCurrency"] = 2;
             $data["paymentTerm"] = 1;
             
             $dto = DTOFactory::createDTOFromArray(new PoDTO(), $data);

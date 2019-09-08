@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\DTO;
+namespace Application\Domain\Shared;
 
 /**
  *

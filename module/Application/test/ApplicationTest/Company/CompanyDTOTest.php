@@ -29,6 +29,6 @@ class CompanyDTOTest extends PHPUnit_Framework_TestCase
     {
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        var_dump(CompanyDTOAssembler::createDTOProperities());
+       CompanyDTOAssembler::createGetMapping();
     }
 }

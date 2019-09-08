@@ -10,6 +10,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Procure\Application\Service\PO\POService;
 use Procure\Application\Reporting\PO\PoReporter;
+use Procure\Application\DTO\DTOFactory;
+use Procure\Application\DTO\Po\PoDTO;
 
 /**
  *
@@ -220,6 +222,154 @@ class PoController extends AbstractActionController
 
         $viewModel->setTemplate("procure/po/crud");
         return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function createAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/po/create";
+        $form_title = "Create PO";
+        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/po/crudPO";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $data = $prg;
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+
+        $userId = $u->getId();
+        $companyId = $u->getCompany()->getId();
+
+        $notification = $this->purchaseOrderService->createHeader($dto, $companyId, $userId, __METHOD__, true);
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/procure/po/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function updateAction()
+    {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/po/update";
+        $form_title = "Edit PO";
+        $action = \Application\Model\Constants::FORM_ACTION_EDIT;
+        $viewTemplete = "procure/po/crudPO";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $data = $prg;
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+
+        $userId = $u->getId();
+        $companyId = $u->getCompany()->getId();
+
+        $notification = $this->purchaseOrderService->createHeader($dto, $companyId, $userId, __METHOD__, true);
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->errorMessage(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/procure/po/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**

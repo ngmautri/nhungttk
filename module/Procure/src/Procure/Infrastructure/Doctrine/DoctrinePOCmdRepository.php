@@ -132,8 +132,6 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
             }
         } else {
             $entity = new \Application\Entity\NmtProcurePo();
-            // $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
-            // $entity->setToken($entity->getUuid());
         }
 
         $entity = PoMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);

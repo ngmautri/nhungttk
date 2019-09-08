@@ -8,6 +8,7 @@ use Procure\Application\Reporting\PR\Output\PrRowStatusInHTMLTable;
 use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
 use Procure\Application\Reporting\PR\Output\PrRowStatusInOpenOffice;
+use Procure\Infrastructure\Persistence\Doctrine\PRListRepository;
 
 /**
  * PR Row Service.
@@ -100,7 +101,6 @@ class PrRowStatusReporter extends AbstractService
         return $factory->createOutput($result);
     }
 
-    
     public function getPrRowStatusTotal($is_active = 1, $pr_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
     {
         $result = $this->getPrListRespository()->getAllPrRowTotal($is_active, $pr_year, $balance, $sort_by, $sort, $limit, $offset);
@@ -108,20 +108,20 @@ class PrRowStatusReporter extends AbstractService
     }
     
  
-    /**
-     * 
-     * @return \Procure\Application\Reporting\PR\DoctrinePRListRepository;
-     */
+   /**
+    * 
+    * @return \Procure\Infrastructure\Persistence\Doctrine\PRListRepository
+    */
     public function getPrListRespository()
     {
         return $this->prListRespository;
     }
 
-    /**
-     * 
-     * @param DoctrinePRListRepository $prListRespository
-     */
-    public function setPrListRespository(DoctrinePRListRepository $prListRespository)
+ /**
+  * 
+  * @param PRListRepository $prListRespository
+  */
+    public function setPrListRespository(PRListRepository $prListRespository)
     {
         $this->prListRespository = $prListRespository;
     }

@@ -26,7 +26,7 @@ class PrRowStatusReporterFactory implements FactoryInterface
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));
 
-        $sv = $container->get('Procure\Infrastructure\Persistence\DoctrinePRListRepository');
+        $sv = $container->get('Procure\Infrastructure\Persistence\Doctrine\PRListRepository');
         $service->setPrListRespository($sv);
 
         return $service;

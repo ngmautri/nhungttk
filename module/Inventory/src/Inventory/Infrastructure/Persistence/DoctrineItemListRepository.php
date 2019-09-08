@@ -2,10 +2,7 @@
 namespace Inventory\Infrastructure\Persistence;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**

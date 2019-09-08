@@ -8,11 +8,11 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri
- *
+ *        
  */
 class POListRepositoryFactory implements FactoryInterface
 {
-    
+
     /**
      *
      * {@inheritdoc}
@@ -22,12 +22,10 @@ class POListRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
-        $controller = new POListRepository();
-        
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        $controller->setDoctrineEM($sv);
-        return $controller;
+        
+        $service = new POListRepository($sv);
+         return $service;
     }
     
 }

@@ -193,13 +193,13 @@ class PORow
 
     protected $itemVersion;
 
-    /**
-     *
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRrowSnapshot
-     */
+   /**
+    * 
+    * @return NULL|PORowSnapshot
+    */
     public function makeSnapshot()
     {
-        return PORowSnapshotAssembler::createSnapshotFrom($this);
+        return SnapshotAssembler::createSnapshotFrom($this, new PORowSnapshot());
     }
 
     /**

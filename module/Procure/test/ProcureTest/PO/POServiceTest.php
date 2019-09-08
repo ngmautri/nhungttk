@@ -2,11 +2,13 @@
 namespace ProcureTest\PO;
 
 use ProcureTest\Bootstrap;
-use PHPUnit_Framework_TestCase;
-
-use Procure\Application\DTO\Po\Output\PORowOutputStrategy;
-use Procure\Application\Service\PO\POService;
+use Procure\Application\DTO\DTOFactory;
+use Procure\Application\DTO\Po\PoDTO;
+use Procure\Domain\SnapshotAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\POSnapshot;
+use PHPUnit_Framework_TestCase;
 
 class POServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -23,10 +25,24 @@ class POServiceTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-
+            
+            $data =  array();
+            $data["vendor"] = 229;
+            $data["contractDate"] = "2019-012-08";
+            $data["contractNo"] = "2019-08-08";
+            $data["docCurrency"] = 1;
+            $data["localCurrency"] = 10000;
+            $data["paymentTerm"] = 1;
+            
+            $dto = DTOFactory::createDTOFromArray(new PoDTO(), $data);
+            $snapshot = SnapshotAssembler::createSnapShotFromDTO($dto, new POSnapshot());
+            $rootEntity = new PODoc();
+            $rootEntity->makeFromSnapshot($snapshot);
+            //var_dump($rootEntity);
+            
             /** @var POService $sv ; */
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PO\POService');
-            $results = $sv->getPODetailsById(199, PORowOutputStrategy::OUTPUT_IN_ARRAY);
+            $results = $sv->createHeader($dto,1,39);
             var_dump($results);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

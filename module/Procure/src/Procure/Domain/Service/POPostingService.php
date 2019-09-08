@@ -2,9 +2,7 @@
 namespace Procure\Domain\Service;
 
 use Inventory\Domain\Service\QueryRepositoryFactoryInteface;
-use Procure\Domain\APInvoice\APDocCmdRepositoryInterface;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseRequest\PRCmdRepositoryInterface;
 use Procure\Domain\PurchaseOrder\POCmdRepositoryInterface;
 
 /**

@@ -11,6 +11,52 @@ class SnapshotAssembler
 
     /**
      *
+     * @param array $data
+     * @param object $snapshot
+     * @return object
+     */
+    public static function createSnapShotFromArray($data, $snapshot)
+    {
+        foreach ($data as $property => $value) {
+            if (property_exists($snapshot, $property)) {
+                if ($value == null || $value == "") {
+                    $snapshot->$property = null;
+                } else {
+                    $snapshot->$property = $value;
+                }
+            }
+        }
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param array $data
+     * @param object $snapshot
+     * @return object
+     */
+    public static function createSnapShotFromDTO($dto, $snapShot)
+    {
+        if ($dto == null or $snapShot == null) {
+            return null;
+        }
+
+        $reflectionClass = new \ReflectionClass(get_class($dto));
+        $itemProperites = $reflectionClass->getProperties();
+
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($snapShot, $propertyName)) {
+                $snapShot->$propertyName = $property->getValue($dto);
+            }
+        }
+        
+        return $snapShot;
+    }
+
+    /**
+     *
      * @param object $obj
      * @param object $snapshot
      */

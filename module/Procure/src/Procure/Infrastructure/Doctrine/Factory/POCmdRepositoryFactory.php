@@ -1,16 +1,16 @@
 <?php
-namespace Procure\Infrastructure\Persistence\Factory;
+namespace Procure\Infrastructure\Doctrine\Factory;
 
-use Procure\Infrastructure\Persistence\DoctrineAPListRepository;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 
 /**
  *
  * @author Nguyen Mau Tri
  *        
  */
-class DoctrineAPListRepositoryFactory implements FactoryInterface
+class POCmdRepositoryFactory implements FactoryInterface
 {
 
     /**
@@ -22,12 +22,10 @@ class DoctrineAPListRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
-        $controller = new DoctrineAPListRepository();
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
-		return $controller;
-	}	
-	
+        
+        $service = new DoctrinePOCmdRepository($sv);
+         return $service;
+    }
+    
 }

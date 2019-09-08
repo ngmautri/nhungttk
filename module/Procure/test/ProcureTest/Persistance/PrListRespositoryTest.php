@@ -37,7 +37,7 @@ class PrListRespository extends PHPUnit_Framework_TestCase
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             //echo Uuid::uuid4()->toString();
             
-            $rep = new DoctrinePRListRepository();
+            $rep = new DoctrinePol();
             $rep->setDoctrineEM($em);
             
             $result = $rep->getPrStatus(835, 1);

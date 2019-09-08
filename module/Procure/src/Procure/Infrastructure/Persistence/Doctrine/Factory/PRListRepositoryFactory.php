@@ -22,12 +22,10 @@ class PRListRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
-        $controller = new PRListRepository();
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
-		return $controller;
+        
+        $service = new PRListRepository($sv);
+        return $service;
 	}	
 	
 }

@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_employee_FK4_idx", columns={"birth_country"}), @ORM\Index(name="nmt_hr_employee_INX1", columns={"employee_code"}), @ORM\Index(name="nmt_hr_employee_FK3_idx", columns={"company_id"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtHrEmployeeRepository")
  */
 class NmtHrEmployee
 {
@@ -21,231 +20,231 @@ class NmtHrEmployee
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
      */
     private $checksum;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
      */
     private $employeeCode;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="employee_name", type="string", length=80, nullable=false)
      */
     private $employeeName;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="employee_name_local", type="string", length=80, nullable=true)
      */
     private $employeeNameLocal;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="gender", type="string", nullable=true)
      */
     private $gender;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="birthday", type="datetime", nullable=true)
      */
     private $birthday;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="sso_number", type="string", length=45, nullable=true)
      */
     private $ssoNumber;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="sso_date", type="datetime", nullable=true)
      */
     private $ssoDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="family_book_no", type="string", length=45, nullable=true)
      */
     private $familyBookNo;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="personal_id_no", type="string", length=45, nullable=true)
      */
     private $personalIdNo;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="personal_id_issue_date", type="datetime", nullable=true)
      */
     private $personalIdIssueDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="personal_id_issue_place", type="string", length=45, nullable=true)
      */
     private $personalIdIssuePlace;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="personal_id_expire_date", type="datetime", nullable=true)
      */
     private $personalIdExpireDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="passport_no", type="string", length=45, nullable=true)
      */
     private $passportNo;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="passport_issue_date", type="datetime", nullable=true)
      */
     private $passportIssueDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="passport_issue_place", type="string", length=45, nullable=true)
      */
     private $passportIssuePlace;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="passport_expire_date", type="datetime", nullable=true)
      */
     private $passportExpireDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="stay_permit_no", type="string", length=45, nullable=true)
      */
     private $stayPermitNo;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="stay_permit_issue_date", type="datetime", nullable=true)
      */
     private $stayPermitIssueDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="stay_permit_issue_place", type="string", length=45, nullable=true)
      */
     private $stayPermitIssuePlace;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="stay_permit_expire_date", type="datetime", nullable=true)
      */
     private $stayPermitExpireDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="work_permit_no", type="string", length=45, nullable=true)
      */
     private $workPermitNo;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="work_permit_issue_date", type="datetime", nullable=true)
      */
     private $workPermitIssueDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="work_permint_issue_place", type="string", length=45, nullable=true)
      */
     private $workPermintIssuePlace;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="work_permit_expire_date", type="datetime", nullable=true)
      */
     private $workPermitExpireDate;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="salary_pmt_method", type="string", length=45, nullable=true)
      */
     private $salaryPmtMethod;
-    
+
     /**
      * @var integer
      *
      * @ORM\Column(name="nationality", type="integer", nullable=false)
      */
     private $nationality;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-    
+
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -255,7 +254,7 @@ class NmtHrEmployee
      * })
      */
     private $createdBy;
-    
+
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -265,7 +264,7 @@ class NmtHrEmployee
      * })
      */
     private $lastChangeBy;
-    
+
     /**
      * @var \Application\Entity\NmtApplicationCompany
      *
@@ -275,7 +274,7 @@ class NmtHrEmployee
      * })
      */
     private $company;
-    
+
     /**
      * @var \Application\Entity\NmtApplicationCountry
      *
@@ -285,9 +284,9 @@ class NmtHrEmployee
      * })
      */
     private $birthCountry;
-    
-    
-    
+
+
+
     /**
      * Get id
      *
@@ -297,7 +296,7 @@ class NmtHrEmployee
     {
         return $this->id;
     }
-    
+
     /**
      * Set token
      *
@@ -308,10 +307,10 @@ class NmtHrEmployee
     public function setToken($token)
     {
         $this->token = $token;
-        
+
         return $this;
     }
-    
+
     /**
      * Get token
      *
@@ -321,7 +320,7 @@ class NmtHrEmployee
     {
         return $this->token;
     }
-    
+
     /**
      * Set checksum
      *
@@ -332,10 +331,10 @@ class NmtHrEmployee
     public function setChecksum($checksum)
     {
         $this->checksum = $checksum;
-        
+
         return $this;
     }
-    
+
     /**
      * Get checksum
      *
@@ -345,7 +344,7 @@ class NmtHrEmployee
     {
         return $this->checksum;
     }
-    
+
     /**
      * Set employeeCode
      *
@@ -356,10 +355,10 @@ class NmtHrEmployee
     public function setEmployeeCode($employeeCode)
     {
         $this->employeeCode = $employeeCode;
-        
+
         return $this;
     }
-    
+
     /**
      * Get employeeCode
      *
@@ -369,7 +368,7 @@ class NmtHrEmployee
     {
         return $this->employeeCode;
     }
-    
+
     /**
      * Set employeeName
      *
@@ -380,10 +379,10 @@ class NmtHrEmployee
     public function setEmployeeName($employeeName)
     {
         $this->employeeName = $employeeName;
-        
+
         return $this;
     }
-    
+
     /**
      * Get employeeName
      *
@@ -393,7 +392,7 @@ class NmtHrEmployee
     {
         return $this->employeeName;
     }
-    
+
     /**
      * Set employeeNameLocal
      *
@@ -404,10 +403,10 @@ class NmtHrEmployee
     public function setEmployeeNameLocal($employeeNameLocal)
     {
         $this->employeeNameLocal = $employeeNameLocal;
-        
+
         return $this;
     }
-    
+
     /**
      * Get employeeNameLocal
      *
@@ -417,7 +416,7 @@ class NmtHrEmployee
     {
         return $this->employeeNameLocal;
     }
-    
+
     /**
      * Set gender
      *
@@ -428,10 +427,10 @@ class NmtHrEmployee
     public function setGender($gender)
     {
         $this->gender = $gender;
-        
+
         return $this;
     }
-    
+
     /**
      * Get gender
      *
@@ -441,7 +440,7 @@ class NmtHrEmployee
     {
         return $this->gender;
     }
-    
+
     /**
      * Set birthday
      *
@@ -452,10 +451,10 @@ class NmtHrEmployee
     public function setBirthday($birthday)
     {
         $this->birthday = $birthday;
-        
+
         return $this;
     }
-    
+
     /**
      * Get birthday
      *
@@ -465,7 +464,7 @@ class NmtHrEmployee
     {
         return $this->birthday;
     }
-    
+
     /**
      * Set remarks
      *
@@ -476,10 +475,10 @@ class NmtHrEmployee
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-        
+
         return $this;
     }
-    
+
     /**
      * Get remarks
      *
@@ -489,7 +488,7 @@ class NmtHrEmployee
     {
         return $this->remarks;
     }
-    
+
     /**
      * Set createdOn
      *
@@ -500,10 +499,10 @@ class NmtHrEmployee
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdOn
      *
@@ -513,7 +512,7 @@ class NmtHrEmployee
     {
         return $this->createdOn;
     }
-    
+
     /**
      * Set lastChangeOn
      *
@@ -524,10 +523,10 @@ class NmtHrEmployee
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get lastChangeOn
      *
@@ -537,7 +536,7 @@ class NmtHrEmployee
     {
         return $this->lastChangeOn;
     }
-    
+
     /**
      * Set ssoNumber
      *
@@ -548,10 +547,10 @@ class NmtHrEmployee
     public function setSsoNumber($ssoNumber)
     {
         $this->ssoNumber = $ssoNumber;
-        
+
         return $this;
     }
-    
+
     /**
      * Get ssoNumber
      *
@@ -561,7 +560,7 @@ class NmtHrEmployee
     {
         return $this->ssoNumber;
     }
-    
+
     /**
      * Set ssoDate
      *
@@ -572,10 +571,10 @@ class NmtHrEmployee
     public function setSsoDate($ssoDate)
     {
         $this->ssoDate = $ssoDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get ssoDate
      *
@@ -585,7 +584,7 @@ class NmtHrEmployee
     {
         return $this->ssoDate;
     }
-    
+
     /**
      * Set familyBookNo
      *
@@ -596,10 +595,10 @@ class NmtHrEmployee
     public function setFamilyBookNo($familyBookNo)
     {
         $this->familyBookNo = $familyBookNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get familyBookNo
      *
@@ -609,7 +608,7 @@ class NmtHrEmployee
     {
         return $this->familyBookNo;
     }
-    
+
     /**
      * Set personalIdNo
      *
@@ -620,10 +619,10 @@ class NmtHrEmployee
     public function setPersonalIdNo($personalIdNo)
     {
         $this->personalIdNo = $personalIdNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get personalIdNo
      *
@@ -633,7 +632,7 @@ class NmtHrEmployee
     {
         return $this->personalIdNo;
     }
-    
+
     /**
      * Set personalIdIssueDate
      *
@@ -644,10 +643,10 @@ class NmtHrEmployee
     public function setPersonalIdIssueDate($personalIdIssueDate)
     {
         $this->personalIdIssueDate = $personalIdIssueDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get personalIdIssueDate
      *
@@ -657,7 +656,7 @@ class NmtHrEmployee
     {
         return $this->personalIdIssueDate;
     }
-    
+
     /**
      * Set personalIdIssuePlace
      *
@@ -668,10 +667,10 @@ class NmtHrEmployee
     public function setPersonalIdIssuePlace($personalIdIssuePlace)
     {
         $this->personalIdIssuePlace = $personalIdIssuePlace;
-        
+
         return $this;
     }
-    
+
     /**
      * Get personalIdIssuePlace
      *
@@ -681,7 +680,7 @@ class NmtHrEmployee
     {
         return $this->personalIdIssuePlace;
     }
-    
+
     /**
      * Set personalIdExpireDate
      *
@@ -692,10 +691,10 @@ class NmtHrEmployee
     public function setPersonalIdExpireDate($personalIdExpireDate)
     {
         $this->personalIdExpireDate = $personalIdExpireDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get personalIdExpireDate
      *
@@ -705,7 +704,7 @@ class NmtHrEmployee
     {
         return $this->personalIdExpireDate;
     }
-    
+
     /**
      * Set passportNo
      *
@@ -716,10 +715,10 @@ class NmtHrEmployee
     public function setPassportNo($passportNo)
     {
         $this->passportNo = $passportNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get passportNo
      *
@@ -729,7 +728,7 @@ class NmtHrEmployee
     {
         return $this->passportNo;
     }
-    
+
     /**
      * Set passportIssueDate
      *
@@ -740,10 +739,10 @@ class NmtHrEmployee
     public function setPassportIssueDate($passportIssueDate)
     {
         $this->passportIssueDate = $passportIssueDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get passportIssueDate
      *
@@ -753,7 +752,7 @@ class NmtHrEmployee
     {
         return $this->passportIssueDate;
     }
-    
+
     /**
      * Set passportIssuePlace
      *
@@ -764,10 +763,10 @@ class NmtHrEmployee
     public function setPassportIssuePlace($passportIssuePlace)
     {
         $this->passportIssuePlace = $passportIssuePlace;
-        
+
         return $this;
     }
-    
+
     /**
      * Get passportIssuePlace
      *
@@ -777,7 +776,7 @@ class NmtHrEmployee
     {
         return $this->passportIssuePlace;
     }
-    
+
     /**
      * Set passportExpireDate
      *
@@ -788,10 +787,10 @@ class NmtHrEmployee
     public function setPassportExpireDate($passportExpireDate)
     {
         $this->passportExpireDate = $passportExpireDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get passportExpireDate
      *
@@ -801,7 +800,7 @@ class NmtHrEmployee
     {
         return $this->passportExpireDate;
     }
-    
+
     /**
      * Set stayPermitNo
      *
@@ -812,10 +811,10 @@ class NmtHrEmployee
     public function setStayPermitNo($stayPermitNo)
     {
         $this->stayPermitNo = $stayPermitNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get stayPermitNo
      *
@@ -825,7 +824,7 @@ class NmtHrEmployee
     {
         return $this->stayPermitNo;
     }
-    
+
     /**
      * Set stayPermitIssueDate
      *
@@ -836,10 +835,10 @@ class NmtHrEmployee
     public function setStayPermitIssueDate($stayPermitIssueDate)
     {
         $this->stayPermitIssueDate = $stayPermitIssueDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get stayPermitIssueDate
      *
@@ -849,7 +848,7 @@ class NmtHrEmployee
     {
         return $this->stayPermitIssueDate;
     }
-    
+
     /**
      * Set stayPermitIssuePlace
      *
@@ -860,10 +859,10 @@ class NmtHrEmployee
     public function setStayPermitIssuePlace($stayPermitIssuePlace)
     {
         $this->stayPermitIssuePlace = $stayPermitIssuePlace;
-        
+
         return $this;
     }
-    
+
     /**
      * Get stayPermitIssuePlace
      *
@@ -873,7 +872,7 @@ class NmtHrEmployee
     {
         return $this->stayPermitIssuePlace;
     }
-    
+
     /**
      * Set stayPermitExpireDate
      *
@@ -884,10 +883,10 @@ class NmtHrEmployee
     public function setStayPermitExpireDate($stayPermitExpireDate)
     {
         $this->stayPermitExpireDate = $stayPermitExpireDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get stayPermitExpireDate
      *
@@ -897,7 +896,7 @@ class NmtHrEmployee
     {
         return $this->stayPermitExpireDate;
     }
-    
+
     /**
      * Set workPermitNo
      *
@@ -908,10 +907,10 @@ class NmtHrEmployee
     public function setWorkPermitNo($workPermitNo)
     {
         $this->workPermitNo = $workPermitNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get workPermitNo
      *
@@ -921,7 +920,7 @@ class NmtHrEmployee
     {
         return $this->workPermitNo;
     }
-    
+
     /**
      * Set workPermitIssueDate
      *
@@ -932,10 +931,10 @@ class NmtHrEmployee
     public function setWorkPermitIssueDate($workPermitIssueDate)
     {
         $this->workPermitIssueDate = $workPermitIssueDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get workPermitIssueDate
      *
@@ -945,7 +944,7 @@ class NmtHrEmployee
     {
         return $this->workPermitIssueDate;
     }
-    
+
     /**
      * Set workPermintIssuePlace
      *
@@ -956,10 +955,10 @@ class NmtHrEmployee
     public function setWorkPermintIssuePlace($workPermintIssuePlace)
     {
         $this->workPermintIssuePlace = $workPermintIssuePlace;
-        
+
         return $this;
     }
-    
+
     /**
      * Get workPermintIssuePlace
      *
@@ -969,7 +968,7 @@ class NmtHrEmployee
     {
         return $this->workPermintIssuePlace;
     }
-    
+
     /**
      * Set workPermitExpireDate
      *
@@ -980,10 +979,10 @@ class NmtHrEmployee
     public function setWorkPermitExpireDate($workPermitExpireDate)
     {
         $this->workPermitExpireDate = $workPermitExpireDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get workPermitExpireDate
      *
@@ -993,7 +992,7 @@ class NmtHrEmployee
     {
         return $this->workPermitExpireDate;
     }
-    
+
     /**
      * Set salaryPmtMethod
      *
@@ -1004,10 +1003,10 @@ class NmtHrEmployee
     public function setSalaryPmtMethod($salaryPmtMethod)
     {
         $this->salaryPmtMethod = $salaryPmtMethod;
-        
+
         return $this;
     }
-    
+
     /**
      * Get salaryPmtMethod
      *
@@ -1017,7 +1016,7 @@ class NmtHrEmployee
     {
         return $this->salaryPmtMethod;
     }
-    
+
     /**
      * Set nationality
      *
@@ -1028,10 +1027,10 @@ class NmtHrEmployee
     public function setNationality($nationality)
     {
         $this->nationality = $nationality;
-        
+
         return $this;
     }
-    
+
     /**
      * Get nationality
      *
@@ -1041,7 +1040,7 @@ class NmtHrEmployee
     {
         return $this->nationality;
     }
-    
+
     /**
      * Set currentState
      *
@@ -1052,10 +1051,10 @@ class NmtHrEmployee
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-        
+
         return $this;
     }
-    
+
     /**
      * Get currentState
      *
@@ -1065,7 +1064,7 @@ class NmtHrEmployee
     {
         return $this->currentState;
     }
-    
+
     /**
      * Set createdBy
      *
@@ -1076,10 +1075,10 @@ class NmtHrEmployee
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdBy
      *
@@ -1089,7 +1088,7 @@ class NmtHrEmployee
     {
         return $this->createdBy;
     }
-    
+
     /**
      * Set lastChangeBy
      *
@@ -1100,10 +1099,10 @@ class NmtHrEmployee
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
         $this->lastChangeBy = $lastChangeBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get lastChangeBy
      *
@@ -1113,7 +1112,7 @@ class NmtHrEmployee
     {
         return $this->lastChangeBy;
     }
-    
+
     /**
      * Set company
      *
@@ -1124,10 +1123,10 @@ class NmtHrEmployee
     public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
     {
         $this->company = $company;
-        
+
         return $this;
     }
-    
+
     /**
      * Get company
      *
@@ -1137,7 +1136,7 @@ class NmtHrEmployee
     {
         return $this->company;
     }
-    
+
     /**
      * Set birthCountry
      *
@@ -1148,10 +1147,10 @@ class NmtHrEmployee
     public function setBirthCountry(\Application\Entity\NmtApplicationCountry $birthCountry = null)
     {
         $this->birthCountry = $birthCountry;
-        
+
         return $this;
     }
-    
+
     /**
      * Get birthCountry
      *

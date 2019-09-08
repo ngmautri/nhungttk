@@ -22,12 +22,9 @@ class DoctrineItemReportingRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-
-        $controller = new DoctrineItemReportingRepository();
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
-		return $controller;
+        $service = new DoctrineItemReportingRepository($sv);
+		return $service;
 	}	
 	
 }

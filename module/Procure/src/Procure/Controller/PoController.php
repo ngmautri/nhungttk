@@ -9,6 +9,7 @@ use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Procure\Application\Service\PO\POService;
+use Procure\Application\Reporting\PO\PoReporter;
 
 /**
  *
@@ -25,6 +26,8 @@ class PoController extends AbstractActionController
     protected $purchaseOrderService;
 
     protected $poSearchService;
+
+    protected $poReporter;
 
     /**
      *
@@ -586,9 +589,11 @@ class PoController extends AbstractActionController
         $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
 
-      /*   if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('not_found');
-        } */
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('not_found');
+         * }
+         */
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
@@ -947,27 +952,17 @@ class PoController extends AbstractActionController
             $sort = "DESC";
         endif;
 
-        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-        // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-
-        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-        // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
-        // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
-        // echo $postingPeriod;
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $list = $res->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
+        $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
@@ -978,6 +973,9 @@ class PoController extends AbstractActionController
             'currentState' => $currentState,
             'docStatus' => $docStatus
         ));
+
+        $viewModel->setTemplate("procure/po/dto_list");
+        return $viewModel;
     }
 
     /**
@@ -1166,4 +1164,23 @@ class PoController extends AbstractActionController
     {
         $this->purchaseOrderService = $purchaseOrderService;
     }
+   /**
+    * 
+    * @return \Procure\Application\Reporting\PO\PoReporter
+    */
+    public function getPoReporter()
+    {
+        return $this->poReporter;
+    }
+    
+      /**
+       * 
+       * @param PoReporter $poReporter
+       */
+    public function setPoReporter(PoReporter $poReporter)
+    {
+        $this->poReporter = $poReporter;
+    }
+
+
 }

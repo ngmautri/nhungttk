@@ -215,12 +215,18 @@ return array(
 
             
             // Repository Service
-            'Procure\Infrastructure\Persistence\DoctrinePRListRepository' => 'Procure\Infrastructure\Persistence\Factory\DoctrinePRListRepositoryFactory',
+            'Procure\Infrastructure\Persistence\Doctrine\PRListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\PRListRepositoryFactory',
+            'Procure\Infrastructure\Persistence\Doctrine\POListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\POListRepositoryFactory',
+      
+            
+            'Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository' => 'Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory',
+            'Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository' => 'Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory',
             
             
             // Reporing Service
             'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',
-   
+            'Procure\Application\Reporting\PO\PoReporter' => 'Procure\Application\Reporting\PO\PoReporterFactory',
+            
             // Appliation Service            
             'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
             

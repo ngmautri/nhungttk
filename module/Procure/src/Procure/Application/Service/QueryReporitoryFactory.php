@@ -4,6 +4,7 @@ namespace Procure\Application\Service;
 use Application\Service\AbstractService;
 use Procure\Domain\Service\QueryRepositoryFactoryInteface;
 use Procure\Infrastructure\Doctrine\DoctrineAPDocQueryRepository;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  *
@@ -24,11 +25,16 @@ class QueryRepositoryFactory extends AbstractService implements QueryRepositoryF
     }
 
     public function createPRQueryRepository()
-    {}
+    {
+         
+    }
 
     public function createQRQueryRepository()
     {}
 
     public function createPOQueryRepository()
-    {}
+    {
+        return new DoctrinePOQueryRepository($this->getDoctrineEM());
+        
+    }
 }

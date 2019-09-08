@@ -1,7 +1,7 @@
 <?php
 namespace Application\Infrastructure\Persistence;
 
-
+use Application\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -12,8 +12,14 @@ class AbstractDoctrineRepository
 {
 
     protected $doctrineEM;
-    
-    
+
+    public function __construct(\Doctrine\ORM\EntityManager $doctrineEM)
+    {
+        if ($doctrineEM == null)
+            throw new InvalidArgumentException("Entitiy manager not found.");
+
+        $this->doctrineEM = $doctrineEM;
+    }
 
     /**
      *
@@ -22,14 +28,5 @@ class AbstractDoctrineRepository
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param \Doctrine\ORM\EntityManager $doctrineEM
-     */
-    public function setDoctrineEM(\Doctrine\ORM\EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
     }
 }

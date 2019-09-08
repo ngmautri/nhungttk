@@ -20,15 +20,20 @@ class POServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
+
         $service = new POService();
-        
-        $sv =  $container->get('ControllerPluginManager');
+
+        $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));
-        
-        $sv =  $container->get('doctrine.entitymanager.orm_default');
+
+        $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
-        
+
+        $queryRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository');
+        $service->setQueryRepository($queryRepository);
+
+        $cmdRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository');
+        $service->setCmdRepository($cmdRepository);
         
         return $service;
     }

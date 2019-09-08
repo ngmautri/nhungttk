@@ -15,7 +15,7 @@ Interface POCmdRepositoryInterface
 
     public function storeHeader(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false);
 
-    public function storeRow(GenericPO $rootEntity, PORow $row, $isPosting = false);
+    public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false);
 
-    public function createRow($poId, GenericPO $row, $isPosting = false);
+    public function createRow($poId, PORow $localEntity, $isPosting = false);
 }

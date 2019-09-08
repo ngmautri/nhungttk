@@ -20,8 +20,7 @@ Interface POListRepositoryInterface
     
     public function getOpenPoGr($id, $token);
     
-    public function getOpenPoAP($id, $token);
-    
+    public function getOpenPoAP($id, $token);   
     
     
 }

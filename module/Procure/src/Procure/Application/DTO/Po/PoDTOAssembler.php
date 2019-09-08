@@ -61,7 +61,7 @@ class PoDTOAssembler
     public static function findMissingProperties()
     {
         $missingProperties = array();
-        $entity = new \Application\Entity\NmtProcurePr();
+        $entity = new \Application\Entity\NmtProcurePo();
         $dto = new PoDTO();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();

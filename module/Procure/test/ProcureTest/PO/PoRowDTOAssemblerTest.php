@@ -1,12 +1,9 @@
 <?php
 namespace ProcureTest\PR;
 
-use Procure\Application\DTO\Pr\PrDTOAssembler;
-
+use Procure\Application\DTO\Po\PORowDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\DTO\Pr\PrRowDTOAssembler;
-use Procure\Application\DTO\Po\PORowDTOAssembler;
 
 class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -30,7 +27,7 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PORowDTOAssembler::createGetMapping();
+            PORowDTOAssembler::createStoreMapping();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

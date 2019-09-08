@@ -1,7 +1,7 @@
 <?php
-namespace Procure\Infrastructure\Persistence\Factory;
+namespace Procure\Infrastructure\Doctrine\Factory;
 
-use Procure\Infrastructure\Persistence\DoctrineQOListRepository;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri
  *        
  */
-class DoctrineQOListRepositoryFactory implements FactoryInterface
+class POQueryRepositoryFactory implements FactoryInterface
 {
 
     /**
@@ -22,12 +22,10 @@ class DoctrineQOListRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
-        $controller = new DoctrineQOListRepository();
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
-		return $controller;
-	}	
-	
+        
+        $service = new DoctrinePOQueryRepository($sv);
+         return $service;
+    }
+    
 }

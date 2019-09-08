@@ -36,6 +36,9 @@ class PoControllerFactory implements FactoryInterface
 
         $sv = $sm->get('Procure\Application\Service\PO\POService' );
 		$controller->setPurchaseOrderService($sv );
+	
+		$sv = $sm->get('Procure\Application\Reporting\PO\PoReporter' );
+		$controller->setPoReporter($sv );
 		
 		return $controller;
 	}

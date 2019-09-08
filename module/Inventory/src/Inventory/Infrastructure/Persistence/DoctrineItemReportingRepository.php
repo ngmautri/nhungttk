@@ -2,10 +2,7 @@
 namespace Inventory\Infrastructure\Persistence;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
@@ -37,9 +34,9 @@ SELECT
         $sql = sprintf($sql_tmp, $limit);
 
         try {
-            $rsm = new ResultSetMappingBuilder($this->doctrineEM);
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
-            $query = $this->doctrineEM->createNativeQuery($sql, $rsm);
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
         } catch (NoResultException $e) {

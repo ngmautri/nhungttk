@@ -4,6 +4,8 @@ namespace ProcureTest\PR;
 use Procure\Application\DTO\Po\PORowDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\Intl\ResourceBundle\CurrencyBundle;
+use Symfony\Component\Intl\Intl;
 
 class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -27,7 +29,9 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PORowDTOAssembler::createStoreMapping();
+            //PORowDTOAssembler::createStoreMapping();
+            $currencies = Intl::getCurrencyBundle()->getCurrencyNames();
+            var_dump($currencies);
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

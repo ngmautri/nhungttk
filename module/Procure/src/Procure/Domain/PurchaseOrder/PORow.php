@@ -147,6 +147,8 @@ class PORow
 
     protected $billedAmount;
 
+    protected $openAPAmount;
+
     protected $pr;
 
     protected $prToken;
@@ -193,10 +195,13 @@ class PORow
 
     protected $itemVersion;
 
-   /**
-    * 
-    * @return NULL|PORowSnapshot
-    */
+    private function __construct()
+    {}
+
+    /**
+     *
+     * @return NULL|PORowSnapshot
+     */
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new PORowSnapshot());
@@ -237,24 +242,29 @@ class PORow
      *
      * @param PORowSnapshot $snapshot
      */
-    public function makeFromSnapshot(PORowSnapshot $snapshot)
+    public static function makeFromSnapshot(PORowSnapshot $snapshot)
     {
         if (! $snapshot instanceof PORowSnapshot)
             return;
 
-        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
+        $instance = new self();
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
     }
 
     /**
      *
      * @param PORowDetailsSnapshot $snapshot
      */
-    public function makeFromDetailsSnapshot(PORowDetailsSnapshot $snapshot)
+    public static function makeFromDetailsSnapshot(PORowDetailsSnapshot $snapshot)
     {
         if (! $snapshot instanceof PORowDetailsSnapshot)
             return;
 
-        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
     }
 
     /**
@@ -985,4 +995,76 @@ class PORow
     {
         return $this->prRowVersion;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getOpenAPAmount()
+    {
+        return $this->openAPAmount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPr()
+    {
+        return $this->pr;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrToken()
+    {
+        return $this->prToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrChecksum()
+    {
+        return $this->prChecksum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemToken()
+    {
+        return $this->itemToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemCheckSum()
+    {
+        return $this->itemCheckSum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemName1()
+    {
+        return $this->itemName1;
+    }
+
 }

@@ -8,6 +8,7 @@ use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
 use Inventory\Domain\Warehouse\Location\LocationSnapshotAssembler;
 use Procure\Domain\APInvoice\APInvoiceRowSnapshotAssembler;
 use Procure\Domain\APInvoice\APInvoiceSnapshotAssembler;
+use Procure\Domain\APInvoice\APDocRowSnapshotAssembler;
 
 /**
  * 
@@ -34,6 +35,6 @@ class ApInvoiceRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        APInvoiceRowSnapshotAssembler::createFromSnapshotCode();
+        APDocRowSnapshotAssembler::createFromSnapshotCode();
     }
 }

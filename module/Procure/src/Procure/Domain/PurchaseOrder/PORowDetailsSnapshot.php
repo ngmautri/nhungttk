@@ -24,6 +24,10 @@ class PORowDetailsSnapshot extends PORowSnapshot
     public $openAPQuantity;
 
     public $billedAmount;
+    
+    public $openAPAmount;
+    
+    //=======================
 
     public $pr;
     

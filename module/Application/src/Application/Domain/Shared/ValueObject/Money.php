@@ -1,5 +1,6 @@
 <?php
-namespace Application\Domain\Shared\ValueObject;
+namespace Application\Domain\Shared;
+
 use Money\Currency;
 
 /**

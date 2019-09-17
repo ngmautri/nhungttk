@@ -8,6 +8,7 @@ use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Doctrine\ORM\EntityManager;
+use Procure\Domain\APInvoice\APDocRowDetailsSnapshot;
 
 /**
  *
@@ -16,6 +17,98 @@ use Doctrine\ORM\EntityManager;
  */
 class PoMapper
 {
+    
+    /**
+     * 
+     * @param EntityManager $doctrineEM
+     * @param PORowDetailsSnapshot $sourceSnapShot
+     * @param APDocRowDetailsSnapshot $targetSnapShot
+     */
+    public static function mapPOtoAPRowDetail(EntityManager $doctrineEM, PORowDetailsSnapshot $sourceSnapShot, APDocRowDetailsSnapshot $targetSnapShot){
+        
+        if ($sourceSnapShot == null || $targetSnapShot == null || $targetSnapShot == null) {
+            return null;
+        }
+        
+        //$targetSnapShot->id = $sourceSnapShot-;
+        $targetSnapShot->rowNumber = $sourceSnapShot->rowNumber;
+        //$targetSnapShot->token = $sourceSnapShot-;
+        $targetSnapShot->quantity = $sourceSnapShot->openAPQuantity;
+        $targetSnapShot->unitPrice = $sourceSnapShot->docUnitPrice;
+        
+        $targetSnapShot->netAmount = $sourceSnapShot->netAmount;
+        $targetSnapShot->unit = $sourceSnapShot->docUnit;
+        $targetSnapShot->itemUnit = $sourceSnapShot->itemUnit;
+        
+        $targetSnapShot->conversionFactor = $sourceSnapShot->conversionFactor;
+        
+        //$targetSnapShot->converstionText = $sourceSnapShot-;
+        $targetSnapShot->taxRate = $sourceSnapShot->taxRate;
+        $targetSnapShot->remarks = $sourceSnapShot->remarks;
+        
+        $targetSnapShot->isActive = $sourceSnapShot->isActive;
+        //$targetSnapShot->createdOn = $sourceSnapShot-;
+        //$targetSnapShot->lastchangeOn = $sourceSnapShot-;
+        //$targetSnapShot->currentState = $sourceSnapShot-;
+        $targetSnapShot->vendorItemCode = $sourceSnapShot->vendorItemCode;
+        $targetSnapShot->traceStock = $sourceSnapShot->traceStock;
+        
+        $targetSnapShot->grossAmount = $sourceSnapShot->grossAmount;
+        $targetSnapShot->taxAmount = $sourceSnapShot->taxAmount;
+        $targetSnapShot->faRemarks = $sourceSnapShot->faRemarks;
+        
+        //$targetSnapShot->rowIdentifer = $sourceSnapShot-;
+        $targetSnapShot->discountRate = $sourceSnapShot->discountRate;
+        
+        //$targetSnapShot->revisionNo = $sourceSnapShot-;
+        //$targetSnapShot->localUnitPrice = $sourceSnapShot->uni;
+        
+        $targetSnapShot->docUnitPrice = $sourceSnapShot->docUnitPrice;
+        $targetSnapShot->exwUnitPrice = $sourceSnapShot->exwUnitPrice;
+        //$targetSnapShot->exwCurrency = $sourceSnapShot->;
+         
+        //$targetSnapShot->localNetAmount = $sourceSnapShot->netAmount;
+        //$targetSnapShot->localGrossAmount = $sourceSnapShot-;
+        
+        //$targetSnapShot->docStatus = $sourceSnapShot-;
+        //$targetSnapShot->workflowStatus = $sourceSnapShot-;
+        //$targetSnapShot->transactionType = $sourceSnapShot-;
+        //$targetSnapShot->isDraft = $sourceSnapShot-;
+        //$targetSnapShot->isPosted = $sourceSnapShot-;
+        //$targetSnapShot->transactionStatus = $sourceSnapShot-;
+        
+        //$targetSnapShot->totalExwPrice = $sourceSnapShot-;
+        //$targetSnapShot->convertFactorPurchase = $sourceSnapShot-;
+        //$targetSnapShot->convertedPurchaseQuantity = $sourceSnapShot-;
+        //$targetSnapShot->convertedStockQuantity = $sourceSnapShot-;
+        //$targetSnapShot->convertedStockUnitPrice = $sourceSnapShot-;
+        //$targetSnapShot->convertedStandardQuantity = $sourceSnapShot-;
+        //$targetSnapShot->convertedStandardUnitPrice = $sourceSnapShot-;
+        //$targetSnapShot->docQuantity = $sourceSnapShot-;
+        $targetSnapShot->docUnit = $sourceSnapShot->docUnit;
+        //$targetSnapShot->convertedPurchaseUnitPrice = $sourceSnapShot-;
+        //$targetSnapShot->isReversed = $sourceSnapShot-;
+        //$targetSnapShot->reversalDate = $sourceSnapShot-;
+        //$targetSnapShot->reversalReason = $sourceSnapShot-;
+        //$targetSnapShot->reversalDoc = $sourceSnapShot-;
+        //$targetSnapShot->isReversable = $sourceSnapShot-;
+        //$targetSnapShot->docType = $sourceSnapShot-;
+        //$targetSnapShot->descriptionText = $sourceSnapShot-;
+        //$targetSnapShot->vendorItemName = $sourceSnapShot-;
+        //$targetSnapShot->reversalBlocked = $sourceSnapShot-;
+        //$targetSnapShot->invoice = $sourceSnapShot-;
+        //$targetSnapShot->glAccount = $sourceSnapShot-;
+        //$targetSnapShot->costCenter = $sourceSnapShot-;
+        $targetSnapShot->docUom = $sourceSnapShot->docUom;
+        $targetSnapShot->prRow = $sourceSnapShot->prRow;
+        
+        //$targetSnapShot->createdBy = $sourceSnapShot-;
+        $targetSnapShot->warehouse = $sourceSnapShot->warehouse;
+        //$targetSnapShot->lastchangeBy = $sourceSnapShot-;
+        $targetSnapShot->poRow = $sourceSnapShot->id;
+        $targetSnapShot->item = $sourceSnapShot->item;
+        //$targetSnapShot->grRow = $sourceSnapShot->;
+    }
 
     /**
      *

@@ -733,6 +733,8 @@ $( "#vendor_name_1" ).autocomplete({
        <?php  //$rowDTO->convertedStandardQuantity;?>
        
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+   	{ title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
+	
        { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
        
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
@@ -760,13 +762,13 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
        { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
        { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
+       { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:70,editable: false },
 
        { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
        { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
         
  
 		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
-		{ title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
               
       ];

@@ -228,7 +228,7 @@ class POSpecificationService
         }
         // ======= EXW PRICE ==========
         if (! $spec->isSatisfiedBy($localEntity->getExwUnitPrice())) {
-            $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
+           // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
         }
 
         // ======= PR ROW ==========

@@ -4,11 +4,13 @@ namespace Procure\Infrastructure\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Domain\PurchaseOrder\GenericPO;
+use Money\Currencies\ISOCurrencies;
+use Money\Parser\DecimalMoneyParser;
+use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POQueryRepositoryInterface;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Infrastructure\Mapper\PoMapper;
-use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\AbstractPO;
 
 /**
  *
@@ -37,8 +39,9 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
      */
     public function getPODetailsById($id)
     {
-
-        $po = $this->getDoctrineEM()->getRepository('Application\Entity\NmtProcurePo')->find($id);
+        $po = $this->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtProcurePo')
+            ->find($id);
         $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
 
         if ($poDetailsSnapshot == null) {
@@ -48,8 +51,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         $rows = $this->getPoRowsDetails($id);
 
         if (count($rows) == 0) {
-            $rootEntity = new PODoc();
-            $rootEntity->makeFromDetailsSnapshot($poDetailsSnapshot);
+            $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
             return $rootEntity;
         }
 
@@ -68,7 +70,6 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
 
             /**@var \Application\Entity\NmtProcurePoRow $poRowEntity ;*/
             $po_row = $r[0];
-
 
             $poRowDetailSnapshot = PoMapper::createRowDetailSnapshot($po_row);
 
@@ -92,7 +93,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRowDetailSnapshot->postedAPQuantity = $r["posted_ap_qty"];
             $poRowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
             $poRowDetailSnapshot->billedAmount = $r["billed_amount"];
-
+            $poRowDetailSnapshot->openAPAmount = $poRowDetailSnapshot->netAmount - $poRowDetailSnapshot->billedAmount;
+            
             $totalRows ++;
             $totalActiveRows ++;
             $netAmount = $netAmount + $poRowDetailSnapshot->netAmount;
@@ -100,8 +102,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $grossAmount = $grossAmount + $poRowDetailSnapshot->grossAmount;
             $billedAmount = $billedAmount + $poRowDetailSnapshot->billedAmount;
 
-            $poRow = new PORow();
-            $poRow->makeFromDetailsSnapshot($poRowDetailSnapshot);
+            $poRow  = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
         }
 
@@ -120,9 +121,18 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         $poDetailsSnapshot->billedAmount = $billedAmount;
         $poDetailsSnapshot->completedRows = $completedRows;
 
-        $rootEntity = new PODoc();
-        $rootEntity->makeFromDetailsSnapshot($poDetailsSnapshot);
+        $currencies = new ISOCurrencies();
+        // $numberFormatter = new \NumberFormatter('en', \NumberFormatter::CURRENCY_SYMBOL);
+        // $moneyFormatter = new DecimalMoneyFormatter($currencies);
+        $moneyParser = new DecimalMoneyParser($currencies);
+        //var_dump($poDetailsSnapshot->currencyIso3);
 
+        $netMoney = $moneyParser->parse("$netAmount", $poDetailsSnapshot->currencyIso3);
+        $billedMoney = $moneyParser->parse("$billedAmount", $poDetailsSnapshot->currencyIso3);
+
+        $poDetailsSnapshot->openAPAmount = $netMoney->subtract($billedMoney);
+
+        $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);   
         $rootEntity->setDocRows($docRowsArray);
         return $rootEntity;
     }

@@ -2,6 +2,7 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Notification;
+use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecificationService;
 
@@ -41,7 +42,39 @@ class PODoc extends GenericPO
     protected function doPost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
     {}
 
-    protected function specificRowValidation(PORow $row, POPostingService $specificationService, Notification $notification, $isPosting = false)
+    private function __construct()
+    {}
+
+    /**
+     *
+     * @param PODetailsSnapshot $snapshot
+     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function makeFromDetailsSnapshot(PODetailsSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PODetailsSnapshot)
+            return;
+
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
+    /**
+     *
+     * @param PoSnapshot $snapshot
+     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function makeFromSnapshot(PoSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof PoSnapshot)
+            return;
+            
+            $instance = new self();
+            SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+            return $instance;
+    }
+    protected function specificRowValidation(PORow $row, POSpecificationService $specificationService, Notification $notification, $isPosting = false)
     {}
 
 }

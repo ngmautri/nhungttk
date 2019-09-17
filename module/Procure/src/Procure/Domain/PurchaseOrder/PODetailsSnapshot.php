@@ -46,7 +46,11 @@ class PODetailsSnapshot extends POSnapshot
     public $billedAmount;
 
     public $completedRows;
+
+    public $openAPAmount;
+
     /**
+     *
      * @return mixed
      */
     public function getPaymentTermName()
@@ -55,6 +59,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTermCode()
@@ -63,6 +68,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseName()
@@ -71,6 +77,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseCode()
@@ -79,6 +86,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethodName()
@@ -87,6 +95,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethodCode()
@@ -95,6 +104,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermCode()
@@ -103,6 +113,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermName()
@@ -111,6 +122,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedByName()
@@ -119,6 +131,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangedByName()
@@ -127,6 +140,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalRows()
@@ -135,6 +149,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalActiveRows()
@@ -143,6 +158,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMaxRowNumber()
@@ -151,6 +167,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getNetAmount()
@@ -159,6 +176,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -167,6 +185,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -175,6 +194,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountAmount()
@@ -183,6 +203,7 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBilledAmount()
@@ -191,11 +212,11 @@ class PODetailsSnapshot extends POSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompletedRows()
     {
         return $this->completedRows;
     }
-
 }

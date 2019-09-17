@@ -62,8 +62,7 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
                 }
             }
 
-            $rep = new DoctrineItemReportingRepository();
-            $rep->setDoctrineEM($this->getDoctrineEM());
+            $rep = new DoctrineItemReportingRepository($this->getDoctrineEM());
             $records = $rep->getAllItemWithSerial($itemId);
 
             if (count($records) == 0) {

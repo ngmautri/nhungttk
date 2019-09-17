@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\DTO\Po;
 
-use Procure\Domain\PurchaseOrder\PORow;
 
 /**
  *

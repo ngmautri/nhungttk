@@ -91,6 +91,8 @@ class ExcelStrategy extends DownloadStrategyAbstract
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Buying");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Item.No.");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $header, "Row.No.");
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $header, "Vendor.I Code");
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $header, "Vendor.I.No.");
         
         foreach ($rows as $r) {
 
@@ -116,6 +118,8 @@ class ExcelStrategy extends DownloadStrategyAbstract
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getItem()
                 ->getSysNumber());
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getRowNumber());
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->getVendorItemCode());
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $l, $a->getVendorItemName());
             
         }
 

@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecificationService;
+use Ramsey;
 
 /**
  *
@@ -55,6 +56,9 @@ class PODoc extends GenericPO
         if (! $snapshot instanceof PODetailsSnapshot)
             return;
 
+        if ($snapshot->uuid == null) {
+            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+        }
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
@@ -69,12 +73,16 @@ class PODoc extends GenericPO
     {
         if (! $snapshot instanceof PoSnapshot)
             return;
-            
-            $instance = new self();
-            SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-            return $instance;
+
+        if ($snapshot->uuid == null) {
+            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+        }
+
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
     }
+
     protected function specificRowValidation(PORow $row, POSpecificationService $specificationService, Notification $notification, $isPosting = false)
     {}
-
 }

@@ -18,4 +18,6 @@ Interface PRQueryRepositoryInterface
     public function getByUUID($uuid);
 
     public function getPRDetailsById($id, $token = null);
+    
+ 
 }

@@ -20,6 +20,15 @@ use Procure\Infrastructure\Doctrine\SQL\PrSQL;
  */
 class DoctrinePRQueryRepository  extends AbstractDoctrineRepository implements PRQueryRepositoryInterface
 {
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Procure\Domain\PurchaseRequest\PRQueryRepositoryInterface::getPriceOfItem()
+     */
+    public function getPriceOfItem($id, $token = null)
+    {}
+    
+    
 
     /**
      *
@@ -368,5 +377,6 @@ class DoctrinePRQueryRepository  extends AbstractDoctrineRepository implements P
 
         return $snapshot;
     }
-  
+    
+   
 }

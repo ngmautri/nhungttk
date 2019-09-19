@@ -60,9 +60,9 @@ class POServiceTest extends PHPUnit_Framework_TestCase
             $rootEntity = PODoc::makeFromSnapshot($snapshot);
             // var_dump($rootEntity);
 
-            $data["item"] = 24271;
+            $data["item"] = 2427;
             $data["docQuantity"] = 40;
-            $data["docUnitPrice"] = 40.89;
+            $data["docUnitPrice"] = 4089;
             $data["conversionFactor"] = 1;
             $rowSnapshot = SnapshotAssembler::createSnapShotFromArray($data, new PORowSnapshot());
             

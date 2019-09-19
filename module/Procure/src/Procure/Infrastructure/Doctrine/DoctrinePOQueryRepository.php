@@ -11,6 +11,7 @@ use Procure\Domain\PurchaseOrder\POQueryRepositoryInterface;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Infrastructure\Mapper\PoMapper;
 use Procure\Domain\PurchaseOrder\AbstractPO;
+use Procure\Infrastructure\Doctrine\SQL\PoSQL;
 
 /**
  *
@@ -94,7 +95,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
             $poRowDetailSnapshot->billedAmount = $r["billed_amount"];
             $poRowDetailSnapshot->openAPAmount = $poRowDetailSnapshot->netAmount - $poRowDetailSnapshot->billedAmount;
-            
+
             $totalRows ++;
             $totalActiveRows ++;
             $netAmount = $netAmount + $poRowDetailSnapshot->netAmount;
@@ -102,7 +103,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $grossAmount = $grossAmount + $poRowDetailSnapshot->grossAmount;
             $billedAmount = $billedAmount + $poRowDetailSnapshot->billedAmount;
 
-            $poRow  = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
+            $poRow = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
         }
 
@@ -125,14 +126,14 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         // $numberFormatter = new \NumberFormatter('en', \NumberFormatter::CURRENCY_SYMBOL);
         // $moneyFormatter = new DecimalMoneyFormatter($currencies);
         $moneyParser = new DecimalMoneyParser($currencies);
-        //var_dump($poDetailsSnapshot->currencyIso3);
+        // var_dump($poDetailsSnapshot->currencyIso3);
 
         $netMoney = $moneyParser->parse("$netAmount", $poDetailsSnapshot->currencyIso3);
         $billedMoney = $moneyParser->parse("$billedAmount", $poDetailsSnapshot->currencyIso3);
 
         $poDetailsSnapshot->openAPAmount = $netMoney->subtract($billedMoney);
 
-        $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);   
+        $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         return $rootEntity;
     }
@@ -146,46 +147,13 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
      */
     private function getPoRowsDetails($id)
     {
-        $sql1 = "
-SELECT
-    nmt_procure_po_row.id AS po_row_id,
-	IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS draft_ap_qty,
-    IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS posted_ap_qty,
-    IFNULL(nmt_procure_po_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS confirmed_ap_balance,
-    nmt_procure_po_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END)-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END) AS open_ap_qty,
-    ifnull(SUM(CASE WHEN fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.net_amount ELSE 0 END),0)AS billed_amount
-            
-FROM nmt_procure_po_row
-            
-LEFT JOIN fin_vendor_invoice_row
-ON fin_vendor_invoice_row.po_row_id =  nmt_procure_po_row.id
-            
-WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1
-GROUP BY nmt_procure_po_row.id
-";
-
-        $sql2 = "
-SELECT
-            
-	IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS draft_gr_qty,
-    IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 AND nmt_procure_gr_row.is_posted=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS posted_gr_qty,
-    IFNULL(nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 AND nmt_procure_gr_row.is_posted=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS confirmed_gr_balance,
-    nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END)-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 AND nmt_procure_gr_row.is_posted=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END) AS open_gr_qty,
-    nmt_procure_po_row.id as po_row_id
-            
-FROM nmt_procure_po_row
-            
-LEFT JOIN nmt_procure_gr_row
-ON nmt_procure_gr_row.po_row_id =  nmt_procure_po_row.id
-            
-WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1
-GROUP BY nmt_procure_po_row.id
-";
-
         $sql = "
 SELECT
 *
 FROM nmt_procure_po_row
+
+LEFT JOIN nmt_procure_po
+on nmt_procure_po.id = nmt_procure_po_row.po_id
             
 LEFT JOIN
 (%s)
@@ -204,12 +172,12 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
          * @todo To add Return and Credit Memo
          */
 
-        $sql1 = sprintf($sql1, $id);
-        $sql2 = sprintf($sql2, $id);
+        $sql1 = sprintf(PoSQL::SQL_ROW_PO_AP, sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id));
+        $sql2 = sprintf(PoSQL::SQL_ROW_PO_GR, sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id));
 
         $sql = sprintf($sql, $sql1, $sql2, $id);
 
-        // echo $sql;
+        //echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());

@@ -25,6 +25,13 @@ class PoReporter extends AbstractService
         return $results;
     }
 
+    
+    public function getAllPoRowStatus($is_active = 1, $pr_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy){
+        
+    }
+    
+    
+    
     /**
      *
      * @return \Procure\Infrastructure\Persistence\Doctrine\POListRepository

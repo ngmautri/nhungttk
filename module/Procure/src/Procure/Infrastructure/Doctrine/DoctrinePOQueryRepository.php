@@ -151,9 +151,6 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
 SELECT
 *
 FROM nmt_procure_po_row
-
-LEFT JOIN nmt_procure_po
-on nmt_procure_po.id = nmt_procure_po_row.po_id
             
 LEFT JOIN
 (%s)
@@ -166,37 +163,34 @@ AS nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
             
 WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by row_number";
-
         /**
          *
          * @todo To add Return and Credit Memo
          */
-
-        $sql1 = sprintf(PoSQL::SQL_ROW_PO_AP, sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id));
-        $sql2 = sprintf(PoSQL::SQL_ROW_PO_GR, sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id));
-
+        
+        $tmp1 = sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id );        
+        $sql1 = sprintf(PoSQL::SQL_ROW_PO_AP, $tmp1);
+        
+        $tmp2 = sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id );
+        $sql2 = sprintf(PoSQL::SQL_ROW_PO_GR, $tmp2);
+        
         $sql = sprintf($sql, $sql1, $sql2, $id);
 
-        //echo $sql;
-
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
-
             $rsm->addScalarResult("draft_gr_qty", "draft_gr_qty");
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
             $rsm->addScalarResult("confirmed_gr_balance", "confirmed_gr_balance");
             $rsm->addScalarResult("open_gr_qty", "open_gr_qty");
-
             $rsm->addScalarResult("draft_ap_qty", "draft_ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
             $rsm->addScalarResult("confirmed_ap_balance", "confirmed_ap_balance");
             $rsm->addScalarResult("open_ap_qty", "open_ap_qty");
             $rsm->addScalarResult("billed_amount", "billed_amount");
-
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return $result;
+            return $query->getResult();
         } catch (NoResultException $e) {
             return null;
         }

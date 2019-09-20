@@ -12,6 +12,8 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtInventoryTrx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Procure\Application\Reporting\PO\Output\PoRowStatusOutputStrategy;
+use Procure\Application\Reporting\PO\PoReporter;
 
 /**
  *
@@ -26,12 +28,182 @@ class PoRowController extends AbstractActionController
     protected $poService;
 
     protected $poSearchService;
+    
+    /**
+     *
+     * @var PoReporter $poReporter ;
+     */
+    protected $poReporter;
 
     /*
      * Defaul Action
      */
     public function indexAction()
     {}
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function statusReportAction()
+    {
+
+        // $this->layout ( "layout/fluid" );
+        $item_type = $this->params()->fromQuery('item_type');
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
+
+        $output = (int) $this->params()->fromQuery('output');
+
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $balance = $this->params()->fromQuery('balance');
+        $po_year = $this->params()->fromQuery('po_year');
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 30;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+
+        if ($output == null) :
+            // $sort_by = "prNumber";
+            $output = PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
+        endif;
+
+        if ($sort_by == null) :
+            // $sort_by = "prNumber";
+            $sort_by = "vendorName";
+        endif;
+
+            // $n = new NmtInventoryItem();
+        if ($balance == null) :
+            $balance = 1;
+        endif;
+
+        if ($is_active == null) :
+            $is_active = 1;
+        endif;
+
+            // $n = new NmtInventoryItem();
+        if ($po_year == null) :
+             $po_year = date('Y');
+        endif;
+
+        if ($sort == null) :
+            $sort = "ASC";
+        endif;
+
+        $paginator = null;
+        $result = null;
+
+        $total_records = count($this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output));
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $result = $this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+        } else {
+            $result = $this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output);
+        }
+
+        // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
+        // var_dump (count($all));
+
+        return new ViewModel(array(
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'is_active' => $is_active,
+            'is_fixed_asset' => $is_fixed_asset,
+            'per_pape' => $resultsPerPage,
+            'item_type' => $item_type,
+            'balance' => $balance,
+            'po_year' => $po_year,
+            'output' => $output,
+            'result' => $result,
+            'paginator' => $paginator
+        ));
+    }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function statusReportGirdAction()
+    {
+        if (isset($_GET['sort_by'])) {
+            $sort_by = $_GET['sort_by'];
+        } else {
+            $sort_by = "itemName";
+        }
+        
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "ASC";
+        }
+        
+        if (isset($_GET['balance'])) {
+            $balance = $_GET['balance'];
+        } else {
+            $balance = 1;
+        }
+        
+        if (isset($_GET['is_active'])) {
+            $is_active = (int) $_GET['is_active'];
+        } else {
+            $is_active = 1;
+        }
+        
+        if (isset($_GET['po_year'])) {
+            
+            $po_year = $_GET['po_year'];
+        } else {
+            $po_year = date('Y');
+        }
+        
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        } else {
+            $pq_curPage = 1;
+        }
+        
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        } else {
+            $pq_rPP = 1;
+        }
+        $output = PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
+        $total_records = count($this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output));
+        
+        $a_json_final = array();
+        
+        if ($total_records > 0) {
+            
+            if ($total_records > $pq_rPP) {
+                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
+                $result = $this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+            } else {
+                $result = $this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output);
+            }
+            
+            $a_json_final['data'] = $result;
+            $a_json_final['totalRecords'] = $total_records;
+            $a_json_final['curPage'] = $pq_curPage;
+        }
+        
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
 
     /**
      *
@@ -611,9 +783,9 @@ class PoRowController extends AbstractActionController
 
                     // $a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());
 
-                    //$a_json_row["row_identifer"] = '<span style="font-size:8pt; color: graytext">'. $a->getRowIdentifer() .'</span>' ;
-                    
-                    $a_json_row["row_identifer"] = $a->getRowIdentifer() ;
+                    // $a_json_row["row_identifer"] = '<span style="font-size:8pt; color: graytext">'. $a->getRowIdentifer() .'</span>' ;
+
+                    $a_json_row["row_identifer"] = $a->getRowIdentifer();
 
                     $a_json_row["row_id"] = $a->getId();
                     $a_json_row["row_token"] = $a->getToken();
@@ -649,8 +821,7 @@ class PoRowController extends AbstractActionController
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
 
-                            $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', 
-                                $a->getPrRow()->getRowIdentifer(), $a->getPrRow()
+                            $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $a->getPrRow()->getRowIdentifer(), $a->getPrRow()
                                 ->getPr()
                                 ->getToken(), $a->getPrRow()
                                 ->getPr()
@@ -658,7 +829,9 @@ class PoRowController extends AbstractActionController
                                 ->getPr()
                                 ->getChecksum());
 
-                            $a_json_row["pr_number"] = '<span style="font-size:8pt; color: graytext">'. $a->getPrRow()->getPr()->getPrName() .'</span>' . $link;
+                            $a_json_row["pr_number"] = '<span style="font-size:8pt; color: graytext">' . $a->getPrRow()
+                                ->getPr()
+                                ->getPrName() . '</span>' . $link;
                         }
                     }
 
@@ -1252,4 +1425,20 @@ class PoRowController extends AbstractActionController
     {
         $this->poSearchService = $poSearchService;
     }
+    /**
+     * @return \Procure\Application\Reporting\PO\PoReporter
+     */
+    public function getPoReporter()
+    {
+        return $this->poReporter;
+    }
+
+    /**
+     * @param \Procure\Application\Reporting\PO\PoReporter $poReporter
+     */
+    public function setPoReporter(PoReporter $poReporter)
+    {
+        $this->poReporter = $poReporter;
+    }
+
 }

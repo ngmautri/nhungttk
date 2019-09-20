@@ -37,7 +37,9 @@ class PoRowControllerFactory implements FactoryInterface {
 		
 		$sv =  $sm->get ('Procure\Service\PoSearchService' );
 		$controller->setPoSearchService($sv );
-		
+
+		$sv =  $sm->get ('Procure\Application\Reporting\PO\PoReporter' );
+		$controller->setPoReporter($sv);		
 		
 		return $controller;
 	}

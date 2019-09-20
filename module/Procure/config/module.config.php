@@ -41,6 +41,7 @@ return array(
             ),
             
             
+            
             array(
                 'label' => 'Pending PR',
                 //'uri'  => "/procure/pr/all?pr_year=0&balance=0&is_active=1&sort_by=prNumber&sort=ASC&perPage=15",
@@ -84,6 +85,15 @@ return array(
                 'label' => 'PR Row Report',
                 'route' => 'procure/default',
                 'controller' => 'pr-row',
+                'action' => 'status-report',
+                'icon' => 'glyphicon glyphicon-list'
+                
+            ),
+            
+            array(
+                'label' => 'PO Row Report',
+                'route' => 'procure/default',
+                'controller' => 'po-row',
                 'action' => 'status-report',
                 'icon' => 'glyphicon glyphicon-list'
                 

@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Infrastructure\Persistence\Doctrine\Factory;
 
-use Procure\Infrastructure\Persistence\Doctrine\POListRepository;
+use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -24,7 +24,7 @@ class POListRepositoryFactory implements FactoryInterface
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
         
-        $service = new POListRepository($sv);
+        $service = new POListRepositoryImpl($sv);
          return $service;
     }
     

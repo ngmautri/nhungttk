@@ -30,6 +30,7 @@ use Inventory\Domain\Item\ItemType;
 			<td style="padding: 1pt 2pt 2pt 10pt;">
 				<h3 style="padding: 2pt 2pt 2pt 1pt;"><?php echo (!$entity == null)?$entity->getItemName():"";?></h3>
 				<span style="color: gray; font-size: 9.5pt"><?php echo (!$entity == null)? "Item No.: " . $entity->getSysNumber() :"";?></span>
+				<span style="color: gray; font-size: 9.5pt"><?php echo (!$entity == null)? "SKU: " . $entity->getItemSku() :"";?></span>
 
 				<div style="color: gray; padding-top: 5pt; font-size: 8pt"><?php if(!$entity == null): echo ($entity->getCreatedOn() !== null)?'Created date: ' . date_format($entity->getCreatedOn(),"Y/m/d H:i:s"):""; endif;?></div>
 				<div style="color: gray; padding-top: 2pt; font-size: 8pt"><?php if(!$entity == null): echo  ($entity->getLastChangeOn() !== null)?'Revision# '. $entity->getRevisionNo(). ' - Last Change: ' . date_format($entity->getLastChangeOn(),"Y/m/d H:i:s"):""; endif;?></div>

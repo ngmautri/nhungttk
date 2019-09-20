@@ -163,17 +163,16 @@ AS nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
             
 WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by row_number";
+        
         /**
          *
          * @todo To add Return and Credit Memo
          */
-        
-        $tmp1 = sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id );        
+
+        $tmp1 = sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id);
         $sql1 = sprintf(PoSQL::SQL_ROW_PO_AP, $tmp1);
-        
-        $tmp2 = sprintf(" AND nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1", $id );
-        $sql2 = sprintf(PoSQL::SQL_ROW_PO_GR, $tmp2);
-        
+        $sql2 = sprintf(PoSQL::SQL_ROW_PO_GR, $tmp1);
+
         $sql = sprintf($sql, $sql1, $sql2, $id);
 
         // echo $sql;

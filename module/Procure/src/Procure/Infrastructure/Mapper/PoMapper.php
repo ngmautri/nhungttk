@@ -694,6 +694,10 @@ class PoMapper
         // $snapshot->po= $entity->getPo();
         if ($entity->getPo() !== null) {
             $snapshot->po = $entity->getPo()->getId();
+            $snapshot->vendorName = $entity->getPo()->getVendorName();
+            $snapshot->poNumber = $entity->getPo()->getContractNo();
+            $snapshot->docCurrencyISO = $entity->getPo()->getCurrencyIso3();
+            $snapshot->poToken = $entity->getPo()->getToken();      
         }
 
         // $snapshot->item= $entity->getItem();

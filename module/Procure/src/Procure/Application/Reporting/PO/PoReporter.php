@@ -2,7 +2,11 @@
 namespace Procure\Application\Reporting\PO;
 
 use Application\Service\AbstractService;
-use Procure\Infrastructure\Persistence\Doctrine\POListRepository;
+use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
+use Procure\Application\Reporting\PO\Output\PoRowStatusOutputStrategy;
+use Procure\Application\Reporting\PO\Output\PoRowStatusInArray;
+use Procure\Application\Reporting\PO\Output\PoRowStatusInExcel;
+use Procure\Application\Reporting\PO\Output\PoRowStatusInOpenOffice;
 
 /**
  * PR Row Service.
@@ -15,7 +19,7 @@ class PoReporter extends AbstractService
 
     /**
      *
-     * @var POListRepository $prListRespository;
+     * @var POListRepositoryImpl $prListRespository;
      */
     private $listRespository;
 
@@ -25,16 +29,36 @@ class PoReporter extends AbstractService
         return $results;
     }
 
-    
-    public function getAllPoRowStatus($is_active = 1, $pr_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy){
-        
+    public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
+    {
+        $results = $this->getListRespository()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, $limit, $offset);
+        if ($results == null) {
+            return null;
+        }
+
+        $factory = null;
+        switch ($outputStrategy) {
+            case PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY:
+                $factory = new PoRowStatusInArray();
+                break;
+            case PoRowStatusOutputStrategy::OUTPUT_IN_EXCEL:
+                $factory = new PoRowStatusInExcel();
+                break;
+
+            case PoRowStatusOutputStrategy::OUTPUT_IN_OPEN_OFFICE:
+                $factory = new PoRowStatusInOpenOffice();
+                break;
+            default:
+                $factory = new PoRowStatusInArray();
+                break;
+        }
+
+        return $factory->createOutput($results);
     }
-    
-    
-    
+
     /**
      *
-     * @return \Procure\Infrastructure\Persistence\Doctrine\POListRepository
+     * @return \Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl
      */
     public function getListRespository()
     {
@@ -43,9 +67,9 @@ class PoReporter extends AbstractService
 
     /**
      *
-     * @param POListRepository $listRespository
+     * @param POListRepositoryImpl $listRespository
      */
-    public function setListRespository(POListRepository $listRespository)
+    public function setListRespository(POListRepositoryImpl $listRespository)
     {
         $this->listRespository = $listRespository;
     }

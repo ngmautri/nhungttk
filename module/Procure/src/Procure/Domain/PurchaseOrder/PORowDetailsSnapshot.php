@@ -9,6 +9,12 @@ namespace Procure\Domain\PurchaseOrder;
 class PORowDetailsSnapshot extends PORowSnapshot
 {
 
+    public $vendorName;
+    public $poNumber;
+    public $docCurrencyISO;
+    public $poToken;
+    
+    
     public $draftGrQuantity;
 
     public $postedGrQuantity;

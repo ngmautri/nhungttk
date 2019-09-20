@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Reporting\PR\Output;
+namespace Procure\Application\Reporting\PO\Output;
 
 /**
  * PR Row Service.
@@ -7,7 +7,7 @@ namespace Procure\Application\Reporting\PR\Output;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrRowStatusInHTMLTable extends PrRowStatusOutputStrategy
+class PoRowStatusInHTMLTable extends PoRowStatusOutputStrategy
 {
 
     private $limit;

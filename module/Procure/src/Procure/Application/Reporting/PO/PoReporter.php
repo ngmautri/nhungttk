@@ -31,11 +31,16 @@ class PoReporter extends AbstractService
 
     public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
     {
+        
         $results = $this->getListRespository()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, $limit, $offset);
+        
+          
         if ($results == null) {
             return null;
         }
 
+        //var_dump($results);
+        
         $factory = null;
         switch ($outputStrategy) {
             case PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY:
@@ -56,6 +61,12 @@ class PoReporter extends AbstractService
         return $factory->createOutput($results);
     }
 
+    
+    public function getAllPoRowStatusTotal($is_active = 1, $po_year, $balance = 1)
+    {
+        return $this->getListRespository()->getAllPoRowStatusTotal($is_active, $po_year, $balance);
+    }
+    
     /**
      *
      * @return \Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl

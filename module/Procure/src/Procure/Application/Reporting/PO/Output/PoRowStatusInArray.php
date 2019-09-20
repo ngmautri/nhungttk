@@ -41,46 +41,46 @@ class PoRowStatusInArray extends PoRowStatusOutputStrategy
                 $decimalNo = 2;
             }
 
-            if ($a->unitPrice) {
+            if ($a->unitPrice!==null) {
                 $a->unitPrice = number_format($a->unitPrice, $decimalNo);
             }
 
-            if ($a->billedAmount) {
+            if ($a->billedAmount!==null) {
                 $a->billedAmount = number_format($a->billedAmount, $decimalNo);
             }
 
-            if ($a->netAmount) {
+            if ($a->netAmount!==null) {
                 $a->netAmount = number_format($a->netAmount, $decimalNo);
             }
 
-            if ($a->openAPAmount) {
+            if ($a->openAPAmount!==null) {
                 $a->openAPAmount = number_format($a->openAPAmount, $decimalNo);
             }
 
-            if ($a->draftAPQuantity) {
+            if ($a->draftAPQuantity!==null) {
                 $a->draftAPQuantity = number_format($a->draftAPQuantity, 0);
             }
 
-            if ($a->draftGrQuantity) {
+            if ($a->draftGrQuantity!==null) {
                 $a->draftGrQuantity = number_format($a->draftGrQuantity, 0);
             }
 
-            if ($a->postedAPQuantity) {
+            if ($a->postedAPQuantity!==null) {
                 $a->postedAPQuantity = number_format($a->postedAPQuantity, 0);
             }
 
-            if ($a->postedGrQuantity) {
+            if ($a->postedGrQuantity!==null) {
                 $a->postedGrQuantity = number_format($a->postedGrQuantity, 0);
             }
 
             $escaper = new Escaper();
 
-            $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->itemToken, $a->itemCheckSum, $a->item);
+            $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->itemToken, $a->itemChecksum, $a->item);
             $onclick = sprintf("showJqueryDialog('Detail of Item: %s','1600',$(window).height()-50,'%s','j_loaded_data', true);", $escaper->escapeJs($a->itemName), $item_detail);
             
             
             $item_link = sprintf('<a style="cursor:pointer;color:#337ab7"  item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>',
-                $a->item, $a->itemName, $a->itemName, $onclick);
+                $a->item, $escaper->escapeJs($a->itemName), $escaper->escapeJs($a->itemName), $onclick);
             
             
             if (strlen($a->itemName) < 35) {

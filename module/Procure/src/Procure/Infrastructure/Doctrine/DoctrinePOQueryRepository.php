@@ -78,7 +78,10 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
                 continue;
             }
 
-            if ($r['open_gr_qty'] == 0 and $r['open_ap_qty'] == 0) {
+            /**
+             * @todo
+             */
+            if ($r['open_gr_qty'] <= 0 and $r['open_ap_qty'] <= 0) {
                 $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
                 $completedRows ++;
             } else {

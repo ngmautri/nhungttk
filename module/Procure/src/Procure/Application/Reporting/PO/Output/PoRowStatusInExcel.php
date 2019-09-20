@@ -3,6 +3,7 @@ namespace Procure\Application\Reporting\PO\Output;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
+use Application\Domain\Util\ExcelColumnMap;
 
 /**
  * PR Row Service.
@@ -49,60 +50,80 @@ class PoRowStatusInExcel extends PoRowStatusOutputStrategy
         $header = 3;
         $i = 0;
 
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "#");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "Vendor");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $header, "PO#");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $header, "Item");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $header, "SKU");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Item Vendor Name");
+        $cols = ExcelColumnMap::COLS;
 
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $header, "Item Vendor code");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Unit");
+        $headerValues = array(
+            "#",
+            "Vendor",
+            "PO#",
+            "Item",
+            "SKU",
+            "Item Vendor Name",
+            "Item Vendor code",
+            "Unit",
+            "Qty",
+            "UP",
+            "Net Amt",
+            "CUrr",
+            "Draft GR",
+            "Posted GR",
+            "Draft AP#",
+            "Posted AP",
+            "Billed Amt",
+            "Open Amt",
+            "PR",
+            "PR"
+            
+        );
 
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $header, "Qty");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $header, "UP");
+        $n = 0;
+        foreach ($headerValues as $v) {
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($cols[$n] . $header, $v);
+            $n ++;
+        }
 
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $header, "Net Amt");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $header, "CUrr");
-
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $header, "Draft GR");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $header, "Posted GR");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $header, "Draft AP#");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "Posted AP");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Billed Amt");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Open Amt");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Remarks");
-        
         foreach ($result as $a) {
 
             /**@var PORowDetailsSnapshot $a ;*/
             $i ++;
             $l = $header + $i;
 
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $l, $i);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $l, $a->vendorName);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->poNumber);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $a->itemName);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $a->itemSKU);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $a->vendorItemName);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->vendorItemCode);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->docUnit);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->quantity);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->docUnitPrice);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $l, $a->netAmount);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, $a->docCurrencyISO);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, $a->draftGrQuantity);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $l, $a->postedGrQuantity);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, $a->draftAPQuantity);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->postedAPQuantity);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->billedAmount);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->openAPAmount);
+            $columnValues = array(
+                $i,
+                $a->vendorName,
+                $a->poNumber,
+                $a->itemSKU,
+                $a->itemName,
+                $a->vendorItemName,
+                $a->vendorItemCode,
+                $a->docUnit,
+                $a->quantity,
+                $a->docUnitPrice,
+                $a->netAmount,
+                $a->docCurrencyISO,
+                $a->draftGrQuantity,
+                $a->postedGrQuantity,
+                $a->draftAPQuantity,
+                $a->postedAPQuantity,
+                $a->billedAmount,
+                $a->openAPAmount,
+                $a->remarks,
+                $a->prRowIndentifer,
+                $a->prNumber,
+            );
+
+            $n = 0;
+            foreach ($columnValues as $v) {
+
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue($cols[$n] . $l, $v);
+                $n ++;
+            }
         }
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
 
-        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:R3");
+        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:T3");
 
         // Redirect output to a client's web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

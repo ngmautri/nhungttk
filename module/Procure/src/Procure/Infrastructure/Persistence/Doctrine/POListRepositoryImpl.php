@@ -83,24 +83,24 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
 
     public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset)
     {
-        $results = $this->_getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset);
-        
+        $results = $this->_getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, $limit, $offset);
+
         if (count($results) == null) {
             return null;
         }
-          
+
         $resultList = array();
         foreach ($results as $r) {
-            
+
             /**@var \Application\Entity\NmtProcurePoRow $entity ;*/
             $entity = $r[0];
-            
+
             $poRowDetailsSnapshot = PoMapper::createRowDetailSnapshot($entity);
-            
+
             if ($poRowDetailsSnapshot == null) {
                 continue;
             }
-            
+
             $poRowDetailsSnapshot->draftGrQuantity = $r["draft_gr_qty"];
             $poRowDetailsSnapshot->postedGrQuantity = $r["posted_gr_qty"];
             $poRowDetailsSnapshot->confirmedGrBalance = $r["confirmed_gr_balance"];
@@ -110,14 +110,13 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
             $poRowDetailsSnapshot->openAPQuantity = $r["open_ap_qty"];
             $poRowDetailsSnapshot->billedAmount = $r["billed_amount"];
             $poRowDetailsSnapshot->openAPAmount = $poRowDetailsSnapshot->netAmount - $poRowDetailsSnapshot->billedAmount;
-              
+
             $resultList[] = $poRowDetailsSnapshot;
         }
-        
+
         return $resultList;
     }
-    
-   
+
     private function _getPoList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = PoSQL::PO_LIST;
@@ -188,10 +187,9 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
             return null;
         }
     }
-   
-  
-    private function _getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset){
-        
+
+    private function _getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset)
+    {
         $sql = "
 SELECT
 nmt_procure_po_row.*,
@@ -222,14 +220,14 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
          *
          * @todo To add Return and Credit Memo
          */
-        
-        $sql_tmp = '';  
+
+        $sql_tmp = '';
         $sql_tmp1 = '';
-        
+
         if ($po_year > 0) {
             $sql_tmp = $sql_tmp . " AND year(nmt_procure_po.contract_date) =" . $po_year;
         }
-        
+
         if ($balance == 0) {
             $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) <= 0";
         }
@@ -239,37 +237,37 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
         if ($balance == - 1) {
             $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) < 0";
         }
-        
+
         switch ($sort_by) {
- /*            case "itemName":
-                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
-                break;
-  */               
+            /*
+             * case "itemName":
+             * $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
+             * break;
+             */
             case "vendorName":
                 $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_procure_po.vendor_name " . $sort;
                 break;
-                
+
             case "poNumber":
                 $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_procure_po_row.contract_no " . $sort;
                 break;
-                
-         }
-        
+        }
+
         if ($limit > 0) {
             $sql_tmp1 = $sql_tmp1 . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql_tmp1 = $sql_tmp1 . " OFFSET " . $offset;
         }
-        
-        $sql1 = sprintf(\Procure\Infrastructure\Doctrine\SQL\PoSQL::SQL_ROW_PO_AP, $sql_tmp);        
+
+        $sql1 = sprintf(\Procure\Infrastructure\Doctrine\SQL\PoSQL::SQL_ROW_PO_AP, $sql_tmp);
         $sql2 = sprintf(\Procure\Infrastructure\Doctrine\SQL\PoSQL::SQL_ROW_PO_GR, $sql_tmp);
-        
+
         $sql = sprintf($sql, $sql1, $sql2, $sql_tmp . $sql_tmp1);
-        
-        //  echo $sql;
-    
+
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
@@ -289,5 +287,12 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
             return null;
         }
     }
+
+    public function getAllPoRowStatusTotal($is_active = 1, $po_year, $balance = 1)
+    {
+        $results = $this->_getAllPoRowStatus($is_active, $po_year, $balance, null, null, null, null);
+        return count($results) ;
+    }
+
     
 }

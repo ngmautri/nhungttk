@@ -61,7 +61,7 @@ class PoRowController extends AbstractActionController
         $po_year = $this->params()->fromQuery('po_year');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 30;
+            $resultsPerPage = 100;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -105,7 +105,7 @@ class PoRowController extends AbstractActionController
         $paginator = null;
         $result = null;
 
-        $total_records = count($this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output));
+        $total_records = $this->getPoReporter()->getAllPoRowStatusTotal($is_active, $po_year, $balance);
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
@@ -141,7 +141,7 @@ class PoRowController extends AbstractActionController
         if (isset($_GET['sort_by'])) {
             $sort_by = $_GET['sort_by'];
         } else {
-            $sort_by = "itemName";
+            $sort_by = "vendorName";
         }
         
         if (isset($_GET['sort'])) {
@@ -178,10 +178,10 @@ class PoRowController extends AbstractActionController
         if (isset($_GET["pq_rpp"])) {
             $pq_rPP = $_GET["pq_rpp"];
         } else {
-            $pq_rPP = 1;
+            $pq_rPP = 100;
         }
         $output = PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
-        $total_records = count($this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output));
+        $total_records = $this->getPoReporter()->getAllPoRowStatusTotal($is_active, $po_year, $balance);
         
         $a_json_final = array();
         
@@ -190,14 +190,17 @@ class PoRowController extends AbstractActionController
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
                 $result = $this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+                //var_dump($total_records);
             } else {
                 $result = $this->getPoReporter()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, 0, 0, $output);
+                
             }
             
             $a_json_final['data'] = $result;
             $a_json_final['totalRecords'] = $total_records;
             $a_json_final['curPage'] = $pq_curPage;
         }
+        //var_dump($a_json_final);
         
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');

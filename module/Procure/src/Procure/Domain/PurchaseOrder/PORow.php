@@ -233,7 +233,7 @@ class PORow
      */
     public function makeDTOForGrid()
     {
-        $dto = new PORowForGridDTO();
+        $dto = new PORowDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }

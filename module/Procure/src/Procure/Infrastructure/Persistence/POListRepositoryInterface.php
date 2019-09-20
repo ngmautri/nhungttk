@@ -23,4 +23,6 @@ Interface POListRepositoryInterface
     public function getOpenPoAP($id, $token);   
     
     public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset);
+    public function getAllPoRowStatusTotal($is_active = 1, $po_year, $balance = 1);
+    
 }

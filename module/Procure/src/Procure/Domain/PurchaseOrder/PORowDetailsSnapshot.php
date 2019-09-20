@@ -59,7 +59,7 @@ class PORowDetailsSnapshot extends PORowSnapshot
 
     public $itemToken;
 
-    public $itemCheckSum;
+    public $itemChecksum;
 
     public $itemName;
 
@@ -72,7 +72,8 @@ class PORowDetailsSnapshot extends PORowSnapshot
     public $itemSKU2;
 
     public $itemUUID;
-
+    
+     
     public $itemSysNumber;
 
     public $itemStandardUnit;

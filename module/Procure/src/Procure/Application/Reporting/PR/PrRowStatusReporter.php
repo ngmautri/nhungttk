@@ -59,6 +59,8 @@ class PrRowStatusReporter extends AbstractService
         }
 
         $result = $this->getPrListRespository()->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, $limit, $offset);
+        
+        
         return $factory->createOutput($result);
     }
 

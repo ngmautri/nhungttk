@@ -15,10 +15,10 @@ if ($output == PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
     
 endif;
 
-$link = "/procure/po-row/status-report?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
+$link = "/procure/po-row/status-report?po_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
 $url = $this->baseUrl . sprintf($link, $po_year, $balance, $is_active, $sort_by, $sort, $output1);
 
-$link1 = "/procure/po-row/status-report-gird?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
+$link1 = "/procure/po-row/status-report-gird?po_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
 $url1 = $this->baseUrl . sprintf($link1, $po_year, $balance, $is_active, $sort_by, $sort);
 
 $filtered1 = "Year=%s, Balance=%s, Sorted By=%s %s, Display=%s";
@@ -50,7 +50,7 @@ $filtered = sprintf($filtered1, $po_year, $balance, $sort_by, $sort, $output1);
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag">PR Year</label>
 						<div class="col-sm-3">
-							<select name="pr_year" class="form-control input-sm">
+							<select name="po_year" class="form-control input-sm">
 								<option value="0">All</option>
 								<option <?php echo $po_year=='2016'? "selected='selected'":"";?>
 									value="2016">2016</option>

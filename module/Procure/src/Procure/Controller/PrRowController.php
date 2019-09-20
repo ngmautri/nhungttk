@@ -2205,7 +2205,7 @@ class PrRowController extends AbstractActionController
         if (isset($_GET["pq_rpp"])) {
             $pq_rPP = $_GET["pq_rpp"];
         } else {
-            $pq_rPP = 1;
+            $pq_rPP = 100;
         }
         $output = PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
         $total_records = $this->getPrRowStatusReporter()->getPrRowStatusTotal($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);

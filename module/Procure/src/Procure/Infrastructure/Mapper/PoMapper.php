@@ -705,8 +705,7 @@ class PoMapper
             $snapshot->item = $entity->getItem()->getId();
 
             $snapshot->itemToken = $entity->getItem()->getToken();
-            $snapshot->itemCheckSum = $entity->getItem()->getChecksum();
-
+         
             $snapshot->itemName = $entity->getItem()->getItemName();
             $snapshot->itemName1 = $entity->getItem()->getItemNameForeign();
 
@@ -715,6 +714,9 @@ class PoMapper
             $snapshot->itemSKU1 = $entity->getItem()->getItemSku1();
             $snapshot->itemSKU2 = $entity->getItem()->getItemSku2();
 
+            $snapshot->itemChecksum = $entity->getItem()->getChecksum();
+   
+            
             $snapshot->itemVersion = $entity->getItem()->getRevisionNo();
 
             if ($entity->getItem()->getStandardUom() != null) {

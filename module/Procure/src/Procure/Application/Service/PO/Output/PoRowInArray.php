@@ -51,7 +51,7 @@ class PoRowInArray extends PoRowOutputStrategy
                 continue;
             }
 
-            /**@var \Procure\Application\DTO\Po\PORowForGridDTO $dto ;*/
+            /**@var \Procure\Application\DTO\Po\PORowDetailsDTO $dto ;*/
             $dto = $row->makeDTOForGrid();
 
             if ($dto == null) {
@@ -92,6 +92,10 @@ class PoRowInArray extends PoRowOutputStrategy
 
             if ($dto->netAmount !== null) {
                 $dto->netAmount = number_format($dto->netAmount, $decimalNo);
+            }
+            
+            if ($dto->openAPAmount !== null) {
+                $dto->openAPAmount = number_format($dto->openAPAmount, $decimalNo);
             }
 
             if ($dto->taxAmount !== null) {

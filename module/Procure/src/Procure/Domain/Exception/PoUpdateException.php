@@ -6,6 +6,6 @@ namespace Procure\Domain\Exception;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class InvalidArgumentException extends \Exception
+class PoUpdateException extends \Exception
 {
 }

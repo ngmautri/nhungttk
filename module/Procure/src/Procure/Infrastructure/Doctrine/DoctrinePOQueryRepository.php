@@ -10,7 +10,6 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POQueryRepositoryInterface;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Infrastructure\Mapper\PoMapper;
-use Procure\Domain\PurchaseOrder\AbstractPO;
 use Procure\Infrastructure\Doctrine\SQL\PoSQL;
 
 /**
@@ -21,8 +20,24 @@ use Procure\Infrastructure\Doctrine\SQL\PoSQL;
 class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getHeaderById()
+     */
     public function getHeaderById($id, $token = null)
-    {}
+    {
+        $po = $this->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtProcurePo')
+            ->find($id);
+        $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
+
+        if ($poDetailsSnapshot == null) {
+            return null;
+        }
+
+        return PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
+    }
 
     public function getById($id, $outputStragegy = null)
     {}
@@ -79,6 +94,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             }
 
             /**
+             *
              * @todo
              */
             if ($r['open_gr_qty'] <= 0 and $r['open_ap_qty'] <= 0) {
@@ -166,7 +182,7 @@ AS nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
             
 WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by row_number";
-        
+
         /**
          *
          * @todo To add Return and Credit Memo

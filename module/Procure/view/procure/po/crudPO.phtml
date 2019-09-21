@@ -161,12 +161,12 @@ if (count($errors) > 0) {
                 foreach ($currency_list as $curr) :
                     if ($dto !== null) :
                         if ($dto->getDocCurrency() == $curr->getId()) :
-                        echo sprintf('<option selected value="%s">%s</option>'. $curr->getId(),$curr->getCurrency());
+                            echo sprintf('<option selected value="%s">%s</option>', $curr->getId(),$curr->getCurrency());
                         else :
-                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            echo sprintf('<option value="%s">%s</option>', $curr->getId(),$curr->getCurrency());
                         endif;
                     else :
-                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                         echo sprintf('<option value="%s">%s</option>', $curr->getId(),$curr->getCurrency());
                     endif;
                 endforeach
                 ;

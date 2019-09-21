@@ -4,6 +4,7 @@ namespace Application\Service;
 use Doctrine\ORM\EntityManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Application\Domain\Shared\AggregateRoot;
 
 /**
  * All Service shall extend this.
@@ -21,6 +22,31 @@ abstract class AbstractService implements EventManagerAwareInterface
     protected $eventManager;
 
     protected $jeService;
+
+    protected function triggerEvent(AggregateRoot $rootEntity)
+    {
+        if (! $rootEntity instanceof AggregateRoot) {
+            return;
+        }
+
+        // Triger Event
+        if (count($rootEntity->getRecordedEvents() > 0)) {
+
+            $dispatcher = new $rootEntity();
+
+            foreach ($rootEntity->getRecordedEvents() as $event) {
+
+                $subcribers = $rootEntity::createEventHandler(get_class($event));
+
+                if (count($subcribers) > 0) {
+                    foreach ($subcribers as $subcriber) {
+                        $dispatcher->addSubscriber($subcriber);
+                    }
+                }
+                $dispatcher->dispatch(get_class($event), $event);
+            }
+        }
+    }
 
     /**
      *
@@ -56,8 +82,8 @@ abstract class AbstractService implements EventManagerAwareInterface
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
      */
     public function getEventManager()
@@ -65,36 +91,36 @@ abstract class AbstractService implements EventManagerAwareInterface
         return $this->eventManager;
     }
 
-   /**
-    * 
-    *  @return \Finance\Service\JEService
-    */
+    /**
+     *
+     * @return \Finance\Service\JEService
+     */
     public function getJeService()
     {
         return $this->jeService;
     }
 
-   /**
-    * 
-    *  @param \Finance\Service\JEService $jeService
-    */
+    /**
+     *
+     * @param \Finance\Service\JEService $jeService
+     */
     public function setJeService(\Finance\Service\JEService $jeService)
     {
         $this->jeService = $jeService;
     }
-    
-   /**
-    * 
-    *  @return \Application\Controller\Plugin\NmtPlugin
-    */
+
+    /**
+     *
+     * @return \Application\Controller\Plugin\NmtPlugin
+     */
     public function getControllerPlugin()
     {
         return $this->controllerPlugin;
     }
 
     /**
-     * 
-     *  @param \Application\Controller\Plugin\NmtPlugin $controllerPlugin
+     *
+     * @param \Application\Controller\Plugin\NmtPlugin $controllerPlugin
      */
     public function setControllerPlugin(\Application\Controller\Plugin\NmtPlugin $controllerPlugin)
     {

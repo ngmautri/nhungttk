@@ -305,6 +305,8 @@ class PoController extends AbstractActionController
      */
     public function updateAction()
     {
+        $this->layout("Procure/layout-fullscreen");
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/update";
@@ -321,11 +323,19 @@ class PoController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
 
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('token');
+            $dto = $this->purchaseOrderService->getPOHeaderById($entity_id);
+
+            if ($dto == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'dto' => null,
+                'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -347,14 +357,15 @@ class PoController extends AbstractActionController
 
         $userId = $u->getId();
         $companyId = $u->getCompany()->getId();
-
-        $notification = $this->purchaseOrderService->createHeader($dto, $companyId, $userId, __METHOD__, true);
+        $entity_id = $data['entity_id'];
+        
+        $notification = $this->purchaseOrderService->updateHeader($data['entity_id'], $dto, $companyId, $userId, __METHOD__);
+        
         if ($notification->hasErrors()) {
-
             $viewModel = new ViewModel(array(
-                'errors' => $notification->errorMessage(),
+                'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
-                'entity_id' => null,
+                'entity_id' => $entity_id,
                 'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -774,8 +785,7 @@ class PoController extends AbstractActionController
             'errors' => null,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
-            'nmtPlugin' => $nmtPlugin,
-            
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("procure/po/view");

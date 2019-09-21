@@ -6,6 +6,8 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecificationService;
 use Ramsey;
+use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\Event\POHeaderUpdatedEvent;
 
 /**
  *
@@ -76,10 +78,35 @@ class PODoc extends GenericPO
 
         if ($snapshot->uuid == null) {
             $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $snapshot->token = $snapshot->uuid;
         }
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
+    /**
+     *
+     * @param PoSnapshot $snapshot
+     * @param POSpecificationService $specificationService
+     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function updateFromSnapshot(PoSnapshot $snapshot, POSpecificationService $specificationService = null)
+    {
+        if (! $snapshot instanceof PoSnapshot) {
+            return;
+        }
+
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+
+        $notification = $instance->validateHeader($specificationService);
+        if ($notification->hasErrors()) {
+            throw new PoUpdateException($notification->errorMessage());
+        }
+        $instance->registerEvent(new POHeaderUpdatedEvent());
+        
         return $instance;
     }
 

@@ -33,8 +33,8 @@ abstract class AggregateRoot
      *
      * @return array
      */
-    public function registerEvent()
+    public function registerEvent($event)
     {
-        
+        $this->recordedEvents[] = $event;
     }
 }

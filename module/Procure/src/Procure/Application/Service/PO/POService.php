@@ -64,12 +64,9 @@ class POService extends AbstractService
          * @var POSnapshot $snapshot ;
          */
         $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
-        $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-        $snapshot->token = $snapshot->uuid;
         $snapshot->localCurrency = $company->getDefaultCurrency();
 
-        $entityRoot = new PODoc();
-        $entityRoot->makeFromSnapshot($snapshot);
+        $entityRoot = PODoc::makeFromSnapshot($snapshot);
 
         $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $fxService = new FXService();
@@ -157,12 +154,12 @@ class POService extends AbstractService
             return $notification;
         }
 
-        $rootEntity = $this->getQueryRepository()->getPODetailsById($rootEntityId);
+        $rootEntity = $this->getQueryRepository()->getHeaderById($rootEntityId);
 
         if ($rootEntity == null) {
             $notification->addError(sprintf("PO #%s can not be retrieved or empty", $rootEntityId));
         }
-        
+
         if ($notification->hasErrors()) {
             return $notification;
         }
@@ -182,8 +179,8 @@ class POService extends AbstractService
 
             $newSnapshot = POSnapshotAssembler::updateSnapshotFromDTO($dto, $newSnapshot);
             $changeArray = $snapshot->compare($newSnapshot);
-            var_dump($changeArray);
-            
+            // var_dump($changeArray);
+
             if ($changeArray == null) {
                 $notification->addError("Nothing change on PO#" . $rootEntityId);
                 return $notification;
@@ -194,16 +191,14 @@ class POService extends AbstractService
             $newSnapshot->lastChangeOn = new \DateTime();
             $newSnapshot->revisionNo ++;
 
-            $newRootEntity = new PODoc();
-            $newRootEntity->makeFromSnapshot($newSnapshot);
-
+      
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($this->getDoctrineEM());
-
             $specService = new POSpecificationService($sharedSpecificationFactory, $fxService);
-
-            $notification = $newRootEntity->validateHeader($specService, $notification);
+            
+            $newRootEntity = PODoc::updateFromSnapshot($newSnapshot, $specService);
+                       
 
             if ($notification->hasErrors()) {
                 return $notification;
@@ -212,6 +207,9 @@ class POService extends AbstractService
             $this->getCmdRepository()->storeHeader($newRootEntity);
 
             $m = sprintf("PO #%s updated", $rootEntityId);
+            
+         
+            
 
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
@@ -260,6 +258,22 @@ class POService extends AbstractService
 
         return $po;
     }
+    
+    /**
+     *
+     * @param int $id
+     * @param int $outputStrategy
+     */
+    public function getPOHeaderById($id)
+    {
+        $po = $this->getQueryRepository()->getHeaderById($id);
+        
+        if ($po == null) {
+            return null;
+        }
+        return $po->makeHeaderDTO();
+    }
+    
 
     /**
      *

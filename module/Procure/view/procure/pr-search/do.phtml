@@ -41,6 +41,9 @@ if (! $hits == null) :
     $count = 0;
     foreach ($hits as $hit) :
         $count ++;
+    
+        $url = $nmtPlugin->getItemPic($hit->item_id);
+        
         ?>
 	 <tr>
 
@@ -52,6 +55,13 @@ if (! $hits == null) :
 						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->item_token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->item_checksum;?>"><?php echo $this->escapeHtml($hit->item_sys_number);?></a>
 
 					</span></td>
+					
+					<td>
+					<img id="item_<?php echo $this->escapeHtml($hit->item_id);?>"
+								style="cursor: pointer;" title="click for more detail!"
+								onclick="" class="img-rounded" width="80" height="80"
+								src="<?php echo $url; ?>" />
+					</td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->item_sku_key);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->row_name);?></span></td>

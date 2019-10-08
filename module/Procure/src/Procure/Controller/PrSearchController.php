@@ -106,20 +106,27 @@ class PrSearchController extends AbstractActionController
     public function doAction()
     {
         $q = $this->params()->fromQuery('q');
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
         
         if ($q !== "") {
             $results = $this->prSearchService->search($q);
         } else {
             $results = [
                 "message" => "",
-                "hits" => null
+                "hits" => null,
+                'nmtPlugin' => $nmtPlugin
+                
             ];
         }
         
         // var_dump($results);
         return new ViewModel(array(
             'message' => $results["message"],
-            'hits' => $results["hits"]
+            'hits' => $results["hits"],
+            'nmtPlugin' => $nmtPlugin
+            
         ));
     }
 
@@ -130,6 +137,10 @@ class PrSearchController extends AbstractActionController
     public function do1Action()
     {
         $request = $this->getRequest();
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
         
         // accepted only ajax request
         
@@ -149,7 +160,8 @@ class PrSearchController extends AbstractActionController
             "hits" => null,
             'context' => $context,
             'target_id' => $target_id,
-            'target_name' => $target_name
+            'target_name' => $target_name,
+            'nmtPlugin' => $nmtPlugin
         ];
         
         if ($q !== null) {
@@ -164,7 +176,8 @@ class PrSearchController extends AbstractActionController
             'hits' => $results["hits"],
             'context' => $context,
             'target_id' => $target_id,
-            'target_name' => $target_name
+            'target_name' => $target_name,
+            'nmtPlugin' => $nmtPlugin
         
         ));
     }

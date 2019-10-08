@@ -1,11 +1,13 @@
 <?php
 namespace ProcureTest\PR;
 
+use Doctrine\ORM\EntityManager;
 use Procure\Application\DTO\Pr\PrDTOAssembler;
 
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 use Procure\Application\DTO\Po\PoDTOAssembler;
+use Symfony\Component\Inflector\Inflector;
 
 class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -28,8 +30,10 @@ class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
+            
+            var_dump(Inflector::singularize('cakes'));
 
-            PoDTOAssembler::createStoreMapping();
+            //PoDTOAssembler::createStoreMapping();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

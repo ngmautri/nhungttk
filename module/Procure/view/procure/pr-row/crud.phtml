@@ -120,10 +120,10 @@ if (count($errors) > 0) {
 									<div class="col-sm-4">
 										<input
 											<?php if(!$target == null): echo ($target->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+											type="checkbox" name="isPRActive" value="1">&nbsp;Active&nbsp;&nbsp;
 										<input
 											<?php if(!$target == null): echo ($target->getIsDraft()== "1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
+											type="checkbox" name="isPRDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
 
 									</div>
 
@@ -236,13 +236,11 @@ if (count($errors) > 0) {
 										<input tabindex="0" class="form-control input-sm" type="text"
 											id="rowNumber" name="rowNumber"
 											value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
+										<input type="checkbox" name="isActive1" value="1" <?php if(!$entity == null): if ($entity->getIsActive()=="1"): echo "checked"; endif; endif;?>>&nbsp;Active&nbsp;&nbsp;
+									
 									</div>
 
-									<div class="col-sm-1">
-										<input
-											<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-									</div>
+									
 								</div>
 
 								<div class="form-group margin-bottom">

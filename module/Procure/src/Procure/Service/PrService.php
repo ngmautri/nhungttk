@@ -309,6 +309,7 @@ class PrService extends AbstractService
      */
     public function validateRow($target, $entity, $data, $isNew = false)
     {
+        var_dump($data);
         $errors = array();
 
         if (! $entity instanceof \Application\Entity\NmtProcurePrRow) {
@@ -345,15 +346,15 @@ class PrService extends AbstractService
             $errors[] = $this->controllerPlugin->translate('No input given "edt"');
         }
 
-        if (isset($data['isActive'])) {
-            $isActive = (int) $data['isActive'];
+        if (isset($data['isActive1'])) {
+            $isActive = (int) $data['isActive1'];
 
             if ($isActive != 1) {
                 $isActive = 0;
             }
             $entity->setIsActive($isActive);
         } else {
-            $errors[] = $this->controllerPlugin->translate('No input given "$isActive"');
+            $errors[] = $this->controllerPlugin->translate('No input given "$isActive"...');
         }
 
         if (isset($data['rowNumber'])) {

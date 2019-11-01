@@ -19,9 +19,6 @@
 		"moneyphp/money" : "~3.2",
 		"endroid/qr-code" : "2.5.1",
 		"nesbot/carbon" : "1.37.1",
-		"forked/mailreader" : "~1.0",
-		"php-mime-mail-parser/php-mime-mail-parser" : "3.0.4",
-		"php-amqplib/php-amqplib" : "~2.10",
 		"fzaninotto/faker" : "~1.8",
 		"symfony/intl" : "3.4.31"
 	},
@@ -31,7 +28,9 @@
 			"Inventory" : "module/Inventory/src",
 			"Application" : "module/Application/src",
 			"ApplicationTest" : "module/Application/test",
-			"InventoryTest" : "module/Inventory/test"
+			"InventoryTest" : "module/Inventory/test",
+			"Procure" : "module/Procure/src",
+			"ProcureTest" : "module/Procure/test"
 		}
 	}
 }

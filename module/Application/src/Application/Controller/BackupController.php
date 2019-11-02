@@ -54,7 +54,10 @@ class BackupController extends AbstractActionController {
 	    if($os == \Application\Model\Constants::OS_LINUX){
 	        $exe_string = sprintf('mysqldump -u %s --password=%s mla > %s',$user_name,$pw,$fileName);	        
 	    }else{
-	        $exe_string = sprintf('mysqldump -u %s --password=%s mla --result-file %s',$user_name,$pw,$fileName);
+	        $exe_string = sprintf('mysqldump -u %s --password=%s mla --result-file "%s"',$user_name,$pw,$fileName);
+	        //mysqldump -root --password= NMTerfolgkflg#7986 mla --result-file 1.sql
+	        
+	        
 	    }
 	
 	    exec($exe_string);

@@ -21,6 +21,8 @@ class CompositeTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        echo "Test starting";
+        
         $root = realpath(dirname(dirname(dirname(__FILE__))));
         echo $root;
         require ($root . '/Bootstrap.php');
@@ -28,6 +30,10 @@ class CompositeTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
+        $root = realpath(dirname(dirname(dirname(__FILE__))));
+        echo $root;
+        require ($root . '/Bootstrap.php');
+        
         $tree = new Composite();
         $branch1 = new Composite;
         $branch1->add(new Leaf());

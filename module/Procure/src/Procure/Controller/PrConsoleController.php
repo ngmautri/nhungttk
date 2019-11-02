@@ -70,7 +70,7 @@ class PrConsoleController extends AbstractActionController
         if ($os == \Application\Model\Constants::OS_LINUX) {
             $exe_string = sprintf('mysqldump -u %s --password=%s mla > %s', $user_name, $pw, $fileName);
         } else {
-            $exe_string = sprintf('mysqldump -u %s --password=%s mla --result-file %s', $user_name, $pw, $fileName);
+            $exe_string = sprintf('mysqldump -u %s --password=%s mla --result-file "%s"', $user_name, $pw, $fileName);
         }
 
         exec($exe_string);

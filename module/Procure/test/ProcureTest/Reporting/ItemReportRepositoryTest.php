@@ -17,7 +17,7 @@ class ItemReportRepositoryTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        // echo $root;
+        echo $root;
         require ($root . '/Bootstrap.php');
     }
 

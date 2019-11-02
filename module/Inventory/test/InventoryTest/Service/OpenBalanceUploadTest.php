@@ -9,6 +9,7 @@ use InventoryTest\Bootstrap;
 use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
 use Inventory\Application\DTO\Warehouse\Location\LocationDTOAssembler;
 use Inventory\Application\Service\Upload\Transaction\OpenBalanceUpload;
+use PHPUnit\Framework\TestCase;
 
 class WarehouseDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {

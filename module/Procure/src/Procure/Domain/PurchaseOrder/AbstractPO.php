@@ -51,6 +51,9 @@ abstract class AbstractPO extends AggregateRoot
     protected $billedAmount;
 
     protected $completedRows;
+    
+    
+    
 
     protected $id;
 

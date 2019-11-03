@@ -3,6 +3,7 @@ namespace Procure\Domain\APInvoice;
 
 use Application\Domain\Shared\AggregateRoot;
 use Procure\Application\DTO\Ap\APDocDTOAssembler;
+use Application\Domain\Shared\SnapshotAssembler;
 
 /**
  *
@@ -11,6 +12,10 @@ use Procure\Application\DTO\Ap\APDocDTOAssembler;
  */
 abstract class AbstractAPDoc extends AggregateRoot
 {
+
+    protected $postingYear;
+
+    protected $postingMonth;
 
     protected $id;
 
@@ -136,15 +141,35 @@ abstract class AbstractAPDoc extends AggregateRoot
 
     protected $inventoryGr;
 
-    abstract public function specify();
-
     /**
      *
-     * @return NULL|\Procure\Domain\APInvoice\APDocSnapshot
+     * @return NULL|object
      */
     public function makeSnapshot()
     {
-        return APDocSnapshotAssembler::createSnapshotFrom($this);
+        return SnapshotAssembler::createSnapshotFrom($this, new APDocSnapshot());
+    }
+
+    /**
+     *
+     *
+     *
+     * /**
+     *
+     * @return mixed
+     */
+    public function getPostingYear()
+    {
+        return $this->postingYear;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostingMonth()
+    {
+        return $this->postingMonth;
     }
 
     /**

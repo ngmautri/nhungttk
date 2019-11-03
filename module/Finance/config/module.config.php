@@ -36,6 +36,14 @@ return array(
             ),
             
             array(
+                'label' => 'A/P Report',
+                'route' => 'procure/default',
+                'controller' => 'ap-report',
+                'action' => 'row-status',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            
+            array(
                 'label' => 'Log',
                 'route' => 'finance/default',
                 'controller' => 'activity-log',

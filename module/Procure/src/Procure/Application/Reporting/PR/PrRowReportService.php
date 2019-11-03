@@ -132,19 +132,12 @@ class PrRowReportService extends AbstractService
         return $a_json_final;
     }
 
-    /**
-     *
-     * @return \Procure\Infrastructure\Persistence\DoctrinePRListRepository
-     */
+   
     public function getPrListRespository()
     {
         return $this->prListRespository;
     }
 
-    /**
-     *
-     * @param \Procure\Infrastructure\Persistence\DoctrinePRListRepository $prListRespository
-     */
     public function setPrListRespository($prListRespository)
     {
         $this->prListRespository = $prListRespository;

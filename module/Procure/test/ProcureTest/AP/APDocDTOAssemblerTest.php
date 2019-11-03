@@ -1,16 +1,14 @@
 <?php
-namespace ProcureTest\PR;
+namespace ProcureTest\AP;
 
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\DTO\Ap\APDocDTOAssembler;
 
-class PoRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
+class APDocDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $serviceManager;
-
-   
+    
 
     public function setUp()
     {
@@ -23,7 +21,8 @@ class PoRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PORowSnapshotAssembler::createFromDetailsSnapshotCode();
+            APDocDTOAssembler::createDTOProperities();
+
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

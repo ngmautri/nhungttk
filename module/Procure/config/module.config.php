@@ -98,6 +98,15 @@ return array(
                 'icon' => 'glyphicon glyphicon-list'
                 
             ),
+            
+            array(
+                'label' => 'AP Row Report',
+                'route' => 'procure/default',
+                'controller' => 'ap-report',
+                'action' => 'row-status',
+                'icon' => 'glyphicon glyphicon-list'
+                
+            ),
             array(
                 'label' => 'Log',
                 'route' => 'procure/default',
@@ -227,7 +236,8 @@ return array(
             // Repository Service
             'Procure\Infrastructure\Persistence\Doctrine\PRListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\PRListRepositoryFactory',
             'Procure\Infrastructure\Persistence\Doctrine\POListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\POListRepositoryFactory',
-      
+            'Procure\Infrastructure\Persistence\Doctrine\APRepoterRepositoryImpl' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\APReporterRepositoryImplFactory',
+            
             
             'Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository' => 'Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory',
             'Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository' => 'Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory',
@@ -236,6 +246,8 @@ return array(
             // Reporing Service
             'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',
             'Procure\Application\Reporting\PO\PoReporter' => 'Procure\Application\Reporting\PO\PoReporterFactory',
+            'Procure\Application\Reporting\AP\ApReporter' => 'Procure\Application\Reporting\AP\ApReporterFactory',
+            
             
             // Appliation Service            
             'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
@@ -280,6 +292,7 @@ return array(
             'Procure\Controller\ReturnAttachment' => 'Procure\Controller\ReturnAttachmentControllerFactory',
      
             'Procure\Controller\PriceComparison' => 'Procure\Controller\PriceComparisonControllerFactory',
+            'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
             
         )
     

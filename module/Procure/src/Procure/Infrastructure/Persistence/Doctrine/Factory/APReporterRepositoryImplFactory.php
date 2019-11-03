@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Infrastructure\Persistence\Doctrine\Factory;
 
-use Procure\Infrastructure\Persistence\Doctrine\DoctrineAPListRepository;
+use Procure\Infrastructure\Persistence\Doctrine\APReportRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri
  *        
  */
-class APListRepositoryFactory implements FactoryInterface
+class APReporterRepositoryImplFactory implements FactoryInterface
 {
 
     /**
@@ -22,12 +22,10 @@ class APListRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
-        $controller = new DoctrineAPListRepository();
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
-		return $controller;
+        
+        $service = new APReportRepositoryImpl($sv);
+        return $service;
 	}	
 	
 }

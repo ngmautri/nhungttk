@@ -10,15 +10,7 @@ use PHPUnit_Framework_TestCase;
 
 class PrRowStatusReportTest extends PHPUnit_Framework_TestCase
 {
-
-    protected $serviceManager;
-
-    /**
-     *
-     * @var EntityManager $em;
-     */
-    protected $em;
-
+  
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));

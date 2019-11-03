@@ -8,11 +8,6 @@ use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
 use Zend\Mvc\Controller\AbstractActionController;
 
-/**
- *
- * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
- */
 class PrConsoleController extends AbstractActionController
 {
 

@@ -11,6 +11,22 @@ use Procure\Application\DTO\Ap\APDocDTO;
  */
 class APDocSnapshotAssembler
 {
+    
+    /**
+     * generete fields.
+     */
+    public static function createProperities()
+    {
+        $entity = new APDocDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "protected $" . $propertyName . ";";
+        }
+    }
+   
 
     /**
      *
@@ -18,8 +34,8 @@ class APDocSnapshotAssembler
      */
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new APDocSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $snapshot = new APDocDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($snapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
@@ -38,7 +54,7 @@ class APDocSnapshotAssembler
         if ($data == null)
             return null;
 
-            $snapShot = new APDocSnapshot();
+            $snapShot = new APDocDetailsSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {

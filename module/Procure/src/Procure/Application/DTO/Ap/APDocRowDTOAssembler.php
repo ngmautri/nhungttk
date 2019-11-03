@@ -69,7 +69,7 @@ class APDocRowDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
+            print "\n" . "public $" . $propertyName . ";";
         }
     }
 

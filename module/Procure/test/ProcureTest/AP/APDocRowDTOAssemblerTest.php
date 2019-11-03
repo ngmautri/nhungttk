@@ -1,22 +1,16 @@
 <?php
 namespace ProcureTest\AP;
 
-use Procure\Application\DTO\Pr\PrDTOAssembler;
+use Procure\Application\DTO\Ap\APDocRowDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\DTO\Ap\APInvoiceDTO;
-use Procure\Application\DTO\Ap\APInvoiceDTOAssembler;
-use Procure\Application\DTO\Ap\APInvoiceRowDTOAssembler;
 
-class ApInvoiceRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
+class APDocRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
 
-    /**
-     *
-     * @var EntityManager $em;
-     */
+  
     protected $em;
 
     public function setUp()
@@ -30,7 +24,7 @@ class ApInvoiceRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            APInvoiceRowDTOAssembler::createGetMapping();
+            APDocRowDTOAssembler::createGetMapping();
 
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

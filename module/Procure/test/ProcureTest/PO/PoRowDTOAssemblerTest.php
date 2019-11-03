@@ -1,21 +1,16 @@
 <?php
 namespace ProcureTest\PR;
 
-use Procure\Application\DTO\Po\PORowDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Zend\Stdlib\StringWrapper\Intl;
 use PHPUnit_Framework_TestCase;
-use Symfony\Component\Intl\ResourceBundle\CurrencyBundle;
-use Symfony\Component\Intl\Intl;
 
 class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
 
-    /**
-     *
-     * @var EntityManager $em;
-     */
+  
     protected $em;
 
     public function setUp()

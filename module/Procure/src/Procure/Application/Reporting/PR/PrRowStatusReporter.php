@@ -5,9 +5,8 @@ use Application\Service\AbstractService;
 use Procure\Application\Reporting\PR\Output\PrRowStatusInArray;
 use Procure\Application\Reporting\PR\Output\PrRowStatusInExcel;
 use Procure\Application\Reporting\PR\Output\PrRowStatusInHTMLTable;
-use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
-use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
 use Procure\Application\Reporting\PR\Output\PrRowStatusInOpenOffice;
+use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 use Procure\Infrastructure\Persistence\Doctrine\PRListRepository;
 
 /**
@@ -19,10 +18,7 @@ use Procure\Infrastructure\Persistence\Doctrine\PRListRepository;
 class PrRowStatusReporter extends AbstractService
 {
 
-    /**
-     *
-     * @var DoctrinePRListRepository $prListRespository;
-     */
+   
     private $prListRespository;
 
     public function getPrRowStatus($is_active = 1, $pr_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)

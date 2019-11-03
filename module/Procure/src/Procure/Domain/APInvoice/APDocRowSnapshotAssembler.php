@@ -11,6 +11,22 @@ use Procure\Application\DTO\Ap\APDocRowDTO;
  */
 class APDocRowSnapshotAssembler
 {
+    
+    
+    /**
+     * generete fields.
+     */
+    public static function createProperities()
+    {
+        $entity = new APDocRowDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "protected $" . $propertyName . ";";
+        }
+    }
 
     /**
      *
@@ -27,6 +43,24 @@ class APDocRowSnapshotAssembler
             //print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
             
             print "\n" . "\$targetSnapShot->" . $propertyName . " = \$sourceSnapShot-;";
+        }
+    }
+    
+    /**
+     *
+     * @return LocationSnapshot;
+     */
+    public static function createSnapshotDetailsCode()
+    {
+        $itemSnapshot = new APDocRowDetailsSnapshot();
+        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            //print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
+            
+            print "\n" . "\$snapShot->" . $propertyName . " = ";
         }
     }
 

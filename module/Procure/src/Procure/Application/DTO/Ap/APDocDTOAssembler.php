@@ -11,6 +11,11 @@ use Procure\Domain\APInvoice\GenericAPDoc;
 class APDocDTOAssembler
 {
 
+    /**
+     * 
+     * @param array $data
+     * @return \Procure\Application\DTO\Ap\APDocDTO
+     */
     public static function createDTOFromArray($data)
     {
         $dto = new APDocDTO();
@@ -69,7 +74,7 @@ class APDocDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
+            print "\n" . "public $" . $propertyName . ";";
         }
     }
 

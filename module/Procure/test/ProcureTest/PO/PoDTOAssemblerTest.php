@@ -31,9 +31,9 @@ class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
             
-            var_dump(Inflector::singularize('cakes'));
+            //var_dump(Inflector::singularize('cakes'));
 
-            //PoDTOAssembler::createStoreMapping();
+            PoDTOAssembler::createDTOProperities();
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

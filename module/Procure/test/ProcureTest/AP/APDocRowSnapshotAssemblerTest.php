@@ -1,7 +1,7 @@
 <?php
 namespace ProcureTest\AP;
 
-use Procure\Domain\APInvoice\APDocSnapshotAssembler;
+use Procure\Domain\APInvoice\APDocRowSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -9,17 +9,9 @@ use PHPUnit_Framework_TestCase;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ApInvoiceSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
+class APDocRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
-
-    protected $serviceManager;
-
-    /**
-     *
-     * @var EntityManager $em;
-     */
-    protected $em;
-
+  
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
@@ -29,6 +21,6 @@ class ApInvoiceSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        APDocSnapshotAssembler::createProperities();
+        APDocRowSnapshotAssembler::createSnapshotDetailsCode();
     }
 }

@@ -88,6 +88,8 @@ WHERE 1
             $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
+            var_dump($e->getMessage());
+            
             return null;
         }
     }

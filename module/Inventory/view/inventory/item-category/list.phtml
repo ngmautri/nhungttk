@@ -1,42 +1,51 @@
 
 <ul class="nav nav-pills">
-	<li><a style="color: #0080ff;" href="<?php echo $this->baseUrl ?>/application/item-category/add"><i class="glyphicon glyphicon-plus"> </i> Add New Category</a></li>
+	<li><a style="color: #0080ff;"
+		href="<?php echo $this->baseUrl ?>/application/item-category/add"><i
+			class="glyphicon glyphicon-plus"> </i> Add New Category</a></li>
 	<li><a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Item Category','/application/item-category/list1','loaded_data');"> <i class="glyphicon glyphicon-list">  </i> Test Ajax List
-</a>
+		onclick="showBootstrapDialog('Item Category','/application/item-category/list1','loaded_data');">
+			<i class="glyphicon glyphicon-list"> </i> Test Ajax List
+	</a>
 
 </ul>
 
-<div id="tabs" style="font-size: 10pt"> 
-  <ul>
-  <li ><a href="#general">Item Category</a></li>
-   </ul>
-
-
-
-
-<div id="general"> 
-
-
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="$('#html').jstree('open_all');">Expand all
-</a>
-
-&nbsp;|&nbsp;
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="$('#html').jstree('close_all');">Collapse all
-</a>
-
-
-<div id="html" class="demo">
+<div id="tabs" style="font-size: 10pt">
 	<ul>
-	<?php echo $jsTree ?>
-</ul>
-</div>
+		<li><a href="#general">Item Category</a></li>
+	</ul>
 
-</div>
-</div>
-<script>	
+
+
+
+	<div id="general">
+
+
+		<a style="color: #0080ff;" href="javascript:;"
+			onclick="$('#html').jstree('open_all');">Expand all </a>
+
+		&nbsp;|&nbsp; <a style="color: #0080ff;" href="javascript:;"
+			onclick="$('#html').jstree('close_all');">Collapse all </a>
+
+		<div class="row" >
+
+			<div class="col-xs-6 col-md-2" >
+				<div style="width:100%; max-width: 540px;">
+				<div id="html" class="demo" >
+					<ul >
+	<?php echo $jsTree ?>
+					</ul>
+				</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-6 col-md-10" style="" id="category_list">
+				<h3><?php echo $this->translate('Inventory Setting'); ?></h3>
+			</div>
+		</div>
+	</div>
+	
+	<script>	
 // html demo
 	$('#html').jstree({
 		"core" : {
@@ -122,45 +131,45 @@
 	});
 </script>
 
-<!-- Modal -->
-<div id="myModal" class="modal hide" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h5 class="modal-title">Message:</h5>
-		</div>
-		<div class="modal-body">
-			<div>
-				<span id="_status"></span>
-			</div>
-		</div>
-
-		<div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-		</div>
-	</div>
-</div>
-
-
-
-<!-- Modal -->
-<div class="modal" id="modal1" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
+	<!-- Modal -->
+	<div id="myModal" class="modal hide" role="dialog">
+		<div class="modal-dialog">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<b><h5 class="modal-title" id = "modal_title" >Mascot International Laos</h5></b>
+				<h5 class="modal-title">Message:</h5>
 			</div>
 			<div class="modal-body">
-				<div id="loaded_data">loading</div>
+				<div>
+					<span id="_status"></span>
+				</div>
 			</div>
+
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
 	</div>
-</div>
-<div id="dialog1" style="display: none; padding-top: 4pt">
-	<div id="content">loading</div>
-</div>
 
+
+
+	<!-- Modal -->
+	<div class="modal" id="modal1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<b><h5 class="modal-title" id="modal_title">Mascot International
+							Laos</h5></b>
+				</div>
+				<div class="modal-body">
+					<div id="loaded_data">loading</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="dialog1" style="display: none; padding-top: 4pt">
+		<div id="content">loading</div>
+	</div>

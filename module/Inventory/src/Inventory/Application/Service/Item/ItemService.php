@@ -2,9 +2,6 @@
 namespace Inventory\Application\Service;
 
 use Application\Service\AbstractService;
-use InventoryTest\Model\ItemAssemblerTest;
-use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
-use Inventory\Application\DTO\ItemAssembler;
 
 /**
  *
@@ -14,22 +11,12 @@ use Inventory\Application\DTO\ItemAssembler;
 class ItemService extends AbstractService
 {
 
-    /**
-     *
-     * @var ItemRepositoryInterface
-     */
     private $itemRepository;
 
-    /**
-     *
-     * @var ItemAssembler
-     */
     private $itemAssembler;
 
     public function getItemList()
-    {
-        
-    }
+    {}
 
     /**
      *
@@ -40,10 +27,6 @@ class ItemService extends AbstractService
         return $this->itemRepository;
     }
 
-    /**
-     * 
-     * @return \Inventory\Application\DTO\ItemAssembler
-     */
     public function getItemAssembler()
     {
         return $this->itemAssembler;
@@ -58,10 +41,6 @@ class ItemService extends AbstractService
         $this->itemRepository = $itemRepository;
     }
 
-    /**
-     *
-     * @param \Inventory\Application\DTO\ItemAssembler $itemAssembler
-     */
     public function setItemAssembler($itemAssembler)
     {
         $this->itemAssembler = $itemAssembler;

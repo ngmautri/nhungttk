@@ -2,8 +2,6 @@
 namespace Inventory\Domain\Item;
 
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use ReflectionProperty;
 
 /**
  *

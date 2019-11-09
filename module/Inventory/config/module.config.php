@@ -182,6 +182,7 @@ return array(
 
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
             'Inventory\Application\Service\Item\FIFOService' => 'Inventory\Application\Service\Item\FIFOServiceFactory',
+            'Inventory\Application\Service\Item\ItemCategoryService' => 'Inventory\Application\Service\Item\ItemCategoryServiceFactory',
             
             
             'Inventory\Application\Service\Warehouse\TransactionService' => 'Inventory\Application\Service\Warehouse\TransactionServiceFactory',
@@ -198,7 +199,14 @@ return array(
 
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
-            'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory'
+            'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory',
+       
+            
+        
+            // Repository Service
+            'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
+            
+            
         )
     ),
 
@@ -263,7 +271,8 @@ return array(
             'Inventory/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
             'Inventory/gi-create-layout' => __DIR__ . '/../view/layout/create_gi_layout.phtml',
             'Inventory/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
-
+            'Inventory/layout-blank' => __DIR__ . '/../view/layout/layout-blank.phtml',
+            
             'layout/no-layout' => __DIR__ . '/../view/layout/no-layout.phtml',
             'inventory/index/index' => __DIR__ . '/../view/inventory/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',

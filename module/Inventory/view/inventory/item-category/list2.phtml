@@ -1,25 +1,11 @@
+<div id="wrapper1" class="toggled1">
 
-<ul class="nav nav-pills">
-	<li><a style="color: #0080ff;"
-		href="<?php echo $this->baseUrl ?>/application/item-category/add"><i
-			class="glyphicon glyphicon-plus"> </i> Add New Category</a></li>
-	<li><a style="color: #0080ff;" href="javascript:;"
-		onclick="showBootstrapDialog('Item Category','/application/item-category/list1','loaded_data');">
-			<i class="glyphicon glyphicon-list"> </i> Test Ajax List
-	</a>
-
-</ul>
-
-<div id="tabs" style="font-size: 10pt">
-	<ul>
-		<li><a href="#general">Item Category</a></li>
-	</ul>
-
-
-
-
-	<div id="general">
-
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper1" style="font-size: 9.5pt;">
+		<h5 style="padding-left: 10px;">
+			<strong><?php echo $this->translate("ITEM CATEGORY")?></strong>
+		</h5>
+		<hr>
 
 		<a style="color: #0080ff;" href="javascript:;"
 			onclick="$('#html').jstree('open_all');">Expand all </a>
@@ -27,22 +13,50 @@
 		&nbsp;|&nbsp; <a style="color: #0080ff;" href="javascript:;"
 			onclick="$('#html').jstree('close_all');">Collapse all </a>
 
-		<div class="row">
 
-			<div class="col-xs-6 col-md-3" style="border=1px">
-				<div id="html" class="demo">
-					<ul>
+		<div id="html" class="demo">
+			<ul>
 	<?php echo $jsTree ?>
-					</ul>
-				</div>
+		    </ul>
+		</div>
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper1"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<div>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><i
+				class="fa fa-chevron-left" aria-hidden="true"></i> Menu </a>
 			</div>
 
-			<div class="col-xs-12 col-sm-6 col-md-9" style="" id="category_list">
-				<h3><?php echo $this->translate('Inventory Setting'); ?></h3>
+
+
+			<div style="" id="category_list">
 			</div>
+
+
+
 		</div>
 	</div>
-	<script>	
+	<!-- /#page-content-wrapper -->
+	<hr>
+	<footer>
+		<span
+			style="font-size: 9pt; font-weight: bold; padding-top: 20px; color: graytext;">&copy;
+			2016-2018 Nguyen Mau Tri</span>
+	</footer>
+
+</div>
+<!-- /#wrapper -->
+
+
+<script>	
 // html demo
 	$('#html').jstree({
 		"core" : {
@@ -128,45 +142,5 @@
 	});
 </script>
 
-	<!-- Modal -->
-	<div id="myModal" class="modal hide" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h5 class="modal-title">Message:</h5>
-			</div>
-			<div class="modal-body">
-				<div>
-					<span id="_status"></span>
-				</div>
-			</div>
-
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			</div>
-		</div>
-	</div>
 
 
-
-	<!-- Modal -->
-	<div class="modal" id="modal1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<b><h5 class="modal-title" id="modal_title">Mascot International
-							Laos</h5></b>
-				</div>
-				<div class="modal-body">
-					<div id="loaded_data">loading</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="dialog1" style="display: none; padding-top: 4pt">
-		<div id="content">loading</div>
-	</div>

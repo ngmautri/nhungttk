@@ -1,8 +1,8 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
-use Procure\Application\DTO\DTOFactory;
-use Procure\Domain\SnapshotAssembler;
+use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Pr\PRRowDTO;
 
 /**

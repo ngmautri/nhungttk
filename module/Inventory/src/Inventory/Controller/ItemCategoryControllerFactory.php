@@ -2,7 +2,6 @@
 
 namespace Inventory\Controller;
 
-use Inventory\Controller\ItemCategoryController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -30,6 +29,9 @@ class ItemCategoryControllerFactory implements FactoryInterface {
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
+		
+		$sv =  $container->get ('Inventory\Application\Service\Item\ItemCategoryService' );
+		$controller->setItemCatService($sv );
 		
 		return $controller;
 	}

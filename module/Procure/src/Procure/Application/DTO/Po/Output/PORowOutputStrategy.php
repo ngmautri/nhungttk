@@ -2,10 +2,9 @@
 namespace Procure\Application\DTO\Po\Output;
 
 
-use Procure\Application\DTO\Po\PORowDetailDTO;
 
 /**
- * PR Row Service.
+ * PO Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

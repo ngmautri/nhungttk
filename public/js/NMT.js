@@ -145,6 +145,31 @@ function filterPrRow(url) {
  */
 function loadCategory(cat_id, cat_name) {
 	
+	
+	//alert(cat_id);
+	$('#category_list').text("Loading...");
+		// alert(cat_id);
+		$.get("/inventory/item-category/show", {
+		cat_id : cat_id,
+	}, function(data, status) {
+		// updateCarts();
+		
+		
+		$('#category_list').html(data);
+
+	});
+}
+
+
+
+/**
+ * 
+ * @param cat_id
+ * @param cat_name
+ * @returns
+ */
+function loadCategoryList(cat_id, cat_name) {
+	
 	var defaut_width = 1350;
 	var container_with = $("#main_container").width();
 	

@@ -1,9 +1,7 @@
 <?php
 namespace InventoryTest\Item;
 
-use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
-use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use PHPUnit_Framework_TestCase;
 use Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl;
 
@@ -36,6 +34,6 @@ class ItemCategoryRepositoryTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $repository = new ItemCategoryRepositoryImpl($em);
-        var_dump($repository->getItemsByCategory(6)[3]);      
+        var_dump($repository->addItemToCategory(2217,57,39));      
     }
 }

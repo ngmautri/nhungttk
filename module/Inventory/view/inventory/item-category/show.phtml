@@ -51,8 +51,10 @@ if ($total_records <= 0) {
 	 <td><?php echo $record->getItem()->getManufacturerCode();?></td>
 	 <td><?php echo $record->getItem()->getLocation();?></td>
 	<td>
+	<div class="">
 	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($record->getItem()->getId());?>" item_name="<?php echo $this->escapeHtml($record->getItem()->getItemName());?>" target="blank" 
 	href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $record->getItem()->getToken();?>&entity_id=<?php echo $record->getItem()->getId();?>&checksum=<?php echo $record->getItem()->getChecksum();?>">Show</a>
+	 </div>
 	 </td>
 	 
 	</tr>

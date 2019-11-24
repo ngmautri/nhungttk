@@ -14,6 +14,14 @@ class ItemCategoryService extends AbstractService
 
     private $itemCategoryRepository;
     
+    public function getNoneCategorizedItems(){
+        return $this->getItemCategoryRepository()->getNoneCategorizedItems();
+    }
+        
+    public function addItemToCategory($itemId, $catId,$userId){
+        return $this->getItemCategoryRepository()->addItemToCategory($itemId, $catId, $userId);
+    }
+    
     /**
      * 
      * @param int $catId

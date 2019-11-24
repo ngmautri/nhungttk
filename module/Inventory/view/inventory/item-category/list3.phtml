@@ -1,28 +1,15 @@
-<div id="wrapper1" class="toggled1">
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper1" style="font-size: 9.5pt;">
-	
-	 <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
-  <div class="form-group" style="padding-left: 8px;">
-    	<input placeholder ="<?php echo $this->translate("enter search term ...")?>" class="form-control" size="15" type="text" name = "q">
- 
- 
-  </div>
-  
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small></button>
-  </div>
-	
-	
+
+<div class="row">
+	<div class="col-xs-6 col-md-3">
 		<h5 style="padding-left: 10px;">
 			<strong><?php echo $this->translate("ITEM CATEGORY")?></strong>
 		</h5>
 		<hr>
-		
-		
 
-		<a style="color: #0080ff;padding-left: 10px; " href="javascript:;"
+
+
+		<a style="color: #0080ff; padding-left: 10px;" href="javascript:;"
 			onclick="$('#html').jstree('open_all');">Expand all </a>
 
 		&nbsp;|&nbsp; <a style="color: #0080ff;" href="javascript:;"
@@ -35,49 +22,28 @@
 		    </ul>
 		</div>
 
-
 	</div>
-	<!-- /#sidebar-wrapper -->
 
-	<!-- Page Content -->
-	<div id="page-content-wrapper1"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<div>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><i
-				class="fa fa-chevron-left" aria-hidden="true"></i> Menu </a>
-			</div>
+	<div class="col-xs-12 col-sm-6 col-md-9" style="">
+		<h3><?php echo $this->translate('Inventory Setting'); ?></h3>
 
 
-
-			<div style="" id="category_list">
-			</div>
-
-
-<div id="draggable" class="ui-widget-content">
-  <p>Drag me to my target</p>
-</div>
- 
-<div id="droppable" class="ui-widget-header">
-  <p>Drop here</p>
-</div>
-
-
-
-		</div>
+		<div style="" id="category_list"></div>
 	</div>
-	<!-- /#page-content-wrapper -->
-	<hr>
-	<footer>
-		<span
-			style="font-size: 9pt; font-weight: bold; padding-top: 20px; color: graytext;">&copy;
-			2016-2018 Nguyen Mau Tri</span>
-	</footer>
-
 </div>
-<!-- /#wrapper -->
+
+
+
+
+
+
+<hr>
+<footer>
+	<span
+		style="font-size: 9pt; font-weight: bold; padding-top: 20px; color: graytext;">&copy;
+		2016-2018 Nguyen Mau Tri</span>
+</footer>
+
 
 
 
@@ -166,8 +132,8 @@
 			if (node.state.disabled)
     		{
         		//alert('disabled');
-    		}else{        		
-    			loadCategory(id,cat_name);
+    		}else{ 
+        	 	loadCategory(id,cat_name);
         	}
 	});
 </script>

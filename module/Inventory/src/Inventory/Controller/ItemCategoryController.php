@@ -188,9 +188,8 @@ class ItemCategoryController extends AbstractActionController
      */
     public function listAction()
     {
-        
         $this->layout("Inventory/layout-blank");
-        
+
         $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
             "nodeName" => "_ROOT_"
         ));
@@ -208,13 +207,12 @@ class ItemCategoryController extends AbstractActionController
          *
          */
         // $jsTree = $this->tree;
-        $viewModel =  new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'jsTree' => $jsTree
         ));
-        
-        $viewModel->setTemplate("inventory/item-category/list2");
+
+        $viewModel->setTemplate("inventory/item-category/list3");
         return $viewModel;
-        
     }
 
     /**
@@ -267,7 +265,6 @@ class ItemCategoryController extends AbstractActionController
         $request = $this->getRequest();
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
 
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
@@ -278,25 +275,29 @@ class ItemCategoryController extends AbstractActionController
         // $user = $this->userTable->getUserByEmail ( $this->identity());
 
         $catId = $this->params()->fromQuery('cat_id');
-      
-        $records = $this->getItemCatService()->getItemsByCategory($catId);
+        
+        if($catId==50){
+            $records = $this->getItemCatService()->getNoneCategorizedItems();
+            
+        }else{
+            $records = $this->getItemCatService()->getItemsByCategory($catId);
+            
+        }
 
+  
         $total_records = count($records);
         $paginator = null;
 
-    
-        $viewModel =  new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'list' => $records,
             'total_records' => $total_records,
             'paginator' => $paginator,
             'cat_id' => $catId,
-            'nmtPlugin' => $nmtPlugin,
-            
+            'nmtPlugin' => $nmtPlugin
         ));
-        
+
         $viewModel->setTemplate("inventory/item-category/show1");
         return $viewModel;
-        
     }
 
     /**
@@ -377,67 +378,27 @@ class ItemCategoryController extends AbstractActionController
      */
     public function addMemberAction()
     {
-        $request = $this->getRequest();
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        $identity = $this->authService->getIdentity();
-        $user = $this->userTable->getUserByEmail($identity);
-        $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $user['id']);
+        $itemId = (int) $this->params()->fromQuery('item_id');
+        $catId = (int) $this->params()->fromQuery('cat_id');
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+        try {
 
-        if ($request->isPost()) {
-
-            $role_id = (int) $request->getPost('id');
-            $user_id_list = $request->getPost('users');
-
-            if (count($user_id_list) > 0) {
-                foreach ($user_id_list as $member_id) {
-
-                    /*
-                     * $member = new AclUserRole ();
-                     * $member->role_id = $role_id;
-                     * $member->user_id = $user_id;
-                     * $member->updated_by = $user ['id'];
-                     */
-                    // echo $member_id;
-
-                    $criteria = array(
-                        'user' => $member_id,
-                        'role' => $role_id
-                    );
-
-                    $isMember = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclUserRole')->findBy($criteria);
-                    // var_dump($isMember);
-                    if (count($isMember) == 0) {
-                        $member = new NmtApplicationAclUserRole();
-                        $role = $this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $role_id);
-                        $member->setRole($role);
-                        $m = $this->doctrineEM->find('Application\Entity\MlaUsers', $member_id);
-                        $member->setUser($m);
-                        $member->setUpdatedBy($u);
-                        $member->setUpdatedOn(new \DateTime());
-                        $this->doctrineEM->persist($member);
-                        $this->doctrineEM->flush();
-                    }
-                }
-
-                $redirectUrl = $request->getPost('redirectUrl');
-                $this->redirect()->toUrl($redirectUrl);
-            }
+            $result = $this->getItemCatService()->addItemToCategory($itemId, $catId, $u->getId());
+        } catch (\Exception $e) {
+            $result= $e->getMessage();
         }
 
-        $id = (int) $this->params()->fromQuery('id');
-        // $role = $this->aclRoleTable->getRole ( $id );
-        $role = $this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $id);
-
-        // No Doctrine
-        $users = $this->aclRoleTable->getNoneMembersOfRole($id);
-
-        return new ViewModel(array(
-            'role' => $role,
-            'users' => $users,
-            'redirectUrl' => $redirectUrl
+        $viewModel = new ViewModel(array(
+            'itemId' => $itemId,
+            'cat_id' => $catId,
+            'result' => $result
         ));
+
+        $viewModel->setTemplate("inventory/item-category/add-member1");
+        return $viewModel;
     }
 
     /**
@@ -902,27 +863,24 @@ class ItemCategoryController extends AbstractActionController
     public function setItemCategoryService(ItemCategoryService $itemCategoryService)
     {
         $this->itemCategoryService = $itemCategoryService;
-		return $this;
-	}
-	
-   /**
-    * 
-    * @return \Inventory\Application\Service\Item\ItemCategoryService
-    */
+        return $this;
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Item\ItemCategoryService
+     */
     public function getItemCatService()
     {
         return $this->itemCatService;
     }
 
-   /**
-    * 
-    * @param \Inventory\Application\Service\Item\ItemCategoryService $itemCatService
-    */
+    /**
+     *
+     * @param \Inventory\Application\Service\Item\ItemCategoryService $itemCatService
+     */
     public function setItemCatService(\Inventory\Application\Service\Item\ItemCategoryService $itemCatService)
     {
         $this->itemCatService = $itemCatService;
     }
-
-	
-	
 }

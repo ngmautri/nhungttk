@@ -51,9 +51,10 @@ if ($total_records <= 0) {
 
     foreach ($list as $a) :
 
-     /**
-      * @var ItemSnapshot $a ;
-      */
+        /**
+         *
+         * @var ItemSnapshot $a ;
+         */
         $url = $nmtPlugin->getItemPic($a->getId());
 
         if ($count == 0 || $count % $lineBreak == 0) {
@@ -64,12 +65,21 @@ if ($total_records <= 0) {
 		    <div class="col-xs-6 col-md-3	">
 
 
+				<div class="itemDraggable" style="cursor: move;"
+					id="<?php echo $this->escapeHtml($a->getId());?>"
+					class="ui-widget-content">
+					<h5>
+						<i class="fa fa-arrows-alt" aria-hidden="true"></i> Move to category
+					</h5>
+				</div>
+
+
 				<table style="">
 					<tr style="padding: 1pt 2pt 10pt 1pt;">
 						<td>
 
 
-							<div style="position: relative; float: right;">
+							<div style="position: relative; float: right; border: 1px;">
 								<!-- <span class="badge badge-primary"><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count+1;?></span> -->
 
 								<!--  <img id="item_<?php echo $this->escapeHtml($a->getId());?>"
@@ -121,7 +131,7 @@ if ($total_records <= 0) {
 											<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;Action&nbsp;<span
 												class="caret"></span>
 										</button>
-										
+
 									</div>
 						
 	
@@ -206,6 +216,15 @@ endif;
 
 <script type="text/javascript">
 
+$( ".itemDraggable" ).draggable({ revert: true, helper: "clone" });
+
+$( ".categoryDroppable" ).droppable({
+	accept: ".itemDraggable",
+    drop: function( event, ui ) {
+        addItemToCategory(ui.draggable.attr('id'), $( this ).attr('id'));
+    }
+  });
+
 $( "#tabs1" ).tabs({
 
 	beforeLoad:function(e,ui){
@@ -213,5 +232,20 @@ $( "#tabs1" ).tabs({
 	    },
 	   
 });
+
+    function addItemToCategory(item_id, cat_id) {
+    
+    	//alert(cat_id);
+    	
+        $.get("/inventory/item-category/add-member", {
+    		cat_id : cat_id,
+    		item_id : item_id
+    	}, function(data, status) {
+    		//alert(data);
+
+    		loadCategory(<?php echo $cat_id?>,"")
+    	});
+    }
+
 </script>
 

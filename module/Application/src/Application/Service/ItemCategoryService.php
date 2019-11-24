@@ -58,10 +58,10 @@ class ItemCategoryService extends AbstractCategory {
 			if($tree['instance']->getNodeName() == "_ROOT_"){
 			    
 			    
-				$this->jsTree = $this->jsTree . '<li  id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true, "disabled":true}\' data-ic=\'{"hasMember":"0"}\'><span  style="cursor:text">ITEM CATEGORY</span>';
+				$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true, "disabled":true}\' data-ic=\'{"hasMember":"0"}\'><span  style="cursor:text">ITEM CATEGORY</span>';
 			}else{
 				if($expandAll === true){
-				    $this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+				    $this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'<span class="categoryDroppable">' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")</span>\n";
 				}else{
 					$this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-ic=\'{"hasMember":"' . $tree['instance']->getHasMember() . '"}\'>' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
 				}
@@ -76,7 +76,7 @@ class ItemCategoryService extends AbstractCategory {
 				} else {
 				    
 				    
-				    $this->jsTree = $this->jsTree . '<li title="'. ucwords($value['instance']->getNodeName()).'" id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\' data-ic=\'{"hasMember":"'.$value ['instance']->getHasMember(). '"}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
+				    $this->jsTree = $this->jsTree . '<li class="categoryDroppable" title="'. ucwords($value['instance']->getNodeName()).'" id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\' data-ic=\'{"hasMember":"'.$value ['instance']->getHasMember(). '"}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
 					$this->generateJSTreeNew($key,$expandAll);
 				}
 			}

@@ -9,8 +9,9 @@ namespace Inventory\Infrastructure\Persistence;
 Interface ItemCategoryRepositoryInterface
 {
     public function addItemToCategory($itemId,$catId,$userId);    
-    public function getItemsByCategory($catId);
+    
+    public function getItemsByCategory($catId,$limit,$offset);
     public function getTotalItemsByCategory($catId);
-    public function getNoneCategorizedItems();
+    public function getNoneCategorizedItems($limit,$offset);
     public function getNoneCategorizedItemsTotal();
 }

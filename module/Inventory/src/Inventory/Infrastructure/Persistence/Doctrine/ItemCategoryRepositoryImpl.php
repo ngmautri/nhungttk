@@ -17,38 +17,43 @@ use Application\Entity\NmtInventoryItemCategoryMember;
 class ItemCategoryRepositoryImpl extends AbstractDoctrineRepository implements ItemCategoryRepositoryInterface
 {
 
-    public function getNoneCategorizedItems()
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Infrastructure\Persistence\ItemCategoryRepositoryInterface::getNoneCategorizedItems()
+     */
+    public function getNoneCategorizedItems($limit, $offset)
     {
-        $results = $this->_getNoneCategorizedItems();
-        
+        $results = $this->_getNoneCategorizedItems($limit, $offset);
+
         if (count($results) == null) {
             return null;
         }
-        
+
         $resultList = array();
         foreach ($results as $r) {
-            
+
             /**@var \Application\Entity\NmtInventoryItem $entity ;*/
             $entity = $r[0];
-            
+
             $snapShot = ItemMapper::createSnapshot($entity, new ItemSnapshot());
-            
+
             if ($snapShot == null) {
                 continue;
             }
-            
+
             $resultList[] = $snapShot;
         }
-        
+
         return $resultList;
     }
-    
+
     /**
      *
      * @param int $catId
      * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      */
-    private function _getNoneCategorizedItems()
+    private function _getNoneCategorizedItems($limit, $offset)
     {
         $sql = "select
 nmt_inventory_item.*
@@ -56,7 +61,15 @@ from nmt_inventory_item
 left join nmt_inventory_item_category_member
 on nmt_inventory_item.id = nmt_inventory_item_category_member.item_id
 where isnull(nmt_inventory_item_category_member.category_id)";
-        
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nm_inventory_item');
@@ -68,12 +81,12 @@ where isnull(nmt_inventory_item_category_member.category_id)";
             return null;
         }
     }
-    
+
     public function getNoneCategorizedItemsTotal()
     {
         return $this->_getNoneCategorizedItemsTotal();
     }
-    
+
     private function _getNoneCategorizedItemsTotal()
     {
         $sql = "select
@@ -82,24 +95,20 @@ from nmt_inventory_item
 left join nmt_inventory_item_category_member
 on nmt_inventory_item.id = nmt_inventory_item_category_member.item_id
 where isnull(nmt_inventory_item_category_member.category_id)";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addScalarResult("total_rows", "total_rows");
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
-            
+
             if (count($result) == 1) {
                 return (int) $result[0]['total_rows'];
             }
-        } catch (NoResultException $e) {
-            
-        }
+        } catch (NoResultException $e) {}
         return 0;
     }
-    
-    
-    
+
     /**
      *
      * {@inheritdoc}
@@ -107,25 +116,23 @@ where isnull(nmt_inventory_item_category_member.category_id)";
      */
     public function addItemToCategory($itemId, $catId, $userId)
     {
-        
         $criteria = array(
             'item' => $itemId,
-            'category'=>$catId,
+            'category' => $catId
         );
-        
+
         /**
          *
          * @var \Application\Entity\NmtInventoryItemCategoryMember $entity ;
          */
         $entity = $this->getDoctrineEM()
-        ->getRepository('\Application\Entity\NmtInventoryItemCategoryMember')
-        ->findOneBy($criteria);
-        
-        if(!$entity==null){            
+            ->getRepository('\Application\Entity\NmtInventoryItemCategoryMember')
+            ->findOneBy($criteria);
+
+        if (! $entity == null) {
             throw new \Exception("Exits..");
         }
-        
-        
+
         $criteria = array(
             'item' => $itemId
         );
@@ -135,17 +142,17 @@ where isnull(nmt_inventory_item_category_member.category_id)";
             ->findOneBy($criteria);
 
         if ($entity == null) {
-            $entity = new NmtInventoryItemCategoryMember();            
+            $entity = new NmtInventoryItemCategoryMember();
             $obj = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemCategory')->find($catId);
             $entity->setCategory($obj);
-            
+
             $obj = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->find($itemId);
             $entity->setItem($obj);
-            
+
             $obj = $this->doctrineEM->getRepository('\Application\Entity\MlaUsers')->find($userId);
-            $entity->setCreatedBy($obj);            
+            $entity->setCreatedBy($obj);
             $entity->setCreatedOn(new \DateTime());
-        }else{
+        } else {
             $obj = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemCategory')->find($catId);
             $entity->setCategory($obj);
         }
@@ -159,9 +166,9 @@ where isnull(nmt_inventory_item_category_member.category_id)";
      * {@inheritdoc}
      * @see \Inventory\Infrastructure\Persistence\ItemCategoryRepositoryInterface::getItemsByCategory()
      */
-    public function getItemsByCategory($catId)
+    public function getItemsByCategory($catId, $limit, $offset)
     {
-        $results = $this->_getItemsByCategory($catId);
+        $results = $this->_getItemsByCategory($catId, $limit, $offset);
 
         if (count($results) == null) {
             return null;
@@ -190,7 +197,7 @@ where isnull(nmt_inventory_item_category_member.category_id)";
      * @param int $catId
      * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      */
-    private function _getItemsByCategory($catId)
+    private function _getItemsByCategory($catId, $limit, $offset)
     {
         $sql = "select
 nmt_inventory_item.*,
@@ -200,6 +207,15 @@ nmt_inventory_item_category_member
 left join nmt_inventory_item
 on nmt_inventory_item.id = nmt_inventory_item_category_member.item_id where 1=1 AND nmt_inventory_item_category_member.category_id=" . $catId;
 
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nm_inventory_item');

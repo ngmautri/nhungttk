@@ -275,25 +275,54 @@ class ItemCategoryController extends AbstractActionController
         // $user = $this->userTable->getUserByEmail ( $this->identity());
 
         $catId = $this->params()->fromQuery('cat_id');
+        $catName = $this->params()->fromQuery('cat_name');
         
-        if($catId==50){
-            $records = $this->getItemCatService()->getNoneCategorizedItems();
-            
-        }else{
-            $records = $this->getItemCatService()->getItemsByCategory($catId);
-            
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 12;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
         }
+        ;
 
-  
-        $total_records = count($records);
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+
+        $limit =0;
+        $offset =0;
         $paginator = null;
+        
+        if ($catId == 50) {
+            $total_records = $this->getItemCatService()->getNoneCategorizedItemsTotal($limit,$offset);
+        } else {
+            $total_records = $this->getItemCatService()->getTotalItemsByCategory($catId,$limit,$offset);
+        }
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $limit =($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset =$paginator->minInPage - 1;
+        } 
 
+        if ($catId == 50) {
+            $records = $this->getItemCatService()->getNoneCategorizedItems($limit,$offset);
+        } else {
+            $records = $this->getItemCatService()->getItemsByCategory($catId,$limit,$offset);
+        }
+        
+        
         $viewModel = new ViewModel(array(
             'list' => $records,
             'total_records' => $total_records,
             'paginator' => $paginator,
             'cat_id' => $catId,
-            'nmtPlugin' => $nmtPlugin
+            'cat_name' => $catName,
+            'nmtPlugin' => $nmtPlugin,
+            'page' => $page
         ));
 
         $viewModel->setTemplate("inventory/item-category/show1");
@@ -388,7 +417,7 @@ class ItemCategoryController extends AbstractActionController
 
             $result = $this->getItemCatService()->addItemToCategory($itemId, $catId, $u->getId());
         } catch (\Exception $e) {
-            $result= $e->getMessage();
+            $result = $e->getMessage();
         }
 
         $viewModel = new ViewModel(array(

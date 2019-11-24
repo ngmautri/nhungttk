@@ -25,7 +25,7 @@
 	</div>
 
 	<div class="col-xs-12 col-sm-6 col-md-9" style="">
-		<h3><?php echo $this->translate('Inventory Setting'); ?></h3>
+		<h3><?php echo $this->translate('Item Category'); ?></h3>
 
 
 		<div style="" id="category_list"></div>
@@ -133,7 +133,9 @@
     		{
         		//alert('disabled');
     		}else{ 
-        	 	loadCategory(id,cat_name);
+
+    			//alert(cat_name);
+         	 	loadCategory(id,cat_name,1);
         	}
 	});
 </script>

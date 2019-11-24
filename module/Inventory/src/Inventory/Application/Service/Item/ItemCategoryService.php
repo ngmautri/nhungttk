@@ -14,8 +14,12 @@ class ItemCategoryService extends AbstractService
 
     private $itemCategoryRepository;
     
-    public function getNoneCategorizedItems(){
-        return $this->getItemCategoryRepository()->getNoneCategorizedItems();
+    public function getNoneCategorizedItems($limit, $offset){
+        return $this->getItemCategoryRepository()->getNoneCategorizedItems($limit, $offset);
+    }
+    
+    public function getNoneCategorizedItemsTotal(){
+        return $this->getItemCategoryRepository()->getNoneCategorizedItemsTotal();
     }
         
     public function addItemToCategory($itemId, $catId,$userId){
@@ -27,8 +31,8 @@ class ItemCategoryService extends AbstractService
      * @param int $catId
      * @return NULL|NULL[]|\Inventory\Domain\Item\ItemSnapshot[]
      */
-    public function getItemsByCategory($catId){
-        return $this->getItemCategoryRepository()->getItemsByCategory($catId);        
+    public function getItemsByCategory($catId,$limit, $offset){
+        return $this->getItemCategoryRepository()->getItemsByCategory($catId,$limit, $offset);        
     }
     
     

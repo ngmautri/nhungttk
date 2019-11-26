@@ -185,6 +185,8 @@ class ItemCategoryController extends AbstractActionController
     }
 
     /**
+     * 
+     * @return \Zend\View\Model\ViewModel
      */
     public function listAction()
     {
@@ -211,9 +213,76 @@ class ItemCategoryController extends AbstractActionController
             'jsTree' => $jsTree
         ));
 
+        $viewModel->setTemplate("inventory/item-category/list2");
+        return $viewModel;
+    }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function updateListAction()
+    {
+        $this->layout("Inventory/layout-blank");
+        
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
+            "nodeName" => "_ROOT_"
+        ));
+        
+        $this->itemCategoryService->initCategory();
+        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
+        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
+        
+        $request = $this->getRequest();
+        
+        /*
+         * if ($request->isXmlHttpRequest ()) {
+         * $this->layout ( "layout/user/ajax" );
+         * }
+         *
+         */
+        // $jsTree = $this->tree;
+        $viewModel = new ViewModel(array(
+            'jsTree' => $jsTree
+        ));
+        
         $viewModel->setTemplate("inventory/item-category/list3");
         return $viewModel;
     }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function changeListAction()
+    {
+        $this->layout("Inventory/layout-blank");
+        
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
+            "nodeName" => "_ROOT_"
+        ));
+        
+        $this->itemCategoryService->initCategory();
+        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
+        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
+        
+        $request = $this->getRequest();
+        
+        /*
+         * if ($request->isXmlHttpRequest ()) {
+         * $this->layout ( "layout/user/ajax" );
+         * }
+         *
+         */
+        // $jsTree = $this->tree;
+        $viewModel = new ViewModel(array(
+            'jsTree' => $jsTree
+        ));
+        
+        $viewModel->setTemplate("inventory/item-category/list3");
+        return $viewModel;
+    }
+    
 
     /**
      *
@@ -279,7 +348,7 @@ class ItemCategoryController extends AbstractActionController
         
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 12;
+            $resultsPerPage = 16;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }

@@ -11,12 +11,12 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 ?>
 
 <div id="content_id">
-<div id="tabs1" style="font-size: 9.5pt">
+	<div id="tabs1" style="font-size: 9.5pt">
 
-	<ul>
-		<li><a href="#general"><?php echo $cat_name; ?></a></li>
-	</ul>
-	<div id="general">
+		<ul>
+			<li><a href="#general"><?php echo $cat_name; ?></a></li>
+		</ul>
+		<div id="general">
 		
 <?php
 
@@ -31,13 +31,11 @@ if ($total_records <= 0) {
         echo $total_records . ' records found!';
     }
 
-  
     ?>
 
 
 	&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm"
-				style="color: black; padding: 1pt 5pt 2pt 5pt;" title="List View"
-				href="<?php echo $url;?>"> <i class="fa fa-list" aria-hidden="true"></i></a>
+				style="color: black; padding: 1pt 5pt 2pt 5pt;" title="List View" href="javascript:;" onclick="refreshDroppable();"> <i class="fa fa-refresh" aria-hidden="true"></i></a>
 
 			<hr style="margin: 5pt 1pt 5pt 1pt;">
 			<div class="container-fluid">
@@ -88,7 +86,9 @@ if ($total_records <= 0) {
 								</div>
 							</td>
 
-							<td style="padding: 1pt 1pt 1pt 10pt;"><span id="<?php echo $a->getId();?>" class="itemDraggable" style="cursor: move; padding: 1pt 1pt 1pt 2pt; font-weight: bold;"> 
+							<td style="padding: 1pt 1pt 1pt 10pt;"><span
+								id="<?php echo $a->getId();?>" class="itemDraggable"
+								style="cursor: move; padding: 1pt 1pt 1pt 2pt; font-weight: bold;"> 
 							<?php echo ucwords(substr($this->escapeHtml($a->getItemName()),0,100));?></span>
 																		
 							<?php if($a->getItemType()=="SERVICE"):?>			
@@ -151,11 +151,9 @@ if ($total_records <= 0) {
 
     // ===============================
     if (! is_null($paginator)) :
-        
-    
-    
+
         // change it only
-    $base = sprintf("/inventory/item-category/show?cat_id=%s&cat_name=%s", $cat_id,$cat_name);
+        $base = sprintf("/inventory/item-category/show?cat_id=%s&cat_name=%s", $cat_id, $cat_name);
 
         $_connector_symbol = '&';
 
@@ -215,14 +213,39 @@ endif;
 
 <script type="text/javascript">
 
-$( ".itemDraggable" ).draggable({helper: "clone" });
+$( ".itemDraggable" ).draggable({helper: "clone", start: refreshDroppable
+});
 
-$( ".categoryDroppable" ).droppable({
-	accept: ".itemDraggable",
-    drop: function( event, ui ) {
-        addItemToCategory(ui.draggable.attr('id'), $( this ).attr('id'),'<?php echo $cat_id; ?>', '<?php echo $cat_name;?>', '<?php echo $page;?>');
-    }
-  });
+
+function myHelper() {
+	  return '<div id="draggableHelper">helper</div>';
+	}
+
+function refreshDroppable(){
+	
+	$( ".categoryDroppable" ).droppable({
+		accept: ".itemDraggable",
+		classes: {
+		        "ui-droppable-hover": "cat_drag_over"
+		      },
+
+		      over: function(event, ui) {
+		          $(this).addClass('cat_drag_over');
+		        },
+
+		        out: function(event, ui) {
+		            $(this).removeClass('cat_drag_over');
+		       },
+
+		              
+	    drop: function( event, ui ) {
+	        
+	        addItemToCategory(ui.draggable.attr('id'), $( this ).attr('id'),'<?php echo $cat_id; ?>', '<?php echo $cat_name;?>', '<?php echo $page;?>');
+	        $(this).removeClass('cat_drag_over');
+	    }
+	  });
+}
+
 
 $( "#tabs1" ).tabs({
 
@@ -231,6 +254,9 @@ $( "#tabs1" ).tabs({
 	    },
 	   
 });
+
+
+
 
     function addItemToCategory(item_id, cat_id, current_cat, cat_name, current_page) {
     
@@ -246,7 +272,8 @@ $( "#tabs1" ).tabs({
 				$('#global-notice').html('"' + item_id + '" moved to category #' + cat_id+ '"');
 				$('#global-notice').fadeOut(5000);
 
-    			loadCategory(current_cat, cat_name,current_page)
+    			loadCategory(current_cat, cat_name,current_page);
+    			//$('#html').jstree('open_all');
     	});
     }
 

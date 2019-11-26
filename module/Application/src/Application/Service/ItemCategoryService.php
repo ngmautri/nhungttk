@@ -58,12 +58,37 @@ class ItemCategoryService extends AbstractCategory {
 			if($tree['instance']->getNodeName() == "_ROOT_"){
 			    
 			    
+			    
 				$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true, "disabled":true}\' data-ic=\'{"hasMember":"0"}\'><span  style="cursor:text">ITEM CATEGORY</span>';
 			}else{
 				if($expandAll === true){
-				    $this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'<span class="categoryDroppable">' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")</span>\n";
+				    
+				    $tmp = sprintf('<li title="%s" id="%s" data-jstree=\'{"opened" : true}\' data-ic=\'{"hasMember":%s}\'><span id="%s" class="categoryDroppable"> %s </span>',
+				        ucwords($tree['instance']->getNodeName()),
+				        $tree['instance']->getNodeId(),
+				        $tree['instance']->getHasMember(),
+				        $tree['instance']->getNodeId(),
+				        
+				        ucwords($tree['instance']->getNodeName()) . "(".count ($children).")"				        
+				        );
+				    
+				    $this->jsTree = $this->jsTree.$tmp;
+				    //$this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'<span class="categoryDroppable">' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")</span>\n";
 				}else{
-					$this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-ic=\'{"hasMember":"' . $tree['instance']->getHasMember() . '"}\'>' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+				    
+				    $tmp = sprintf('<li title="%s" id="%s" data-ic=\'{"hasMember":%s}\'><span id="%s" class="categoryDroppable"> %s </span>',
+				        ucwords($tree['instance']->getNodeName()),
+				        $tree['instance']->getNodeId(),
+				        $tree['instance']->getHasMember(),
+				        $tree['instance']->getNodeId(),
+				        
+				        ucwords($tree['instance']->getNodeName()) . "(".count ($children).")"
+				        );
+				    
+				    $this->jsTree = $this->jsTree.$tmp;
+				    
+				    
+				    //$this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' .  $tree['instance']->getNodeId().'" data-ic=\'{"hasMember":"' . $tree['instance']->getHasMember() . '"}\'><span class="categoryDroppable">' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")</span>\n";
 				}
 			}
 			
@@ -75,9 +100,19 @@ class ItemCategoryService extends AbstractCategory {
 					$this->generateJSTreeNew($key,$expandAll);
 				} else {
 				    
+				     $tmp = sprintf('<li  class="categoryDroppable" title="%s" id="%s" data-jstree="{\'opened\' : true, \'disabled\':false}" data-ic="{\'hasMember\':%s}">%s</li>',
+				        ucwords($value['instance']->getNodeName()),
+				         $value['instance']->getNodeId(),
+				         $value ['instance']->getHasMember(),
+				          $value ['instance']->getNodeName()
+				        );
 				    
-				    $this->jsTree = $this->jsTree . '<li class="categoryDroppable" title="'. ucwords($value['instance']->getNodeName()).'" id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\' data-ic=\'{"hasMember":"'.$value ['instance']->getHasMember(). '"}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
-					$this->generateJSTreeNew($key,$expandAll);
+				    
+				    //$this->jsTree = $this->jsTree . '<li class="categoryDroppable" title="'. ucwords($value['instance']->getNodeName()).'" id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\' data-ic=\'{"hasMember":"'.$value ['instance']->getHasMember(). '"}\'>' . $value ['instance']->getNodeName() . '</li>' . "\n";
+					
+				    $this->jsTree = $this->jsTree.$tmp;
+				    
+				    $this->generateJSTreeNew($key,$expandAll);
 				}
 			}
 			$this->jsTree = $this->jsTree . '</ul>' . "\n";

@@ -25,14 +25,17 @@
 	</div>
 
 	<div class="col-xs-12 col-sm-6 col-md-9" style="">
-		<h3><?php echo $this->translate('Item Category'); ?></h3>
+		<a class="btn btn-default btn-sm"
+			style="color: black; padding: 1pt 5pt 2pt 5pt;" title="List View"
+			href="http://localhost:81/inventory/item-category/list"> <i
+			class="fa fa-list" aria-hidden="true"></i></a>
 
 
 		<div style="" id="category_list"></div>
 	</div>
 </div>
 
-
+<div id ="test"><h1>TEST AREA</h1></div>
 
 
 
@@ -50,6 +53,7 @@
 
 
 <script>
+
 
   
 
@@ -138,6 +142,13 @@
          	 	loadCategory(id,cat_name,1);
         	}
 	});
+
+
+	$('#html').on('open_node.jstree', function (e, data) {
+		//refreshDroppable();
+    });
+
+		
 </script>
 
 

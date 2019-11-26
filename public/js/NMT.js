@@ -143,22 +143,31 @@ function filterPrRow(url) {
  * @param cat_name
  * @returns
  */
-function loadCategory(cat_id, cat_name) {
+function loadCategory(cat_id, cat_name, currentPage) {
 	
 	
-	//alert(cat_id);
 	$('#category_list').text("Loading...");
-		// alert(cat_id);
-		$.get("/inventory/item-category/show", {
+	//alert(cat_name);
+	
+	$.get("/inventory/item-category/show", {
 		cat_id : cat_id,
+		cat_name : cat_name,
+		page : currentPage,
 	}, function(data, status) {
 		// updateCarts();
-		
 		
 		$('#category_list').html(data);
 
 	});
 }
+
+
+/**
+ * 
+ * @param cat_id
+ * @param cat_name
+ * @returns
+ */
 
 
 
@@ -192,6 +201,7 @@ function loadCategoryList(cat_id, cat_name) {
 		// alert(cat_id);
 		$.get("/inventory/item-category/show", {
 		cat_id : cat_id,
+		cat_name : cat_name,
 	}, function(data, status) {
 		// updateCarts();
 		

@@ -1,8 +1,10 @@
 $(document).ready(function() {
 	
 	
+	
+	
 
-		// $('[data-toggle="tooltip"]').tooltip();
+	//$('[data-toggle="tooltip"]').tooltip();
 
 	$(document).ready(function() {
 		//$("#lightgallery").lightGallery({});
@@ -14,12 +16,19 @@ $(document).ready(function() {
 		 * 'avatar', '{"1": "Black Widow", "2": "Captain America", "3": "Iron
 		 * Man"}']] } });
 		 */
+		
+	
 
 	});
 
 	$("#select_ALL").change(function() {
 		$(".checkbox1").prop('checked', $(this).prop("checked"));
 	});
+	
+	
+	
+	
+
 
 });
 

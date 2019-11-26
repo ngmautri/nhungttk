@@ -122,26 +122,44 @@ ul.pagination li a.active {
 }
 
 ul
+
+
 .pagination
+
  
+
 li
+
  
+
 a
+
+
 :hover
+
+
 :not
+
  
+
 (
 .active
+
  
+
 )
 {
 background-color
+
+
 :
+
  
+
 #ddd
+
+
 ;
-
-
 }
 <!--
 jquery UI -->.dialogClass a:hover {
@@ -453,15 +471,30 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 	font-size: 12px;
 }
 
- 
-   /* Change default height */
+/* Change default height */
 .pq-grid td.pq-grid-cell {
 	padding: 6pt 2pt 5pt 2pt;
 }
 
-.pq-grid td.pq-grid-cell .ui-button .ui-button-text{
+.pq-grid td.pq-grid-cell .ui-button .ui-button-text {
 	padding: 3px 10px 3px 10px;
 	margin: 0px;
 	font-size: 9pt;
 }
- 
+
+.itemDraggable {
+	cursor: help;
+	font-size: 10pt;
+}
+
+.cat_drag_over {	
+	border: 2px dashed green;		
+	min-width: 150px;
+	min-height: 150px;
+	font-size: 11pt;
+	font-weight:bold;
+	color: navy;
+		
+}
+
+#draggableHelper { width: 300px; height: 300px; background: yellow; }

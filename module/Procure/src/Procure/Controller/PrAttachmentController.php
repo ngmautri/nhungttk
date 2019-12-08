@@ -1054,7 +1054,7 @@ class PrAttachmentController extends AbstractActionController
             
             $data = $_POST;
             
-            $redirectUrl = $data['redirectUrl'];
+            $redirectUrl = null;
             $target_id = $data['target_id'];
             $target_token = $data['token'];
             
@@ -1094,19 +1094,15 @@ class PrAttachmentController extends AbstractActionController
             
             $errors = $this->getAttachmentService()->doUploading(null, $target_id, $target_token, $data, $attachments, $u, TRUE);
             
+            $data = array();
+            
             if (count($errors) > 0) {
-                $this->flashMessenger()->addMessage('Something wrong!');
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'target' => $target,
-                    'entity' => $this->getAttachmentService()->getAttachmentEntity()
-                ));
                 
-                $viewModel->setTemplate("procure/pr-attachment/upload1");
-                return $viewModel;
+                $data['message'] = $errors[0];
+                $response = $this->getResponse();
+                $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                $response->setContent(json_encode($data));
+                return $response;
             }
             
             $m = sprintf('[OK] Attachment for PR  #%s added.', $target->getPrAutoNumber());
@@ -1120,10 +1116,10 @@ class PrAttachmentController extends AbstractActionController
                 'createdBy' => $u,
                 'createdOn' => $createdOn
             ));
-            return $this->redirect()->toUrl($redirectUrl);
+            //return $this->redirect()->toUrl($redirectUrl);
             
             
-            $data = array();
+          
             $data['message'] = $m;
             $response = $this->getResponse();
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');

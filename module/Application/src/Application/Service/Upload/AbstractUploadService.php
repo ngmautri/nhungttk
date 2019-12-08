@@ -396,7 +396,7 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
             ->getTargetClass(), $this->getAttachmentEntity()
             ->getTargetId(), $isNew);
 
-        if (count($ck1) > 0) {
+        if (count($ck2) > 0) {
             $errors = array_merge($errors, $ck2);
         }
 

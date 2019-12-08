@@ -239,6 +239,13 @@ class NmtApplicationAttachment
     private $fileExits;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1122,6 +1129,30 @@ class NmtApplicationAttachment
     public function getFileExits()
     {
         return $this->fileExits;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**

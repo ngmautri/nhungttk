@@ -225,6 +225,13 @@ class FinVendorInvoiceRow
     private $localGrossAmount;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="gr_row_id", type="integer", nullable=true)
+     */
+    private $grRowId;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -498,16 +505,6 @@ class FinVendorInvoiceRow
      * })
      */
     private $item;
-
-    /**
-     * @var \Application\Entity\NmtProcureGrRow
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="gr_row_id", referencedColumnName="id")
-     * })
-     */
-    private $grRow;
 
 
 
@@ -1215,6 +1212,30 @@ class FinVendorInvoiceRow
     public function getLocalGrossAmount()
     {
         return $this->localGrossAmount;
+    }
+
+    /**
+     * Set grRowId
+     *
+     * @param integer $grRowId
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setGrRowId($grRowId)
+    {
+        $this->grRowId = $grRowId;
+
+        return $this;
+    }
+
+    /**
+     * Get grRowId
+     *
+     * @return integer
+     */
+    public function getGrRowId()
+    {
+        return $this->grRowId;
     }
 
     /**
@@ -2055,29 +2076,5 @@ class FinVendorInvoiceRow
     public function getItem()
     {
         return $this->item;
-    }
-
-    /**
-     * Set grRow
-     *
-     * @param \Application\Entity\NmtProcureGrRow $grRow
-     *
-     * @return FinVendorInvoiceRow
-     */
-    public function setGrRow(\Application\Entity\NmtProcureGrRow $grRow = null)
-    {
-        $this->grRow = $grRow;
-
-        return $this;
-    }
-
-    /**
-     * Get grRow
-     *
-     * @return \Application\Entity\NmtProcureGrRow
-     */
-    public function getGrRow()
-    {
-        return $this->grRow;
     }
 }

@@ -24,18 +24,22 @@
 		</div>
 
 		<div class="container_dropzone">
-			<input type="file" name="pictures[]" id="file">
+			<input style="display: none;" type="file" name="pictures[]" id="file">
 
 			<!-- Drag and Drop container-->
 			<div class="upload-area" id="uploadfile">
 				<h4>
-					<i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i><br><br>Drag and Drop file here
+					<i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i><br>
+					<br>Drag and Drop file here
 				</h4>
 			</div>
-			<div id="selected_file">			
-			</div>
-			
-			
+			<div id="selected_file"></div>
+			<a id="uploadBtn" class="btn btn-default btn-sm"
+				style="color: black; margin-top: 4pt; margin-left: 10pt; display: none;"
+				href="javascript:;" onclick="doUploading();"> <i
+				class="fa fa-upload" aria-hidden="true">&nbsp;&nbsp;Upload</i></a>
+
+
 		</div>
 
 
@@ -721,28 +725,30 @@ function doPosting() {
 	} 
 
 
-
-   // preventing page from redirecting
-   $("html").on("dragover", function(e) {
-       e.preventDefault();
-       e.stopPropagation();
-       $("h1").text("Drag here");
-   });
-
-   $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
-
    // Drag enter
    $('.upload-area').on('dragenter', function (e) {
        e.stopPropagation();
        e.preventDefault();
-       $("h1").text("Drop");
+       $("h4").addClass('cat_drag_over');
+           
+       //$("h4").text("Drop");
+   });
+
+   // Drag enter
+   $('.upload-area').on('dragleave', function (e) {
+       e.stopPropagation();
+       e.preventDefault();
+       $("h4").removeClass('cat_drag_over');
+           
+       //$("h4").text("Drop");
    });
 
    // Drag over
    $('.upload-area').on('dragover', function (e) {
        e.stopPropagation();
        e.preventDefault();
-       $("h1").text("Drop");
+       $("h4").addClass('cat_drag_over');
+       //$("h4").text("Drop");
    });
 
    // Drop
@@ -750,7 +756,9 @@ function doPosting() {
        e.stopPropagation();
        e.preventDefault();
 
-       $("h4").text("Uploaded");
+       //$("h4").text("Uploaded");
+       $("h4").removeClass('cat_drag_over');
+       
 
        var file = e.originalEvent.dataTransfer.files;
        var fd = new FormData();
@@ -769,7 +777,7 @@ function doPosting() {
        fd.append('remarks','');
 
        $('#file')[0] = file[0];
-       alert(file[0].size + file[0].type);
+       //alert(file[0].size + file[0].type);
 
        dataArray.push(file[0]);
 
@@ -777,9 +785,14 @@ function doPosting() {
     	   alert("Max file " +  maxFiles);
     	   return;
        }
+
+       if(dataArray.length == 0){
+    	   return;
+       }
        
        var i;
        var selected_file="";
+       
        selected_file= "<ul>";
        for (i = 0; i < dataArray.length; i++) {
     	   selected_file = selected_file + "<li>"+ dataArray[i].name +"; "+dataArray[i].size + "</li>";
@@ -788,7 +801,8 @@ function doPosting() {
        selected_file= selected_file+"</ul>";
 
        $('#selected_file').html(selected_file);
-       
+       $('#uploadBtn').show();
+          
        //uploadData(fd);
    });
 
@@ -819,8 +833,6 @@ function doPosting() {
 //Sending AJAX request and upload file
 function uploadData(formdata){
 	
-	
- 
    $.ajax({
        url: '/procure/pr-attachment/upload1',
        type: 'POST',
@@ -837,6 +849,54 @@ function uploadData(formdata){
 	    
 		
 		 alert('false');
+
+		   });
+}
+
+//Sending AJAX request and upload file
+function doUploading(){
+
+	 if(dataArray.length == 0){
+		alert("No File");
+	  	return;
+	 }     
+
+	 alert(dataArray.length);
+	 
+    var fd = new FormData();
+    fd.append('attachments',dataArray[0]);
+    fd.append('target_id', <?php echo (!$entity == null)? $entity->getId():"";?>);
+    fd.append('checksum','na');
+    fd.append('token', '<?php echo (!$entity == null)? $entity->getToken():"";?>');       
+    fd.append('documentSubject','na');
+    fd.append('entity_id','na');
+    fd.append('entity_token','na');
+    fd.append('validFrom','');
+    fd.append('validTo','');
+    fd.append('redirectUrl',null);
+    fd.append('isActive',1);
+    fd.append('remarks','');
+    fd.append('markedForDeletion',0);
+    fd.append('visibility',1);
+    fd.append('filePassword','');
+        
+            
+   $.ajax({
+       url: '/procure/pr-attachment/upload1',
+       type: 'POST',
+       data: fd,
+       contentType: false,
+       processData: false,
+       dataType: 'json',       
+       success: function( jqXHR, textStatus ){
+    	   alert("ok");
+           //alert(response);
+    	   location.reload();
+       },
+   }).fail(function(  jqXHR, textStatus ) {
+	    
+		
+		 alert(jqXHR.responseText  + textStatus);
 
 		   });
 }

@@ -34,6 +34,10 @@ class PrAttachmentControllerFactory implements FactoryInterface{
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
 		
+		$sv =  $container->get('Procure\Service\Upload\PrUploadService');
+		$controller->setAttachmentService($sv);
+		
+		
 		return $controller;
 	}	
 	

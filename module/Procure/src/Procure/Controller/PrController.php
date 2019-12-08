@@ -34,6 +34,9 @@ class PrController extends AbstractActionController
     protected $pdfService;
 
     protected $prService;
+    
+    protected $attachmentService;
+    
 
     /*
      * Defaul Action
@@ -665,6 +668,8 @@ class PrController extends AbstractActionController
         $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
             ->getUri();
+        
+            
         $id = (int) $this->params()->fromQuery('entity_id');
         // $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
@@ -1217,4 +1222,7 @@ class PrController extends AbstractActionController
     {
         $this->prService = $prService;
     }
+    
+    
+  
 }

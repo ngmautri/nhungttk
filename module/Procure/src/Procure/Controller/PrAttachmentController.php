@@ -30,7 +30,9 @@ class PrAttachmentController extends AbstractActionController
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
-    protected $doctrineEM;
+    protected $doctrineE;
+    protected $attachmentService;
+    
 
     /*
      * Defaul Action
@@ -1031,6 +1033,146 @@ class PrAttachmentController extends AbstractActionController
             'entity' => null
         ));
     }
+    
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+     */
+    public function upload1Action()
+    {
+        $request = $this->getRequest();
+        $this->layout("layout/user/ajax");
+        
+        if ($request->isPost()) {
+            
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+            
+            $errors = array();
+            //$data = $request->getPost();
+            
+            $data = $_POST;
+            
+            $redirectUrl = $data['redirectUrl'];
+            $target_id = $data['target_id'];
+            $target_token = $data['token'];
+            
+            $criteria = array(
+                'id' => $target_id,
+                'token' => $target_token
+            );
+            
+            /**
+             *
+             * @todo : Change Target
+             * @var \Application\Entity\NmtProcurePr $target ;
+             *
+             */
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+            
+            if (! $target instanceof \Application\Entity\NmtProcurePr) {
+                
+                $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
+                $this->flashMessenger()->addMessage('Something wrong!' . $target_id);
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => null,
+                    'entity' => null
+                ));
+                
+                $viewModel->setTemplate("procure/pr-attachment/upload1");
+                return $viewModel;
+            }
+            
+            $attachments = null;
+            if (isset($_FILES['attachments'])) {
+                $attachments = $_FILES['attachments'];
+            }
+            
+            $errors = $this->getAttachmentService()->doUploading(null, $target_id, $target_token, $data, $attachments, $u, TRUE);
+            
+            if (count($errors) > 0) {
+                $this->flashMessenger()->addMessage('Something wrong!');
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $this->getAttachmentService()->getAttachmentEntity()
+                ));
+                
+                $viewModel->setTemplate("procure/pr-attachment/upload1");
+                return $viewModel;
+            }
+            
+            $m = sprintf('[OK] Attachment for PR  #%s added.', $target->getPrAutoNumber());
+            $this->flashMessenger()->addMessage($m);
+            
+            $createdOn = new \DateTime();
+            // Trigger Activity Log . AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn
+            ));
+            return $this->redirect()->toUrl($redirectUrl);
+            
+            
+            $data = array();
+            $data['message'] = $m;
+            $response = $this->getResponse();
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            return $response;
+        }
+        
+        // NO POST
+        // Initiating....................
+        // ================================
+        
+        $redirectUrl = null;
+        if ($this->getRequest()->getHeader('Referer') != null) {
+            $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+        
+        /**
+         *
+         * @todo : Change Target
+         * @var \Application\Entity\NmtProcurePr $target ;
+         */
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        
+        if ($target instanceof \Application\Entity\NmtProcurePr) {
+            
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'target' => $target,
+                'entity' => null
+            ));
+            
+            $viewModel->setTemplate("procure/pr-attachment/upload1");
+            return $viewModel;
+        }
+    }
 
     /**
      *
@@ -1361,7 +1503,12 @@ class PrAttachmentController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
+            
+            
             $pictures = $_POST['pictures'];
+            //$pictures = $_FILES['pictures'];
+                      
+            
             $target_id = $_POST['target_id'];
             $checksum = $_POST['checksum'];
             $token = $_POST['token'];
@@ -1398,8 +1545,15 @@ class PrAttachmentController extends AbstractActionController
                 $n = 0;
                 foreach ($pictures as $p) {
                     $n ++;
+                    
+                    
                     $filetype = $p[0];
+                    //$filetype = $p['type'];
+                    
                     $original_filename = $p[2];
+                    //$original_filename = $p['name'];
+                    
+                    $ext='';
 
                     if (preg_match('/(jpg|jpeg)$/', $filetype)) {
                         $ext = 'jpg';
@@ -1548,12 +1702,12 @@ class PrAttachmentController extends AbstractActionController
         // Initiate...............
         // ========================
 
-        $redirectUrl = null;
+     /*    $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
-        }
+        } */
 
         $id = (int) $this->params()->fromQuery('target_id');
         $checksum = $this->params()->fromQuery('checksum');
@@ -1691,5 +1845,23 @@ class PrAttachmentController extends AbstractActionController
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
+    }
+    
+  /**
+   * 
+   * @return \Procure\Service\Upload\PrUploadService
+   */
+    public function getAttachmentService()
+    {
+        return $this->attachmentService;
+    }
+    
+   /**
+    * 
+    * @param \Procure\Service\Upload\PrUploadService $attachmentService
+    */
+    public function setAttachmentService(\Procure\Service\Upload\PrUploadService $attachmentService)
+    {
+        $this->attachmentService = $attachmentService;
     }
 }

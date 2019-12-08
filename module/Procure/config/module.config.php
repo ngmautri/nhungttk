@@ -231,7 +231,8 @@ return array(
             'Procure\Service\ApSearchService' => 'Procure\Service\ApSearchServiceFactory',
             
             'Procure\Service\Upload\PrRowUploadService' => 'Procure\Service\Upload\PrRowUploadServiceFactory',
-
+            'Procure\Service\Upload\PrUploadService' => 'Procure\Service\Upload\PrUploadServiceFactory',
+            
             
             // Repository Service
             'Procure\Infrastructure\Persistence\Doctrine\PRListRepository' => 'Procure\Infrastructure\Persistence\Doctrine\Factory\PRListRepositoryFactory',

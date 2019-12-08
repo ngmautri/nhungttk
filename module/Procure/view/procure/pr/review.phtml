@@ -18,8 +18,25 @@
 		</div>
 
 		<div class="alert alert-warning" role="alert"
-			style="padding: 2px 2px 2px 5px; font-size: 9pt; margin: 5pt 2px 5pt 5pt"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;Document
-			can't be changed anymore when submitted!</div>
+			style="padding: 2px 2px 2px 5px; font-size: 9pt; margin: 5pt 2px 5pt 5pt">
+			<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;Document
+			can't be changed anymore when submitted!
+		</div>
+
+		<div class="container_dropzone">
+			<input type="file" name="pictures[]" id="file">
+
+			<!-- Drag and Drop container-->
+			<div class="upload-area" id="uploadfile">
+				<h4>
+					<i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i><br><br>Drag and Drop file here
+				</h4>
+			</div>
+			<div id="selected_file">			
+			</div>
+			
+			
+		</div>
 
 
 	</div>
@@ -39,18 +56,18 @@
 			<div id="tabs" style="font-size: 10pt">
 				<ul>
 					<li><a href="#general"><?php echo $this->translate("New Purchase Request");?>:</a></li>
-						<li><a
-			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
-				class="glyphicon glyphicon-picture"></span>&nbsp;Picture<?php if($total_picture!==null): echo sprintf('&nbsp;(%s)',$total_picture); endif;?></a></li>
-		<li><a
-			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment<?php if($total_attachment!==null): echo sprintf('&nbsp;(%s)',$total_attachment); endif;?>
+					<li><a
+						href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
+							class="glyphicon glyphicon-picture"></span>&nbsp;Picture<?php if($total_picture!==null): echo sprintf('&nbsp;(%s)',$total_picture); endif;?></a></li>
+					<li><a
+						href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+							<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment<?php if($total_attachment!==null): echo sprintf('&nbsp;(%s)',$total_attachment); endif;?>
 		</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
-				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
-					
-					
+					<li><a
+						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+
+
 				</ul>
 
 				<div id="general" style="font-size: 9pt; padding: 5pt">
@@ -294,6 +311,10 @@ if (count($errors) > 0) {
 </div>
 
 <script>
+
+var dataArray = [];
+var maxFiles = 2;
+
 
 function confirmPost() {
  	$('#confirm_modal_sm').modal();
@@ -698,5 +719,159 @@ function doPosting() {
    function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
 	} 
+
+
+
+   // preventing page from redirecting
+   $("html").on("dragover", function(e) {
+       e.preventDefault();
+       e.stopPropagation();
+       $("h1").text("Drag here");
+   });
+
+   $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
+
+   // Drag enter
+   $('.upload-area').on('dragenter', function (e) {
+       e.stopPropagation();
+       e.preventDefault();
+       $("h1").text("Drop");
+   });
+
+   // Drag over
+   $('.upload-area').on('dragover', function (e) {
+       e.stopPropagation();
+       e.preventDefault();
+       $("h1").text("Drop");
+   });
+
+   // Drop
+   $('.upload-area').on('drop', function (e) {
+       e.stopPropagation();
+       e.preventDefault();
+
+       $("h4").text("Uploaded");
+
+       var file = e.originalEvent.dataTransfer.files;
+       var fd = new FormData();
+
+       fd.append('attachments', file[0]);         
+       fd.append('target_id', <?php echo (!$entity == null)? $entity->getId():"";?>);
+       fd.append('token', '<?php echo (!$entity == null)? $entity->getToken():"";?>');
+       fd.append('redirectUrl',null);
+       fd.append('documentSubject','na');
+       fd.append('validTo','');
+       fd.append('validFrom','');
+       fd.append('isActive',1);
+       fd.append('markedForDeletion',0);
+       fd.append('filePassword','');
+       fd.append('visibility',1);
+       fd.append('remarks','');
+
+       $('#file')[0] = file[0];
+       alert(file[0].size + file[0].type);
+
+       dataArray.push(file[0]);
+
+       if(dataArray.length>maxFiles){
+    	   alert("Max file " +  maxFiles);
+    	   return;
+       }
+       
+       var i;
+       var selected_file="";
+       selected_file= "<ul>";
+       for (i = 0; i < dataArray.length; i++) {
+    	   selected_file = selected_file + "<li>"+ dataArray[i].name +"; "+dataArray[i].size + "</li>";
+       } 
+
+       selected_file= selected_file+"</ul>";
+
+       $('#selected_file').html(selected_file);
+       
+       //uploadData(fd);
+   });
+
+   // Open file selector on div click
+   $("#uploadfile").click(function(){
+       $("#file").click();
+   });
+
+   // file selected
+   $("#file").change(function(){
+       var fd = new FormData();
+
+       var files = $('#file')[0].files[0];
+
+       fd.append('attachments',files);
+       fd.append('target_id', <?php echo (!$entity == null)? $entity->getId():"";?>);
+       fd.append('checksum','na');
+       fd.append('token', '<?php echo (!$entity == null)? $entity->getToken():"";?>');       
+       fd.append('subject','na');
+       fd.append('entity_id','na');
+       fd.append('entity_token','na');
+ 
+
+       //uploadData(fd);
+   });
+
+
+//Sending AJAX request and upload file
+function uploadData(formdata){
+	
+	
+ 
+   $.ajax({
+       url: '/procure/pr-attachment/upload1',
+       type: 'POST',
+       data: formdata,
+       contentType: false,
+       processData: false,
+       dataType: 'json',       
+       success: function( jqXHR, textStatus ){
+    	   alert("ok");
+           //alert(response);
+    	   location.reload();
+       },
+   }).fail(function(  jqXHR, textStatus ) {
+	    
+		
+		 alert('false');
+
+		   });
+}
+
+//Added thumbnail
+function addThumbnail(data){
+   $("#uploadfile h1").remove(); 
+   var len = $("#uploadfile div.thumbnail").length;
+
+   var num = Number(len);
+   num = num + 1;
+
+   var name = data.name;
+   var size = convertSize(data.size);
+   var src = data.src;
+
+   // Creating an thumbnail
+   $("#uploadfile").append('<div id="thumbnail_'+num+'" class="thumbnail"></div>');
+   $("#thumbnail_"+num).append('<img src="'+src+'" width="100%" height="78%">');
+   $("#thumbnail_"+num).append('<span class="size">'+size+'<span>');
+
+}
+
+//Bytes conversion
+function convertSize(size) {
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+   if (size == 0) return '0 Byte';
+   var i = parseInt(Math.floor(Math.log(size) / Math.log(1024)));
+   return Math.round(size / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
+
+
+
+
+	
 </script>
 

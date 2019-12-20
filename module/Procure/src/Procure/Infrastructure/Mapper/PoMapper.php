@@ -737,9 +737,7 @@ class PoMapper
         // Mapping Date
         // =====================
 
-        $snapshot->createdOn = $entity->getCreatedOn();
-        $snapshot->lastchangeOn = $entity->getLastchangeOn();
-
+    
         if (! $entity->getCreatedOn() == null) {
             $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
         }

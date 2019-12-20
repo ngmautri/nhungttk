@@ -21,6 +21,6 @@ class AttachmentDTOTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-       AttachmentDTOAssembler::createDTOProperities();
+       AttachmentDTOAssembler::createStoreMapping();
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoiceRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx1", columns={"gr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK10_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK11_idx", columns={"cost_center_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK12_idx", columns={"doc_uom"})})
+ * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"}), @ORM\Index(name="fin_vendor_invoice_row_FK10_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK11_idx", columns={"cost_center_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK12_idx", columns={"doc_uom"}), @ORM\Index(name="fin_vendor_invoice_row_FK13_idx", columns={"gr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK14_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class FinVendorInvoiceRow
@@ -225,13 +225,6 @@ class FinVendorInvoiceRow
     private $localGrossAmount;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="gr_row_id", type="integer", nullable=true)
-     */
-    private $grRowId;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -447,6 +440,26 @@ class FinVendorInvoiceRow
     private $docUom;
 
     /**
+     * @var \Application\Entity\NmtProcureGrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_row_id", referencedColumnName="id")
+     * })
+     */
+    private $grRow;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
+
+    /**
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -495,16 +508,6 @@ class FinVendorInvoiceRow
      * })
      */
     private $poRow;
-
-    /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
 
 
 
@@ -1215,30 +1218,6 @@ class FinVendorInvoiceRow
     }
 
     /**
-     * Set grRowId
-     *
-     * @param integer $grRowId
-     *
-     * @return FinVendorInvoiceRow
-     */
-    public function setGrRowId($grRowId)
-    {
-        $this->grRowId = $grRowId;
-
-        return $this;
-    }
-
-    /**
-     * Get grRowId
-     *
-     * @return integer
-     */
-    public function getGrRowId()
-    {
-        return $this->grRowId;
-    }
-
-    /**
      * Set docStatus
      *
      * @param string $docStatus
@@ -1935,6 +1914,54 @@ class FinVendorInvoiceRow
     }
 
     /**
+     * Set grRow
+     *
+     * @param \Application\Entity\NmtProcureGrRow $grRow
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setGrRow(\Application\Entity\NmtProcureGrRow $grRow = null)
+    {
+        $this->grRow = $grRow;
+
+        return $this;
+    }
+
+    /**
+     * Get grRow
+     *
+     * @return \Application\Entity\NmtProcureGrRow
+     */
+    public function getGrRow()
+    {
+        return $this->grRow;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
      * Set prRow
      *
      * @param \Application\Entity\NmtProcurePrRow $prRow
@@ -2052,29 +2079,5 @@ class FinVendorInvoiceRow
     public function getPoRow()
     {
         return $this->poRow;
-    }
-
-    /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return FinVendorInvoiceRow
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
     }
 }

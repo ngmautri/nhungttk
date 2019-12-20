@@ -494,7 +494,48 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 	font-size: 11pt;
 	font-weight:bold;
 	color: navy;
+	opacity: 0.9;
 		
 }
 
 #draggableHelper { width: 300px; height: 300px; background: yellow; }
+
+
+
+.upload-area{
+    width: 90%;    
+    height: 180px;
+    border: 2px solid lightgray;
+    border-radius: 3px;
+    margin: 0 auto;
+    margin-top: 50px;
+    text-align: center;
+    overflow: auto;
+}
+
+.upload-area:hover{
+    cursor: pointer;
+}
+
+.upload-area h4{
+    text-align: center;
+    font-weight: normal;
+    font-family: sans-serif;
+     color: darkslategray;
+}
+
+
+
+/* Thumbnail */
+.thumbnail{
+    width: 80px;
+    height: 80px;
+    padding: 2px;
+    border: 2px solid lightgray;
+    border-radius: 3px;
+    float: left;
+}
+
+.size{
+    font-size:12px;
+}

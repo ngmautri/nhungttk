@@ -5,9 +5,9 @@ use Inventory\Domain\Item\AbstractItem;
 use Inventory\Domain\Item\InventoryItem;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com 1
  *
- * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
  */
 class ItemAssembler
 {

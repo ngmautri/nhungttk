@@ -423,6 +423,20 @@ if (count($errors) > 0) {
 				<!-- end tab -->
 			</div>
 		</div>
+		
+		
+	    <div style="width: 200pt; position: relative; float: right;">
+		<hr>
+		<div class="alert alert-default" role="alert"
+			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+			<ul style="font-size: 10pt; margin: 0; padding-left: 15pt">
+				<li>Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?></li>
+				<li>Tax: <?php echo number_format($tax_amount,2);?></li>
+				<li>Gross: <?php echo number_format($gross_amount,2) . " " .$entity->getCurrency()->getCurrency();?></li>
+			</ul>
+		</div>
+		</div>
+		
 	</div>
 	<!-- /#page-content-wrapper -->
 

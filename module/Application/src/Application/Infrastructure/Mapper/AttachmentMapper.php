@@ -29,6 +29,8 @@ class AttachmentMapper
         }
 
         // DATE MAPPING
+        //==================
+        
         // $entity->setValidFrom($snapshot->validFrom);
         if ($snapshot->validFrom !== null) {
             $entity->setCreatedOn(new \DateTime($snapshot->validFrom));
@@ -50,7 +52,7 @@ class AttachmentMapper
         }
 
         // REFERRENCE MAPPING
-        // ===================
+        // ==================
         $entity->setCreatedBy($snapshot->createdBy);
         // $entity->setPmtTerm($snapshot->pmtTerm);
         if ($snapshot->createdBy > 0) {
@@ -288,7 +290,6 @@ class AttachmentMapper
 
         // Mapping Date
         // =====================
-
         $snapshot->createdOn = $entity->getCreatedOn();
         if (! $entity->getCreatedOn() == null) {
             $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");

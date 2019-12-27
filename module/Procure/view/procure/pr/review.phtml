@@ -841,7 +841,7 @@ function uploadData(formdata){
        processData: false,
        dataType: 'json',       
        success: function( jqXHR, textStatus ){
-    	   alert("ok");
+    	   //alert("ok");
            //alert(response);
     	   location.reload();
        },
@@ -859,9 +859,11 @@ function doUploading(){
 	 if(dataArray.length == 0){
 		alert("No File");
 	  	return;
-	 }     
+	 }    
 
-	 alert(dataArray.length);
+	 $("#b_modal_no_header").modal(); 
+
+	 //alert(dataArray.length);
 	 
     var fd = new FormData();
     fd.append('attachments',dataArray[0]);
@@ -889,7 +891,7 @@ function doUploading(){
        processData: false,
        dataType: 'json',       
        success: function( jqXHR, textStatus ){
-    	   alert("ok");
+    	   //alert("ok");
            //alert(response);
     	   location.reload();
        },

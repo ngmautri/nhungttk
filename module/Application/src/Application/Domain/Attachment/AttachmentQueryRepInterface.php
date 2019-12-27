@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Company;
+namespace Application\Domain\Attachment;
 
 /**
  *
@@ -8,4 +8,8 @@ namespace Application\Domain\Company;
  */
 Interface AttachmentQueryRepInterface
 {
+    public function findAll();
+    
+    public function getById($id);
+    
 }

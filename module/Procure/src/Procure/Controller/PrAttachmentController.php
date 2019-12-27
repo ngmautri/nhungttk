@@ -848,7 +848,7 @@ class PrAttachmentController extends AbstractActionController
                     $file_size = $_FILES['attachments']['size'];
                     $file_tmp = $_FILES['attachments']['tmp_name'];
                     $file_type = $_FILES['attachments']['type'];
-                    $file_ext = strtolower(end(explode('.', $_FILES['attachments']['name'])));
+                    $file_ext = strtolower(end(explode('.', $file_name)));
 
                     // attachement required?
                     if ($file_tmp == "" or $file_tmp === null) {

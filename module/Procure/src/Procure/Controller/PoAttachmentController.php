@@ -842,8 +842,13 @@ class PoAttachmentController extends AbstractActionController
                 $file_size = $_FILES['attachments']['size'];
                 $file_tmp = $_FILES['attachments']['tmp_name'];
                 $file_type = $_FILES['attachments']['type'];
-                $file_ext = strtolower(end(explode('.', $_FILES['attachments']['name'])));
-
+                
+                /**
+                 * @todo: Strict Standards: Only variables should be passed by reference                 
+                 */
+                $file_ext_tmp = explode('.', $file_name);
+                $file_ext = strtolower(end($file_ext_tmp));
+                
                 // attachement required?
                 if ($file_tmp == "" or $file_tmp === null) {
 

@@ -289,6 +289,13 @@ class NmtProcurePo
     private $uuid;
     
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+    
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1320,6 +1327,30 @@ class NmtProcurePo
     public function getUuid()
     {
         return $this->uuid;
+    }
+    
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtProcurePo
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+        
+        return $this;
+    }
+    
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
     }
     
     /**

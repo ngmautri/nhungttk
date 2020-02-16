@@ -1,7 +1,6 @@
 <?php
 namespace Application\Domain\Shared;
 
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 
 /**
  *

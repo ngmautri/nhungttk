@@ -358,6 +358,13 @@ class NmtProcurePoRow
     private $reversalBlocked;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1599,6 +1606,30 @@ class NmtProcurePoRow
     public function getReversalBlocked()
     {
         return $this->reversalBlocked;
+    }
+
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
     }
 
     /**

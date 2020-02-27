@@ -66,5 +66,134 @@ class NmtApplicationAclRoleResource
     private $updatedBy;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set updatedOn
+     *
+     * @param \DateTime $updatedOn
+     *
+     * @return NmtApplicationAclRoleResource
+     */
+    public function setUpdatedOn($updatedOn)
+    {
+        $this->updatedOn = $updatedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedOn
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedOn()
+    {
+        return $this->updatedOn;
+    }
+
+    /**
+     * Set nmtApplicationAclRoleResourcecol
+     *
+     * @param string $nmtApplicationAclRoleResourcecol
+     *
+     * @return NmtApplicationAclRoleResource
+     */
+    public function setNmtApplicationAclRoleResourcecol($nmtApplicationAclRoleResourcecol)
+    {
+        $this->nmtApplicationAclRoleResourcecol = $nmtApplicationAclRoleResourcecol;
+
+        return $this;
+    }
+
+    /**
+     * Get nmtApplicationAclRoleResourcecol
+     *
+     * @return string
+     */
+    public function getNmtApplicationAclRoleResourcecol()
+    {
+        return $this->nmtApplicationAclRoleResourcecol;
+    }
+
+    /**
+     * Set role
+     *
+     * @param \Application\Entity\NmtApplicationAclRole $role
+     *
+     * @return NmtApplicationAclRoleResource
+     */
+    public function setRole(\Application\Entity\NmtApplicationAclRole $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Application\Entity\NmtApplicationAclRole
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set resource
+     *
+     * @param \Application\Entity\NmtApplicationAclResource $resource
+     *
+     * @return NmtApplicationAclRoleResource
+     */
+    public function setResource(\Application\Entity\NmtApplicationAclResource $resource = null)
+    {
+        $this->resource = $resource;
+
+        return $this;
+    }
+
+    /**
+     * Get resource
+     *
+     * @return \Application\Entity\NmtApplicationAclResource
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
+     * Set updatedBy
+     *
+     * @param \Application\Entity\MlaUsers $updatedBy
+     *
+     * @return NmtApplicationAclRoleResource
+     */
+    public function setUpdatedBy(\Application\Entity\MlaUsers $updatedBy = null)
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
+    }
+}

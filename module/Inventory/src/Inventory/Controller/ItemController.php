@@ -31,7 +31,7 @@ class ItemController extends AbstractActionController
 {
 
     protected $doctrineEM;
-
+    
     protected $itemListRepository;
 
     protected $itemReportingRepository;
@@ -50,6 +50,7 @@ class ItemController extends AbstractActionController
      */
     protected $itemCRUDService;
 
+   
     /**
      *
      * @return \Inventory\Service\Report\ItemReportService

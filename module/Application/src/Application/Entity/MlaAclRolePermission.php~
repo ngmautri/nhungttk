@@ -42,5 +42,62 @@ class MlaAclRolePermission
     private $permission;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set role
+     *
+     * @param \Application\Entity\MlaAclRoles $role
+     *
+     * @return MlaAclRolePermission
+     */
+    public function setRole(\Application\Entity\MlaAclRoles $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Application\Entity\MlaAclRoles
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set permission
+     *
+     * @param \Application\Entity\MlaAclPermissions $permission
+     *
+     * @return MlaAclRolePermission
+     */
+    public function setPermission(\Application\Entity\MlaAclPermissions $permission = null)
+    {
+        $this->permission = $permission;
+
+        return $this;
+    }
+
+    /**
+     * Get permission
+     *
+     * @return \Application\Entity\MlaAclPermissions
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
+}

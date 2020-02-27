@@ -42,5 +42,62 @@ class MlaAclUserPermission
     private $permission;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Application\Entity\MlaUsers $user
+     *
+     * @return MlaAclUserPermission
+     */
+    public function setUser(\Application\Entity\MlaUsers $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set permission
+     *
+     * @param \Application\Entity\MlaAclPermissions $permission
+     *
+     * @return MlaAclUserPermission
+     */
+    public function setPermission(\Application\Entity\MlaAclPermissions $permission = null)
+    {
+        $this->permission = $permission;
+
+        return $this;
+    }
+
+    /**
+     * Get permission
+     *
+     * @return \Application\Entity\MlaAclPermissions
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
+}

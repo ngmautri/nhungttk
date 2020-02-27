@@ -87,5 +87,206 @@ class NmtInventoryWarehouseJournal
     private $currency;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set itemId
+     *
+     * @param integer $itemId
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set quantityIn
+     *
+     * @param integer $quantityIn
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setQuantityIn($quantityIn)
+    {
+        $this->quantityIn = $quantityIn;
+
+        return $this;
+    }
+
+    /**
+     * Get quantityIn
+     *
+     * @return integer
+     */
+    public function getQuantityIn()
+    {
+        return $this->quantityIn;
+    }
+
+    /**
+     * Set quantityOut
+     *
+     * @param integer $quantityOut
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setQuantityOut($quantityOut)
+    {
+        $this->quantityOut = $quantityOut;
+
+        return $this;
+    }
+
+    /**
+     * Get quantityOut
+     *
+     * @return integer
+     */
+    public function getQuantityOut()
+    {
+        return $this->quantityOut;
+    }
+
+    /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set wh
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $wh
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setWh(\Application\Entity\NmtInventoryWarehouse $wh = null)
+    {
+        $this->wh = $wh;
+
+        return $this;
+    }
+
+    /**
+     * Get wh
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWh()
+    {
+        return $this->wh;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $currency
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+}

@@ -1,9 +1,8 @@
 <?php
 namespace Inventory\Domain\Event\Item;
 
-use Symfony\Component\Workflow\Event\Event;
-use Inventory\Domain\Item\AbstractItem;
 use Inventory\Domain\Item\GenericItem;
+use Symfony\Component\Workflow\Event\Event;
 
 /**
  *

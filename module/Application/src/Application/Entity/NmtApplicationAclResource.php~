@@ -126,5 +126,350 @@ class NmtApplicationAclResource
     private $changeBy;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set module
+     *
+     * @param string $module
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setModule($module)
+    {
+        $this->module = $module;
+
+        return $this;
+    }
+
+    /**
+     * Get module
+     *
+     * @return string
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * Set controller
+     *
+     * @param string $controller
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+
+        return $this;
+    }
+
+    /**
+     * Get controller
+     *
+     * @return string
+     */
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    /**
+     * Set action
+     *
+     * @param string $action
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * Get action
+     *
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set resource
+     *
+     * @param string $resource
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setResource($resource)
+    {
+        $this->resource = $resource;
+
+        return $this;
+    }
+
+    /**
+     * Get resource
+     *
+     * @return string
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set changeOn
+     *
+     * @param \DateTime $changeOn
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setChangeOn($changeOn)
+    {
+        $this->changeOn = $changeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get changeOn
+     *
+     * @return \DateTime
+     */
+    public function getChangeOn()
+    {
+        return $this->changeOn;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set companyId
+     *
+     * @param integer $companyId
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+
+        return $this;
+    }
+
+    /**
+     * Get companyId
+     *
+     * @return integer
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set changeBy
+     *
+     * @param \Application\Entity\MlaUsers $changeBy
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setChangeBy(\Application\Entity\MlaUsers $changeBy = null)
+    {
+        $this->changeBy = $changeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get changeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getChangeBy()
+    {
+        return $this->changeBy;
+    }
+}

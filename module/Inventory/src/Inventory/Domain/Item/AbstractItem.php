@@ -2,10 +2,6 @@
 namespace Inventory\Domain\Item;
 
 use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
-use Inventory\Domain\Item\ItemType;
 
 /**
  *

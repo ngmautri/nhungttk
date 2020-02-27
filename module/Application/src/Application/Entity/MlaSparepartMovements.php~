@@ -119,5 +119,326 @@ class MlaSparepartMovements
     private $wh;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set movementDate
+     *
+     * @param \DateTime $movementDate
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setMovementDate($movementDate)
+    {
+        $this->movementDate = $movementDate;
+
+        return $this;
+    }
+
+    /**
+     * Get movementDate
+     *
+     * @return \DateTime
+     */
+    public function getMovementDate()
+    {
+        return $this->movementDate;
+    }
+
+    /**
+     * Set assetId
+     *
+     * @param integer $assetId
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setAssetId($assetId)
+    {
+        $this->assetId = $assetId;
+
+        return $this;
+    }
+
+    /**
+     * Get assetId
+     *
+     * @return integer
+     */
+    public function getAssetId()
+    {
+        return $this->assetId;
+    }
+
+    /**
+     * Set flow
+     *
+     * @param string $flow
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setFlow($flow)
+    {
+        $this->flow = $flow;
+
+        return $this;
+    }
+
+    /**
+     * Get flow
+     *
+     * @return string
+     */
+    public function getFlow()
+    {
+        return $this->flow;
+    }
+
+    /**
+     * Set quantity
+     *
+     * @param integer $quantity
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return integer
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Set reason
+     *
+     * @param string $reason
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setReason($reason)
+    {
+        $this->reason = $reason;
+
+        return $this;
+    }
+
+    /**
+     * Get reason
+     *
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
+
+    /**
+     * Set requester
+     *
+     * @param string $requester
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setRequester($requester)
+    {
+        $this->requester = $requester;
+
+        return $this;
+    }
+
+    /**
+     * Get requester
+     *
+     * @return string
+     */
+    public function getRequester()
+    {
+        return $this->requester;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param string $comment
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set assetName
+     *
+     * @param string $assetName
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setAssetName($assetName)
+    {
+        $this->assetName = $assetName;
+
+        return $this;
+    }
+
+    /**
+     * Get assetName
+     *
+     * @return string
+     */
+    public function getAssetName()
+    {
+        return $this->assetName;
+    }
+
+    /**
+     * Set movementType
+     *
+     * @param string $movementType
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setMovementType($movementType)
+    {
+        $this->movementType = $movementType;
+
+        return $this;
+    }
+
+    /**
+     * Get movementType
+     *
+     * @return string
+     */
+    public function getMovementType()
+    {
+        return $this->movementType;
+    }
+
+    /**
+     * Set assetLocation
+     *
+     * @param string $assetLocation
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setAssetLocation($assetLocation)
+    {
+        $this->assetLocation = $assetLocation;
+
+        return $this;
+    }
+
+    /**
+     * Get assetLocation
+     *
+     * @return string
+     */
+    public function getAssetLocation()
+    {
+        return $this->assetLocation;
+    }
+
+    /**
+     * Set sparepart
+     *
+     * @param \Application\Entity\MlaSpareparts $sparepart
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setSparepart(\Application\Entity\MlaSpareparts $sparepart = null)
+    {
+        $this->sparepart = $sparepart;
+
+        return $this;
+    }
+
+    /**
+     * Get sparepart
+     *
+     * @return \Application\Entity\MlaSpareparts
+     */
+    public function getSparepart()
+    {
+        return $this->sparepart;
+    }
+
+    /**
+     * Set wh
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $wh
+     *
+     * @return MlaSparepartMovements
+     */
+    public function setWh(\Application\Entity\NmtInventoryWarehouse $wh = null)
+    {
+        $this->wh = $wh;
+
+        return $this;
+    }
+
+    /**
+     * Get wh
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWh()
+    {
+        return $this->wh;
+    }
+}

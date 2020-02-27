@@ -152,5 +152,398 @@ class NmtApplicationCompany
     private $defaultWarehouse;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set companyCode
+     *
+     * @param integer $companyCode
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setCompanyCode($companyCode)
+    {
+        $this->companyCode = $companyCode;
+
+        return $this;
+    }
+
+    /**
+     * Get companyCode
+     *
+     * @return integer
+     */
+    public function getCompanyCode()
+    {
+        return $this->companyCode;
+    }
+
+    /**
+     * Set companyName
+     *
+     * @param string $companyName
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+
+        return $this;
+    }
+
+    /**
+     * Get companyName
+     *
+     * @return string
+     */
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    /**
+     * Set defaultLogoId
+     *
+     * @param integer $defaultLogoId
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultLogoId($defaultLogoId)
+    {
+        $this->defaultLogoId = $defaultLogoId;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultLogoId
+     *
+     * @return integer
+     */
+    public function getDefaultLogoId()
+    {
+        return $this->defaultLogoId;
+    }
+
+    /**
+     * Set status
+     *
+     * @param boolean $status
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return boolean
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set isDefault
+     *
+     * @param boolean $isDefault
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get isDefault
+     *
+     * @return boolean
+     */
+    public function getIsDefault()
+    {
+        return $this->isDefault;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set defaultCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $defaultCurrency
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultCurrency(\Application\Entity\NmtApplicationCurrency $defaultCurrency = null)
+    {
+        $this->defaultCurrency = $defaultCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getDefaultCurrency()
+    {
+        return $this->defaultCurrency;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \Application\Entity\NmtApplicationCountry $country
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setCountry(\Application\Entity\NmtApplicationCountry $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \Application\Entity\NmtApplicationCountry
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set defaultAddress
+     *
+     * @param \Application\Entity\NmtApplicationCompanyAddress $defaultAddress
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultAddress(\Application\Entity\NmtApplicationCompanyAddress $defaultAddress = null)
+    {
+        $this->defaultAddress = $defaultAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultAddress
+     *
+     * @return \Application\Entity\NmtApplicationCompanyAddress
+     */
+    public function getDefaultAddress()
+    {
+        return $this->defaultAddress;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
+    }
+
+    /**
+     * Set defaultWarehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $defaultWarehouse
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultWarehouse(\Application\Entity\NmtInventoryWarehouse $defaultWarehouse = null)
+    {
+        $this->defaultWarehouse = $defaultWarehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultWarehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getDefaultWarehouse()
+    {
+        return $this->defaultWarehouse;
+    }
+}

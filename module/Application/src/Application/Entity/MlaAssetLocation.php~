@@ -52,5 +52,86 @@ class MlaAssetLocation
     private $asset;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set department
+     *
+     * @param \Application\Entity\MlaDepartments $department
+     *
+     * @return MlaAssetLocation
+     */
+    public function setDepartment(\Application\Entity\MlaDepartments $department = null)
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    /**
+     * Get department
+     *
+     * @return \Application\Entity\MlaDepartments
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Application\Entity\MlaUsers $user
+     *
+     * @return MlaAssetLocation
+     */
+    public function setUser(\Application\Entity\MlaUsers $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set asset
+     *
+     * @param \Application\Entity\MlaAsset $asset
+     *
+     * @return MlaAssetLocation
+     */
+    public function setAsset(\Application\Entity\MlaAsset $asset = null)
+    {
+        $this->asset = $asset;
+
+        return $this;
+    }
+
+    /**
+     * Get asset
+     *
+     * @return \Application\Entity\MlaAsset
+     */
+    public function getAsset()
+    {
+        return $this->asset;
+    }
+}

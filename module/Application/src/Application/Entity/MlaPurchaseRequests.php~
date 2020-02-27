@@ -126,5 +126,350 @@ class MlaPurchaseRequests
     private $lastWorkflow;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set seqNumberOfYear
+     *
+     * @param integer $seqNumberOfYear
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setSeqNumberOfYear($seqNumberOfYear)
+    {
+        $this->seqNumberOfYear = $seqNumberOfYear;
+
+        return $this;
+    }
+
+    /**
+     * Get seqNumberOfYear
+     *
+     * @return integer
+     */
+    public function getSeqNumberOfYear()
+    {
+        return $this->seqNumberOfYear;
+    }
+
+    /**
+     * Set autoPrNumber
+     *
+     * @param string $autoPrNumber
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setAutoPrNumber($autoPrNumber)
+    {
+        $this->autoPrNumber = $autoPrNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get autoPrNumber
+     *
+     * @return string
+     */
+    public function getAutoPrNumber()
+    {
+        return $this->autoPrNumber;
+    }
+
+    /**
+     * Set prNumber
+     *
+     * @param string $prNumber
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setPrNumber($prNumber)
+    {
+        $this->prNumber = $prNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get prNumber
+     *
+     * @return string
+     */
+    public function getPrNumber()
+    {
+        return $this->prNumber;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set requestedOn
+     *
+     * @param \DateTime $requestedOn
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setRequestedOn($requestedOn)
+    {
+        $this->requestedOn = $requestedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get requestedOn
+     *
+     * @return \DateTime
+     */
+    public function getRequestedOn()
+    {
+        return $this->requestedOn;
+    }
+
+    /**
+     * Set verifiedBy
+     *
+     * @param string $verifiedBy
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setVerifiedBy($verifiedBy)
+    {
+        $this->verifiedBy = $verifiedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get verifiedBy
+     *
+     * @return string
+     */
+    public function getVerifiedBy()
+    {
+        return $this->verifiedBy;
+    }
+
+    /**
+     * Set verifiedOn
+     *
+     * @param \DateTime $verifiedOn
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setVerifiedOn($verifiedOn)
+    {
+        $this->verifiedOn = $verifiedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get verifiedOn
+     *
+     * @return \DateTime
+     */
+    public function getVerifiedOn()
+    {
+        return $this->verifiedOn;
+    }
+
+    /**
+     * Set approvedBy
+     *
+     * @param integer $approvedBy
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setApprovedBy($approvedBy)
+    {
+        $this->approvedBy = $approvedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get approvedBy
+     *
+     * @return integer
+     */
+    public function getApprovedBy()
+    {
+        return $this->approvedBy;
+    }
+
+    /**
+     * Set approvedOn
+     *
+     * @param \DateTime $approvedOn
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setApprovedOn($approvedOn)
+    {
+        $this->approvedOn = $approvedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get approvedOn
+     *
+     * @return \DateTime
+     */
+    public function getApprovedOn()
+    {
+        return $this->approvedOn;
+    }
+
+    /**
+     * Set releasedBy
+     *
+     * @param integer $releasedBy
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setReleasedBy($releasedBy)
+    {
+        $this->releasedBy = $releasedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get releasedBy
+     *
+     * @return integer
+     */
+    public function getReleasedBy()
+    {
+        return $this->releasedBy;
+    }
+
+    /**
+     * Set releasedOn
+     *
+     * @param \DateTime $releasedOn
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setReleasedOn($releasedOn)
+    {
+        $this->releasedOn = $releasedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get releasedOn
+     *
+     * @return \DateTime
+     */
+    public function getReleasedOn()
+    {
+        return $this->releasedOn;
+    }
+
+    /**
+     * Set requestedBy
+     *
+     * @param \Application\Entity\MlaUsers $requestedBy
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setRequestedBy(\Application\Entity\MlaUsers $requestedBy = null)
+    {
+        $this->requestedBy = $requestedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get requestedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getRequestedBy()
+    {
+        return $this->requestedBy;
+    }
+
+    /**
+     * Set lastWorkflow
+     *
+     * @param \Application\Entity\MlaPurchaseRequestsWorkflows $lastWorkflow
+     *
+     * @return MlaPurchaseRequests
+     */
+    public function setLastWorkflow(\Application\Entity\MlaPurchaseRequestsWorkflows $lastWorkflow = null)
+    {
+        $this->lastWorkflow = $lastWorkflow;
+
+        return $this;
+    }
+
+    /**
+     * Get lastWorkflow
+     *
+     * @return \Application\Entity\MlaPurchaseRequestsWorkflows
+     */
+    public function getLastWorkflow()
+    {
+        return $this->lastWorkflow;
+    }
+}

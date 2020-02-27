@@ -148,5 +148,374 @@ class NmtWfToken
     private $note;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set placeName
+     *
+     * @param string $placeName
+     *
+     * @return NmtWfToken
+     */
+    public function setPlaceName($placeName)
+    {
+        $this->placeName = $placeName;
+
+        return $this;
+    }
+
+    /**
+     * Get placeName
+     *
+     * @return string
+     */
+    public function getPlaceName()
+    {
+        return $this->placeName;
+    }
+
+    /**
+     * Set tokenStatus
+     *
+     * @param string $tokenStatus
+     *
+     * @return NmtWfToken
+     */
+    public function setTokenStatus($tokenStatus)
+    {
+        $this->tokenStatus = $tokenStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get tokenStatus
+     *
+     * @return string
+     */
+    public function getTokenStatus()
+    {
+        return $this->tokenStatus;
+    }
+
+    /**
+     * Set enabledDate
+     *
+     * @param \DateTime $enabledDate
+     *
+     * @return NmtWfToken
+     */
+    public function setEnabledDate($enabledDate)
+    {
+        $this->enabledDate = $enabledDate;
+
+        return $this;
+    }
+
+    /**
+     * Get enabledDate
+     *
+     * @return \DateTime
+     */
+    public function getEnabledDate()
+    {
+        return $this->enabledDate;
+    }
+
+    /**
+     * Set cancelledDate
+     *
+     * @param \DateTime $cancelledDate
+     *
+     * @return NmtWfToken
+     */
+    public function setCancelledDate($cancelledDate)
+    {
+        $this->cancelledDate = $cancelledDate;
+
+        return $this;
+    }
+
+    /**
+     * Get cancelledDate
+     *
+     * @return \DateTime
+     */
+    public function getCancelledDate()
+    {
+        return $this->cancelledDate;
+    }
+
+    /**
+     * Set consumedDate
+     *
+     * @param \DateTime $consumedDate
+     *
+     * @return NmtWfToken
+     */
+    public function setConsumedDate($consumedDate)
+    {
+        $this->consumedDate = $consumedDate;
+
+        return $this;
+    }
+
+    /**
+     * Get consumedDate
+     *
+     * @return \DateTime
+     */
+    public function getConsumedDate()
+    {
+        return $this->consumedDate;
+    }
+
+    /**
+     * Set subjectId
+     *
+     * @param integer $subjectId
+     *
+     * @return NmtWfToken
+     */
+    public function setSubjectId($subjectId)
+    {
+        $this->subjectId = $subjectId;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectId
+     *
+     * @return integer
+     */
+    public function getSubjectId()
+    {
+        return $this->subjectId;
+    }
+
+    /**
+     * Set subjectToken
+     *
+     * @param string $subjectToken
+     *
+     * @return NmtWfToken
+     */
+    public function setSubjectToken($subjectToken)
+    {
+        $this->subjectToken = $subjectToken;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectToken
+     *
+     * @return string
+     */
+    public function getSubjectToken()
+    {
+        return $this->subjectToken;
+    }
+
+    /**
+     * Set subjectClass
+     *
+     * @param string $subjectClass
+     *
+     * @return NmtWfToken
+     */
+    public function setSubjectClass($subjectClass)
+    {
+        $this->subjectClass = $subjectClass;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectClass
+     *
+     * @return string
+     */
+    public function getSubjectClass()
+    {
+        return $this->subjectClass;
+    }
+
+    /**
+     * Set case
+     *
+     * @param \Application\Entity\NmtWfCase $case
+     *
+     * @return NmtWfToken
+     */
+    public function setCase(\Application\Entity\NmtWfCase $case = null)
+    {
+        $this->case = $case;
+
+        return $this;
+    }
+
+    /**
+     * Get case
+     *
+     * @return \Application\Entity\NmtWfCase
+     */
+    public function getCase()
+    {
+        return $this->case;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \Application\Entity\NmtWfWorkflow $workflow
+     *
+     * @return NmtWfToken
+     */
+    public function setWorkflow(\Application\Entity\NmtWfWorkflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \Application\Entity\NmtWfWorkflow
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+
+    /**
+     * Set place
+     *
+     * @param \Application\Entity\NmtWfPlace $place
+     *
+     * @return NmtWfToken
+     */
+    public function setPlace(\Application\Entity\NmtWfPlace $place = null)
+    {
+        $this->place = $place;
+
+        return $this;
+    }
+
+    /**
+     * Get place
+     *
+     * @return \Application\Entity\NmtWfPlace
+     */
+    public function getPlace()
+    {
+        return $this->place;
+    }
+
+    /**
+     * Set tokenEnabledBy
+     *
+     * @param \Application\Entity\MlaUsers $tokenEnabledBy
+     *
+     * @return NmtWfToken
+     */
+    public function setTokenEnabledBy(\Application\Entity\MlaUsers $tokenEnabledBy = null)
+    {
+        $this->tokenEnabledBy = $tokenEnabledBy;
+
+        return $this;
+    }
+
+    /**
+     * Get tokenEnabledBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getTokenEnabledBy()
+    {
+        return $this->tokenEnabledBy;
+    }
+
+    /**
+     * Set tokenCancelledBy
+     *
+     * @param \Application\Entity\MlaUsers $tokenCancelledBy
+     *
+     * @return NmtWfToken
+     */
+    public function setTokenCancelledBy(\Application\Entity\MlaUsers $tokenCancelledBy = null)
+    {
+        $this->tokenCancelledBy = $tokenCancelledBy;
+
+        return $this;
+    }
+
+    /**
+     * Get tokenCancelledBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getTokenCancelledBy()
+    {
+        return $this->tokenCancelledBy;
+    }
+
+    /**
+     * Set tokenConsumedBy
+     *
+     * @param \Application\Entity\MlaUsers $tokenConsumedBy
+     *
+     * @return NmtWfToken
+     */
+    public function setTokenConsumedBy(\Application\Entity\MlaUsers $tokenConsumedBy = null)
+    {
+        $this->tokenConsumedBy = $tokenConsumedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get tokenConsumedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getTokenConsumedBy()
+    {
+        return $this->tokenConsumedBy;
+    }
+
+    /**
+     * Set note
+     *
+     * @param \Application\Entity\NmtWfNode $note
+     *
+     * @return NmtWfToken
+     */
+    public function setNote(\Application\Entity\NmtWfNode $note = null)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return \Application\Entity\NmtWfNode
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+}

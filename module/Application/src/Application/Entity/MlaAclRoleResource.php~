@@ -42,5 +42,62 @@ class MlaAclRoleResource
     private $resource;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set role
+     *
+     * @param \Application\Entity\MlaAclRoles $role
+     *
+     * @return MlaAclRoleResource
+     */
+    public function setRole(\Application\Entity\MlaAclRoles $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Application\Entity\MlaAclRoles
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set resource
+     *
+     * @param \Application\Entity\MlaAclResources $resource
+     *
+     * @return MlaAclRoleResource
+     */
+    public function setResource(\Application\Entity\MlaAclResources $resource = null)
+    {
+        $this->resource = $resource;
+
+        return $this;
+    }
+
+    /**
+     * Get resource
+     *
+     * @return \Application\Entity\MlaAclResources
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+}

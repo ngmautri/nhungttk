@@ -91,5 +91,230 @@ class NmtWfArc
     private $place;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set weight
+     *
+     * @param integer $weight
+     *
+     * @return NmtWfArc
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * Get weight
+     *
+     * @return integer
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * Set transitionId
+     *
+     * @param integer $transitionId
+     *
+     * @return NmtWfArc
+     */
+    public function setTransitionId($transitionId)
+    {
+        $this->transitionId = $transitionId;
+
+        return $this;
+    }
+
+    /**
+     * Get transitionId
+     *
+     * @return integer
+     */
+    public function getTransitionId()
+    {
+        return $this->transitionId;
+    }
+
+    /**
+     * Set direction
+     *
+     * @param string $direction
+     *
+     * @return NmtWfArc
+     */
+    public function setDirection($direction)
+    {
+        $this->direction = $direction;
+
+        return $this;
+    }
+
+    /**
+     * Get direction
+     *
+     * @return string
+     */
+    public function getDirection()
+    {
+        return $this->direction;
+    }
+
+    /**
+     * Set arcType
+     *
+     * @param string $arcType
+     *
+     * @return NmtWfArc
+     */
+    public function setArcType($arcType)
+    {
+        $this->arcType = $arcType;
+
+        return $this;
+    }
+
+    /**
+     * Get arcType
+     *
+     * @return string
+     */
+    public function getArcType()
+    {
+        return $this->arcType;
+    }
+
+    /**
+     * Set condition
+     *
+     * @param string $condition
+     *
+     * @return NmtWfArc
+     */
+    public function setCondition($condition)
+    {
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * Get condition
+     *
+     * @return string
+     */
+    public function getCondition()
+    {
+        return $this->condition;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param integer $createdBy
+     *
+     * @return NmtWfArc
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return integer
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtWfArc
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \Application\Entity\NmtWfWorkflow $workflow
+     *
+     * @return NmtWfArc
+     */
+    public function setWorkflow(\Application\Entity\NmtWfWorkflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \Application\Entity\NmtWfWorkflow
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+
+    /**
+     * Set place
+     *
+     * @param \Application\Entity\NmtWfPlace $place
+     *
+     * @return NmtWfArc
+     */
+    public function setPlace(\Application\Entity\NmtWfPlace $place = null)
+    {
+        $this->place = $place;
+
+        return $this;
+    }
+
+    /**
+     * Get place
+     *
+     * @return \Application\Entity\NmtWfPlace
+     */
+    public function getPlace()
+    {
+        return $this->place;
+    }
+}

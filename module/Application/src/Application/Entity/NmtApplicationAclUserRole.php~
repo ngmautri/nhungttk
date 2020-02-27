@@ -59,5 +59,110 @@ class NmtApplicationAclUserRole
     private $updatedBy;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set updatedOn
+     *
+     * @param \DateTime $updatedOn
+     *
+     * @return NmtApplicationAclUserRole
+     */
+    public function setUpdatedOn($updatedOn)
+    {
+        $this->updatedOn = $updatedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedOn
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedOn()
+    {
+        return $this->updatedOn;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Application\Entity\MlaUsers $user
+     *
+     * @return NmtApplicationAclUserRole
+     */
+    public function setUser(\Application\Entity\MlaUsers $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set role
+     *
+     * @param \Application\Entity\NmtApplicationAclRole $role
+     *
+     * @return NmtApplicationAclUserRole
+     */
+    public function setRole(\Application\Entity\NmtApplicationAclRole $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Application\Entity\NmtApplicationAclRole
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set updatedBy
+     *
+     * @param \Application\Entity\MlaUsers $updatedBy
+     *
+     * @return NmtApplicationAclUserRole
+     */
+    public function setUpdatedBy(\Application\Entity\MlaUsers $updatedBy = null)
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
+    }
+}

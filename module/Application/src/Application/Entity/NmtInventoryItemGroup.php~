@@ -137,5 +137,326 @@ class NmtInventoryItemGroup
     private $defaultWarehouse;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set groupName
+     *
+     * @param string $groupName
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setGroupName($groupName)
+    {
+        $this->groupName = $groupName;
+
+        return $this;
+    }
+
+    /**
+     * Get groupName
+     *
+     * @return string
+     */
+    public function getGroupName()
+    {
+        return $this->groupName;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set inventoryAccount
+     *
+     * @param \Application\Entity\FinAccount $inventoryAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setInventoryAccount(\Application\Entity\FinAccount $inventoryAccount = null)
+    {
+        $this->inventoryAccount = $inventoryAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get inventoryAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getInventoryAccount()
+    {
+        return $this->inventoryAccount;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set cogsAccount
+     *
+     * @param \Application\Entity\FinAccount $cogsAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setCogsAccount(\Application\Entity\FinAccount $cogsAccount = null)
+    {
+        $this->cogsAccount = $cogsAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get cogsAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getCogsAccount()
+    {
+        return $this->cogsAccount;
+    }
+
+    /**
+     * Set allocationAccount
+     *
+     * @param \Application\Entity\FinAccount $allocationAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setAllocationAccount(\Application\Entity\FinAccount $allocationAccount = null)
+    {
+        $this->allocationAccount = $allocationAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get allocationAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getAllocationAccount()
+    {
+        return $this->allocationAccount;
+    }
+
+    /**
+     * Set revenueAccount
+     *
+     * @param \Application\Entity\FinAccount $revenueAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setRevenueAccount(\Application\Entity\FinAccount $revenueAccount = null)
+    {
+        $this->revenueAccount = $revenueAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get revenueAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getRevenueAccount()
+    {
+        return $this->revenueAccount;
+    }
+
+    /**
+     * Set expenseAccount
+     *
+     * @param \Application\Entity\FinAccount $expenseAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setExpenseAccount(\Application\Entity\FinAccount $expenseAccount = null)
+    {
+        $this->expenseAccount = $expenseAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get expenseAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getExpenseAccount()
+    {
+        return $this->expenseAccount;
+    }
+
+    /**
+     * Set costCenter
+     *
+     * @param \Application\Entity\FinCostCenter $costCenter
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setCostCenter(\Application\Entity\FinCostCenter $costCenter = null)
+    {
+        $this->costCenter = $costCenter;
+
+        return $this;
+    }
+
+    /**
+     * Get costCenter
+     *
+     * @return \Application\Entity\FinCostCenter
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
+    }
+
+    /**
+     * Set defaultWarehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $defaultWarehouse
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setDefaultWarehouse(\Application\Entity\NmtInventoryWarehouse $defaultWarehouse = null)
+    {
+        $this->defaultWarehouse = $defaultWarehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultWarehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getDefaultWarehouse()
+    {
+        return $this->defaultWarehouse;
+    }
+}

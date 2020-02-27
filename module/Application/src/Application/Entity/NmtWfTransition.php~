@@ -118,5 +118,302 @@ class NmtWfTransition
     private $workflow;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtWfTransition
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set workflowName
+     *
+     * @param string $workflowName
+     *
+     * @return NmtWfTransition
+     */
+    public function setWorkflowName($workflowName)
+    {
+        $this->workflowName = $workflowName;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowName
+     *
+     * @return string
+     */
+    public function getWorkflowName()
+    {
+        return $this->workflowName;
+    }
+
+    /**
+     * Set transitionName
+     *
+     * @param string $transitionName
+     *
+     * @return NmtWfTransition
+     */
+    public function setTransitionName($transitionName)
+    {
+        $this->transitionName = $transitionName;
+
+        return $this;
+    }
+
+    /**
+     * Get transitionName
+     *
+     * @return string
+     */
+    public function getTransitionName()
+    {
+        return $this->transitionName;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtWfTransition
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtWfTransition
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtWfTransition
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set froms
+     *
+     * @param string $froms
+     *
+     * @return NmtWfTransition
+     */
+    public function setFroms($froms)
+    {
+        $this->froms = $froms;
+
+        return $this;
+    }
+
+    /**
+     * Get froms
+     *
+     * @return string
+     */
+    public function getFroms()
+    {
+        return $this->froms;
+    }
+
+    /**
+     * Set tos
+     *
+     * @param string $tos
+     *
+     * @return NmtWfTransition
+     */
+    public function setTos($tos)
+    {
+        $this->tos = $tos;
+
+        return $this;
+    }
+
+    /**
+     * Get tos
+     *
+     * @return string
+     */
+    public function getTos()
+    {
+        return $this->tos;
+    }
+
+    /**
+     * Set agent
+     *
+     * @param \Application\Entity\MlaUsers $agent
+     *
+     * @return NmtWfTransition
+     */
+    public function setAgent(\Application\Entity\MlaUsers $agent = null)
+    {
+        $this->agent = $agent;
+
+        return $this;
+    }
+
+    /**
+     * Get agent
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * Set role
+     *
+     * @param \Application\Entity\NmtApplicationAclRole $role
+     *
+     * @return NmtWfTransition
+     */
+    public function setRole(\Application\Entity\NmtApplicationAclRole $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Application\Entity\NmtApplicationAclRole
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtWfTransition
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \Application\Entity\NmtWfWorkflow $workflow
+     *
+     * @return NmtWfTransition
+     */
+    public function setWorkflow(\Application\Entity\NmtWfWorkflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \Application\Entity\NmtWfWorkflow
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+}

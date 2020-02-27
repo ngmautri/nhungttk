@@ -10,6 +10,7 @@ use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
 use Inventory\Application\Event\Listener\ItemLoggingListener;
 use Inventory\Domain\Event\ItemCreatedEvent;
 use Inventory\Domain\Event\ItemUpdatedEvent;
+use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;

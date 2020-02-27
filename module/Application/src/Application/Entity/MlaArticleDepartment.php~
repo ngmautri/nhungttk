@@ -59,5 +59,110 @@ class MlaArticleDepartment
     private $updatedBy;
 
 
-}
 
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set updatedOn
+     *
+     * @param \DateTime $updatedOn
+     *
+     * @return MlaArticleDepartment
+     */
+    public function setUpdatedOn($updatedOn)
+    {
+        $this->updatedOn = $updatedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedOn
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedOn()
+    {
+        return $this->updatedOn;
+    }
+
+    /**
+     * Set department
+     *
+     * @param \Application\Entity\MlaDepartments $department
+     *
+     * @return MlaArticleDepartment
+     */
+    public function setDepartment(\Application\Entity\MlaDepartments $department = null)
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    /**
+     * Get department
+     *
+     * @return \Application\Entity\MlaDepartments
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * Set article
+     *
+     * @param \Application\Entity\MlaArticles $article
+     *
+     * @return MlaArticleDepartment
+     */
+    public function setArticle(\Application\Entity\MlaArticles $article = null)
+    {
+        $this->article = $article;
+
+        return $this;
+    }
+
+    /**
+     * Get article
+     *
+     * @return \Application\Entity\MlaArticles
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
+    /**
+     * Set updatedBy
+     *
+     * @param \Application\Entity\MlaUsers $updatedBy
+     *
+     * @return MlaArticleDepartment
+     */
+    public function setUpdatedBy(\Application\Entity\MlaUsers $updatedBy = null)
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
+    }
+}

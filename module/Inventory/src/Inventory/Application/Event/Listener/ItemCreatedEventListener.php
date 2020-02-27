@@ -1,12 +1,16 @@
 <?php
 namespace Inventory\Application\Event\Listener;
 
+use Application\Entity\AllMessageStore;
+use Application\Entity\MessageStore;
 use Doctrine\ORM\EntityManager;
+use Inventory\Domain\Event\ItemCreatedEvent;
+use Inventory\Domain\Item\AbstractItem;
+use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
-use Inventory\Domain\Event\ItemCreatedEvent;
-use Inventory\Domain\Item\AbstractItem;
+use Ramsey;
 
 /**
  *
@@ -21,6 +25,26 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
     protected $events;
 
     protected $doctrineEM;
+
+    protected $messagesDoctrineEM;
+
+    /**
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getMessagesDoctrineEM()
+    {
+        return $this->messagesDoctrineEM;
+    }
+
+    /**
+     *
+     * @param EntityManager $messagesDoctrineEM
+     */
+    public function setMessagesDoctrineEM(EntityManager $messagesDoctrineEM)
+    {
+        $this->messagesDoctrineEM = $messagesDoctrineEM;
+    }
 
     /**
      *
@@ -49,6 +73,42 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
         $itemId = $e->getParam('itemId');
 
         $searcher->updateItemIndex($itemId, true, false);
+
+        $rep = new DoctrineItemRepository($this->getDoctrineEM());
+        $item = $rep->getById($itemId);
+
+        $itemClass = new \ReflectionClass($item);
+        $className = null;
+        if ($itemClass !== null) {
+            $className = $itemClass->getShortName();
+        }
+
+        $message = new MessageStore();
+        $message->setQueueName("inventory.item");
+
+        $message->setClassName($className);
+        $message->setTriggeredBy($e->getTarget());
+        
+
+        $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
+        $message->setMsgBody(json_encode((array) $item->createDTO()));
+        $message->setCreatedOn(new \DateTime());
+        $message->setEventName($e->getName());
+        $this->getDoctrineEM()->persist($message);
+        $this->getDoctrineEM()->flush();
+
+        $message = new AllMessageStore();
+
+        $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
+        $message->setClassName($className);
+        $message->setTriggeredBy($e->getTarget());
+        
+        $message->setQueueName("inventory.item");
+        $message->setMsgBody(json_encode((array) $item->createDTO()));
+        $message->setCreatedOn(new \DateTime());
+        $message->setEventName($e->getName());
+        $this->getMessagesDoctrineEM()->persist($message);
+        $this->getMessagesDoctrineEM()->flush();
     }
 
     public function detach(EventManagerInterface $events)

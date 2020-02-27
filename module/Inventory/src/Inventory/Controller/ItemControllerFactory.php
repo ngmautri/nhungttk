@@ -26,7 +26,7 @@ class ItemControllerFactory implements FactoryInterface
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
-
+     
         $sv = $container->get('Application\Service\SmtpOutlookService');
         $controller->setSmptService($sv);
 

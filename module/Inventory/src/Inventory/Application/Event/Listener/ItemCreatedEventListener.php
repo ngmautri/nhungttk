@@ -110,8 +110,8 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
         $this->getMessagesDoctrineEM()->persist($message);
         $this->getMessagesDoctrineEM()->flush();
         
-        $exe_string = 'D:\Application\xampp\php\php.exe "D:\Software Development\php-2019-12-R\mla-2.6.7\public\index.php" "send_to_rabitmq"';
-        exec($exe_string);
+        //$exe_string = 'D:\Application\xampp\php\php.exe "D:\Software Development\php-2019-12-R\mla-2.6.7\public\index.php" "send_to_rabitmq"';
+        //exec($exe_string);
         
     }
 

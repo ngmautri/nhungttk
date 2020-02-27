@@ -112,7 +112,13 @@ EOT;
 
         // send message
         $dbConfig = $nmtPlugin->getStmpOutlook()->send($message);
+        
+        sleep(20);
+        
     }
+    
+    
+    
 
    /**
     * 

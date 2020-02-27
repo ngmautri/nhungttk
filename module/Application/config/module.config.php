@@ -239,6 +239,32 @@ return array(
             )
         )
     ),
+    
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'send_to_rabitmq' => array(
+                    'options' => array(
+                        'route' => 'send_to_rabitmq',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Console',
+                            'action' => 'send_to_rabitmq'
+                        )
+                    )
+                ),
+                'receive_from_rabitmq' => array(
+                    'options' => array(
+                        'route' => 'receive_from_rabitmq',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Console',
+                            'action' => 'receive_msg'
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    
     'service_manager' => array(
         'aliases' => array(
             // important for Internationation
@@ -332,6 +358,7 @@ return array(
     
             'Application\Controller\Incoterm' => 'Application\Controller\IncotermControllerFactory',
             'Application\Controller\PaymentTerm' => 'Application\Controller\PaymentTermControllerFactory',
+            'Application\Controller\Console' => 'Application\Controller\ConsoleControllerFactory',
             
         )
     ),

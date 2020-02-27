@@ -62,6 +62,8 @@ class BackupController extends AbstractActionController {
 	
 	    exec($exe_string);
 	    
+	    sleep(10);
+	    
 	    //AbtractController is EventManagerAware.
 	    $this->getEventManager()->trigger('system.log', __CLASS__, array(
 	        'priority' => 7,

@@ -118,7 +118,9 @@ class Module
             'not_found',
             'order_suggestion_console',
             'pr_rest',
-            'pr_console'
+            'pr_console',
+            'send_to_rabitmq',
+            'receive_from_rabitmq',
         
         ))) {
             return;
@@ -260,7 +262,10 @@ class Module
             'access_denied',
             'order_suggestion_console',
             'pr_rest',
-            'pr_console'
+            'pr_console',
+            'send_to_rabitmq',
+            'receive_from_rabitmq',
+            
         ))) {
             return;
         }

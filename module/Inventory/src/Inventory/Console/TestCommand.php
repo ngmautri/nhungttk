@@ -15,7 +15,7 @@ class CreateUserCommand extends Command
 {
     protected function configure()
     {
-        $this->setName('app:create-user');
+        $this->setName('app:test');
         
         // the short description shown while running "php app/console list"
         $this->etDescription('Creates a new user.');
@@ -27,6 +27,6 @@ class CreateUserCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // ...
+       echo "hello world!";
     }
 }

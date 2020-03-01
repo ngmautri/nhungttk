@@ -1,6 +1,7 @@
 <?php
 namespace ProcureTest\AP;
 
+use Doctrine\ORM\EntityManager;
 use Procure\Domain\APInvoice\APDocSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 

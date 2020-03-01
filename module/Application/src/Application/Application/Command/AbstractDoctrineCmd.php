@@ -82,7 +82,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     public function __construct(EntityManager $doctrineEM, AbstractDTO $dto, array $options, CommandHandlerInterface $handler = null)
     {
         if ($doctrineEM == null) {
-            throw new \Exception("Entity Manager not give!");
+            throw new \Exception("Entity Manager not given!");
         }
         $this->doctrineEM = $doctrineEM;
         $this->dto = $dto;

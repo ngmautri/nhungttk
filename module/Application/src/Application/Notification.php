@@ -20,33 +20,41 @@ class Notification
     public function __construct()
     {
         $this->errors = array();
+        $this->warnings = array();
+        $this->success = array();
     }
 
     /**
      *
      * @param string $err
+     * @return \Application\Notification
      */
-    public function addError($err)
+    public function addError(string $err)
     {
         $this->errors[] = $err;
+        return $this;
     }
 
     /**
-     *
+     * 
      * @param string $mes
+     * @return \Application\Notification
      */
-    public function addWarning($mes)
+    public function addWarning(string $mes)
     {
         $this->warnings[] = $mes;
+        return $this;
     }
 
     /**
-     *
+     * 
      * @param string $mes
+     * @return \Application\Notification
      */
-    public function addSuccess($mes)
+    public function addSuccess(string $mes)
     {
         $this->success[] = $mes;
+        return $this;
     }
 
     /**
@@ -68,18 +76,15 @@ class Notification
     }
 
     /**
-     *
-     * @return multitype:
+     * 
+     * @return array|multitype:
      */
     public function getErrors()
     {
         return $this->errors;
     }
 
-    /**
-     *
-     * @param multitype: $errors
-     */
+  
     public function setErrors($errors)
     {
         $this->errors = $errors;

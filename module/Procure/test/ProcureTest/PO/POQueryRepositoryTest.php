@@ -1,6 +1,7 @@
 <?php
 namespace ProcureTest\PO;
 
+use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Application\Reporting\PR\PrRowStatusReporter;
 use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;

@@ -1,6 +1,8 @@
 <?php
 namespace Application\Domain\Shared;
 
+use Application\Notification;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -9,9 +11,33 @@ namespace Application\Domain\Shared;
 abstract class AbstractDTO
 {
 
+    protected $notification;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getNotification()
+    {
+        if ($this->notification == null) {
+            return new Notification();
+        }
+
+        return $this->notification;
+    }
+
+    /**
+     *
+     * @param mixed $notification
+     */
+    public function setNotification($notification)
+    {
+        $this->notification = $notification;
+    }
+
     public function compare(AbstractDTO $o2)
     {
-        $o1=$this;
+        $o1 = $this;
         $diffArray = array();
 
         if (get_class($o1) !== get_class($o2)) {
@@ -242,6 +268,5 @@ abstract class AbstractDTO
         }
 
         return $diffArray;
-        
     }
 }

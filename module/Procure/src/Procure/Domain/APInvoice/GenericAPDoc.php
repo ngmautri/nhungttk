@@ -26,25 +26,25 @@ abstract class GenericAPDoc extends AbstractAPDoc
      */
     protected $rowsOutput;
 
-    abstract protected function prePost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function prePost(APSpecificationService $specificationService, APPostingService $postingService);
 
-    abstract protected function doPost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function doPost(APSpecificationService $specificationService, APPostingService $postingService);
 
-    abstract protected function afterPost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function afterPost(APSpecificationService $specificationService, APPostingService $postingService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function specificHeaderValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function specificHeaderValidation(APSpecificationService $specificationService, $isPosting = false);
 
-    abstract protected function specificRowValidation(ApDocRow $row, APSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function specificRowValidation(ApDocRow $row, APSpecificationService $specificationService, $isPosting = false);
 
-    abstract protected function specificValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function specificValidation(APSpecificationService $specificationService, $isPosting = false);
 
-    abstract protected function preReserve(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function preReserve(APSpecificationService $specificationService, APPostingService $postingService);
 
-    abstract protected function doReverse(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function doReverse(APSpecificationService $specificationService, APPostingService $postingService);
 
-    abstract protected function afterReserve(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function afterReserve(APSpecificationService $specificationService, APPostingService $postingService);
 
     /**
      *
@@ -91,7 +91,7 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @throws InvalidArgumentException
      * @return \Application\Notification
      */
-    public function post(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
+    public function post(APSpecificationService $specificationService, APPostingService $postingService)
     {
         if ($specificationService == null) {
             throw new InvalidArgumentException("Specification service not found");
@@ -101,16 +101,7 @@ abstract class GenericAPDoc extends AbstractAPDoc
             throw new InvalidArgumentException("Posting service not found");
         }
 
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
-        $validationResult = $this->validate($specificationService, $notification, TRUE);
-        if ($validationResult instanceof Notification) {
-            if ($validationResult->hasErrors()) {
-                return $validationResult;
-            }
-        }
+        $this->validate($specificationService, TRUE);
 
         $this->recordedEvents = array();
 
@@ -134,7 +125,7 @@ abstract class GenericAPDoc extends AbstractAPDoc
         if (! $notification->hasErrors()) {
             $this->raiseEvent();
         }
-        
+
         return $notification;
     }
 
@@ -144,17 +135,13 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @param Notification $notification
      * @param boolean $isPosting
      */
-    public function validate(APSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function validate(APSpecificationService $specificationService, $isPosting = false)
     {
         if ($specificationService == null) {
             throw new InvalidArgumentException("Specification service not found");
         }
 
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
-        $notification = $this->validateHeader($specificationService, $notification, $isPosting);
+        $this->validateHeader($specificationService, $isPosting);
 
         if ($notification->hasErrors()) {
             return $notification;
@@ -192,24 +179,20 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @param Notification $notification
      * @param boolean $isPosting
      */
-    public function validateHeader(APSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function validateHeader(APSpecificationService $specificationService, $isPosting = false)
     {
         try {
 
-            if ($notification == null) {
-                $notification = new Notification();
-            }
-
             if ($specificationService == null) {
-                $notification->addError("Specification service not found");
-                return $notification;
+                $this->addError("Specification service not found");
+                return $this;
             }
 
             // general validation done
-            $notification = $this->generalHeaderValidation($specificationService, $notification, $isPosting);
+            $this->generalHeaderValidation($specificationService, $isPosting);
 
-            if ($notification->hasErrors()) {
-                return $notification;
+            if ($this->hasErrors()) {
+                return $this;
             }
 
             // Check and set exchange rate
@@ -219,16 +202,12 @@ abstract class GenericAPDoc extends AbstractAPDoc
             // }
 
             // specific validation
-            $specificHeaderValidationResult = $this->specificHeaderValidation($specificationService, $notification, $isPosting);
-
-            if ($specificHeaderValidationResult instanceof Notification) {
-                $notification = $specificHeaderValidationResult;
-            }
+            $this->specificHeaderValidation($specificationService, $isPosting);
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+            $this->addError($e->getMessage());
         }
 
-        return $notification;
+        return $this;
     }
 
     /**
@@ -239,20 +218,16 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    protected function generalHeaderValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function generalHeaderValidation(APSpecificationService $specificationService, $isPosting = false)
     {
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
         if ($specificationService == null) {
-            $notification->addError("Specification not found");
-            return $notification;
+            $this->addError("Specification not found");
+            return $this;
         }
 
-        $notification = $specificationService->doGeneralHeaderValiation($this, $notification, $isPosting);
+        $specificationService->doGeneralHeaderValiation($this, $isPosting);
 
-        return $notification;
+        return $this;
     }
 
     /**
@@ -262,37 +237,28 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @param Notification $notification
      * @param boolean $isPosting
      */
-    public function validateRow(ApDocRow $row, APSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function validateRow(ApDocRow $row, APSpecificationService $specificationService, $isPosting = false)
     {
         try {
 
-            if ($notification == null) {
-                $notification = new Notification();
-            }
-
             if ($specificationService == null) {
-                $notification->addError("Specification service not found");
-                return $notification;
+                $this->addError("Specification service not found");
+                return $this;
             }
 
-            // general validation done
-            $notification = $this->generalRowValidation($row, $specificationService, $notification, $isPosting);
+            $this->generalRowValidation($row, $specificationService, $isPosting);
 
-            if ($notification->hasErrors()) {
-                return $notification;
+            if ($this->hasErrors()) {
+                return $this;
             }
 
             // specific validation
-            $specificRowValidationResult = $this->specificRowValidation($row, $specificationService, $notification, $isPosting);
-
-            if ($specificRowValidationResult instanceof Notification) {
-                $notification = $specificRowValidationResult;
-            }
+            $this->specificRowValidation($row, $specificationService, $isPosting);
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+            $this->addError($e->getMessage());
         }
 
-        return $notification;
+        return $this;
     }
 
     /**
@@ -302,19 +268,15 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    protected function generalRowValidation(ApDocRow $row, APSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function generalRowValidation(ApDocRow $row, APSpecificationService $specificationService, $isPosting = false)
     {
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
         if ($specificationService == null) {
-            $notification->addError("Specification not found");
-            return $notification;
+            $this->addError("Specification not found");
+            return $this;
         }
-        $notification = $specificationService->doGeneralRowValiation($this, $row, $notification, $isPosting);
+        $specificationService->doGeneralRowValiation($this, $row, $isPosting);
 
-        return $notification;
+        return $this;
     }
 
     /**
@@ -325,7 +287,7 @@ abstract class GenericAPDoc extends AbstractAPDoc
      * @throws InvalidArgumentException
      * @return NULL|\Procure\Domain\APInvoice\GenericAPDoc
      */
-    public function addRowFromSnapshot(APDocRowSnapshot $snapshot, APSpecificationService $specificationService, Notification $notification = null)
+    public function addRowFromSnapshot(APDocRowSnapshot $snapshot, APSpecificationService $specificationService)
     {
         if (! $snapshot instanceof APDocRowSnapshot)
             return null;
@@ -339,25 +301,24 @@ abstract class GenericAPDoc extends AbstractAPDoc
         $row = new APDocRow();
         $row->makeFromSnapshot($snapshot);
 
-        $ckResult = $this->validateRow($row, $specificationService, $notification, false);
-        
+        $this->validateRow($row, $specificationService, false);
+
+        if ($this->hasErrors()) {
+            return $this;
+        }
+
         $convertedPurchaseQuantity = $row->getDocQuantity();
         $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
-        
+
         $conversionFactor = $row->getConversionFactor();
         $standardCF = $row->getConversionFactor();
-        
+
         // converted to purchase quantity
         $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
         $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-        
+
         $convertedStandardQuantity = $entity->getDocQuantity();
         $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-        
-        
-        if ($ckResult->hasErrors()) {
-            throw new InvalidArgumentException($ckResult->errorMessage());
-        }
 
         $this->apDocRows[] = $row;
         return $this;

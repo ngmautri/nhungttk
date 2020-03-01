@@ -55,21 +55,19 @@ class APSpecificationService
      * @param Notification $notification
      * @return \Application\Notification
      */
-    public function doGeneralHeaderValiation(GenericAPDoc $rootEntity, Notification $notification, $isPosting = false)
+    public function doGeneralHeaderValiation(GenericAPDoc $rootEntity, $isPosting = false)
     {
-        if ($notification == null) {
-            $notification = new Notification();
+        if (! $rootEntity instanceof GenericAPDoc) {
+            throw new \Procure\Domain\Exception\InvalidArgumentException("GenericAPDoc not given");
         }
+
         /**
          *
          * @var AbstractSpecification $spec ;
          */
         if ($this->sharedSpecificationFactory == null) {
-            $notification->addError("Validators is not found");
-        }
-
-        if ($notification->hasErrors()) {
-            return $notification;
+            $rootEntity->addError("Validators is not found");
+            return $rootEntity;
         }
 
         // do verification now
@@ -79,12 +77,12 @@ class APSpecificationService
             // ==== CK COMPANY =======
             $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
             if (! $spec->isSatisfiedBy($rootEntity->getCompany())) {
-                $notification->addError("Company not exits. #" . $rootEntity->getCompany());
+                $rootEntity->addError("Company not exits. #" . $rootEntity->getCompany());
             }
 
             // ===== CK VENDOR =======
             if ($rootEntity->getVendor() == null) {
-                $notification->addError("Vendor is not set");
+                $rootEntity->addError("Vendor is not set");
             } else {
                 $spec = $this->sharedSpecificationFactory->getVendorExitsSpecification();
                 $subject = array(
@@ -92,12 +90,12 @@ class APSpecificationService
                     "vendorId" => $rootEntity->getVendor()
                 );
                 if (! $spec->isSatisfiedBy($subject))
-                    $notification->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
+                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
             }
 
             // ==== CK INVOICE DATE =======
             if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($rootEntity->getInvoiceDate())) {
-                $notification->addError("Invoice date is not correct or empty");
+                $rootEntity->addError("Invoice date is not correct or empty");
             }
 
             if ($isPosting) {
@@ -109,7 +107,7 @@ class APSpecificationService
                 );
 
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $notification->addError("Can not post on this date. Period is not created or closed." . $rootEntity->getPostingDate());
+                    $rootEntity->addError("Can not post on this date. Period is not created or closed." . $rootEntity->getPostingDate());
                 }
 
                 $subject = array(
@@ -117,27 +115,27 @@ class APSpecificationService
                     "movementDate" => $rootEntity->getGrDate()
                 );
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $notification->addError("Can not post goods receipt on this date. Period is not created or closed." . $rootEntity->getGrDate());
+                    $rootEntity->addError("Can not post goods receipt on this date. Period is not created or closed." . $rootEntity->getGrDate());
                 }
             }
 
             // ===== DOC CURRENCY =======
             if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
-                $notification->addError("Doc Currency is empty or invalid");
+                $rootEntity->addError("Doc Currency is empty or invalid");
             }
 
             // ===== LOCAL CURRENCY =======
             if ($rootEntity->getLocalCurrency() == null) {
-                $notification->addError("Local currency is not set");
+                $rootEntity->addError("Local currency is not set");
             } else {
                 $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
                 if (! $spec->isSatisfiedBy($rootEntity->getLocalCurrency()))
-                    $notification->addError("Local currency not exits..." . $rootEntity->getLocalCurrency());
+                    $rootEntity->addError("Local currency not exits..." . $rootEntity->getLocalCurrency());
             }
 
             // ===== WAREHOUSE =======
             if ($rootEntity->getWarehouse() == null) {
-                $notification->addError("Warehouse is not set");
+                $rootEntity->addError("Warehouse is not set");
             } else {
                 $spec1 = $this->sharedSpecificationFactory->getWarehouseExitsSpecification();
                 $subject = array(
@@ -145,7 +143,7 @@ class APSpecificationService
                     "warehouseId" => $rootEntity->getWarehouse()
                 );
                 if (! $spec1->isSatisfiedBy($subject))
-                    $notification->addError(sprintf("Warehouse not found!C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $$rootEntity->getCreatedBy()));
+                    $rootEntity->addError(sprintf("Warehouse not found!C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $$rootEntity->getCreatedBy()));
             }
 
             // ===== INCOTERM =======
@@ -156,11 +154,11 @@ class APSpecificationService
                     "incotermId" => $rootEntity->getIncoterm2()
                 );
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $notification->addError(sprintf("Incoterm not found!C#%s", $rootEntity->getIncoterm2()));
+                    $rootEntity->addError(sprintf("Incoterm not found!C#%s", $rootEntity->getIncoterm2()));
                 }
 
                 if ($rootEntity->getIncotermPlace() == null or $rootEntity->getIncotermPlace() == "") {
-                    $notification->addError(sprintf("Incoterm place not set"));
+                    $rootEntity->addError(sprintf("Incoterm place not set"));
                 }
             }
 
@@ -170,7 +168,7 @@ class APSpecificationService
                 "paymentTermId" => $rootEntity->getPaymentTerm()
             );
             if (! $spec->isSatisfiedBy($subject)) {
-                $notification->addError(sprintf("Payment term not found!C#%s", $rootEntity->getPaymentTerm()));
+                $rootEntity->addError(sprintf("Payment term not found!C#%s", $rootEntity->getPaymentTerm()));
             }
 
             $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
@@ -180,13 +178,13 @@ class APSpecificationService
             );
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $notification->addError("User is not identified for this transaction. #" . $rootEntity->getCreatedBy());
+                $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getCreatedBy());
             }
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+            $rootEntity->addError($e->getMessage());
         }
 
-        return $notification;
+        return $rootEntity;
     }
 
     /**
@@ -196,19 +194,17 @@ class APSpecificationService
      * @param Notification $notification
      * @return \Application\Notification
      */
-    public function doGeneralRowValiation(GenericAPDoc $rootEntity, APDocRow $localEntity, Notification $notification)
+    public function doGeneralRowValiation(GenericAPDoc $rootEntity, APDocRow $localEntity,$isPosting = false)
     {
-        if ($notification == null) {
-            $notification = new Notification();
+        if (! $rootEntity instanceof GenericAPDoc) {
+            throw new \Procure\Domain\Exception\InvalidArgumentException("GenericAPDoc not given");
         }
 
-        if ($localEntity == null) {
-            $notification->addError("row not found");
-            return $notification;
+        if (! $localEntity instanceof APDocRow) {
+            throw new \Procure\Domain\Exception\InvalidArgumentException("APDocRow not given");
         }
 
         // do verification now
-
         /**
          *
          * @var AbstractSpecification $spec ;
@@ -223,25 +219,25 @@ class APSpecificationService
         );
 
         if (! $spec->isSatisfiedBy($subject)) {
-            $notification->addError("Item not exits in the company #" . $localEntity->getItem());
+            $rootEntity->addError("Item not exits in the company #" . $localEntity->getItem());
         }
 
         // ======= QUANTITY ==========
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-            $notification->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
+            $rootEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
         }
 
         // ======= UNIT PRICE ==========
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
-            $notification->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
+            $rootEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
         }
 
         // ======= CONVERSION FACTORY ==========
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
-            $notification->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
+            $rootEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
         }
 
         // ======= GL ACCOUNT ==========
@@ -253,7 +249,7 @@ class APSpecificationService
         );
 
         if (! $spec->isSatisfiedBy($subject)) {
-            $notification->addError("GL account is not valid! " . $localEntity->getGlAccount());
+            $rootEntity->addError("GL account is not valid! " . $localEntity->getGlAccount());
         }
 
         // ======= COST CENTER ==========
@@ -264,10 +260,10 @@ class APSpecificationService
         );
 
         if (! $spec->isSatisfiedBy($subject)) {
-            $notification->addError("Cost center is not valid! " . $localEntity->getCostCenter());
+            $rootEntity->addError("Cost center is not valid! " . $localEntity->getCostCenter());
         }
         
-        return $notification;
+        return $rootEntity;
     }
     
     /**

@@ -1,14 +1,14 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORowSnapshot extends AbstractValueObject
+class PORowSnapshot extends AbstractDTO
 {
 
     public $id;

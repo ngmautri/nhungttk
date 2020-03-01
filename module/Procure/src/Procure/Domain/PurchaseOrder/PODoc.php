@@ -1,13 +1,12 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Application\Notification;
 use Application\Domain\Shared\SnapshotAssembler;
+use Procure\Domain\Event\POHeaderUpdatedEvent;
+use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Ramsey;
-use Procure\Domain\Exception\PoUpdateException;
-use Procure\Domain\Event\POHeaderUpdatedEvent;
 
 /**
  *
@@ -17,33 +16,6 @@ use Procure\Domain\Event\POHeaderUpdatedEvent;
 class PODoc extends GenericPO
 
 {
-
-    protected function afterPost(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
-    {}
-
-    protected function doReverse(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
-    {}
-
-    protected function prePost(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
-    {}
-
-    protected function preReserve(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
-    {}
-
-    protected function specificHeaderValidation(POSpecService $specService, Notification $notification, $isPosting = false)
-    {}
-
-    protected function specificValidation(POSpecService $specService, Notification $notification, $isPosting = false)
-    {}
-
-    protected function afterReserve(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
-    {}
-
-    protected function raiseEvent()
-    {}
-
-    protected function doPost(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
-    {}
 
     private function __construct()
     {}
@@ -106,10 +78,37 @@ class PODoc extends GenericPO
             throw new PoUpdateException($notification->errorMessage());
         }
         $instance->registerEvent(new POHeaderUpdatedEvent());
-        
+
         return $instance;
     }
 
-    protected function specificRowValidation(PORow $row, POSpecService $specService, Notification $notification, $isPosting = false)
+    protected function afterPost(POSpecService $specService, POPostingService $postingService)
+    {}
+
+    protected function doReverse(POSpecService $specService, POPostingService $postingService)
+    {}
+
+    protected function prePost(POSpecService $specService, POPostingService $postingService)
+    {}
+
+    protected function preReserve(POSpecService $specService, POPostingService $postingService)
+    {}
+
+    protected function specificHeaderValidation(POSpecService $specService, $isPosting = false)
+    {}
+
+    protected function specificValidation(POSpecService $specService, $isPosting = false)
+    {}
+
+    protected function afterReserve(POSpecService $specService, POPostingService $postingService)
+    {}
+
+    protected function raiseEvent()
+    {}
+
+    protected function doPost(POSpecService $specService, POPostingService $postingService)
+    {}
+
+    protected function specificRowValidation(PORow $row, POSpecService $specService, $isPosting = false)
     {}
 }

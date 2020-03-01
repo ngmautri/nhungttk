@@ -1,5 +1,5 @@
 {
-	"name" : "NMT Project",
+	"name" : "nmt/mla-app",
 	"license" : "BSD-3-Clause",
 	"keywords" : [
 		"nmt",
@@ -17,8 +17,7 @@
 		"ramsey/uuid" : "~3.8",
 		"moneyphp/money" : "~3.2",
 		"endroid/qr-code" : "~2.5.1",
-		"php-amqplib/php-amqplib" : "2.11.0",
-		"symfony/console" : "2.8.52"
+		"php-amqplib/php-amqplib" : "2.11.0"
 	},
 	"config" : {
 		"platform" : {

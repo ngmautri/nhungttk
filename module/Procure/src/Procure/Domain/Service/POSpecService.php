@@ -2,6 +2,7 @@
 namespace Procure\Domain\Service;
 
 use Application\Notification;
+use Application\Domain\Shared\Specification\AbstractSpecification;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\GenericPO;
@@ -13,7 +14,7 @@ use Procure\Domain\PurchaseOrder\PORow;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class POSpecificationService
+class POSpecService
 {
 
     protected $sharedSpecificationFactory;

@@ -5,7 +5,7 @@ use Application\Notification;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\APInvoice\Factory\APFactory;
 use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecificationService;
+use Procure\Domain\Service\POSpecService;
 use Application\Domain\Shared\DTOFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
 
@@ -21,35 +21,35 @@ abstract class GenericPO extends AbstractPO
 
     protected $rowsOutput;
 
-    abstract protected function prePost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null);
+    abstract protected function prePost(POSpecService $specService, POPostingService $postingService, Notification $notification = null);
 
-    abstract protected function doPost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null);
+    abstract protected function doPost(POSpecService $specService, POPostingService $postingService, Notification $notification = null);
 
-    abstract protected function afterPost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null);
+    abstract protected function afterPost(POSpecService $specService, POPostingService $postingService, Notification $notification = null);
 
     abstract protected function raiseEvent();
 
-    abstract protected function specificHeaderValidation(POSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function specificHeaderValidation(POSpecService $specService, Notification $notification, $isPosting = false);
 
-    abstract protected function specificRowValidation(PORow $row, POSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function specificRowValidation(PORow $row, POSpecService $specService, Notification $notification, $isPosting = false);
 
-    abstract protected function specificValidation(POSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function specificValidation(POSpecService $specService, Notification $notification, $isPosting = false);
 
-    abstract protected function preReserve(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null);
+    abstract protected function preReserve(POSpecService $specService, POPostingService $postingService, Notification $notification = null);
 
-    abstract protected function doReverse(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null);
+    abstract protected function doReverse(POSpecService $specService, POPostingService $postingService, Notification $notification = null);
 
-    abstract protected function afterReserve(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null);
+    abstract protected function afterReserve(POSpecService $specService, POPostingService $postingService, Notification $notification = null);
 
     /**
      *
      * @param PORowSnapshot $snapshot
-     * @param POSpecificationService $specificationService
+     * @param POSpecService $specService
      * @param Notification $notification
      * @throws InvalidArgumentException
      * @return NULL|\Procure\Domain\PurchaseOrder\GenericPO
      */
-    public function addRowFromSnapshot(PORowSnapshot $snapshot, POSpecificationService $specificationService, Notification $notification = null)
+    public function addRowFromSnapshot(PORowSnapshot $snapshot, POSpecService $specService, Notification $notification = null)
     {
         if (! $snapshot instanceof PORowSnapshot) {
             return null;
@@ -61,7 +61,7 @@ abstract class GenericPO extends AbstractPO
 
         $row = PORow::makeFromSnapshot($snapshot);
 
-        $ckResult = $this->validateRow($row, $specificationService, $notification, false);
+        $ckResult = $this->validateRow($row, $specService, $notification, false);
 
         $convertedPurchaseQuantity = $row->getDocQuantity();
         $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
@@ -86,12 +86,12 @@ abstract class GenericPO extends AbstractPO
 
     /**
      *
-     * @param POSpecificationService $specificationService
+     * @param POSpecService $specService
      * @param Notification $notification
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    public function validateHeader(POSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function validateHeader(POSpecService $specService, Notification $notification = null, $isPosting = false)
     {
         try {
 
@@ -99,13 +99,13 @@ abstract class GenericPO extends AbstractPO
                 $notification = new Notification();
             }
 
-            if ($specificationService == null) {
+            if ($specService == null) {
                 $notification->addError("Specification service not found");
                 return $notification;
             }
 
             // general validation done
-            $notification = $this->generalHeaderValidation($specificationService, $notification, $isPosting);
+            $notification = $this->generalHeaderValidation($specService, $notification, $isPosting);
 
             if ($notification->hasErrors()) {
                 return $notification;
@@ -113,12 +113,12 @@ abstract class GenericPO extends AbstractPO
 
             // Check and set exchange rate
             // if ($isPosting) {
-            $fxRate = $specificationService->getFxService()->checkAndReturnFX($this->getDocCurrency(), $this->getLocalCurrency(), $this->getExchangeRate());
+            $fxRate = $specService->getFxService()->checkAndReturnFX($this->getDocCurrency(), $this->getLocalCurrency(), $this->getExchangeRate());
             $this->exchangeRate = $fxRate;
             // }
 
             // specific validation
-            $specificHeaderValidationResult = $this->specificHeaderValidation($specificationService, $notification, $isPosting);
+            $specificHeaderValidationResult = $this->specificHeaderValidation($specService, $notification, $isPosting);
 
             if ($specificHeaderValidationResult instanceof Notification) {
                 $notification = $specificHeaderValidationResult;
@@ -132,27 +132,27 @@ abstract class GenericPO extends AbstractPO
 
     /**
      *
-     * @param POSpecificationService $specificationService
+     * @param POSpecService $specService
      * @param Notification $notification
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    protected function generalHeaderValidation(POSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function generalHeaderValidation(POSpecService $specService, Notification $notification, $isPosting = false)
     {
         if ($notification == null)
             $notification = new Notification();
 
-        if ($specificationService == null) {
+        if ($specService == null) {
             $notification->addError("Specification not found");
             return $notification;
         }
 
         /**
          *
-         * @var POSpecificationService $specificationService ;
+         * @var POSpecService $specService ;
          */
 
-        $notification = $specificationService->doGeneralHeaderValiation($this, $notification);
+        $notification = $specService->doGeneralHeaderValiation($this, $notification);
 
         return $notification;
     }
@@ -160,12 +160,12 @@ abstract class GenericPO extends AbstractPO
     /**
      *
      * @param PORow $row
-     * @param POSpecificationService $specificationService
+     * @param POSpecService $specService
      * @param Notification $notification
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    public function validateRow(PORow $row, POSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function validateRow(PORow $row, POSpecService $specService, Notification $notification = null, $isPosting = false)
     {
         try {
 
@@ -173,20 +173,20 @@ abstract class GenericPO extends AbstractPO
                 $notification = new Notification();
             }
 
-            if ($specificationService == null) {
+            if ($specService == null) {
                 $notification->addError("Specification service not found");
                 return $notification;
             }
 
             // general validation done
-            $notification = $this->generalRowValidation($row, $specificationService, $notification, $isPosting);
+            $notification = $this->generalRowValidation($row, $specService, $notification, $isPosting);
 
             if ($notification->hasErrors()) {
                 return $notification;
             }
 
             // specific validation
-            $specificRowValidationResult = $this->specificRowValidation($row, $specificationService, $notification, $isPosting);
+            $specificRowValidationResult = $this->specificRowValidation($row, $specService, $notification, $isPosting);
 
             if ($specificRowValidationResult instanceof Notification) {
                 $notification = $specificRowValidationResult;
@@ -201,22 +201,22 @@ abstract class GenericPO extends AbstractPO
     /**
      *
      * @param PORow $row
-     * @param POSpecificationService $specificationService
+     * @param POSpecService $specService
      * @param Notification $notification
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    protected function generalRowValidation(PORow $row, POSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function generalRowValidation(PORow $row, POSpecService $specService, Notification $notification, $isPosting = false)
     {
         if ($notification == null) {
             $notification = new Notification();
         }
 
-        if ($specificationService == null) {
+        if ($specService == null) {
             $notification->addError("Specification not found");
             return $notification;
         }
-        $notification = $specificationService->doGeneralRowValiation($this, $row, $notification, $isPosting);
+        $notification = $specService->doGeneralRowValiation($this, $row, $notification, $isPosting);
 
         return $notification;
     }

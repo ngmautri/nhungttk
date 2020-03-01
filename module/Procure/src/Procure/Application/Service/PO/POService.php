@@ -3,24 +3,21 @@ namespace Procure\Application\Service\PO;
 
 use Application\Notification;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\SnapshotAssembler;
+use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Application\Service\AbstractService;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
+use Procure\Application\Service\FXService;
 use Procure\Application\Service\PO\Output\PoRowInArray;
 use Procure\Application\Service\PO\Output\PoRowInExcel;
 use Procure\Application\Service\PO\Output\PoRowOutputStrategy;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\Service\POSpecificationService;
+use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
+use Procure\Domain\Service\POSpecService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Application\Service\FXService;
-use Ramsey;
-use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
-use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 
 /**
  * PO Service.
@@ -72,7 +69,7 @@ class POService extends AbstractService
         $fxService = new FXService();
         $fxService->setDoctrineEM($this->getDoctrineEM());
 
-        $specService = new POSpecificationService($sharedSpecificationFactory, $fxService);
+        $specService = new POSpecService($sharedSpecificationFactory, $fxService);
 
         $notification = $entityRoot->validateHeader($specService, $notification);
 

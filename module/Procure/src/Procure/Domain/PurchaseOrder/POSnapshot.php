@@ -1,67 +1,118 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class POSnapshot extends AbstractValueObject
+class POSnapshot extends AbstractDTO
 {
-    
+
     public $id;
+
     public $token;
+
     public $vendorName;
+
     public $invoiceNo;
+
     public $invoiceDate;
+
     public $currencyIso3;
+
     public $exchangeRate;
+
     public $remarks;
+
     public $createdOn;
+
     public $currentState;
+
     public $isActive;
+
     public $trxType;
+
     public $lastchangeOn;
+
     public $postingDate;
+
     public $grDate;
+
     public $sapDoc;
+
     public $contractNo;
+
     public $contractDate;
+
     public $quotationNo;
+
     public $quotationDate;
+
     public $sysNumber;
+
     public $revisionNo;
+
     public $deliveryMode;
+
     public $incoterm;
+
     public $incotermPlace;
+
     public $paymentTerm;
+
     public $docStatus;
+
     public $workflowStatus;
+
     public $transactionStatus;
+
     public $docType;
+
     public $paymentStatus;
+
     public $totalDocValue;
+
     public $totalDocTax;
+
     public $totalDocDiscount;
+
     public $totalLocalValue;
+
     public $totalLocalTax;
+
     public $totalLocalDiscount;
+
     public $reversalBlocked;
+
     public $uuid;
+
     public $vendor;
+
     public $pmtTerm;
+
     public $company;
+
     public $warehouse;
+
     public $createdBy;
+
     public $lastchangeBy;
+
     public $currency;
+
     public $paymentMethod;
+
     public $localCurrency;
+
     public $docCurrency;
+
     public $incoterm2;
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -70,6 +121,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -78,6 +130,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorName()
@@ -86,6 +139,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceNo()
@@ -94,6 +148,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceDate()
@@ -102,6 +157,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrencyIso3()
@@ -110,6 +166,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExchangeRate()
@@ -118,6 +175,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -126,6 +184,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -134,6 +193,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -142,6 +202,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -150,6 +211,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTrxType()
@@ -158,6 +220,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -166,6 +229,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingDate()
@@ -174,6 +238,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrDate()
@@ -182,6 +247,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSapDoc()
@@ -190,6 +256,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractNo()
@@ -198,6 +265,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractDate()
@@ -206,6 +274,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationNo()
@@ -214,6 +283,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationDate()
@@ -222,6 +292,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSysNumber()
@@ -230,6 +301,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -238,6 +310,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDeliveryMode()
@@ -246,6 +319,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm()
@@ -254,6 +328,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermPlace()
@@ -262,6 +337,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTerm()
@@ -270,6 +346,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -278,6 +355,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -286,6 +364,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -294,6 +373,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -302,6 +382,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentStatus()
@@ -310,6 +391,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocValue()
@@ -318,6 +400,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocTax()
@@ -326,6 +409,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocDiscount()
@@ -334,6 +418,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalValue()
@@ -342,6 +427,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalTax()
@@ -350,6 +436,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalDiscount()
@@ -358,6 +445,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -366,6 +454,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -374,6 +463,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -382,6 +472,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPmtTerm()
@@ -390,6 +481,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
@@ -398,6 +490,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -406,6 +499,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -414,6 +508,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -422,6 +517,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrency()
@@ -430,6 +526,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethod()
@@ -438,6 +535,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrency()
@@ -446,6 +544,7 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrency()
@@ -454,11 +553,11 @@ class POSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm2()
     {
         return $this->incoterm2;
     }
-
 }

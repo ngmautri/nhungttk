@@ -4,7 +4,7 @@ namespace Procure\Domain\PurchaseOrder;
 use Application\Notification;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecificationService;
+use Procure\Domain\Service\POSpecService;
 use Ramsey;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Event\POHeaderUpdatedEvent;
@@ -18,31 +18,31 @@ class PODoc extends GenericPO
 
 {
 
-    protected function afterPost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
+    protected function afterPost(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
     {}
 
-    protected function doReverse(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
+    protected function doReverse(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
     {}
 
-    protected function prePost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
+    protected function prePost(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
     {}
 
-    protected function preReserve(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
+    protected function preReserve(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
     {}
 
-    protected function specificHeaderValidation(POSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function specificHeaderValidation(POSpecService $specService, Notification $notification, $isPosting = false)
     {}
 
-    protected function specificValidation(POSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function specificValidation(POSpecService $specService, Notification $notification, $isPosting = false)
     {}
 
-    protected function afterReserve(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
+    protected function afterReserve(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
     {}
 
     protected function raiseEvent()
     {}
 
-    protected function doPost(POSpecificationService $specificationService, POPostingService $postingService, Notification $notification = null)
+    protected function doPost(POSpecService $specService, POPostingService $postingService, Notification $notification = null)
     {}
 
     private function __construct()
@@ -89,10 +89,10 @@ class PODoc extends GenericPO
     /**
      *
      * @param PoSnapshot $snapshot
-     * @param POSpecificationService $specificationService
+     * @param POSpecService $specService
      * @return void|\Procure\Domain\PurchaseOrder\PODoc
      */
-    public static function updateFromSnapshot(PoSnapshot $snapshot, POSpecificationService $specificationService = null)
+    public static function updateFromSnapshot(PoSnapshot $snapshot, POSpecService $specService = null)
     {
         if (! $snapshot instanceof PoSnapshot) {
             return;
@@ -101,7 +101,7 @@ class PODoc extends GenericPO
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
-        $notification = $instance->validateHeader($specificationService);
+        $notification = $instance->validateHeader($specService);
         if ($notification->hasErrors()) {
             throw new PoUpdateException($notification->errorMessage());
         }
@@ -110,6 +110,6 @@ class PODoc extends GenericPO
         return $instance;
     }
 
-    protected function specificRowValidation(PORow $row, POSpecificationService $specificationService, Notification $notification, $isPosting = false)
+    protected function specificRowValidation(PORow $row, POSpecService $specService, Notification $notification, $isPosting = false)
     {}
 }

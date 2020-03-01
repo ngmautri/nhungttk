@@ -12,6 +12,11 @@ use Procure\Application\Service\PO\POService;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Procure\Application\Command\PO\CreateHeaderCmd;
+use Procure\Application\Command\PO\CreateHeaderCmdHandler;
+use Application\Notification;
+use Procure\Application\Command\PO\EditHeaderCmd;
+use Procure\Application\Command\PO\EditHeaderCmdHandler;
 
 /**
  *
@@ -270,12 +275,32 @@ class PoController extends AbstractActionController
             'email' => $this->identity()
         ));
 
+        /**
+         *
+         * @var PoDTO $dto ;
+         */
         $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
 
         $userId = $u->getId();
         $companyId = $u->getCompany()->getId();
 
-        $notification = $this->purchaseOrderService->createHeader($dto, $companyId, $userId, __METHOD__, true);
+        $options = [
+            "companyId" => $companyId,
+            "userId" => $userId,
+            "trigger" => __METHOD__
+        ];
+
+        $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, new CreateHeaderCmdHandler());
+
+        try {
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
         if ($notification->hasErrors()) {
 
             $viewModel = new ViewModel(array(
@@ -298,7 +323,7 @@ class PoController extends AbstractActionController
 
         return $this->redirect()->toUrl($redirectUrl);
     }
-    
+
     /**
      *
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -306,23 +331,23 @@ class PoController extends AbstractActionController
     public function amendAction()
     {
         $this->layout("Procure/layout-fullscreen");
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/create";
         $form_title = "Create PO";
         $action = \Application\Model\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/po/crudPO";
-        
+
         $prg = $this->prg($form_action, true);
-        
+
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
             return $prg;
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
-            
+
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
@@ -333,26 +358,26 @@ class PoController extends AbstractActionController
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            
+
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
-        
+
         $data = $prg;
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-        
+
         $userId = $u->getId();
         $companyId = $u->getCompany()->getId();
-        
+
         $notification = $this->purchaseOrderService->createHeader($dto, $companyId, $userId, __METHOD__, true);
         if ($notification->hasErrors()) {
-            
+
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
@@ -363,17 +388,16 @@ class PoController extends AbstractActionController
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            
+
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
-        
+
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/procure/po/list";
-        
+
         return $this->redirect()->toUrl($redirectUrl);
     }
-    
 
     /**
      *
@@ -432,11 +456,25 @@ class PoController extends AbstractActionController
         $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
 
         $userId = $u->getId();
-        $companyId = $u->getCompany()->getId();
         $entity_id = $data['entity_id'];
-        
-        $notification = $this->purchaseOrderService->updateHeader($data['entity_id'], $dto, $companyId, $userId, __METHOD__);
-        
+
+        $options = [
+            "rootEntityId" => $entity_id,
+            "userId" => $userId,
+            "trigger" => __METHOD__
+        ];
+
+        $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, new EditHeaderCmdHandler());
+
+        try {
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
         if ($notification->hasErrors()) {
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),

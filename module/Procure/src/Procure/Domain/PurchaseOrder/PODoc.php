@@ -82,6 +82,44 @@ class PODoc extends GenericPO
         return $instance;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
+     */
+    protected function doPost(POSpecService $specService, POPostingService $postingService)
+    {
+        $this->docType = "";
+        $this->docStatus = PODocStatus::DOC_STATUS_POSTED;
+        $this->revisionNo = $this->revisionNo + 1;
+        $this->lastchangeBy = null;
+        $this->lastchangeOn = new \DateTime();
+
+        $n = 0;
+        foreach ($this->docRows as $r) {
+
+            /** @var \Procure\Domain\PurchaseOrder\PORow $r ; */
+            $snapshot = $r->makeSnapshot();
+
+            /**
+             * Double check only.
+             * Receipt of ZERO quantity not allowed
+             */
+            if ($snapshot->quantity() == 0) {
+                continute;
+            }
+
+            $n ++;
+            $snapshot->isPosted = 1;
+            $snapshot->isDraft = 0;
+            $snapshot->docStatus = $this->docStatus;
+            $snapshot->rowNumber = $n;
+            $snapshot->lastchangeOn = $this->lastchangeOn;
+        }
+
+        $postingService->getCmdRepository()->post($this, true);
+    }
+
     protected function afterPost(POSpecService $specService, POPostingService $postingService)
     {}
 
@@ -106,8 +144,7 @@ class PODoc extends GenericPO
     protected function raiseEvent()
     {}
 
-    protected function doPost(POSpecService $specService, POPostingService $postingService)
-    {}
+    
 
     protected function specificRowValidation(PORow $row, POSpecService $specService, $isPosting = false)
     {}

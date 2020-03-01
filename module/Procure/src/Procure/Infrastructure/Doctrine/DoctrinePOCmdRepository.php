@@ -87,7 +87,57 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
      * @see \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface::post()
      */
     public function post(GenericPO $rootEntity, $generateSysNumber = True)
-    {}
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("GenericPO not retrieved.");
+        }
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePo $entity ;
+         */
+        $entity = $this->doctrineEM->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
+
+        if ($entity == null) {
+            throw new InvalidArgumentException("PO Entity not retrieved.");
+        }
+
+        if ($generateSysNumber) {
+            $entity->setSysNumber($this->generateSysNumber($entity));
+        }
+
+        $entity->setLastChangeOn(new \DateTime());
+        $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
+        $entity->setIsDraft(0);
+        $entity->setIsPosted(1);
+
+        $rows = $rootEntity->getDocRows();
+        $n = 0;
+        foreach ($rows as $row) {
+
+            /** @var PORow $row ; */
+
+            /** @var \Application\Entity\NmtProcurePoRow $r ; */
+            $r = $this->doctrineEM->find("\Application\Entity\NmtProcurePoRow", $row->getId());
+
+            if ($r == null) {
+                continue;
+            }
+
+            $n ++;
+
+            // update transaction row
+            $r->setDocStatus($entity->getDocStatus());
+            $r->setDocType($entity->getMovementType());
+            $r->setTransactionType($entity->getMovementType());
+            $r->setCogsLocal($row->getCogsLocal());
+            $r->setSysNumber($entity->getSysNumber() . '-' . $n);
+            $this->doctrineEM->persist($r);
+        }
+
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
 
     /**
      *

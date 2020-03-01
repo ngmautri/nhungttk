@@ -1,11 +1,11 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Procure\Application\DTO\Po\PORowForGridDTO;
-use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PORowDTO;
-use Application\Domain\Shared\DTOFactory;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Application\Domain\Shared\AbstractEntity;
 
 /**
  * AP Row
@@ -13,7 +13,7 @@ use Application\Domain\Shared\DTOFactory;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORow
+class PORow extends AbstractEntity
 {
 
     protected $id;

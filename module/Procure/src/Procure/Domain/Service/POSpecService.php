@@ -49,14 +49,18 @@ class POSpecService
         return $this->sharedSpecificationFactory;
     }
 
-    /**
-     *
-     * @param GenericPO $rootEntity
-     * @param boolean $isPosting
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
+   /**
+    * 
+    * @param GenericPO $rootEntity
+    * @param boolean $isPosting
+    */
     public function doGeneralHeaderValiation(GenericPO $rootEntity, $isPosting = false)
     {
+        
+        if (! $rootEntity instanceof GenericPO) {
+            throw new \Procure\Domain\Exception\InvalidArgumentException('Root entity not given!');
+        }
+        
 
         /**
          *
@@ -64,7 +68,7 @@ class POSpecService
          */
         if ($this->sharedSpecificationFactory == null) {
             $rootEntity->addError("Validators is not found");
-            return $rootEntity;
+            return;
         }
 
         // do verification now
@@ -164,17 +168,14 @@ class POSpecService
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
-
-        return $rootEntity;
     }
 
-    /**
-     *
-     * @param GenericPO $rootEntity
-     * @param PORow $localEntity
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
+   /**
+    * 
+    * @param GenericPO $rootEntity
+    * @param PORow $localEntity
+    * @throws \Procure\Domain\Exception\InvalidArgumentException
+    */
     public function doGeneralRowValiation(GenericPO $rootEntity, PORow $localEntity)
     {
         if (! $rootEntity instanceof GenericPO) {
@@ -201,33 +202,30 @@ class POSpecService
         );
 
         if (! $spec->isSatisfiedBy($subject)) {
-            $rootEntity->addError("Item not exits in the company #" . $localEntity->getItem());
+            $localEntity->addError("Item not exits in the company #" . $localEntity->getItem());
         }
 
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
 
         // ======= QUANTITY ==========
         if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-            $rootEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
+            $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
         }
 
         // ======= UNIT PRICE ==========
         if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
-            $rootEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
+            $localEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
         }
 
         // ======= CONVERSION FACTORY ==========
         if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
-            $rootEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
+            $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
         }
         // ======= EXW PRICE ==========
         if (! $spec->isSatisfiedBy($localEntity->getExwUnitPrice())) {
             // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
         }
 
-        // ======= PR ROW ==========
-
-        return $rootEntity;
     }
 
     /**

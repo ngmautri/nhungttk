@@ -1,7 +1,8 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Application\Domain\Shared\AggregateRoot;
+use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\AggregateRootInterface;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PoDTOAssembler;
 
@@ -10,7 +11,7 @@ use Procure\Application\DTO\Po\PoDTOAssembler;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractPO extends AggregateRoot
+abstract class AbstractPO extends AbstractEntity implements AggregateRootInterface
 {
 
     // +++++++++++++++++++ ADTIONAL +++++++++++++++++++++

@@ -42,6 +42,78 @@ abstract class GenericPO extends AbstractPO
     abstract protected function afterReserve(POSpecService $specService, POPostingService $postingService);
 
     /**
+     * 
+     * @param POSpecService $specService
+     * @param POPostingService $postingService
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\PurchaseOrder\GenericPO
+     */
+    public function post(POSpecService $specService, POPostingService $postingService)
+    {
+        if ($specService == null) {
+            throw new InvalidArgumentException("Specification service not found");
+        }
+
+        if ($postingService == null) {
+            throw new InvalidArgumentException("Posting service not found");
+        }
+
+        $this->validate($specService, TRUE);
+
+        if ($this->hasErrors()) {
+            throw new InvalidArgumentException("Invalid document!");
+        }
+
+        $this->recordedEvents = array();
+
+        // template method
+        $this->prePost($specService, $postingService);
+
+        // template method
+        $this->doPost($specService, $postingService);
+
+        // template method
+        $this->afterPost($specService, $postingService);
+
+        if (! $this->hasErrors()) {
+            $this->raiseEvent();
+        }
+
+        return $this;
+    }
+
+    public function validate(POSpecService $specService, $isPosting = false)
+    {
+        if ($specService == null) {
+            throw new InvalidArgumentException("Specification service not found");
+        }
+
+        $this->validateHeader($specService, $isPosting);
+
+        if ($this->hasErrors()) {
+            return $this;
+        }
+
+        // template method.
+        $this->specificValidation($specService, $isPosting);
+
+        if ($this->hasErrors()) {
+            return $this;
+        }
+
+        if (count($this->docRows) == 0) {
+            $this->addError("Doc has no lines");
+            return $this;
+        }
+
+        foreach ($this->apDocRows as $row) {
+            $this->validateRow($row, $specService, $isPosting);
+        }
+
+        return $this;
+    }
+
+    /**
      *
      * @param PORowSnapshot $snapshot
      * @param POSpecService $specService
@@ -76,8 +148,8 @@ abstract class GenericPO extends AbstractPO
         // $convertedStandardQuantity = $entity->getDocQuantity();
         // $convertedStandardUnitPrice = $entity->getDocUnitPrice();
 
-        if ($ckResult->hasErrors()) {
-            throw new InvalidArgumentException($ckResult->errorMessage());
+        if ($row->hasErrors()) {
+            throw new InvalidArgumentException($row->getNotification()->errorMessage());
         }
 
         $this->docRows[] = $row;
@@ -91,7 +163,7 @@ abstract class GenericPO extends AbstractPO
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    public function validateHeader(POSpecService $specService, Notification $notification = null, $isPosting = false)
+    public function validateHeader(POSpecService $specService,$isPosting = false)
     {
         try {
 
@@ -114,11 +186,10 @@ abstract class GenericPO extends AbstractPO
 
             // specific validation - template method
             $this->specificHeaderValidation($specService, $isPosting);
+            
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+            $this->addError($e->getMessage());
         }
-
-        return $notification;
     }
 
     /**
@@ -156,27 +227,24 @@ abstract class GenericPO extends AbstractPO
             if ($specService == null) {
                 $this->addError("Specification service not found");
                 return $this;
-            }
+             }
 
             // general validation done
             $this->generalRowValidation($row, $specService, $isPosting);
 
-            if ($this->hasErrors()) {
-                return $this;
-            }
-
             // specific validation
             $this->specificRowValidation($row, $specService, $isPosting);
-            
+
+            if ($row->hasErrors()) {
+                $this->addErrorArray($row->getErrors());
+            }
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
         }
-
-        return $this;
     }
 
     /**
-     * 
+     *
      * @param PORow $row
      * @param POSpecService $specService
      * @param boolean $isPosting

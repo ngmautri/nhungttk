@@ -24,12 +24,12 @@ class Notification
         $this->success = array();
     }
 
-    /**
-     *
-     * @param string $err
-     * @return \Application\Notification
-     */
-    public function addError(string $err)
+   /**
+    * 
+    * @param string $err
+    * @return \Application\Notification
+    */
+    public function addError($err)
     {
         $this->errors[] = $err;
         return $this;
@@ -40,7 +40,7 @@ class Notification
      * @param string $mes
      * @return \Application\Notification
      */
-    public function addWarning(string $mes)
+    public function addWarning($mes)
     {
         $this->warnings[] = $mes;
         return $this;
@@ -51,7 +51,7 @@ class Notification
      * @param string $mes
      * @return \Application\Notification
      */
-    public function addSuccess(string $mes)
+    public function addSuccess($mes)
     {
         $this->success[] = $mes;
         return $this;

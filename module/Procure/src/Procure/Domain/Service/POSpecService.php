@@ -106,7 +106,7 @@ class POSpecService
 
             // ===== DOC CURRENCY =======
             if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
-                $rootEntity->addError("Doc Currency is empty or invalid");
+                $rootEntity->addError(sprintf("Doc Currency is empty or invalid! %s",$rootEntity->getDocCurrency()));
             }
 
             // ===== LOCAL CURRENCY =======

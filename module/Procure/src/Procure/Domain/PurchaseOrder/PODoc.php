@@ -7,6 +7,7 @@ use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Ramsey;
+use Procure\Domain\Event\POPostedEvent;
 
 /**
  *
@@ -120,6 +121,16 @@ class PODoc extends GenericPO
         $postingService->getCmdRepository()->post($this, true);
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\GenericPO::raiseEvent()
+     */
+    protected function raiseEvent()
+    {
+        $this->recordedEvents[] = new POPostedEvent();
+    }
+
     protected function afterPost(POSpecService $specService, POPostingService $postingService)
     {}
 
@@ -140,11 +151,6 @@ class PODoc extends GenericPO
 
     protected function afterReserve(POSpecService $specService, POPostingService $postingService)
     {}
-
-    protected function raiseEvent()
-    {}
-
-    
 
     protected function specificRowValidation(PORow $row, POSpecService $specService, $isPosting = false)
     {}

@@ -11,7 +11,7 @@ use Application\Notification;
 abstract class AbstractValueObject
 {
 
-    protected $notification;
+    private $notification;
 
     /**
      *

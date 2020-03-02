@@ -42,7 +42,7 @@ abstract class GenericPO extends AbstractPO
     abstract protected function afterReserve(POSpecService $specService, POPostingService $postingService);
 
     /**
-     * 
+     *
      * @param POSpecService $specService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
@@ -82,11 +82,21 @@ abstract class GenericPO extends AbstractPO
         return $this;
     }
 
+    /**
+     *
+     * @param POSpecService $specService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\PurchaseOrder\GenericPO
+     */
     public function validate(POSpecService $specService, $isPosting = false)
     {
         if ($specService == null) {
             throw new InvalidArgumentException("Specification service not found");
         }
+        
+        // Clear Notification.
+        $this->clearNotification();
 
         $this->validateHeader($specService, $isPosting);
 
@@ -106,7 +116,7 @@ abstract class GenericPO extends AbstractPO
             return $this;
         }
 
-        foreach ($this->apDocRows as $row) {
+        foreach ($this->docRows as $row) {
             $this->validateRow($row, $specService, $isPosting);
         }
 
@@ -124,12 +134,16 @@ abstract class GenericPO extends AbstractPO
     public function addRowFromSnapshot(PORowSnapshot $snapshot, POSpecService $specService)
     {
         if (! $snapshot instanceof PORowSnapshot) {
-            return null;
+            return;
         }
 
-        // $snapshot-> = $this->uuid;
-        $snapshot->docType = $this->docType;
+        $this->validateHeader($specService);
+
         $snapshot->quantity = $snapshot->docQuantity;
+        $snapshot->revisionNo = 0;
+        $snapshot->token = $this->uuid;
+        $snapshot->docType = $this->docType;
+        $snapshot->isDraft = 1;
 
         $row = PORow::makeFromSnapshot($snapshot);
 
@@ -149,7 +163,7 @@ abstract class GenericPO extends AbstractPO
         // $convertedStandardUnitPrice = $entity->getDocUnitPrice();
 
         if ($row->hasErrors()) {
-            throw new InvalidArgumentException($row->getNotification()->errorMessage());
+            return;
         }
 
         $this->docRows[] = $row;
@@ -163,7 +177,7 @@ abstract class GenericPO extends AbstractPO
      * @param boolean $isPosting
      * @return \Application\Notification
      */
-    public function validateHeader(POSpecService $specService,$isPosting = false)
+    public function validateHeader(POSpecService $specService, $isPosting = false)
     {
         try {
 
@@ -175,7 +189,7 @@ abstract class GenericPO extends AbstractPO
             $this->generalHeaderValidation($specService, $isPosting);
 
             if ($this->hasErrors()) {
-                return $this;
+                return;
             }
 
             // Check and set exchange rate
@@ -186,7 +200,6 @@ abstract class GenericPO extends AbstractPO
 
             // specific validation - template method
             $this->specificHeaderValidation($specService, $isPosting);
-            
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
         }
@@ -202,7 +215,7 @@ abstract class GenericPO extends AbstractPO
     {
         if ($specService == null) {
             $this->addError("Specification not found");
-            return $this;
+            return;
         }
 
         /**
@@ -227,7 +240,7 @@ abstract class GenericPO extends AbstractPO
             if ($specService == null) {
                 $this->addError("Specification service not found");
                 return $this;
-             }
+            }
 
             // general validation done
             $this->generalRowValidation($row, $specService, $isPosting);

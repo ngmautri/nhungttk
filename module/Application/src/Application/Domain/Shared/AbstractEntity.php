@@ -38,13 +38,14 @@ abstract class AbstractEntity
      * @param string $err
      * @return \Application\Domain\Shared\AbstractEntity
      */
-    public function addError(string $err)
+    public function addError($err)
     {
         if ($err == null)
             return $this;
 
         $notification = $this->getNotification();
-        $this->notification = $notification->addError($err);
+        $notification->addError($err);
+        $this->notification = $notification;
         return $this;
     }
 
@@ -65,7 +66,7 @@ abstract class AbstractEntity
             $notification->addError($err);
         }
 
-        $this->notification = $notification->addError($err);
+        $this->notification = $notification;
 
         return $this;
     }
@@ -75,7 +76,7 @@ abstract class AbstractEntity
      * @param string $mes
      * @return \Application\Domain\Shared\AbstractEntity
      */
-    public function addWaring(string $mes)
+    public function addWaring($mes)
     {
         if ($mes == null)
             return $this;
@@ -90,7 +91,7 @@ abstract class AbstractEntity
      * @param string $mes
      * @return \Application\Domain\Shared\AbstractEntity
      */
-    public function addSuccess(string $mes)
+    public function addSuccess($mes)
     {
         if ($mes == null)
             return $this;
@@ -129,6 +130,18 @@ abstract class AbstractEntity
     public function getRecordedEvents()
     {
         return $this->recordedEvents;
+    }
+
+    /**
+     */
+    public function clearNotification()
+    {
+        $this->notification = null;
+    }
+
+    public function getErrorMessage($html = true)
+    {
+        return $this->getNotification()->errorMessage($html);
     }
 
     /**

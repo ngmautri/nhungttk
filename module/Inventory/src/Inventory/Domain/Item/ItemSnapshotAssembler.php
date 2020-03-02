@@ -88,15 +88,18 @@ class ItemSnapshotAssembler
 
         $snapShot = new ItemSnapshot();
 
-        $reflectionClass = new \ReflectionClass(get_class($dto));
-        $itemProperites = $reflectionClass->getProperties();
+        $refl = new \ReflectionObject($dto);
+        $props = $refl->getProperties();
 
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-                $snapShot->$propertyName = $property->getValue($dto);
-            }
+        foreach ($props as $prop) {
+            try {
+
+                $prop->setAccessible(true);
+                $propertyName = $prop->getName();
+                if (property_exists($snapShot, $propertyName)) {
+                    $snapShot->$propertyName = $prop->getValue($dto);
+                }
+            } catch (\Exception $e) {}
         }
         return $snapShot;
     }
@@ -136,12 +139,11 @@ class ItemSnapshotAssembler
             "isStocked",
             "isFixedAsset",
             "isSparepart",
-            "itemTypeId",
-            
+            "itemTypeId"
         );
 
-        //$dto->isSparepart;
-        
+        // $dto->isSparepart;
+
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
@@ -185,10 +187,9 @@ class ItemSnapshotAssembler
                 } else {
                     $snapShot->$propertyName = $property->getValue($item);
                 }
-                
             }
         }
-          
+
         return $snapShot;
     }
 }

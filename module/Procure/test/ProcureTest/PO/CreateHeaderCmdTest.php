@@ -13,8 +13,13 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\Service\POSpecService;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\Command\PO\CreateHeaderCmd;
+use Procure\Application\Command\PO\CreateHeaderCmdHandler;
+use Application\Domain\Shared\DTOFactory;
+use Procure\Application\DTO\Po\PoDTO;
+use Application\Notification;
 
-class POServiceTest extends PHPUnit_Framework_TestCase
+class CreateeHeaderCmdTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -43,6 +48,30 @@ class POServiceTest extends PHPUnit_Framework_TestCase
             $data["paymentTerm"] = 1;
             $data["company"] = 1;
             $data["exchangeRate"] = 1;
+            
+            $userId = 39;
+            $companyId = 1;
+            
+            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+            
+            $options = [
+                "companyId" => $companyId,
+                "userId" => $userId,
+                "trigger" => __METHOD__
+            ];
+            
+            $cmd = new CreateHeaderCmd($doctrineEM, $dto, $options, new CreateHeaderCmdHandler());
+            
+            try {
+                $cmd->execute();
+                $notification = $dto->getNotification();
+            } catch (\Exception $e) {
+                
+                $notification = new Notification();
+                $notification->addError($e->getMessage());
+            }
+            
+            var_dump($notification);
 
             $snapshot = SnapshotAssembler::createSnapShotFromArray($data, new POSnapshot());
 

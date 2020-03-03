@@ -15,11 +15,97 @@ abstract class AbstractDTO
 
     /**
      *
-     * @return mixed
+     * @return boolean
+     */
+    public function hasErrors()
+    {
+        return $this->getNotification()->hasErrors();
+    }
+
+    /**
+     *
+     * @return array|\Application\multitype:
+     */
+    public function getErrors()
+    {
+        return $this->getNotification()->getErrors();
+    }
+
+    /**
+     *
+     * @param string $err
+     * @return \Application\Domain\Shared\AbstractDTO
+     */
+    public function addError($err)
+    {
+        if ($err == null)
+            return $this;
+
+        $notification = $this->getNotification();
+        $notification->addError($err);
+        $this->notification = $notification;
+        return $this;
+    }
+
+    /**
+     *
+     * @param array $errs
+     * @return \Application\Domain\Shared\AbstractDTO
+     */
+    public function addErrorArray(array $errs)
+    {
+        if (count($errs) == 0) {
+            return $this;
+        }
+
+        $notification = $this->getNotification();
+
+        foreach ($errs as $err) {
+            $notification->addError($err);
+        }
+
+        $this->notification = $notification;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $mes
+     * @return \Application\Domain\Shared\AbstractDTO
+     */
+    public function addWaring($mes)
+    {
+        if ($mes == null)
+            return $this;
+
+        $notification = $this->getNotification();
+        $this->notification = $notification->addWarning($mes);
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $mes
+     * @return \Application\Domain\Shared\AbstractDTO
+     */
+    public function addSuccess($mes)
+    {
+        if ($mes == null)
+            return $this;
+
+        $notification = $this->getNotification();
+        $this->notification = $notification->addSuccess($mes);
+        return $this;
+    }
+
+    /**
+     *
+     * @return \Application\Notification
      */
     public function getNotification()
     {
-        if ($this->notification == null) {
+        if (! $this->notification instanceof Notification) {
             return new Notification();
         }
 
@@ -28,9 +114,9 @@ abstract class AbstractDTO
 
     /**
      *
-     * @param mixed $notification
+     * @param Notification $notification
      */
-    public function setNotification($notification)
+    public function setNotification(Notification $notification)
     {
         $this->notification = $notification;
     }

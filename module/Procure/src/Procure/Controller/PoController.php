@@ -302,7 +302,6 @@ class PoController extends AbstractActionController
         }
 
         if ($notification->hasErrors()) {
-
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,

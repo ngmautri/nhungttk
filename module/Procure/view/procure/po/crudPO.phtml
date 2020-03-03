@@ -190,7 +190,7 @@ if (count($errors) > 0) {
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
 									<div class="col-sm-3">
-										<select name="incoterm2" class="form-control input-sm">
+										<select name="incoterm" class="form-control input-sm">
 											<option value="">---</option>
        	    							<?php
                 $incoterm_list = $nmtPlugin->incotermList();
@@ -204,7 +204,7 @@ if (count($errors) > 0) {
                          */
 
                         if ($dto !== null) :
-                            if ($dto->getPmtTerm() == $l->getId()) :
+                        if ($dto->getIncoterm() == $l->getId()) :
                                 echo sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
                             else :
                                 echo sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
@@ -234,7 +234,7 @@ if (count($errors) > 0) {
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
 									<div class="col-sm-3">
-										<select name="payment_term_id" class="form-control input-sm">
+										<select name="paymentTerm" class="form-control input-sm">
 											<option value=""><?php echo $this->translate("---");?></option>
        	    							<?php
                 $pmtTerm_list = $nmtPlugin->getPaymentTerms();
@@ -242,7 +242,7 @@ if (count($errors) > 0) {
                 if ($pmtTerm_list !== null) :
                     foreach ($pmtTerm_list as $l) :
                         if ($dto !== null) :
-                            if ($dto->getPmtTerm() == $l->getId()) :
+                        if ($dto->getPaymentTerm() == $l->getId()) :
                                 echo '<option selected value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
                             else :
                                 echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
@@ -264,7 +264,7 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
 									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
-											placeholder="" id="paymentTerm" name="paymentTerm"
+											placeholder="" id="paymentTermDetail" name="paymentTermDetail"
 											value="<?php echo (!$dto == null)? $dto->getPaymentTerm() :"";?>">
 									</div>
 								</div>

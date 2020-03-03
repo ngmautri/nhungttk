@@ -9,7 +9,7 @@ use Application\Domain\Shared\Command\CommandHandlerInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateHeaderCmd extends AbstractDoctrineCmd
+class AmendHeaderCmd extends AbstractDoctrineCmd
 {
 
     /**
@@ -19,8 +19,8 @@ class CreateHeaderCmd extends AbstractDoctrineCmd
      */
     public function execute()
     {
-        if ($this->handler instanceof CommandHandlerInterface) {
-            throw new \Exception("No handler is found!");
+        if (!$this->getHandler() instanceof CommandHandlerInterface) {
+            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())) );
         }
 
         $this->handler->run($this);

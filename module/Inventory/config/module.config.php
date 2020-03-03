@@ -137,7 +137,46 @@ return array(
                         )
                     )
                 )
-            )
+            ),
+            
+            'item-api' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/inventory/item-api[/:id]',
+                    'constraints' => array(
+                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Inventory\API\ItemController'
+                    )
+                )
+            ),
+            
+            'warehouse-api' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/inventory/wh-api[/:id]',
+                    'constraints' => array(
+                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Inventory\API\WarehouseController'
+                    )
+                )
+            ),
+            
+            'inventory-trx-api' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/inventory/trx-api[/:id]',
+                    'constraints' => array(
+                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Inventory\API\TransactionController'
+                    )
+                )
+            ),
         )
     ),
 
@@ -256,7 +295,14 @@ return array(
             'Inventory\Controller\ItemVariant' => 'Inventory\Controller\ItemVariantControllerFactory',
 
             'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
-            'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory'
+            'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
+            
+            // API
+            'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',
+            'Inventory\API\WarehouseController' => 'Inventory\API\WarehouseControllerFactory',
+            'Inventory\API\TransactionController' => 'Inventory\API\TransactionControllerFactory',
+            
+            
         )
     ),
     'view_manager' => array(

@@ -9,7 +9,7 @@ use Application\Domain\Shared\Command\CommandHandlerInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateHeaderCmd extends AbstractDoctrineCmd
+class PostCmd extends AbstractDoctrineCmd
 {
 
     /**

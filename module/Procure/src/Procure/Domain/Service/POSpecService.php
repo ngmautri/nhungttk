@@ -91,7 +91,7 @@ class POSpecService
                     "vendorId" => $rootEntity->getVendor()
                 );
                 if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
+                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));                    
             }
 
             // ==== CK Contract DATE =======
@@ -152,7 +152,7 @@ class POSpecService
                 "paymentTermId" => $rootEntity->getPaymentTerm()
             );
             if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError(sprintf("Payment term not found!C#%s", $rootEntity->getPaymentTerm()));
+                $rootEntity->addError(sprintf("Payment term not found! #%s", $rootEntity->getPaymentTerm()));
             }
 
             // ===== USER ID =======

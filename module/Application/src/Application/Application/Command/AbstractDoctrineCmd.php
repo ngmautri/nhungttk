@@ -87,7 +87,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         $this->doctrineEM = $doctrineEM;
         $this->dto = $dto;
         $this->handler = $handler;
-        $this->$options = $options;
+        $this->options = $options;
     }
 
     public function load()

@@ -177,7 +177,19 @@ return array(
                         'controller' => 'Procure\Controller\PrRest'
                     )
                 )
-            )
+            ),
+            'pr_api' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/procure/pr-api[/:id]',
+                    'constraints' => array(
+                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Procure\API\PrController'
+                    )
+                )
+            ),
         )
     ),
 
@@ -281,7 +293,10 @@ return array(
             'Procure\Controller\ReturnAttachment' => 'Procure\Controller\ReturnAttachmentControllerFactory',
 
             'Procure\Controller\PriceComparison' => 'Procure\Controller\PriceComparisonControllerFactory',
-            'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory'
+            'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
+            
+            // API
+            'Procure\API\PrController' => 'Procure\API\PrControllerFactory',
         )
     ),
     'view_manager' => array(

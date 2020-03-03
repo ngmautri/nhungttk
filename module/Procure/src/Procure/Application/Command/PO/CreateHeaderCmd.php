@@ -2,7 +2,7 @@
 namespace Procure\Application\Command\PO;
 
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Domain\Shared\Command\CommandHandlerInterface;
+use Application\Application\Command\AbstractDoctrineCmdHandler;
 
 /**
  *
@@ -19,8 +19,8 @@ class CreateHeaderCmd extends AbstractDoctrineCmd
      */
     public function execute()
     {
-        if ($this->handler instanceof CommandHandlerInterface) {
-            throw new \Exception("No handler is found!");
+        if (!$this->handler instanceof AbstractDoctrineCmdHandler) {
+            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())) );
         }
 
         $this->handler->run($this);

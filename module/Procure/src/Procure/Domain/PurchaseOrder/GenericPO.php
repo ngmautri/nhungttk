@@ -46,6 +46,27 @@ abstract class GenericPO extends AbstractPO
      * @param POSpecService $specService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
+     * @return int
+     */
+    public function storeHeader(POSpecService $specService, POPostingService $postingService)
+    {
+        if ($specService == null) {
+            throw new InvalidArgumentException("Specification service not found");
+        }
+
+        if ($postingService == null) {
+            throw new InvalidArgumentException("Posting service not found");
+        }
+
+        $this->recordedEvents = array();
+        return $postingService->getCmdRepository()->storeHeader($this, false);
+    }
+
+    /**
+     *
+     * @param POSpecService $specService
+     * @param POPostingService $postingService
+     * @throws InvalidArgumentException
      * @return \Procure\Domain\PurchaseOrder\GenericPO
      */
     public function post(POSpecService $specService, POPostingService $postingService)
@@ -61,7 +82,7 @@ abstract class GenericPO extends AbstractPO
         $this->validate($specService, TRUE);
 
         if ($this->hasErrors()) {
-            throw new InvalidArgumentException("Invalid document!");
+            throw new InvalidArgumentException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -94,7 +115,7 @@ abstract class GenericPO extends AbstractPO
         if ($specService == null) {
             throw new InvalidArgumentException("Specification service not found");
         }
-        
+
         // Clear Notification.
         $this->clearNotification();
 
@@ -138,6 +159,10 @@ abstract class GenericPO extends AbstractPO
         }
 
         $this->validateHeader($specService);
+
+        if ($this->hasErrors()) {
+            return;
+        }
 
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->revisionNo = 0;
@@ -239,7 +264,7 @@ abstract class GenericPO extends AbstractPO
 
             if ($specService == null) {
                 $this->addError("Specification service not found");
-                return $this;
+                return;
             }
 
             // general validation done
@@ -267,7 +292,7 @@ abstract class GenericPO extends AbstractPO
     {
         if ($specService == null) {
             $this->addError("Specification not found");
-            return $this;
+            return;
         }
         $specService->doGeneralRowValiation($this, $row, $isPosting);
     }

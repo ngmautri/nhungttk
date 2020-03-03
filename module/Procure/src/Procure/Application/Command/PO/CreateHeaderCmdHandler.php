@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandInterface;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Service\FXService;
 use Procure\Domain\PurchaseOrder\PODoc;
@@ -14,6 +15,7 @@ use Procure\Domain\Service\POSpecService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Application\DTO\Po\PoDTO;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Procure\Domain\Service\POPostingService;
 
 /**
  *
@@ -28,10 +30,10 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
      * {@inheritdoc}
      * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
      */
-    public function run(AbstractDoctrineCmd $cmd)
+    public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
+            throw new \Exception(sprintf("% not found!", get_class($cmd)));
         }
 
         if ($cmd->getDto() == null) {
@@ -58,14 +60,14 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
         $companyId = null;
         if (isset($options['companyId'])) {
-            $companyId = $options['$companyId'];
+            $companyId = $options['companyId'];
         } else {
             $notification->addError("Company ID not given");
         }
 
         $userId = null;
         if (isset($options['userId'])) {
-            $userId = $options['$userId'];
+            $userId = $options['userId'];
         } else {
             $notification->addError("user ID not given");
         }
@@ -75,12 +77,7 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             return;
         }
 
-        $dto->company = $companyId;
-        $dto->createdBy = $userId;
-
-        $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
-
-        $companyQueryRepository = new DoctrineCompanyQueryRepository($this->getDoctrineEM());
+        $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
         $company = $companyQueryRepository->getById($companyId);
 
         if ($company == null) {
@@ -88,45 +85,51 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $dto->setNotification($notification);
             return;
         }
+        
+        
 
+        $dto->company = $companyId;
+        $dto->createdBy = $userId;
+        $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
+        $dto->currency = $dto->getDocCurrency();
+        
+        
         /**
          *
          * @var POSnapshot $snapshot ;
          */
         $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
         $snapshot->localCurrency = $company->getDefaultCurrency();
-
+         
         $entityRoot = PODoc::makeFromSnapshot($snapshot);
 
-        $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+        $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
         $fxService = new FXService();
-        $fxService->setDoctrineEM($this->getDoctrineEM());
+        $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
-        $specService = new POSpecService($sharedSpecificationFactory, $fxService);
-        $notification = $entityRoot->validateHeader($specService, $notification);
-
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
-            return;
-        }
-
-        $this->getDoctrineEM()
+        $specService = new POSpecService($sharedSpecFactory, $fxService);
+        $cmd->getDoctrineEM()
             ->getConnection()
             ->beginTransaction(); // suspend auto-commit
 
         try {
+            
+            $postingService= new POPostingService($cmdRepository, $procureQueryRepositoryFactory, $inventoryQueryRepository);
 
-            $rep = new DoctrinePOCmdRepository($this->getDoctrineEM());
+            $entityRoot->storeHeader($specService, $postingService)
+            
+            $rep = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
+            
             $rootEntityId = $rep->storeHeader($entityRoot);
             $m = sprintf("[OK] PO # %s created", $rootEntityId);
             $notification->addSuccess($m);
 
-            $this->getDoctrineEM()
+            $cmd->getDoctrineEM()
                 ->getConnection()
                 ->commit();
         } catch (\Exception $e) {
 
-            $this->getDoctrineEM()
+            $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
             $this->getDoctrineEM()->close();

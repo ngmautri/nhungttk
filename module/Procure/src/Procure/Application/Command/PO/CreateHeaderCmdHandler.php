@@ -114,9 +114,9 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
         try {
             
-            $postingService= new POPostingService($cmdRepository, $procureQueryRepositoryFactory, $inventoryQueryRepository);
+            //$postingService= new POPostingService($cmdRepository, $procureQueryRepositoryFactory, $inventoryQueryRepository);
 
-            $entityRoot->storeHeader($specService, $postingService)
+            //$entityRoot->storeHeader($specService, $postingService);
             
             $rep = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             

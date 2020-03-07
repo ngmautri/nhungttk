@@ -3,7 +3,6 @@ namespace Inventory\Application\Event\Listener;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Inventory\Domain\Event\ItemUpdatedEvent;
 
 /**
  *

@@ -17,6 +17,21 @@ abstract class AbstractEntity
 
     /**
      *
+     * @param object $e
+     */
+    public function addEvent($e)
+    {
+        if ($e == null) {
+            return;
+        }
+
+        $events = $this->getRecordedEvents();
+        $events[] = $e;
+        $this->recordedEvents = $events;
+    }
+
+    /**
+     *
      * @return boolean
      */
     public function hasErrors()
@@ -125,10 +140,14 @@ abstract class AbstractEntity
 
     /**
      *
-     * @return array
+     * @return array|NULL
      */
     public function getRecordedEvents()
     {
+        if ($this->recordedEvents == null) {
+            return array();
+        }
+
         return $this->recordedEvents;
     }
 

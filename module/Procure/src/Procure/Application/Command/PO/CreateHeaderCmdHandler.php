@@ -14,8 +14,10 @@ use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\Service\POSpecService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Event\Handler\EventHandlerFactory;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Procure\Domain\Service\POPostingService;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -85,44 +87,59 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $dto->setNotification($notification);
             return;
         }
-        
-        
 
         $dto->company = $companyId;
         $dto->createdBy = $userId;
         $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
         $dto->currency = $dto->getDocCurrency();
-        
-        
+
         /**
          *
          * @var POSnapshot $snapshot ;
          */
         $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
         $snapshot->localCurrency = $company->getDefaultCurrency();
-         
+
         $entityRoot = PODoc::makeFromSnapshot($snapshot);
 
         $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
         $fxService = new FXService();
         $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
         $specService = new POSpecService($sharedSpecFactory, $fxService);
+
         $cmd->getDoctrineEM()
             ->getConnection()
             ->beginTransaction(); // suspend auto-commit
 
         try {
-            
-            //$postingService= new POPostingService($cmdRepository, $procureQueryRepositoryFactory, $inventoryQueryRepository);
 
-            //$entityRoot->storeHeader($specService, $postingService);
-            
-            $rep = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
-            
-            $rootEntityId = $rep->storeHeader($entityRoot);
+            $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
+            $postingService = new POPostingService($cmdRepository);
+            $rootEntityId = $entityRoot->storeHeader($specService, $postingService);
+
+            // $rootEntityId = $rep->storeHeader($entityRoot);
+
             $m = sprintf("[OK] PO # %s created", $rootEntityId);
             $notification->addSuccess($m);
+
+            // event
+
+            if (count($entityRoot->getRecordedEvents() > 0)) {
+
+                $dispatcher = new EventDispatcher();
+
+                foreach ($entityRoot->getRecordedEvents() as $event) {
+
+                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event),$cmd->getDoctrineEM());
+
+                    if (count($subcribers) > 0) {
+                        foreach ($subcribers as $subcriber) {
+                            $dispatcher->addSubscriber($subcriber);
+                        }
+                    }
+                    $dispatcher->dispatch(get_class($event), $event);
+                }
+            }
 
             $cmd->getDoctrineEM()
                 ->getConnection()
@@ -132,8 +149,8 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
-            $this->getDoctrineEM()->close();
-            $notification->addError($e->getTraceAsString());
+            $cmd->getDoctrineEM()->close();
+            $notification->addError($e->getMessage());
         }
 
         $dto->setNotification($notification);

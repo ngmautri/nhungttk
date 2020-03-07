@@ -8,6 +8,7 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Application\Domain\Shared\DTOFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Event\PoHeaderCreatedEvent;
 
 /**
  *
@@ -57,9 +58,21 @@ abstract class GenericPO extends AbstractPO
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
+        
+        $this->validateHeader($specService);
+        
+        if ($this->hasErrors()) {
+            throw new InvalidArgumentException($this->getNotification()->errorMessage());
+        }
 
         $this->recordedEvents = array();
-        return $postingService->getCmdRepository()->storeHeader($this, false);
+        $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
+
+        if (! $rootEntityId == null) {
+            $this->addEvent(new PoHeaderCreatedEvent($rootEntityId));
+        }
+
+        return $rootEntityId;
     }
 
     /**

@@ -173,8 +173,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
             $entity = $this->getDoctrineEM()->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
             if ($entity == null) {
-                throw new InvalidArgumentException("Entity not found.");
-            }
+                throw new InvalidArgumentException("Entity not found.");            }
 
             $entity->setLastChangeOn(new \DateTime());
             if ($entity->getToken() == null) {

@@ -5,6 +5,8 @@ use Application\Domain\Shared\AbstractEntity;
 use Application\Domain\Shared\AggregateRootInterface;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PoDTOAssembler;
+use Application\Domain\Shared\DTOFactory;
+use Procure\Application\DTO\Po\PoDTO;
 
 /**
  *
@@ -52,9 +54,6 @@ abstract class AbstractPO extends AbstractEntity implements AggregateRootInterfa
     protected $billedAmount;
 
     protected $completedRows;
-    
-    
-    
 
     protected $id;
 
@@ -174,10 +173,10 @@ abstract class AbstractPO extends AbstractEntity implements AggregateRootInterfa
      */
     public function makeDTO()
     {
-        return PoDTOAssembler::createDTOFrom($this);
+        return DTOFactory::createDTOFrom($this, new PoDTO());
     }
 
-   /**
+    /**
      *
      * @return mixed
      */

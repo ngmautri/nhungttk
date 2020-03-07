@@ -155,7 +155,7 @@ class PoMapper
         $entity->setUuid($snapshot->uuid);
 
         // DATE MAPPING
-        $entity->setCreatedOn($snapshot->createdOn);
+        //$entity->setCreatedOn($snapshot->createdOn);
         if ($snapshot->createdOn !== null) {
             $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
         }

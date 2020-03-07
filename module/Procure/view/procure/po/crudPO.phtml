@@ -61,8 +61,7 @@ if (count($errors) > 0) {
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-							id="entity_id" name="entity_id"
-							value="<?php if (!$dto == null): echo $dto->getId();endif;?>" />
+							id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
 						<input type="hidden" id="entity_token" name="entity_token"
 							value="<?php if (!$dto == null): echo $dto->getToken();endif;?>" />
 
@@ -153,20 +152,18 @@ if (count($errors) > 0) {
 											<option value="">Select Currency</option>
    	    							<?php
 
-   	    							
-   	    							
             $currency_list = $nmtPlugin->currencyList();
 
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
                     if ($dto !== null) :
                         if ($dto->getDocCurrency() == $curr->getId()) :
-                            echo sprintf('<option selected value="%s">%s</option>', $curr->getId(),$curr->getCurrency());
+                            echo sprintf('<option selected value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
                         else :
-                            echo sprintf('<option value="%s">%s</option>', $curr->getId(),$curr->getCurrency());
+                            echo sprintf('<option value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
                         endif;
                     else :
-                         echo sprintf('<option value="%s">%s</option>', $curr->getId(),$curr->getCurrency());
+                        echo sprintf('<option value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
                     endif;
                 endforeach
                 ;
@@ -204,7 +201,7 @@ if (count($errors) > 0) {
                          */
 
                         if ($dto !== null) :
-                        if ($dto->getIncoterm() == $l->getId()) :
+                            if ($dto->getIncoterm() == $l->getId()) :
                                 echo sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
                             else :
                                 echo sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
@@ -242,7 +239,7 @@ if (count($errors) > 0) {
                 if ($pmtTerm_list !== null) :
                     foreach ($pmtTerm_list as $l) :
                         if ($dto !== null) :
-                        if ($dto->getPaymentTerm() == $l->getId()) :
+                            if ($dto->getPaymentTerm() == $l->getId()) :
                                 echo '<option selected value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
                             else :
                                 echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
@@ -264,7 +261,8 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
 									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
-											placeholder="" id="paymentTermDetail" name="paymentTermDetail"
+											placeholder="" id="paymentTermDetail"
+											name="paymentTermDetail"
 											value="<?php echo (!$dto == null)? $dto->getPaymentTerm() :"";?>">
 									</div>
 								</div>

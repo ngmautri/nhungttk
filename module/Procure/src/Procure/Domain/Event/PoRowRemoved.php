@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class POHeaderUpdatedEvent extends Event{
+class PoRowAdded extends Event{
       
    
 }

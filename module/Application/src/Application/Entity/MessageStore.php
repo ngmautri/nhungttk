@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MessageStore
  *
- * @ORM\Table(name="message_store")
+ * @ORM\Table(name="message_store", indexes={@ORM\Index(name="message_store_IDX1", columns={"entity_id"}), @ORM\Index(name="message_store_IDX2", columns={"entity_token"}), @ORM\Index(name="message_store_IDX3", columns={"queue_name"})})
  * @ORM\Entity
  */
 class MessageStore
@@ -118,6 +118,27 @@ class MessageStore
      * @ORM\Column(name="triggered_by", type="string", length=255, nullable=true)
      */
     private $triggeredBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="entity_id", type="integer", nullable=true)
+     */
+    private $entityId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="entity_token", type="string", length=45, nullable=true)
+     */
+    private $entityToken;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="sent_to_mq", type="datetime", nullable=true)
+     */
+    private $sentToMq;
 
 
 
@@ -465,5 +486,77 @@ class MessageStore
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
+    }
+
+    /**
+     * Set entityId
+     *
+     * @param integer $entityId
+     *
+     * @return MessageStore
+     */
+    public function setEntityId($entityId)
+    {
+        $this->entityId = $entityId;
+
+        return $this;
+    }
+
+    /**
+     * Get entityId
+     *
+     * @return integer
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
+
+    /**
+     * Set entityToken
+     *
+     * @param string $entityToken
+     *
+     * @return MessageStore
+     */
+    public function setEntityToken($entityToken)
+    {
+        $this->entityToken = $entityToken;
+
+        return $this;
+    }
+
+    /**
+     * Get entityToken
+     *
+     * @return string
+     */
+    public function getEntityToken()
+    {
+        return $this->entityToken;
+    }
+
+    /**
+     * Set sentToMq
+     *
+     * @param \DateTime $sentToMq
+     *
+     * @return MessageStore
+     */
+    public function setSentToMq($sentToMq)
+    {
+        $this->sentToMq = $sentToMq;
+
+        return $this;
+    }
+
+    /**
+     * Get sentToMq
+     *
+     * @return \DateTime
+     */
+    public function getSentToMq()
+    {
+        return $this->sentToMq;
     }
 }

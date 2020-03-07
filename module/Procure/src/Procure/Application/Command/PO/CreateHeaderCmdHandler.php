@@ -122,8 +122,7 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $m = sprintf("[OK] PO # %s created", $rootEntityId);
             $notification->addSuccess($m);
 
-            // event
-
+            // event dispatc
             if (count($entityRoot->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();

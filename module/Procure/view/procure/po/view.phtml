@@ -136,7 +136,7 @@ if (count($errors) > 0) {
 					<?php
 
         if ($headerDTO->docStatus == \Application\Model\Constants::DOC_STATUS_DRAFT) :
-            $url = sprintf('/procure/po/review?token=%s&entity_id=%s', $headerDTO->token, $headerDTO->id);
+            $url = sprintf('/procure/po/review1?token=%s&entity_id=%s', $headerDTO->token, $headerDTO->id);
             ?>
 <a class="btn btn-default btn-sm" href="<?php echo $url;?>"
 								title="<?php echo $this->translate('Review PO');?>"> <i

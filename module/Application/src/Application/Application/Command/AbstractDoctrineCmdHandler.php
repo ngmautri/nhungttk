@@ -3,6 +3,7 @@ namespace Application\Application\Command;
 
 use Application\Domain\Shared\Command\CommandHandlerInterface;
 use Application\Domain\Shared\Command\CommandInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -11,11 +12,20 @@ use Application\Domain\Shared\Command\CommandInterface;
  */
 abstract class AbstractDoctrineCmdHandler implements CommandHandlerInterface
 {
-  /**
-   * 
-   * {@inheritDoc}
-   * @see \Application\Domain\Shared\Command\CommandHandlerInterface::run()
-   */
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Command\CommandHandlerInterface::run()
+     */
     abstract public function run(CommandInterface $cmd);
+    
+    /**
+     * @todo: implementation.
+     * @param EventDispatcher $dipatcher
+     */
+    public function dispatch (EventDispatcher $dipatcher =null){
+     
+    }
     
 }

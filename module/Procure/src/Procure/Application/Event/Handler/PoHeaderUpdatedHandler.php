@@ -1,19 +1,20 @@
 <?php
 namespace Procure\Application\Event\Handler;
 
+use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
-use Procure\Domain\Event\PoHeaderCreatedEvent;
+use Procure\Domain\Event\PoHeaderCreated;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Application\Application\Event\AbstractEventHandler;
+use Procure\Domain\Event\PoHeaderUpdated;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoHeaderCreatedEventHandler extends AbstractEventHandler implements EventSubscriberInterface
+class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -23,15 +24,15 @@ class PoHeaderCreatedEventHandler extends AbstractEventHandler implements EventS
     public static function getSubscribedEvents()
     {
         return [
-            PoHeaderCreatedEvent::class => 'onCreated'
+            PoHeaderUpdated::class => 'onUpdated'
         ];
     }
 
     /**
      *
-     * @param PoHeaderCreatedEvent $ev
+     * @param PoHeaderUpdated $ev
      */
-    public function onCreated(PoHeaderCreatedEvent $ev)
+    public function onUpdated(PoHeaderUpdated $ev)
     {
         $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
         $rootEntity = $rep->getHeaderById($ev->getTarget());
@@ -43,6 +44,8 @@ class PoHeaderCreatedEventHandler extends AbstractEventHandler implements EventS
         }
 
         $message = new MessageStore();
+        $message->setEntityId($ev->getTarget());
+        $message->setEntityToken($rootEntity->getToken());
         $message->setQueueName("procure.po");
 
         $message->setClassName($className);

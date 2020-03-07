@@ -1,14 +1,14 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Application\Notification;
+use Application\Domain\Shared\DTOFactory;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\APInvoice\Factory\APFactory;
+use Procure\Domain\Event\PoHeaderCreated;
+use Procure\Domain\Event\PoHeaderUpdated;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
-use Application\Domain\Shared\DTOFactory;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Event\PoHeaderCreatedEvent;
 
 /**
  *
@@ -69,9 +69,42 @@ abstract class GenericPO extends AbstractPO
         $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
 
         if (! $rootEntityId == null) {
-            $this->addEvent(new PoHeaderCreatedEvent($rootEntityId));
+            $this->addEvent(new PoHeaderCreated($rootEntityId));
         }
 
+        return $rootEntityId;
+    }
+    
+    /**
+     *
+     * @param POSpecService $specService
+     * @param POPostingService $postingService
+     * @throws InvalidArgumentException
+     * @return int
+     */
+    public function updateHeader(POSpecService $specService, POPostingService $postingService)
+    {
+        if ($specService == null) {
+            throw new InvalidArgumentException("Specification service not found");
+        }
+        
+        if ($postingService == null) {
+            throw new InvalidArgumentException("Posting service not found");
+        }
+        
+        $this->validateHeader($specService);
+        
+        if ($this->hasErrors()) {
+            throw new InvalidArgumentException($this->getNotification()->errorMessage());
+        }
+        
+        $this->recordedEvents = array();
+        $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
+        
+        if (! $rootEntityId == null) {
+            $this->addEvent(new PoHeaderUpdated($rootEntityId));
+        }
+        
         return $rootEntityId;
     }
 

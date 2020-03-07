@@ -192,7 +192,7 @@ class POService extends AbstractService
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($this->getDoctrineEM());
-            $specService = new POSpecificationService($sharedSpecificationFactory, $fxService);
+            $specService = new POSpecService($sharedSpecificationFactory, $fxService);
             
             $newRootEntity = PODoc::updateFromSnapshot($newSnapshot, $specService);
                        

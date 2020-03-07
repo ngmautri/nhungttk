@@ -11,7 +11,7 @@ use Application\Notification;
 abstract class AbstractDTO
 {
 
-    protected $notification;
+    private $notification;
 
     /**
      *

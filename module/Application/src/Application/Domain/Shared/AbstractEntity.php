@@ -11,9 +11,9 @@ use Application\Notification;
 abstract class AbstractEntity
 {
 
-    protected $notification;
+    private $notification;
 
-    protected $recordedEvents;
+    private $recordedEvents;
 
     /**
      *

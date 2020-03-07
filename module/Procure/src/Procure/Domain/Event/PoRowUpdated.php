@@ -8,8 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GRNIPostedEvent extends Event{
-    
-   
+class PoRowAdded extends Event{
+      
    
 }

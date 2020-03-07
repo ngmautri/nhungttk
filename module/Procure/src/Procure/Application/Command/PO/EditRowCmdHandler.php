@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandInterface;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Service\FXService;
 use Procure\Domain\PurchaseOrder\PODoc;
@@ -29,13 +30,13 @@ class EditRowCmdHandler extends AbstractDoctrineCmdHandler
      * {@inheritdoc}
      * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
      */
-    public function run(AbstractDoctrineCmd $cmd)
+    public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
             throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
-        if (!$cmd->getDto() instanceof PORowDTO) {
+        if (! $cmd->getDto() instanceof PORowDTO) {
             throw new \Exception("PORowDTO object not found!");
         }
 
@@ -109,31 +110,32 @@ class EditRowCmdHandler extends AbstractDoctrineCmdHandler
         if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
-        }
-
-        $this->getDoctrineEM()
-            ->getConnection()
-            ->beginTransaction(); // suspend auto-commit
-
-        try {
-
-            $rep = new DoctrinePOCmdRepository($this->getDoctrineEM());
-            $rootEntityId = $rep->storeHeader($entityRoot);
-            $m = sprintf("[OK] PO # %s created", $rootEntityId);
-            $notification->addSuccess($m);
-
-            $this->getDoctrineEM()
-                ->getConnection()
-                ->commit();
-        } catch (\Exception $e) {
-
-            $this->getDoctrineEM()
-                ->getConnection()
-                ->rollBack();
-            $this->getDoctrineEM()->close();
-            $notification->addError($e->getTraceAsString());
-        }
-
-        $dto->setNotification($notification);
     }
+    
+    $this->getDoctrineEM()
+    ->getConnection()
+    ->beginTransaction(); // suspend auto-commit
+    
+    try {
+        
+        $rep = new DoctrinePOCmdRepository($this->getDoctrineEM());
+        $rootEntityId = $rep->storeHeader($entityRoot);
+        $m = sprintf("[OK] PO # %s created", $rootEntityId);
+        $notification->addSuccess($m);
+        
+        $this->getDoctrineEM()
+        ->getConnection()
+        ->commit();
+    } catch (\Exception $e) {
+        
+        $this->getDoctrineEM()
+        ->getConnection()
+        ->rollBack();
+        $this->getDoctrineEM()->close();
+        $notification->addError($e->getTraceAsString());
+    }
+    
+    $dto->setNotification($notification);}
+    
+
 }

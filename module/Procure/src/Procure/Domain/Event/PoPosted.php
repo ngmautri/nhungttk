@@ -1,14 +1,14 @@
 <?php
 namespace Procure\Domain\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Application\Application\Event\AbstractEvent;
 
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class POCreatedEvent extends Event{
+class PoPosted extends AbstractEvent{
       
    
 }

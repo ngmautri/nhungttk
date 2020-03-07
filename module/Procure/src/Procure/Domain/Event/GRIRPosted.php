@@ -8,6 +8,6 @@ use Application\Application\Event\AbstractEvent;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoHeaderCreatedEvent extends AbstractEvent
+class GRIRPosted extends AbstractEvent
 {
 }

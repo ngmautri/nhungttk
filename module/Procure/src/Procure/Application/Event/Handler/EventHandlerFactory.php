@@ -1,9 +1,9 @@
 <?php
 namespace Procure\Application\Event\Handler;
 
-use Procure\Domain\Event\POCreatedEvent;
-use Procure\Domain\Event\PoHeaderCreatedEvent;
 use Doctrine\ORM\EntityManager;
+use Procure\Domain\Event\PoHeaderCreated;
+use Procure\Domain\Event\PoHeaderUpdated;
 
 /**
  *
@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
  */
 class EventHandlerFactory
 {
+
     public static function createEventHandler($eventName, EntityManager $doctrineEM = null)
     {
         if (! $doctrineEM instanceof EntityManager) {
@@ -20,14 +21,15 @@ class EventHandlerFactory
 
         $handlers = array();
         switch ($eventName) {
-            case POCreatedEvent::class:
-                $handlers[] = new PoHeaderCreatedEventHandler();
+            case PoHeaderCreated::class:
+                $handlers[] = new PoHeaderCreatedHandler($doctrineEM);
                 break;
-            case PoHeaderCreatedEvent::class:
-                $handlers[] = new PoHeaderCreatedEventHandler($doctrineEM);
+
+            case PoHeaderUpdated::class:
+                $handlers[] = new PoHeaderUpdatedHandler($doctrineEM);
                 break;
         }
-        
+
         return $handlers;
     }
 }

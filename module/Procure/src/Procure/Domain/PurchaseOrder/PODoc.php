@@ -74,12 +74,11 @@ class PODoc extends GenericPO
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
-        $notification = $instance->validateHeader($specService);
-        if ($notification->hasErrors()) {
-            throw new PoUpdateException($notification->errorMessage());
+        $instance->validateHeader($specService);
+        if ($instance->hasErrors()) {
+            throw new PoUpdateException($instance->getErrorMessage());
         }
-        $instance->registerEvent(new POHeaderUpdatedEvent());
-
+        
         return $instance;
     }
 

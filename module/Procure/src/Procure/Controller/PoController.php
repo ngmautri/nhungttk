@@ -327,6 +327,100 @@ class PoController extends AbstractActionController
      *
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
      */
+    public function addRowAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/po/add-row";
+        $form_title = "Create PO";
+        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/po/crudPORow";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $data = $prg;
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        /**
+         *
+         * @var PoDTO $dto ;
+         */
+        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+
+        $userId = $u->getId();
+        $companyId = $u->getCompany()->getId();
+
+        $options = [
+            "companyId" => $companyId,
+            "userId" => $userId,
+            "trigger" => __METHOD__
+        ];
+
+        $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, new CreateHeaderCmdHandler());
+
+        try {
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/procure/po/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
     public function amendAction()
     {
         $this->layout("Procure/layout-fullscreen");
@@ -433,7 +527,7 @@ class PoController extends AbstractActionController
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
-                'entity_id' => null,
+                'entity_id' => $entity_id,
                 'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -626,9 +720,17 @@ class PoController extends AbstractActionController
         $request = $this->getRequest();
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();
+
+        $form_action = "/procure/po/review-1";
+        $form_title = "Review PO";
+        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/po/crudPO";
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -686,7 +788,7 @@ class PoController extends AbstractActionController
                     'gross_amount' => $po['gross_amount']
                 ));
 
-                $viewModel->setTemplate("procure/po/review");
+                $viewModel->setTemplate($form_action);
                 return $viewModel;
             }
 
@@ -716,7 +818,7 @@ class PoController extends AbstractActionController
                     'gross_amount' => $po['gross_amount']
                 ));
 
-                $viewModel->setTemplate("procure/po/review");
+                $viewModel->setTemplate($form_action);
                 return $viewModel;
             }
 
@@ -788,7 +890,183 @@ class PoController extends AbstractActionController
             'gross_amount' => $po['gross_amount']
         ));
 
-        $viewModel->setTemplate("procure/po/review");
+        $viewModel->setTemplate($form_action);
+        return $viewModel;
+    }
+
+    /*
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function review1Action()
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+
+        // Is Posting .................
+        // ============================
+        if ($request->isPost()) {
+
+            $errors = array();
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+
+            $id = (int) $data['entity_id'];
+            $token = $data['token'];
+
+            $po = $res->getPo($id, $token);
+
+            if ($po == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            /**@var \Application\Entity\NmtProcurePo $entity ;*/
+            $entity = null;
+            if ($po[0] instanceof NmtProcurePo) {
+
+                $entity = $po[0];
+            }
+
+            if ($entity == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            $oldEntity = clone ($entity);
+            $errors = $this->poService->validateHeader($entity, $data, TRUE);
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+
+                    'total_row' => $po['total_row'],
+                    'active_row' => $po['active_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
+                ));
+
+                $viewModel->setTemplate("procure/po/review-v1");
+                return $viewModel;
+            }
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $changeOn = new \DateTime();
+            $oldEntity = clone ($entity);
+            try {
+                $this->poService->doPosting($entity, $u, true);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+
+                    'total_row' => $po['total_row'],
+                    'active_row' => $po['active_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
+                ));
+
+                $viewModel->setTemplate("procure/po/review-v1");
+                return $viewModel;
+            }
+
+            // LOGGING
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            $m = sprintf('[OK] PO #%s posted.', $entity->getSysNumber());
+
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
+            $this->flashMessenger()->addMessage($m);
+            $redirectUrl = "/procure/po/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        $po = $res->getPo($id, $token);
+
+        if ($po == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity = null;
+        if ($po[0] instanceof NmtProcurePo) {
+            $entity = $po[0];
+        }
+
+        if ($entity == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+
+            'total_row' => $po['total_row'],
+            'active_row' => $po['active_row'],
+            'max_row_number' => $po['total_row'],
+            'net_amount' => $po['net_amount'],
+            'tax_amount' => $po['tax_amount'],
+            'gross_amount' => $po['gross_amount']
+        ));
+
+        $viewModel->setTemplate("procure/po/review-v1");
         return $viewModel;
     }
 
@@ -1439,23 +1717,22 @@ class PoController extends AbstractActionController
     {
         $this->purchaseOrderService = $purchaseOrderService;
     }
-   /**
-    * 
-    * @return \Procure\Application\Reporting\PO\PoReporter
-    */
+
+    /**
+     *
+     * @return \Procure\Application\Reporting\PO\PoReporter
+     */
     public function getPoReporter()
     {
         return $this->poReporter;
     }
-    
-      /**
-       * 
-       * @param PoReporter $poReporter
-       */
+
+    /**
+     *
+     * @param PoReporter $poReporter
+     */
     public function setPoReporter(PoReporter $poReporter)
     {
         $this->poReporter = $poReporter;
     }
-
-
 }

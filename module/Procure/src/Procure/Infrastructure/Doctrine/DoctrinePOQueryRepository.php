@@ -4,13 +4,11 @@ namespace Procure\Infrastructure\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Money\Currencies\ISOCurrencies;
-use Money\Parser\DecimalMoneyParser;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\POQueryRepositoryInterface;
 use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Infrastructure\Mapper\PoMapper;
+use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
 use Procure\Infrastructure\Doctrine\SQL\PoSQL;
+use Procure\Infrastructure\Mapper\PoMapper;
 
 /**
  *
@@ -23,7 +21,31 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getHeaderById()
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getPOEventLog()
+     */
+    public function getPOEventLog($id, $token = null)
+    {
+        $sql = "
+SELECT * FROM message_store
+where entity_id=%s and entity_id=%s
+";
+        $sql = sprintf($sql, $id, $token);
+
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\MessageStore', 'message_store');
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getHeaderById()
      */
     public function getHeaderById($id, $token = null)
     {
@@ -48,12 +70,12 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     public function findAll()
     {}
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getPODetailsById()
-    */
-    public function getPODetailsById($id,$token = null)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getPODetailsById()
+     */
+    public function getPODetailsById($id, $token = null)
     {
         $po = $this->getDoctrineEM()
             ->getRepository('Application\Entity\NmtProcurePo')
@@ -141,16 +163,16 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         $poDetailsSnapshot->billedAmount = $billedAmount;
         $poDetailsSnapshot->completedRows = $completedRows;
 
-        //$currencies = new ISOCurrencies();
+        // $currencies = new ISOCurrencies();
         // $numberFormatter = new \NumberFormatter('en', \NumberFormatter::CURRENCY_SYMBOL);
         // $moneyFormatter = new DecimalMoneyFormatter($currencies);
-       // $moneyParser = new DecimalMoneyParser($currencies);
+        // $moneyParser = new DecimalMoneyParser($currencies);
         // var_dump($poDetailsSnapshot->currencyIso3);
 
-        //$netMoney = $moneyParser->parse("$netAmount", $poDetailsSnapshot->currencyIso3);
-        //$billedMoney = $moneyParser->parse("$billedAmount", $poDetailsSnapshot->currencyIso3);
+        // $netMoney = $moneyParser->parse("$netAmount", $poDetailsSnapshot->currencyIso3);
+        // $billedMoney = $moneyParser->parse("$billedAmount", $poDetailsSnapshot->currencyIso3);
 
-        //$poDetailsSnapshot->openAPAmount = $netMoney->subtract($billedMoney);
+        // $poDetailsSnapshot->openAPAmount = $netMoney->subtract($billedMoney);
 
         $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
         $rootEntity->setDocRows($docRowsArray);

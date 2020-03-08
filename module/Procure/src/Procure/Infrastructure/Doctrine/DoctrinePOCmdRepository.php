@@ -3,7 +3,7 @@ namespace Procure\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\PurchaseOrder\GenericPO;
-use Procure\Domain\PurchaseOrder\POCmdRepositoryInterface;
+use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Ramsey;
@@ -18,11 +18,11 @@ use Procure\Domain\PurchaseOrder\PODocStatus;
 class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCmdRepositoryInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface::storeRow()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::storeRow()
+    */
     public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false)
     {
         if ($rootEntity == null) {
@@ -82,9 +82,9 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
     }
 
     /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface::post()
+     * 
+     * {@inheritDoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::post()
      */
     public function post(GenericPO $rootEntity, $generateSysNumber = True)
     {
@@ -139,19 +139,19 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         $this->doctrineEM->flush();
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface::createRow()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::createRow()
+    */
     public function createRow($poId, PORow $localEntity, $isPosting = false)
     {}
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface::storeHeader()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::storeHeader()
+    */
     public function storeHeader(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
         if ($rootEntity == null) {
@@ -203,9 +203,9 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
     }
 
     /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface::store()
+     * 
+     * {@inheritDoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::store()
      */
     public function store(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
     {}

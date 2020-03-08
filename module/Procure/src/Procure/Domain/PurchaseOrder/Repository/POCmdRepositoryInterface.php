@@ -1,5 +1,8 @@
 <?php
-namespace Procure\Domain\PurchaseOrder;
+namespace Procure\Domain\PurchaseOrder\Repository;
+
+use Procure\Domain\PurchaseOrder\GenericPO;
+use Procure\Domain\PurchaseOrder\PORow;
 
 /**
  *

@@ -34,7 +34,7 @@
 					<li><a href="#general"><?php echo $form_title;?>:</a></li>
 		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
  	 	<li><a
-						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$dto == null)? $dto->getToken():"";?>&object_id=<?php echo (!$dto == null)? $dto->getId():"";?>&class_name=<?php echo (!$dto == null)? get_class($dto):"";?>"><span
+						href="<?php echo $this->baseUrl ?>/application/message-store/list1?entity_token=<?php echo (!$dto == null)? $dto->getToken():"";?>&entity_id=<?php echo (!$dto == null)? $dto->getId():"";?>"><span
 							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 		<?php endif;?>			
 	

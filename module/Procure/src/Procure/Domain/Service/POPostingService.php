@@ -2,7 +2,7 @@
 namespace Procure\Domain\Service;
 
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseOrder\POCmdRepositoryInterface;
+use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 
 /**
  * Transaction Domain Service
@@ -22,13 +22,13 @@ class POPostingService
         }
         $this->cmdRepository = $cmdRepository;
     }
+
     /**
-     * @return \Procure\Domain\PurchaseOrder\POCmdRepositoryInterface
+     *
+     * @return \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface
      */
     public function getCmdRepository()
     {
         return $this->cmdRepository;
     }
-
-  
 }

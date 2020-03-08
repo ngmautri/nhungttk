@@ -1,5 +1,5 @@
 <?php
-Namespace Procure\Domain\PurchaseOrder;
+Namespace Procure\Domain\PurchaseOrder\Repository;
 
 /**
  *
@@ -18,5 +18,7 @@ Interface POQueryRepositoryInterface
     public function getByUUID($uuid);
     
     public function getPODetailsById($id,$token = null);
+    
+    public function getPOEventLog($id,$token = null);
     
 }

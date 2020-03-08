@@ -12,19 +12,31 @@ use Application\Domain\Shared\Event\EventHandlerInterface;
 abstract class AbstractEventHandler implements EventHandlerInterface
 {
 
-    protected $doctrineEM;
+    private $doctrineEM;
+
+    private $params;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
 
     /**
      *
      * @param EntityManager $doctrineEM
      */
-    public function __construct(EntityManager $doctrineEM)
+    public function __construct(EntityManager $doctrineEM, $params = null)
     {
         if (! $doctrineEM instanceof EntityManager) {
             return;
         }
 
         $this->doctrineEM = $doctrineEM;
+        $this->params = $params;
     }
 
     /**

@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="fin_vendor_invoice", indexes={@ORM\Index(name="fin_vendor_invoice_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="fin_vendor_invoice_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="fin_vendor_invoice_FK6_idx", columns={"po_id"}), @ORM\Index(name="fin_vendor_invoice_FK7_idx", columns={"company_id"}), @ORM\Index(name="fin_vendor_invoice_FK8_idx", columns={"payment_method"}), @ORM\Index(name="fin_vendor_invoice_FK9_idx", columns={"inventory_gr_id"}), @ORM\Index(name="fin_vendor_invoice_FK10_idx", columns={"procure_gr_id"}), @ORM\Index(name="fin_vendor_invoice_FK11_idx", columns={"local_currency_id"}), @ORM\Index(name="fin_vendor_invoice_FK12_idx", columns={"doc_currency_id"}), @ORM\Index(name="fin_vendor_invoice_FK13_idx", columns={"posting_period_id"}), @ORM\Index(name="fin_vendor_invoice_FK14_idx", columns={"incoterm_id"}), @ORM\Index(name="fin_vendor_invoice_FK15_idx", columns={"pmt_term_id"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
  */
 class FinVendorInvoice
 {
@@ -343,6 +342,20 @@ class FinVendorInvoice
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
      */
     private $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_rate", type="decimal", precision=2, scale=2, nullable=true)
+     */
+    private $discountRate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $discountAmount;
 
     /**
      * @var \Application\Entity\NmtBpVendor
@@ -1608,6 +1621,54 @@ class FinVendorInvoice
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set discountRate
+     *
+     * @param string $discountRate
+     *
+     * @return FinVendorInvoice
+     */
+    public function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+
+        return $this;
+    }
+
+    /**
+     * Get discountRate
+     *
+     * @return string
+     */
+    public function getDiscountRate()
+    {
+        return $this->discountRate;
+    }
+
+    /**
+     * Set discountAmount
+     *
+     * @param string $discountAmount
+     *
+     * @return FinVendorInvoice
+     */
+    public function setDiscountAmount($discountAmount)
+    {
+        $this->discountAmount = $discountAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get discountAmount
+     *
+     * @return string
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
     }
 
     /**

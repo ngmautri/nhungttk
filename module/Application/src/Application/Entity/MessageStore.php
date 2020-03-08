@@ -140,6 +140,27 @@ class MessageStore
      */
     private $sentToMq;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="change_log", type="text", nullable=true)
+     */
+    private $changeLog;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="version", type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
 
 
     /**
@@ -558,5 +579,77 @@ class MessageStore
     public function getSentToMq()
     {
         return $this->sentToMq;
+    }
+
+    /**
+     * Set changeLog
+     *
+     * @param string $changeLog
+     *
+     * @return MessageStore
+     */
+    public function setChangeLog($changeLog)
+    {
+        $this->changeLog = $changeLog;
+
+        return $this;
+    }
+
+    /**
+     * Get changeLog
+     *
+     * @return string
+     */
+    public function getChangeLog()
+    {
+        return $this->changeLog;
+    }
+
+    /**
+     * Set version
+     *
+     * @param integer $version
+     *
+     * @return MessageStore
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return integer
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return MessageStore
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
     }
 }

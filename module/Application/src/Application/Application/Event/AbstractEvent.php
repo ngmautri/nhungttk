@@ -13,17 +13,37 @@ abstract class AbstractEvent extends Event implements EventInterface
 {
 
     private $target;
-   
+
+    private $params;
+
+    private $trigger;
+
     /**
-     * @return mixed
+     * @return string
      */
+    public function getTrigger()
+    {
+        return $this->trigger;
+    }
+
+    public function __construct($target, $trigger = null, $params = null)
+    {
+        $this->target = $target;
+        $this->trigger = $trigger;
+        $this->params = $params;
+    }
+
     public function getTarget()
     {
         return $this->target;
     }
 
-    public function __construct($target)
+    /**
+     *
+     * @return string
+     */
+    public function getParams()
     {
-        $this->target = $target;
+        return $this->params;
     }
 }

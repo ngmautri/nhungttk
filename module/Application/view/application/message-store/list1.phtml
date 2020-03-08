@@ -1,0 +1,23 @@
+<?php
+
+// echo $total_records;
+if (count($list) > 0) :
+    foreach ($list as $item) :
+
+        /**
+         *
+         * @var \Application\Domain\MessageStore\MessageSnapshot $item ;
+         */
+
+        echo (sprintf("Version %s: %s, %s =>", $item->revisionNo,  $item->eventName,  $item->createdOn));
+        echo ( $item->changeLog);
+        echo ("<br>");
+    endforeach
+    ;
+endif;
+
+?>
+
+	
+
+

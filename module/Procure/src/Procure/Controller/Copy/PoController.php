@@ -334,7 +334,7 @@ class PoController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/add-row";
-        $form_title = "Add PO Row";
+        $form_title = "Create PO";
         $action = \Application\Model\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/po/crudPORow";
 
@@ -346,21 +346,12 @@ class PoController extends AbstractActionController
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
-            $target_id = (int) $this->params()->fromQuery('target_id');
-            
-            $token = $this->params()->fromQuery('token');
-            $rootDto = $this->purchaseOrderService->getPOHeaderById($target_id);
-            
-            if ($rootDto == null) {
-                return $this->redirect()->toRoute('not_found');
-            }
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
-                '$target_id' => $target_id,
+                'entity_id' => null,
                 'dto' => null,
-                'rootDto' => $rootDto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -404,19 +395,18 @@ class PoController extends AbstractActionController
             $notification->addError($e->getMessage());
         }
 
-        if ($notification->hasErrors()) {                       
+        if ($notification->hasErrors()) {
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'dto' => null,
-                'rootDto' => $rootDto,
+                'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            
+
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
@@ -528,7 +518,7 @@ class PoController extends AbstractActionController
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $token = $this->params()->fromQuery('token');
-            $dto = $this->purchaseOrderService->getPOHeaderById($entity_id);
+            $dto = $this->purchaseOrderService->getPODetailsById($entity_id);
 
             if ($dto == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -918,7 +908,7 @@ class PoController extends AbstractActionController
         $form_action = "/procure/po/review";
         $form_title = "Review PO";
         $action = \Application\Model\Constants::FORM_ACTION_REVIEW;
-        $viewTemplete = "procure/po/review-v1";
+        $viewTemplete = "procure/po/review1";
         
         $prg = $this->prg($form_action, true);
         
@@ -931,10 +921,9 @@ class PoController extends AbstractActionController
             
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $token = $this->params()->fromQuery('token');
+            $dto = $this->purchaseOrderService->getPOHeaderById($entity_id);
             
-            $po = $this->getPurchaseOrderService()->getPODetailsById($entity_id,$token);
-            
-            if ($po == null) {
+            if ($dto == null) {
                 return $this->redirect()->toRoute('not_found');
             }
             
@@ -942,8 +931,7 @@ class PoController extends AbstractActionController
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
-                'po' => $po,
-                'headerDTO' => $po->makeDTOForGrid(),                
+                'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -1003,8 +991,179 @@ class PoController extends AbstractActionController
         $redirectUrl = "/procure/po/list";
         
         return $this->redirect()->toUrl($redirectUrl);
+        
         //=======================
-       
+        
+        
+        $this->layout("Procure/layout-fullscreen");
+
+        $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+
+        // Is Posting .................
+        // ============================
+        if ($request->isPost()) {
+
+            $errors = array();
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+
+            $id = (int) $data['entity_id'];
+            $token = $data['token'];
+
+            $po = $res->getPo($id, $token);
+
+            if ($po == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            /**@var \Application\Entity\NmtProcurePo $entity ;*/
+            $entity = null;
+            if ($po[0] instanceof NmtProcurePo) {
+
+                $entity = $po[0];
+            }
+
+            if ($entity == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            $oldEntity = clone ($entity);
+            $errors = $this->poService->validateHeader($entity, $data, TRUE);
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+
+                    'total_row' => $po['total_row'],
+                    'active_row' => $po['active_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
+                ));
+
+                $viewModel->setTemplate("procure/po/review-v1");
+                return $viewModel;
+            }
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $changeOn = new \DateTime();
+            $oldEntity = clone ($entity);
+            try {
+                $this->poService->doPosting($entity, $u, true);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+
+                    'total_row' => $po['total_row'],
+                    'active_row' => $po['active_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
+                ));
+
+                $viewModel->setTemplate("procure/po/review-v1");
+                return $viewModel;
+            }
+
+            // LOGGING
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            $m = sprintf('[OK] PO #%s posted.', $entity->getSysNumber());
+
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
+            $this->flashMessenger()->addMessage($m);
+            $redirectUrl = "/procure/po/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        $po = $res->getPo($id, $token);
+
+        if ($po == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity = null;
+        if ($po[0] instanceof NmtProcurePo) {
+            $entity = $po[0];
+        }
+
+        if ($entity == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+
+            'total_row' => $po['total_row'],
+            'active_row' => $po['active_row'],
+            'max_row_number' => $po['total_row'],
+            'net_amount' => $po['net_amount'],
+            'tax_amount' => $po['tax_amount'],
+            'gross_amount' => $po['gross_amount']
+        ));
+
+        $viewModel->setTemplate("procure/po/review-v1");
+        return $viewModel;
     }
 
     /**

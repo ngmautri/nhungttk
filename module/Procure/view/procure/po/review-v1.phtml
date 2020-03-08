@@ -1,22 +1,91 @@
 <?php
+/**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
+/**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+$entity_id = null;
+$entity_token = null;
+$add_row_url = null;
 
-/**@var \Application\Entity\NmtProcurePo $entity ;*/
-$form_action = '';
-$form_title = '';
+$picture_url = null;
+$attachment_url = null;
+$status_url = null;
+$log_url = null;
 
-switch ($action) {
+$pay_url = null;
+$gr_from_po_url = null;
+$ap_from_po_url = null;
 
-    case \Application\Model\Constants::FORM_ACTION_REVIEW:
-        $form_action = '/procure/po/review';
-        $form_title = $this->translate("Review PO");
+$pdf_url = null;
+$excel_url = null;
+$openoffice_url = null;
 
-        break;
-    case \Application\Model\Constants::FORM_ACTION_SHOW:
-        $form_action = '/procure/po/show';
-        $form_title = $this->translate("Show PO");
-        break;
+if (! $headerDTO == null) {
+    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/copy-from-po?source_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $ap_from_po_url = sprintf($this->baseUrl . "finance/v-invoice/copy-from-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 }
 
+$currency_list = $nmtPlugin->currencyList();
+$currency_option = "";
+
+if ($currency_list !== null) :
+    foreach ($currency_list as $curr) :
+        if ($headerDTO !== null) :
+            if ($headerDTO->getDocCurrency() == $curr->getId()) :
+                $currency_option = $currency_option . sprintf('<option selected value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
+            else :
+                $currency_option = $currency_option . '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+            endif;
+        else :
+            $currency_option = $currency_option . '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+        endif;
+    endforeach
+    ;
+endif;
+
+$incoterm_option = "";
+$incoterm_list = $nmtPlugin->incotermList();
+
+if ($incoterm_list !== null) :
+    foreach ($incoterm_list as $l) :
+        if ($headerDTO !== null) :
+            if ($headerDTO->getIncoterm() == $l->getId()) :
+                $incoterm_option = $incoterm_option . '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
+            else :
+                $incoterm_option = $incoterm_option . '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
+            endif;
+        else :
+            $incoterm_option = $incoterm_option . '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
+        endif;
+    endforeach
+    ;
+endif;
+
+$error_msg = "";
+if (count($errors) > 0) {
+    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
+    $error_msg = $error_msg . '<ul>';
+    foreach ($errors as $error) :
+        $error_msg = $error_msg . '<li>' . $error . '</li>';
+    endforeach
+    ;
+    $error_msg = $error_msg . '</ul>';
+    $error_msg = $error_msg . '</div>';
+}
+
+// ============================
 ?>
 
 <div id="wrapper" class="toggled">
@@ -28,7 +97,7 @@ switch ($action) {
 			class="btn btn-default btn-sm" href="/procure/po/list"> <small><i
 				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate("PO List");?></a>
 
-	<?php
+<?php
 if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
     $current_step = "STEP3";
     include (ROOT . '/module/Procure/view/procure/create-wizard.php');
@@ -36,30 +105,37 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 
 ?>
   					
-  					<hr>
+  		<hr>
 		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
 
 		<div class="alert alert-info" role="alert"
 			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-				<li><?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
+				<li><b><?php if (!$headerDTO == null): echo $headerDTO->vendorName; endif;?></b></li>
 				<li>-----</li>
 
-				<li><?php if (!$entity == null): if (!$entity->getIncoterm2() == null):echo "Incoterm: ".$entity->getIncoterm2()->getIncoterm(). " " . $entity->getIncotermPlace();endif;endif;?></li>
+				<li><?php if (!$headerDTO == null): echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;?> </li>
 
-				<li>Total Rows: <?php echo ($total_row);?></li>
-				
-					<li>-----</li>
-				
-				<li>Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?></li>
-				<li>Tax: <?php echo number_format($tax_amount,2);?></li>
-				<li>Gross: <?php echo number_format($gross_amount,2) . " " .$entity->getCurrency()->getCurrency();?></li>
+				<li>Total rows: <?php echo ($headerDTO->totalRows);?></li>
+				<li>Status:<?php if (!$headerDTO == null): echo $headerDTO->getTransactionStatus(); endif;?> </li>
+
+				<li>-----</li>
+
+				<li>Net: <?php echo number_format($headerDTO->netAmount,2) . " " . $headerDTO->currencyIso3 ;?></li>
+				<li>Tax: <?php echo number_format($headerDTO->taxAmount,2);?></li>
+				<li>Gross: <?php echo number_format($headerDTO->grossAmount,2) . " " . $headerDTO->currencyIso3;?></li>
+				<li>Billed: <?php echo number_format($headerDTO->getBilledAmount(),2) . " " . $headerDTO->currencyIso3;?></li>
+				<li>-----</li>
+
+				<li>Created by: <?php echo $headerDTO->getCreatedByName();?></li>
+
 			</ul>
 		</div>
 		
 	<?php if($action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
 		<div class="alert alert-warning" role="alert"
-			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt;color: graytext;"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
+			<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
 			<?php echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');?>
 		</div>
 	<?php endif;?>
@@ -81,25 +157,19 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 				<ul>
 					<li><a href="#general"><small><i class="fa fa-calculator"
 								aria-hidden="true"></i></small>&nbsp;<?php echo $form_title;?></a></li>
-					<li><a
-						href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+					<li><a href="<?php echo $picture_url; ?>"><span
 							class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 					<li><a href="#logistic"><small><i class="fa fa-calculator"
 								aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
 					<li><a href="#accounting"><small><i class="fa fa-calculator"
 								aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
-					<li><a
-						href="/procure/po/status?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
-							class="glyphicon glyphicon-picture"></span></span>&nbsp;Status</a></li>
-
-
-
-					<li><a
-						href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-							<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
+					<li><a href="<?php echo $status_url;?>"> <span
+							class="glyphicon glyphicon-picture"></span> </span>&nbsp;Status
 					</a></li>
-					<li><a
-						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+					<li><a href="<?php echo $attachment_url ;?>"> <small><span
+								class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
+					</a></li>
+					<li><a href="<?php echo $log_url ;?>"><span
 							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 				</ul>
 
@@ -107,18 +177,10 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
 					<!-- Tab1 -->
 	
+	
 	<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
-
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
+// ======================
+echo $error_msg;
 ?>
 	
  			<form id="Posting_Form" class="form-horizontal"
@@ -127,13 +189,13 @@ if (count($errors) > 0) {
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							name="entity_id"
-							value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
+							value="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>" />
 						<input type="hidden" name="token"
-							value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
+							value="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>" />
 
 						<div style="position: relative; float: right;">
 							
-							<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+							<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
 							<a class="btn btn-primary btn-sm" style="color: white"
 								onclick="confirmPost();" href="javascript:;"><i
 								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
@@ -143,8 +205,8 @@ if (count($errors) > 0) {
 				<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
 					<?php
 
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT) :
-            $url = sprintf('/procure/po/review?token=%s&entity_id=%s', $entity->getToken(), $entity->getId());
+        if ($headerDTO->docStatus == \Application\Model\Constants::DOC_STATUS_DRAFT) :
+            $url = sprintf('/procure/po/review1?token=%s&entity_id=%s', $headerDTO->token, $headerDTO->id);
             ?>
 <a class="btn btn-default btn-sm" href="<?php echo $url;?>"
 								title="<?php echo $this->translate('Review PO');?>"> <i
@@ -152,24 +214,20 @@ if (count($errors) > 0) {
 </a>
 					<?php endif;?>
 					
-					<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED):?>
+					<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED):?>
 					
 							<a title="<?php echo $this->translate("Pay P/O");?>"
-								class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/payment/outgoing/pay-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay
-							</a> <a
+								class="btn btn-default btn-sm" href="<?php echo $pay_url;?>"><i
+								class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay</a> <a
 								title="<?php echo $this->translate("Create Good Receipt from this P/O");?>"
 								class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/gr/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&source_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Goods
-								Receipt
+								href="<?php echo $gr_from_po_url;?>"> <i class="fa fa-plus"
+								aria-hidden="true"></i>&nbsp;&nbsp;Goods Receipt
 							</a> <a
 								title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"
 								class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P
-								Invoice
+								href="<?php echo $ap_from_po_url;?>"> <i class="fa fa-plus"
+								aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice
 							</a>      	
 					<?php endif;?>
 					
@@ -180,7 +238,7 @@ if (count($errors) > 0) {
 						<fieldset>
 							<legend style="font-size: 9.5pt; color: gray;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getSysNumber():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$headerDTO == null)? $headerDTO->getSysNumber():"";?> <?php echo (!$headerDTO == null)? $headerDTO->getInvoiceNo():"";?>)</a>
 							</legend>
 							<div id="invoice_header" class="collapse">
 
@@ -190,17 +248,17 @@ if (count($errors) > 0) {
 										<select name="currentState" class="form-control input-sm">
 											<option value="">Please Select</option>
 											<option
-												<?php if($entity->getCurrentState()=="draftPo"): echo "selected"; endif ?>
+												<?php if($headerDTO->getCurrentState()=="draftPo"): echo "selected"; endif ?>
 												value="draftPo">Draft</option>
 											<option
-												<?php if($entity->getCurrentState()=="finalPo"): echo "selected"; endif ?>
+												<?php if($headerDTO->getCurrentState()=="finalPo"): echo "selected"; endif ?>
 												value="finalPo">Final</option>
 										</select>
 									</div>
 
 									<div class="col-sm-3">
 										<input
-											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											<?php if(!$headerDTO== null): echo ($headerDTO->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 											type="checkbox" name="isActive" value="1">&nbsp;Is
 										Active&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -214,11 +272,11 @@ if (count($errors) > 0) {
 										<input class="form-control input-sm input-sm" type="text"
 											id="vendor_name_1" placeholder="Enter term to search vendor"
 											name="vendor_name"
-											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+											value="<?php if (!$headerDTO == null):  echo $headerDTO->getVendorName() ;endif;?>">
 
 										<input type="hidden" id="vendor_id" placeholder=""
 											name="vendor_id"
-											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+											value="<?php if (!$headerDTO == null): echo $headerDTO->getVendor();endif;?>">
 									</div>
 									<div class="col-sm-3">
 
@@ -233,13 +291,13 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="contractNo" name="contractNo"
-											value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getContractNo():"";?>">
 									</div>
 									<label class="control-label col-sm-2">Contract /PO Date:</label>
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="contractDate" name="contractDate"
-											value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+											value="<?php if(!$headerDTO == null): echo ($headerDTO->getContractDate() !== null); endif;?>">
 									</div>
 								</div>
 
@@ -249,35 +307,15 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<select name="currency_id" class="form-control input-sm">
 											<option value="">Select Currency</option>
-   	    							<?php
-            if ($currency_list !== null) :
-                foreach ($currency_list as $curr) :
-                    if ($entity !== null) :
-                        if ($entity->getCurrency() !== null) :
-                            if ($entity->getCurrency()->getCurrency() == $curr->getCurrency()) :
-                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                            else :
-                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
-
-            ?>
-   					</select>
+   	    									<?php echo $currency_option ; ?>
+   										</select>
 									</div>
 
 									<label class="control-label col-sm-2">Exchange Rate:</label>
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="exchangeRate" name="exchangeRate"
-											value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getExchangeRate():"";?>">
 									</div>
 								</div>
 
@@ -287,35 +325,15 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<select name="incoterm_id" class="form-control input-sm">
 											<option value="">Select Incoterm</option>
-   	    							<?php
-            if ($incoterm_list !== null) :
-                foreach ($incoterm_list as $l) :
-                    if ($entity !== null) :
-                        if ($entity->getIncoterm2() !== null) :
-                            if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
-                                echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-                            else :
-                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
-
-            ?>
-   					</select>
+   	    									<?php echo $incoterm_option; ?>
+   										</select>
 									</div>
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
 									<div class="col-sm-3">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="incotermPlace" name="incotermPlace"
-											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getIncotermPlace():"";?>">
 									</div>
 
 								</div>
@@ -325,7 +343,7 @@ if (count($errors) > 0) {
 									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="paymentTerm" name="paymentTerm"
-											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getPaymentTerm():"";?>">
 									</div>
 								</div>
 
@@ -334,7 +352,7 @@ if (count($errors) > 0) {
 									<div class="col-sm-8">
 										<input class="form-control input-sm" type="text"
 											placeholder="" name="remarks"
-											value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getRemarks():"";?>">
 									</div>
 								</div>
 							</div>
@@ -369,51 +387,42 @@ if (count($errors) > 0) {
 										</a> <a <?php echo $this->translate("Full Screen");?>
 											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
 											class="btn btn-default btn-sm" href="javascript:;"
-											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
+											onclick="showJqueryDialog('Contract /PO: <?php echo $headerDTO->getSysNumber().' - '. $headerDTO->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $headerDTO->getToken() ?>&entity_id=<?php echo $headerDTO->getId() ?>','j_loaded_data',true);"><i
 											class="fa fa-window-maximize" aria-hidden="true"></i></a>
 
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$headerDTO == null)? $headerDTO->getSysNumber():"";?> // </strong></span>
 
 										<span class=""
 											style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
-						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
-                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
-                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
-                        &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
+						Net amount: <?php echo number_format($headerDTO->getNetAmount(),2) . " " . $headerDTO->getCurrencyIso3() ;?>
+                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($headerDTO->getTaxAmount(),2);?>
+                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($headerDTO->getGrossAmount(),2) . "</b> " .$headerDTO->getCurrencyIso3();?>
+                        &nbsp;|&nbsp;Total rows:<?php echo ($headerDTO->getTotalActiveRows());?>
 					</span>
 
 
 										<ul style="font-size: 9.5pt;" class="dropdown-menu"
 											aria-labelledby="dropdownMenu1">
-											<li><a target="_blank" class=""
-												href="<?php echo $this->baseUrl ?>/procure/po-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+											<li><a target="_blank" class="" href="<?php echo $pdf_url;?>">
 													<i class="fa fa-file-pdf-o" aria-hidden="true"></i>
 													&nbsp;PDF
 											</a></li>
-											<li><a class=""
-												href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=xlsx&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-													<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+											<li><a class="" href="<?php echo $excel_url;?>"> <i
+													class="fa fa-file-excel-o" aria-hidden="true"></i>
 													&nbsp;Excel (*.xlxs)
 											</a></li>
-											<li><a class=""
-												href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=ods&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-													<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+											<li><a class="" href="<?php echo $openoffice_url;?>"> <i
+													class="fa fa-file-excel-o" aria-hidden="true"></i>
 													&nbsp;Open Office (*.ods)
 											</a></li>
 										</ul>
 									</div>
 
 								</div>
-
-
-
 								<div id="pr_row_gird" style="font-size: 8pt;"></div>
 						
 						</fieldset>
 					</form>
-
-
-
 				</div>
 
 				<div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
@@ -423,20 +432,6 @@ if (count($errors) > 0) {
 				<!-- end tab -->
 			</div>
 		</div>
-		
-		
-	    <div style="width: 200pt; position: relative; float: right;">
-		<hr>
-		<div class="alert alert-default" role="alert"
-			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-			<ul style="font-size: 10pt; margin: 0; padding-left: 15pt">
-				<li>Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?></li>
-				<li>Tax: <?php echo number_format($tax_amount,2);?></li>
-				<li>Gross: <?php echo number_format($gross_amount,2) . " " .$entity->getCurrency()->getCurrency();?></li>
-			</ul>
-		</div>
-		</div>
-		
 	</div>
 	<!-- /#page-content-wrapper -->
 
@@ -474,7 +469,7 @@ if (count($errors) > 0) {
 
 <script>
 
-
+var data = <?php echo json_encode($po->getRowsOutPut()) ; ?>
     
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
@@ -487,7 +482,7 @@ function confirmPost() {
 }
 
 function doPosting() {
-	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
+	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&entity_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>"
 	//window.location = url;
 	$('#confirm_modal_sm').modal('hide');
 	submitForm('Posting_Form');
@@ -603,10 +598,10 @@ $( "#vendor_name_1" ).autocomplete({
 			//draggable:true,
 			sortable: true,
 			freezeCols:1,
-           	<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
-           		hoverMode: 'cell',
+           	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+           	hoverMode: 'cell',
        		<?php else:?>
-       			hoverMode: 'row',
+       		hoverMode: 'row',
            	<?php endif;?>
 		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
@@ -620,13 +615,13 @@ $( "#vendor_name_1" ).autocomplete({
 
 				  	  toolbar: {
               
-                    	<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+                    	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
                         items: [
                         	
                         { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
                             { "click": function (evt, ui) {
                                 var $grid = $(this).closest('.pq-grid');
-            redirectUrl="/procure/po-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+            redirectUrl="<?php echo $add_row_url; ?>";
               window.location.href= redirectUrl;
                              }
                             }
@@ -744,7 +739,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     obj.colModel = [
    
-    	<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+    	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
         
        { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
@@ -753,57 +748,73 @@ $( "#vendor_name_1" ).autocomplete({
                
                }
        },
+
+       
        <?php endif;?>
-     
-       { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-       { title: "Ref", dataType: "integer", dataIndx: "row_identifer", width:85,editable: false},
+
+
+       <?php  //$rowDTO->convertedStandardQuantity;?>
        
-       { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
-  		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-       { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
-       { title: "Vendor Item Name", dataType: "string", dataIndx: "row_name", width:180,editable: false },
-       { title: "Code", dataType: "string", dataIndx: "row_code", width:100,editable: false },
+       { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+   	{ title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
+	
+       { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
        
-      	<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
-        { title: "Doc Qty", dataType: "float", dataIndx: "doc_qty", width: 70,align: 'right',editable: true},
-        { title: "Unit Price", dataType: "float", dataIndx: "doc_unit_price", width:90, align: 'right',editable: true},
+       { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
+  		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+       { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
+       { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
+       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+       
+      	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+        { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
         <?php else:?>
-        { title: "Doc Qty", dataType: "string", dataIndx: "doc_qty", width: 70,align: 'right',editable: false},
-        { title: "Unit Price", dataType: "float", dataIndx: "doc_unit_price", width:90, align: 'right',editable: false},
+        { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
        	<?php endif;?>
 
        
-       { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
+       { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
        
-       { title: "Net", dataType: "float", dataIndx: "row_net", width:90, align: 'right',editable: false},
-       { title: "Tax", dataType: "integer", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
-       { title: "Gross", dataType: "float", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
+       { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
+       { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
+       { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
 
-       { title: "Receiving", dataType: "string", dataIndx: "draft_gr",align: 'right', width:80,editable: false },
-       { title: "Received", dataType: "string", dataIndx: "confirmed_gr", align: 'right',width:70,editable: false },
-       { title: "Balance", dataType: "integer", dataIndx: "open_gr", align: 'right',width:70,editable: false },
-       { title: "Billed qty", dataType: "integer", dataIndx: "billed_qty", align: 'right',width:70,editable: false },
-       { title: "Billed Amt", dataType: "decimal", dataIndx: "billed_amount",align: 'right', width:70,editable: false },
+       { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
+       { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
+       { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
+       { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
+       { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:70,editable: false },
 
-       { title: "Standard Qty", dataType: "integer", dataIndx: "standard_qty", width: 70,align: 'right',editable: false},
-       { title: "Standard Unit", dataType: "integer", dataIndx: "standard_unit", width: 70,align: 'right',editable: false},
+       { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
+       { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
         
  
-		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
+		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
               
       ];
 
+    /*   
     obj.dataModel = {
     		  dataType: "JSON",
               location: "remote",
               method: "GET",
-              recIndx: "row_id",
-              url: "/procure/po-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+              recIndx: "row_id	",
+              url: "/procure/po-row/gird?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
     };
+    */
+
+    obj.dataModel = {
+            data: data,
+            location: "local",
+            sorting: "local",
+            sortDir: "down"
+        };
     
     var $grid = $("#pr_row_gird").pqGrid(obj);
 

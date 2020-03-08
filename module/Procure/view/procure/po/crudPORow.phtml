@@ -1,30 +1,18 @@
 <?php
-/**
- * @var \Application\Entity\NmtProcurePo $target ;
- * @var \Application\Entity\NmtProcurePoRow $entity ;
- * 
- */
 
-
-/**@var \Procure\Application\DTO\Po\PoDTO $dto ;*/
+/**@var \Procure\Application\DTO\Po\PoDTO $rootDto ;*/
+/**@var \Procure\Application\DTO\Po\PoRowDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-
-$form_action = '';
-$form_title = '';
-
-switch ($action) {
-
-    case \Application\Model\Constants::FORM_ACTION_ADD:
-        $form_action = '/procure/po/add-row';
-        $form_title = $this->translate("Add PO Row:");
-
-        break;
-    case \Application\Model\Constants::FORM_ACTION_EDIT:
-        $form_action = '/procure/po/edit-row';
-        $form_title = $this->translate("Edit PO Row:");
-        break;
+$target_id = null;
+$target_token = null;
+if (! $rootDto == null) {
+    $target_id = $rootDto->getId();
+    $target_token = $rootDto->getToken();
 }
+
+$review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $target_token, $target_id);
+
 ?>
 
 <div id="wrapper" class="toggled">
@@ -32,10 +20,10 @@ switch ($action) {
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
     	
-    					<?php
-        $current_step = "STEP2";
-        include (ROOT . '/module/Procure/view/procure/create-wizard.php');
-        ?>
+    	<?php
+    $current_step = "STEP2";
+    include (ROOT . '/module/Procure/view/procure/create-wizard.php');
+    ?>
       					
       					<hr>
 		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
@@ -43,13 +31,13 @@ switch ($action) {
 		<div class="alert alert-info" role="alert"
 			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.5pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-				<li><?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?></li>
+				<li><?php if (!$rootDto == null): if (!$rootDto->getVendor() == null):echo $rootDto->getVendorName();endif;endif;?></li>
 				<li>-----</li>
 
-				<li>Total Rows: <?php echo ($total_row);?></li>
-				<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
-				<li>Tax: <?php echo number_format($tax_amount,2);?></li>
-				<li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
+				<li>Total Rows: <?php echo ($rootDto->getTotalLocalValue());?></li>
+				<li>Net: <?php echo number_format($rootDto->getTotalDocValue(),2) . " " . $rootDto->getCurrencyIso3() ;?></li>
+				<li>Tax: <?php echo number_format($rootDto->getTotalDocTax(),2);?></li>
+				<li>Gross: <?php echo number_format($rootDto->getTotalDocValue(),2) . " " .$rootDto->getCurrencyIso3();?></li>
 			</ul>
 		</div>
 
@@ -72,9 +60,13 @@ switch ($action) {
 				<ul>
 					<li><a href="#general"><?php echo $form_title;?></a></li>
 					
-		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-            	
- 	 	<li ><a href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		<?php
+
+if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
+    $url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $rootDto->getToken(), $rootDto->getId());
+    ?>
+ 	 	<li><a href=""<?php echo $url;?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 		<?php endif;?>			
 				</ul>
 
@@ -102,14 +94,14 @@ if (count($errors) > 0) {
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							id="target_id" name="target_id"
-							value="<?php if (!$target == null): echo $target->getId();endif;?>" />
+							value="<?php if (!$rootDto== null): echo $rootDto->getId();endif;?>" />
 						<input type="hidden" id="target_token" name="target_token"
-							value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
+							value="<?php if (!$rootDto == null): echo $rootDto->getToken();endif;?>" />
 
 						<input type="hidden" id="entity_id" name="entity_id"
-							value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+							value="<?php if (!$dto == null): echo $dto->getId();endif;?>" />
 						<input type="hidden" id="entity_token" name="entity_token"
-							value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
+							value="<?php if (!$dto == null): echo $dto->getToken();endif;?>" />
 
 							
             			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
@@ -121,13 +113,12 @@ if (count($errors) > 0) {
 							<label class="control-label col-sm-2">Row Number: </label>
 							<div class="col-sm-1">
 								<input tabindex="0" class="form-control input-sm" type="text"
-									id="rowNumber" name="rowNumber"
-									value="<?php if($entity->getRowNumber()==null): echo ($max_row_number+1); else: echo $entity->getRowNumber(); endif;?>">
+									id="rowNumber" name="rowNumber" value="">
 							</div>
 
 							<div class="col-sm-2">
 								<input
-									<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+									<?php if(!$dto== null): echo ($dto->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 									type="checkbox" name="isActive" value="1">&nbsp;Is
 								Active&nbsp;&nbsp;&nbsp;&nbsp;
 							</div>
@@ -139,7 +130,7 @@ if (count($errors) > 0) {
 								<input tabindex="1" class="form-control input-sm" type="text"
 									id="pr_item_name" placeholder="Select PR item"
 									name="pr_item_name"
-									value="<?php if (!$entity== null): if($entity->getPrRow()!==null): echo $entity->getPrRow()->getRowIdentifer(); endif;endif;?>">
+									value="<?php if (!$dto== null): if($dto->getPrRow()!==null): echo $dto->getPrRow(); endif;endif;?>">
 								<input type="hidden" id="pr_row_id" placeholder=""
 									name="pr_row_id" value="">
 
@@ -181,11 +172,11 @@ if (count($errors) > 0) {
 								<input tabindex="2" class="form-control" type="text"
 									id="item_name" placeholder="Enter keyword to search item..."
 									name="item_name"
-									value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
+									value="<?php if (!$dto== null): echo $dto->getItem();endif;?>">
 
 
 								<input type="hidden" id="item_id" placeholder="" name="item_id"
-									value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
+									value="<?php if (!$dto== null): echo $entity->getItem; endif;?>">
 
 								<div id="item_url" style="display: none;"></div>
 
@@ -220,15 +211,15 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="3" class="form-control input-sm" type="text"
 									id="vendorItemName" name="vendorItemName"
-									value="<?php echo (!$entity == null)? $entity->getVendorItemName():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getVendorItemName():"";?>">
 							</div>
-							
+
 							<label class="control-label col-sm-2" for="inputTag">Vendor Item
 								Code:</label>
 							<div class="col-sm-3">
 								<input tabindex="3" class="form-control input-sm" type="text"
 									id="vendor_item_code" name="vendorItemCode"
-									value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
+									value="<?php echo (!$dto == null)? $entity->$dto():"";?>">
 							</div>
 						</div>
 						<hr style="margin: 5pt 1pt 5pt 1pt;">
@@ -237,7 +228,7 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="4" class="form-control input-sm" type="text"
 									id="quantity" name="quantity"
-									value="<?php echo (!$entity == null)? $entity->getDocQuantity():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getDocQuantity():"";?>">
 							</div>
 							<div class="col-sm-3">
 								<div style="color: graytext; padding-bottom: 5px;"
@@ -250,14 +241,14 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="5" class="form-control input-sm" type="text"
 									name="unit" id="rowUnit"
-									value="<?php echo (!$entity == null)? $entity->getDocUnit():"each";?>">
+									value="<?php echo (!$dto == null)? $dto->getDocUnit():"each";?>">
 							</div>
 							<label class="control-label col-sm-2" for="inputTag">Converstion
 								Factor:</label>
 							<div class="col-sm-1">
 								<input tabindex="6" class="form-control input-sm" type="text"
 									name="conversionFactor"
-									value="<?php echo (!$entity == null)? $entity->getConversionFactor():"1";?>">
+									value="<?php echo (!$dto == null)? $dto->getConversionFactor():"1";?>">
 
 							</div>
 
@@ -277,10 +268,10 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="7" class="form-control input-sm" type="text"
 									id="unit_price" name="unitPrice"
-									value="<?php echo (!$entity == null)? $entity->getDocUnitPrice():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getDocUnitPrice():"";?>">
 							</div>
 							<div class="col-sm-1" style="margin-left: 0px">
-								<strong><?php if (!$target == null): echo $target->getCurrency()->getCurrency(); endif;?></strong>
+								<strong><?php if (!$rootDto == null): echo $rootDto->getCurrencyIso3(); endif;?></strong>
 							</div>
 
 							<label class="control-label col-sm-1" for="inputTag">Exw Price
@@ -288,7 +279,7 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="8" class="form-control input-sm" type="text"
 									id="exw_unit_price" name="exwUnitPrice"
-									value="<?php echo (!$entity == null)? $entity->getExwUnitPrice():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getExwUnitPrice():"";?>">
 
 							</div>
 						</div>
@@ -297,11 +288,11 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input readonly class="form-control input-sm" type="text"
 									id="net_amount" name="netAmount"
-									value="<?php echo (!$entity == null)? $entity->getNetAmount():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getNetAmount():"";?>">
 
 							</div>
 							<div class="col-sm-3">
-								<strong><?php if (!$target == null): echo $target->getCurrency()->getCurrency(); endif;?></strong>
+								<strong><?php if (!$rootDto == null): echo $rootDto->getCurrencyIso3(); endif;?></strong>
 							</div>
 						</div>
 						<div class="form-group margin-bottom required">
@@ -309,13 +300,13 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="9" class="form-control input-sm" type="text"
 									id="tax_rate" name="taxRate"
-									value="<?php echo (!$entity == null)? $entity->getTaxRate():"0";?>">
+									value="<?php echo (!$dto == null)? $dto->getTaxRate():"0";?>">
 							</div>
 							<label class="control-label col-sm-2" for="inputTag">Tax Amount:</label>
 							<div class="col-sm-3">
 								<input readonly class="form-control input-sm" type="text"
 									id="tax_amount" name="taxAmount"
-									value="<?php echo (!$entity == null)? $entity->getTaxAmount():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getTaxAmount():"";?>">
 							</div>
 						</div>
 
@@ -325,11 +316,11 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input readonly class="form-control input-sm" type="text"
 									id="gross_amount" name="grossAmount"
-									value="<?php echo (!$entity == null)? $entity->getGrossAmount():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getGrossAmount():"";?>">
 
 							</div>
 							<div class="col-sm-1">
-								<strong><?php if (!$target == null): echo $target->getCurrency()->getCurrency(); endif;?></strong>
+								<strong><?php if (!$rootDto == null): echo $rootDto->getCurrencyIso3(); endif;?></strong>
 							</div>
 
 							<label class="control-label col-sm-1" for="inputTag">Total Exw
@@ -337,7 +328,7 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input readonly tabindex="10" class="form-control input-sm"
 									type="text" id="total_exw_price" name="totalExwPrice"
-									value="<?php echo (!$entity == null)? $entity->getTotalExwPrice():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getTotalExwPrice():"";?>">
 
 							</div>
 
@@ -350,19 +341,19 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="11" class="form-control input-sm" type="text"
 									placeholder="" name="remarks"
-									value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+									value="<?php echo (!$dto == null)? $dto->getRemarks():"";?>">
 							</div>
 						</div>
-						
-										<div class="form-group margin-bottom">
-			<label class="control-label col-sm-2">Description:</label>
-				<div class="col-sm-4">
-					<textarea class="form-control input-sm" type="text" rows="6"
-						placeholder="" name="descriptionText" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getDescriptionText():"";?></textarea>
-				</div>
-			</div>
-			<hr style="margin: 5pt 1pt 5pt 1pt">
-					
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2">Description:</label>
+							<div class="col-sm-4">
+								<textarea class="form-control input-sm" type="text" rows="6"
+									placeholder="" name="descriptionText" style="font-size: 9pt;"><?php echo (!$dto == null)? $dto->getDescriptionText():"";?></textarea>
+							</div>
+						</div>
+						<hr style="margin: 5pt 1pt 5pt 1pt">
+
 
 						<div class="form-group margin-bottom" style="margin-top: 10pt">
 							<label class="control-label col-sm-2" for="inputTag"></label>
@@ -371,22 +362,13 @@ if (count($errors) > 0) {
 									onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
 										class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate("Save");?></a>
 								<a tabindex="12" class="btn btn-default btn-sm"
-									href="<?php echo $this->baseUrl ?>/procure/po/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+									href="<?php echo $review_url ;?>"><small><i
 										class="glyphicon glyphicon-remove"></i></small>&nbsp;<?php echo $this->translate("Cancel");?></a>
 
 							</div>
 
 
-							<div class="col-sm-3">
-    			
-    	 	  			<?php if($total_row>0):?>
-    					<a tabindex="13" style="color: white;"
-									class="btn btn-primary btn-sm"
-									href="<?php echo $this->baseUrl ?>/procure/po/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><?php echo $this->translate("Review & Post");?>&nbsp;<i
-									class="fa fa-chevron-right" aria-hidden="true"></i></a>
-    					<?php endif;?>				
-    		
-      	    </div>
+							<div class="col-sm-3"></div>
 						</div>
 					</form>
 
@@ -548,49 +530,21 @@ if (count($errors) > 0) {
     	}
 
         <?php
-        if ($entity != null) :
-            if ($entity->getItem() != null) :
-                ?>
-
-        		  $("#item_id" ).val(<?php echo $entity->getItem()->getId();?>);      	  
-        	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo $entity->getItem()->getToken();?>');
+        if ($dto !== null) :
+            ?>
+        		  $("#item_id" ).val(<?php echo $dto->getItem;?>);      	  
+        	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php echo $dto->getItem();?>&token=');
         		  $('#item_detail').show();
-        		    
 
-        		<?php
-        	endif;
-
-        		
-        		endif;
-
-
+        		  $("#pr_row_id" ).val(<?php echo $dto->getPrRow();?>);    	 	  
+          	      $('#pr_row_url').text('/procure/pr-row/show1?tab_idx=0&entity_id=<?php echo $dto->getPrRow();?>');
+          	      $('#pr_row_detail').show();
+              		  
+        <?php
+       	 endif
         ?>
 
-       <?php
-    if ($entity != null) :
-        if ($entity->getPrRow() != null) :
-            ?>
-
-    	        		  $("#pr_row_id" ).val(<?php echo $entity->getPrRow()->getId();?>);      	  
-    	        	      $('#pr_row_url').text('/procure/pr-row/show1?tab_idx=0&entity_id=<?php echo +$entity->getPrRow()->getId();?>&token=<?php echo $entity->getPrRow()->getToken();?>');
-    	        		  $('#pr_row_detail').show();
-    	        		    
-
-    	        		<?php
-    	        	endif;
-
-    	        		
-    	        		endif;
-
-
-    ?>
-
-    /**
-     * 
-     * @param id
-     * @param target
-     */
-    function selectItem(id, token, target, name, target_name, context = null){
+    function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);
     	
@@ -602,7 +556,7 @@ if (count($errors) > 0) {
     	
     	
     	// alert($(target_id).val());
-    	$('#modal1 .close').click();
+    	$('#modal1.close').click();
     	$('#global-notice').show();
     	$('#global-notice').html('"' + name + '" selected');
     	$('#global-notice').fadeOut(5000);
@@ -627,8 +581,6 @@ if (count($errors) > 0) {
                 $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
        	   
        	});
-
-    	
     }
         
     

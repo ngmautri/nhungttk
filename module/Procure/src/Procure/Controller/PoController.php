@@ -1160,7 +1160,7 @@ class PoController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
-        $po = $this->getPurchaseOrderService()->getPODetailsById($id);
+        $po = $this->getPurchaseOrderService()->getPODetailsById($id,$token);
 
         if ($po == null) {
             return $this->redirect()->toRoute('not_found');

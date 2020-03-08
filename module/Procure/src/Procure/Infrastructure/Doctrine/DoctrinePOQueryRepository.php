@@ -48,12 +48,12 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     public function findAll()
     {}
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getPODetailsById()
-     */
-    public function getPODetailsById($id)
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Domain\PurchaseOrder\POQueryRepositoryInterface::getPODetailsById()
+    */
+    public function getPODetailsById($id,$token = null)
     {
         $po = $this->getDoctrineEM()
             ->getRepository('Application\Entity\NmtProcurePo')

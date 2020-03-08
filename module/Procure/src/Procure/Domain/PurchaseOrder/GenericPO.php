@@ -4,8 +4,8 @@ namespace Procure\Domain\PurchaseOrder;
 use Application\Domain\Shared\DTOFactory;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\APInvoice\Factory\APFactory;
-use Procure\Domain\Event\PoHeaderCreated;
-use Procure\Domain\Event\PoHeaderUpdated;
+use Procure\Domain\Event\Po\PoHeaderCreated;
+use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
@@ -49,7 +49,7 @@ abstract class GenericPO extends AbstractPO
      * @throws InvalidArgumentException
      * @return int
      */
-    public function storeHeader(POSpecService $specService, POPostingService $postingService)
+    public function storeHeader($trigger, $params, POSpecService $specService, POPostingService $postingService)
     {
         if ($specService == null) {
             throw new InvalidArgumentException("Specification service not found");
@@ -58,9 +58,9 @@ abstract class GenericPO extends AbstractPO
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-        
+
         $this->validateHeader($specService);
-        
+
         if ($this->hasErrors()) {
             throw new InvalidArgumentException($this->getNotification()->errorMessage());
         }
@@ -69,12 +69,12 @@ abstract class GenericPO extends AbstractPO
         $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
 
         if (! $rootEntityId == null) {
-            $this->addEvent(new PoHeaderCreated($rootEntityId));
+            $this->addEvent(new PoHeaderCreated($rootEntityId,$trigger, $params));
         }
 
         return $rootEntityId;
     }
-    
+
     /**
      *
      * @param POSpecService $specService
@@ -82,29 +82,29 @@ abstract class GenericPO extends AbstractPO
      * @throws InvalidArgumentException
      * @return int
      */
-    public function updateHeader(POSpecService $specService, POPostingService $postingService)
+    public function updateHeader($trigger, $params, POSpecService $specService, POPostingService $postingService)
     {
         if ($specService == null) {
             throw new InvalidArgumentException("Specification service not found");
         }
-        
+
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-        
+
         $this->validateHeader($specService);
-        
+
         if ($this->hasErrors()) {
             throw new InvalidArgumentException($this->getNotification()->errorMessage());
         }
-        
+
         $this->recordedEvents = array();
         $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
-        
+
         if (! $rootEntityId == null) {
-            $this->addEvent(new PoHeaderUpdated($rootEntityId));
+            $this->addEvent(new PoHeaderUpdated($rootEntityId, $trigger, $params));
         }
-        
+
         return $rootEntityId;
     }
 
@@ -194,9 +194,7 @@ abstract class GenericPO extends AbstractPO
      *
      * @param PORowSnapshot $snapshot
      * @param POSpecService $specService
-     * @param Notification $notification
-     * @throws InvalidArgumentException
-     * @return NULL|\Procure\Domain\PurchaseOrder\GenericPO
+     * @return void|\Procure\Domain\PurchaseOrder\GenericPO
      */
     public function addRowFromSnapshot(PORowSnapshot $snapshot, POSpecService $specService)
     {
@@ -244,9 +242,7 @@ abstract class GenericPO extends AbstractPO
     /**
      *
      * @param POSpecService $specService
-     * @param Notification $notification
      * @param boolean $isPosting
-     * @return \Application\Notification
      */
     public function validateHeader(POSpecService $specService, $isPosting = false)
     {
@@ -300,9 +296,7 @@ abstract class GenericPO extends AbstractPO
      *
      * @param PORow $row
      * @param POSpecService $specService
-     * @param Notification $notification
      * @param boolean $isPosting
-     * @return \Application\Notification
      */
     public function validateRow(PORow $row, POSpecService $specService, $isPosting = false)
     {

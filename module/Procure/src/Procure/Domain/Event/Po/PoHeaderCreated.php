@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\Event;
+namespace Procure\Domain\Event\Po;
 
 use Application\Application\Event\AbstractEvent;
 
@@ -8,6 +8,6 @@ use Application\Application\Event\AbstractEvent;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowAdded extends AbstractEvent
+class PoHeaderCreated extends AbstractEvent
 {
 }

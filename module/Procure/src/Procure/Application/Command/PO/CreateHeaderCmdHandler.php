@@ -74,6 +74,13 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addError("user ID not given");
         }
 
+        $trigger = null;
+        if (isset($options['trigger'])) {
+            $trigger = $options['trigger'];
+        } else {
+            $notification->addError("Trigger not identifable!");
+        }
+
         if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
@@ -92,6 +99,10 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
         $dto->createdBy = $userId;
         $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
         $dto->currency = $dto->getDocCurrency();
+        $dto->revisionNo =0;
+        
+
+        $params = [];
 
         /**
          *
@@ -115,7 +126,7 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
-            $rootEntityId = $entityRoot->storeHeader($specService, $postingService);
+            $rootEntityId = $entityRoot->storeHeader($trigger, $params, $specService, $postingService);
 
             // $rootEntityId = $rep->storeHeader($entityRoot);
 

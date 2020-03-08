@@ -226,9 +226,9 @@ class POService extends AbstractService
      * @param int $id
      * @param int $outputStrategy
      */
-    public function getPODetailsById($id, $outputStrategy = null)
+    public function getPODetailsById($id, $token =null, $outputStrategy = null)
     {
-        $po = $this->getQueryRepository()->getPODetailsById($id);
+        $po = $this->getQueryRepository()->getPODetailsById($id,$token);
 
         if ($po == null) {
             return null;

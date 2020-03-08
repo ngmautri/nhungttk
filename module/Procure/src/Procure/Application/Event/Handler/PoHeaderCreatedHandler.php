@@ -1,13 +1,12 @@
 <?php
 namespace Procure\Application\Event\Handler;
 
-use Application\Entity\MessageStore;
-use Procure\Domain\Event\PoHeaderCreatedEvent;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Application\Entity\MessageStore;
 use Application\Application\Event\AbstractEventHandler;
-use Procure\Domain\Event\PoHeaderCreated;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Procure\Domain\Event\Po\PoHeaderCreated;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  *
@@ -45,11 +44,11 @@ class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscr
 
         $message = new MessageStore();
         $message->setEntityId($ev->getTarget());
-        $message->setEntityToken($rootEntity->getToken());
+         $message->setEntityToken($rootEntity->getToken());
         $message->setQueueName("procure.po");
 
         $message->setClassName($className);
-        $message->setTriggeredBy(get_class($ev));
+        $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());
         $message->setMsgBody(json_encode((array) $rootEntity->makeSnapshot()));
         $message->setCreatedOn(new \DateTime());

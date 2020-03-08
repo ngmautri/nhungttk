@@ -2,12 +2,11 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\Event\POHeaderUpdatedEvent;
+use Procure\Domain\Event\Po\POPostedEvent;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Ramsey;
-use Procure\Domain\Event\POPostedEvent;
 
 /**
  *
@@ -15,7 +14,6 @@ use Procure\Domain\Event\POPostedEvent;
  *        
  */
 class PODoc extends GenericPO
-
 {
 
     private function __construct()
@@ -78,7 +76,7 @@ class PODoc extends GenericPO
         if ($instance->hasErrors()) {
             throw new PoUpdateException($instance->getErrorMessage());
         }
-        
+
         return $instance;
     }
 

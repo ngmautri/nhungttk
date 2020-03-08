@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\Event;
+namespace Procure\Domain\Event\Po;
 
 use Symfony\Component\EventDispatcher\Event;
 

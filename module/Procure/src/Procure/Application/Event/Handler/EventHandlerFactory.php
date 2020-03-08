@@ -2,8 +2,8 @@
 namespace Procure\Application\Event\Handler;
 
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\Event\PoHeaderCreated;
-use Procure\Domain\Event\PoHeaderUpdated;
+use Procure\Domain\Event\Po\PoHeaderCreated;
+use Procure\Domain\Event\Po\PoHeaderUpdated;
 
 /**
  *

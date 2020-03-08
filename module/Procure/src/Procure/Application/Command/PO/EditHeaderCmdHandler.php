@@ -107,14 +107,17 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $newSnapshot = clone ($snapshot);
 
             $newSnapshot = POSnapshotAssembler::updateSnapshotFromDTO($dto, $newSnapshot);
-            $changeArray = $snapshot->compare($newSnapshot);
-            // var_dump($changeArray);
+            $changeLog = $snapshot->compare($newSnapshot);
 
-            if ($changeArray == null) {
+            if ($changeLog == null) {
                 $notification->addError("Nothing change on PO#" . $rootEntityId);
                 $dto->setNotification($notification);
                 return;
             }
+
+            $params = [
+                "changeLog" => $changeLog
+            ];
 
             // do change
             $newSnapshot->lastChangeBy = $userId;
@@ -130,16 +133,16 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
-            $rootEntityId = $newRootEntity->updateHeader($specService, $postingService);
-            
+            $rootEntityId = $newRootEntity->updateHeader($trigger, $params, $specService, $postingService);
+
             // event dispatc
             if (count($newRootEntity->getRecordedEvents() > 0)) {
-                
+
                 $dispatcher = new EventDispatcher();
-                
+
                 foreach ($newRootEntity->getRecordedEvents() as $event) {
-                    
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event),$cmd->getDoctrineEM());
+
+                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
                     
                     if (count($subcribers) > 0) {
                         foreach ($subcribers as $subcriber) {

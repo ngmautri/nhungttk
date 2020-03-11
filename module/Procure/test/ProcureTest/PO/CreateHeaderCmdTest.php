@@ -18,6 +18,8 @@ use Procure\Application\Command\PO\CreateHeaderCmdHandler;
 use Application\Domain\Shared\DTOFactory;
 use Procure\Application\DTO\Po\PoDTO;
 use Application\Notification;
+use Procure\Application\Command\PO\AddRowCmd;
+use Procure\Application\Command\PO\AddRowCmdHandler;
 
 class CreateeHeaderCmdTest extends PHPUnit_Framework_TestCase
 {
@@ -60,7 +62,16 @@ class CreateeHeaderCmdTest extends PHPUnit_Framework_TestCase
                 "trigger" => __METHOD__
             ];
             
-            $cmd = new CreateHeaderCmd($doctrineEM, $dto, $options, new CreateHeaderCmdHandler());
+            
+            $options = [
+                "rootEntityId" => 302,
+                "rootEntityToken" => 'b69a9fbe-e7e5-48da-a7a7-cf7e27040d1b',
+                "userId" => $userId,
+                "trigger" => __METHOD__
+            ];
+            
+            
+            $cmd = new AddRowCmd($doctrineEM, $dto, $options, new AddRowCmdHandler());
             
             try {
                 $cmd->execute();

@@ -9,6 +9,7 @@ use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
+use Procure\Domain\Event\Po\PoRowAdded;
 
 /**
  *
@@ -69,7 +70,7 @@ abstract class GenericPO extends AbstractPO
         $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
 
         if (! $rootEntityId == null) {
-            $this->addEvent(new PoHeaderCreated($rootEntityId,$trigger, $params));
+            $this->addEvent(new PoHeaderCreated($rootEntityId, $trigger, $params));
         }
 
         return $rootEntityId;
@@ -106,6 +107,57 @@ abstract class GenericPO extends AbstractPO
         }
 
         return $rootEntityId;
+    }
+
+    /**
+     *
+     * @param POSpecService $specService
+     * @param POPostingService $postingService
+     * @throws InvalidArgumentException
+     * @return int
+     */
+    public function storeRow($trigger, $params, PORowSnapshot $snapshot, POSpecService $specService, POPostingService $postingService)
+    {
+        if ($snapshot == null) {
+            throw new InvalidArgumentException("PORowSnapshot not found");
+        }
+
+        if ($specService == null) {
+            throw new InvalidArgumentException("Specification service not found");
+        }
+
+        if ($postingService == null) {
+            throw new InvalidArgumentException("Posting service not found");
+        }
+
+        $snapshot->quantity = $snapshot->docQuantity;
+        $snapshot->revisionNo = 0;
+        $snapshot->token = $this->uuid;
+        $snapshot->docType = $this->docType;
+        $snapshot->isDraft = 1;
+        $snapshot->unitPrice = $snapshot->getDocUnitPrice();
+
+        $row = PORow::makeFromSnapshot($snapshot);
+
+        $this->validateRow($row, $specService, false);
+
+        if ($this->hasErrors()) {
+            throw new InvalidArgumentException($this->getNotification()->errorMessage());
+        }
+
+        $this->recordedEvents = array();
+        $localEntityId = $postingService->getCmdRepository()->storeRow($this, $row);
+
+        if (! $localEntityId == null) {
+
+            $params = [
+                "rowId" => $localEntityId
+            ];
+
+            $this->addEvent(new PoRowAdded($this->getId(), $trigger, $params));
+        }
+
+        return $localEntityId;
     }
 
     /**

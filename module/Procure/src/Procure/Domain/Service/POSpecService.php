@@ -49,18 +49,16 @@ class POSpecService
         return $this->sharedSpecificationFactory;
     }
 
-   /**
-    * 
-    * @param GenericPO $rootEntity
-    * @param boolean $isPosting
-    */
+    /**
+     *
+     * @param GenericPO $rootEntity
+     * @param boolean $isPosting
+     */
     public function doGeneralHeaderValiation(GenericPO $rootEntity, $isPosting = false)
     {
-        
         if (! $rootEntity instanceof GenericPO) {
             throw new \Procure\Domain\Exception\InvalidArgumentException('Root entity not given!');
         }
-        
 
         /**
          *
@@ -91,7 +89,7 @@ class POSpecService
                     "vendorId" => $rootEntity->getVendor()
                 );
                 if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));                    
+                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
             }
 
             // ==== CK Contract DATE =======
@@ -106,7 +104,7 @@ class POSpecService
 
             // ===== DOC CURRENCY =======
             if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
-                $rootEntity->addError(sprintf("Doc Currency is empty or invalid! %s",$rootEntity->getDocCurrency()));
+                $rootEntity->addError(sprintf("Doc Currency is empty or invalid! %s", $rootEntity->getDocCurrency()));
             }
 
             // ===== LOCAL CURRENCY =======
@@ -170,12 +168,12 @@ class POSpecService
         }
     }
 
-   /**
-    * 
-    * @param GenericPO $rootEntity
-    * @param PORow $localEntity
-    * @throws \Procure\Domain\Exception\InvalidArgumentException
-    */
+    /**
+     *
+     * @param GenericPO $rootEntity
+     * @param PORow $localEntity
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     */
     public function doGeneralRowValiation(GenericPO $rootEntity, PORow $localEntity)
     {
         if (! $rootEntity instanceof GenericPO) {
@@ -202,7 +200,7 @@ class POSpecService
         );
 
         if (! $spec->isSatisfiedBy($subject)) {
-            $localEntity->addError("Item not exits in the company #" . $localEntity->getItem());
+            $localEntity->addError(sprintf("Item #%s not exits in the company #%s", $localEntity->getItem(), $rootEntity->getCompany()));
         }
 
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();

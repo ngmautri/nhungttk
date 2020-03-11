@@ -49,9 +49,11 @@ where entity_id=%s and entity_id=%s
      */
     public function getHeaderById($id, $token = null)
     {
-        $po = $this->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtProcurePo')
-            ->find($id);
+        $criteria = array(
+            'id' => $id,
+        );
+
+        $po = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
         $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
 
         if ($poDetailsSnapshot == null) {
@@ -77,9 +79,14 @@ where entity_id=%s and entity_id=%s
      */
     public function getPODetailsById($id, $token = null)
     {
-        $po = $this->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtProcurePo')
-            ->find($id);
+        $criteria = array(
+            'id' => $id,
+            'token' => $token,
+        );
+        
+         
+        $po = $this->getDoctrineEM()->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
+        
         $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
 
         if ($poDetailsSnapshot == null) {

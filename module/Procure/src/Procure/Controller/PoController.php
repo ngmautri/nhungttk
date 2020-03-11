@@ -17,6 +17,10 @@ use Procure\Application\Command\PO\CreateHeaderCmdHandler;
 use Application\Notification;
 use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
+use Procure\Application\DTO\Po\PORowDTO;
+use Procure\Application\Command\PO\AddRowCmd;
+use Procure\Application\Command\PO\AddRowCmdHandler;
+use Application\Entity\MlaUsers;
 
 /**
  *
@@ -347,10 +351,9 @@ class PoController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
             $target_id = (int) $this->params()->fromQuery('target_id');
-            
-            $token = $this->params()->fromQuery('token');
-            $rootDto = $this->purchaseOrderService->getPOHeaderById($target_id);
-            
+            $target_token = $this->params()->fromQuery('token');
+            $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
+
             if ($rootDto == null) {
                 return $this->redirect()->toRoute('not_found');
             }
@@ -358,7 +361,6 @@ class PoController extends AbstractActionController
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
-                '$target_id' => $target_id,
                 'dto' => null,
                 'rootDto' => $rootDto,
                 'nmtPlugin' => $nmtPlugin,
@@ -380,20 +382,27 @@ class PoController extends AbstractActionController
 
         /**
          *
-         * @var PoDTO $dto ;
+         * @var PoRowDTO $dto ;
          */
-        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+        $dto = DTOFactory::createDTOFromArray($data, new PORowDTO());
+        //var_dump($dto);
+        
 
         $userId = $u->getId();
-        $companyId = $u->getCompany()->getId();
-
+        
+        $target_id = $data['target_id'];
+        $target_token = $data['target_token'];
+        
+        $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
+        
         $options = [
-            "companyId" => $companyId,
+            "rootEntityId" => $target_id,
+            "rootEntityToken" => $target_token,            
             "userId" => $userId,
             "trigger" => __METHOD__
         ];
 
-        $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, new CreateHeaderCmdHandler());
+        $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, new AddRowCmdHandler());
 
         try {
             $cmd->execute();
@@ -403,26 +412,26 @@ class PoController extends AbstractActionController
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
-
-        if ($notification->hasErrors()) {                       
+        
+     
+        if ($notification->hasErrors()) {
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
-                'entity_id' => null,
-                'dto' => null,
+                'dto' => $dto,
                 'rootDto' => $rootDto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            
+
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/procure/po/list";
+        $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&token=%s", $target_id,$target_token);
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -468,7 +477,7 @@ class PoController extends AbstractActionController
 
         $data = $prg;
 
-        /**@var \Application\Entity\MlaUsers $u ;*/
+        /**@var MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
@@ -908,81 +917,80 @@ class PoController extends AbstractActionController
      * @return \Zend\View\Model\ViewModel
      */
     public function review1Action()
-    
+
     {
-        
         $this->layout("Procure/layout-fullscreen");
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/review";
         $form_title = "Review PO";
         $action = \Application\Model\Constants::FORM_ACTION_REVIEW;
         $viewTemplete = "procure/po/review-v1";
-        
+
         $prg = $this->prg($form_action, true);
-        
+
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
             return $prg;
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
-            
+
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $token = $this->params()->fromQuery('token');
-            
-            $po = $this->getPurchaseOrderService()->getPODetailsById($entity_id,$token);
-            
+
+            $po = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $token);
+
             if ($po == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            
+
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'po' => $po,
-                'headerDTO' => $po->makeDTOForGrid(),                
+                'headerDTO' => $po->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            
+
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
-        
+
         $data = $prg;
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-        
+
         $userId = $u->getId();
         $entity_id = $data['entity_id'];
-        
+
         $options = [
             "rootEntityId" => $entity_id,
             "userId" => $userId,
             "trigger" => __METHOD__
         ];
-        
+
         $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, new EditHeaderCmdHandler());
-        
+
         try {
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
-            
+
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
-        
+
         if ($notification->hasErrors()) {
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
@@ -994,17 +1002,16 @@ class PoController extends AbstractActionController
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            
+
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
-        
+
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/procure/po/list";
-        
+
         return $this->redirect()->toUrl($redirectUrl);
-        //=======================
-       
+        // =======================
     }
 
     /**
@@ -1086,7 +1093,7 @@ class PoController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-   
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -1095,7 +1102,7 @@ class PoController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
-        $po = $this->getPurchaseOrderService()->getPODetailsById($id,$token);
+        $po = $this->getPurchaseOrderService()->getPODetailsById($id, $token);
 
         if ($po == null) {
             return $this->redirect()->toRoute('not_found');

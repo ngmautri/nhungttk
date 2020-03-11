@@ -331,7 +331,6 @@ class PoMapper
         $entity->setTaxRate($snapshot->taxRate);
         $entity->setRemarks($snapshot->remarks);
         $entity->setIsActive($snapshot->isActive);
-
         $entity->setCurrentState($snapshot->currentState);
         $entity->setVendorItemCode($snapshot->vendorItemCode);
         $entity->setTraceStock($snapshot->traceStock);
@@ -381,8 +380,8 @@ class PoMapper
 
         // REFERRENCE MAPPING
 
-        $entity->setInvoice($snapshot->invoice);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setInvoice($snapshot->invoice);
+        if ($snapshot->invoice > 0) {
             /**
              *
              * @var \Application\Entity\FinVendorInvoice $obj ;
@@ -391,8 +390,8 @@ class PoMapper
             $entity->setInvoice($obj);
         }
 
-        $entity->setLastchangeBy($snapshot->lastchangeBy);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setLastchangeBy($snapshot->lastchangeBy);
+        if ($snapshot->lastchangeBy > 0) {
             /**
              *
              * @var \Application\Entity\MlaUsers $obj ;
@@ -401,8 +400,8 @@ class PoMapper
             $entity->setLastchangeBy($obj);
         }
 
-        $entity->setPrRow($snapshot->prRow);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setPrRow($snapshot->prRow);
+        if ($snapshot->prRow > 0) {
             /**
              *
              * @var \Application\Entity\NmtProcurePrRow $obj ;
@@ -411,8 +410,8 @@ class PoMapper
             $entity->setPrRow($obj);
         }
 
-        $entity->setCreatedBy($snapshot->createdBy);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setCreatedBy($snapshot->createdBy);
+        if ($snapshot->createdBy > 0) {
             /**
              *
              * @var \Application\Entity\MlaUsers $obj ;
@@ -421,8 +420,8 @@ class PoMapper
             $entity->setCreatedBy($obj);
         }
 
-        $entity->setWarehouse($snapshot->warehouse);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setWarehouse($snapshot->warehouse);
+        if ($snapshot->warehouse > 0) {
             /**
              *
              * @var \Application\Entity\NmtInventoryWarehouse $obj ;
@@ -431,8 +430,8 @@ class PoMapper
             $entity->setWarehouse($obj);
         }
 
-        $entity->setPo($snapshot->po);
-        if ($snapshot->incoterm2 > 0) {
+        //entity->setPo($snapshot->po);
+        if ($snapshot->po > 0) {
             /**
              *
              * @var \Application\Entity\NmtProcurePo $obj ;
@@ -441,8 +440,8 @@ class PoMapper
             $entity->setPo($obj);
         }
 
-        $entity->setItem($snapshot->item);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setItem($snapshot->item);
+        if ($snapshot->item > 0) {
             /**
              *
              * @var \Application\Entity\NmtInventoryItem $obj ;
@@ -451,8 +450,8 @@ class PoMapper
             $entity->setItem($obj);
         }
 
-        $entity->setDocUom($snapshot->docUom);
-        if ($snapshot->incoterm2 > 0) {
+        //$entity->setDocUom($snapshot->docUom);
+        if ($snapshot->docUom > 0) {
             /**
              *
              * @var \Application\Entity\NmtApplicationUom $obj ;

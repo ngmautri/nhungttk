@@ -18,16 +18,27 @@ use Procure\Domain\PurchaseOrder\PODocStatus;
 class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCmdRepositoryInterface
 {
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::storeRow()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::storeRow()
+     */
     public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false)
     {
         if ($rootEntity == null) {
             throw new InvalidArgumentException("PO is empty");
         }
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePo $entity ;
+         */
+        $rootEntityDoctrine = $this->doctrineEM->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("PO Entity not retrieved.");
+        }
+
         if ($localEntity == null) {
             throw new InvalidArgumentException("PO row is empty");
         }
@@ -65,8 +76,10 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
             $entity = new \Application\Entity\NmtProcurePoRow();
             // $entity->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
+            $entity->setCreatedOn(new \Datetime());
         }
 
+        $entity->setPo($rootEntityDoctrine);
         $entity = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
         if ($isPosting) {
@@ -78,12 +91,13 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
+        echo " Test" . $entity->getId();
         return $entity->getId();
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::post()
      */
     public function post(GenericPO $rootEntity, $generateSysNumber = True)
@@ -139,19 +153,19 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         $this->doctrineEM->flush();
     }
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::createRow()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::createRow()
+     */
     public function createRow($poId, PORow $localEntity, $isPosting = false)
     {}
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::storeHeader()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::storeHeader()
+     */
     public function storeHeader(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
         if ($rootEntity == null) {
@@ -173,7 +187,8 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
             $entity = $this->getDoctrineEM()->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
             if ($entity == null) {
-                throw new InvalidArgumentException("Entity not found.");            }
+                throw new InvalidArgumentException("Entity not found.");
+            }
 
             $entity->setLastChangeOn(new \DateTime());
             if ($entity->getToken() == null) {

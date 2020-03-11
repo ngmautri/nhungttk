@@ -261,7 +261,7 @@ class POService extends AbstractService
      * @param int $id
      * @param int $outputStrategy
      */
-    public function getPOHeaderById($id)
+    public function getPOHeaderById($id, $token = null)
     {
         $po = $this->getQueryRepository()->getHeaderById($id);
         

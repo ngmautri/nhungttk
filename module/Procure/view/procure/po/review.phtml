@@ -807,6 +807,8 @@ $( "#vendor_name_1" ).autocomplete({
     
     var $grid = $("#pr_row_gird").pqGrid(obj);
 
+    
+   
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;
         var $grid = $(this);
@@ -827,9 +829,15 @@ $( "#vendor_name_1" ).autocomplete({
           	//window.open(redirectUrl,'_blank');
         });
 
-     });        
-
+ 
+     });
+    
+    $( "#pr_row_gird" ).pqGrid( "pqgridrefresh" );
+	   
+ 
     function refreshGird(){
-    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
     }
+
+   	 
 </script>

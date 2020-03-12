@@ -21,6 +21,8 @@ use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\Command\PO\AddRowCmd;
 use Procure\Application\Command\PO\AddRowCmdHandler;
 use Application\Entity\MlaUsers;
+use Procure\Application\Command\PO\UpdateRowCmd;
+use Procure\Application\Command\PO\UpdateRowCmdHandler;
 
 /**
  *
@@ -385,19 +387,18 @@ class PoController extends AbstractActionController
          * @var PoRowDTO $dto ;
          */
         $dto = DTOFactory::createDTOFromArray($data, new PORowDTO());
-        //var_dump($dto);
-        
+        // var_dump($dto);
 
         $userId = $u->getId();
-        
+
         $target_id = $data['target_id'];
         $target_token = $data['target_token'];
-        
+
         $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
-        
+
         $options = [
             "rootEntityId" => $target_id,
-            "rootEntityToken" => $target_token,            
+            "rootEntityToken" => $target_token,
             "userId" => $userId,
             "trigger" => __METHOD__
         ];
@@ -412,8 +413,7 @@ class PoController extends AbstractActionController
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
-        
-     
+
         if ($notification->hasErrors()) {
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
@@ -431,7 +431,127 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&token=%s", $target_id,$target_token);
+        $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function updateRowAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/po/update-row";
+        $form_title = "Update PO Row";
+        $action = \Application\Model\Constants::FORM_ACTION_EDIT;
+        $viewTemplete = "procure/po/crudPORow";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+
+            // $entity_id = 249;
+
+            $target_id = (int) $this->params()->fromQuery('target_id');
+            $token = $this->params()->fromQuery('token');
+
+            $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $token);
+            if ($rootDto == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $dto = $rootDto->getRowbyTokenId($entity_id, $entity_token);
+
+            if ($dto == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'dto' => $dto,
+                'rootDto' => $rootDto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $data = $prg;
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        /**
+         *
+         * @var PoRowDTO $dto ;
+         */
+        $dto = DTOFactory::createDTOFromArray($data, new PORowDTO());
+        // var_dump($dto);
+
+        $userId = $u->getId();
+
+        $target_id = $data['target_id'];
+        $target_token = $data['target_token'];
+
+        $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
+
+        $options = [
+            "rootEntityId" => $target_id,
+            "rootEntityToken" => $target_token,
+            "userId" => $userId,
+            "trigger" => __METHOD__
+        ];
+
+        $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, new UpdateRowCmdHandler());
+
+        try {
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'dto' => $dto,
+                'rootDto' => $rootDto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&token=%s", $target_id, $target_token);
 
         return $this->redirect()->toUrl($redirectUrl);
     }

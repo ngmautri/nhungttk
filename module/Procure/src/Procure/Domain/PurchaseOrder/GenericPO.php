@@ -10,6 +10,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Event\Po\PoRowAdded;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -20,6 +21,8 @@ abstract class GenericPO extends AbstractPO
 {
 
     protected $docRows;
+
+    protected $rowIdArray;
 
     protected $rowsOutput;
 
@@ -132,7 +135,11 @@ abstract class GenericPO extends AbstractPO
 
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->revisionNo = 0;
-        $snapshot->token = $this->uuid;
+
+        if ($snapshot->token == null) {
+            $snapshot->token = Uuid::uuid4();
+        }
+
         $snapshot->docType = $this->docType;
         $snapshot->isDraft = 1;
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
@@ -159,7 +166,40 @@ abstract class GenericPO extends AbstractPO
 
         return $localEntityId;
     }
-
+    
+    /**
+     *
+     * @param POSpecService $specService
+     * @param POPostingService $postingService
+     * @throws InvalidArgumentException
+     * @return int
+     */
+    public function updateRow($trigger, $params, POSpecService $specService, POPostingService $postingService)
+    {
+        if ($specService == null) {
+            throw new InvalidArgumentException("Specification service not found");
+        }
+        
+        if ($postingService == null) {
+            throw new InvalidArgumentException("Posting service not found");
+        }
+        
+        $this->validateHeader($specService);
+        
+        if ($this->hasErrors()) {
+            throw new InvalidArgumentException($this->getNotification()->errorMessage());
+        }
+        
+        $this->recordedEvents = array();
+        $rootEntityId = $postingService->getCmdRepository()->storeRow($this, false);
+        
+        if (! $rootEntityId == null) {
+            $this->addEvent(new PoHeaderUpdated($rootEntityId, $trigger, $params));
+        }
+        
+        return $rootEntityId;
+    }
+ 
     /**
      *
      * @param POSpecService $specService
@@ -262,7 +302,10 @@ abstract class GenericPO extends AbstractPO
 
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->revisionNo = 0;
-        $snapshot->token = $this->uuid;
+
+        if ($snapshot->token == null) {
+            $snapshot->token = Uuid::uuid4();
+        }
         $snapshot->docType = $this->docType;
         $snapshot->isDraft = 1;
 
@@ -480,4 +523,62 @@ abstract class GenericPO extends AbstractPO
     {
         $this->rowsOutput = $rowsOutput;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowIdArray()
+    {
+        if ($this->rowIdArray == null) {
+            return [];
+        }
+        return $this->rowIdArray;
+    }
+
+    /**
+     *
+     * @param mixed $rowIdArray
+     */
+    public function setRowIdArray($rowIdArray)
+    {
+        $this->rowIdArray = $rowIdArray;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return boolean
+     */
+    public function hasRowId($id)
+    {
+        if ($this->getRowIdArray() == null)
+            return false;
+
+        return in_array($id, $this->getRowIdArray());
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return NULL|\Procure\Domain\PurchaseOrder\PoRow
+     */
+    public function getRowbyTokenId($id, $token)
+    {
+        if($id==null|| $id==null || $this->getDocRows()==null){
+            return null;
+        }
+        $rows = $this->getDocRows();
+        
+        foreach ($rows as $r){
+            if ($r->getId() == $id && $r->getToken() == $token) {
+                return $r;
+            }
+        }
+        
+        return null;
+            
+    }
+
 }

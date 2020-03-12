@@ -3,7 +3,6 @@ namespace Procure\Application\Command\PO;
 
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
-use Application\Domain\Shared\Command\CommandHandlerInterface;
 
 /**
  *
@@ -15,7 +14,7 @@ class EditHeaderCmd extends AbstractDoctrineCmd
 
     /**
      *
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @see \Application\Domain\Shared\Command\CommandInterface::execute()
      */
     public function execute()

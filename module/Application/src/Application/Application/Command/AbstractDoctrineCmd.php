@@ -29,6 +29,21 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     protected $handler;
     
     protected $dto;
+    
+    
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Command\CommandInterface::execute()
+     */
+    public function execute()
+    {
+        if (!$this->handler instanceof AbstractDoctrineCmdHandler) {
+            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())) );
+        }
+        
+        $this->handler->run($this);
+    }
 
     /**
      * @return mixed

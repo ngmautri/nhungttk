@@ -1,12 +1,14 @@
 <?php
 
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $rootDto ;*/
-/**@var \Procure\Application\DTO\Po\PoRowDTO $dto ;*/
+/**@var \Procure\Application\DTO\Po\PORowDetailsDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
 $target_id = null;
 $target_token = null;
 $message_url = null;
 $review_url = null;
+$rowNumber = null;
 
 if ($rootDto !== null) {
     $target_id = $rootDto->getId();
@@ -15,6 +17,7 @@ if ($rootDto !== null) {
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $target_id, $target_token);
     $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+    $rowNumber = $rootDto->getTotalRows() + 1;
 }
 
 $entity_id = null;
@@ -22,6 +25,18 @@ $entity_token = null;
 if ($dto !== null) {
     $entity_id = $dto->getId();
     $entity_token = $dto->getToken();
+}
+
+$error_msg = "";
+if (count($errors) > 0) {
+    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
+    $error_msg = $error_msg . '<ul>';
+    foreach ($errors as $error) :
+        $error_msg = $error_msg . '<li>' . $error . '</li>';
+    endforeach
+    ;
+    $error_msg = $error_msg . '</ul>';
+    $error_msg = $error_msg . '</div>';
 }
 
 ?>
@@ -94,18 +109,10 @@ if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
 				<div id="general" style="font-size: 9pt">
 					<!-- Tab1 -->
     	
- 	<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
-
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
+<?php
+// ================================
+echo $error_msg;
+// ===============================
 ?>
     
 					<form id="New_Invoice_Row" class="form-horizontal"
@@ -129,7 +136,8 @@ if (count($errors) > 0) {
 							<label class="control-label col-sm-2">Row Number: </label>
 							<div class="col-sm-1">
 								<input tabindex="0" class="form-control input-sm" type="text"
-									id="rowNumber" name="rowNumber" value="">
+									id="rowNumber" name="rowNumber"
+									value="<?php echo $rowNumber;?>">
 							</div>
 
 							<div class="col-sm-2">
@@ -188,7 +196,7 @@ if (count($errors) > 0) {
 								<input tabindex="2" class="form-control" type="text"
 									id="item_name" placeholder="Enter keyword to search item..."
 									name="item_name"
-									value="<?php if (!$dto== null): echo $dto->getItem();endif;?>">
+									value="<?php if (!$dto== null): echo $dto->getItemName();endif;?>">
 
 
 								<input type="hidden" id="item_id" placeholder="" name="item"
@@ -549,7 +557,7 @@ if (count($errors) > 0) {
         if ($dto !== null) :
             ?>
         		  $("#item_id" ).val(<?php echo $dto->getItem();?>);      	  
-        	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php echo $dto->getItem();?>&token=');
+        	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php echo $dto->getItem();?>&token=<?php echo $dto->getItemToken();?>');
         		  $('#item_detail').show();
 
         		  $("#pr_row_id" ).val(<?php echo $dto->getPrRow();?>);    	 	  
@@ -559,9 +567,7 @@ if (count($errors) > 0) {
        	 endif
         ?>
         
-        
-        
-   
+    
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);

@@ -18,6 +18,7 @@ $ap_from_po_url = null;
 $pdf_url = null;
 $excel_url = null;
 $openoffice_url = null;
+$hoverMode = "row";
 
 if (! $headerDTO == null) {
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -35,6 +36,11 @@ if (! $headerDTO == null) {
     $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+        $hoverMode = "cell";
+    endif;
+
 }
 
 $currency_list = $nmtPlugin->currencyList();
@@ -178,9 +184,10 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 					<!-- Tab1 -->
 	
 	
-	<?php
-// ======================
+<?php
+// ================================
 echo $error_msg;
+// ===============================
 ?>
 	
  			<form id="Posting_Form" class="form-horizontal"
@@ -593,16 +600,15 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
+    
+   
+       
 	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
 			freezeCols:1,
-           	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
-           	hoverMode: 'cell',
-       		<?php else:?>
-       		hoverMode: 'row',
-           	<?php endif;?>
+			hoverMode: '<?php echo $hoverMode;?>',
 		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
                 allowInvalid: true,
@@ -614,15 +620,13 @@ $( "#vendor_name_1" ).autocomplete({
 		 columnBorders: true,
 
 				  	  toolbar: {
-              
                     	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
                         items: [
-                        	
                         { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
                             { "click": function (evt, ui) {
                                 var $grid = $(this).closest('.pq-grid');
-            redirectUrl="<?php echo $add_row_url; ?>";
-              window.location.href= redirectUrl;
+                                redirectUrl="<?php echo $add_row_url; ?>";
+                                window.location.href= redirectUrl;
                              }
                             }
                         ]
@@ -697,7 +701,7 @@ $( "#vendor_name_1" ).autocomplete({
                 //alert(sent_list);
                   
                   $.ajax({
-                      url: '/procure/po-row/update-row',
+                      url: '/procure/po/update-row',
                       data: {
                           sent_list: sent_list
                       },
@@ -737,6 +741,13 @@ $( "#vendor_name_1" ).autocomplete({
 	              
 	};
 
+    obj.dataModel = {
+            data: data,
+            location: "local",
+            sorting: "local",
+            sortDir: "down"
+    };
+
     obj.colModel = [
    
     	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
@@ -744,11 +755,9 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
-        		return '<button type="button" class="edit_btn">Edit</button>';
-               
-               }
+        		return '<button type="button" class="edit_btn">Edit </button>';
+           }
        },
-
        
        <?php endif;?>
 
@@ -756,7 +765,7 @@ $( "#vendor_name_1" ).autocomplete({
        <?php  //$rowDTO->convertedStandardQuantity;?>
        
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
-   	{ title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
+   	   { title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
 	
        { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
        
@@ -796,27 +805,8 @@ $( "#vendor_name_1" ).autocomplete({
               
       ];
 
-    /*   
-    obj.dataModel = {
-    		  dataType: "JSON",
-              location: "remote",
-              method: "GET",
-              recIndx: "row_id	",
-              url: "/procure/po-row/gird?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&target_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>",
-              getData: function (response) {
-           	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
-             }
-    };
-    */
-
-    obj.dataModel = {
-            data: data,
-            location: "local",
-            sorting: "local",
-            sortDir: "down"
-        };
-    
     var $grid = $("#pr_row_gird").pqGrid(obj);
+    
 
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;
@@ -832,7 +822,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/po-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/procure/po/update-row?token="+rowData['poToken']+"&entity_id="+rowData['id']+"&target_id="+rowData['po']+"&entity_token="+rowData['token'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');
@@ -840,6 +830,9 @@ $( "#vendor_name_1" ).autocomplete({
 
      });        
 
+	// important for datamodel: local.
+    $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+     
     function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
     }

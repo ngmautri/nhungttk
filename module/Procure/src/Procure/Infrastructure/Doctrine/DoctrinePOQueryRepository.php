@@ -21,36 +21,12 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getPOEventLog()
-     */
-    public function getPOEventLog($id, $token = null)
-    {
-        $sql = "
-SELECT * FROM message_store
-where entity_id=%s and entity_id=%s
-";
-        $sql = sprintf($sql, $id, $token);
-
-        // echo $sql;
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\MessageStore', 'message_store');
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            return $query->getResult();
-        } catch (NoResultException $e) {
-            return null;
-        }
-    }
-
-    /**
-     *
-     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getHeaderById()
      */
     public function getHeaderById($id, $token = null)
     {
         $criteria = array(
-            'id' => $id,
+            'id' => $id
         );
 
         $po = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
@@ -81,12 +57,13 @@ where entity_id=%s and entity_id=%s
     {
         $criteria = array(
             'id' => $id,
-            'token' => $token,
+            'token' => $token
         );
-        
-         
-        $po = $this->getDoctrineEM()->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
-        
+
+        $po = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtProcurePo')
+            ->findOneBy($criteria);
+
         $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
 
         if ($poDetailsSnapshot == null) {
@@ -102,6 +79,7 @@ where entity_id=%s and entity_id=%s
 
         $completed = True;
         $docRowsArray = array();
+        $rowIdArray = array();
         $totalRows = 0;
         $totalActiveRows = 0;
         $netAmount = 0;
@@ -121,7 +99,7 @@ where entity_id=%s and entity_id=%s
             if ($poRowDetailSnapshot == null) {
                 continue;
             }
-
+      
             /**
              *
              * @todo
@@ -153,6 +131,7 @@ where entity_id=%s and entity_id=%s
 
             $poRow = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
+            $rowIdArray[] = $poRow->getId();
         }
 
         if ($completed == true) {
@@ -183,6 +162,7 @@ where entity_id=%s and entity_id=%s
 
         $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
         $rootEntity->setDocRows($docRowsArray);
+        $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;
     }
 

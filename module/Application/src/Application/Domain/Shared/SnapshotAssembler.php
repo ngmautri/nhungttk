@@ -51,7 +51,7 @@ class SnapshotAssembler
                 $snapShot->$propertyName = $property->getValue($dto);
             }
         }
-        
+
         return $snapShot;
     }
 
@@ -98,7 +98,7 @@ class SnapshotAssembler
      */
     public static function makeFromSnapshot($obj, $snapshot)
     {
-        if ($obj == null or $snapshot == null) {
+        if ($obj == null || $snapshot == null) {
             return;
         }
 

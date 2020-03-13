@@ -181,7 +181,7 @@ class POSpecService
         }
 
         if (! $localEntity instanceof PORow) {
-            throw new \Procure\Domain\Exception\InvalidArgumentException('PORow not given!');
+            throw new \Procure\Domain\Exception\InvalidArgumentException('PO Row not given!');
         }
 
         // do verification now

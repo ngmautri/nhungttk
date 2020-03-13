@@ -2,15 +2,18 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\APInvoice\Factory\APFactory;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\Event\Po\PoRowUpdated;
 
 /**
  *
@@ -166,7 +169,7 @@ abstract class GenericPO extends AbstractPO
 
         return $localEntityId;
     }
-    
+
     /**
      *
      * @param POSpecService $specService
@@ -179,27 +182,64 @@ abstract class GenericPO extends AbstractPO
         if ($specService == null) {
             throw new InvalidArgumentException("Specification service not found");
         }
-        
+
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-        
+
         $this->validateHeader($specService);
-        
+
         if ($this->hasErrors()) {
             throw new InvalidArgumentException($this->getNotification()->errorMessage());
         }
-        
+
         $this->recordedEvents = array();
         $rootEntityId = $postingService->getCmdRepository()->storeRow($this, false);
-        
+
         if (! $rootEntityId == null) {
             $this->addEvent(new PoHeaderUpdated($rootEntityId, $trigger, $params));
         }
-        
+
         return $rootEntityId;
     }
- 
+
+   /**
+    * 
+    * @param string $trigger
+    * @param array $params
+    * @param PORow $row
+    * @param PoRowSnapshot $snapshot
+    * @param POSpecService $specService
+    * @param POPostingService $postingService
+    * @throws PoUpdateException
+    * @return void|\Procure\Domain\PurchaseOrder\GenericPO
+    */
+    public function updateRowFromSnapshot($trigger, $params, PORow $row, PoRowSnapshot $snapshot, POSpecService $specService, POPostingService $postingService)
+    {
+        if (! $snapshot instanceof PoRowSnapshot || !$row instanceof PORow || $specService == null || $postingService == null) {
+            return;
+        }
+
+     
+        SnapshotAssembler::makeFromSnapshot($row, $snapshot);
+
+        $this->validateRow($row, $specService);
+
+        if ($this->hasErrors()) {
+            throw new PoUpdateException($this->getErrorMessage());
+        }
+
+        $this->recordedEvents = array();
+        $rowId = $postingService->getCmdRepository()->storeRow($this, $row, false);
+
+        if (! $rowId == null) {
+            $this->addEvent(new PoRowUpdated($this->getId(), $trigger, $params));
+        }
+
+   
+        return $this;
+    }
+
     /**
      *
      * @param POSpecService $specService
@@ -566,19 +606,40 @@ abstract class GenericPO extends AbstractPO
      */
     public function getRowbyTokenId($id, $token)
     {
+        if ($id == null || $token == null || $this->getDocRows() == null) {
+            return null;
+        }
+        $rows = $this->getDocRows();
+
+        foreach ($rows as $r) {
+            if ($r->getId() == $id && $r->getToken() == $token) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+    
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return NULL|\Procure\Domain\PurchaseOrder\PoRow
+     */
+    public function getRowbyId($id)
+    {
         if($id==null|| $id==null || $this->getDocRows()==null){
             return null;
         }
         $rows = $this->getDocRows();
         
         foreach ($rows as $r){
-            if ($r->getId() == $id && $r->getToken() == $token) {
+            if ($r->getId() == $id) {
                 return $r;
             }
         }
         
         return null;
-            
-    }
+   }
 
 }

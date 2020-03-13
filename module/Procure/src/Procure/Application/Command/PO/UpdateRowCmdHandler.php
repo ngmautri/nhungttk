@@ -25,11 +25,11 @@ use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 {
-    
+
     /**
      *
      * {@inheritdoc}
@@ -40,130 +40,122 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
         if (! $cmd instanceof AbstractDoctrineCmd) {
             throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
         }
-        
+
         if (! $cmd->getDto() instanceof PORowDTO) {
             throw new \Exception("PORowDTO object not found!");
         }
-        
+
         /**
          *
          * @var PORowDTO $dto ;
          */
         $dto = $cmd->getDto();
         $notification = new Notification();
-        
+
         if ($cmd->getOptions() == null) {
             $notification->addError("No Options given");
         }
-        
+
         $options = $cmd->getOptions();
-        
-        $rootEntityId = null;
-        if (isset($options['rootEntityId'])) {
-            $rootEntityId = $options['rootEntityId'];
+
+        /**
+         *
+         * @var PODoc $rootEntity ;
+         */
+        $rootEntity = null;
+        if (isset($options['rootEntity'])) {
+            $rootEntity = $options['rootEntity'];
         } else {
-            $notification->addError("Current entityId not given");
+            $notification->addError("RootEntiy not given");
         }
-        
-        $rootEntityToken = null;
-        if (isset($options['rootEntityToken'])) {
-            $rootEntityToken = $options['rootEntityToken'];
-        } else {
-            $notification->addError("Current entityId not given");
-        }
-        
         $userId = null;
         if (isset($options['userId'])) {
             $userId = $options['userId'];
         } else {
             $notification->addError("user ID not given");
         }
-        
+
         $trigger = null;
         if (isset($options['trigger'])) {
             $trigger = $options['trigger'];
         } else {
             $notification->addError("Trigger not identifable!");
         }
-        
+
+        if ($rootEntity == null) {
+            $notification->addError("PO #%s can not be retrieved or empty");
+        }
+
         if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
         }
-        
+
         /**
          *
-         * @var PODoc $rootEntity ;
+         * @var PORow $row ;
          */
-        $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
-        $rootEntity = $queryRep->getPODetailsById($rootEntityId,$rootEntityToken);
-        
-        if ($rootEntity == null) {
-            $notification->addError(sprintf("PO #%s can not be retrieved or empty", $rootEntityId));
-            $dto->setNotification($notification);
-            return;
-        }
-        
-        /**
-         *
-         * @var PORow $localEntity ;
-         */
-        $localEntity = $rootEntity->getRowbyTokenId($dto->getId(), $dto->getToken());
-        
-        if ($localEntity == null) {
+        $row = $rootEntity->getRowbyTokenId($dto->getId(), $dto->getToken());
+
+        if ($row == null) {
             $notification->addError(sprintf("PO Row #%s can not be retrieved or empty", $dto->getId()));
             $dto->setNotification($notification);
             return;
         }
-        
+
         try {
-            
             $cmd->getDoctrineEM()
-            ->getConnection()
-            ->beginTransaction(); // suspend auto-commit
-            
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
             /**
              *
              * @var PORowSnapshot $snapshot ;
              */
-            $snapshot = $localEntity->makeSnapshot();
+            $snapshot = $row->makeSnapshot();
+
+            /**
+             *
+             * @var PORowSnapshot $newSnapshot ;
+             */
             $newSnapshot = clone ($snapshot);
-            
+
             $newSnapshot = PORowSnapshotAssembler::updateSnapshotFromDTO($dto, $newSnapshot);
             $changeLog = $snapshot->compare($newSnapshot);
-            
+
             if ($changeLog == null) {
-                $notification->addError("Nothing change on PO row#" . $rootEntityId);
+                $notification->addError("Nothing change on PO row#" . $row->getId());
                 $dto->setNotification($notification);
                 return;
             }
-            
+
             $params = [
+                "rowId" => $row->getId(),
+                "rowToken" => $row->getToken(),
                 "changeLog" => $changeLog
             ];
-            
+
             // do change
-            $newSnapshot->lastChangeBy = $userId;
-            $newSnapshot->lastChangeOn = new \DateTime();
+            $newSnapshot->lastchangeBy = $userId;
+            $newSnapshot->lastchangeOn = new \DateTime();
             $newSnapshot->revisionNo ++;
-            
+
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
             $specService = new POSpecService($sharedSpecificationFactory, $fxService);
-            
-            $newLocalEntity = PODoc::updateFromSnapshot($newSnapshot, $specService);
-            
+
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
-            $localEntityId = $newLocalEntity->updateHeader($trigger, $params, $specService, $postingService);
-            
-            // event dispatc
-            if (count($newRootEntity->getRecordedEvents() > 0)) {
-                
+
+            $rootEntity->updateRowFromSnapshot($trigger, $params, $row, $snapshot, $specService, $postingService);
+
+            // event dispatcher
+            if (count($rootEntity->getRecordedEvents() > 0)) {
+
                 $dispatcher = new EventDispatcher();
-                
-                foreach ($newRootEntity->getRecordedEvents() as $event) {
+
+                foreach ($rootEntity->getRecordedEvents() as $event) {
                     
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
                     
@@ -177,7 +169,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             }
             
             
-            $m = sprintf("PO #%s updated", $rootEntityId);
+            $m = sprintf("PO #%s updated", $rootEntity->getId());
             
             $notification->addSuccess($m);
             $cmd->getDoctrineEM()->commit(); // now commit

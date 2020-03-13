@@ -507,18 +507,16 @@ class PoController extends AbstractActionController
          * @var PoRowDTO $dto ;
          */
         $dto = DTOFactory::createDTOFromArray($data, new PORowDTO());
-        // var_dump($dto);
-
+  
         $userId = $u->getId();
 
         $target_id = $data['target_id'];
         $target_token = $data['target_token'];
-
-        $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
+        
+         $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
 
         $options = [
-            "rootEntityId" => $target_id,
-            "rootEntityToken" => $target_token,
+            "rootEntity" => $rootDto,
             "userId" => $userId,
             "trigger" => __METHOD__
         ];

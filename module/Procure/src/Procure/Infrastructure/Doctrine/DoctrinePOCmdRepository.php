@@ -91,7 +91,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-        echo " Test" . $entity->getId();
+        //echo " Test" . $entity->getId();
         return $entity->getId();
     }
 

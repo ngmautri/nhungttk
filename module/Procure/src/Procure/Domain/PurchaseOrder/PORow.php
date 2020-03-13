@@ -17,101 +17,195 @@ class PORow extends AbstractEntity
 {
 
     protected $vendorName;
+
     protected $poNumber;
+
     protected $docCurrencyISO;
+
     protected $poToken;
+
     protected $draftGrQuantity;
+
     protected $postedGrQuantity;
+
     protected $confirmedGrBalance;
+
     protected $openGrBalance;
+
     protected $draftAPQuantity;
+
     protected $postedAPQuantity;
+
     protected $openAPQuantity;
+
     protected $billedAmount;
+
     protected $openAPAmount;
+
     protected $pr;
+
     protected $prToken;
+
     protected $prChecksum;
+
     protected $prNumber;
+
     protected $prSysNumber;
+
     protected $prRowIndentifer;
+
     protected $prRowCode;
+
     protected $prRowName;
+
     protected $prRowConvertFactor;
+
     protected $prRowUnit;
+
     protected $prRowVersion;
+
     protected $itemToken;
+
     protected $itemChecksum;
+
     protected $itemName;
+
     protected $itemName1;
+
     protected $itemSKU;
+
     protected $itemSKU1;
+
     protected $itemSKU2;
+
     protected $itemUUID;
+
     protected $itemSysNumber;
+
     protected $itemStandardUnit;
+
     protected $itemStandardUnitName;
+
     protected $itemVersion;
+
     protected $id;
+
     protected $rowNumber;
+
     protected $token;
+
     protected $quantity;
+
     protected $unitPrice;
+
     protected $netAmount;
+
     protected $unit;
+
     protected $itemUnit;
+
     protected $conversionFactor;
+
     protected $converstionText;
+
     protected $taxRate;
+
     protected $remarks;
+
     protected $isActive;
+
     protected $createdOn;
+
     protected $lastchangeOn;
+
     protected $currentState;
+
     protected $vendorItemCode;
+
     protected $traceStock;
+
     protected $grossAmount;
+
     protected $taxAmount;
+
     protected $faRemarks;
+
     protected $rowIdentifer;
+
     protected $discountRate;
+
     protected $revisionNo;
+
     protected $targetObject;
+
     protected $sourceObject;
+
     protected $targetObjectId;
+
     protected $sourceObjectId;
+
     protected $docStatus;
+
     protected $workflowStatus;
+
     protected $transactionStatus;
+
     protected $isPosted;
+
     protected $isDraft;
+
     protected $exwUnitPrice;
+
     protected $totalExwPrice;
+
     protected $convertFactorPurchase;
+
     protected $convertedPurchaseQuantity;
+
     protected $convertedStandardQuantity;
+
     protected $convertedStockQuantity;
+
     protected $convertedStandardUnitPrice;
+
     protected $convertedStockUnitPrice;
+
     protected $docQuantity;
+
     protected $docUnit;
+
     protected $docUnitPrice;
+
     protected $convertedPurchaseUnitPrice;
+
     protected $docType;
+
     protected $descriptionText;
+
     protected $vendorItemName;
+
     protected $reversalBlocked;
+
     protected $invoice;
+
     protected $lastchangeBy;
+
     protected $prRow;
+
     protected $createdBy;
+
     protected $warehouse;
+
     protected $po;
+
     protected $item;
+
     protected $docUom;
 
     private function __construct()
     {}
+
+   
 
     /**
      *
@@ -181,7 +275,9 @@ class PORow extends AbstractEntity
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getVendorName()
@@ -190,6 +286,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoNumber()
@@ -198,6 +295,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrencyISO()
@@ -206,6 +304,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoToken()
@@ -214,6 +313,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftGrQuantity()
@@ -222,6 +322,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedGrQuantity()
@@ -230,6 +331,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConfirmedGrBalance()
@@ -238,6 +340,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenGrBalance()
@@ -246,6 +349,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftAPQuantity()
@@ -254,6 +358,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedAPQuantity()
@@ -262,6 +367,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenAPQuantity()
@@ -270,6 +376,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBilledAmount()
@@ -278,6 +385,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenAPAmount()
@@ -286,6 +394,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPr()
@@ -294,6 +403,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrToken()
@@ -302,6 +412,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrChecksum()
@@ -310,6 +421,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrNumber()
@@ -318,6 +430,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrSysNumber()
@@ -326,6 +439,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowIndentifer()
@@ -334,6 +448,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowCode()
@@ -342,6 +457,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowName()
@@ -350,6 +466,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowConvertFactor()
@@ -358,6 +475,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowUnit()
@@ -366,6 +484,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowVersion()
@@ -374,6 +493,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemToken()
@@ -382,6 +502,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemChecksum()
@@ -390,6 +511,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemName()
@@ -398,6 +520,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemName1()
@@ -406,6 +529,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSKU()
@@ -414,6 +538,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSKU1()
@@ -422,6 +547,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSKU2()
@@ -430,6 +556,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemUUID()
@@ -438,6 +565,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSysNumber()
@@ -446,6 +574,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemStandardUnit()
@@ -454,6 +583,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemStandardUnitName()
@@ -462,6 +592,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemVersion()
@@ -470,6 +601,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -478,6 +610,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowNumber()
@@ -486,6 +619,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -494,6 +628,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuantity()
@@ -502,6 +637,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -510,6 +646,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getNetAmount()
@@ -518,6 +655,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnit()
@@ -526,6 +664,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemUnit()
@@ -534,6 +673,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -542,6 +682,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConverstionText()
@@ -550,6 +691,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxRate()
@@ -558,6 +700,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -566,6 +709,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -574,6 +718,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -582,6 +727,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -590,6 +736,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -598,6 +745,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -606,6 +754,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTraceStock()
@@ -614,6 +763,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -622,6 +772,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -630,6 +781,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFaRemarks()
@@ -638,6 +790,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowIdentifer()
@@ -646,6 +799,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountRate()
@@ -654,6 +808,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -662,6 +817,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObject()
@@ -670,6 +826,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObject()
@@ -678,6 +835,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObjectId()
@@ -686,6 +844,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObjectId()
@@ -694,6 +853,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -702,6 +862,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -710,6 +871,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -718,6 +880,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -726,6 +889,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -734,6 +898,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExwUnitPrice()
@@ -742,6 +907,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalExwPrice()
@@ -750,6 +916,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertFactorPurchase()
@@ -758,6 +925,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -766,6 +934,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -774,6 +943,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -782,6 +952,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -790,6 +961,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -798,6 +970,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -806,6 +979,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnit()
@@ -814,6 +988,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -822,6 +997,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseUnitPrice()
@@ -830,6 +1006,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -838,6 +1015,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDescriptionText()
@@ -846,6 +1024,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemName()
@@ -854,6 +1033,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -862,6 +1042,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoice()
@@ -870,6 +1051,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -878,6 +1060,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRow()
@@ -886,6 +1069,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -894,6 +1078,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -902,6 +1087,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()

@@ -29,44 +29,14 @@ class POServiceTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-            /** @var EntityManager $doctrineEM ; */
-            $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-
-            $data = array();
-            $data["isActive"] = 1;
-            $data["vendor"] = 229;
-            $data["createdBy"] = 39;
-            $data["contractDate"] = "2019-08-08";
-            $data["contractNo"] = "2019-08-08";
-            $data["docCurrency"] = 100;
-            $data["localCurrency"] = 2;
-            $data["paymentTerm"] = 1;
-            $data["company"] = 1;
-            $data["exchangeRate"] = 1;
-
-            $snapshot = SnapshotAssembler::createSnapShotFromArray($data, new POSnapshot());
-
-            $rootEntity = PODoc::makeFromSnapshot($snapshot);
-
-            $data["item"] = 2427;
-            $data["docQuantity"] = 40;
-            $data["docUnitPrice"] = -4089;
-            $data["conversionFactor"] = 1;
-            $rowSnapshot = SnapshotAssembler::createSnapShotFromArray($data, new PORowSnapshot());
-
-            $sharedSpecificationFactory = new ZendSpecificationFactory($doctrineEM);
-            $fxService = new FXService();
-            $fxService->setDoctrineEM($doctrineEM);
-
-            $specService = new POSpecService($sharedSpecificationFactory, $fxService);
-            $rootEntity->addRowFromSnapshot($rowSnapshot, $specService);
-            //$rootEntity->validate($specService);
-            var_dump($rootEntity->getErrorMessage(false));
-            
-            
+           
             /** @var POService $sv ; */
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PO\POService');
-            //$results = $sv->updateHeader(214,$dto,1,39);
+            $po= $sv->getPODetailsById(302,"b69a9fbe-e7e5-48da-a7a7-cf7e27040d1b");
+            
+            $id = "2484";
+            $token="effecea7-b949-4be2-9e1c-aba40ea844e0";
+            var_dump($po->getRowbyTokenId($id, $token));
            
             
             

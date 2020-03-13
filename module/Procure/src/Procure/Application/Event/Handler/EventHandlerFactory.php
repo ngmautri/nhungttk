@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityManager;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Event\Po\PoRowAdded;
+use Procure\Domain\Event\Po\PoRowUpdated;
 
 /**
  *
@@ -32,6 +33,10 @@ class EventHandlerFactory
 
             case PoRowAdded::class:
                 $handlers[] = new PoRowAddedHandler($doctrineEM);
+                break;
+                
+            case PoRowUpdated::class:
+                $handlers[] = new PoRowUpdatedHandler($doctrineEM);
                 break;
         }
 

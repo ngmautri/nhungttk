@@ -220,6 +220,10 @@ abstract class GenericPO extends AbstractPO
             return;
         }
 
+        // quantity can not be null;
+        $snapshot->quantity = $snapshot->docQuantity;
+        $snapshot->unitPrice = $snapshot->getDocUnitPrice();
+        
      
         SnapshotAssembler::makeFromSnapshot($row, $snapshot);
 
@@ -235,7 +239,6 @@ abstract class GenericPO extends AbstractPO
         if (! $rowId == null) {
             $this->addEvent(new PoRowUpdated($this->getId(), $trigger, $params));
         }
-
    
         return $this;
     }
@@ -609,6 +612,7 @@ abstract class GenericPO extends AbstractPO
         if ($id == null || $token == null || $this->getDocRows() == null) {
             return null;
         }
+        
         $rows = $this->getDocRows();
 
         foreach ($rows as $r) {

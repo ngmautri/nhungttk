@@ -121,7 +121,6 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             // do change
             $newSnapshot->lastChangeBy = $userId;
-            $newSnapshot->lastChangeOn = new \DateTime();
             $newSnapshot->revisionNo ++;
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());

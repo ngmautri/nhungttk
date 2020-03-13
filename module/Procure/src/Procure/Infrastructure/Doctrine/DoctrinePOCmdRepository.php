@@ -67,7 +67,8 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
             if (! $entity->getPo()->getId() == $rootEntity->getId()) {
                 throw new InvalidArgumentException("PO row is corrupted");
             }
-
+            
+  
             $entity->setLastChangeOn(new \Datetime());
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
@@ -80,6 +81,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         }
 
         $entity->setPo($rootEntityDoctrine);
+        
         $entity = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
         if ($isPosting) {
@@ -91,7 +93,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-        //echo " Test" . $entity->getId();
+
         return $entity->getId();
     }
 

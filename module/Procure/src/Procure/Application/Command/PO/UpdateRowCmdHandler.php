@@ -68,6 +68,21 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
         } else {
             $notification->addError("RootEntiy not given");
         }
+        
+        $entityId= null;
+        if (isset($options['entityId'])) {
+            $entityId = $options['entityId'];
+        } else {
+            $notification->addError("entityId not given");
+        }
+        
+        $entityToken= null;
+        if (isset($options['entityToken'])) {
+            $entityToken = $options['entityToken'];
+        } else {
+            $notification->addError("entityToken not given");
+        }
+        
         $userId = null;
         if (isset($options['userId'])) {
             $userId = $options['userId'];
@@ -90,12 +105,12 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $dto->setNotification($notification);
             return;
         }
-
+ 
         /**
          *
          * @var PORow $row ;
          */
-        $row = $rootEntity->getRowbyTokenId($dto->getId(), $dto->getToken());
+        $row = $rootEntity->getRowbyTokenId($entityId, $entityToken);
 
         if ($row == null) {
             $notification->addError(sprintf("PO Row #%s can not be retrieved or empty", $dto->getId()));
@@ -120,7 +135,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
              */
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFromDTO($dto, $newSnapshot);
+            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFromDTO($newSnapshot, $dto);
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
@@ -137,7 +152,6 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             // do change
             $newSnapshot->lastchangeBy = $userId;
-            $newSnapshot->lastchangeOn = new \DateTime();
             $newSnapshot->revisionNo ++;
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
@@ -148,12 +162,13 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
 
-            $rootEntity->updateRowFromSnapshot($trigger, $params, $row, $snapshot, $specService, $postingService);
+            $rootEntity->updateRowFromSnapshot($trigger, $params, $row, $newSnapshot, $specService, $postingService);
 
             // event dispatcher
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
+                
 
                 foreach ($rootEntity->getRecordedEvents() as $event) {
                     

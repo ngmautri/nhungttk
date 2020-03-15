@@ -9,6 +9,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Ramsey;
 use Procure\Infrastructure\Mapper\PoMapper;
 use Procure\Domain\PurchaseOrder\PODocStatus;
+use Procure\Domain\Exception\PoVersionChangedException;
 
 /**
  *
@@ -67,8 +68,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
             if (! $entity->getPo()->getId() == $rootEntity->getId()) {
                 throw new InvalidArgumentException("PO row is corrupted");
             }
-            
-  
+
             $entity->setLastChangeOn(new \Datetime());
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
@@ -81,7 +81,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         }
 
         $entity->setPo($rootEntityDoctrine);
-        
+
         $entity = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
         if ($isPosting) {
@@ -92,10 +92,10 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         }
 
         $this->doctrineEM->persist($entity);
-        
-        $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo()+1);        
+
+        $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
         $this->doctrineEM->persist($rootEntityDoctrine);
-        
+
         $this->doctrineEM->flush();
 
         return $entity->getId();
@@ -216,6 +216,23 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));
+        }
+
+        // Optimistic Locking
+        if ($rootEntity->getId() > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePo $entityCK ;
+             */
+
+            $entityCK = $this->getDoctrineEM()->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
+
+            if ($rootEntity->getRevisionNo() != $entityCK->getRevisionNo()) {
+                throw new PoVersionChangedException(sprintf("PO Revsion changed from %s to %s since viewing", $rootEntity->getRevisionNo(), $entityCK->getRevisionNo()));
+            }
+
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
         }
 
         $this->doctrineEM->persist($entity);

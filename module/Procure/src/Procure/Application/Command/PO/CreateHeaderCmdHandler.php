@@ -81,52 +81,50 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addError("Trigger not identifable!");
         }
 
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
-            return;
-        }
-
         $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
         $company = $companyQueryRepository->getById($companyId);
 
         if ($company == null) {
             $notification->addError("Company not found");
+            return;
+        }
+
+        if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
         }
+
+        // ====================
 
         $dto->company = $companyId;
         $dto->createdBy = $userId;
         $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
         $dto->currency = $dto->getDocCurrency();
-        $dto->revisionNo =0;
-        
-
+        $dto->localCurrency = $company->getDefaultCurrency();
         $params = [];
-
-        /**
-         *
-         * @var POSnapshot $snapshot ;
-         */
-        $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
-        $snapshot->localCurrency = $company->getDefaultCurrency();
-
-        $entityRoot = PODoc::makeFromSnapshot($snapshot);
-
-        $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-        $fxService = new FXService();
-        $fxService->setDoctrineEM($cmd->getDoctrineEM());
-        $specService = new POSpecService($sharedSpecFactory, $fxService);
-
-        $cmd->getDoctrineEM()
-            ->getConnection()
-            ->beginTransaction(); // suspend auto-commit
 
         try {
 
+            /**
+             *
+             * @var POSnapshot $snapshot ;
+             */
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
+            $rootEntity = PODoc::makeFromSnapshot($snapshot);
+
+            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $fxService = new FXService();
+            $fxService->setDoctrineEM($cmd->getDoctrineEM());
+            $specService = new POSpecService($sharedSpecFactory, $fxService);
+
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
-            $rootEntityId = $entityRoot->storeHeader($trigger, $params, $specService, $postingService);
+
+            $cmd->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
+            $rootEntityId = $rootEntity->storeHeader($trigger, $params, $specService, $postingService);
 
             // $rootEntityId = $rep->storeHeader($entityRoot);
 
@@ -134,11 +132,11 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addSuccess($m);
 
             // event dispatc
-            if (count($entityRoot->getRecordedEvents() > 0)) {
+            if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
 
-                foreach ($entityRoot->getRecordedEvents() as $event) {
+                foreach ($rootEntity->getRecordedEvents() as $event) {
 
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event),$cmd->getDoctrineEM());
 

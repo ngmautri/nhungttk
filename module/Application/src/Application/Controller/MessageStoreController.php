@@ -62,7 +62,7 @@ class MessageStoreController extends AbstractActionController
         $entity_id = $this->params()->fromQuery('entity_id');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 10;
+            $resultsPerPage = 15;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }

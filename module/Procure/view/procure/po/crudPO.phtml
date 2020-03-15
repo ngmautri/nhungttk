@@ -2,6 +2,97 @@
 
 /**@var \Procure\Application\DTO\Po\PoDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+$currency_list = $nmtPlugin->currencyList();
+$currency_option = "";
+
+if ($currency_list !== null) :
+    foreach ($currency_list as $l) :
+        if ($dto !== null) :
+            if ($dto->getDocCurrency() == $l->getId()) :
+                $currency_option = $currency_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getCurrency());
+            else :
+                $currency_option = $currency_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getCurrency());
+            endif;
+        else :
+            $currency_option = $currency_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getCurrency());
+        endif;
+    endforeach
+    ;
+endif;
+
+$incoterm_option = "";
+$incoterm_list = $nmtPlugin->incotermList();
+
+if ($incoterm_list !== null) :
+    foreach ($incoterm_list as $l) :
+        if ($dto !== null) :
+            if ($dto->getIncoterm() == $l->getId()) :
+                $incoterm_option = $incoterm_option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+            else :
+                $incoterm_option = $incoterm_option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+            endif;
+        else :
+            $incoterm_option = $incoterm_option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+        endif;
+    endforeach
+    ;
+endif;
+
+$paymentTerm_option = "";
+$pmtTerm_list = $nmtPlugin->getPaymentTerms();
+
+if ($pmtTerm_list !== null) :
+    foreach ($pmtTerm_list as $l) :
+        if ($dto !== null) :
+            if ($dto->getPaymentTerm() == $l->getId()) :
+                $paymentTerm_option = $paymentTerm_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
+            else :
+                $paymentTerm_option = $paymentTerm_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
+            endif;
+        else :
+            $paymentTerm_option = $paymentTerm_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
+        endif;
+    endforeach
+    ;
+endif;
+
+$error_msg = "";
+
+if (count($errors) > 0) {
+    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
+    $error_msg = $error_msg . '<ul>';
+    foreach ($errors as $error) :
+        $error_msg = $error_msg . '<li>' . $error . '</li>';
+    endforeach
+    ;
+    $error_msg = $error_msg . '</ul>';
+    $error_msg = $error_msg . '</div>';
+}
+
+$version = '';
+if (! $dto == null) {
+    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $dto->getId(), $dto->getToken());
+
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
+
+    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+
+    $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/copy-from-po?source_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $ap_from_po_url = sprintf($this->baseUrl . "finance/v-invoice/copy-from-po?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+
+    $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
+
+    if ($dto->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+        $hoverMode = "cell";
+    endif;
+
+    $version = $dto->getRevisionNo();
+}
 ?>
 
 
@@ -33,8 +124,7 @@
 				<ul>
 					<li><a href="#general"><?php echo $form_title;?>:</a></li>
 		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
- 	 	<li><a
-						href="<?php echo $this->baseUrl ?>/application/message-store/list1?entity_token=<?php echo (!$dto == null)? $dto->getToken():"";?>&entity_id=<?php echo (!$dto == null)? $dto->getId():"";?>"><span
+ 	 	<li><a href="<?php echo $log_url;?>"><span
 							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 		<?php endif;?>			
 	
@@ -43,18 +133,16 @@
 				<div id="general" style="font-size: 9pt">
 					<!-- Tab1 -->
 		
-	<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+<?php
+// ==================
+echo $error_msg;
+// ==================
+?>
 
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
+<?php
+// ==================
+echo $version;
+// ==================
 ?>
 	<form id="Creating_Form" class="form-horizontal"
 						action="<?php echo $form_action;?>" method="post"
@@ -150,27 +238,11 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<select name="docCurrency" class="form-control input-sm">
 											<option value="">Select Currency</option>
-   	    							<?php
-
-            $currency_list = $nmtPlugin->currencyList();
-
-            if ($currency_list !== null) :
-                foreach ($currency_list as $curr) :
-                    if ($dto !== null) :
-                        if ($dto->getDocCurrency() == $curr->getId()) :
-                            echo sprintf('<option selected value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
-                        else :
-                            echo sprintf('<option value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
-                        endif;
-                    else :
-                        echo sprintf('<option value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
-                    endif;
-                endforeach
-                ;
-   	    							endif;
-
-            ?>
-   					</select>
+ <?php
+// ================
+echo $currency_option;
+// ================
+?>   											</select>
 									</div>
 
 									<label class="control-label col-sm-2">Exchange Rate:</label>
@@ -189,32 +261,12 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<select name="incoterm" class="form-control input-sm">
 											<option value="">---</option>
-       	    							<?php
-                $incoterm_list = $nmtPlugin->incotermList();
-                $incoterm_list = $nmtPlugin->incotermList();
-
-                if ($incoterm_list !== null) :
-                    foreach ($incoterm_list as $l) :
-                        /**
-                         *
-                         * @var \Application\Entity\NmtApplicationIncoterms $l ;
-                         */
-
-                        if ($dto !== null) :
-                            if ($dto->getIncoterm() == $l->getId()) :
-                                echo sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-                            else :
-                                echo sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-                            endif;
-                        else :
-                            echo sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-                        endif;
-                    endforeach
-                    ;
-       	    							endif;
-
-                ?>
-       					</select>
+<?php
+// ================
+echo $incoterm_option;
+// ================
+?>
+            							</select>
 									</div>
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
@@ -233,25 +285,11 @@ if (count($errors) > 0) {
 									<div class="col-sm-3">
 										<select name="paymentTerm" class="form-control input-sm">
 											<option value=""><?php echo $this->translate("---");?></option>
-       	    							<?php
-                $pmtTerm_list = $nmtPlugin->getPaymentTerms();
-
-                if ($pmtTerm_list !== null) :
-                    foreach ($pmtTerm_list as $l) :
-                        if ($dto !== null) :
-                            if ($dto->getPaymentTerm() == $l->getId()) :
-                                echo '<option selected value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
-                            else :
-                                echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
-                        endif;
-                    endforeach
-                    ;
-       	    							endif;
-
-                ?>
+ <?php
+// ================
+echo $paymentTerm_option;
+// ================
+?>>
        					</select>
 									</div>
 

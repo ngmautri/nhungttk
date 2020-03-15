@@ -121,8 +121,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             // do change
             $newSnapshot->lastChangeBy = $userId;
-            $newSnapshot->revisionNo ++;
-
+        
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());

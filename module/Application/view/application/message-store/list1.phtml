@@ -1,23 +1,124 @@
 <?php
 
 // echo $total_records;
+$message_log_div = "message_log_div";
+$table_body = "";
+$count = 0;
+$n = 0;
+
+$result_msg = "No record found!";
+
 if (count($list) > 0) :
+
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->minInPage, $paginator->maxInPage, $total_records);
+    }
+
     foreach ($list as $item) :
+
+        $n ++;
+
+        if ($paginator !== null) {
+            $count = $paginator->minInPage - 1 + $n;
+        } else {
+            $count = $n;
+        }
 
         /**
          *
          * @var \Application\Domain\MessageStore\MessageSnapshot $item ;
          */
-
-        echo (sprintf("Version %s: %s, %s =>", $item->revisionNo,  $item->eventName,  $item->createdOn));
-        echo ( $item->changeLog);
-        echo ("<br>");
+        $table_body = $table_body . "<tr>";
+        $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->version);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->eventName);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->createdOn);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->changeLog);
+        $table_body = $table_body . "</tr>";
     endforeach
+    ;
     ;
 endif;
 
 ?>
 
-	
 
+<div id="<?php echo $message_log_div; ?>">
 
+	<?php echo $result_msg; ?>
+	<table id="mytable26" style="font-size: 9pt; color: graytext;"
+		class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<td><b><?php echo $this->translate("#");?></b></td>
+				<td><b><?php echo $this->translate("Version");?></b></td>
+				<td><b><?php echo $this->translate("Event Name");?></b></td>
+				<td><b><?php echo $this->translate("Date");?></b></td>
+				<td><b><?php echo $this->translate("Change Log");?></b></td>
+			</tr>
+		</thead>
+		<tbody>
+		<?php echo $table_body;?>
+		</tbody>
+	</table>
+
+<?php
+
+// ===============================
+if (! is_null($paginator)) :
+
+    // change it only
+
+    $base = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+    $_connector_symbol = '&';
+
+    $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+    $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+
+    $first_js = "doPaginator('" . $first . "','$message_log_div')";
+    $last_js = "doPaginator('" . $last . "','$message_log_div')";
+
+    $p1 = ($paginator->page) - 1;
+    $p2 = ($paginator->page) + 1;
+
+    $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+    $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+    $next_js = "doPaginator('" . $next . "','$message_log_div')";
+    $prev_js = "doPaginator('" . $prev . "','$message_log_div')";
+
+    echo '<ul class="pagination pagination-sm">';
+
+    if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        // echo '<li><a href="' . $first . '"> |< </a></li>';
+        // echo '<li><a href="' . $prev . '"> < </a></li>';
+
+        echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+        echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+    }
+
+    for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+        $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+        $url_js = "doPaginator('" . $url . "','$message_log_div')";
+
+        if ($i == $paginator->page) {
+            echo '<li><a class="active" href="#">' . $i . '</a></li>';
+        } else {
+            // echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            echo '<li><a href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
+        }
+    }
+    if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        // echo '<li><a href="' . $next . '"> > </a></li>';
+        echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
+        echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
+    }
+    echo '</ul>';
+endif;
+
+    // ===============================
+?>
+
+</div>

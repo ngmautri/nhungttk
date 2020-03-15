@@ -21,6 +21,14 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     /**
      *
      * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getHeaderDTO()
+     */
+    public function getHeaderDTO($id, $token = null)
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getHeaderById()
      */
     public function getHeaderById($id, $token = null)
@@ -55,6 +63,10 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
      */
     public function getPODetailsById($id, $token = null)
     {
+        if ($id == null || $token == null) {
+            return null;
+        }
+
         $criteria = array(
             'id' => $id,
             'token' => $token
@@ -99,7 +111,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             if ($poRowDetailSnapshot == null) {
                 continue;
             }
-      
+
             /**
              *
              * @todo
@@ -222,4 +234,6 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             return null;
         }
     }
+
+  
 }

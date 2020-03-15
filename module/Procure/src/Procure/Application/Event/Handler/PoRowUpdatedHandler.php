@@ -24,7 +24,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
     public static function getSubscribedEvents()
     {
         return [
-            PoRowAdded::class => 'onPoRowUpdated'
+            PoRowUpdated::class => 'onPoRowUpdated'
         ];
     }
 

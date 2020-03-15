@@ -541,7 +541,7 @@ class PoMapper
         }
 
         if ($entity->getCompany() !== null) {
-            $snapshot->company = $entity->getCompany()->getId();
+            $snapshot->company = $entity->getCompany()->getId();            
         }
 
         // MAPPING DATE
@@ -702,9 +702,7 @@ class PoMapper
         // $snapshot->item= $entity->getItem();
         if ($entity->getItem() !== null) {
             $snapshot->item = $entity->getItem()->getId();
-
-            $snapshot->itemToken = $entity->getItem()->getToken();
-         
+            $snapshot->itemToken = $entity->getItem()->getToken();         
             $snapshot->itemName = $entity->getItem()->getItemName();
             $snapshot->itemName1 = $entity->getItem()->getItemNameForeign();
 

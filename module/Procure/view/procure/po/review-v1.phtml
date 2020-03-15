@@ -2,6 +2,10 @@
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+//var_dump($headerDTO);
+
+//echo memory_get_usage();
+
 $entity_id = null;
 $entity_token = null;
 $add_row_url = null;
@@ -476,7 +480,7 @@ echo $error_msg;
 
 <script>
 
-var data = <?php echo json_encode($po->getRowsOutPut()) ; ?>
+var data = <?php echo json_encode($headerDTO->docRowsDTO) ; ?>
     
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
@@ -748,17 +752,14 @@ $( "#vendor_name_1" ).autocomplete({
             sortDir: "down"
     };
 
-    obj.colModel = [
-   
+    obj.colModel = [   
     	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
-        
        { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
         		return '<button type="button" class="edit_btn">Edit </button>';
            }
        },
-       
        <?php endif;?>
 
 

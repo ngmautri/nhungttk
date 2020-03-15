@@ -6,21 +6,17 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
-use Procure\Domain\Service\POSpecService;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
-use Procure\Domain\Service\POPostingService;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Application\Event\Handler\EventHandlerFactory;
-use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
+use Procure\Domain\Service\POPostingService;
+use Procure\Domain\Service\POSpecService;
+use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -38,16 +34,16 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof PORowDTO) {
-            throw new \Exception("PORowDTO object not found!");
+        if (! $cmd->getDto() instanceof PORowDetailsDTO) {
+            throw new \Exception("PORowDetailsDTO object not found!");
         }
 
         /**
          *
-         * @var PORowDTO $dto ;
+         * @var PORowDetailsDTO $dto ;
          */
         $dto = $cmd->getDto();
         $notification = new Notification();
@@ -68,21 +64,28 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
         } else {
             $notification->addError("RootEntiy not given");
         }
-        
-        $entityId= null;
+
+        $localEntity = null;
+        if (isset($options['localEntity'])) {
+            $localEntity = $options['localEntity'];
+        } else {
+            $notification->addError("LocalEntity not given");
+        }
+
+        $entityId = null;
         if (isset($options['entityId'])) {
             $entityId = $options['entityId'];
         } else {
             $notification->addError("entityId not given");
         }
-        
-        $entityToken= null;
+
+        $entityToken = null;
         if (isset($options['entityToken'])) {
             $entityToken = $options['entityToken'];
         } else {
             $notification->addError("entityToken not given");
         }
-        
+
         $userId = null;
         if (isset($options['userId'])) {
             $userId = $options['userId'];
@@ -101,16 +104,20 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addError("PO #%s can not be retrieved or empty");
         }
 
+        if ($localEntity == null) {
+            $notification->addError("PO Row #%s can not be retrieved or empty");
+        }
+
         if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
         }
- 
+
         /**
          *
          * @var PORow $row ;
          */
-        $row = $rootEntity->getRowbyTokenId($entityId, $entityToken);
+        $row = $localEntity;
 
         if ($row == null) {
             $notification->addError(sprintf("PO Row #%s can not be retrieved or empty", $dto->getId()));
@@ -126,16 +133,33 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             /**
              *
              * @var PORowSnapshot $snapshot ;
+             * @var PORowSnapshot $newSnapshot ;
+             *     
              */
             $snapshot = $row->makeSnapshot();
-
-            /**
-             *
-             * @var PORowSnapshot $newSnapshot ;
-             */
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFromDTO($newSnapshot, $dto);
+            $editableProperties = [
+                "isActive",
+                "remarks",
+                "rowNumber",
+                "item",
+                "prRow",
+                "vendorItemCode",
+                "vendorItemName",
+                "docQuantity",
+                "docUnit",
+                "docUnitPrice",
+                "conversionFactor",
+                "descriptionText",
+                "taxRate"
+            ];
+
+            /*
+             * $newSnapshot->rowNumber;
+             */
+
+            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
@@ -168,12 +192,11 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
-                
 
                 foreach ($rootEntity->getRecordedEvents() as $event) {
-                    
+
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-                    
+
                     if (count($subcribers) > 0) {
                         foreach ($subcribers as $subcriber) {
                             $dispatcher->addSubscriber($subcriber);
@@ -184,7 +207,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             }
             
             
-            $m = sprintf("PO #%s updated", $rootEntity->getId());
+            $m = sprintf("PO #%s updated. Event Count #%s", $rootEntity->getId(),   count($rootEntity->getRecordedEvents()) );
             
             $notification->addSuccess($m);
             $cmd->getDoctrineEM()->commit(); // now commit

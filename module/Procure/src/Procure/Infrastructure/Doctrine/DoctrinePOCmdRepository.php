@@ -31,7 +31,7 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         /**
          *
-         * @var \Application\Entity\NmtProcurePo $entity ;
+         * @var \Application\Entity\NmtProcurePo $rootEntityDoctrine ;
          */
         $rootEntityDoctrine = $this->doctrineEM->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
 
@@ -92,6 +92,10 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         }
 
         $this->doctrineEM->persist($entity);
+        
+        $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo()+1);        
+        $this->doctrineEM->persist($rootEntityDoctrine);
+        
         $this->doctrineEM->flush();
 
         return $entity->getId();

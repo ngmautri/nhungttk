@@ -92,7 +92,7 @@ class POSnapshotAssembler
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+        $props = $reflectionClass->getProperties();
 
         $excludedProperties = array(
             "id",
@@ -128,7 +128,7 @@ class POSnapshotAssembler
             "remarks",
          );
 
-        foreach ($itemProperites as $property) {
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
 

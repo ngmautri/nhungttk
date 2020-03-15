@@ -23,6 +23,9 @@ use Procure\Application\Command\PO\AddRowCmdHandler;
 use Application\Entity\MlaUsers;
 use Procure\Application\Command\PO\UpdateRowCmd;
 use Procure\Application\Command\PO\UpdateRowCmdHandler;
+use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Domain\PurchaseOrder\GenericPO;
 
 /**
  *
@@ -449,7 +452,7 @@ class PoController extends AbstractActionController
         $form_action = "/procure/po/update-row";
         $form_title = "Update PO Row";
         $action = \Application\Model\Constants::FORM_ACTION_EDIT;
-        $viewTemplete = "procure/po/crudPORow";
+        $viewTemplete = "/procure/po/crudPORow";
 
         $prg = $this->prg($form_action, true);
 
@@ -462,20 +465,23 @@ class PoController extends AbstractActionController
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
-
-            // $entity_id = 249;
-
             $target_id = (int) $this->params()->fromQuery('target_id');
-            $token = $this->params()->fromQuery('token');
+            $target_token = $this->params()->fromQuery('token');
 
-            $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $token);
-            if ($rootDto == null) {
-                return $this->redirect()->toRoute('not_found');
+            $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+
+            $rootDTO = null;
+            $localDTO = null;
+
+            if (isset($result["rootDTO"])) {
+                $rootDTO = $result["rootDTO"];
             }
 
-            $dto = $rootDto->getRowbyTokenId($entity_id, $entity_token);
+            if (isset($result["localDTO"])) {
+                $localDTO = $result["localDTO"];
+            }
 
-            if ($dto == null) {
+            if (! $rootDTO instanceof PoDetailsDTO || ! $localDTO instanceof PORowDetailsDTO) {
                 return $this->redirect()->toRoute('not_found');
             }
 
@@ -483,8 +489,11 @@ class PoController extends AbstractActionController
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
-                'dto' => $dto,
-                'rootDto' => $rootDto,
+                'entity_token' => $entity_token,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'dto' => $localDTO,
+                'rootDto' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -494,6 +503,8 @@ class PoController extends AbstractActionController
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
+
+        // Posting
 
         $data = $prg;
 
@@ -506,20 +517,44 @@ class PoController extends AbstractActionController
          *
          * @var PoRowDTO $dto ;
          */
-        $dto = DTOFactory::createDTOFromArray($data, new PORowDTO());
+        $dto = DTOFactory::createDTOFromArray($data, new PORowDetailsDTO());
 
         $userId = $u->getId();
 
         $target_id = $data['target_id'];
         $target_token = $data['target_token'];
-
         $entity_id = $data['entity_id'];
         $entity_token = $data['entity_token'];
 
-        $rootDto = $this->purchaseOrderService->getPODetailsById($target_id, $target_token);
+        $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+
+        $rootEntity = null;
+        $localEntity = null;
+        $rootDTO = null;
+        $localDTO = null;
+
+        if (isset($result["rootEntity"])) {
+            $rootEntity = $result["rootEntity"];
+        }
+
+        if (isset($result["localEntity"])) {
+            $localEntity = $result["localEntity"];
+        }
+        if (isset($result["rootDTO"])) {
+            $rootDTO = $result["rootDTO"];
+        }
+
+        if (isset($result["localDTO"])) {
+            $localDTO = $result["localDTO"];
+        }
+
+        if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
 
         $options = [
-            "rootEntity" => $rootDto,
+            "rootEntity" => $rootEntity,
+            "localEntity" => $localEntity,
             "entityId" => $entity_id,
             "entityToken" => $entity_token,
             "userId" => $userId,
@@ -541,8 +576,12 @@ class PoController extends AbstractActionController
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
                 'dto' => $dto,
-                'rootDto' => $rootDto,
+                'rootDto' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -869,7 +908,7 @@ class PoController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();
 
-        $form_action = "/procure/po/review-1";
+        $form_action = "/procure/po/review";
         $form_title = "Review PO";
         $action = \Application\Model\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/po/crudPO";
@@ -1063,11 +1102,14 @@ class PoController extends AbstractActionController
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $token = $this->params()->fromQuery('token');
 
-            $po = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $token);
+            $po = $this->getPurchaseOrderService()->getPO($entity_id, $token);
 
             if ($po == null) {
                 return $this->redirect()->toRoute('not_found');
             }
+            // echo memory_get_usage();
+            // var_dump($po->makeDTOForGrid());
+            // echo memory_get_usage();
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -1179,6 +1221,9 @@ class PoController extends AbstractActionController
         if ($entity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+
+        // echo memory_get_usage();
+
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
             'redirectUrl' => null,

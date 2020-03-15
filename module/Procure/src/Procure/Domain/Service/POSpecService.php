@@ -224,6 +224,13 @@ class POSpecService
             // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
         }
 
+        if ($localEntity->getTaxRate() !== null) {
+            if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
+                $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
+            }
+        }
+        
+
     }
 
     /**

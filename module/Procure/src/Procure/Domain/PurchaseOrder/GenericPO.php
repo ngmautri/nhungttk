@@ -146,6 +146,7 @@ abstract class GenericPO extends AbstractPO
         $snapshot->docType = $this->docType;
         $snapshot->isDraft = 1;
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
+        $snapshot->unit = $snapshot->getDocUnit();
 
         $row = PORow::makeFromSnapshot($snapshot);
 
@@ -203,28 +204,28 @@ abstract class GenericPO extends AbstractPO
         return $rootEntityId;
     }
 
-   /**
-    * 
-    * @param string $trigger
-    * @param array $params
-    * @param PORow $row
-    * @param PoRowSnapshot $snapshot
-    * @param POSpecService $specService
-    * @param POPostingService $postingService
-    * @throws PoUpdateException
-    * @return void|\Procure\Domain\PurchaseOrder\GenericPO
-    */
+    /**
+     *
+     * @param string $trigger
+     * @param array $params
+     * @param PORow $row
+     * @param PoRowSnapshot $snapshot
+     * @param POSpecService $specService
+     * @param POPostingService $postingService
+     * @throws PoUpdateException
+     * @return void|\Procure\Domain\PurchaseOrder\GenericPO
+     */
     public function updateRowFromSnapshot($trigger, $params, PORow $row, PoRowSnapshot $snapshot, POSpecService $specService, POPostingService $postingService)
     {
-        if (! $snapshot instanceof PoRowSnapshot || !$row instanceof PORow || $specService == null || $postingService == null) {
+        if (! $snapshot instanceof PoRowSnapshot || ! $row instanceof PORow || $specService == null || $postingService == null) {
             return;
         }
 
         // quantity can not be null;
-        $snapshot->quantity = $snapshot->docQuantity;
+        $snapshot->quantity = $snapshot->getDocQuantity();
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
-        
-     
+        $snapshot->unit = $snapshot->getDocUnit();
+
         SnapshotAssembler::makeFromSnapshot($row, $snapshot);
 
         $this->validateRow($row, $specService);
@@ -234,12 +235,14 @@ abstract class GenericPO extends AbstractPO
         }
 
         $this->recordedEvents = array();
-        $rowId = $postingService->getCmdRepository()->storeRow($this, $row, false);
+        $postingService->getCmdRepository()->storeRow($this, $row, false);
 
-        if (! $rowId == null) {
-            $this->addEvent(new PoRowUpdated($this->getId(), $trigger, $params));
+        if ($this->hasErrors()) {
+            throw new PoUpdateException($this->getErrorMessage());
         }
-   
+
+        $this->addEvent(new PoRowUpdated($this->getId(), $trigger, $params));
+
         return $this;
     }
 
@@ -609,10 +612,10 @@ abstract class GenericPO extends AbstractPO
      */
     public function getRowbyTokenId($id, $token)
     {
-        if ($id == null || $token == null || $this->getDocRows() == null) {
+        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
             return null;
         }
-        
+
         $rows = $this->getDocRows();
 
         foreach ($rows as $r) {
@@ -621,6 +624,34 @@ abstract class GenericPO extends AbstractPO
             }
         }
 
+        return null;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return NULL|NULL|object
+     */
+    public function getRowDTObyTokenId($id, $token)
+    {
+        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
+            return null;
+        }
+
+        $rows = $this->getDocRows();
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var \Procure\Domain\PurchaseOrder\PoRow $r ;
+             */
+            if ($r->getId() == $id && $r->getToken() == $token) {
+                return $r->makeDTOForGrid();
+            }
+        }
+        
         return null;
     }
     

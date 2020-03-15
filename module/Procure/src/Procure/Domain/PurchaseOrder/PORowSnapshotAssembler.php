@@ -2,6 +2,8 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Procure\Application\DTO\Po\PORowDTO;
+use Zend\Form\Annotation\Object;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
 
 /**
  *
@@ -10,6 +12,10 @@ use Procure\Application\DTO\Po\PORowDTO;
  */
 class PORowSnapshotAssembler
 {
+
+    const EXCLUDED_FIELDS = 1;
+
+    const EDITABLE_FIELDS = 2;
 
     /**
      * generete fields.
@@ -65,12 +71,12 @@ class PORowSnapshotAssembler
 
     /**
      *
-     * @param PORowDTO $dto
+     * @param Object $dto
      * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
      */
-    public static function createSnapshotFromDTO(PORowDTO $dto)
+    public static function createSnapshotFromDTO($dto)
     {
-        if (! $dto instanceof PORowDTO)
+        if ($dto == null)
             return null;
 
         $snapShot = new PORowSnapshot();
@@ -91,22 +97,17 @@ class PORowSnapshotAssembler
     /**
      *
      * @param PORowSnapshot $snapShot
-     * @param PORowDTO $dto
+     * @param Object $dto
      * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
      */
-    public static function updateSnapshotFromDTO(PORowSnapshot $snapShot, PORowDTO $dto)
+    public static function updateSnapshotFromDTO(PORowSnapshot $snapShot, $dto, $editMode = self::EDITABLE_FIELDS)
     {
-        if (! $dto instanceof PORowDTO || ! $snapShot instanceof PORowSnapshot)
+        if ($dto == null || ! $snapShot instanceof PORowSnapshot)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+        $props = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
         $excludedProperties = array(
             "id",
             "uuid",
@@ -120,26 +121,90 @@ class PORowSnapshotAssembler
             "company",
             "itemType",
             "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
+            "currencyIso3",
+            "vendorName",
+            "docStatus",
+            "workflowStatus",
+            "transactionStatus",
+            "paymentStatus"
         );
 
-        // $dto->isSparepart;
+        $editableProperties = array(
+            "isActive",
+            "vendor",
+            "contractNo",
+            "contractDate",
+            "docCurrency",
+            "exchangeRate",
+            "incoterm",
+            "incotermPlace",
+            "paymentTerm",
+            "remarks"
+        );
 
-        foreach ($itemProperites as $property) {
+        /**
+         *
+         * @var PORowDetailsDTO $dto ;
+         */
+
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+            if ($editMode == self::EXCLUDED_FIELDS) {
+                if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                        $snapShot->$propertyName = null;
+                    } else {
+                        $snapShot->$propertyName = $property->getValue($dto);
+                    }
+                }
+            }
+
+            if ($editMode == self::EDITABLE_FIELDS) {
+                if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
+
+                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                        $snapShot->$propertyName = null;
+                    } else {
+                        $snapShot->$propertyName = $property->getValue($dto);
+                    }
+                }
+            }
+        }
+        return $snapShot;
+    }
+
+    /**
+     *
+     * @param PORowSnapshot $snapShot
+     * @param object $dto
+     * @param array $editableProperties
+     * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
+     */
+    public static function updateSnapshotFieldsFromDTO(PORowSnapshot $snapShot, $dto, $editableProperties)
+    {
+        if ($dto == null || ! $snapShot instanceof PORowSnapshot || $editableProperties == null)
+            return null;
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
 
                 if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                     $snapShot->$propertyName = null;
                 } else {
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
-            }
-        }
-        return $snapShot;
+                    }
+           }
+            return $snapShot;
     }
+    
 }

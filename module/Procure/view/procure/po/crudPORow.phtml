@@ -4,28 +4,25 @@
 /**@var \Procure\Application\DTO\Po\PORowDetailsDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-$target_id = null;
-$target_token = null;
+//var_dump($rootDto);
+
+//echo memory_get_usage();
+
 $message_url = null;
 $review_url = null;
 $rowNumber = null;
 
+//var_dump($rootDto);
 if ($rootDto !== null) {
     $target_id = $rootDto->getId();
     $target_token = $rootDto->getToken();
 
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $target_id, $target_token);
-    $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+   // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
     $rowNumber = $rootDto->getTotalRows() + 1;
 }
 
-$entity_id = null;
-$entity_token = null;
-if ($dto !== null) {
-    $entity_id = $dto->getId();
-    $entity_token = $dto->getToken();
-}
 
 $error_msg = "";
 if (count($errors) > 0) {
@@ -38,6 +35,8 @@ if (count($errors) > 0) {
     $error_msg = $error_msg . '</ul>';
     $error_msg = $error_msg . '</div>';
 }
+
+//echo memory_get_usage();
 
 ?>
 
@@ -97,13 +96,12 @@ if (count($errors) > 0) {
 				<ul>
 					<li><a href="#general"><?php echo $form_title;?></a></li>
 					
-		<?php
-
+<?php
 if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
     ?>
  	 	<li><a href=""<?php echo $message_url;?>"><span
 							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
-		<?php endif;?>			
+<?php endif;?>			
 				</ul>
 
 				<div id="general" style="font-size: 9pt">
@@ -127,11 +125,7 @@ echo $error_msg;
 							id="entity_id" name="entity_id" value="<?php echo $entity_id; ?>" />
 						<input type="hidden" id="entity_token" name="entity_token"
 							value="<?php echo $entity_token; ?>" />
-							
-            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-            				<input type="hidden" name="n" value="<?php echo $n;?>" />
-            			<?php endif;?>
-            			
+
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">Row Number: </label>
 							<div class="col-sm-1">
@@ -154,7 +148,7 @@ echo $error_msg;
 								<input tabindex="1" class="form-control input-sm" type="text"
 									id="pr_item_name" placeholder="Select PR item"
 									name="pr_item_name"
-									value="<?php if (!$dto== null): if($dto->getPrRow()!==null): echo $dto->getPrRow(); endif;endif;?>">
+									value="<?php if (!$dto == null): if($dto->getPrRow()!==null): echo $dto->getPrRow(); endif;endif;?>">
 								<input type="hidden" id="pr_row_id" placeholder=""
 									name="pr_row_id" value="">
 
@@ -195,8 +189,8 @@ echo $error_msg;
 							<div class="col-sm-3">
 								<input tabindex="2" class="form-control" type="text"
 									id="item_name" placeholder="Enter keyword to search item..."
-									name="item_name"
-									value="<?php if (!$dto== null): echo $dto->getItemName();endif;?>">
+									name="itemName"
+									value="<?php if (!$dto == null): echo $dto->getItemName();endif;?>">
 
 
 								<input type="hidden" id="item_id" placeholder="" name="item"
@@ -264,7 +258,7 @@ echo $error_msg;
 							<label class="control-label col-sm-2" for="inputTag">Unit:</label>
 							<div class="col-sm-3">
 								<input tabindex="5" class="form-control input-sm" type="text"
-									name="unit" id="rowUnit"
+									name="docUnit" id="rowUnit"
 									value="<?php echo (!$dto == null)? $dto->getDocUnit():"each";?>">
 							</div>
 							<label class="control-label col-sm-2" for="inputTag">Converstion
@@ -559,7 +553,6 @@ echo $error_msg;
         		  $("#item_id" ).val(<?php echo $dto->getItem();?>);      	  
         	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php echo $dto->getItem();?>&token=<?php echo $dto->getItemToken();?>');
         		  $('#item_detail').show();
-
         		  $("#pr_row_id" ).val(<?php echo $dto->getPrRow();?>);    	 	  
           	      $('#pr_row_url').text('/procure/pr-row/show1?tab_idx=0&entity_id=<?php echo $dto->getPrRow();?>');
           	      $('#pr_row_detail').show();              		  
@@ -567,19 +560,15 @@ echo $error_msg;
        	 endif
         ?>
         
+        
+        
     
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);
-    	
-    	// alert(name);
-    	
-    	// alert(target_name);
-    	var target_name_id = '#' + target_name;
+
+        var target_name_id = '#' + target_name;
     	$(target_name_id).val(name);
-    	
-    	
-    	// alert($(target_id).val());
     	$('#modal1.close').click();
     	$('#global-notice').show();
     	$('#global-notice').html('"' + name + '" selected');

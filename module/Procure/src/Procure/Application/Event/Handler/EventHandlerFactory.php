@@ -6,6 +6,10 @@ use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowUpdated;
+use Procure\Application\Event\Handler\PO\PoHeaderCreatedHandler;
+use Procure\Application\Event\Handler\PO\PoHeaderUpdatedHandler;
+use Procure\Application\Event\Handler\PO\PoRowAddedHandler;
+use Procure\Application\Event\Handler\PO\PoRowUpdatedHandler;
 
 /**
  *

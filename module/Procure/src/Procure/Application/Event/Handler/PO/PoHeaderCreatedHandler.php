@@ -1,21 +1,21 @@
 <?php
-namespace Procure\Application\Event\Handler;
+namespace Procure\Application\Event\Handler\PO;
 
 use Ramsey\Uuid\Uuid;
 use Application\Entity\MessageStore;
 use Application\Application\Event\AbstractEventHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Domain\Event\Po\PoRowAdded;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-class PoRowAddedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
-    
+
     /**
      *
      * @return string[]
@@ -23,37 +23,30 @@ class PoRowAddedHandler extends AbstractEventHandler implements EventSubscriberI
     public static function getSubscribedEvents()
     {
         return [
-            PoRowAdded::class => 'onPoRowAdded'
+            PoHeaderCreated::class => 'onCreated'
         ];
     }
-    
-  /**
-   * 
-   * @param PoRowAdded $ev
-   */
-    public function onPoRowAdded(PoRowAdded $ev)
+
+    /**
+     *
+     * @param PoHeaderCreated $ev
+     */
+    public function onCreated(PoHeaderCreated $ev)
     {
         $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
         $rootEntity = $rep->getHeaderById($ev->getTarget());
-        
+
         $class = new \ReflectionClass($rootEntity);
         $class = null;
         if ($class !== null) {
             $className = $class->getShortName();
         }
-        
-        echo $className;
-        
+
         $message = new MessageStore();
-        
-        $message->setRevisionNo($rootEntity->getRevisionNo());
-        $message->setVersion($rootEntity->getRevisionNo());
-        
-        
         $message->setEntityId($ev->getTarget());
-        $message->setEntityToken($rootEntity->getToken());
+         $message->setEntityToken($rootEntity->getToken());
         $message->setQueueName("procure.po");
-        
+
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());

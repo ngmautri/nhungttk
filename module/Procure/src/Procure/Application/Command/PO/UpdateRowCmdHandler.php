@@ -126,9 +126,6 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
         }
 
         try {
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
 
             /**
              *
@@ -175,6 +172,11 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             ];
 
             // do change
+
+            $cmd->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
             $newSnapshot->lastchangeBy = $userId;
             $newSnapshot->revisionNo ++;
 
@@ -207,7 +209,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             }
             
             
-            $m = sprintf("PO #%s updated. Event Count #%s", $rootEntity->getId(),   count($rootEntity->getRecordedEvents()) );
+            $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(),   memory_get_usage());
             
             $notification->addSuccess($m);
             $cmd->getDoctrineEM()->commit(); // now commit

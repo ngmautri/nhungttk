@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Event\Handler;
+namespace Procure\Application\Event\Handler\PO;
 
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;

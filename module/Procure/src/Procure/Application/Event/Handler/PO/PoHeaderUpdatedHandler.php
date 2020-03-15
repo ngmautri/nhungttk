@@ -1,20 +1,19 @@
 <?php
-namespace Procure\Application\Event\Handler;
+namespace Procure\Application\Event\Handler\PO;
 
+use Ramsey\Uuid\Uuid;
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
-use Procure\Domain\Event\Po\PoRowAdded;
-use Procure\Domain\Event\Po\PoRowUpdated;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Domain\Event\Po\PoHeaderUpdated;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -24,28 +23,26 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
     public static function getSubscribedEvents()
     {
         return [
-            PoRowUpdated::class => 'onPoRowUpdated'
+            PoHeaderUpdated::class => 'onUpdated'
         ];
     }
 
     /**
      *
-     * @param PoRowUpdated $ev
+     * @param PoHeaderUpdated $ev
      */
-    public function onPoRowUpdated(PoRowUpdated $ev)
+    public function onUpdated(PoHeaderUpdated $ev)
     {
         $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
         $rootEntity = $rep->getHeaderById($ev->getTarget());
 
-        $class = new \ReflectionClass($rootEntity);
-        $class = null;
-        if ($class !== null) {
-            $className = $class->getShortName();
+        if ($rootEntity == null) {
+            return;
         }
 
-        $params = $ev->getParams();
-        $trigger = $ev->getTrigger();
-
+        $params = $ev->getParams();        
+        $trigger= $ev->getTrigger();
+      
         $changeLog = null;
         $changeLog1 = array();
         if (isset($params['changeLog'])) {
@@ -72,21 +69,27 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
             }
         }
 
+        $class = new \ReflectionClass($rootEntity);
+        $class = null;
+        if ($class !== null) {
+            $className = $class->getShortName();
+        }
+
         $message = new MessageStore();
 
         $message->setRevisionNo($rootEntity->getRevisionNo());
         $message->setVersion($rootEntity->getRevisionNo());
-        $message->setTriggeredBy($trigger);
-        
-        $message->setEntityId($ev->getTarget());
-        $message->setEntityToken($rootEntity->getToken());
-        $message->setQueueName("procure.po");
-        
+
         if (! $changeLog1 == null) {
             $message->setChangeLog(json_encode($changeLog1));
         }
 
+        $message->setEntityId($ev->getTarget());
+        $message->setEntityToken($rootEntity->getToken());
+        $message->setQueueName("procure.po");
+
         $message->setClassName($className);
+        $message->setTriggeredBy($trigger);
         $message->setUuid(Uuid::uuid4());
         $message->setMsgBody(json_encode((array) $rootEntity->makeSnapshot()));
         $message->setCreatedOn(new \DateTime());

@@ -110,12 +110,7 @@ class POService extends AbstractService
      */
     public function getPOHeaderById($id, $token = null)
     {
-        $po = $this->getQueryRepository()->getHeaderById($id);
-
-        if ($po == null) {
-            return null;
-        }
-        return $po->makeHeaderDTO();
+        return $this->getQueryRepository()->getHeaderById($id,$token);
     }
 
     // ======================================================================

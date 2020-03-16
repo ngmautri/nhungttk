@@ -20,4 +20,6 @@ Interface POQueryRepositoryInterface
     public function getByUUID($uuid);
 
     public function getPODetailsById($id, $token = null);
+    
+    public function getVersion($id, $token = null);
 }

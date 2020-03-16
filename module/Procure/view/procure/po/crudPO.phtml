@@ -69,29 +69,9 @@ if (count($errors) > 0) {
     $error_msg = $error_msg . '</div>';
 }
 
-$version = '';
+$docStatus = null;
 if (! $dto == null) {
-    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $dto->getId(), $dto->getToken());
-
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
-
-    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-
-    $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-    $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/copy-from-po?source_id=%s&token=%s", $dto->getId(), $dto->getToken());
-    $ap_from_po_url = sprintf($this->baseUrl . "finance/v-invoice/copy-from-po?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-
-    $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-    $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-    $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods?target_id=%s&token=%s", $dto->getId(), $dto->getToken());
-
-    if ($dto->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
-        $hoverMode = "cell";
-    endif;
-
-    $version = $dto->getRevisionNo();
 }
 ?>
 
@@ -139,11 +119,7 @@ echo $error_msg;
 // ==================
 ?>
 
-<?php
-// ==================
-echo $version;
-// ==================
-?>
+
 	<form id="Creating_Form" class="form-horizontal"
 						action="<?php echo $form_action;?>" method="post"
 						enctype="multipart/form-data">
@@ -151,13 +127,9 @@ echo $version;
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
 						<input type="hidden" id="entity_token" name="entity_token"
-							value="<?php if (!$dto == null): echo $dto->getToken();endif;?>" />
-
-							
-            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-            				<input type="hidden" name="n" value="<?php echo $n;?>" />
-            			<?php endif;?>
-            			
+							value="<?php echo $entity_token; ?>" /> <input type="hidden"
+							name="version" value="<?php echo $version;?>" />
+	            			
            			<?php
 
             if ($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO) :
@@ -170,7 +142,7 @@ echo $version;
             			<fieldset>
 							<legend style="font-size: 9.5pt; color: gray;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php echo "Version ".  $version; ?>):</a>
 							</legend>
 							<div id="invoice_header" class="collapse in">
 								<div class="form-group margin-bottom required">
@@ -374,16 +346,14 @@ $( "#vendor_name_1" ).autocomplete({
 $( "#vendor_name_1" ).focus();
 
 <?php
-if ($dto !== null) :
-
-    if ($dto->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) :
-        ?>
+if ($docStatus == \Application\Model\Constants::DOC_STATUS_POSTED) :
+    ?>
 $("#Creating_Form :input").attr("disabled", "disabled");
 $("#remarks").attr("disabled", false);
 $("#entity_id").attr("disabled", false);
 $("#entity_token").attr("disabled", false);
 $("#submit").attr("disabled", false);
- <?php endif;endif;?>
+ <?php endif;?>
 
   
 </script>

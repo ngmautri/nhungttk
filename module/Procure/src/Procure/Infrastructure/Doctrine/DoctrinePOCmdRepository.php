@@ -220,18 +220,6 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         // Optimistic Locking
         if ($rootEntity->getId() > 0) {
-
-            /**
-             *
-             * @var \Application\Entity\NmtProcurePo $entityCK ;
-             */
-
-            $entityCK = $this->getDoctrineEM()->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
-
-            if ($rootEntity->getRevisionNo() != $entityCK->getRevisionNo()) {
-                throw new PoVersionChangedException(sprintf("PO Revsion changed from %s to %s since viewing", $rootEntity->getRevisionNo(), $entityCK->getRevisionNo()));
-            }
-
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
         }
 

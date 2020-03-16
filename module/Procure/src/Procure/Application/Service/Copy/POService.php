@@ -188,14 +188,12 @@ class POService extends AbstractService
             $newSnapshot->lastChangeOn = new \DateTime();
             $newSnapshot->revisionNo ++;
 
-      
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($this->getDoctrineEM());
             $specService = new POSpecService($sharedSpecificationFactory, $fxService);
-            
+
             $newRootEntity = PODoc::updateFromSnapshot($newSnapshot, $specService);
-                       
 
             if ($notification->hasErrors()) {
                 return $notification;
@@ -204,9 +202,6 @@ class POService extends AbstractService
             $this->getCmdRepository()->storeHeader($newRootEntity);
 
             $m = sprintf("PO #%s updated", $rootEntityId);
-            
-         
-            
 
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
@@ -226,9 +221,9 @@ class POService extends AbstractService
      * @param int $id
      * @param int $outputStrategy
      */
-    public function getPODetailsById($id, $token =null, $outputStrategy = null)
+    public function getPODetailsById($id, $token = null, $outputStrategy = null)
     {
-        $po = $this->getQueryRepository()->getPODetailsById($id,$token);
+        $po = $this->getQueryRepository()->getPODetailsById($id, $token);
 
         if ($po == null) {
             return null;
@@ -255,28 +250,37 @@ class POService extends AbstractService
 
         return $po;
     }
-    
-    
+
     /**
      *
      * @param int $id
      * @param int $outputStrategy
      */
-    public function getPO($id, $token =null)
+    public function getPO($id, $token = null)
     {
-        return $this->getQueryRepository()->getPODetailsById($id,$token);
-        
+        return $this->getQueryRepository()->getPODetailsById($id, $token);
     }
-    
+
     /**
-     *
+     * 
      * @param int $id
-     * @param int $outputStrategy
+     * @param string $token
+     * @return NULL|void|\Procure\Domain\PurchaseOrder\PODoc
      */
     public function getPOHeaderById($id, $token = null)
     {
+        return $this->getQueryRepository()->getHeaderById($id, $token);
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param int $outputStrategy
+     */
+    public function getPOHeaderDTOById($id, $token = null)
+    {
         $po = $this->getQueryRepository()->getHeaderById($id);
-        
+
         if ($po == null) {
             return null;
         }

@@ -4,25 +4,23 @@
 /**@var \Procure\Application\DTO\Po\PORowDetailsDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-//var_dump($rootDto);
+// var_dump($rootDto);
 
-//echo memory_get_usage();
-
+// echo memory_get_usage();
 $message_url = null;
 $review_url = null;
 $rowNumber = null;
 
-//var_dump($rootDto);
+// var_dump($rootDto);
 if ($rootDto !== null) {
     $target_id = $rootDto->getId();
     $target_token = $rootDto->getToken();
 
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $target_id, $target_token);
-   // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+    // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
     $rowNumber = $rootDto->getTotalRows() + 1;
 }
-
 
 $error_msg = "";
 if (count($errors) > 0) {
@@ -36,7 +34,7 @@ if (count($errors) > 0) {
     $error_msg = $error_msg . '</div>';
 }
 
-//echo memory_get_usage();
+// echo memory_get_usage();
 
 ?>
 
@@ -122,8 +120,10 @@ echo $error_msg;
 							id="target_id" name="target_id" value="<?php echo $target_id; ?>" />
 						<input type="hidden" id="target_token" name="target_token"
 							value="<?php echo $target_token; ?>" /> <input type="hidden"
-							id="entity_id" name="entity_id" value="<?php echo $entity_id; ?>" />
-						<input type="hidden" id="entity_token" name="entity_token"
+							name="version" value="<?php echo $version;?>" /> <input
+							type="hidden" id="entity_id" name="entity_id"
+							value="<?php echo $entity_id; ?>" /> <input type="hidden"
+							id="entity_token" name="entity_token"
 							value="<?php echo $entity_token; ?>" />
 
 						<div class="form-group margin-bottom">
@@ -555,10 +555,12 @@ echo $error_msg;
         		  $('#item_detail').show();
         		  $("#pr_row_id" ).val(<?php echo $dto->getPrRow();?>);    	 	  
           	      $('#pr_row_url').text('/procure/pr-row/show1?tab_idx=0&entity_id=<?php echo $dto->getPrRow();?>');
-          	      $('#pr_row_detail').show();              		  
+          	      $('#pr_row_detail').show();
         <?php
        	 endif
         ?>
+        
+        
         
         
         

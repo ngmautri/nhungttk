@@ -17,6 +17,7 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Application\Event\Handler\EventHandlerFactory;
+use Procure\Domain\Exception\PoVersionChangedException;
 
 /**
  *
@@ -54,11 +55,32 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
         $options = $cmd->getOptions();
 
+        /**
+         *
+         * @var PODoc $rootEntity ;
+         */
+        $rootEntity = null;
+        if (isset($options['rootEntity'])) {
+            $rootEntity = $options['rootEntity'];
+        } else {
+            $notification->addError("Root Entity not given");
+        }
+
         $rootEntityId = null;
         if (isset($options['rootEntityId'])) {
             $rootEntityId = $options['rootEntityId'];
         } else {
             $notification->addError("Current entityId not given");
+        }
+
+        $rootEntityToken = null;
+        if (isset($options['rootEntityToken'])) {
+            $rootEntityToken = $options['rootEntityToken'];
+        }
+
+        $version = null;
+        if (isset($options['version'])) {
+            $version = $options['version'];
         }
 
         $userId = null;
@@ -75,20 +97,12 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addError("Trigger not identifable!");
         }
 
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
+        if ($rootEntity == null) {
+            $notification->addError(sprintf("PO #%s (%s) can not be retrieved or empty", $rootEntityId, $rootEntityToken));
             return;
         }
 
-        /**
-         *
-         * @var PODoc $rootEntity ;
-         */
-        $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
-        $rootEntity = $queryRep->getHeaderById($rootEntityId);
-
-        if ($rootEntity == null) {
-            $notification->addError(sprintf("PO #%s can not be retrieved or empty", $rootEntityId));
+        if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
         }
@@ -121,7 +135,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             // do change
             $newSnapshot->lastChangeBy = $userId;
-        
+
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
@@ -131,6 +145,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
+
             $rootEntityId = $newRootEntity->updateHeader($trigger, $params, $specService, $postingService);
 
             // event dispatc
@@ -141,7 +156,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
                 foreach ($newRootEntity->getRecordedEvents() as $event) {
 
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-                    
+
                     if (count($subcribers) > 0) {
                         foreach ($subcribers as $subcriber) {
                             $dispatcher->addSubscriber($subcriber);
@@ -150,12 +165,24 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
-            
 
             $m = sprintf("PO #%s updated", $rootEntityId);
 
             $notification->addSuccess($m);
+            
+            
+            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            
+            
+            // time to check version - concurency
+            $currentVersion = $queryRep->getVersion($rootEntityId)-1;
+            
+            // revision numner has been increased.
+            if($version != $currentVersion){
+                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
+            }
             $cmd->getDoctrineEM()->commit(); // now commit
+            
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());

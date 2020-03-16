@@ -57,6 +57,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
 
         $changeLog = null;
         $changeLog1 = array();
+        $changeLog_tmp = array();
         
         $changeLog1['rowId'] = $rowId;
         $changeLog1['rowToken'] = $rowToken;
@@ -81,10 +82,12 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
                         ;
                     }
 
-                    $changeLog1['changeLog'] = $changeLog2;
+                    $changeLog_tmp[] = $changeLog2;
                 }
             }
         }
+        
+        $changeLog1['changeLog'] = $changeLog_tmp;
 
         $message = new MessageStore();
 

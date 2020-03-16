@@ -266,7 +266,8 @@ class PoController extends AbstractActionController
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'entity_token' => null,                
+                'entity_token' => null,
+                'version' => null,
                 'dto' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -316,7 +317,8 @@ class PoController extends AbstractActionController
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'entity_token' => null,                
+                'entity_token' => null,
+                'version' => null,
                 'dto' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -370,6 +372,7 @@ class PoController extends AbstractActionController
                 'redirectUrl' => null,
                 'dto' => null,
                 'rootDto' => $rootDto,
+                'version' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -425,6 +428,7 @@ class PoController extends AbstractActionController
                 'redirectUrl' => null,
                 'dto' => $dto,
                 'rootDto' => $rootDto,
+                'version' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -494,8 +498,9 @@ class PoController extends AbstractActionController
                 'entity_token' => $entity_token,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                'dto' => $localDTO,
+                'version' => $rootDTO->getRevisionNo(),
                 'rootDto' => $rootDTO,
+                'dto' => $localDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -527,6 +532,7 @@ class PoController extends AbstractActionController
         $target_token = $data['target_token'];
         $entity_id = $data['entity_id'];
         $entity_token = $data['entity_token'];
+        $version = $data['version'];
 
         $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
 
@@ -559,6 +565,7 @@ class PoController extends AbstractActionController
             "localEntity" => $localEntity,
             "entityId" => $entity_id,
             "entityToken" => $entity_token,
+            "version" => $version,
             "userId" => $userId,
             "trigger" => __METHOD__
         ];
@@ -582,6 +589,7 @@ class PoController extends AbstractActionController
                 'entity_token' => $entity_token,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
+                'version' => $version,
                 'dto' => $dto,
                 'rootDto' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
@@ -701,7 +709,7 @@ class PoController extends AbstractActionController
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $token = $this->params()->fromQuery('token');
-            $dto = $this->purchaseOrderService->getPOHeaderById($entity_id);
+            $dto = $this->purchaseOrderService->getPOHeaderById($entity_id, $token);
 
             if ($dto == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -711,7 +719,9 @@ class PoController extends AbstractActionController
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
+                'entity_token' => $token,
                 'dto' => $dto,
+                'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -733,9 +743,21 @@ class PoController extends AbstractActionController
 
         $userId = $u->getId();
         $entity_id = $data['entity_id'];
+        $entity_token = $data['entity_token'];
+        $version = $data['version'];
+        
+        $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
+        
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        
 
         $options = [
+            "rootEntity" => $rootEntity,            
             "rootEntityId" => $entity_id,
+            "rootEntityToken" => $entity_token,
+            "version" => $version,
             "userId" => $userId,
             "trigger" => __METHOD__
         ];
@@ -756,7 +778,9 @@ class PoController extends AbstractActionController
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
                 'dto' => $dto,
+                'version' => $rootEntity->getRevisionNo(), // get current version.
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

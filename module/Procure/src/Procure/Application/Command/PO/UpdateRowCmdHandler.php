@@ -17,6 +17,8 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Procure\Infrastructure\Doctrine\DoctrineQRCmdRepository;
+use Procure\Domain\Exception\PoVersionChangedException;
 
 /**
  *
@@ -63,6 +65,11 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $rootEntity = $options['rootEntity'];
         } else {
             $notification->addError("RootEntiy not given");
+        }
+
+        $version = null;
+        if (isset($options['version'])) {
+            $version = $options['version'];
         }
 
         $localEntity = null;
@@ -207,11 +214,23 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
-            
-            
-            $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(),   memory_get_usage());
-            
+
+            $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
+
             $notification->addSuccess($m);
+
+            $queryRep = new DoctrineQRCmdRepository($cmd->getDoctrineEM());
+            
+            
+            // time to check version - concurency
+            $currentVersion = $queryRep->getVersion($entityId)-1;
+            
+            // revision numner has been increased.
+            if($version != $currentVersion){
+                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
+            }
+            
+            
             $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
             

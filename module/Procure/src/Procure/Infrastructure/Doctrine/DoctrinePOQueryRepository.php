@@ -21,6 +21,29 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
     /**
      *
      * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getVersion()
+     */
+    public function getVersion($id, $token = null)
+    {
+        $criteria = array(
+            'id' => $id
+        );
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePo $doctrineEntity ;
+         */
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
+        if ($doctrineEntity !== null) {
+            return $doctrineEntity->getRevisionNo();
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getHeaderDTO()
      */
     public function getHeaderDTO($id, $token = null)
@@ -33,9 +56,16 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
      */
     public function getHeaderById($id, $token = null)
     {
-        $criteria = array(
-            'id' => $id
-        );
+        if ($token == null) {
+            $criteria = array(
+                'id' => $id
+            );
+        } else {
+            $criteria = array(
+                'id' => $id,
+                'token' => $token,
+            );
+        }
 
         $po = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
         $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
@@ -234,6 +264,6 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             return null;
         }
     }
-
+   
   
 }

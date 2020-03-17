@@ -370,12 +370,12 @@ class PoController extends AbstractActionController
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
-                
+
                 'entity_id' => null,
                 'entity_token' => null,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                
+
                 'dto' => null,
                 'rootDto' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
@@ -408,9 +408,9 @@ class PoController extends AbstractActionController
         $target_id = $data['target_id'];
         $target_token = $data['target_token'];
         $version = $data['version'];
-        
+
         $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
-        
+
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
@@ -442,7 +442,7 @@ class PoController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'target_id' => $target_id,
-                'target_token' => $target_token,                
+                'target_token' => $target_token,
                 'dto' => $dto,
                 'rootDto' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
@@ -762,16 +762,15 @@ class PoController extends AbstractActionController
         $entity_id = $data['entity_id'];
         $entity_token = $data['entity_token'];
         $version = $data['version'];
-        
+
         $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
-        
+
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
-        
 
         $options = [
-            "rootEntity" => $rootEntity,            
+            "rootEntity" => $rootEntity,
             "rootEntityId" => $entity_id,
             "rootEntityToken" => $entity_token,
             "version" => $version,
@@ -1143,11 +1142,11 @@ class PoController extends AbstractActionController
             // probably this is the first time the form was loaded
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $token = $this->params()->fromQuery('token');
+            $entity_token = $this->params()->fromQuery('token');
 
-            $po = $this->getPurchaseOrderService()->getPO($entity_id, $token);
+            $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
 
-            if ($po == null) {
+            if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
             // echo memory_get_usage();
@@ -1158,8 +1157,10 @@ class PoController extends AbstractActionController
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
-                'po' => $po,
-                'headerDTO' => $po->makeDTOForGrid(),
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -1313,9 +1314,9 @@ class PoController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
-        $po = $this->getPurchaseOrderService()->getPODetailsById($id, $token);
+        $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($id, $token);
 
-        if ($po == null) {
+        if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
 
@@ -1324,13 +1325,14 @@ class PoController extends AbstractActionController
             'form_action' => "/procure/po/view",
             'form_title' => $nmtPlugin->translate("Show PO"),
             'redirectUrl' => null,
-            'headerDTO' => $po->makeDTOForGrid(),
-            'po' => $po,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'nmtPlugin' => $nmtPlugin
         ));
 
-        $viewModel->setTemplate("procure/po/view");
+        $viewModel->setTemplate("procure/po/review-v1");
         return $viewModel;
     }
 

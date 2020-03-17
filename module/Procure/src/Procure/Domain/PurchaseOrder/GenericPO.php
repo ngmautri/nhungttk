@@ -518,15 +518,17 @@ abstract class GenericPO extends AbstractPO
     {
         $dto = new PoDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
-
+        $rowDTOList = [];
         if (count($this->docRows) > 0) {
             foreach ($this->docRows as $row) {
 
                 if ($row instanceof PORow) {
-                    $dto->docRowsDTO[] = $row->makeDTOForGrid();
+                    $rowDTOList[] = $row->makeDTOForGrid();
                 }
             }
         }
+        
+        $dto->docRowsDTO = $rowDTOList;
         return $dto;
     }
 

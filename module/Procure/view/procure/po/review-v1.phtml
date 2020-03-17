@@ -1,13 +1,11 @@
 <?php
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
+/**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-//var_dump($headerDTO);
+// var_dump($headerDTO);
 
-//echo memory_get_usage();
-
-$entity_id = null;
-$entity_token = null;
+// echo memory_get_usage();
 $add_row_url = null;
 
 $picture_url = null;
@@ -480,7 +478,7 @@ echo $error_msg;
 
 <script>
 
-var data = <?php echo json_encode($headerDTO->docRowsDTO) ; ?>
+var data = <?php echo json_encode($rowOutput) ; ?>
     
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 

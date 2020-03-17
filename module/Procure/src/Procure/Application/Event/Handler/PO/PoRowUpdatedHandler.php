@@ -37,7 +37,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
         $rootEntity = $rep->getHeaderById($ev->getTarget());
 
         $class = new \ReflectionClass($rootEntity);
-        $class = null;
+        $className = null;
         if ($class !== null) {
             $className = $class->getShortName();
         }
@@ -49,7 +49,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
         if (isset($params['rowId'])) {
             $rowId = $params['rowId'];
         }
-        
+
         $rowToken = null;
         if (isset($params['rowToken'])) {
             $rowToken = $params['rowToken'];
@@ -58,11 +58,10 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
         $changeLog = null;
         $changeLog1 = array();
         $changeLog_tmp = array();
-        
+
         $changeLog1['rowId'] = $rowId;
         $changeLog1['rowToken'] = $rowToken;
-        
-        
+
         if (isset($params['changeLog'])) {
             $changeLog = $params['changeLog'];
 
@@ -86,7 +85,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
                 }
             }
         }
-        
+
         $changeLog1['changeLog'] = $changeLog_tmp;
 
         $message = new MessageStore();

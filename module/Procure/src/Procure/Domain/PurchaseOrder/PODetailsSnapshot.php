@@ -219,4 +219,12 @@ class PODetailsSnapshot extends POSnapshot
     {
         return $this->completedRows;
     }
+    /**
+     * @return mixed
+     */
+    public function getOpenAPAmount()
+    {
+        return $this->openAPAmount;
+    }
+
 }

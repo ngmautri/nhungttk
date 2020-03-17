@@ -2,14 +2,12 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Procure\Domain\PurchaseOrder\GenericPO;
-use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
-use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Ramsey;
-use Procure\Infrastructure\Mapper\PoMapper;
+use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PODocStatus;
-use Procure\Domain\Exception\PoVersionChangedException;
+use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
+use Procure\Infrastructure\Mapper\PoMapper;
 
 /**
  *

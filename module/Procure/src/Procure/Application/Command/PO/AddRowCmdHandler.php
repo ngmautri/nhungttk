@@ -17,6 +17,9 @@ use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Application\Event\Handler\EventHandlerFactory;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\Exception\PoVersionChangedException;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
 
 /**
  *
@@ -37,8 +40,8 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
             throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof PORowDTO) {
-            throw new \Exception("PORowDTO object not found!");
+        if (! $cmd->getDto() instanceof PORowDetailsDTO) {
+            throw new \Exception("PORowDetailsDTO object not found!");
         }
 
         /**
@@ -46,10 +49,6 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
          * @var PoDTO $dto ;
          */
         $dto = $cmd->getDto();
-
-        if (! $dto instanceof PoRowDTO) {
-            throw new \Exception("PoDTO object not found!");
-        }
 
         $notification = new Notification();
 
@@ -66,30 +65,27 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addError("user ID not given");
         }
 
-        $rootEntityId = null;
-        if (isset($options['rootEntityId'])) {
-            $rootEntityId = $options['rootEntityId'];
+        /**
+         *
+         * @var PODoc $rootEntity ;
+         */
+        $rootEntity = null;
+        if (isset($options['rootEntity'])) {
+            $rootEntity = $options['rootEntity'];
         } else {
-            $notification->addError("rootEntityId ID not given");
+            $notification->addError("rootEntity not given");
         }
-
-        $rootEntityToken = null;
-        if (isset($options['rootEntityToken'])) {
-            $rootEntityToken = $options['rootEntityToken'];
-        } else {
-            $rootEntityToken->addError("$rootEntityToken ID not given");
-        }
-
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
-            return;
-        }
-
-        $queryRepository = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
-        $rootEntity = $queryRepository->getPODetailsById($rootEntityId, $rootEntityToken);
 
         if ($rootEntity == null) {
             $notification->addError("Root Entity not found");
+        }
+
+        $version = null;
+        if (isset($options['version'])) {
+            $version = $options['version'];
+        }
+
+        if ($notification->hasErrors()) {
             $dto->setNotification($notification);
             return;
         }
@@ -120,9 +116,8 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
             $params = [];
 
             $localEntityId = $rootEntity->storeRow(__METHOD__, $params, $snapshot, $specService, $postingService);
-            var_dump($rootEntity->getRecordedEvents());
-            
-            // event dispatc
+
+            // event dispatch
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
@@ -143,7 +138,14 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
             $m = sprintf("[OK] PO Row # %s created", $localEntityId);
             $notification->addSuccess($m);
             
-       
+            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            
+            // revision numner has been increased.
+            $currentVersion = $queryRep->getVersion($rootEntity->getId())-1;
+            if($version != $currentVersion){
+                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
+            }
+            
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->commit();

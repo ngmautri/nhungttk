@@ -2,7 +2,6 @@
 namespace Application\Application\Specification\Zend;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Zend\I18n\Validator\IsFloat;
 
 /**
  *

@@ -19,6 +19,8 @@ use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Infrastructure\Doctrine\DoctrineQRCmdRepository;
 use Procure\Domain\Exception\PoVersionChangedException;
+use Procure\Infrastructure\Doctrine\DoctrineQRQueryRepository;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  *
@@ -86,13 +88,6 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $notification->addError("entityId not given");
         }
 
-        $entityToken = null;
-        if (isset($options['entityToken'])) {
-            $entityToken = $options['entityToken'];
-        } else {
-            $notification->addError("entityToken not given");
-        }
-
         $userId = null;
         if (isset($options['userId'])) {
             $userId = $options['userId'];
@@ -120,26 +115,16 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             return;
         }
 
-        /**
-         *
-         * @var PORow $row ;
-         */
-        $row = $localEntity;
-
-        if ($row == null) {
-            $notification->addError(sprintf("PO Row #%s can not be retrieved or empty", $dto->getId()));
-            $dto->setNotification($notification);
-            return;
-        }
-
         try {
 
             /**
              *
              * @var PORowSnapshot $snapshot ;
              * @var PORowSnapshot $newSnapshot ;
+             * @var PORow $row ;
              *     
              */
+            $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
@@ -219,13 +204,9 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             $notification->addSuccess($m);
 
-            $queryRep = new DoctrineQRCmdRepository($cmd->getDoctrineEM());
-            
-            
-            // time to check version - concurency
-            $currentVersion = $queryRep->getVersion($entityId)-1;
-            
-            // revision numner has been increased.
+            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());            
+            // revision numner hasnt been increased.
+            $currentVersion = $queryRep->getVersion($rootEntity->getId())-1;
             if($version != $currentVersion){
                 throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
             }

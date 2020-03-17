@@ -25,7 +25,7 @@ use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class POService extends AbstractService
+class POService1 extends AbstractService
 {
 
     private $cmdRepository;

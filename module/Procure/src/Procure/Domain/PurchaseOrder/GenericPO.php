@@ -158,11 +158,12 @@ abstract class GenericPO extends AbstractPO
 
         $this->recordedEvents = array();
         $localEntityId = $postingService->getCmdRepository()->storeRow($this, $row);
-
+        
         if (! $localEntityId == null) {
 
             $params = [
-                "rowId" => $localEntityId
+                "rowId" => $localEntityId,
+                "rowToken" => "",                
             ];
 
             $this->addEvent(new PoRowAdded($this->getId(), $trigger, $params));

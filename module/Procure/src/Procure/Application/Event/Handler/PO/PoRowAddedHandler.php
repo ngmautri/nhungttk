@@ -41,7 +41,24 @@ class PoRowAddedHandler extends AbstractEventHandler implements EventSubscriberI
             $className = $class->getShortName();
         }
         
-        echo $className;
+        $params = $ev->getParams();
+        $trigger = $ev->getTrigger();
+        
+        
+        $rowId = null;
+        if (isset($params['rowId'])) {
+            $rowId = $params['rowId'];
+        }
+        
+        $rowToken = null;
+        if (isset($params['rowToken'])) {
+            $rowToken = $params['rowToken'];
+        }
+        
+        $changeLog1 = array();
+        
+        $changeLog1['rowId'] = $rowId;
+        $changeLog1['rowToken'] = $rowToken;
         
         $message = new MessageStore();
         
@@ -52,6 +69,11 @@ class PoRowAddedHandler extends AbstractEventHandler implements EventSubscriberI
         $message->setEntityId($ev->getTarget());
         $message->setEntityToken($rootEntity->getToken());
         $message->setQueueName("procure.po");
+        
+        if (! $changeLog1 == null) {
+            $message->setChangeLog(json_encode($changeLog1));
+        }
+        
         
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());

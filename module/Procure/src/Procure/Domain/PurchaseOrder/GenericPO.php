@@ -148,6 +148,18 @@ abstract class GenericPO extends AbstractPO
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
         $snapshot->unit = $snapshot->getDocUnit();
 
+        /**
+         *
+         * @todo: need to verify snapshot
+         */
+        $netAmount = $snapshot->getDocUnitPrice() * $snapshot->getDocQuantity();
+        $taxAmount = $netAmount * $snapshot->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $snapshot->netAmount = $netAmount;
+        $snapshot->taxAmount = $taxAmount;
+        $snapshot->grossAmount = $grosAmount;
+
         $row = PORow::makeFromSnapshot($snapshot);
 
         $this->validateRow($row, $specService, false);
@@ -158,12 +170,12 @@ abstract class GenericPO extends AbstractPO
 
         $this->recordedEvents = array();
         $localEntityId = $postingService->getCmdRepository()->storeRow($this, $row);
-        
+
         if (! $localEntityId == null) {
 
             $params = [
                 "rowId" => $localEntityId,
-                "rowToken" => "",                
+                "rowToken" => ""
             ];
 
             $this->addEvent(new PoRowAdded($this->getId(), $trigger, $params));
@@ -226,6 +238,18 @@ abstract class GenericPO extends AbstractPO
         $snapshot->quantity = $snapshot->getDocQuantity();
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
         $snapshot->unit = $snapshot->getDocUnit();
+
+        /**
+         *
+         * @todo: need to verify snapshot
+         */
+        $netAmount = $snapshot->getDocUnitPrice() * $snapshot->getDocQuantity();
+        $taxAmount = $netAmount * $snapshot->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $snapshot->netAmount = $netAmount;
+        $snapshot->taxAmount = $taxAmount;
+        $snapshot->grossAmount = $grosAmount;
 
         SnapshotAssembler::makeFromSnapshot($row, $snapshot);
 
@@ -527,7 +551,7 @@ abstract class GenericPO extends AbstractPO
                 }
             }
         }
-        
+
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
     }

@@ -174,8 +174,8 @@ class POSpecService
      * @param PORow $localEntity
      * @throws \Procure\Domain\Exception\InvalidArgumentException
      */
-    public function doGeneralRowValiation(GenericPO $rootEntity, PORow $localEntity)
     {
+    public function doGeneralRowValiation(GenericPO $rootEntity, PORow $localEntity)
         if (! $rootEntity instanceof GenericPO) {
             throw new \Procure\Domain\Exception\InvalidArgumentException('Root entity not given!');
         }

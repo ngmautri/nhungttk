@@ -53,10 +53,11 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
          * @var \Application\Entity\NmtProcurePoRow $entity ;
          */
         if ($localEntity->getId() > 0) {
+
             $entity = $this->doctrineEM->find("\Application\Entity\NmtProcurePoRow", $localEntity->getId());
 
             if ($entity == null) {
-                throw new InvalidArgumentException("Transaction row can't be retrieved.");
+                throw new InvalidArgumentException("Local Entity can't be retrieved.");
             }
 
             if ($entity->getPo() == null) {
@@ -66,19 +67,11 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
             if (! $entity->getPo()->getId() == $rootEntity->getId()) {
                 throw new InvalidArgumentException("PO row is corrupted");
             }
-
-            $entity->setLastChangeOn(new \Datetime());
-            if ($entity->getToken() == null) {
-                $entity->setToken($entity->getUuid());
-            }
         } else {
 
             $entity = new \Application\Entity\NmtProcurePoRow();
-            // $entity->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
-            $entity->setCreatedOn(new \Datetime());
+            $entity->setPo($rootEntityDoctrine);
         }
-
-        $entity->setPo($rootEntityDoctrine);
 
         $entity = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
@@ -93,10 +86,13 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
         $this->doctrineEM->persist($rootEntityDoctrine);
-
         $this->doctrineEM->flush();
 
-        return $entity->getId();
+        if ($snapshot->getId() == null) {
+            $snapshot->id = $entity->getId();
+        }
+
+        return $snapshot;
     }
 
     /**
@@ -176,7 +172,10 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
             throw new InvalidArgumentException("Root entity is empty");
         }
 
-        // create snapshot
+        /**
+         *
+         * @var \Procure\Domain\PurchaseOrder\POSnapshot $snapshot ;
+         */
         $snapshot = $rootEntity->makeSnapshot();
         if ($snapshot == null) {
             throw new InvalidArgumentException("Snapshot not created!");
@@ -194,23 +193,15 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
                 throw new InvalidArgumentException("Entity not found.");
             }
 
-            $entity->setLastChangeOn(new \DateTime());
+            // lagency.
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
             }
         } else {
             $entity = new \Application\Entity\NmtProcurePo();
-            $entity->setCreatedOn(new \DateTime());
         }
 
         $entity = PoMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
-
-        if ($isPosting) {
-            $entity->setLastChangeOn(new \DateTime());
-            $entity->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
-            $entity->setIsDraft(0);
-            $entity->setIsPosted(1);
-        }
 
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));
@@ -223,7 +214,10 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-        return $entity->getId();
+
+        // get ID;
+        $snapshot->id = $entity->getId();
+        return $snapshot;
     }
 
     /**

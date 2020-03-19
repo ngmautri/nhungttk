@@ -205,7 +205,21 @@ class PORow extends AbstractEntity
     private function __construct()
     {}
 
-   
+    /**
+     *
+     * @return \Procure\Domain\PurchaseOrder\PORow
+     */
+    public function calculateRow()
+    {
+        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+        $taxAmount = $netAmount * $this->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $this->netAmount = $netAmount;
+        $this->taxAmount = $taxAmount;
+        $this->grossAmount = $grosAmount;
+        return $this;
+    }
 
     /**
      *
@@ -1096,6 +1110,7 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()

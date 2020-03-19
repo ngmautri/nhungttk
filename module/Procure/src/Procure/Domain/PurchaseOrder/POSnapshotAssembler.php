@@ -127,6 +127,8 @@ class POSnapshotAssembler
             "paymentTerm",
             "remarks",
          );
+        
+        //$snapShot->getPay;
 
         foreach ($props as $property) {
             $property->setAccessible(true);

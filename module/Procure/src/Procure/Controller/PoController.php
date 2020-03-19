@@ -331,7 +331,7 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/procure/po/list";
+        $redirectUrl = sprintf("/procure/po/add-row?token=%s&target_id=%s", $dto->getToken(), $dto->getId());
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -808,8 +808,8 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/procure/po/list";
-
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+        
         return $this->redirect()->toUrl($redirectUrl);
     }
 

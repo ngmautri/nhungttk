@@ -33,7 +33,18 @@ class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
             
             //var_dump(Inflector::singularize('cakes'));
 
-            PoDTOAssembler::createDTOProperities();
+            //PoDTOAssembler::createDTOProperities();
+            $docQty = "redsfds";
+            $docUnitPrice = "sdasdredsfds";
+            $taxRate ="asdsad212";
+            
+            $netAmount = $docUnitPrice* $docQty;
+            $taxAmount = $netAmount * $taxRate;
+            $grosAmount = $netAmount + $taxAmount;
+            
+            
+            var_dump($grosAmount);
+            
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

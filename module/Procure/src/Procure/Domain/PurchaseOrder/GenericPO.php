@@ -14,6 +14,8 @@ use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Ramsey\Uuid\Uuid;
 use Procure\Domain\Event\Po\PoRowUpdated;
+use Application\Domain\Shared\Constants;
+use Procure\Domain\Exception\PoRowException;
 
 /**
  *
@@ -51,12 +53,14 @@ abstract class GenericPO extends AbstractPO
 
     /**
      *
+     * @param string $trigger
+     * @param array $params
      * @param POSpecService $specService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
-     * @return int
+     * @return POSnapshot
      */
-    public function storeHeader($trigger, $params, POSpecService $specService, POPostingService $postingService)
+    public function createHeader($trigger, $params, POSpecService $specService, POPostingService $postingService)
     {
         if ($specService == null) {
             throw new InvalidArgumentException("Specification service not found");
@@ -66,28 +70,43 @@ abstract class GenericPO extends AbstractPO
             throw new InvalidArgumentException("Posting service not found");
         }
 
+        $createdDate = new \Datetime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setDocStatus(PODocStatus::DOC_STATUS_DRAFT);
+        $this->setDocType(PODocType::PO);
+
+        $this->setIsActive(1);
+        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        $this->setRevisionNo(1);
+
         $this->validateHeader($specService);
 
         if ($this->hasErrors()) {
             throw new InvalidArgumentException($this->getNotification()->errorMessage());
         }
+        $this->setUuid(UUId::uuid4());
+        $this->setToken($this->getUuid());
 
         $this->recordedEvents = array();
-        $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
+        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($this, false);
 
-        if (! $rootEntityId == null) {
-            $this->addEvent(new PoHeaderCreated($rootEntityId, $trigger, $params));
+        if ($rootSnapshot == null) {
+            throw new PoUpdateException(sprintf("Error orcured when creating PO #%s", $this->getId()));
         }
 
-        return $rootEntityId;
+        $this->addEvent(new PoHeaderCreated($rootSnapshot, $trigger, $params));
+
+        return $rootSnapshot;
     }
 
     /**
      *
+     * @param string $trigger
+     * @param array $params
      * @param POSpecService $specService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
-     * @return int
+     * @return \Procure\Domain\PurchaseOrder\POSnapshot
      */
     public function updateHeader($trigger, $params, POSpecService $specService, POPostingService $postingService)
     {
@@ -99,6 +118,12 @@ abstract class GenericPO extends AbstractPO
             throw new InvalidArgumentException("Posting service not found");
         }
 
+        $changedDate = new \Datetime();
+        $this->setLastchangeOn(date_format($changedDate, 'Y-m-d H:i:s'));
+        if ($this->getSysNumber() == null) {
+            $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        }
+
         $this->validateHeader($specService);
 
         if ($this->hasErrors()) {
@@ -106,13 +131,20 @@ abstract class GenericPO extends AbstractPO
         }
 
         $this->recordedEvents = array();
-        $rootEntityId = $postingService->getCmdRepository()->storeHeader($this, false);
 
-        if (! $rootEntityId == null) {
-            $this->addEvent(new PoHeaderUpdated($rootEntityId, $trigger, $params));
+        /**
+         *
+         * @var POSnapshot $rootSnapshort
+         */
+        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($this, false);
+
+        if ($rootSnapshot == null) {
+            throw new PoUpdateException(sprintf("Error orcured when updating PO #%s", $this->getId()));
         }
 
-        return $rootEntityId;
+        $this->addEvent(new PoHeaderUpdated($rootSnapshot, $trigger, $params));
+
+        return $rootSnapshot;
     }
 
     /**
@@ -122,7 +154,7 @@ abstract class GenericPO extends AbstractPO
      * @throws InvalidArgumentException
      * @return int
      */
-    public function storeRow($trigger, $params, PORowSnapshot $snapshot, POSpecService $specService, POPostingService $postingService)
+    public function createRow($trigger, $params, PORowSnapshot $snapshot, POSpecService $specService, POPostingService $postingService)
     {
         if ($snapshot == null) {
             throw new InvalidArgumentException("PORowSnapshot not found");
@@ -135,7 +167,10 @@ abstract class GenericPO extends AbstractPO
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-
+        
+        $createdDate = new \Datetime();
+   
+        $snapshot->createdOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->revisionNo = 0;
 
@@ -161,27 +196,33 @@ abstract class GenericPO extends AbstractPO
         $snapshot->grossAmount = $grosAmount;
 
         $row = PORow::makeFromSnapshot($snapshot);
-
+        
         $this->validateRow($row, $specService, false);
 
         if ($this->hasErrors()) {
-            throw new InvalidArgumentException($this->getNotification()->errorMessage());
+            throw new PoRowException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
-        $localEntityId = $postingService->getCmdRepository()->storeRow($this, $row);
 
-        if (! $localEntityId == null) {
+        /**
+         *
+         * @var PORowSnapshot $localSnapshot
+         */
+        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
-            $params = [
-                "rowId" => $localEntityId,
-                "rowToken" => ""
-            ];
-
-            $this->addEvent(new PoRowAdded($this->getId(), $trigger, $params));
+        if ($localSnapshot == null) {
+            throw new PoRowException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
         }
 
-        return $localEntityId;
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $this->addEvent(new PoRowAdded($this->getId(), $trigger, $params));
+
+        return $localSnapshot;
     }
 
     /**

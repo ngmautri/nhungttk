@@ -58,6 +58,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
         /**
          *
          * @var PODoc $rootEntity ;
+         * @var POSnapshot $rootSnapshot ;
          */
         $rootEntity = null;
         if (isset($options['rootEntity'])) {
@@ -146,7 +147,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
 
-            $rootEntityId = $newRootEntity->updateHeader($trigger, $params, $specService, $postingService);
+            $rootSnapshot = $newRootEntity->updateHeader($trigger, $params, $specService, $postingService);
 
             // event dispatc
             if (count($newRootEntity->getRecordedEvents() > 0)) {
@@ -166,7 +167,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("PO #%s updated", $rootEntityId);
+            $m = sprintf("PO #%s updated", $rootSnapshot->getId());
 
             $notification->addSuccess($m);
             

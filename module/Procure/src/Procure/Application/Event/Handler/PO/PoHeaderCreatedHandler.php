@@ -7,6 +7,7 @@ use Application\Application\Event\AbstractEventHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 
 /**
  *
@@ -33,24 +34,35 @@ class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscr
      */
     public function onCreated(PoHeaderCreated $ev)
     {
-        $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
-        $rootEntity = $rep->getHeaderById($ev->getTarget());
 
-        $class = new \ReflectionClass($rootEntity);
+        /**
+         *
+         * @var POSnapshot $rootSnapshot ;
+         */
+        $rootSnapshot = $ev->getTarget();
+
+        if ($rootSnapshot == null) {
+            return;
+        }
+
+        $class = new \ReflectionClass($rootSnapshot);
         $class = null;
         if ($class !== null) {
             $className = $class->getShortName();
         }
 
         $message = new MessageStore();
-        $message->setEntityId($ev->getTarget());
-         $message->setEntityToken($rootEntity->getToken());
+        
+        $message->setRevisionNo($rootSnapshot->getRevisionNo());
+        $message->setVersion($rootSnapshot->getRevisionNo());
+        $message->setEntityId($rootSnapshot->getId());
+        $message->setEntityToken($rootSnapshot->getToken());
         $message->setQueueName("procure.po");
 
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());
-        $message->setMsgBody(json_encode((array) $rootEntity->makeSnapshot()));
+        $message->setMsgBody(json_encode((array) $rootSnapshot));
         $message->setCreatedOn(new \DateTime());
         $message->setEventName(get_class($ev));
         $this->getDoctrineEM()->persist($message);

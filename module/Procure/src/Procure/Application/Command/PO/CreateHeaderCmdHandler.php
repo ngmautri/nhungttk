@@ -18,6 +18,7 @@ use Procure\Application\Event\Handler\EventHandlerFactory;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Procure\Domain\Service\POPostingService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Application\Model\Constants;
 
 /**
  *
@@ -98,7 +99,6 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
         $dto->company = $companyId;
         $dto->createdBy = $userId;
-        $dto->docStatus = PODocStatus::DOC_STATUS_DRAFT;
         $dto->currency = $dto->getDocCurrency();
         $dto->localCurrency = $company->getDefaultCurrency();
         $params = [];
@@ -108,6 +108,8 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             /**
              *
              * @var POSnapshot $snapshot ;
+             * @var POSnapshot $rootSnapshot ;
+             * @var PODoc $rootEntity ;
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
             $rootEntity = PODoc::makeFromSnapshot($snapshot);
@@ -124,11 +126,13 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
                 ->getConnection()
                 ->beginTransaction(); // suspend auto-commit
 
-            $rootEntityId = $rootEntity->storeHeader($trigger, $params, $specService, $postingService);
+            $rootSnapshot = $rootEntity->createHeader($trigger, $params, $specService, $postingService);
+            $dto->id = $rootSnapshot->getId();
+            $dto->token = $rootSnapshot->getToken();
 
             // $rootEntityId = $rep->storeHeader($entityRoot);
 
-            $m = sprintf("[OK] PO # %s created", $rootEntityId);
+            $m = sprintf("[OK] PO # %s created", $dto->getId());
             $notification->addSuccess($m);
 
             // event dispatc

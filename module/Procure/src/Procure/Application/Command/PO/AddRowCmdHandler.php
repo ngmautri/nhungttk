@@ -115,7 +115,7 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
 
             $params = [];
 
-            $localEntityId = $rootEntity->storeRow(__METHOD__, $params, $snapshot, $specService, $postingService);
+            $localSnapshot = $rootEntity->createRow(__METHOD__, $params, $snapshot, $specService, $postingService);
 
             // event dispatch
             if (count($rootEntity->getRecordedEvents() > 0)) {
@@ -135,7 +135,7 @@ class AddRowCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("[OK] PO Row # %s created", $localEntityId);
+            $m = sprintf("[OK] PO Row # %s created", $localSnapshot->getId());
             $notification->addSuccess($m);
             
             $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());

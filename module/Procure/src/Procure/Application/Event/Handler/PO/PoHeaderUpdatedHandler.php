@@ -7,6 +7,7 @@ use Application\Entity\MessageStore;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 
 /**
  *
@@ -33,16 +34,19 @@ class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscr
      */
     public function onUpdated(PoHeaderUpdated $ev)
     {
-        $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
-        $rootEntity = $rep->getHeaderById($ev->getTarget());
+        /**
+         *
+         * @var POSnapshot $rootSnapshot ;
+         */
+        $rootSnapshot = $ev->getTarget();
 
-        if ($rootEntity == null) {
+        if ($rootSnapshot == null) {
             return;
         }
 
-        $params = $ev->getParams();        
-        $trigger= $ev->getTrigger();
-      
+        $params = $ev->getParams();
+        $trigger = $ev->getTrigger();
+
         $changeLog = null;
         $changeLog1 = array();
         if (isset($params['changeLog'])) {
@@ -69,7 +73,7 @@ class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscr
             }
         }
 
-        $class = new \ReflectionClass($rootEntity);
+        $class = new \ReflectionClass($rootSnapshot);
         $class = null;
         if ($class !== null) {
             $className = $class->getShortName();
@@ -77,21 +81,21 @@ class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscr
 
         $message = new MessageStore();
 
-        $message->setRevisionNo($rootEntity->getRevisionNo());
-        $message->setVersion($rootEntity->getRevisionNo());
+        $message->setRevisionNo($rootSnapshot->getRevisionNo());
+        $message->setVersion($rootSnapshot->getRevisionNo());
 
         if (! $changeLog1 == null) {
             $message->setChangeLog(json_encode($changeLog1));
         }
 
-        $message->setEntityId($ev->getTarget());
-        $message->setEntityToken($rootEntity->getToken());
+        $message->setEntityId($rootSnapshot->getId());
+        $message->setEntityToken($rootSnapshot->getToken());
         $message->setQueueName("procure.po");
 
         $message->setClassName($className);
         $message->setTriggeredBy($trigger);
         $message->setUuid(Uuid::uuid4());
-        $message->setMsgBody(json_encode((array) $rootEntity->makeSnapshot()));
+        $message->setMsgBody(json_encode((array) $rootSnapshot));
         $message->setCreatedOn(new \DateTime());
         $message->setEventName(get_class($ev));
         $this->getDoctrineEM()->persist($message);

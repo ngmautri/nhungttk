@@ -93,9 +93,13 @@ class POSpecService
             }
 
             // ==== CK Contract DATE =======
-            if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($rootEntity->getContractDate())) {
+
+            $spec = $this->sharedSpecificationFactory->getDateSpecification();
+            if (! $spec->isSatisfiedBy($rootEntity->getContractDate())) {
                 $rootEntity->addError("Contract date is not correct or empty");
             }
+            
+            
 
             // ==== CK CONTRACT NO =======
             if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($rootEntity->getContractNo())) {
@@ -174,8 +178,8 @@ class POSpecService
      * @param PORow $localEntity
      * @throws \Procure\Domain\Exception\InvalidArgumentException
      */
-    {
     public function doGeneralRowValiation(GenericPO $rootEntity, PORow $localEntity)
+    {
         if (! $rootEntity instanceof GenericPO) {
             throw new \Procure\Domain\Exception\InvalidArgumentException('Root entity not given!');
         }
@@ -224,7 +228,7 @@ class POSpecService
             // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
         }
 
-        if (!$localEntity->getTaxRate() == null ) {
+        if (! $localEntity->getTaxRate() == null) {
             if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
                 $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
             }

@@ -122,11 +122,9 @@ class PoMapper
         }
 
         // $entity->setId($snapshot->id);
-        $entity->setToken($snapshot->token);
-        
-        
+        $entity->setToken($snapshot->token);      
         $entity->setInvoiceNo($snapshot->invoiceNo);
-         $entity->setExchangeRate($snapshot->exchangeRate);
+        $entity->setExchangeRate($snapshot->exchangeRate);
         $entity->setRemarks($snapshot->remarks);
         $entity->setCurrentState($snapshot->currentState);
         $entity->setIsActive($snapshot->isActive);

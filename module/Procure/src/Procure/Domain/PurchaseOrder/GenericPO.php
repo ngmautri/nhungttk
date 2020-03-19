@@ -16,6 +16,9 @@ use Ramsey\Uuid\Uuid;
 use Procure\Domain\Event\Po\PoRowUpdated;
 use Application\Domain\Shared\Constants;
 use Procure\Domain\Exception\PoRowException;
+use Procure\Domain\Exception\PoInvalidArgumentException;
+use module\Procure\src\Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use module\Procure\src\Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 
 /**
  *
@@ -39,12 +42,6 @@ abstract class GenericPO extends AbstractPO
 
     abstract protected function raiseEvent();
 
-    abstract protected function specificHeaderValidation(POSpecService $specService, $isPosting = false);
-
-    abstract protected function specificRowValidation(PORow $row, POSpecService $specService, $isPosting = false);
-
-    abstract protected function specificValidation(POSpecService $specService, $isPosting = false);
-
     abstract protected function preReserve(POSpecService $specService, POPostingService $postingService);
 
     abstract protected function doReverse(POSpecService $specService, POPostingService $postingService);
@@ -55,19 +52,21 @@ abstract class GenericPO extends AbstractPO
      *
      * @param string $trigger
      * @param array $params
-     * @param POSpecService $specService
+     * @param HeaderValidatorCollection $headerValidators
      * @param POPostingService $postingService
+     * @throws PoInvalidArgumentException
      * @throws InvalidArgumentException
-     * @return POSnapshot
+     * @throws PoUpdateException
+     * @return unknown
      */
-    public function createHeader($trigger, $params, POSpecService $specService, POPostingService $postingService)
+    public function createHeader($trigger, $params, HeaderValidatorCollection $headerValidators, POPostingService $postingService)
     {
-        if ($specService == null) {
-            throw new InvalidArgumentException("Specification service not found");
+        if (! $headerValidators instanceof HeaderValidatorCollection) {
+            throw new PoInvalidArgumentException("Validator collection not given!");
         }
 
         if ($postingService == null) {
-            throw new InvalidArgumentException("Posting service not found");
+            throw new PoInvalidArgumentException("Posting service not found");
         }
 
         $createdDate = new \Datetime();
@@ -79,7 +78,7 @@ abstract class GenericPO extends AbstractPO
         $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $this->setRevisionNo(1);
 
-        $this->validateHeader($specService);
+        $headerValidators->validate($this);
 
         if ($this->hasErrors()) {
             throw new InvalidArgumentException($this->getNotification()->errorMessage());
@@ -167,9 +166,9 @@ abstract class GenericPO extends AbstractPO
         if ($postingService == null) {
             throw new InvalidArgumentException("Posting service not found");
         }
-        
+
         $createdDate = new \Datetime();
-   
+
         $snapshot->createdOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $snapshot->quantity = $snapshot->docQuantity;
         $snapshot->revisionNo = 0;
@@ -196,7 +195,7 @@ abstract class GenericPO extends AbstractPO
         $snapshot->grossAmount = $grosAmount;
 
         $row = PORow::makeFromSnapshot($snapshot);
-        
+
         $this->validateRow($row, $specService, false);
 
         if ($this->hasErrors()) {
@@ -448,55 +447,24 @@ abstract class GenericPO extends AbstractPO
 
     /**
      *
-     * @param POSpecService $specService
+     * @param HeaderValidatorCollection $headerValidators
      * @param boolean $isPosting
      */
-    public function validateHeader(POSpecService $specService, $isPosting = false)
+    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
     {
         try {
 
-            if ($specService == null) {
-                $this->addError("Specification service not found");
+            if (! $headerValidators instanceof HeaderValidatorCollection) {
+                throw new PoInvalidArgumentException("Validator collection not given!");
             }
 
-            // general validation done
-            $this->generalHeaderValidation($specService, $isPosting);
+            $headerValidators->validate($this);
 
-            if ($this->hasErrors()) {
-                return;
-            }
-
-            // Check and set exchange rate
-            // if ($isPosting) {
             $fxRate = $specService->getFxService()->checkAndReturnFX($this->getDocCurrency(), $this->getLocalCurrency(), $this->getExchangeRate());
             $this->exchangeRate = $fxRate;
-            // }
-
-            // specific validation - template method
-            $this->specificHeaderValidation($specService, $isPosting);
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
         }
-    }
-
-    /**
-     *
-     * @param POSpecService $specService
-     * @param boolean $isPosting
-     * @return GenericPO
-     */
-    protected function generalHeaderValidation(POSpecService $specService, $isPosting = false)
-    {
-        if ($specService == null) {
-            $this->addError("Specification not found");
-            return;
-        }
-
-        /**
-         *
-         * @var POSpecService $specService ;
-         */
-        $specService->doGeneralHeaderValiation($this);
     }
 
     /**
@@ -505,20 +473,20 @@ abstract class GenericPO extends AbstractPO
      * @param POSpecService $specService
      * @param boolean $isPosting
      */
-    public function validateRow(PORow $row, POSpecService $specService, $isPosting = false)
+    public function validateRow(PORow $row, RowValidatorCollection $rowValidators, POSpecService $specService, $isPosting = false)
     {
         try {
+
+            if (! $rowValidators instanceof RowValidatorCollection) {
+                throw new PoInvalidArgumentException("Row Validator collection not given!");
+            }
 
             if ($specService == null) {
                 $this->addError("Specification service not found");
                 return;
             }
 
-            // general validation done
-            $this->generalRowValidation($row, $specService, $isPosting);
-
-            // specific validation
-            $this->specificRowValidation($row, $specService, $isPosting);
+            $rowValidators->validate($this, $row);
 
             if ($row->hasErrors()) {
                 $this->addErrorArray($row->getErrors());
@@ -526,22 +494,6 @@ abstract class GenericPO extends AbstractPO
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
         }
-    }
-
-    /**
-     *
-     * @param PORow $row
-     * @param POSpecService $specService
-     * @param boolean $isPosting
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
-    protected function generalRowValidation(PORow $row, POSpecService $specService, $isPosting = false)
-    {
-        if ($specService == null) {
-            $this->addError("Specification not found");
-            return;
-        }
-        $specService->doGeneralRowValiation($this, $row, $isPosting);
     }
 
     /**

@@ -2,23 +2,26 @@
 namespace Procure\Application\Command\PO;
 
 use Application\Notification;
+use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
+use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
-use Procure\Application\Service\FXService;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\Service\POSpecService;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
-use Application\Application\Command\AbstractDoctrineCmd;
+use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\PoCreateException;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\Service\POPostingService;
+use Procure\Domain\Service\POSpecService;
+use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Application\Model\Constants;
+use module\Procure\src\Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use module\Procure\src\Procure\Domain\PurchaseOrder\Validator\GeneralHeaderValidator;
 
 /**
  *
@@ -36,74 +39,49 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not found!", get_class($cmd)));
-        }
-
-        if ($cmd->getDto() == null) {
-            throw new \Exception("DTO object not found!");
+            throw new PoCreateException(sprintf("% not found!", get_class($cmd)));
         }
 
         /**
          *
          * @var PoDTO $dto ;
+         * @var PoCreateOptions $options ;
          */
         $dto = $cmd->getDto();
-
-        if (! $dto instanceof PoDTO) {
-            throw new \Exception("PoDTO object not found!");
-        }
-
-        $notification = new Notification();
-
-        if ($cmd->getOptions() == null) {
-            $notification->addError("No Options given");
-        }
-
         $options = $cmd->getOptions();
 
-        $companyId = null;
-        if (isset($options['companyId'])) {
-            $companyId = $options['companyId'];
-        } else {
-            $notification->addError("Company ID not given");
+        if (! $dto instanceof PoDTO) {
+            throw new PoCreateException("PoDTO object not found!");
         }
 
-        $userId = null;
-        if (isset($options['userId'])) {
-            $userId = $options['userId'];
-        } else {
-            $notification->addError("user ID not given");
+        if (! $options instanceof CommandOptions) {
+            throw new PoCreateException("No Options given. Pls check configuration!");
         }
-
-        $trigger = null;
-        if (isset($options['trigger'])) {
-            $trigger = $options['trigger'];
-        } else {
-            $notification->addError("Trigger not identifable!");
-        }
-
-        $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
-        $company = $companyQueryRepository->getById($companyId);
-
-        if ($company == null) {
-            $notification->addError("Company not found");
-            return;
-        }
-
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
-            return;
-        }
-
-        // ====================
-
-        $dto->company = $companyId;
-        $dto->createdBy = $userId;
-        $dto->currency = $dto->getDocCurrency();
-        $dto->localCurrency = $company->getDefaultCurrency();
-        $params = [];
 
         try {
+
+            $notification = new Notification();
+
+            $companyId = $options->getCompanyId();
+            $userId = $options->getUserId();
+            $trigger = $options->getTriggeredBy();
+
+            $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
+            $company = $companyQueryRepository->getById($companyId);
+
+            if ($company == null) {
+                $notification->addError("Company not found");
+                $dto->setNotification($notification);
+                return;
+            }
+
+            // ====================
+
+            $dto->company = $companyId;
+            $dto->createdBy = $userId;
+            $dto->currency = $dto->getDocCurrency();
+            $dto->localCurrency = $company->getDefaultCurrency();
+            $params = [];
 
             /**
              *
@@ -114,10 +92,14 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
             $rootEntity = PODoc::makeFromSnapshot($snapshot);
 
+            $headerValidators = new HeaderValidatorCollection();
+
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            $specService = new POSpecService($sharedSpecFactory, $fxService);
+            $validator = new GeneralHeaderValidator($sharedSpecFactory, $fxService);
+
+            $headerValidators->add($validator);
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
@@ -126,7 +108,8 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
                 ->getConnection()
                 ->beginTransaction(); // suspend auto-commit
 
-            $rootSnapshot = $rootEntity->createHeader($trigger, $params, $specService, $postingService);
+            $rootSnapshot = $rootEntity->createHeader($trigger, $params, $headerValidators, $postingService);
+
             $dto->id = $rootSnapshot->getId();
             $dto->token = $rootSnapshot->getToken();
 

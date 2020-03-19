@@ -5,6 +5,7 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Doctrine\ORM\EntityManager;
 use Application\Domain\Shared\Command\CommandHandlerInterface;
 use Application\Domain\Shared\AbstractDTO;
+use Application\Domain\Shared\Command\CommandOptions;
 
 /**
  *
@@ -33,6 +34,24 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     
     /**
      *
+     * @param EntityManager $doctrineEM
+     * @param CommandOptions $inputData
+     * @param CommandHandlerInterface $handler
+     * @throws \Exception
+     */
+    public function __construct(EntityManager $doctrineEM, AbstractDTO $dto, CommandOptions $options, CommandHandlerInterface $handler = null)
+    {
+        if ($doctrineEM == null) {
+            throw new \Exception("Entity Manager not given!");
+        }
+        $this->doctrineEM = $doctrineEM;
+        $this->dto = $dto;
+        $this->handler = $handler;
+        $this->options = $options;
+    }
+    
+    /**
+     *
      * {@inheritDoc}
      * @see \Application\Domain\Shared\Command\CommandInterface::execute()
      */
@@ -45,13 +64,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         $this->handler->run($this);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
+  
 
     /**
      * @return mixed
@@ -61,14 +74,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         return $this->dto;
     }
 
-    /**
-     * @param mixed $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
-
+  
     /**
      *
      * @return mixed
@@ -78,33 +84,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         return $this->handler;
     }
 
-    /**
-     *
-     * @param mixed $handler
-     */
-    protected function setHandler($handler)
-    {
-        $this->handler = $handler;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @param array $inputData
-     * @param CommandHandlerInterface $handler
-     * @throws \Exception
-     */
-    public function __construct(EntityManager $doctrineEM, AbstractDTO $dto, array $options, CommandHandlerInterface $handler = null)
-    {
-        if ($doctrineEM == null) {
-            throw new \Exception("Entity Manager not given!");
-        }
-        $this->doctrineEM = $doctrineEM;
-        $this->dto = $dto;
-        $this->handler = $handler;
-        $this->options = $options;
-    }
-
+  
     public function load()
     {}
 
@@ -200,6 +180,14 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     {
         $this->id = $id;
     }
+    /**
+     * @return \Application\Domain\Shared\Command\CommandOptions
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
 
   
 }

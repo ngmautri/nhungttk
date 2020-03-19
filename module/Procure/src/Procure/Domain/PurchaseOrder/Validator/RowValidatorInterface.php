@@ -8,6 +8,6 @@ namespace module\Procure\src\Procure\Domain\PurchaseOrder\Validator;
  */
 interface RowValidatorInterface
 {
-    public function validate($rootEntity, $localSnapshot);
+    public function validate($rootEntity, $localEntity);
 }
 

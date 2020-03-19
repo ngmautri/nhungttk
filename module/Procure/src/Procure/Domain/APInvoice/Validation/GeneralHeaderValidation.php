@@ -20,7 +20,7 @@ class GeneralHeaderValidation
      * @param Notification $notification
      * @return \Application\Notification
      */
-    public function doValidation(APInvoiceSpecificationService $specificationService, Notification $notification)
+    public function doValidation(APIN $specificationService, Notification $notification)
     {
         /**
          *

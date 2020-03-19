@@ -2,7 +2,6 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\Event\Po\POPostedEvent;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
@@ -80,8 +79,6 @@ class PODoc extends GenericPO
         return $instance;
     }
 
-   
-
     /**
      *
      * {@inheritdoc}
@@ -126,9 +123,7 @@ class PODoc extends GenericPO
      * @see \Procure\Domain\PurchaseOrder\GenericPO::raiseEvent()
      */
     protected function raiseEvent()
-    {
-        $this->recordedEvents[] = new POPostedEvent();
-    }
+    {}
 
     protected function afterPost(POSpecService $specService, POPostingService $postingService)
     {}
@@ -141,16 +136,8 @@ class PODoc extends GenericPO
 
     protected function preReserve(POSpecService $specService, POPostingService $postingService)
     {}
-
-    protected function specificHeaderValidation(POSpecService $specService, $isPosting = false)
-    {}
-
-    protected function specificValidation(POSpecService $specService, $isPosting = false)
-    {}
-
+  
     protected function afterReserve(POSpecService $specService, POPostingService $postingService)
     {}
 
-    protected function specificRowValidation(PORow $row, POSpecService $specService, $isPosting = false)
-    {}
 }

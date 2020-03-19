@@ -1,31 +1,32 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Notification;
 use Application\Domain\Shared\DTOFactory;
+use Application\Entity\MlaUsers;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Procure\Application\Command\PO\AddRowCmd;
+use Procure\Application\Command\PO\AddRowCmdHandler;
+use Procure\Application\Command\PO\CreateHeaderCmd;
+use Procure\Application\Command\PO\CreateHeaderCmdHandler;
+use Procure\Application\Command\PO\EditHeaderCmd;
+use Procure\Application\Command\PO\EditHeaderCmdHandler;
+use Procure\Application\Command\PO\UpdateRowCmd;
+use Procure\Application\Command\PO\UpdateRowCmdHandler;
+use Procure\Application\Command\PO\Options\PoCreateOptions;
+use Procure\Application\DTO\Po\PORowDTO;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\PO\POService;
+use Procure\Domain\Exception\PoCreateException;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Procure\Application\Command\PO\CreateHeaderCmd;
-use Procure\Application\Command\PO\CreateHeaderCmdHandler;
-use Application\Notification;
-use Procure\Application\Command\PO\EditHeaderCmd;
-use Procure\Application\Command\PO\EditHeaderCmdHandler;
-use Procure\Application\DTO\Po\PORowDTO;
-use Procure\Application\Command\PO\AddRowCmd;
-use Procure\Application\Command\PO\AddRowCmdHandler;
-use Application\Entity\MlaUsers;
-use Procure\Application\Command\PO\UpdateRowCmd;
-use Procure\Application\Command\PO\UpdateRowCmdHandler;
-use Procure\Application\DTO\Po\PoDetailsDTO;
-use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Domain\PurchaseOrder\GenericPO;
 
 /**
  *
@@ -279,34 +280,28 @@ class PoController extends AbstractActionController
             return $viewModel;
         }
 
-        $data = $prg;
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        /**
-         *
-         * @var PoDTO $dto ;
-         */
-        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-
-        $userId = $u->getId();
-        $companyId = $u->getCompany()->getId();
-
-        $options = [
-            "companyId" => $companyId,
-            "userId" => $userId,
-            "trigger" => __METHOD__
-        ];
-
-        $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, new CreateHeaderCmdHandler());
-
         try {
+
+            $data = $prg;
+
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $u ;
+             * @var PoDTO $dto ;
+             */
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+            $userId = $u->getId();
+            $companyId = $u->getCompany()->getId();
+
+            $options = new PoCreateOptions($companyId, $userId, __METHOD__);
+            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, new CreateHeaderCmdHandler());
+
             $cmd->execute();
             $notification = $dto->getNotification();
-        } catch (\Exception $e) {
+        } catch (PoCreateException $e) {
 
             $notification = new Notification();
             $notification->addError($e->getMessage());
@@ -809,7 +804,7 @@ class PoController extends AbstractActionController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
-        
+
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -1404,7 +1399,7 @@ class PoController extends AbstractActionController
         $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();

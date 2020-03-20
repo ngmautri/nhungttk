@@ -1,5 +1,5 @@
 <?php
-namespace module\Procure\src\Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\PurchaseOrder\Validator;
 
 /**
  *

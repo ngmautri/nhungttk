@@ -16,12 +16,13 @@ use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseOrder\Validator\GeneralHeaderValidator;
+use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use module\Procure\src\Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
-use module\Procure\src\Procure\Domain\PurchaseOrder\Validator\GeneralHeaderValidator;
+use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
+use Procure\Domain\Service\SharedService;
 
 /**
  *
@@ -55,7 +56,7 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
         }
 
         if (! $options instanceof CommandOptions) {
-            throw new PoCreateException("No Options given. Pls check configuration!");
+            throw new PoCreateException("No Options given. Pls check command configuration!");
         }
 
         try {
@@ -64,7 +65,6 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             $companyId = $options->getCompanyId();
             $userId = $options->getUserId();
-            $trigger = $options->getTriggeredBy();
 
             $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
             $company = $companyQueryRepository->getById($companyId);
@@ -77,11 +77,14 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
 
             // ====================
 
+            $cmd->getDoctrineEM()
+                ->getConnection()
+                ->beginTransaction(); // suspend auto-commit
+
             $dto->company = $companyId;
             $dto->createdBy = $userId;
             $dto->currency = $dto->getDocCurrency();
             $dto->localCurrency = $company->getDefaultCurrency();
-            $params = [];
 
             /**
              *
@@ -90,42 +93,35 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
              * @var PODoc $rootEntity ;
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
-            $rootEntity = PODoc::makeFromSnapshot($snapshot);
 
             $headerValidators = new HeaderValidatorCollection();
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            $validator = new GeneralHeaderValidator($sharedSpecFactory, $fxService);
-
+            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
+            $rootEntity = PODoc::createFrom($snapshot, $options, $headerValidators, $sharedService, $postingService);
 
-            $rootSnapshot = $rootEntity->createHeader($trigger, $params, $headerValidators, $postingService);
-
-            $dto->id = $rootSnapshot->getId();
-            $dto->token = $rootSnapshot->getToken();
-
-            // $rootEntityId = $rep->storeHeader($entityRoot);
+            $dto->id = $rootEntity->getId();
+            $dto->token = $rootEntity->getToken();
 
             $m = sprintf("[OK] PO # %s created", $dto->getId());
             $notification->addSuccess($m);
 
-            // event dispatc
+            // event dispatcher
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
 
                 foreach ($rootEntity->getRecordedEvents() as $event) {
 
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event),$cmd->getDoctrineEM());
+                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
 
                     if (count($subcribers) > 0) {
                         foreach ($subcribers as $subcriber) {

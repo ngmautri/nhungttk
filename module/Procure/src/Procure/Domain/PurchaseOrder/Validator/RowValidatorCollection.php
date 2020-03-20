@@ -1,5 +1,5 @@
 <?php
-namespace module\Procure\src\Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Procure\Domain\Exception\PoInvalidArgumentException;
 
@@ -19,8 +19,8 @@ class RowValidatorCollection implements RowValidatorInterface
 
     public function add(RowValidatorInterface $validator)
     {
-        if (! $validator instanceof HeaderValidatorInterface) {
-            throw new PoInvalidArgumentException("Po Row Validator is required!");
+        if (! $validator instanceof RowValidatorInterface) {
+            throw new PoInvalidArgumentException(sprintf("Po Row Validator is required! %s ", get_class($this)));
         }
 
         $this->validators[] = $validator;
@@ -29,7 +29,7 @@ class RowValidatorCollection implements RowValidatorInterface
     /**
      *
      * {@inheritdoc}
-     * @see \module\Procure\src\Procure\Domain\PurchaseOrder\Validator\RowValidatorInterface::validate()
+     * @see \Procure\Domain\PurchaseOrder\Validator\RowValidatorInterface::validate()
      */
     public function validate($rootEntity, $localEntity)
     {

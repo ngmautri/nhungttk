@@ -206,10 +206,10 @@ class PORow extends AbstractEntity
     {}
 
     /**
-     *
+     * this should be called when validated.
      * @return \Procure\Domain\PurchaseOrder\PORow
      */
-    public function calculateRow()
+    public function refresh()
     {
         $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
         $taxAmount = $netAmount * $this->getTaxRate();
@@ -267,8 +267,9 @@ class PORow extends AbstractEntity
      */
     public static function makeFromSnapshot(PORowSnapshot $snapshot)
     {
-        if (! $snapshot instanceof PORowSnapshot)
-            return;
+        if (! $snapshot instanceof PORowSnapshot) {
+            return null;
+        }
 
         $instance = new self();
 

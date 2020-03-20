@@ -18,6 +18,12 @@ use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Domain\Exception\PoVersionChangedException;
+use Procure\Application\Command\PO\Options\PoUpdateOptions;
+use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
+use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\Service\SharedService;
 
 /**
  *
@@ -45,70 +51,34 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
         /**
          *
          * @var PoDTO $dto ;
+         * @var PODoc $rootEntity ;
+         * @var POSnapshot $rootSnapshot ;
+         * @var PoUpdateOptions $options ;
+         *     
          */
+        $options = $cmd->getOptions();
         $dto = $cmd->getDto();
-        $notification = new Notification();
 
-        if ($cmd->getOptions() == null) {
-            $notification->addError("No Options given");
+        if (! $options instanceof PoUpdateOptions) {
+            throw new PoUpdateException("No Options given. Pls check command configuration!");
+        }
+
+        if (! $dto instanceof PoDTO) {
+            throw new PoUpdateException("PoDTO object not found!");
         }
 
         $options = $cmd->getOptions();
 
-        /**
-         *
-         * @var PODoc $rootEntity ;
-         * @var POSnapshot $rootSnapshot ;
-         */
-        $rootEntity = null;
-        if (isset($options['rootEntity'])) {
-            $rootEntity = $options['rootEntity'];
-        } else {
-            $notification->addError("Root Entity not given");
-        }
-
-        $rootEntityId = null;
-        if (isset($options['rootEntityId'])) {
-            $rootEntityId = $options['rootEntityId'];
-        } else {
-            $notification->addError("Current entityId not given");
-        }
-
-        $rootEntityToken = null;
-        if (isset($options['rootEntityToken'])) {
-            $rootEntityToken = $options['rootEntityToken'];
-        }
-
-        $version = null;
-        if (isset($options['version'])) {
-            $version = $options['version'];
-        }
-
-        $userId = null;
-        if (isset($options['userId'])) {
-            $userId = $options['userId'];
-        } else {
-            $notification->addError("user ID not given");
-        }
-
-        $trigger = null;
-        if (isset($options['trigger'])) {
-            $trigger = $options['trigger'];
-        } else {
-            $notification->addError("Trigger not identifable!");
-        }
-
-        if ($rootEntity == null) {
-            $notification->addError(sprintf("PO #%s (%s) can not be retrieved or empty", $rootEntityId, $rootEntityToken));
-            return;
-        }
-
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
-            return;
-        }
+        $rootEntity = $options->getRootEntity();
+        $rootEntityId = $options->getRootEntityId();
+        $rootEntityToken = $options->getRootEntityToken();
+        $version = $options->getVersion();
+        $userId = $options->getUserId();
+        $trigger = $options->getTriggeredBy();
 
         try {
+
+            $notification = new Notification();
 
             $cmd->getDoctrineEM()
                 ->getConnection()
@@ -137,17 +107,26 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
             // do change
             $newSnapshot->lastChangeBy = $userId;
 
-            $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            /**
+             *
+             * @var POSnapshot $snapshot ;
+             * @var POSnapshot $rootSnapshot ;
+             * @var PODoc $rootEntity ;
+             */
+            $headerValidators = new HeaderValidatorCollection();
+
+            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            $specService = new POSpecService($sharedSpecificationFactory, $fxService);
-
-            $newRootEntity = PODoc::updateFromSnapshot($newSnapshot, $specService);
+            
+            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootSnapshot = $newRootEntity->updateHeader($trigger, $params, $specService, $postingService);
+            $newRootEntity = PODoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
 
             // event dispatc
             if (count($newRootEntity->getRecordedEvents() > 0)) {
@@ -167,7 +146,7 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("PO #%s updated", $rootSnapshot->getId());
+            $m = sprintf("PO #%s updated", $newRootEntity->getId());
 
             $notification->addSuccess($m);
             

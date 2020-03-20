@@ -1,5 +1,5 @@
 <?php
-namespace module\Procure\src\Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\PurchaseOrder\GenericPO;
@@ -11,13 +11,13 @@ use Procure\Domain\Exception\PoInvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GeneralRowValidator extends AbstractValidator implements RowValidatorInterface
+class DefaultRowValidator extends AbstractValidator implements RowValidatorInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \module\Procure\src\Procure\Domain\PurchaseOrder\Validator\RowValidatorInterface::validate()
+     * @see \Procure\Domain\PurchaseOrder\Validator\RowValidatorInterface::validate()
      */
     public function validate($rootEntity, $localEntity)
     {

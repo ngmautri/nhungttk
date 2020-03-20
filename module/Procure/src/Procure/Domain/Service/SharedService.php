@@ -1,16 +1,16 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\Service;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Service\FXServiceInterface;
+use Inventory\Domain\Exception\InvalidArgumentException;
 
 /**
+ * PO Domain Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractValidator
+class SharedService
 {
 
     protected $sharedSpecificationFactory;
@@ -21,16 +21,16 @@ abstract class AbstractValidator
      *
      * @param AbstractSpecificationFactory $sharedSpecificationFactory
      * @param FXServiceInterface $fxService
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(AbstractSpecificationFactory $sharedSpecificationFactory, FXServiceInterface $fxService)
     {
-        if (! $sharedSpecificationFactory instanceof AbstractSpecificationFactory) {
-            throw new PoInvalidArgumentException("Shared Specification is required");
+        if ($sharedSpecificationFactory == null) {
+            throw new InvalidArgumentException("Shared Specification not found");
         }
 
-        if (! $fxService instanceof FXServiceInterface) {
-            throw new PoInvalidArgumentException("FX service is required");
+        if ($fxService == null) {
+            throw new InvalidArgumentException("FX service not found");
         }
 
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;
@@ -47,12 +47,11 @@ abstract class AbstractValidator
     }
 
     /**
+     *
      * @return \Procure\Domain\Service\FXServiceInterface
      */
     public function getFxService()
     {
         return $this->fxService;
     }
-
 }
-

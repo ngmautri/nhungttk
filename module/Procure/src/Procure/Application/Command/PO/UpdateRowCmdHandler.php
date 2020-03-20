@@ -21,6 +21,13 @@ use Procure\Infrastructure\Doctrine\DoctrineQRCmdRepository;
 use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Infrastructure\Doctrine\DoctrineQRQueryRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Domain\Exception\PoRowUpdateException;
+use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
+use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
+use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
+use Procure\Domain\Service\SharedService;
 
 /**
  *
@@ -38,84 +45,32 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
+            throw new PoRowUpdateException(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
-
-        if (! $cmd->getDto() instanceof PORowDetailsDTO) {
-            throw new \Exception("PORowDetailsDTO object not found!");
-        }
-
         /**
          *
          * @var PORowDetailsDTO $dto ;
+         * @var PODoc $rootEntity ;
+         * @var PoRowUpdateOptions $options ;
          */
         $dto = $cmd->getDto();
-        $notification = new Notification();
-
-        if ($cmd->getOptions() == null) {
-            $notification->addError("No Options given");
-        }
-
         $options = $cmd->getOptions();
 
-        /**
-         *
-         * @var PODoc $rootEntity ;
-         */
-        $rootEntity = null;
-        if (isset($options['rootEntity'])) {
-            $rootEntity = $options['rootEntity'];
-        } else {
-            $notification->addError("RootEntiy not given");
+        if (! $options instanceof PoRowUpdateOptions) {
+            throw new PoRowUpdateException("No Options given. Pls check command configuration!");
         }
-
-        $version = null;
-        if (isset($options['version'])) {
-            $version = $options['version'];
-        }
-
-        $localEntity = null;
-        if (isset($options['localEntity'])) {
-            $localEntity = $options['localEntity'];
-        } else {
-            $notification->addError("LocalEntity not given");
-        }
-
-        $entityId = null;
-        if (isset($options['entityId'])) {
-            $entityId = $options['entityId'];
-        } else {
-            $notification->addError("entityId not given");
-        }
-
-        $userId = null;
-        if (isset($options['userId'])) {
-            $userId = $options['userId'];
-        } else {
-            $notification->addError("user ID not given");
-        }
-
-        $trigger = null;
-        if (isset($options['trigger'])) {
-            $trigger = $options['trigger'];
-        } else {
-            $notification->addError("Trigger not identifable!");
-        }
-
-        if ($rootEntity == null) {
-            $notification->addError("PO #%s can not be retrieved or empty");
-        }
-
-        if ($localEntity == null) {
-            $notification->addError("PO Row #%s can not be retrieved or empty");
-        }
-
-        if ($notification->hasErrors()) {
-            $dto->setNotification($notification);
-            return;
+        if (! $cmd->getDto() instanceof PORowDetailsDTO) {
+            throw new PoRowUpdateException("PORowDetailsDTO object not found!");
         }
 
         try {
+            $rootEntity = $options->getRootEntity();
+            $localEntity = $options->getLocalEntity();
+
+            $userId = $options->getUserId();
+            $version = $options->getVersion();
+
+            $notification = new Notification();
 
             /**
              *
@@ -171,17 +126,28 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             $newSnapshot->lastchangeBy = $userId;
             $newSnapshot->revisionNo ++;
-
-            $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            
+            $headerValidators = new HeaderValidatorCollection();
+            
+            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            $specService = new POSpecService($sharedSpecificationFactory, $fxService);
-
+            
+            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
+            
+            $rowValidators = new RowValidatorCollection();
+            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
+            $rowValidators->add($validator);
+            
+            
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);
+            
 
-            $rootEntity->updateRowFromSnapshot($trigger, $params, $row, $newSnapshot, $specService, $postingService);
-
+            $rootEntity->updateRowFrom($snapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
+            
             // event dispatcher
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
@@ -210,7 +176,6 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             if($version != $currentVersion){
                 throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
             }
-            
             
             $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {

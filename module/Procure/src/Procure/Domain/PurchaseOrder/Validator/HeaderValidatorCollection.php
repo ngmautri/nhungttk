@@ -1,5 +1,5 @@
 <?php
-namespace module\Procure\src\Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Procure\Domain\Exception\PoInvalidArgumentException;
 
@@ -34,7 +34,7 @@ class HeaderValidatorCollection implements HeaderValidatorInterface
     /**
      *
      * {@inheritdoc}
-     * @see \module\Procure\src\Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
+     * @see \Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
      */
     public function validate($rootEntity)
     {

@@ -14,6 +14,7 @@ class POPostingService
 {
 
     protected $cmdRepository;
+    
 
     public function __construct(POCmdRepositoryInterface $cmdRepository)
     {

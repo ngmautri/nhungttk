@@ -1,22 +1,23 @@
 <?php
-namespace module\Procure\src\Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Procure\Domain\PurchaseOrder\GenericPO;
+use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\PurchaseOrder\GenericPO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GeneralHeaderValidator extends AbstractValidator implements HeaderValidatorInterface
+class DefaultHeaderValidator extends AbstractValidator implements HeaderValidatorInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \module\Procure\src\Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
+     * @see \Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
      */
     public function validate($rootEntity)
     {
@@ -28,13 +29,6 @@ class GeneralHeaderValidator extends AbstractValidator implements HeaderValidato
          *
          * @var AbstractSpecification $spec ;
          */
-        if ($this->sharedSpecificationFactory == null) {
-            $rootEntity->addError("Validators is not found");
-            return;
-        }
-
-        // do verification now
-
         try {
 
             // ==== CK COMPANY =======
@@ -129,7 +123,7 @@ class GeneralHeaderValidator extends AbstractValidator implements HeaderValidato
             if (! $spec->isSatisfiedBy($subject)) {
                 $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getCreatedBy());
             }
-        } catch (\Exception $e) {
+        } catch (PoCreateException $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

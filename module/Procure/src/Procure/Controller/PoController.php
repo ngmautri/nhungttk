@@ -27,6 +27,9 @@ use Procure\Domain\Exception\PoCreateException;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Procure\Application\Command\PO\Options\PoRowCreateOptions;
+use Procure\Application\Command\PO\Options\PoUpdateOptions;
+use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 
 /**
  *
@@ -304,7 +307,7 @@ class PoController extends AbstractActionController
         } catch (PoCreateException $e) {
 
             $notification = new Notification();
-            $notification->addError($e->getMessage());
+            $notification->addError($e->getT());
         }
 
         if ($notification->hasErrors()) {
@@ -410,14 +413,7 @@ class PoController extends AbstractActionController
             return $this->redirect()->toRoute('not_found');
         }
 
-        $options = [
-            "rootEntity" => $rootEntity,
-            "rootEntityId" => $target_id,
-            "rootEntityToken" => $target_token,
-            "version" => $version,
-            "userId" => $userId,
-            "trigger" => __METHOD__
-        ];
+        $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
 
         $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, new AddRowCmdHandler());
 
@@ -524,67 +520,60 @@ class PoController extends AbstractActionController
         }
 
         // Posting
-
-        $data = $prg;
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        /**
-         *
-         * @var PoRowDTO $dto ;
-         */
-        $dto = DTOFactory::createDTOFromArray($data, new PORowDetailsDTO());
-
-        $userId = $u->getId();
-
-        $target_id = $data['target_id'];
-        $target_token = $data['target_token'];
-        $entity_id = $data['entity_id'];
-        $entity_token = $data['entity_token'];
-        $version = $data['version'];
-
-        $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
-
-        $rootEntity = null;
-        $localEntity = null;
-        $rootDTO = null;
-        $localDTO = null;
-
-        if (isset($result["rootEntity"])) {
-            $rootEntity = $result["rootEntity"];
-        }
-
-        if (isset($result["localEntity"])) {
-            $localEntity = $result["localEntity"];
-        }
-        if (isset($result["rootDTO"])) {
-            $rootDTO = $result["rootDTO"];
-        }
-
-        if (isset($result["localDTO"])) {
-            $localDTO = $result["localDTO"];
-        }
-
-        if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-
-        $options = [
-            "rootEntity" => $rootEntity,
-            "localEntity" => $localEntity,
-            "entityId" => $entity_id,
-            "entityToken" => $entity_token,
-            "version" => $version,
-            "userId" => $userId,
-            "trigger" => __METHOD__
-        ];
-
-        $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, new UpdateRowCmdHandler());
+        // =============================
 
         try {
+
+            $data = $prg;
+
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            /**
+             *
+             * @var PoRowDTO $dto ;
+             */
+            $dto = DTOFactory::createDTOFromArray($data, new PORowDetailsDTO());
+
+            $userId = $u->getId();
+
+            $target_id = $data['target_id'];
+            $target_token = $data['target_token'];
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+
+            $rootEntity = null;
+            $localEntity = null;
+            $rootDTO = null;
+            $localDTO = null;
+
+            if (isset($result["rootEntity"])) {
+                $rootEntity = $result["rootEntity"];
+            }
+
+            if (isset($result["localEntity"])) {
+                $localEntity = $result["localEntity"];
+            }
+            if (isset($result["rootDTO"])) {
+                $rootDTO = $result["rootDTO"];
+            }
+
+            if (isset($result["localDTO"])) {
+                $localDTO = $result["localDTO"];
+            }
+
+            if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, new UpdateRowCmdHandler());
+
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -764,15 +753,7 @@ class PoController extends AbstractActionController
             return $this->redirect()->toRoute('not_found');
         }
 
-        $options = [
-            "rootEntity" => $rootEntity,
-            "rootEntityId" => $entity_id,
-            "rootEntityToken" => $entity_token,
-            "version" => $version,
-            "userId" => $userId,
-            "trigger" => __METHOD__
-        ];
-
+        $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
         $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, new EditHeaderCmdHandler());
 
         try {

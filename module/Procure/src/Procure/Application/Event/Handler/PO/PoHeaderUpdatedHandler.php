@@ -74,7 +74,6 @@ class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscr
         }
 
         $class = new \ReflectionClass($rootSnapshot);
-        $class = null;
         if ($class !== null) {
             $className = $class->getShortName();
         }

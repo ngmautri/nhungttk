@@ -23,6 +23,8 @@ use Procure\Domain\Service\SharedService;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Exception\PoRowCreateException;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
+use Procure\Domain\Exception\PoPostingException;
+use Procure\Domain\Event\Po\POPostedEvent;
 
 /**
  *
@@ -38,19 +40,19 @@ abstract class GenericPO extends AbstractPO
 
     protected $rowsOutput;
 
-    abstract protected function prePost(POSpecService $specService, POPostingService $postingService);
+    abstract protected function prePost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function doPost(POSpecService $specService, POPostingService $postingService);
+    abstract protected function doPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function afterPost(POSpecService $specService, POPostingService $postingService);
+    abstract protected function afterPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function preReserve(POSpecService $specService, POPostingService $postingService);
+    abstract protected function preReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function doReverse(POSpecService $specService, POPostingService $postingService);
+    abstract protected function doReverse(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function afterReserve(POSpecService $specService, POPostingService $postingService);
+    abstract protected function afterReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
     /**
      *
@@ -216,69 +218,69 @@ abstract class GenericPO extends AbstractPO
 
     /**
      *
-     * @param POSpecService $specService
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
      * @return \Procure\Domain\PurchaseOrder\GenericPO
      */
-    public function post(POSpecService $specService, POPostingService $postingService)
+    public function post(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
-        if ($specService == null) {
-            throw new InvalidArgumentException("Specification service not found");
+        if ($headerValidators == null) {
+            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($rowValidators == null) {
+            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($sharedService == null) {
+            throw new PoInvalidArgumentException("SharedService service not found");
         }
 
         if ($postingService == null) {
-            throw new InvalidArgumentException("Posting service not found");
+            throw new PoInvalidArgumentException("postingService service not found");
         }
 
-        $this->validate($specService, TRUE);
+        $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new InvalidArgumentException($this->getNotification()->errorMessage());
+            throw new PoPostingException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
-        // template method
-        $this->prePost($specService, $postingService);
+        $this->prePost($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->doPost($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->afterPost($headerValidators, $rowValidators, $sharedService, $postingService);
 
-        // template method
-        $this->doPost($specService, $postingService);
-
-        // template method
-        $this->afterPost($specService, $postingService);
-
-        if (! $this->hasErrors()) {
-            $this->raiseEvent();
-        }
-
+        $this->addEvent(new POPostedEvent($this));
         return $this;
     }
 
     /**
      *
-     * @param POSpecService $specService
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
      * @param boolean $isPosting
-     * @throws InvalidArgumentException
+     * @throws PoInvalidArgumentException
      * @return \Procure\Domain\PurchaseOrder\GenericPO
      */
-    public function validate(POSpecService $specService, $isPosting = false)
+    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
     {
-        if ($specService == null) {
-            throw new InvalidArgumentException("Specification service not found");
+        if (! $headerValidators instanceof HeaderValidatorCollection) {
+            throw new PoInvalidArgumentException("PO Validators not given!");
+        }
+
+        if (! $rowValidators instanceof RowValidatorCollection) {
+            throw new PoInvalidArgumentException("PO Validators not given!");
         }
 
         // Clear Notification.
         $this->clearNotification();
 
-        $this->validateHeader($specService, $isPosting);
-
-        if ($this->hasErrors()) {
-            return $this;
-        }
-
-        // template method.
-        $this->specificValidation($specService, $isPosting);
+        $this->validateHeader($headerValidators, $isPosting);
 
         if ($this->hasErrors()) {
             return $this;
@@ -290,61 +292,9 @@ abstract class GenericPO extends AbstractPO
         }
 
         foreach ($this->docRows as $row) {
-            $this->validateRow($row, $specService, $isPosting);
+            $this->validateRow($row, $rowValidators, $isPosting);
         }
 
-        return $this;
-    }
-
-    /**
-     *
-     * @param PORowSnapshot $snapshot
-     * @param POSpecService $specService
-     * @return void|\Procure\Domain\PurchaseOrder\GenericPO
-     */
-    public function addRowFromSnapshot(PORowSnapshot $snapshot, POSpecService $specService)
-    {
-        if (! $snapshot instanceof PORowSnapshot) {
-            return;
-        }
-
-        $this->validateHeader($specService);
-
-        if ($this->hasErrors()) {
-            return;
-        }
-
-        $snapshot->quantity = $snapshot->docQuantity;
-        $snapshot->revisionNo = 0;
-
-        if ($snapshot->token == null) {
-            $snapshot->token = Uuid::uuid4();
-        }
-        $snapshot->docType = $this->docType;
-        $snapshot->isDraft = 1;
-
-        $row = PORow::makeFromSnapshot($snapshot);
-
-        $this->validateRow($row, $specService, false);
-
-        $convertedPurchaseQuantity = $row->getDocQuantity();
-        $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
-
-        $conversionFactor = $row->getConversionFactor();
-        $standardCF = $row->getConversionFactor();
-
-        // converted to purchase quantity
-        // $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-        // $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-
-        // $convertedStandardQuantity = $entity->getDocQuantity();
-        // $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-
-        if ($row->hasErrors()) {
-            return;
-        }
-
-        $this->docRows[] = $row;
         return $this;
     }
 
@@ -376,7 +326,7 @@ abstract class GenericPO extends AbstractPO
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new PoInvalidArgumentException("Row Validator collection not given!");
+            throw new PoInvalidArgumentException("Row Validator not given!");
         }
 
         $rowValidators->validate($this, $row);

@@ -3,9 +3,8 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\AbstractEntity;
 use Application\Domain\Shared\AggregateRootInterface;
-use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Application\DTO\Po\PoDTOAssembler;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PoDTO;
 
 /**

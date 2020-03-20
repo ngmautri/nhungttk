@@ -206,7 +206,23 @@ class PORow extends AbstractEntity
     {}
 
     /**
+     * this should be called when posted.
+     *
+     * @return \Procure\Domain\PurchaseOrder\PORow
+     */
+    public function setAsPosted($postedBy, $postedDate)
+    {
+        $this->isPosted = 1;
+        $this->isDraft = 0;
+        $this->docStatus = PODocStatus::DOC_STATUS_POSTED;
+        $this->lastchangeOn =(date_format($postedDate, 'Y-m-d H:i:s'));
+        $this->lastchangeBy = $postedBy;
+        return $this;
+    }
+
+    /**
      * this should be called when validated.
+     *
      * @return \Procure\Domain\PurchaseOrder\PORow
      */
     public function refresh()

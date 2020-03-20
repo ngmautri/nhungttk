@@ -8,6 +8,7 @@ use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
@@ -27,6 +28,30 @@ class PODoc extends GenericPO
 
     private function __construct()
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
+     */
+    protected function doPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {
+        $postedDate = new \Datetime();
+        $this->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
+        $this->setLastchangeOn(date_format($postedDate, 'Y-m-d H:i:s'));
+
+        foreach ($this->docRows as $row) {
+
+            /** @var \Procure\Domain\PurchaseOrder\PORow $row ; */
+            if ($row->quantity() == 0) {
+                continute;
+            }
+
+            $row->setAsPosted($postedBy, $postedDate);
+        }
+
+        $postingService->getCmdRepository()->post($this, true);
+    }
 
     /**
      *
@@ -235,64 +260,23 @@ class PODoc extends GenericPO
         return $instance;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
-     */
-    protected function doPost(POSpecService $specService, POPostingService $postingService)
-    {
-        $this->docType = "";
-        $this->docStatus = PODocStatus::DOC_STATUS_POSTED;
-        $this->revisionNo = $this->revisionNo + 1;
-        $this->lastchangeBy = null;
-        $this->lastchangeOn = new \DateTime();
+    protected function afterPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
 
-        $n = 0;
-        foreach ($this->docRows as $r) {
+    protected function doReverse(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
 
-            /** @var \Procure\Domain\PurchaseOrder\PORow $r ; */
-            $snapshot = $r->makeSnapshot();
+    protected function prePost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
 
-            /**
-             * Double check only.
-             * Receipt of ZERO quantity not allowed
-             */
-            if ($snapshot->quantity() == 0) {
-                continute;
-            }
+    protected function preReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
 
-            $n ++;
-            $snapshot->isPosted = 1;
-            $snapshot->isDraft = 0;
-            $snapshot->docStatus = $this->docStatus;
-            $snapshot->rowNumber = $n;
-            $snapshot->lastchangeOn = $this->lastchangeOn;
-        }
+    protected function afterReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
 
-        $postingService->getCmdRepository()->post($this, true);
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\GenericPO::raiseEvent()
-     */
     protected function raiseEvent()
     {}
 
-    protected function afterPost(POSpecService $specService, POPostingService $postingService)
-    {}
-
-    protected function doReverse(POSpecService $specService, POPostingService $postingService)
-    {}
-
-    protected function prePost(POSpecService $specService, POPostingService $postingService)
-    {}
-
-    protected function preReserve(POSpecService $specService, POPostingService $postingService)
-    {}
-
-    protected function afterReserve(POSpecService $specService, POPostingService $postingService)
-    {}
+  
 }

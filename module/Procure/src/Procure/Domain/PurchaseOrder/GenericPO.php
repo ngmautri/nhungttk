@@ -67,7 +67,7 @@ abstract class GenericPO extends AbstractPO
      * @param SharedService $sharedService
      * @param POPostingService $postingService
      */
-    public function ammend(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    public function amend(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_POSTED) {
             throw new PoInvalidOperationException(sprintf("PO can not be amended! %s", $this->getId()));
@@ -81,6 +81,33 @@ abstract class GenericPO extends AbstractPO
             throw new PoInvalidArgumentException("postingService service not found");
         }
     }
+    
+    
+    /**
+     * 
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     * @throws PoInvalidOperationException
+     * @throws PoInvalidArgumentException
+     */
+    public function acceptAmmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    {
+        if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_AMENDING) {
+            throw new PoInvalidOperationException(sprintf("Document is not on amendment! %s", $this->getId()));
+        }
+        
+        if ($sharedService == null) {
+            throw new PoInvalidArgumentException("SharedService service not found");
+        }
+        
+        if ($postingService == null) {
+            throw new PoInvalidArgumentException("postingService service not found");
+        }
+    }
+    
+    
 
     /**
      *
@@ -263,11 +290,11 @@ abstract class GenericPO extends AbstractPO
      */
     public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
-        if ($this->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
-            throw new PoInvalidOperationException(sprintf("PO is already posted! %s", $this->getId()));
+        if (!$this->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT) {
+            throw new PoInvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         }
-
-        if ($headerValidators == null) {
+        
+          if ($headerValidators == null) {
             throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
         }
 

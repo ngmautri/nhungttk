@@ -8,7 +8,7 @@ $n = 0;
 
 $result_msg = "No record found!";
 
-if (count($list) > 0) :
+if (count($list) > 0) {
 
     $result_msg = sprintf("%s records found!", $total_records);
 
@@ -16,7 +16,7 @@ if (count($list) > 0) :
         $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->minInPage, $paginator->maxInPage, $total_records);
     }
 
-    foreach ($list as $item) :
+    foreach ($list as $item) {
 
         $n ++;
 
@@ -37,25 +37,23 @@ if (count($list) > 0) :
         $table_body = $table_body . sprintf("<td>%s</td>", $item->createdOn);
         $table_body = $table_body . sprintf("<td>%s</td>", $item->changeLog);
         $table_body = $table_body . "</tr>";
-    endforeach
-    ;
-    ;
-endif;
-
+    }
+}
 ?>
 
 
 <div id="<?php echo $message_log_div; ?>">
 
 	<?php echo $result_msg; ?>
-	<table id="mytable26" style="font-size: 9pt; color: graytext;"
+	<table id="mytable26"
+		style="font-size: 9.5pt; color: graytext; font-family: Courier, monospace;"
 		class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
 				<td><b><?php echo $this->translate("#");?></b></td>
-				<td><b><?php echo $this->translate("Version");?></b></td>
+				<td><b><?php echo $this->translate("Ver.");?></b></td>
 				<td><b><?php echo $this->translate("Event Name");?></b></td>
-				<td><b><?php echo $this->translate("Date");?></b></td>
+				<td style="width: 160px"><b><?php echo $this->translate("Date");?></b></td>
 				<td><b><?php echo $this->translate("Change Log");?></b></td>
 			</tr>
 		</thead>

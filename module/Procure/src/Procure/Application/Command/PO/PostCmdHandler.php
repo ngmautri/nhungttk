@@ -126,7 +126,7 @@ class PostCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("PO #%s posted", $rootEntity->getId() . "//" . $rootEntity->getDocStatus());
+            $m = sprintf("PO #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
             $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());

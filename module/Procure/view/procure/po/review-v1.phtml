@@ -27,8 +27,19 @@ $canPost = false;
 $canAmend = false;
 $isDraft = true;
 $isPosted = false;
+$transactionStatus = "";
+$alert = "info";
+
 
 if (! $headerDTO == null) {
+    
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
+    
+    if($headerDTO->getTransactionStatus()=="completed"){
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
+    }
+    
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -129,7 +140,7 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
   		<hr>
 		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
 
-		<div class="alert alert-info" role="alert"
+		<div class="alert alert-<?php echo $alert;?>" role="alert"
 			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
 				<li><b><?php if (!$headerDTO == null): echo $headerDTO->vendorName; endif;?></b></li>
@@ -138,7 +149,7 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 				<li><?php if (!$headerDTO == null): echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;?> </li>
 				<li>Status: <?php if (!$headerDTO == null): echo $headerDTO->getDocStatus() ; endif;?> </li>
 				<li>Total rows: <?php echo ($headerDTO->totalRows);?></li>
-				<li>Status:<?php if (!$headerDTO == null): echo $headerDTO->getTransactionStatus(); endif;?> </li>
+				<li>Status: <?php echo $transactionStatus;?> </li>
 
 				<li>-----</li>
 

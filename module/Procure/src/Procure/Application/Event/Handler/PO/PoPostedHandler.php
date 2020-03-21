@@ -7,6 +7,7 @@ use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  *
@@ -27,10 +28,10 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         ];
     }
 
-  /**
-   * 
-   * @param PoPosted $ev
-   */
+    /**
+     *
+     * @param PoPosted $ev
+     */
     public function onPosted(PoPosted $ev)
     {
 
@@ -43,11 +44,9 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         if ($rootSnapshot == null) {
             return;
         }
-        
-        
+
         $params = $ev->getParams();
         $trigger = $ev->getTrigger();
-        
 
         $class = new \ReflectionClass($rootSnapshot);
         $class = null;
@@ -56,13 +55,18 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         }
 
         $message = new MessageStore();
-        
-        $message->setRevisionNo($rootSnapshot->getRevisionNo());
-        $message->setVersion($rootSnapshot->getRevisionNo());
+
+        $queryRep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+
+        // time to check version - concurency
+        $currentVersion = $queryRep->getVersion($rootSnapshot->getId());
+
+        $message->setRevisionNo($currentVersion);
+        $message->setVersion($currentVersion);
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
         $message->setQueueName("procure.po");
-
+        $message->setChangeLog(sprintf("P/O #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());

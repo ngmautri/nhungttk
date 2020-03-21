@@ -650,7 +650,7 @@ class ItemSerialController extends AbstractActionController
         
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
+            //'checksum' => $checksum,
             'token' => $token
         );
         

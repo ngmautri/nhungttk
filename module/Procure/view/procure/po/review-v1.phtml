@@ -1,9 +1,11 @@
 <?php
 use Procure\Domain\PurchaseOrder\PODocStatus;
+use Procure\Domain\Shared\Constants;
 
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
 // var_dump($headerDTO);
 
 // echo memory_get_usage();
@@ -30,33 +32,34 @@ $isPosted = false;
 $transactionStatus = "";
 $alert = "info";
 
-
 if (! $headerDTO == null) {
-    
+
     $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
-    
-    if($headerDTO->getTransactionStatus()=="completed"){
+
+    if ($headerDTO->getTransactionStatus() == "completed") {
         $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
         $alert = "success";
     }
-    
+
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $enable_amendment_url = sprintf($this->baseUrl . "/procure/po/enable-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/copy-from-po?source_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $ap_from_po_url = sprintf($this->baseUrl . "finance/v-invoice/copy-from-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $ap_from_po_url = sprintf($this->baseUrl . "/finance/v-invoice/copy-from-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
@@ -130,7 +133,7 @@ if (count($errors) > 0) {
 				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate("PO List");?></a>
 
 <?php
-if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+if ($action == Constants::FORM_ACTION_REVIEW) :
     $current_step = "STEP3";
     include (ROOT . '/module/Procure/view/procure/create-wizard.php');
     endif;
@@ -143,6 +146,9 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 		<div class="alert alert-<?php echo $alert;?>" role="alert"
 			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
+				<li><b><?php if (!$headerDTO == null): echo "PO #" . $headerDTO->getSysNumber(); endif;?></b></li>
+				<li>-----</li>
+
 				<li><b><?php if (!$headerDTO == null): echo $headerDTO->vendorName; endif;?></b></li>
 				<li>-----</li>
 
@@ -164,7 +170,7 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 			</ul>
 		</div>
 		
-	<?php if($action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+	<?php if($action == Constants::FORM_ACTION_REVIEW):?>
 		<div class="alert alert-warning" role="alert"
 			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
 			<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
@@ -236,13 +242,15 @@ echo $error_msg;
 		  				<?php endif;?>
 		  				
 		  				<?php if($canAmend):?>
-						 <a title="<?php echo $this->translate('P/O Amendment');?>" class="btn btn-default btn-sm" style="color:navy; font-weight: bold; "
-								onclick="confirmPost();" href="javascript:;"><i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Amend');?></a>
+						 <a title="<?php echo $this->translate('P/O Amendment');?>"
+								class="btn btn-default btn-sm"
+								style="color: navy; font-weight: bold;"
+								onclick="confirmAmendment();" href="javascript:;"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Amendment');?></a>
 		  				<?php endif;?>
 							
 				<?php
-    if ($action == \Application\Model\Constants::FORM_ACTION_SHOW) :
+    if ($action == Constants::FORM_ACTION_SHOW) :
         if ($isDraft) :
             ?>
 <a class="btn btn-default btn-sm" href="<?php echo $review_url      ;?>"
@@ -505,13 +513,41 @@ echo $error_msg;
 	</div>
 </div>
 
+<!-- Modal -->
+<div class="modal" id="amendment_confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>#<?php echo$this->translate('PO will be enabled for ammendment!');?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+					created.
+					 -->
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doAmendment();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 
 var data = <?php echo json_encode($rowOutput) ; ?>
     
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
-<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
+<?php if($action == Constants::FORM_ACTION_SHOW):?>
 $("#Posting_Form :input").attr("disabled", "disabled");
 <?php endif;?>
 
@@ -524,6 +560,26 @@ function doPosting() {
 	submitForm('Posting_Form');
 }
 
+function confirmAmendment() {
+ 	$('#amendment_confirm_modal_sm').modal();
+}
+
+function doAmendment() {
+	$('#amendment_confirm_modal_sm').modal('hide');		
+	$('#b_modal_no_header').modal();
+	
+	var url="/procure/po/enable-amendment";
+	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
+	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
+	var version="<?php echo $version ;?>";
+	$.post(url, {
+		entity_id 	: entity_id,
+		entity_token: entity_token,
+		version: version,
+	}, function(data, status, dataType) {
+        window.location.href= data;
+   	});
+}
 
 
 $( "#pr_item_name" ).autocomplete({
@@ -649,7 +705,7 @@ $( "#vendor_name_1" ).autocomplete({
 		 columnBorders: true,
 
 				  	  toolbar: {
-                    	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+                    	<?php if($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW):?>
                         items: [
                         { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
                             { "click": function (evt, ui) {
@@ -663,7 +719,7 @@ $( "#vendor_name_1" ).autocomplete({
                         ]
                     	<?php endif;?>
 
-                     	<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
+                     	<?php if($action == Constants::FORM_ACTION_SHOW):?>
                       	items: [
                             { type: 'button', icon: 'ui-icon-refresh', label: '', listeners: [
                                 { "click": function (evt, ui) {
@@ -747,7 +803,7 @@ $( "#vendor_name_1" ).autocomplete({
                       success: function (changes) {
                           //commit the changes.
                       
-                      	  if(changes.status == <?php echo \Application\Model\Constants::AJAX_FAILED;?>){
+                      	  if(changes.status == <?php echo Constants::AJAX_FAILED;?>){
                       		$("#global-notice").text(changes.message).show();
                       	  }else{
                       		$("#global-notice").text("[OK] Updated...").show();  
@@ -778,7 +834,7 @@ $( "#vendor_name_1" ).autocomplete({
     };
 
     obj.colModel = [   
-    	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+    	<?php if($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW):?>
        { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
@@ -801,7 +857,7 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
        { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
        
-      	<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
+      	<?php if($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW):?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
         <?php else:?>

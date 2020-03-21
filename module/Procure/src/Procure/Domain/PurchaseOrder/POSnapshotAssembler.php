@@ -16,6 +16,37 @@ class POSnapshotAssembler
     const EDITABLE_FIELDS = 2;
 
     /**
+     * 
+     * @param POSnapshot $snapShot
+     * @param PoDTO $dto
+     * @param array $editableProperties
+     * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
+     */
+    public static function updateSnapshotFieldsFromDTO(POSnapshot $snapShot, $dto, $editableProperties)
+    {
+        if ($dto == null || ! $snapShot instanceof POSnapshot || $editableProperties == null)
+            return null;
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
+
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
+            }
+        }
+        return $snapShot;
+    }
+
+    /**
      * generete fields.
      */
     public static function createProperities()
@@ -116,19 +147,19 @@ class POSnapshotAssembler
         );
 
         $editableProperties = array(
-            "isActive",            
+            "isActive",
             "vendor",
             "contractNo",
             "contractDate",
             "docCurrency",
             "exchangeRate",
             "incoterm",
-            "incotermPlace",            
+            "incotermPlace",
             "paymentTerm",
-            "remarks",
-         );
-        
-        //$snapShot->getPay;
+            "remarks"
+        );
+
+        // $snapShot->getPay;
 
         foreach ($props as $property) {
             $property->setAccessible(true);
@@ -144,10 +175,10 @@ class POSnapshotAssembler
                     }
                 }
             }
-            
+
             if ($editMode == self::EDITABLE_FIELDS) {
                 if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
-                    
+
                     if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                         $snapShot->$propertyName = null;
                     } else {
@@ -155,7 +186,6 @@ class POSnapshotAssembler
                     }
                 }
             }
-            
         }
         return $snapShot;
     }

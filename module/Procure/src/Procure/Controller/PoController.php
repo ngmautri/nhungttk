@@ -33,6 +33,8 @@ use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\Command\PO\PostCmd;
 use Procure\Application\Command\PO\PostCmdHandler;
 use Procure\Application\Command\PO\Options\PoPostOptions;
+use Procure\Domain\Shared\Constants;
+use Application\Controller\Plugin\NmtPlugin;
 
 /**
  *
@@ -114,7 +116,7 @@ class PoController extends AbstractActionController
                 $errors[] = 'Quotation can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_PO_FROM_QO,
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -131,12 +133,12 @@ class PoController extends AbstractActionController
 
             $entity = new NmtProcurePo();
             $entity->setLocalCurrency($default_cur);
-            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $entity->setDocStatus(\Procure\Domain\Shared\Constants::DOC_STATUS_DRAFT);
             $errors = $this->poService->validateHeader($entity, $data);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_PO_FROM_QO,
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -230,7 +232,7 @@ class PoController extends AbstractActionController
         $entity->setRemarks("Ref." . $target->getSysNumber());
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
+            'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_PO_FROM_QO,
 
             'redirectUrl' => $redirectUrl,
             'errors' => null,
@@ -257,7 +259,7 @@ class PoController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/create";
         $form_title = "Create PO";
-        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/po/crudPO";
 
         $prg = $this->prg($form_action, true);
@@ -349,7 +351,7 @@ class PoController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/add-row";
         $form_title = "Add PO Row";
-        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/po/crudPORow";
 
         $prg = $this->prg($form_action, true);
@@ -468,7 +470,7 @@ class PoController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/update-row";
         $form_title = "Update PO Row";
-        $action = \Application\Model\Constants::FORM_ACTION_EDIT;
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT;
         $viewTemplete = "/procure/po/crudPORow";
 
         $prg = $this->prg($form_action, true);
@@ -616,16 +618,16 @@ class PoController extends AbstractActionController
      *
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
      */
-    public function amendAction()
+    public function enableAmendmentAction()
     {
         $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/po/create";
+        $form_action = "/procure/po/enable-amendment";
         $form_title = "Create PO";
-        $action = \Application\Model\Constants::FORM_ACTION_ADD;
-        $viewTemplete = "procure/po/crudPO";
+        $action = Constants::FORM_ACTION_EDIT;
+        $viewTemplete = "procure/po/review-v1";
 
         $prg = $this->prg($form_action, true);
 
@@ -635,56 +637,52 @@ class PoController extends AbstractActionController
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
-
-            $viewModel = new ViewModel(array(
-                'errors' => null,
-                'redirectUrl' => null,
-                'entity_id' => null,
-                'dto' => null,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action
-            ));
-
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
         }
-
+        
+        
+        
+        // POSTING
         $data = $prg;
-
-        /**@var MlaUsers $u ;*/
+        
+        $entity_id = $data['entity_id'];
+        $entity_token = $data['entity_token'];
+        $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+        $version = $data['version'];
+        
+        $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
+        
+        $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
+        
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        
+        
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($redirectUrl));
+        return $response;
+        
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-
-        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-
+        
         $userId = $u->getId();
-        $companyId = $u->getCompany()->getId();
-
-        $notification = $this->purchaseOrderService->createHeader($dto, $companyId, $userId, __METHOD__, true);
-        if ($notification->hasErrors()) {
-
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => null,
-                'dto' => $dto,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action
-            ));
-
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
+        $entity_id = $data['entity_id'];
+        $entity_token = $data['entity_token'];
+        $version = $data['version'];
+        
+        $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
+        
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
         }
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/procure/po/list";
-
-        return $this->redirect()->toUrl($redirectUrl);
+       
     }
 
     /**
@@ -699,7 +697,7 @@ class PoController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/update";
         $form_title = "Edit PO";
-        $action = \Application\Model\Constants::FORM_ACTION_EDIT;
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT;
         $viewTemplete = "procure/po/crudPO";
 
         $prg = $this->prg($form_action, true);
@@ -735,32 +733,32 @@ class PoController extends AbstractActionController
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
-
-        // POSTING
-        $data = $prg;
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-
-        $userId = $u->getId();
-        $entity_id = $data['entity_id'];
-        $entity_token = $data['entity_token'];
-        $version = $data['version'];
-
-        $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
-
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-
-        $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-        $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, new EditHeaderCmdHandler());
-
         try {
+
+            // POSTING
+            $data = $prg;
+
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+
+            $userId = $u->getId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, new EditHeaderCmdHandler());
+
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -828,12 +826,12 @@ class PoController extends AbstractActionController
 
             $entity = new NmtProcurePo();
             $entity->setLocalCurrency($default_cur);
-            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $entity->setDocStatus(\Procure\Domain\Shared\Constants::DOC_STATUS_DRAFT);
             $errors = $this->poService->validateHeader($entity, $data);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_ADD,
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -859,7 +857,7 @@ class PoController extends AbstractActionController
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_ADD,
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -898,7 +896,7 @@ class PoController extends AbstractActionController
         $entity->setCurrency($default_cur);
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+            'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_ADD,
 
             'redirectUrl' => $redirectUrl,
             'errors' => null,
@@ -922,9 +920,10 @@ class PoController extends AbstractActionController
 
         $request = $this->getRequest();
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**
+         *
+         * @var NmtPlugin $nmtPlugin ;
+         */
         $nmtPlugin = $this->Nmtplugin();
 
         $currency_list = $nmtPlugin->currencyList();
@@ -932,7 +931,7 @@ class PoController extends AbstractActionController
 
         $form_action = "/procure/po/review";
         $form_title = "Review PO";
-        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/po/crudPO";
 
         /**@var \Application\Entity\MlaUsers $u ;*/
@@ -976,7 +975,7 @@ class PoController extends AbstractActionController
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_REVIEW,
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'errors' => $errors,
@@ -1006,7 +1005,7 @@ class PoController extends AbstractActionController
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_REVIEW,
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'errors' => $errors,
@@ -1077,8 +1076,7 @@ class PoController extends AbstractActionController
         }
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
-
+            'action' => Constants::FORM_ACTION_REVIEW,
             'redirectUrl' => $redirectUrl,
             'entity' => $entity,
             'errors' => null,
@@ -1109,7 +1107,123 @@ class PoController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/review1";
         $form_title = "Review PO";
-        $action = \Application\Model\Constants::FORM_ACTION_REVIEW;
+        $action = Constants::FORM_ACTION_REVIEW;
+        $viewTemplete = "procure/po/review-v1";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('token');
+
+            $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            // echo memory_get_usage();
+            // var_dump($po->makeDTOForGrid());
+            // echo memory_get_usage();
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        try {
+
+            // POSTING
+            $data = $prg;
+
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+
+            $userId = $u->getId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, new PostCmdHandler());
+
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $version,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAmendmentAction()
+
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/po/review1";
+        $form_title = "Review PO";
+        $action = \Procure\Domain\Shared\Constants::FROM_ACTION_REVIEW_AMENDMENT;
         $viewTemplete = "procure/po/review-v1";
 
         $prg = $this->prg($form_action, true);
@@ -1258,7 +1372,7 @@ class PoController extends AbstractActionController
         // echo memory_get_usage();
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+            'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_SHOW,
             'redirectUrl' => null,
             'entity' => $entity,
             'errors' => null,
@@ -1310,7 +1424,7 @@ class PoController extends AbstractActionController
         }
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+            'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_SHOW,
             'form_action' => "/procure/po/view",
             'form_title' => $nmtPlugin->translate("Show PO"),
             'redirectUrl' => null,
@@ -1318,7 +1432,7 @@ class PoController extends AbstractActionController
             'rowOutput' => $rootEntity->getRowsOutput(),
             'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
-            'version' => $rootEntity->getRevisionNo(),            
+            'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin
         ));
 
@@ -1394,7 +1508,7 @@ class PoController extends AbstractActionController
         $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
 
-        /**@var Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();
@@ -1428,7 +1542,7 @@ class PoController extends AbstractActionController
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
@@ -1447,7 +1561,7 @@ class PoController extends AbstractActionController
             $oldEntity = clone ($entity);
 
             $isPosted = FALSE;
-            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+            if ($entity->getDocStatus() == \Procure\Domain\Shared\Constants::DOC_STATUS_POSTED) {
                 $isPosted = TRUE;
                 $redirectUrl = "/procure/po/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             } else {
@@ -1478,7 +1592,7 @@ class PoController extends AbstractActionController
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -1510,7 +1624,7 @@ class PoController extends AbstractActionController
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT,
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -1583,7 +1697,7 @@ class PoController extends AbstractActionController
         }
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+            'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT,
 
             'redirectUrl' => $redirectUrl,
             'errors' => null,
@@ -1776,7 +1890,7 @@ class PoController extends AbstractActionController
                         ->getCurrency());
                 }
 
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Procure\Domain\Shared\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Procure\Domain\Shared\Constants::CHAR_LIST, true));
             }
         }
 

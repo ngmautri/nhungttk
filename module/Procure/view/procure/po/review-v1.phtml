@@ -1,5 +1,6 @@
 <?php
-/**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
+use Procure\Domain\PurchaseOrder\PODocStatus;
+
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -7,7 +8,7 @@
 
 // echo memory_get_usage();
 $add_row_url = null;
-
+$review_url = null;
 $picture_url = null;
 $attachment_url = null;
 $status_url = null;
@@ -22,11 +23,16 @@ $excel_url = null;
 $openoffice_url = null;
 $hoverMode = "row";
 
+$canPost = false;
+$canAmend = false;
+$isDraft = true;
+$isPosted = false;
+
 if (! $headerDTO == null) {
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-
+    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -36,11 +42,18 @@ if (! $headerDTO == null) {
     $ap_from_po_url = sprintf($this->baseUrl . "finance/v-invoice/copy-from-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
+        $canPost = true;
+    endif;
+
+    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) :
+        $isDraft = false;
+        $isPosted = true;
+        $canAmend = true;
     endif;
 
 }
@@ -123,7 +136,7 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 				<li>-----</li>
 
 				<li><?php if (!$headerDTO == null): echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;?> </li>
-
+				<li>Status: <?php if (!$headerDTO == null): echo $headerDTO->getDocStatus() ; endif;?> </li>
 				<li>Total rows: <?php echo ($headerDTO->totalRows);?></li>
 				<li>Status:<?php if (!$headerDTO == null): echo $headerDTO->getTransactionStatus(); endif;?> </li>
 
@@ -193,37 +206,42 @@ echo $error_msg;
 ?>
 	
  			<form id="Posting_Form" class="form-horizontal"
-						action="<?php echo $action;?>" method="post"
+						action="<?php echo $form_action;?>" method="post"
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							name="entity_id"
 							value="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>" />
-						<input type="hidden" name="token"
+						<input type="hidden" name="entity_token"
 							value="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>" />
+						<input type="hidden" name="version" value="<?php echo $version;?>" />
 
 						<div style="position: relative; float: right;">
 							
-							<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
-							<a class="btn btn-primary btn-sm" style="color: white"
+						<?php if($canPost):?>
+						 <a class="btn btn-primary btn-sm" style="color: white"
 								onclick="confirmPost();" href="javascript:;"><i
 								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
-											
-							<?php endif;?>
+		  				<?php endif;?>
+		  				
+		  				<?php if($canAmend):?>
+						 <a title="<?php echo $this->translate('P/O Amendment');?>" class="btn btn-default btn-sm" style="color:navy; font-weight: bold; "
+								onclick="confirmPost();" href="javascript:;"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Amend');?></a>
+		  				<?php endif;?>
 							
-				<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
-					<?php
-
-        if ($headerDTO->docStatus == \Application\Model\Constants::DOC_STATUS_DRAFT) :
-            $url = sprintf('/procure/po/review1?token=%s&entity_id=%s', $headerDTO->token, $headerDTO->id);
+				<?php
+    if ($action == \Application\Model\Constants::FORM_ACTION_SHOW) :
+        if ($isDraft) :
             ?>
-<a class="btn btn-default btn-sm" href="<?php echo $url;?>"
+<a class="btn btn-default btn-sm" href="<?php echo $review_url      ;?>"
 								title="<?php echo $this->translate('Review PO');?>"> <i
 								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Review");?>
 </a>
+					
 					<?php endif;?>
 					
-					<?php if($headerDTO->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED):?>
+					<?php if($isPosted):?>
 					
 							<a title="<?php echo $this->translate("Pay P/O");?>"
 								class="btn btn-default btn-sm" href="<?php echo $pay_url;?>"><i
@@ -491,8 +509,6 @@ function confirmPost() {
 }
 
 function doPosting() {
-	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>&entity_id=<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>"
-	//window.location = url;
 	$('#confirm_modal_sm').modal('hide');
 	submitForm('Posting_Form');
 }

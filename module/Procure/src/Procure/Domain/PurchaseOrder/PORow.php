@@ -217,7 +217,6 @@ class PORow extends AbstractEntity
         $this->docStatus = PODocStatus::DOC_STATUS_POSTED;
         $this->lastchangeOn =(date_format($postedDate, 'Y-m-d H:i:s'));
         $this->lastchangeBy = $postedBy;
-        return $this;
     }
 
     /**

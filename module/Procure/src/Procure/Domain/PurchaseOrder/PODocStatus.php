@@ -19,6 +19,8 @@ class PODocStatus
     
     const DOC_STATUS_POSTED = 'posted';
     
+    const DOC_STATUS_AMENDING= 'amending';
+    
     const DOC_STATUS_ARCHIVED = 'archived';
     
     const DOC_STATUS_REVERSED = 'reversed';

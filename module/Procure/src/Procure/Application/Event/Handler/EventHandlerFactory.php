@@ -10,6 +10,8 @@ use Procure\Application\Event\Handler\PO\PoHeaderCreatedHandler;
 use Procure\Application\Event\Handler\PO\PoHeaderUpdatedHandler;
 use Procure\Application\Event\Handler\PO\PoRowAddedHandler;
 use Procure\Application\Event\Handler\PO\PoRowUpdatedHandler;
+use Procure\Domain\Event\Po\PoPosted;
+use Procure\Application\Event\Handler\PO\PoPostedHandler;
 
 /**
  *
@@ -41,6 +43,10 @@ class EventHandlerFactory
                 
             case PoRowUpdated::class:
                 $handlers[] = new PoRowUpdatedHandler($doctrineEM);
+                break;
+                
+            case PoPosted::class:
+                $handlers[] = new PoPostedHandler($doctrineEM);
                 break;
         }
 

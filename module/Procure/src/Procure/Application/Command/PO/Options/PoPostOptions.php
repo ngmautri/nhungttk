@@ -45,7 +45,9 @@ class PoPostOptions implements CommandOptions
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getRootEntity()
@@ -54,6 +56,7 @@ class PoPostOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRootEntityId()
@@ -62,6 +65,7 @@ class PoPostOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRootEntityToken()
@@ -70,6 +74,7 @@ class PoPostOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUserId()
@@ -78,6 +83,7 @@ class PoPostOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVersion()
@@ -86,11 +92,11 @@ class PoPostOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
     }
-
 }

@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class POAmendedEvent extends Event{
+class POAmended extends Event{
       
    
 }

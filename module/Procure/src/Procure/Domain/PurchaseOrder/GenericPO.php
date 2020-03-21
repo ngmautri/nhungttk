@@ -2,29 +2,23 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\DTOFactory;
-use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\APInvoice\Factory\APFactory;
-use Procure\Domain\Event\Po\PoHeaderCreated;
-use Procure\Domain\Event\Po\PoHeaderUpdated;
+use Procure\Domain\Event\Po\PoPosted;
+use Procure\Domain\Event\Po\PoRowAdded;
+use Procure\Domain\Event\Po\PoRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\Exception\PoInvalidOperationException;
+use Procure\Domain\Exception\PoRowCreateException;
+use Procure\Domain\Exception\PoRowException;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecService;
-use Procure\Domain\Event\Po\PoRowAdded;
-use Ramsey\Uuid\Uuid;
-use Procure\Domain\Event\Po\PoRowUpdated;
-use Application\Domain\Shared\Constants;
-use Procure\Domain\Exception\PoRowException;
-use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Service\SharedService;
-use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoRowCreateException;
-use Procure\Application\Command\PO\Options\PoRowCreateOptions;
-use Procure\Domain\Exception\PoPostingException;
-use Procure\Domain\Event\Po\POPostedEvent;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -40,19 +34,53 @@ abstract class GenericPO extends AbstractPO
 
     protected $rowsOutput;
 
-    abstract protected function prePost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function doPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function afterPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function preReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function doReverse(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    abstract protected function afterReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+
+    /**
+     *
+     * @param PORow $row
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     */
+    public function deactivateRow(PORow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
+
+    /**
+     *
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     */
+    public function ammend(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    {
+        if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_POSTED) {
+            throw new PoInvalidOperationException(sprintf("PO can not be amended! %s", $this->getId()));
+        }
+
+        if ($sharedService == null) {
+            throw new PoInvalidArgumentException("SharedService service not found");
+        }
+
+        if ($postingService == null) {
+            throw new PoInvalidArgumentException("postingService service not found");
+        }
+    }
 
     /**
      *
@@ -68,6 +96,10 @@ abstract class GenericPO extends AbstractPO
      */
     public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
+        if ($this->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
+            throw new PoInvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+        }
+
         if ($snapshot == null) {
             throw new PoInvalidArgumentException("PORowSnapshot not found");
         }
@@ -153,6 +185,10 @@ abstract class GenericPO extends AbstractPO
      */
     public function updateRowFrom(PORowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
+        if ($this->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
+            throw new PoInvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+        }
+
         if ($snapshot == null) {
             throw new PoInvalidArgumentException("PORowSnapshot not found");
         }
@@ -225,8 +261,12 @@ abstract class GenericPO extends AbstractPO
      * @throws InvalidArgumentException
      * @return \Procure\Domain\PurchaseOrder\GenericPO
      */
-    public function post(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
+        if ($this->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
+            throw new PoInvalidOperationException(sprintf("PO is already posted! %s", $this->getId()));
+        }
+
         if ($headerValidators == null) {
             throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
         }
@@ -243,19 +283,17 @@ abstract class GenericPO extends AbstractPO
             throw new PoInvalidArgumentException("postingService service not found");
         }
 
-        $this->validate($headerValidators, $rowValidators, true);
-
-        if ($this->hasErrors()) {
-            throw new PoPostingException($this->getNotification()->errorMessage());
+        if ($options == null) {
+            throw new PoInvalidArgumentException("Comnand Options not found!");
         }
 
         $this->clearEvents();
 
-        $this->prePost($headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doPost($headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterPost($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->prePost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new POPostedEvent($this));
+        $this->addEvent(new PoPosted($this->makeSnapshot()));
         return $this;
     }
 
@@ -286,7 +324,7 @@ abstract class GenericPO extends AbstractPO
             return $this;
         }
 
-        if (count($this->docRows) == 0) {
+        if (count($this->getDocRows()) == 0) {
             $this->addError("Doc has no lines");
             return $this;
         }

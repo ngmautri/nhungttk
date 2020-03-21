@@ -24,6 +24,8 @@ use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Exception\PoInvalidOperationException;
+use Procure\Domain\PurchaseOrder\PODocStatus;
 
 /**
  *
@@ -77,13 +79,21 @@ class EditHeaderCmdHandler extends AbstractDoctrineCmdHandler
         $trigger = $options->getTriggeredBy();
 
         try {
+            
+             
 
             $notification = new Notification();
+            
+              
 
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->beginTransaction(); // suspend auto-commit
 
+                if ($rootEntity->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
+                    throw new PoInvalidOperationException(sprintf("PO is already posted! %s", $rootEntity->getId()));
+                }
+                
             /**
              *
              * @var POSnapshot $snapshot ;

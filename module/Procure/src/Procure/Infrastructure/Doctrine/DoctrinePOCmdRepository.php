@@ -8,6 +8,7 @@ use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Infrastructure\Mapper\PoMapper;
+use Procure\Domain\Exception\PoInvalidArgumentException;
 
 /**
  *
@@ -75,13 +76,6 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
         $entity = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
-        if ($isPosting) {
-            $entity->setLastChangeOn(new \DateTime());
-            $entity->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
-            $entity->setIsDraft(0);
-            $entity->setIsPosted(1);
-        }
-
         $this->doctrineEM->persist($entity);
 
         $rootEntityDoctrine->setRevisionNo($rootEntityDoctrine->getRevisionNo() + 1);
@@ -103,7 +97,16 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
     public function post(GenericPO $rootEntity, $generateSysNumber = True)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException("GenericPO not retrieved.");
+            throw new PoInvalidArgumentException("GenericPO not retrieved.");
+        }
+
+        /**
+         *
+         * @var \Procure\Domain\PurchaseOrder\POSnapshot $snapshot ;
+         */
+        $snapshot = $rootEntity->makeSnapshot();
+        if ($snapshot == null) {
+            throw new PoInvalidArgumentException("Root Snapshot not created!");
         }
 
         /**
@@ -113,17 +116,14 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         $entity = $this->doctrineEM->find("\Application\Entity\NmtProcurePo", $rootEntity->getId());
 
         if ($entity == null) {
-            throw new InvalidArgumentException("PO Entity not retrieved.");
+            throw new PoInvalidArgumentException("PO Entity not retrieved.");
         }
+
+        $entity = PoMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));
         }
-
-        $entity->setLastChangeOn(new \DateTime());
-        $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
-        $entity->setIsDraft(0);
-        $entity->setIsPosted(1);
 
         $rows = $rootEntity->getDocRows();
         $n = 0;
@@ -131,24 +131,27 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
 
             /** @var PORow $row ; */
 
-            /** @var \Application\Entity\NmtProcurePoRow $r ; */
-            $r = $this->doctrineEM->find("\Application\Entity\NmtProcurePoRow", $row->getId());
-
-            if ($r == null) {
+            $rowSnapshot = $row->makeSnapshot();
+            if ($rowSnapshot == null) {
                 continue;
             }
 
-            $n ++;
+            /** @var \Application\Entity\NmtProcurePoRow $rowEntity ; */
+            $rowEntity = $this->doctrineEM->find("\Application\Entity\NmtProcurePoRow", $row->getId());
 
-            // update transaction row
-            $r->setDocStatus($entity->getDocStatus());
-            $r->setDocType($entity->getMovementType());
-            $r->setTransactionType($entity->getMovementType());
-            $r->setCogsLocal($row->getCogsLocal());
-            $r->setSysNumber($entity->getSysNumber() . '-' . $n);
-            $this->doctrineEM->persist($r);
+            if ($rowEntity == null) {
+                continue;
+            }
+
+            $rowEntity = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $row->makeSnapshot(), $rowEntity);
+
+            $n ++;
+            $rowEntity->setRowIdentifer($entity->getSysNumber() . '-' . $n);
+
+            $this->doctrineEM->persist($rowEntity);
         }
 
+        $entity->setRevisionNo($entity->getRevisionNo() + 1);
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
@@ -221,10 +224,30 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface::store()
      */
     public function store(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
-    {}
+    {
+        if ($rootEntity == null) {
+            throw new PoInvalidArgumentException("GenericPO not retrieved.");
+        }
+
+        $this->storeHeader($rootEntity, $generateSysNumber, $isPosting);
+
+        $rows = $rootEntity->getDocRows();
+        foreach ($rows as $row) {
+
+            /** @var PORow $row ; */
+
+            /** @var \Application\Entity\NmtProcurePoRow $r ; */
+            $r = $this->doctrineEM->find("\Application\Entity\NmtProcurePoRow", $row->getId());
+
+            if ($r == null) {
+                continue;
+            }
+            $this->storeRow($rootEntity, $r, $isPosting);
+        }
+    }
 }

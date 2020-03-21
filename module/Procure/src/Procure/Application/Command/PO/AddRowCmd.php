@@ -3,7 +3,6 @@ namespace Procure\Application\Command\PO;
 
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
-use Application\Domain\Shared\Command\CommandHandlerInterface;
 
 /**
  *

@@ -6,28 +6,25 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\PoRowUpdateException;
+use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
-use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecService;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Infrastructure\Doctrine\DoctrineQRCmdRepository;
-use Procure\Domain\Exception\PoVersionChangedException;
-use Procure\Infrastructure\Doctrine\DoctrineQRQueryRepository;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Domain\Exception\PoRowUpdateException;
-use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
+use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
+use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -146,7 +143,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
             
 
-            $rootEntity->updateRowFrom($snapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
             
             // event dispatcher
             if (count($rootEntity->getRecordedEvents() > 0)) {

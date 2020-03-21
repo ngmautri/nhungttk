@@ -17,6 +17,9 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
+use Procure\Application\Command\PO\Options\PoPostOptions;
+use Procure\Domain\Exception\PoPostingException;
+use Procure\Domain\Exception\PoInvalidOperationException;
 
 /**
  *
@@ -34,23 +37,38 @@ class PODoc extends GenericPO
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
      */
-    protected function doPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
+
+        /**
+         *
+         * @var \Procure\Domain\PurchaseOrder\PORow $row ;
+         *     
+         * @todo: decoup dependency
+         * @var PoPostOptions $options ;
+         */
         $postedDate = new \Datetime();
         $this->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
         $this->setLastchangeOn(date_format($postedDate, 'Y-m-d H:i:s'));
+        $this->setLastchangeBy($options->getUserId());
 
-        foreach ($this->docRows as $row) {
+        foreach ($this->getDocRows() as $row) {
 
-            /** @var \Procure\Domain\PurchaseOrder\PORow $row ; */
-            if ($row->quantity() == 0) {
-                continute;
+            if ($row->getDocQuantity() == 0) {
+                continue;
             }
 
-            $row->setAsPosted($postedBy, $postedDate);
+            $row->setAsPosted($options->getUserId(), $postedDate);
+        }
+
+        $this->validate($headerValidators, $rowValidators, true);
+
+        if ($this->hasErrors()) {
+            throw new PoPostingException($this->getNotification()->errorMessage());
         }
 
         $postingService->getCmdRepository()->post($this, true);
+        
     }
 
     /**
@@ -67,6 +85,9 @@ class PODoc extends GenericPO
      */
     public static function createFrom(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
+       
+        
+        
         if (! $snapshot instanceof POSnapshot) {
             throw new PoInvalidArgumentException("PO snapshot not found!");
         }
@@ -85,7 +106,8 @@ class PODoc extends GenericPO
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
+        
+      
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
 
@@ -145,6 +167,9 @@ class PODoc extends GenericPO
      */
     public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
+        
+        
+        
         if (! $snapshot instanceof POSnapshot) {
             throw new PoInvalidArgumentException("PO snapshot not found!");
         }
@@ -260,23 +285,26 @@ class PODoc extends GenericPO
         return $instance;
     }
 
-    protected function afterPost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
-    protected function doReverse(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
-    protected function prePost(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
-    protected function preReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
-    protected function afterReserve(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
     protected function raiseEvent()
     {}
 
+   
+
+  
   
 }

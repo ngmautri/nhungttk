@@ -9,8 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_fingerscan_KF2_idx", columns={"employee_code"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtHrFingerscanRepository")
- 
  */
 class NmtHrFingerscan
 {
@@ -22,91 +20,91 @@ class NmtHrFingerscan
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-    
+
     /**
      * @var integer
      *
      * @ORM\Column(name="employee_id", type="integer", nullable=false)
      */
     private $employeeId;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
      */
     private $employeeCode;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="attendance_date", type="datetime", nullable=true)
      */
     private $attendanceDate;
-    
+
     /**
      * @var integer
      *
      * @ORM\Column(name="attendance_type", type="integer", nullable=true)
      */
     private $attendanceType;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="start_time", type="time", nullable=true)
      */
     private $startTime;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="end_time", type="time", nullable=true)
      */
     private $endTime;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="clock_in", type="string", length=10, nullable=true)
      */
     private $clockIn;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="clock_out", type="string", length=10, nullable=true)
      */
     private $clockOut;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="reconciled_on", type="datetime", nullable=true)
      */
     private $reconciledOn;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-    
+
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -116,9 +114,9 @@ class NmtHrFingerscan
      * })
      */
     private $createdBy;
-    
-    
-    
+
+
+
     /**
      * Get id
      *
@@ -128,7 +126,7 @@ class NmtHrFingerscan
     {
         return $this->id;
     }
-    
+
     /**
      * Set token
      *
@@ -139,10 +137,10 @@ class NmtHrFingerscan
     public function setToken($token)
     {
         $this->token = $token;
-        
+
         return $this;
     }
-    
+
     /**
      * Get token
      *
@@ -152,7 +150,7 @@ class NmtHrFingerscan
     {
         return $this->token;
     }
-    
+
     /**
      * Set employeeId
      *
@@ -163,10 +161,10 @@ class NmtHrFingerscan
     public function setEmployeeId($employeeId)
     {
         $this->employeeId = $employeeId;
-        
+
         return $this;
     }
-    
+
     /**
      * Get employeeId
      *
@@ -176,7 +174,7 @@ class NmtHrFingerscan
     {
         return $this->employeeId;
     }
-    
+
     /**
      * Set employeeCode
      *
@@ -187,10 +185,10 @@ class NmtHrFingerscan
     public function setEmployeeCode($employeeCode)
     {
         $this->employeeCode = $employeeCode;
-        
+
         return $this;
     }
-    
+
     /**
      * Get employeeCode
      *
@@ -200,7 +198,7 @@ class NmtHrFingerscan
     {
         return $this->employeeCode;
     }
-    
+
     /**
      * Set attendanceDate
      *
@@ -211,10 +209,10 @@ class NmtHrFingerscan
     public function setAttendanceDate($attendanceDate)
     {
         $this->attendanceDate = $attendanceDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get attendanceDate
      *
@@ -224,7 +222,7 @@ class NmtHrFingerscan
     {
         return $this->attendanceDate;
     }
-    
+
     /**
      * Set attendanceType
      *
@@ -235,10 +233,10 @@ class NmtHrFingerscan
     public function setAttendanceType($attendanceType)
     {
         $this->attendanceType = $attendanceType;
-        
+
         return $this;
     }
-    
+
     /**
      * Get attendanceType
      *
@@ -248,7 +246,7 @@ class NmtHrFingerscan
     {
         return $this->attendanceType;
     }
-    
+
     /**
      * Set startTime
      *
@@ -259,10 +257,10 @@ class NmtHrFingerscan
     public function setStartTime($startTime)
     {
         $this->startTime = $startTime;
-        
+
         return $this;
     }
-    
+
     /**
      * Get startTime
      *
@@ -272,7 +270,7 @@ class NmtHrFingerscan
     {
         return $this->startTime;
     }
-    
+
     /**
      * Set endTime
      *
@@ -283,10 +281,10 @@ class NmtHrFingerscan
     public function setEndTime($endTime)
     {
         $this->endTime = $endTime;
-        
+
         return $this;
     }
-    
+
     /**
      * Get endTime
      *
@@ -296,7 +294,7 @@ class NmtHrFingerscan
     {
         return $this->endTime;
     }
-    
+
     /**
      * Set clockIn
      *
@@ -307,10 +305,10 @@ class NmtHrFingerscan
     public function setClockIn($clockIn)
     {
         $this->clockIn = $clockIn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get clockIn
      *
@@ -320,7 +318,7 @@ class NmtHrFingerscan
     {
         return $this->clockIn;
     }
-    
+
     /**
      * Set clockOut
      *
@@ -331,10 +329,10 @@ class NmtHrFingerscan
     public function setClockOut($clockOut)
     {
         $this->clockOut = $clockOut;
-        
+
         return $this;
     }
-    
+
     /**
      * Get clockOut
      *
@@ -344,7 +342,7 @@ class NmtHrFingerscan
     {
         return $this->clockOut;
     }
-    
+
     /**
      * Set createdOn
      *
@@ -355,10 +353,10 @@ class NmtHrFingerscan
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdOn
      *
@@ -368,7 +366,7 @@ class NmtHrFingerscan
     {
         return $this->createdOn;
     }
-    
+
     /**
      * Set reconciledOn
      *
@@ -379,10 +377,10 @@ class NmtHrFingerscan
     public function setReconciledOn($reconciledOn)
     {
         $this->reconciledOn = $reconciledOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get reconciledOn
      *
@@ -392,7 +390,7 @@ class NmtHrFingerscan
     {
         return $this->reconciledOn;
     }
-    
+
     /**
      * Set remarks
      *
@@ -403,10 +401,10 @@ class NmtHrFingerscan
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-        
+
         return $this;
     }
-    
+
     /**
      * Get remarks
      *
@@ -416,7 +414,7 @@ class NmtHrFingerscan
     {
         return $this->remarks;
     }
-    
+
     /**
      * Set createdBy
      *
@@ -427,10 +425,10 @@ class NmtHrFingerscan
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdBy
      *

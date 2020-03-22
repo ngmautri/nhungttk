@@ -63,7 +63,7 @@ class PoRowAddedHandler extends AbstractEventHandler implements EventSubscriberI
         $message = new MessageStore();
         
         $message->setRevisionNo($rootEntity->getRevisionNo());
-        $message->setVersion($rootEntity->getRevisionNo());
+        $message->setVersion($rootEntity->getDocVersion());
         
         
         $message->setEntityId($ev->getTarget());

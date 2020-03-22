@@ -2,58 +2,47 @@
 namespace Procure\Application\Command\PO\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoRowUpdateException;
+use Procure\Domain\Exception\PoAmendmentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowUpdateOptions implements CommandOptions
+class PoAmendmentAcceptOptions implements CommandOptions
 {
 
     private $rootEntity;
 
-    private $localEntity;
+    private $rootEntityId;
 
-    private $entityId;
+    private $rootEntityToken;
 
-    private $entityToken;
+    private $userId;
 
     private $version;
 
-    private $userId;
     private $triggeredBy;
+
     private $triggeredOn;
-    
-    /**
-     *
-     * @param int $companyId
-     * @param int $userId
-     * @param string $triggeredBy
-     */
-    public function __construct($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
+
+    public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoRowUpdateException(sprintf("rootEntity not given! %s", "x"));
-        }
-
-        if ($localEntity == null) {
-            throw new PoRowUpdateException(sprintf(" localEntity not given! %s", "x"));
+            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoRowUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoRowUpdateException(sprintf("Trigger not given! %s", $triggeredBy));
+            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
-        $this->localEntity = $localEntity;
-        $this->entityId = $entityId;
-        $this->entityToken = $entityToken;
+        $this->rootEntityId = $rootEntityId;
+        $this->rootEntityToken = $rootEntityToken;
         $this->version = $version;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
@@ -72,27 +61,27 @@ class PoRowUpdateOptions implements CommandOptions
      *
      * @return mixed
      */
-    public function getLocalEntity()
+    public function getRootEntityId()
     {
-        return $this->localEntity;
+        return $this->rootEntityId;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getEntityId()
+    public function getRootEntityToken()
     {
-        return $this->entityId;
+        return $this->rootEntityToken;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getEntityToken()
+    public function getUserId()
     {
-        return $this->entityToken;
+        return $this->userId;
     }
 
     /**
@@ -105,27 +94,21 @@ class PoRowUpdateOptions implements CommandOptions
     }
 
     /**
-     * @return string
+     *
+     * @return mixed
      */
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
     }
+
     /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-    /**
+     *
      * @return mixed
      */
     public function getTriggeredOn()
     {
         return $this->triggeredOn;
     }
-
-
-
+    
 }

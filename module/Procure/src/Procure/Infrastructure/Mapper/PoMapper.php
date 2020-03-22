@@ -152,6 +152,8 @@ class PoMapper
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
 
+        $entity->setDocVersion($snapshot->docVersion); // new
+        
         // DATE MAPPING
         //$entity->setCreatedOn($snapshot->createdOn);
         if ($snapshot->createdOn !== null) {
@@ -616,7 +618,8 @@ class PoMapper
         $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
         $snapshot->uuid = $entity->getUuid();
-
+        $snapshot->docVersion = $entity->getDocVersion(); // new/
+        
         return $snapshot;
     }
 

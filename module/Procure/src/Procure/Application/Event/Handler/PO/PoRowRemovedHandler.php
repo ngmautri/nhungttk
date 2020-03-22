@@ -48,7 +48,7 @@ class PoRowRemovedHandler extends AbstractEventHandler implements EventSubscribe
         $message = new MessageStore();
 
         $message->setRevisionNo($rootEntity->getRevisionNo());
-        $message->setVersion($rootEntity->getRevisionNo());
+        $message->setVersion($rootEntity->getDocVersion());
 
         $message->setEntityId($ev->getTarget());
         $message->setEntityToken($rootEntity->getToken());

@@ -9,6 +9,7 @@ use Procure\Domain\Shared\Constants;
 // var_dump($headerDTO);
 
 // echo memory_get_usage();
+
 $add_row_url = null;
 $review_url = null;
 $picture_url = null;
@@ -25,10 +26,19 @@ $excel_url = null;
 $openoffice_url = null;
 $hoverMode = "row";
 
+$isViewing = false;
+
+if ($action == Constants::FORM_ACTION_SHOW) {
+    $isViewing = true;
+}
+
+$isDraft = false;
+$isPosted = false;
+$isAmending = false;
 $canPost = false;
 $canAmend = false;
-$isDraft = true;
-$isPosted = false;
+$canAcceptAmendment = false;
+
 $transactionStatus = "";
 $alert = "info";
 
@@ -46,6 +56,7 @@ if (! $headerDTO == null) {
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $enable_amendment_url = sprintf($this->baseUrl . "/procure/po/enable-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_amendment_url = sprintf($this->baseUrl . "/procure/po/review-amendment?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
@@ -64,12 +75,20 @@ if (! $headerDTO == null) {
         $canPost = true;
     endif;
 
-    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) :
-        $isDraft = false;
-        $isPosted = true;
-        $canAmend = true;
-    endif;
-
+    switch ($headerDTO->getDocStatus()) {
+        case PODocStatus::DOC_STATUS_DRAFT:
+            $isDraft = true;
+            $canPost = true;
+            break;
+        case PODocStatus::DOC_STATUS_POSTED:
+            $isPosted = true;
+            $canAmend = true;
+            break;
+        case PODocStatus::DOC_STATUS_AMENDING:
+            $isAmending = true;
+            $canAcceptAmendment = true;
+            break;
+    }
 }
 
 $currency_list = $nmtPlugin->currencyList();
@@ -234,25 +253,29 @@ echo $error_msg;
 						<input type="hidden" name="version" value="<?php echo $version;?>" />
 
 						<div style="position: relative; float: right;">
-							
+					
+				<?php if ($isViewing == false) : ?>
+						  		
 						<?php if($canPost):?>
 						 <a class="btn btn-primary btn-sm" style="color: white"
 								onclick="confirmPost();" href="javascript:;"><i
 								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
 		  				<?php endif;?>
 		  				
-		  				<?php if($canAmend):?>
+		  				<?php if($canAcceptAmendment):?>
 						 <a title="<?php echo $this->translate('P/O Amendment');?>"
 								class="btn btn-default btn-sm"
 								style="color: navy; font-weight: bold;"
-								onclick="confirmAmendment();" href="javascript:;"><i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Amendment');?></a>
+								onclick="confirmPostAmendment();" href="javascript:;"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Post Amendment');?></a>
 		  				<?php endif;?>
-							
-				<?php
-    if ($action == Constants::FORM_ACTION_SHOW) :
-        if ($isDraft) :
-            ?>
+				<?php endif;?>
+
+
+<?php
+if ($isViewing) :
+    if ($isDraft) :
+        ?>
 <a class="btn btn-default btn-sm" href="<?php echo $review_url      ;?>"
 								title="<?php echo $this->translate('Review PO');?>"> <i
 								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Review");?>
@@ -260,8 +283,16 @@ echo $error_msg;
 					
 					<?php endif;?>
 					
-					<?php if($isPosted):?>
+					  <?php if($canAmend):?>
+						 <a title="<?php echo $this->translate('P/O Amendment');?>"
+								class="btn btn-default btn-sm"
+								style="color: navy; font-weight: bold;"
+								onclick="confirmAmendment();" href="javascript:;"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Amendment');?></a>
+		  				<?php endif;?>
+	
 					
+					<?php if($isPosted):?>					
 							<a title="<?php echo $this->translate("Pay P/O");?>"
 								class="btn btn-default btn-sm" href="<?php echo $pay_url;?>"><i
 								class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay</a> <a
@@ -275,6 +306,15 @@ echo $error_msg;
 								href="<?php echo $ap_from_po_url;?>"> <i class="fa fa-plus"
 								aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice
 							</a>      	
+					<?php endif;?>
+					
+					
+					<?php if($isAmending):?>					
+							<a class="btn btn-default btn-sm"
+								href="<?php echo $review_amendment_url;?>"
+								title="<?php echo $this->translate('Review PO Amendment');?>"> <i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Review Amendment");?>
+							</a>
 					<?php endif;?>
 					
 				<?php endif;?>
@@ -541,6 +581,31 @@ echo $error_msg;
 	</div>
 </div>
 
+<!-- Modal -->
+<div class="modal" id="post_amendment_confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>#<?php echo$this->translate('PO amendment will be posted!');?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doAmendment();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 
 var data = <?php echo json_encode($rowOutput) ; ?>
@@ -571,12 +636,38 @@ function doAmendment() {
 	var url="/procure/po/enable-amendment";
 	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
 	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
-	var version="<?php echo $version ;?>";
+	var version="<?php echo $version;?>";
+
 	$.post(url, {
 		entity_id 	: entity_id,
 		entity_token: entity_token,
 		version: version,
 	}, function(data, status, dataType) {
+	//	alert(data);
+        window.location.href= data;
+   	});
+}
+
+
+function confirmPostAmendment() {
+ 	$('#post_amendment_confirm_modal_sm').modal();
+}
+
+function doPostAmendment() {
+	$('#post_amendment_confirm_modal_sm').modal('hide');		
+	$('#b_modal_no_header').modal();
+	
+	var url="/procure/po/review-amendment";
+	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
+	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
+	var version="<?php echo $version;?>";
+
+	$.post(url, {
+		entity_id 	: entity_id,
+		entity_token: entity_token,
+		version: version,
+	}, function(data, status, dataType) {
+		alert(data);
         window.location.href= data;
    	});
 }
@@ -705,7 +796,8 @@ $( "#vendor_name_1" ).autocomplete({
 		 columnBorders: true,
 
 				  	  toolbar: {
-                    	<?php if($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW):?>
+				  	 	<?php if(!$isViewing):?> 
+                    	<?php if($canPost || $canAcceptAmendment):?>
                         items: [
                         { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
                             { "click": function (evt, ui) {
@@ -717,6 +809,7 @@ $( "#vendor_name_1" ).autocomplete({
                         ]
                         }
                         ]
+                    	<?php endif;?>
                     	<?php endif;?>
 
                      	<?php if($action == Constants::FORM_ACTION_SHOW):?>
@@ -833,14 +926,16 @@ $( "#vendor_name_1" ).autocomplete({
             sortDir: "down"
     };
 
-    obj.colModel = [   
-    	<?php if($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW):?>
-       { title: "", editable: false, minWidth: 55, sortable: false,
+    obj.colModel = [
+    	<?php if(!$isViewing):?>   
+      	<?php if($canPost || $canAcceptAmendment):?>
+             { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
         		return '<button type="button" class="edit_btn">Edit </button>';
            }
        },
+       <?php endif;?>
        <?php endif;?>
 
 

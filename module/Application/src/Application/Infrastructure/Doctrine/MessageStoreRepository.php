@@ -114,7 +114,7 @@ WHERE message_store.sent_on IS NULL";
     private function _getMessages($entityId, $entityToken, $limit, $offset)
     {
         $sql = 'SELECT * FROM message_store
-WHERE entity_id=%s AND entity_token="%s"  order by Version desc ';
+WHERE entity_id=%s AND entity_token="%s"  order by revision_no desc ';
 
         $sql = sprintf($sql, $entityId, $entityToken);
         

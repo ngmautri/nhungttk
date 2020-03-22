@@ -111,6 +111,17 @@ class POSnapshot extends AbstractDTO
 
     public $incoterm2;
 
+    public $docVersion;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
     /**
      *
      * @return mixed

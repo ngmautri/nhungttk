@@ -24,6 +24,8 @@ class PoRowCreateOptions implements CommandOptions
 
     private $triggeredBy;
 
+    private $triggeredOn;
+
     /**
      *
      * @param int $companyId
@@ -98,12 +100,23 @@ class PoRowCreateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return string
      */
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTriggeredOn()
+    {
+        return $this->triggeredOn;
+    }
+
 
 
    

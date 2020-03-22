@@ -91,7 +91,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
         $message = new MessageStore();
 
         $message->setRevisionNo($rootEntity->getRevisionNo());
-        $message->setVersion($rootEntity->getRevisionNo());
+        $message->setVersion($rootEntity->getDocVersion());
         $message->setTriggeredBy($trigger);
 
         $message->setEntityId($ev->getTarget());

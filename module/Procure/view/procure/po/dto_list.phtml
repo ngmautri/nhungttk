@@ -73,6 +73,10 @@
 								<option
 									<?php echo $docStatus=='posted'? "selected='selected'":"";?>
 									value="posted">Posted</option>
+
+								<option
+									<?php echo $docStatus=='amending'? "selected='selected'":"";?>
+									value="amending">Amending</option>
 							</select>
 						</div>
 					</div>
@@ -262,6 +266,8 @@ else :
 								class="glyphicon glyphicon-pencil"></i></small>&nbsp;View</a></td>
 	<?php endforeach; ?>
  
+			
+			
 			
 			
 			

@@ -18,6 +18,28 @@ use Procure\Infrastructure\Mapper\PoMapper;
 class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
 
+    public function getVersionArray($id, $token = null)
+    {
+        $criteria = array(
+            'id' => $id
+        );
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePo $doctrineEntity ;
+         */
+
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
+        if ($doctrineEntity !== null) {
+            return [
+                "revisionNo" => $doctrineEntity->getRevisionNo(),
+                "docVersion" => $doctrineEntity->getDocVersion()
+            ];
+        }
+
+        return null;
+    }
+
     /**
      *
      * {@inheritdoc}
@@ -33,11 +55,11 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
          *
          * @var \Application\Entity\NmtProcurePo $doctrineEntity ;
          */
+
         $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
         if ($doctrineEntity !== null) {
             return $doctrineEntity->getRevisionNo();
         }
-
         return null;
     }
 
@@ -63,7 +85,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         } else {
             $criteria = array(
                 'id' => $id,
-                'token' => $token,
+                'token' => $token
             );
         }
 
@@ -264,6 +286,6 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             return null;
         }
     }
-   
+  
   
 }

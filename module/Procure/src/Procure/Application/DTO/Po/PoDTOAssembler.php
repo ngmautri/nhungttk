@@ -1,6 +1,9 @@
 <?php
 namespace Procure\Application\DTO\Po;
 
+use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseOrder\PODoc;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -72,6 +75,7 @@ class PoDTOAssembler
                 $missingProperties[] = $propertyName;
             }
         }
+        var_dump($missingProperties);
         return $missingProperties;
     }
 }

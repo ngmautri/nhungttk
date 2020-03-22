@@ -16,7 +16,6 @@ use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\Service\POPostingService;
@@ -24,6 +23,8 @@ use Procure\Domain\Service\SharedService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
+use Procure\Domain\Exception\PoAmendmentException;
 
 /**
  *
@@ -44,10 +45,6 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof PoDTO) {
-            throw new \Exception("PoDTO object not found!");
-        }
-
         /**
          *
          * @var PoDTO $dto ;
@@ -59,31 +56,24 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof PoUpdateOptions) {
-            throw new PoUpdateException("No Options given. Pls check command configuration!");
-        }
-
-        if (! $dto instanceof PoDTO) {
-            throw new PoUpdateException("PoDTO object not found!");
+        if (! $options instanceof PoAmendmentEnableOptions) {
+            throw new PoAmendmentException("No Options given. Pls check command configuration!");
         }
 
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
         $rootEntityId = $options->getRootEntityId();
-        $rootEntityToken = $options->getRootEntityToken();
         $version = $options->getVersion();
         $userId = $options->getUserId();
         $trigger = $options->getTriggeredBy();
-        
-        if (!$rootEntity->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
+
+        if (! $rootEntity->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
             throw new PoInvalidOperationException(sprintf("PO is not signed and posted! %s", $rootEntity->getId()));
         }
-        
 
         try {
 
-     
             $notification = new Notification();
 
             $cmd->getDoctrineEM()
@@ -109,13 +99,14 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             $postingService = new POPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-             
+            $rootEntity->ennableAmendment($options, $headerValidators, $sharedService, $postingService);
+
             // event dispatc
-            if (count($newRootEntity->getRecordedEvents() > 0)) {
+            if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
 
-                foreach ($newRootEntity->getRecordedEvents() as $event) {
+                foreach ($rootEntity->getRecordedEvents() as $event) {
 
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
 
@@ -128,7 +119,7 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("PO #%s updated", $newRootEntity->getId());
+            $m = sprintf("PO #%s enabled for amendment", $rootEntity->getId());
 
             $notification->addSuccess($m);
 
@@ -150,6 +141,5 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 ->rollBack();
         }
 
-        $dto->setNotification($notification);
-    }
+     }
 }

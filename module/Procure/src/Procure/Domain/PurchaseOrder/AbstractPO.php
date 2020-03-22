@@ -54,6 +54,8 @@ abstract class AbstractPO extends AbstractEntity implements AggregateRootInterfa
 
     protected $completedRows;
 
+    protected $openAPAmount;
+
     protected $id;
 
     protected $token;
@@ -152,7 +154,41 @@ abstract class AbstractPO extends AbstractEntity implements AggregateRootInterfa
 
     protected $docCurrency;
 
-    protected $openAPAmount;
+    protected $incoterm2;
+
+    protected $docVersion;
+
+    /**
+     * @param mixed $incoterm2
+     */
+    protected function setIncoterm2($incoterm2)
+    {
+        $this->incoterm2 = $incoterm2;
+    }
+
+    /**
+     * @param mixed $docVersion
+     */
+    protected function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncoterm2()
+    {
+        return $this->incoterm2;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
 
     private function __construct()
     {}

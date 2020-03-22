@@ -24,6 +24,8 @@ class PoUpdateOptions implements CommandOptions
 
     private $triggeredBy;
 
+    private $triggeredOn;
+
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
@@ -45,7 +47,9 @@ class PoUpdateOptions implements CommandOptions
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getRootEntity()
@@ -54,6 +58,7 @@ class PoUpdateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRootEntityId()
@@ -62,6 +67,7 @@ class PoUpdateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRootEntityToken()
@@ -70,6 +76,7 @@ class PoUpdateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUserId()
@@ -78,6 +85,7 @@ class PoUpdateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVersion()
@@ -86,11 +94,22 @@ class PoUpdateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTriggeredOn()
+    {
+        return $this->triggeredOn;
+    }
+
 
 }

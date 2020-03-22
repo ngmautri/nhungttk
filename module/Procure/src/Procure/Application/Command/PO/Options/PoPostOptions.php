@@ -23,6 +23,9 @@ class PoPostOptions implements CommandOptions
     private $version;
 
     private $triggeredBy;
+    
+    private $triggeredOn;
+    
 
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
@@ -99,4 +102,12 @@ class PoPostOptions implements CommandOptions
     {
         return $this->triggeredBy;
     }
+    /**
+     * @return mixed
+     */
+    public function getTriggeredOn()
+    {
+        return $this->triggeredOn;
+    }
+
 }

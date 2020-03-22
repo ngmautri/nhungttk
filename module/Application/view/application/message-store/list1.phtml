@@ -32,7 +32,8 @@ if (count($list) > 0) {
          */
         $table_body = $table_body . "<tr>";
         $table_body = $table_body . sprintf("<td>%s</td>", $count);
-        $table_body = $table_body . sprintf("<td>%s</td>", $item->version);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->version);        
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->revisionNo);
         $table_body = $table_body . sprintf("<td>%s</td>", $item->eventName);
         $table_body = $table_body . sprintf("<td>%s</td>", $item->createdOn);
         $table_body = $table_body . sprintf("<td>%s</td>", $item->changeLog);
@@ -52,6 +53,7 @@ if (count($list) > 0) {
 			<tr>
 				<td><b><?php echo $this->translate("#");?></b></td>
 				<td><b><?php echo $this->translate("Ver.");?></b></td>
+				<td><b><?php echo $this->translate("Rev.");?></b></td>
 				<td><b><?php echo $this->translate("Event Name");?></b></td>
 				<td style="width: 160px"><b><?php echo $this->translate("Date");?></b></td>
 				<td><b><?php echo $this->translate("Change Log");?></b></td>

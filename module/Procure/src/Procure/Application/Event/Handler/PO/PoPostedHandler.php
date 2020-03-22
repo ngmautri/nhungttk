@@ -59,10 +59,23 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         $queryRep = new DoctrinePOQueryRepository($this->getDoctrineEM());
 
         // time to check version - concurency
-        $currentVersion = $queryRep->getVersion($rootSnapshot->getId());
+        $verArray = $queryRep->getVersionArray($rootSnapshot->getId());
+        $currentRevisionNo = null;
+        $currentVersion = null;
 
-        $message->setRevisionNo($currentVersion);
+        if ($verArray != null) {
+            if (isset($verArray["docVersion"])) {
+                $currentVersion = $verArray["docVersion"];
+            }
+
+            if (isset($verArray["revisionNo"])) {
+                $currentRevisionNo = $verArray["revisionNo"];
+            }
+        }
+
+        $message->setRevisionNo($currentRevisionNo);
         $message->setVersion($currentVersion);
+
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
         $message->setQueueName("procure.po");

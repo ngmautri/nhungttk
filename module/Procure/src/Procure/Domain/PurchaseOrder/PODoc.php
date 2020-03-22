@@ -124,6 +124,7 @@ class PODoc extends GenericPO
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $instance->setRevisionNo(1);
+        $instance->setDocVersion(1);
         $instance->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
 

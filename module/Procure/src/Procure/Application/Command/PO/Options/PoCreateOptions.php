@@ -16,7 +16,11 @@ class PoCreateOptions implements CommandOptions
 
     private $userId;
 
+    private $version;
+
     private $triggeredBy;
+
+    private $triggeredOn;
 
     /**
      *
@@ -68,5 +72,23 @@ class PoCreateOptions implements CommandOptions
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTriggeredOn()
+    {
+        return $this->triggeredOn;
     }
 }

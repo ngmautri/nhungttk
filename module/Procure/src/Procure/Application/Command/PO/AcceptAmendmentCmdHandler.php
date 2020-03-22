@@ -5,30 +5,35 @@ use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Application\Domain\Shared\Command\CommandOptions;
-use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
+use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
+use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\Exception\PoCreateException;
+use Procure\Domain\Exception\PoAmendmentException;
+use Procure\Domain\Exception\PoInvalidOperationException;
+use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\Service\POPostingService;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\Service\SharedService;
+use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
+use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
+class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
 {
 
     /**
@@ -39,51 +44,47 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new PoCreateException(sprintf("% not found!", get_class($cmd)));
+            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+        }
+
+        if (! $cmd->getDto() instanceof PoDTO) {
+            throw new \Exception("PoDTO object not found!");
         }
 
         /**
          *
          * @var PoDTO $dto ;
-         * @var PoCreateOptions $options ;
+         * @var PODoc $rootEntity ;
+         * @var POSnapshot $rootSnapshot ;
+         * @var PoAmendmentAcceptOptions $options ;
+         *     
          */
-        $dto = $cmd->getDto();
         $options = $cmd->getOptions();
+        $dto = $cmd->getDto();
+
+        if (! $options instanceof PoAmendmentAcceptOptions) {
+            throw new PoAmendmentException("No Options given. Pls check command configuration!");
+        }
 
         if (! $dto instanceof PoDTO) {
-            throw new PoCreateException("PoDTO object not found!");
+            throw new PoAmendmentException("PoDTO object not found!");
         }
 
-        if (! $options instanceof CommandOptions) {
-            throw new PoCreateException("No Options given. Pls check command configuration!");
-        }
+        $options = $cmd->getOptions();
+
+        $rootEntity = $options->getRootEntity();
+        $rootEntityId = $options->getRootEntityId();
+        $version = $options->getVersion();
+        $userId = $options->getUserId();
+        $trigger = $options->getTriggeredBy();
 
         try {
-
-            $notification = new Notification();
-
-            $companyId = $options->getCompanyId();
-            $userId = $options->getUserId();
-
-            $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
-            $company = $companyQueryRepository->getById($companyId);
-
-            if ($company == null) {
-                $notification->addError("Company not found");
-                $dto->setNotification($notification);
-                return;
-            }
-
-            // ====================
 
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->beginTransaction(); // suspend auto-commit
 
-            $dto->company = $companyId;
-            $dto->createdBy = $userId;
-            $dto->currency = $dto->getDocCurrency();
-            $dto->localCurrency = $company->getDefaultCurrency();
+            $notification = new Notification();
 
             /**
              *
@@ -91,29 +92,26 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
              * @var POSnapshot $rootSnapshot ;
              * @var PODoc $rootEntity ;
              */
-            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
-
-            $headerValidators = new HeaderValidatorCollection();
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
+
+            $headerValidators = new HeaderValidatorCollection();
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
+
+            $rowValidators = new RowValidatorCollection();
+            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
+            $rowValidators->add($validator);
 
             $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity = PODoc::createFrom($snapshot, $options, $headerValidators, $sharedService, $postingService);
+            $rootEntity->acceptAmmendment($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            $dto->id = $rootEntity->getId();
-            $dto->token = $rootEntity->getToken();
-
-            $m = sprintf("[OK] PO # %s created", $dto->getId());
-            $notification->addSuccess($m);
-
-            // event dispatcher
+            // event dispatc
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
@@ -131,16 +129,25 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->commit();
+            $m = sprintf("Amendment of P0O #%s posted!", $rootEntity->getId());
+            $notification->addSuccess($m);
+
+            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+
+            // time to check version - concurency
+            $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
+
+            // revision numner has been increased.
+            if ($version != $currentVersion) {
+                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+            }
+            $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
 
+            $notification->addError($e->getMessage());
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
-            $cmd->getDoctrineEM()->close();
-            $notification->addError($e->getMessage());
         }
 
         $dto->setNotification($notification);

@@ -1,20 +1,19 @@
 <?php
 namespace Procure\Application\Event\Handler\PO;
 
-use Ramsey\Uuid\Uuid;
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Domain\Event\Po\PoHeaderUpdated;
+use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class PoAmendmentEnabledHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -24,15 +23,15 @@ class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscr
     public static function getSubscribedEvents()
     {
         return [
-            PoHeaderUpdated::class => 'onUpdated'
+            PoAmendmentEnabled::class => 'onEnabledForAmmendment'
         ];
     }
 
-    /**
-     *
-     * @param PoHeaderUpdated $ev
-     */
-    public function onUpdated(PoHeaderUpdated $ev)
+   /**
+    * 
+    * @param PoAmendmentEnabled $ev
+    */
+    public function onEnabledForAmmendment(PoAmendmentEnabled $ev)
     {
         /**
          *
@@ -83,9 +82,11 @@ class PoHeaderUpdatedHandler extends AbstractEventHandler implements EventSubscr
         $message->setRevisionNo($rootSnapshot->getRevisionNo());
         $message->setVersion($rootSnapshot->getDocVersion());
 
-        if (! $changeLog1 == null) {
+        /* if (! $changeLog1 == null) {
             $message->setChangeLog(json_encode($changeLog1));
-        }
+        } */
+        
+        $message->setChangeLog(sprintf("P/O #%s is enabled for %s", $rootSnapshot->getId(), $rootSnapshot->getDocStatus() ));
 
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());

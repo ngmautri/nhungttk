@@ -123,6 +123,19 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             if (! $spec->isSatisfiedBy($subject)) {
                 $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getCreatedBy());
             }
+
+            if ($rootEntity->getLastchangeBy() !== null) {
+                $subject = array(
+                    "companyId" => $rootEntity->getCompany(),
+                    "userId" => $rootEntity->getLastchangeBy()
+                );
+                if (! $spec->isSatisfiedBy($subject)) {
+                    $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy());
+                }
+            }
+            
+            
+            
         } catch (PoCreateException $e) {
             $rootEntity->addError($e->getMessage());
         }

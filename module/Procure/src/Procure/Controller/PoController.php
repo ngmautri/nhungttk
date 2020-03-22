@@ -35,6 +35,9 @@ use Procure\Application\Command\PO\PostCmdHandler;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Domain\Shared\Constants;
 use Application\Controller\Plugin\NmtPlugin;
+use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
+use Procure\Application\Command\PO\EnableAmendmentCmd;
+use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
 
 /**
  *
@@ -638,51 +641,54 @@ class PoController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
         }
-        
-        
-        
-        // POSTING
-        $data = $prg;
-        
-        $entity_id = $data['entity_id'];
-        $entity_token = $data['entity_token'];
-        $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
-        $version = $data['version'];
-        
-        $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
-        
-        $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
-        
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
+
+        try {
+
+            $msg = null;
+            // POSTING
+            $data = $prg;
+
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            $version = $data['version'];
+            $userId = $u->getId();
+
+            $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                $redirectUrl = sprintf("/procure/po/review1t?entity_id=%s&token=%s", $entity_id, $entity_token);
+                $response = $this->getResponse();
+                $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                $response->setContent(json_encode($redirectUrl));
+                return $response;
+            }
+
+            $options = new PoAmendmentEnableOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $dto = null;
+            $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, new EnableAmendmentCmdHandler());
+            $cmd->execute();
+            
+            $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
+            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
+            
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&token=%s", $entity_id, $entity_token);
         }
         
+        $this->flashMessenger()->addMessage($msg);
         
+
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($redirectUrl));
         return $response;
-        
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-        
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-        
-        $userId = $u->getId();
-        $entity_id = $data['entity_id'];
-        $entity_token = $data['entity_token'];
-        $version = $data['version'];
-        
-        $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
-        
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-       
     }
 
     /**
@@ -1289,7 +1295,7 @@ class PoController extends AbstractActionController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $options = new PoAcceOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, new PostCmdHandler());
 
             $cmd->execute();

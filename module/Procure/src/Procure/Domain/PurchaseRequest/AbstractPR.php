@@ -2,9 +2,9 @@
 namespace Procure\Domain\PurchaseRequest;
 
 use Application\Domain\Shared\AggregateRoot;
-use Procure\Domain\SnapshotAssembler;
-use Procure\Application\DTO\DTOFactory;
 use Procure\Application\DTO\Pr\PrDTO;
+use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\DTOFactory;
 
 /**
  *
@@ -444,11 +444,11 @@ abstract class AbstractPR extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompletedRows()
     {
         return $this->completedRows;
     }
-
 }

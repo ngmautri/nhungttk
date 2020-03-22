@@ -54,7 +54,7 @@ class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscr
         $message = new MessageStore();
         
         $message->setRevisionNo($rootSnapshot->getRevisionNo());
-        $message->setVersion($rootSnapshot->getRevisionNo());
+        $message->setVersion($rootSnapshot->getDocVersion());
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
         $message->setQueueName("procure.po");

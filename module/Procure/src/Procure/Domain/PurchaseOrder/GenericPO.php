@@ -24,6 +24,7 @@ use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Exception\PoPostingException;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
+use Procure\Domain\Shared\Constants;
 
 /**
  *
@@ -72,7 +73,7 @@ abstract class GenericPO extends AbstractPO
      * @param SharedService $sharedService
      * @param POPostingService $postingService
      */
-    public function ennableAmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    public function enableAmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_POSTED) {
             throw new PoInvalidOperationException(sprintf("PO can not be amended! %s", $this->getId()));
@@ -91,6 +92,10 @@ abstract class GenericPO extends AbstractPO
 
         if ($options == null) {
             throw new PoInvalidArgumentException("command options not found");
+        }
+
+        if ($this->getTransactionStatus() == Constants::TRANSACTION_STATUS_COMPLETED) {
+            throw new PoInvalidArgumentException("PO is completed");
         }
 
         $createdDate = new \Datetime();
@@ -134,10 +139,18 @@ abstract class GenericPO extends AbstractPO
      * @throws PoInvalidOperationException
      * @throws PoInvalidArgumentException
      */
-    public function acceptAmmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    public function acceptAmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_AMENDING) {
             throw new PoInvalidOperationException(sprintf("Document is not on amendment! %s", $this->getId()));
+        }
+
+        if ($headerValidators == null) {
+            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($rowValidators == null) {
+            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
         }
 
         if ($sharedService == null) {
@@ -147,42 +160,40 @@ abstract class GenericPO extends AbstractPO
         if ($postingService == null) {
             throw new PoInvalidArgumentException("postingService service not found");
         }
-        
-        
+
         if ($options == null) {
-            throw new PoInvalidArgumentException("command options not found");
+            throw new PoInvalidArgumentException("Comnand Options not found!");
         }
-        
+
         $createdDate = new \Datetime();
         $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $this->setLastchangeBy($options->getUserId());
         $this->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
-        
-        $this->validateHeader($headerValidators);
-        
+
+        $this->validate($headerValidators, $rowValidators);
+
         if ($this->hasErrors()) {
             throw new PoAmendmentException($this->getErrorMessage());
         }
-        
+
         $this->recordedEvents = array();
-        
+
         /**
          *
          * @var POSnapshot $rootSnapshot
          */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($this, false);
-        
+        $rootSnapshot = $postingService->getCmdRepository()->post($this, false);
+
         if ($rootSnapshot == null) {
             throw new PoAmendmentException(sprintf("Error orcured when posting amendment of PO #%s", $this->getId()));
         }
-        
+
         $this->id = $rootSnapshot->getId();
         $trigger = $options->getTriggeredBy();
         $params = null;
-        
+
         $this->addEvent(new PoAmendmentAccepted($rootSnapshot, $trigger, $params));
         return $this;
-        
     }
 
     /**
@@ -391,10 +402,10 @@ abstract class GenericPO extends AbstractPO
         }
 
         $this->validate($headerValidators, $rowValidators);
-        if($this->hasErrors()){
-            throw new PoPostingException($this->getErrorMessage());            
+        if ($this->hasErrors()) {
+            throw new PoPostingException($this->getErrorMessage());
         }
-        
+
         $this->clearEvents();
 
         $this->prePost($options, $headerValidators, $rowValidators, $sharedService, $postingService);

@@ -152,9 +152,15 @@ class DoctrinePOCmdRepository extends AbstractDoctrineRepository implements POCm
         }
 
         $entity->setRevisionNo($entity->getRevisionNo() + 1);
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
+
+        // Update ID, Revision, Doc Version Numbner
+        $snapshot->id = $entity->getId();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->docVersion = $entity->getDocVersion();
+        return $snapshot;
     }
 
     /**

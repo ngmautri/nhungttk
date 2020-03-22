@@ -1,4 +1,10 @@
 <?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Shared\Constants;
 
@@ -597,7 +603,7 @@ if ($isViewing) :
 				<p><?php echo $this->translate('Do you want to continue?');?></p>
 			</div>
 			<div class="modal-footer">
-				<button onclick="doAmendment();" type="button"
+				<button onclick="doPostAmendment();" type="button"
 					class="btn btn-primary btn-sm">YES</button>
 				<button type="button" class="btn btn-default btn-sm"
 					data-dismiss="modal">Cancel</button>
@@ -661,13 +667,11 @@ function doPostAmendment() {
 	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
 	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
 	var version="<?php echo $version;?>";
-
 	$.post(url, {
 		entity_id 	: entity_id,
 		entity_token: entity_token,
 		version: version,
 	}, function(data, status, dataType) {
-		alert(data);
         window.location.href= data;
    	});
 }

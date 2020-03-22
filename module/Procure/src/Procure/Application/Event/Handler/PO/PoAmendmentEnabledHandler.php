@@ -73,6 +73,8 @@ class PoAmendmentEnabledHandler extends AbstractEventHandler implements EventSub
         }
 
         $class = new \ReflectionClass($rootSnapshot);
+        $className = null;
+        
         if ($class !== null) {
             $className = $class->getShortName();
         }

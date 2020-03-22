@@ -14,6 +14,8 @@ use Procure\Domain\Event\Po\PoPosted;
 use Procure\Application\Event\Handler\PO\PoPostedHandler;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Application\Event\Handler\PO\PoAmendmentEnabledHandler;
+use Procure\Domain\Event\Po\PoAmendmentAccepted;
+use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
 
 /**
  *
@@ -55,6 +57,11 @@ class EventHandlerFactory
             case PoAmendmentEnabled::class:
                 $handlers[] = new PoAmendmentEnabledHandler($doctrineEM);
                 break;
+                
+            case PoAmendmentAccepted::class:
+                $handlers[] = new PoAmendmentAcceptedHandler($doctrineEM);
+                break;
+                
         }
 
         return $handlers;

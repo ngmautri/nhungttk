@@ -49,8 +49,9 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         $trigger = $ev->getTrigger();
 
         $class = new \ReflectionClass($rootSnapshot);
-        $class = null;
-        if ($class !== null) {
+        $className = null;
+        
+         if ($class !== null) {
             $className = $class->getShortName();
         }
 

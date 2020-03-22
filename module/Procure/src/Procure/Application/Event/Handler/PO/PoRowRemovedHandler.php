@@ -38,8 +38,9 @@ class PoRowRemovedHandler extends AbstractEventHandler implements EventSubscribe
         $rootEntity = $rep->getHeaderById($ev->getTarget());
 
         $class = new \ReflectionClass($rootEntity);
-        $class = null;
-        if ($class !== null) {
+        $className = null;
+        
+         if ($class !== null) {
             $className = $class->getShortName();
         }
 

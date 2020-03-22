@@ -1,20 +1,20 @@
 <?php
 namespace Procure\Application\Event\Handler\PO;
 
-use Ramsey\Uuid\Uuid;
-use Application\Entity\MessageStore;
 use Application\Application\Event\AbstractEventHandler;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Procure\Domain\Event\Po\PoHeaderCreated;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Application\Entity\MessageStore;
+use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class PoAmendmentAcceptedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -24,17 +24,16 @@ class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscr
     public static function getSubscribedEvents()
     {
         return [
-            PoHeaderCreated::class => 'onCreated'
+            PoAmendmentAccepted::class => 'onAcceptedForAmmendment'
         ];
     }
 
     /**
      *
-     * @param PoHeaderCreated $ev
+     * @param PoAmendmentAccepted $ev
      */
-    public function onCreated(PoHeaderCreated $ev)
+    public function onAcceptedForAmmendment(PoAmendmentAccepted $ev)
     {
-
         /**
          *
          * @var POSnapshot $rootSnapshot ;
@@ -44,22 +43,42 @@ class PoHeaderCreatedHandler extends AbstractEventHandler implements EventSubscr
         if ($rootSnapshot == null) {
             return;
         }
+        $params = $ev->getParams();
+        $trigger = $ev->getTrigger();
 
         $class = new \ReflectionClass($rootSnapshot);
         $className = null;
-        
         if ($class !== null) {
             $className = $class->getShortName();
         }
 
         $message = new MessageStore();
-        
-        $message->setRevisionNo($rootSnapshot->getRevisionNo());
-        $message->setVersion($rootSnapshot->getDocVersion());
+
+        $queryRep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+
+        // time to check version - concurency
+        $verArray = $queryRep->getVersionArray($rootSnapshot->getId());
+        $currentRevisionNo = null;
+        $currentVersion = null;
+
+        if ($verArray != null) {
+            if (isset($verArray["docVersion"])) {
+                $currentVersion = $verArray["docVersion"];
+            }
+
+            if (isset($verArray["revisionNo"])) {
+                $currentRevisionNo = $verArray["revisionNo"];
+            }
+        }
+
+        $message->setRevisionNo($currentRevisionNo);
+        $message->setVersion($currentVersion);
+        $message->setCreatedBy($rootSnapshot->getLastchangeBy());
+
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
         $message->setQueueName("procure.po");
-
+        $message->setChangeLog(sprintf("Amendment for P/O  #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());

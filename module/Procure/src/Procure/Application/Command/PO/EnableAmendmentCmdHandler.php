@@ -47,14 +47,12 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
 
         /**
          *
-         * @var PoDTO $dto ;
          * @var PODoc $rootEntity ;
          * @var POSnapshot $rootSnapshot ;
          * @var PoUpdateOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
-        $dto = $cmd->getDto();
 
         if (! $options instanceof PoAmendmentEnableOptions) {
             throw new PoAmendmentException("No Options given. Pls check command configuration!");
@@ -65,16 +63,12 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
         $rootEntity = $options->getRootEntity();
         $rootEntityId = $options->getRootEntityId();
         $version = $options->getVersion();
-        $userId = $options->getUserId();
-        $trigger = $options->getTriggeredBy();
 
         if (! $rootEntity->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
             throw new PoInvalidOperationException(sprintf("PO is not signed and posted! %s", $rootEntity->getId()));
         }
 
         try {
-
-            $notification = new Notification();
 
             $cmd->getDoctrineEM()
                 ->getConnection()
@@ -99,7 +93,7 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             $postingService = new POPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity->ennableAmendment($options, $headerValidators, $sharedService, $postingService);
+            $rootEntity->enableAmendment($options, $headerValidators, $sharedService, $postingService);
 
             // event dispatc
             if (count($rootEntity->getRecordedEvents() > 0)) {
@@ -119,10 +113,7 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("PO #%s enabled for amendment", $rootEntity->getId());
-
-            $notification->addSuccess($m);
-
+                  
             $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
 
             // time to check version - concurency
@@ -135,10 +126,12 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
 
-            $notification->addError($e->getMessage());
-            $cmd->getDoctrineEM()
+             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
+             
+                throw new PoAmendmentException($e->getMessage());
+                
         }
 
      }

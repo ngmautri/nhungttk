@@ -9,6 +9,7 @@ use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
 use Procure\Infrastructure\Doctrine\SQL\PoSQL;
 use Procure\Infrastructure\Mapper\PoMapper;
+use Procure\Domain\Shared\Constants;
 
 /**
  *
@@ -169,11 +170,11 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
              * @todo
              */
             if ($r['open_gr_qty'] <= 0 and $r['open_ap_qty'] <= 0) {
-                $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
+                $poRowDetailSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
                 $completedRows ++;
             } else {
                 $completed = false;
-                $poRowDetailSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
+                $poRowDetailSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
             }
 
             $poRowDetailSnapshot->draftGrQuantity = $r["draft_gr_qty"];
@@ -199,9 +200,9 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         }
 
         if ($completed == true) {
-            $poDetailsSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_COMPLETED;
+            $poDetailsSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
         } else {
-            $poDetailsSnapshot->transactionStatus = \Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED;
+            $poDetailsSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
         }
 
         $poDetailsSnapshot->totalRows = $totalRows;

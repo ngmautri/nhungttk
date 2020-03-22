@@ -38,6 +38,9 @@ use Application\Controller\Plugin\NmtPlugin;
 use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
 use Procure\Application\Command\PO\EnableAmendmentCmd;
 use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
+use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
+use Procure\Application\Command\PO\AcceptAmendmentCmd;
+use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
 
 /**
  *
@@ -655,11 +658,10 @@ class PoController extends AbstractActionController
 
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
-            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
             $version = $data['version'];
             $userId = $u->getId();
 
-            $rootEntity = $this->purchaseOrderService->getPOHeaderById($entity_id, $entity_token);
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 $redirectUrl = sprintf("/procure/po/review1t?entity_id=%s&token=%s", $entity_id, $entity_token);
@@ -673,17 +675,15 @@ class PoController extends AbstractActionController
             $dto = null;
             $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, new EnableAmendmentCmdHandler());
             $cmd->execute();
-            
+
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
-            
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
         }
-        
+
         $this->flashMessenger()->addMessage($msg);
-        
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
@@ -1216,10 +1216,6 @@ class PoController extends AbstractActionController
         return $this->redirect()->toUrl($redirectUrl);
     }
 
-    /**
-     *
-     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
     public function reviewAmendmentAction()
 
     {
@@ -1227,9 +1223,9 @@ class PoController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/po/review1";
-        $form_title = "Review PO";
-        $action = \Procure\Domain\Shared\Constants::FROM_ACTION_REVIEW_AMENDMENT;
+        $form_action = "/procure/po/review-amendment";
+        $form_title = "Review Amendment";
+        $action = Constants::FORM_ACTION_REVIEW;
         $viewTemplete = "procure/po/review-v1";
 
         $prg = $this->prg($form_action, true);
@@ -1249,9 +1245,6 @@ class PoController extends AbstractActionController
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            // echo memory_get_usage();
-            // var_dump($po->makeDTOForGrid());
-            // echo memory_get_usage();
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -1274,6 +1267,7 @@ class PoController extends AbstractActionController
 
         try {
 
+            $msg = null;
             // POSTING
             $data = $prg;
 
@@ -1282,54 +1276,41 @@ class PoController extends AbstractActionController
                 'email' => $this->identity()
             ));
 
-            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-
-            $userId = $u->getId();
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
+            $userId = $u->getId();
 
             $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
 
             if ($rootEntity == null) {
-                return $this->redirect()->toRoute('not_found');
+                $msg = sprintf("PO #%s not found", $entity_id);
+
+                $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
+                $response = $this->getResponse();
+                $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                $response->setContent(json_encode($redirectUrl));
+                return $response;
             }
 
-            $options = new PoAcceOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, new PostCmdHandler());
-
+            $options = new PoAmendmentAcceptOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $dto = null;
+            $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, new AcceptAmendmentCmdHandler());
             $cmd->execute();
-            $notification = $dto->getNotification();
+
+            $msg = sprintf("Ammendment of PO #%s is posted", $entity_id);
+            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
-
-            $notification = new Notification();
-            $notification->addError($e->getMessage());
+            $msg = $e->getMessage();
+            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
         }
 
-        if ($notification->hasErrors()) {
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'rootEntity' => $rootEntity,
-                'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'version' => $version,
-                'action' => $action
-            ));
+        $this->flashMessenger()->addMessage($msg);
 
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
-        }
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
-
-        return $this->redirect()->toUrl($redirectUrl);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($redirectUrl));
+        return $response;
     }
 
     /**

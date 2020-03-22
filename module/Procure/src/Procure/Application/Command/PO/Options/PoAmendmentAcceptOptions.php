@@ -29,15 +29,15 @@ class PoAmendmentAcceptOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
+            throw new PoAmendmentException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new PoAmendmentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
+            throw new PoAmendmentException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
@@ -95,7 +95,8 @@ class PoAmendmentAcceptOptions implements CommandOptions
 
     /**
      *
-     * @return mixed
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Command\CommandOptions::getTriggeredBy()
      */
     public function getTriggeredBy()
     {
@@ -104,11 +105,11 @@ class PoAmendmentAcceptOptions implements CommandOptions
 
     /**
      *
-     * @return mixed
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Command\CommandOptions::getTriggeredOn()
      */
     public function getTriggeredOn()
     {
         return $this->triggeredOn;
     }
-    
 }

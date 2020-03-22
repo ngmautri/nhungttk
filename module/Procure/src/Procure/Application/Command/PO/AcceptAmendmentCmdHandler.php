@@ -6,27 +6,23 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
-use Procure\Application\Command\PO\Options\PoUpdateOptions;
+use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoAmendmentException;
-use Procure\Domain\Exception\PoInvalidOperationException;
 use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
+use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
 
 /**
  *
@@ -44,18 +40,13 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
-        }
-
-        if (! $cmd->getDto() instanceof PoDTO) {
-            throw new \Exception("PoDTO object not found!");
+            throw new \Exception(sprintf("% not founds!", "AbstractDoctrineCmd"));
         }
 
         /**
          *
          * @var PoDTO $dto ;
          * @var PODoc $rootEntity ;
-         * @var POSnapshot $rootSnapshot ;
          * @var PoAmendmentAcceptOptions $options ;
          *     
          */
@@ -66,26 +57,17 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             throw new PoAmendmentException("No Options given. Pls check command configuration!");
         }
 
-        if (! $dto instanceof PoDTO) {
-            throw new PoAmendmentException("PoDTO object not found!");
-        }
-
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
         $rootEntityId = $options->getRootEntityId();
         $version = $options->getVersion();
-        $userId = $options->getUserId();
-        $trigger = $options->getTriggeredBy();
 
         try {
 
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->beginTransaction(); // suspend auto-commit
-
-            $notification = new Notification();
-
             /**
              *
              * @var POSnapshot $snapshot ;
@@ -109,7 +91,7 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             $postingService = new POPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity->acceptAmmendment($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $rootEntity->acceptAmendment($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatc
             if (count($rootEntity->getRecordedEvents() > 0)) {
@@ -129,9 +111,6 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $m = sprintf("Amendment of P0O #%s posted!", $rootEntity->getId());
-            $notification->addSuccess($m);
-
             $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
 
             // time to check version - concurency
@@ -142,14 +121,13 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
             $cmd->getDoctrineEM()->commit(); // now commit
+            
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
+                throw new PoAmendmentException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
-    }
+        
+      }
 }

@@ -36,7 +36,8 @@ class PoRowAddedHandler extends AbstractEventHandler implements EventSubscriberI
         $rootEntity = $rep->getHeaderById($ev->getTarget());
         
         $class = new \ReflectionClass($rootEntity);
-        $class = null;
+        $className = null;
+        
         if ($class !== null) {
             $className = $class->getShortName();
         }

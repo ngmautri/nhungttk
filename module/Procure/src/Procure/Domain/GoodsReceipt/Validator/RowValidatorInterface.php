@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\GoodsReceipt\Validator;
 
 /**
  *

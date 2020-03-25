@@ -24,7 +24,7 @@ class GrDTOAssemblerTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-            GrRowDTOAssembler::createDTOProperities();
+            GrRowDTOAssembler::createGetMapping();
          } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

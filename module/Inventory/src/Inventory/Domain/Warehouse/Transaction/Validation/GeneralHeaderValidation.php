@@ -2,8 +2,10 @@
 namespace Inventory\Domain\Warehouse\Transaction\Validation;
 
 use Application\Notification;
+use Application\Application\Specification\Zend\CanPostOnDateSpecification;
+use Application\Domain\Shared\Specification\AbstractSpecification;
 use Inventory\Domain\Service\TransactionSpecificationService;
-use Inventory\Domain\Warehouse\GenericWarehouse;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 
 /**

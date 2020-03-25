@@ -2,21 +2,21 @@
 namespace Procure\Infrastructure\Mapper;
 
 use Application\Entity\NmtProcureGr;
-use Application\Entity\NmtProcurePoRow;
-use Procure\Domain\PurchaseOrder\PODetailsSnapshot;
-use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\PORowSnapshot;
+use Application\Entity\NmtProcureGrRow;
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\APInvoice\APDocRowDetailsSnapshot;
+use Procure\Domain\GoodsReceipt\GRDetailsSnapshot;
+use Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot;
+use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoMapper
+class GrMapper
 {
 
     /**
@@ -263,7 +263,7 @@ class PoMapper
              * @var \Application\Entity\NmtApplicationCurrency $obj ;
              */
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->docCurrency);
-           $entity->setDocCurrency($obj);
+            $entity->setDocCurrency($obj);
         }
 
         $entity->setPostingPeriod($snapshot->postingPeriod);
@@ -291,18 +291,21 @@ class PoMapper
 
     /**
      *
-     * @param PORowSnapshot $snapshot
-     * @param NmtProcurePoRow $entity
-     * @return NULL|\Application\Entity\NmtProcurePoRow
+     * @param EntityManager $doctrineEM
+     * @param GRRowSnapshot $snapshot
+     * @param NmtProcureGrRow $entity
+     * @return NULL|\Application\Entity\NmtProcureGrRow
      */
-    public static function mapRowSnapshotEntity(EntityManager $doctrineEM, GrRowSnapshot $snapshot, NmtProcureGrRow $entity)
+    public static function mapRowSnapshotEntity(EntityManager $doctrineEM, GRRowSnapshot $snapshot, NmtProcureGrRow $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
             return null;
         }
 
-        $entity->setRowNumber($snapshot->rowNumber);
+        // $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
+        $entity->setRowNumber($snapshot->rowNumber);
+        $entity->setRowIdentifer($snapshot->rowIdentifer);
         $entity->setQuantity($snapshot->quantity);
         $entity->setUnitPrice($snapshot->unitPrice);
         $entity->setNetAmount($snapshot->netAmount);
@@ -319,7 +322,6 @@ class PoMapper
         $entity->setGrossAmount($snapshot->grossAmount);
         $entity->setTaxAmount($snapshot->taxAmount);
         $entity->setFaRemarks($snapshot->faRemarks);
-        $entity->setRowIdentifer($snapshot->rowIdentifer);
         $entity->setDiscountRate($snapshot->discountRate);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setTargetObject($snapshot->targetObject);
@@ -327,40 +329,57 @@ class PoMapper
         $entity->setTargetObjectId($snapshot->targetObjectId);
         $entity->setSourceObjectId($snapshot->sourceObjectId);
         $entity->setDocStatus($snapshot->docStatus);
-        $entity->setWorkflowStatus($snapshot->workflowStatus);
-        $entity->setTransactionStatus($snapshot->transactionStatus);
-        $entity->setIsPosted($snapshot->isPosted);
         $entity->setIsDraft($snapshot->isDraft);
+        $entity->setIsPosted($snapshot->isPosted);
+        $entity->setWorkflowStatus($snapshot->workflowStatus);
+        $entity->setTransactionType($snapshot->transactionType);
+        $entity->setTransactionStatus($snapshot->transactionStatus);
         $entity->setExwUnitPrice($snapshot->exwUnitPrice);
         $entity->setTotalExwPrice($snapshot->totalExwPrice);
-        $entity->setConvertFactorPurchase($snapshot->convertFactorPurchase);
         $entity->setConvertedPurchaseQuantity($snapshot->convertedPurchaseQuantity);
         $entity->setConvertedStandardQuantity($snapshot->convertedStandardQuantity);
-        $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
         $entity->setConvertedStandardUnitPrice($snapshot->convertedStandardUnitPrice);
+        $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
         $entity->setConvertedStockUnitPrice($snapshot->convertedStockUnitPrice);
         $entity->setDocQuantity($snapshot->docQuantity);
-        $entity->setDocUnit($snapshot->docUnit);
         $entity->setDocUnitPrice($snapshot->docUnitPrice);
+        $entity->setDocUnit($snapshot->docUnit);
         $entity->setConvertedPurchaseUnitPrice($snapshot->convertedPurchaseUnitPrice);
+        $entity->setIsReversed($snapshot->isReversed);
+        $entity->setReversalReason($snapshot->reversalReason);
+        $entity->setReversalDoc($snapshot->reversalDoc);
+        $entity->setFlow($snapshot->flow);
         $entity->setDocType($snapshot->docType);
-        $entity->setDescriptionText($snapshot->descriptionText);
         $entity->setVendorItemName($snapshot->vendorItemName);
+        $entity->setDescriptionText($snapshot->descriptionText);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
+        $entity->setUuid($snapshot->uuid);
 
         // DATE MAPPING
-
-        // $entity->setLastchangeOn($snapshot->lastchangeOn);
-        if ($snapshot->lastchangeOn !== null) {
-            $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
-        }
+        // ++++++++++++++++++++++++++++++++
 
         // $entity->setCreatedOn($snapshot->createdOn);
         if ($snapshot->createdOn !== null) {
             $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
         }
 
+        // $entity->setLastchangeOn($snapshot->lastchangeOn);
+        if ($snapshot->lastchangeOn !== null) {
+            $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
+        }
+
+        // $entity->setGrDate($snapshot->grDate);
+        if ($snapshot->grDate !== null) {
+            $entity->setGrDate(new \DateTime($snapshot->reversalDate));
+        }
+
+        // $entity->setReversalDate($snapshot->reversalDate);
+        if ($snapshot->reversalDate !== null) {
+            $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
+        }
+
         // REFERRENCE MAPPING
+        // ++++++++++++++++++++++++++++++++
 
         // $entity->setInvoice($snapshot->invoice);
         if ($snapshot->invoice > 0) {
@@ -372,23 +391,61 @@ class PoMapper
             $entity->setInvoice($obj);
         }
 
-        // $entity->setLastchangeBy($snapshot->lastchangeBy);
-        if ($snapshot->lastchangeBy > 0) {
+        // $entity->setGr($snapshot->gr);
+        if ($snapshot->gr > 0) {
             /**
              *
-             * @var \Application\Entity\MlaUsers $obj ;
+             * @var \Application\Entity\NmtProcureGr $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastchangeBy);
-            $entity->setLastchangeBy($obj);
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcureGr')->find($snapshot->gr);
+            $entity->gr($obj);
+        }
+
+        // $entity->setApInvoiceRow($snapshot->apInvoiceRow);
+        if ($snapshot->apInvoiceRow > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinVendorInvoiceRow $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->find($snapshot->apInvoiceRow);
+            $entity->setApInvoiceRow($obj);
+        }
+        // $entity->setGlAccount($snapshot->glAccount);
+        if ($snapshot->glAccount > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinAccount $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinAccount')->find($snapshot->glAccount);
+            $entity->setGlAccount($obj);
+        }
+        // $entity->setCostCenter($snapshot->costCenter);
+        if ($snapshot->costCenter > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinCostCenter $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($snapshot->costCenter);
+            $entity->setCostCenter($obj);
+        }
+
+        // $entity->setDocUom($snapshot->docUom);
+        if ($snapshot->docUom > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationUom $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->docUom);
+            $entity->setDocUom($obj);
         }
 
         // $entity->setPrRow($snapshot->prRow);
         if ($snapshot->prRow > 0) {
             /**
              *
-             * @var \Application\Entity\NmtProcurePrRow $obj ;
+             * @var \Application\Entity\NmtProcureGrRow $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($snapshot->prRow);
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->find($snapshot->prRow);
             $entity->setPrRow($obj);
         }
 
@@ -412,14 +469,14 @@ class PoMapper
             $entity->setWarehouse($obj);
         }
 
-        // entity->setPo($snapshot->po);
-        if ($snapshot->po > 0) {
+        // $entity->setLastchangedBy($snapshot->lastchangedBy);
+        if ($snapshot->lastchangedBy > 0) {
             /**
              *
-             * @var \Application\Entity\NmtProcurePo $obj ;
+             * @var \Application\Entity\MlaUsers $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePo')->find($snapshot->po);
-            $entity->setPo($obj);
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastchangedBy);
+            $entity->setLastchangedBy($obj);
         }
 
         // $entity->setItem($snapshot->item);
@@ -432,146 +489,36 @@ class PoMapper
             $entity->setItem($obj);
         }
 
-        // $entity->setDocUom($snapshot->docUom);
-        if ($snapshot->docUom > 0) {
+        // $entity->setPoRow($snapshot->poRow);
+        if ($snapshot->poRow > 0) {
             /**
              *
-             * @var \Application\Entity\NmtApplicationUom $obj ;
+             * @var \Application\Entity\NmtProcurePoRow $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->docUom);
-            $entity->setDocUom($obj);
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($snapshot->poRow);
+            $entity->setPoRow($obj);
         }
-        return $entity;
     }
 
     /**
-     *
-     * @param object $entity
-     * @return NULL|\Procure\Domain\PurchaseOrder\PODetailsSnapshot
+     * 
+     * @param NmtProcureGr $entity
+     * @return NULL|\Procure\Domain\GoodsReceipt\GRDetailsSnapshot
      */
-    public static function createDetailSnapshot(NmtProcurePo $entity = null)
+    public static function createDetailSnapshot(NmtProcureGr $entity = null)
     {
         if ($entity == null) {
             return null;
         }
 
-        $snapshot = new PODetailsSnapshot();
-
-        // Mapping Reference
-        // =====================
-
-        // $snapshot->vendor= $entity->getVendor();
-        if ($entity->getVendor() !== null) {
-            $snapshot->vendor = $entity->getVendor()->getId();
-            // $snapshot->vendorName = $entity->getVendor()->getVendorName();
-        }
-
-        // $snapshot->pmtTerm = $entity->getPmtTerm();
-        if ($entity->getPmtTerm() !== null) {
-            $snapshot->pmtTerm = $entity->getPmtTerm()->getId();
-            $snapshot->paymentTermName = $entity->getPmtTerm()->getPmtTermName();
-            $snapshot->paymentTermCode = $entity->getPmtTerm()->getPmtTermCode();
-        }
-
-        // $snapshot->warehouse = $entity->getWarehouse();
-        if ($entity->getWarehouse() !== null) {
-            $snapshot->warehouse = $entity->getWarehouse()->getId();
-            $snapshot->warehouseName = $entity->getWarehouse()->getWhName();
-            $snapshot->warehouseCode = $entity->getWarehouse()->getWhCode();
-        }
-
-        // $snapshot->createdBy = $entity->getCreatedBy();
-        if ($entity->getCreatedBy() !== null) {
-            $snapshot->createdBy = $entity->getCreatedBy()->getId();
-            $snapshot->createdByName = $entity->getCreatedBy()->getFirstname() . " " . $entity->getCreatedBy()->getLastname();
-        }
-
-        // $snapshot->lastchangeBy = $entity->getLastchangeBy();
-        if ($entity->getLastchangeBy() !== null) {
-            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
-            $snapshot->lastChangedByName = $entity->getLastchangeBy()->getFirstname() . " " . $entity->getLastchangeBy()->getLastname();
-        }
-
-        // $snapshot->currency = $entity->getCurrency();
-        if ($entity->getCurrency() !== null) {
-            $snapshot->currency = $entity->getCurrency()->getId();
-        }
-
-        // $snapshot->paymentMethod = $entity->getPaymentMethod();
-        if ($entity->getPaymentMethod() !== null) {
-            $snapshot->paymentMethod = $entity->getPaymentMethod()->getId();
-            $snapshot->paymentMethodName = $entity->getPaymentMethod()->getMethodName();
-            $snapshot->paymentMethodCode = $entity->getPaymentMethod()->getMethodCode();
-        }
-
-        // $snapshot->localCurrency = $entity->getLocalCurrency();
-        if ($entity->getLocalCurrency() !== null) {
-            $snapshot->localCurrency = $entity->getLocalCurrency()->getId();
-        }
-
-        // $snapshot->docCurrency = $entity->getDocCurrency();
-        if ($entity->getDocCurrency() !== null) {
-            $snapshot->docCurrency = $entity->getDocCurrency()->getId();
-            $snapshot->currencyIso3 = $entity->getDocCurrency()->getCurrency();
-        }
-
-        // $snapshot->incoterm2 = $entity->getIncoterm2();
-        if ($entity->getIncoterm2() !== null) {
-            $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
-            $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
-            $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
-        }
-
-        if ($entity->getCompany() !== null) {
-            $snapshot->company = $entity->getCompany()->getId();
-        }
-
-        // MAPPING DATE
-        // =====================
-        $snapshot->invoiceDate = $entity->getInvoiceDate();
-        if (! $entity->getInvoiceDate() == null) {
-            $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d");
-        }
-
-        $snapshot->postingDate = $entity->getPostingDate();
-        if (! $entity->getPostingDate() == null) {
-            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d");
-        }
-
-        $snapshot->grDate = $entity->getGrDate();
-        if (! $entity->getGrDate() == null) {
-            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d");
-        }
-
-        $snapshot->quotationDate = $entity->getQuotationDate();
-        if (! $entity->getQuotationDate() == null) {
-            $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d");
-        }
-
-        // $snapshot->createdOn = $entity->getCreatedOn();
-        if (! $entity->getCreatedOn() == null) {
-            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
-        }
-
-        // $snapshot->lastchangeOn = $entity->getLastchangeOn();
-        if (! $entity->getLastChangeOn() == null) {
-            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
-        }
-
-        // $snapshot->contractDate= $entity->getContractDate();
-        if (! $entity->getContractDate() == null) {
-            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d");
-        }
-
-        // Mapping None-Object Field
-        // =====================
+        $snapshot = new GRDetailsSnapshot();
 
         $snapshot->id = $entity->getId();
         $snapshot->token = $entity->getToken();
         $snapshot->vendorName = $entity->getVendorName();
-
         $snapshot->invoiceNo = $entity->getInvoiceNo();
-
+        $snapshot->invoiceDate = $entity->getInvoiceDate();
+        $snapshot->currencyIso3 = $entity->getCurrencyIso3();
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->remarks = $entity->getRemarks();
         $snapshot->currentState = $entity->getCurrentState();
@@ -586,149 +533,123 @@ class PoMapper
         $snapshot->incoterm = $entity->getIncoterm();
         $snapshot->incotermPlace = $entity->getIncotermPlace();
         $snapshot->paymentTerm = $entity->getPaymentTerm();
+        $snapshot->paymentMethod = $entity->getPaymentMethod();
         $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->isDraft = $entity->getIsDraft();
         $snapshot->workflowStatus = $entity->getWorkflowStatus();
         $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->isReversed = $entity->getIsReversed();
+        $snapshot->reversalDoc = $entity->getReversalDoc();
+        $snapshot->reversalReason = $entity->getReversalReason();
         $snapshot->docType = $entity->getDocType();
-        $snapshot->paymentStatus = $entity->getPaymentStatus();
-        $snapshot->totalDocValue = $entity->getTotalDocValue();
-        $snapshot->totalDocTax = $entity->getTotalDocTax();
-        $snapshot->totalDocDiscount = $entity->getTotalDocDiscount();
-        $snapshot->totalLocalValue = $entity->getTotalLocalValue();
-        $snapshot->totalLocalTax = $entity->getTotalLocalTax();
-        $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
         $snapshot->uuid = $entity->getUuid();
-        $snapshot->docVersion = $entity->getDocVersion(); // new/
+        $snapshot->docVersion = $entity->getDocVersion();
 
-        return $snapshot;
-    }
+        // Date Reference
+        // ==========================================
+        $snapshot->createdOn = $entity->getCreatedOn();
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
 
-    /**
-     *
-     * @param NmtProcurePoRow $entity
-     * @return NULL|\Procure\Domain\PurchaseOrder\PORowDetailsSnapshot
-     */
-    public static function createRowDetailSnapshot(NmtProcurePoRow $entity)
-    {
-        if ($entity == null)
-            return null;
+        $snapshot->lastchangeOn = $entity->getLastchangeOn();
+        if (! $entity->getLastchangeOn() == null) {
+            $snapshot->lastchangeOn = $entity->getLastchangeOn()->format("Y-m-d H:i:s");
+        }
 
-        $snapshot = new PORowDetailsSnapshot();
+        $snapshot->postingDate = $entity->getPostingDate();
+        if (! $entity->getPostingDate() == null) {
+            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d H:i:s");
+        }
+
+        $snapshot->grDate = $entity->getGrDate();
+        if (! $entity->getGrDate() == null) {
+            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d H:i:s");
+        }
+
+        $snapshot->contractDate = $entity->getContractDate();
+        if (! $entity->getContractDate() == null) {
+            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d H:i:s");
+        }
+
+        $snapshot->quotationDate = $entity->getQuotationDate();
+        if (! $entity->getQuotationDate() == null) {
+            $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d H:i:s");
+        }
+
+        $snapshot->reversalDate = $entity->getReversalDate();
+        if (! $entity->getReversalDate() == null) {
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
+        }
 
         // Mapping Reference
-        // =====================
-
-        // $snapshot->invoice= $entity->getInvoice();
-        if ($entity->getInvoice() !== null) {
-            $snapshot->invoice = $entity->getInvoice()->getId();
+        // ==========================================
+        $snapshot->vendor = $entity->getVendor();
+        if ($entity->getVendor() !== null) {
+            $snapshot->vendor = $entity->getVendor()->getId();
         }
 
-        // $snapshot->lastchangeBy= $entity->getLastchangeBy();
-        if ($entity->getLastchangeBy() !== null) {
-            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
-        }
-
-        // $snapshot->prRow= $entity->getPrRow();
-        if ($entity->getPrRow() !== null) {
-            $snapshot->prRow = $entity->getPrRow()->getId();
-
-            $snapshot->prRowIndentifer = $entity->getPrRow()->getRowIdentifer();
-            $snapshot->prRowCode = $entity->getPrRow()->getRowCode();
-            $snapshot->prRowName = $entity->getPrRow()->getRowName();
-            $snapshot->prRowConvertFactor = $entity->getPrRow()->getConversionFactor();
-            $snapshot->prRowUnit = $entity->getPrRow()->getRowUnit();
-
-            if ($entity->getPrRow()->getPr() !== null) {
-                $snapshot->pr = $entity->getPrRow()
-                    ->getPr()
-                    ->getId();
-
-                $snapshot->prSysNumber = $entity->getPrRow()
-                    ->getPr()
-                    ->getPrAutoNumber();
-
-                $snapshot->prNumber = $entity->getPrRow()
-                    ->getPr()
-                    ->getPrNumber();
-
-                $snapshot->prToken = $entity->getPrRow()
-                    ->getPr()
-                    ->getToken();
-
-                $snapshot->prChecksum = $entity->getPrRow()
-                    ->getPr()
-                    ->getChecksum();
-            }
-        }
-
-        // $snapshot->createdBy= $entity->getCreatedBy();
-        if ($entity->getCreatedBy() !== null) {
-            $snapshot->createdBy = $entity->getCreatedBy()->getId();
-        }
-
-        // $snapshot->warehouse= $entity->getWarehouse();
+        $snapshot->warehouse = $entity->getWarehouse();
         if ($entity->getWarehouse() !== null) {
             $snapshot->warehouse = $entity->getWarehouse()->getId();
         }
 
-        // $snapshot->po= $entity->getPo();
-        if ($entity->getPo() !== null) {
-            $snapshot->po = $entity->getPo()->getId();
-            $snapshot->vendorName = $entity->getPo()->getVendorName();
-            $snapshot->poNumber = $entity->getPo()->getContractNo();
-            $snapshot->docCurrencyISO = $entity->getPo()->getCurrencyIso3();
-            $snapshot->poToken = $entity->getPo()->getToken();
+        $snapshot->createdBy = $entity->getCreatedBy();
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
         }
 
-        // $snapshot->item= $entity->getItem();
-        if ($entity->getItem() !== null) {
-            $snapshot->item = $entity->getItem()->getId();
-            $snapshot->itemToken = $entity->getItem()->getToken();
-            $snapshot->itemName = $entity->getItem()->getItemName();
-            $snapshot->itemName1 = $entity->getItem()->getItemNameForeign();
-
-            $snapshot->itemSKU = $entity->getItem()->getItemSku();
-
-            $snapshot->itemSKU1 = $entity->getItem()->getItemSku1();
-            $snapshot->itemSKU2 = $entity->getItem()->getItemSku2();
-
-            $snapshot->itemChecksum = $entity->getItem()->getChecksum();
-
-            $snapshot->itemVersion = $entity->getItem()->getRevisionNo();
-
-            if ($entity->getItem()->getStandardUom() != null) {
-                $snapshot->itemStandardUnit = $entity->getItem()
-                    ->getStandardUom()
-                    ->getId();
-                $snapshot->itemStandardUnitName = $entity->getItem()
-                    ->getStandardUom()
-                    ->getUomCode();
-            }
+        $snapshot->lastchangeBy = $entity->getLastchangeBy();
+        if ($entity->getLastchangeBy() !== null) {
+            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
         }
 
-        $snapshot->docUom = $entity->getDocUom();
-        if ($entity->getDocUom() !== null) {
-            $snapshot->docUom = $entity->getDocUom()->getId();
+        $snapshot->currency = $entity->getCurrency();
+        if ($entity->getCurrency() !== null) {
+            $snapshot->currency = $entity->getCurrency()->getId();
         }
 
-        // Mapping Date
-        // =====================
-
-        if (! $entity->getCreatedOn() == null) {
-            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
+        $snapshot->localCurrency = $entity->getLocalCurrency();
+        if ($entity->getLocalCurrency() !== null) {
+            $snapshot->localCurrency = $entity->getLocalCurrency()->getId();
         }
 
-        if (! $entity->getLastChangeOn() == null) {
-            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
+        $snapshot->docCurrency = $entity->getDocCurrency();
+        if ($entity->getDocCurrency() !== null) {
+            $snapshot->docCurrency = $entity->getDocCurrency()->getId();
         }
 
-        // Mapping None-Object Field
-        // =====================
+        $snapshot->postingPeriod = $entity->getPostingPeriod();
+        if ($entity->getPostingPeriod() !== null) {
+            $snapshot->postingPeriod = $entity->getPostingPeriod()->getId();
+        }
+
+        $snapshot->company = $entity->getCompany();
+        if ($entity->getCompany() !== null) {
+            $snapshot->company = $entity->getCompany()->getId();
+        }
+
+        return $snapshot;
+    }
+
+   /**
+    * 
+    * @param NmtProcureGrRow $entity
+    * @return NULL|\Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot
+    */
+    public static function createRowDetailSnapshot(NmtProcureGrRow $entity)
+    {
+        if ($entity == null)
+            return null;
+
+        $snapshot = new GRRowDetailsSnapshot();
 
         $snapshot->id = $entity->getId();
-        $snapshot->rowNumber = $entity->getRowNumber();
         $snapshot->token = $entity->getToken();
+        $snapshot->rowNumber = $entity->getRowNumber();
+        $snapshot->rowIdentifer = $entity->getRowIdentifer();
         $snapshot->quantity = $entity->getQuantity();
         $snapshot->unitPrice = $entity->getUnitPrice();
         $snapshot->netAmount = $entity->getNetAmount();
@@ -745,7 +666,6 @@ class PoMapper
         $snapshot->grossAmount = $entity->getGrossAmount();
         $snapshot->taxAmount = $entity->getTaxAmount();
         $snapshot->faRemarks = $entity->getFaRemarks();
-        $snapshot->rowIdentifer = $entity->getRowIdentifer();
         $snapshot->discountRate = $entity->getDiscountRate();
         $snapshot->revisionNo = $entity->getRevisionNo();
         $snapshot->targetObject = $entity->getTargetObject();
@@ -753,27 +673,116 @@ class PoMapper
         $snapshot->targetObjectId = $entity->getTargetObjectId();
         $snapshot->sourceObjectId = $entity->getSourceObjectId();
         $snapshot->docStatus = $entity->getDocStatus();
-        $snapshot->workflowStatus = $entity->getWorkflowStatus();
-        $snapshot->transactionStatus = $entity->getTransactionStatus();
-        $snapshot->isPosted = $entity->getIsPosted();
         $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionType = $entity->getTransactionType();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
         $snapshot->exwUnitPrice = $entity->getExwUnitPrice();
         $snapshot->totalExwPrice = $entity->getTotalExwPrice();
-        $snapshot->convertFactorPurchase = $entity->getConvertFactorPurchase();
         $snapshot->convertedPurchaseQuantity = $entity->getConvertedPurchaseQuantity();
         $snapshot->convertedStandardQuantity = $entity->getConvertedStandardQuantity();
-        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
         $snapshot->convertedStandardUnitPrice = $entity->getConvertedStandardUnitPrice();
+        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
         $snapshot->convertedStockUnitPrice = $entity->getConvertedStockUnitPrice();
         $snapshot->docQuantity = $entity->getDocQuantity();
-        $snapshot->docUnit = $entity->getDocUnit();
         $snapshot->docUnitPrice = $entity->getDocUnitPrice();
+        $snapshot->docUnit = $entity->getDocUnit();
         $snapshot->convertedPurchaseUnitPrice = $entity->getConvertedPurchaseUnitPrice();
+        $snapshot->isReversed = $entity->getIsReversed();
+        $snapshot->reversalReason = $entity->getReversalReason();
+        $snapshot->reversalDoc = $entity->getReversalDoc();
+        $snapshot->flow = $entity->getFlow();
         $snapshot->docType = $entity->getDocType();
-        $snapshot->descriptionText = $entity->getDescriptionText();
         $snapshot->vendorItemName = $entity->getVendorItemName();
+        $snapshot->descriptionText = $entity->getDescriptionText();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->uuid = $entity->getUuid();
 
+        // Date Reference
+        // ==========================================
+        // $snapshot->createdOn = $entity->getCreatedOn();
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        // $snapshot->lastchangeOn = $entity->getLastchangeOn();
+        if (! $entity->getLastchangeOn() == null) {
+            $snapshot->lastchangeOn = $entity->getLastchangeOn()->format("Y-m-d H:i:s");
+        }
+
+        // $snapshot->grDate = $entity->getGrDate();
+        if (! $entity->getGrDate() == null) {
+            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d H:i:s");
+        }
+
+        // $snapshot->reversalDate = $entity->getReversalDate();
+        if (! $entity->getReversalDate() == null) {
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
+        }
+
+        // Mapping Reference
+        // ==========================================
+
+        // $snapshot->invoice = $entity->getInvoice();
+        if ($entity->getInvoice() !== null) {
+            $snapshot->invoice = $entity->getInvoice()->getId();
+        }
+
+        // $snapshot->gr = $entity->getGr();
+        if ($entity->getGr() !== null) {
+            $snapshot->gr = $entity->getGr()->getId();
+        }
+
+        // $snapshot->apInvoiceRow = $entity->getApInvoiceRow();
+        if ($entity->getApInvoiceRow() !== null) {
+            $snapshot->apInvoiceRow = $entity->getApInvoiceRow()->getId();
+        }
+
+        // $snapshot->glAccount = $entity->getGlAccount();
+        if ($entity->getGlAccount() !== null) {
+            $snapshot->glAccount = $entity->getGlAccount()->getId();
+        }
+
+        $snapshot->costCenter = $entity->getCostCenter();
+        if ($entity->getCostCenter() !== null) {
+            $snapshot->costCenter = $entity->getCostCenter()->getId();
+        }
+
+        $snapshot->docUom = $entity->getDocUom();
+        if ($entity->getDocUom() !== null) {
+            $snapshot->docUom = $entity->getDocUom()->getId();
+        }
+
+        $snapshot->prRow = $entity->getPrRow();
+        if ($entity->getPrRow() !== null) {
+            $snapshot->prRow = $entity->getPrRow()->getId();
+        }
+
+        $snapshot->createdBy = $entity->getCreatedBy();
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+
+        $snapshot->warehouse = $entity->getWarehouse();
+        if ($entity->getWarehouse() !== null) {
+            $snapshot->warehouse = $entity->getWarehouse()->getId();
+        }
+
+        $snapshot->lastchangedBy = $entity->getLastchangedBy();
+        if ($entity->getLastchangedBy() !== null) {
+            $snapshot->lastchangedBy = $entity->getLastchangedBy()->getId();
+        }
+        
+        $snapshot->item = $entity->getItem();
+        if ($entity->getItem() !== null) {
+            $snapshot->item = $entity->getItem()->getId();
+        }
+        
+        $snapshot->poRow= $entity->getPoRow();
+        if ($entity->getPoRow() !== null) {
+            $snapshot->poRow = $entity->getPoRow()->getId();
+        }
         return $snapshot;
     }
 }

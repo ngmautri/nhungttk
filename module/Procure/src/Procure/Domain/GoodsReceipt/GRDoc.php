@@ -3,23 +3,25 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\Event\Po\PoHeaderCreated;
+use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Application\Command\PO\Options\PoCreateOptions;
+use Procure\Application\Command\PO\Options\PoPostOptions;
+use Procure\Application\Command\PO\Options\PoUpdateOptions;
+use Procure\Domain\Event\Gr\GrHeaderCreated;
+use Procure\Domain\Event\Gr\GrHeaderUpdated;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoUpdateException;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
+use Procure\Domain\Exception\Gr\GrCreateException;
+use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
+use Procure\Domain\Exception\Gr\GrPostingException;
+use Procure\Domain\Exception\Gr\GrUpdateException;
+use Procure\Domain\GoodsReceipt\Validator\HeaderValidatorCollection;
+use Procure\Domain\GoodsReceipt\Validator\RowValidatorCollection;
+use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
 use Ramsey;
-use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Domain\Event\Po\PoHeaderUpdated;
-use Procure\Application\Command\PO\Options\PoUpdateOptions;
-use Procure\Application\Command\PO\Options\PoPostOptions;
-use Procure\Domain\Exception\PoPostingException;
-use Procure\Domain\Exception\PoInvalidOperationException;
 
 /**
  *
@@ -32,12 +34,12 @@ class GRDoc extends GenericGR
     private function __construct()
     {}
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
-     */
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
+    */
+    protected function doPost(CommandOptions $options, $headerValidators, $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
 
         /**
@@ -48,7 +50,7 @@ class GRDoc extends GenericGR
          * @var PoPostOptions $options ;
          */
         $postedDate = new \Datetime();
-        $this->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
+        $this->setDocStatus(GRDocStatus::DOC_STATUS_POSTED);
         $this->setLastchangeOn(date_format($postedDate, 'Y-m-d H:i:s'));
         $this->setLastchangeBy($options->getUserId());
 
@@ -64,50 +66,45 @@ class GRDoc extends GenericGR
         $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new PoPostingException($this->getNotification()->errorMessage());
+            throw new GrPostingException($this->getNotification()->errorMessage());
         }
 
         $postingService->getCmdRepository()->post($this, true);
-        
     }
 
     /**
-     *
-     * @param POSnapshot $snapshot
-     * @param array $params
+     * 
+     * @param GRSnapshot $snapshot
+     * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators
      * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
+     * @param GrPostingService $postingService
+     * @throws GrInvalidArgumentException
      * @throws PoCreateException
      * @throws PoUpdateException
-     * @return \Procure\Domain\PurchaseOrder\PODoc
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function createFrom(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    public static function createFrom(GRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, GrPostingService $postingService)
     {
-       
-        
-        
-        if (! $snapshot instanceof POSnapshot) {
-            throw new PoInvalidArgumentException("PO snapshot not found!");
+        if (! $snapshot instanceof GRSnapshot) {
+            throw new GrInvalidArgumentException("PO snapshot not found!");
         }
 
         if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("Header Validator not found!");
+            throw new GrInvalidArgumentException("Header Validator not found!");
         }
 
         if (! $sharedService instanceof SharedService) {
-            throw new PoInvalidArgumentException("Shared service not found!");
+            throw new GrInvalidArgumentException("Shared service not found!");
         }
 
-        if (! $postingService instanceof POPostingService) {
-            throw new PoInvalidArgumentException("Posting service not found!");
+        if (! $postingService instanceof GrPostingException) {
+            throw new GrInvalidArgumentException("Posting service not found!");
         }
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        
-      
+
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
 
@@ -119,8 +116,8 @@ class GRDoc extends GenericGR
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(PODocStatus::DOC_STATUS_DRAFT);
-        $instance->setDocType(PODocType::PO);
+        $instance->setDocStatus(GRDocStatus::DOC_STATUS_DRAFT);
+        $instance->setDocType(GRDocType::PO);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $instance->setRevisionNo(1);
@@ -132,12 +129,12 @@ class GRDoc extends GenericGR
 
         /**
          *
-         * @var POSnapshot $rootSnapshot
+         * @var GRSnapshot $rootSnapshot
          */
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new PoUpdateException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
+            throw new GrUpdateException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
         }
 
         $instance->id = $rootSnapshot->getId();
@@ -149,29 +146,14 @@ class GRDoc extends GenericGR
             $params = [];
         }
 
-        $instance->addEvent(new PoHeaderCreated($rootSnapshot, $trigger, $params));
+        $instance->addEvent(new GrHeaderCreated($rootSnapshot, $trigger, $params));
         return $instance;
     }
 
-    /**
-     *
-     * @param POSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
-     * @throws PoCreateException
-     * @throws PoUpdateException
-     * @return \Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+  
+    public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
-        
-        
-        
-        if (! $snapshot instanceof POSnapshot) {
+        if (! $snapshot instanceof GrSnapshot) {
             throw new PoInvalidArgumentException("PO snapshot not found!");
         }
 
@@ -196,7 +178,7 @@ class GRDoc extends GenericGR
         $instance->validateHeader($headerValidators);
 
         if ($instance->hasErrors()) {
-            throw new PoCreateException($instance->getNotification()->errorMessage());
+            throw new GrCreateException($instance->getNotification()->errorMessage());
         }
 
         $createdDate = new \Datetime();
@@ -206,12 +188,12 @@ class GRDoc extends GenericGR
 
         /**
          *
-         * @var POSnapshot $rootSnapshot
+         * @var GRSnapshot $rootSnapshot
          */
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new PoUpdateException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
+            throw new GrUpdateException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
         }
 
         $instance->id = $rootSnapshot->getId();
@@ -221,18 +203,19 @@ class GRDoc extends GenericGR
             $trigger = $options->getTriggeredBy();
         }
 
-        $instance->addEvent(new PoHeaderUpdated($rootSnapshot, $trigger, $params));
+        $instance->addEvent(new GrHeaderUpdated($rootSnapshot, $trigger, $params));
         return $instance;
     }
 
+  
     /**
-     *
-     * @param PODetailsSnapshot $snapshot
-     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     * 
+     * @param GRDetailsSnapshot $snapshot
+     * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function makeFromDetailsSnapshot(PODetailsSnapshot $snapshot)
+    public static function makeFromDetailsSnapshot(GRDetailsSnapshot $snapshot)
     {
-        if (! $snapshot instanceof PODetailsSnapshot)
+        if (! $snapshot instanceof GRDetailsSnapshot)
             return;
 
         if ($snapshot->uuid == null) {
@@ -244,13 +227,14 @@ class GRDoc extends GenericGR
     }
 
     /**
+     * Call this method to get from storage
      *
-     * @param PoSnapshot $snapshot
-     * @return void|\Procure\Domain\PurchaseOrder\PODoc
+     * @param GrSnapshot $snapshot
+     * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function makeFromSnapshot(PoSnapshot $snapshot)
+    public static function makeFromSnapshot(GrSnapshot $snapshot)
     {
-        if (! $snapshot instanceof PoSnapshot)
+        if (! $snapshot instanceof GrSnapshot)
             return;
 
         if ($snapshot->uuid == null) {
@@ -262,30 +246,6 @@ class GRDoc extends GenericGR
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
     }
-
-    /**
-     *
-     * @param PoSnapshot $snapshot
-     * @param POSpecService $specService
-     * @return void|\Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function updateFromSnapshot(PoSnapshot $snapshot, POSpecService $specService = null)
-    {
-        if (! $snapshot instanceof PoSnapshot) {
-            return;
-        }
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $instance->validateHeader($specService);
-        if ($instance->hasErrors()) {
-            throw new PoUpdateException($instance->getErrorMessage());
-        }
-
-        return $instance;
-    }
-
     protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
@@ -304,8 +264,8 @@ class GRDoc extends GenericGR
     protected function raiseEvent()
     {}
 
-   
 
+ 
   
   
 }

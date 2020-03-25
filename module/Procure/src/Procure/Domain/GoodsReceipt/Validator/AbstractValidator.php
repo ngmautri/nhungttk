@@ -1,9 +1,10 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\GoodsReceipt\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Service\FXServiceInterface;
+use Procure\Domain\Exception\GrInvalidArgumentException;
 
 /**
  *
@@ -26,11 +27,11 @@ abstract class AbstractValidator
     public function __construct(AbstractSpecificationFactory $sharedSpecificationFactory, FXServiceInterface $fxService)
     {
         if (! $sharedSpecificationFactory instanceof AbstractSpecificationFactory) {
-            throw new PoInvalidArgumentException("Shared Specification is required");
+            throw new GrInvalidArgumentException("Shared Specification is required");
         }
 
         if (! $fxService instanceof FXServiceInterface) {
-            throw new PoInvalidArgumentException("FX service is required");
+            throw new GrInvalidArgumentException("FX service is required");
         }
 
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;

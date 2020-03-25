@@ -137,15 +137,47 @@ class GRRow extends AbstractEntity
     protected $glAccount;
 
     protected $costCenter;
-    
+
     protected $docUom;
+
     protected $prRow;
+
     protected $createdBy;
+
     protected $warehouse;
+
     protected $lastchangedBy;
+
     protected $item;
+
     protected $poRow;
+
+    
     /**
+     * Private Constructor:
+     */
+    private function __construct()
+    {}
+
+    /**
+     *
+     * @param GRRowSnapshot $snapshot
+     * @return NULL|\Procure\Domain\GoodsReceipt\GRRow
+     */
+    public static function makeFromSnapshot(GRRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof GRRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getId()
@@ -154,6 +186,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -162,6 +195,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowNumber()
@@ -170,6 +204,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowIdentifer()
@@ -178,6 +213,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuantity()
@@ -186,6 +222,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -194,6 +231,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getNetAmount()
@@ -202,6 +240,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnit()
@@ -210,6 +249,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemUnit()
@@ -218,6 +258,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -226,6 +267,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConverstionText()
@@ -234,6 +276,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxRate()
@@ -242,6 +285,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -250,6 +294,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -258,6 +303,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -266,6 +312,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -274,6 +321,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -282,6 +330,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -290,6 +339,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTraceStock()
@@ -298,6 +348,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -306,6 +357,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -314,6 +366,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFaRemarks()
@@ -322,6 +375,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountRate()
@@ -330,6 +384,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -338,6 +393,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObject()
@@ -346,6 +402,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObject()
@@ -354,6 +411,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObjectId()
@@ -362,6 +420,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObjectId()
@@ -370,6 +429,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -378,6 +438,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -386,6 +447,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -394,6 +456,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrDate()
@@ -402,6 +465,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -410,6 +474,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionType()
@@ -418,6 +483,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -426,6 +492,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExwUnitPrice()
@@ -434,6 +501,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalExwPrice()
@@ -442,6 +510,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -450,6 +519,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -458,6 +528,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -466,6 +537,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -474,6 +546,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -482,6 +555,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -490,6 +564,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -498,6 +573,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnit()
@@ -506,6 +582,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseUnitPrice()
@@ -514,6 +591,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversed()
@@ -522,6 +600,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDate()
@@ -530,6 +609,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalReason()
@@ -538,6 +618,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDoc()
@@ -546,6 +627,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFlow()
@@ -554,6 +636,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -562,6 +645,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemName()
@@ -570,6 +654,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDescriptionText()
@@ -578,6 +663,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -586,6 +672,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -594,6 +681,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoice()
@@ -602,6 +690,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGr()
@@ -610,6 +699,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getApInvoiceRow()
@@ -618,6 +708,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGlAccount()
@@ -626,6 +717,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCostCenter()
@@ -634,6 +726,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUom()
@@ -642,6 +735,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRow()
@@ -650,6 +744,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -658,6 +753,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -666,6 +762,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangedBy()
@@ -674,6 +771,7 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()
@@ -682,11 +780,11 @@ class GRRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoRow()
     {
         return $this->poRow;
     }
-
- }
+}

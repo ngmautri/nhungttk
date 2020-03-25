@@ -15,6 +15,11 @@ abstract class AbstractEntity
 
     private $recordedEvents;
 
+    protected function translate($text)
+    {
+        return $text;
+    }
+
     /**
      *
      * @param object $e

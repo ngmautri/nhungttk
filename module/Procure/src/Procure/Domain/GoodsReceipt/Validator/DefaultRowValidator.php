@@ -1,10 +1,11 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\GoodsReceipt\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Procure\Domain\PurchaseOrder\GenericPO;
-use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\Exception\GrCreateException;
+use Procure\Domain\Exception\GrInvalidArgumentException;
+use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\GenericGR;
 
 /**
  *
@@ -21,58 +22,65 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
      */
     public function validate($rootEntity, $localEntity)
     {
-        if (! $rootEntity instanceof GenericPO) {
-            throw new PoInvalidArgumentException('Root entity not given!');
+        if (! $rootEntity instanceof GenericGR) {
+            throw new GrInvalidArgumentException('Root entity not given!');
         }
 
-        if (! $localEntity instanceof PORow) {
-            throw new PoInvalidArgumentException('PO Row not given!');
+        if (! $localEntity instanceof GRRow) {
+            throw new GrInvalidArgumentException('GR Row not given!');
         }
 
         // do verification now
 
-        /**
-         *
-         * @var AbstractSpecification $spec ;
-         */
+        Try {
 
-        // ======= ITEM ==========
-        $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
+            /**
+             *
+             * @var AbstractSpecification $spec ;
+             */
 
-        $subject = array(
-            "companyId" => $rootEntity->getCompany(),
-            "itemId" => $localEntity->getItem()
-        );
+            // ======= ITEM ==========
+            $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
 
-        if (! $spec->isSatisfiedBy($subject)) {
-            $localEntity->addError(sprintf("Item #%s not exits in the company #%s", $localEntity->getItem(), $rootEntity->getCompany()));
-        }
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "itemId" => $localEntity->getItem()
+            );
 
-        $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
+            if (! $spec->isSatisfiedBy($subject)) {
+                $localEntity->addError(sprintf("Item #%s not exits in the company #%s", $localEntity->getItem(), $rootEntity->getCompany()));
+            }
 
-        // ======= QUANTITY ==========
-        if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-            $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
-        }
+            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
 
-        // ======= UNIT PRICE ==========
-        if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
-            $localEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
-        }
+            // ======= QUANTITY ==========
+            if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
+                $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
+            }
 
-        // ======= CONVERSION FACTORY ==========
-        if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
-            $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
-        }
-        // ======= EXW PRICE ==========
-        if (! $spec->isSatisfiedBy($localEntity->getExwUnitPrice())) {
-            // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
-        }
+            // ======= UNIT PRICE ==========
+            if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
+                $localEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
+            }
 
-        if (! $localEntity->getTaxRate() == null) {
+            // ======= CONVERSION FACTORY ==========
+            if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
+                $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
+            }
+            // ======= EXW PRICE ==========
+            if (! $spec->isSatisfiedBy($localEntity->getExwUnitPrice())) {
+                // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
+            }
+
+            if (! $localEntity->getTaxRate() == null) {
             if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
                 $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
             }
+        }
+        
+        
+        } catch (GrCreateException $e) {
+            $localEntity->addError($e->getMessage());
         }
     }
 }

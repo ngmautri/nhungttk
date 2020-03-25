@@ -1,10 +1,11 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\GoodsReceipt\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Procure\Domain\Exception\GrInvalidArgumentException;
 use Procure\Domain\Exception\PoCreateException;
-use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\PurchaseOrder\GenericPO;
+use Procure\Domain\GoodsReceipt\GenericGR;
+use Procure\Domain\Exception\GrCreateException;
 
 /**
  *
@@ -21,8 +22,8 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
      */
     public function validate($rootEntity)
     {
-        if (! $rootEntity instanceof GenericPO) {
-            throw new PoInvalidArgumentException('Root entity not given!');
+        if (! $rootEntity instanceof GenericGR) {
+            throw new GrInvalidArgumentException('Root entity not given!');
         }
 
         /**
@@ -136,7 +137,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             
             
             
-        } catch (PoCreateException $e) {
+        } catch (GrCreateException $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

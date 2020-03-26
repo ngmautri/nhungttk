@@ -2,8 +2,8 @@
 namespace Procure\Domain\GoodsReceipt\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Procure\Domain\Exception\GrCreateException;
-use Procure\Domain\Exception\GrInvalidArgumentException;
+use Procure\Domain\Exception\Gr\GrCreateException;
+use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GenericGR;
 

@@ -3,8 +3,8 @@ namespace Procure\Domain\GoodsReceipt\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\Service\FXServiceInterface;
-use Procure\Domain\Exception\GrInvalidArgumentException;
 
 /**
  *
@@ -48,12 +48,12 @@ abstract class AbstractValidator
     }
 
     /**
+     *
      * @return \Procure\Domain\Service\FXServiceInterface
      */
     public function getFxService()
     {
         return $this->fxService;
     }
-
 }
 

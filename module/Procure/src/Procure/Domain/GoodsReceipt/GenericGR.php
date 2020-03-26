@@ -181,6 +181,19 @@ abstract class GenericGR extends AbstractGR
         return $this;
     }
 
+    /**
+     * 
+     * @param GRRowSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param GrPostingService $postingService
+     * @throws GrInvalidOperationException
+     * @throws GrInvalidArgumentException
+     * @throws GrRowUpdateException
+     * @return \Procure\Domain\GoodsReceipt\GRRowSnapshot
+     */
     public function createRowFrom(GRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
         if ($this->getDocStatus() == GRDocStatus::DOC_STATUS_POSTED) {
@@ -256,6 +269,20 @@ abstract class GenericGR extends AbstractGR
         return $localSnapshot;
     }
 
+    /**
+     * 
+     * @param GRRowSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     * @throws GrInvalidOperationException
+     * @throws GrInvalidArgumentException
+     * @throws GrRowUpdateException
+     * @return \Procure\Domain\GoodsReceipt\GRRowSnapshot
+     */
     public function updateRowFrom(GRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() == GRDocStatus::DOC_STATUS_POSTED) {
@@ -467,6 +494,10 @@ abstract class GenericGR extends AbstractGR
         return $dto;
     }
 
+    /**
+     * 
+     * @return NULL|object
+     */
      public function makeHeaderDTO()
     {
         $dto = new GrDetailsDTO();
@@ -480,7 +511,6 @@ abstract class GenericGR extends AbstractGR
      */
     public function makeDTOForGrid()
     {
-        $dto = new GrDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         $rowDTOList = [];
         if (count($this->docRows) > 0) {

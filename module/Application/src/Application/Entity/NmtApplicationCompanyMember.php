@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationCompanyMember
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationCompanyMember
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remark", type="string", length=150, nullable=true)
@@ -31,7 +29,6 @@ class NmtApplicationCompanyMember
     private $remark;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationCompanyMember
     private $createdOn;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -50,7 +46,6 @@ class NmtApplicationCompanyMember
     private $company;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -61,7 +56,6 @@ class NmtApplicationCompanyMember
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -70,6 +64,8 @@ class NmtApplicationCompanyMember
      * })
      */
     private $user;
+
+
 
     /**
      * Get id

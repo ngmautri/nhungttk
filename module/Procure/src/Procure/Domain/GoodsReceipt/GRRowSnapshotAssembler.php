@@ -1,9 +1,10 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
-use Procure\Application\DTO\Po\PORowDTO;
-use Zend\Form\Annotation\Object;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Domain\GenericRow;
+use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\PurchaseOrder\PORowSnapshot;
 
 /**
  *
@@ -16,6 +17,58 @@ class GRRowSnapshotAssembler
     const EXCLUDED_FIELDS = 1;
 
     const EDITABLE_FIELDS = 2;
+
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericRow();
+        // $entity = new GRRowSnapshot();
+
+        // $dto = new GenericRow();
+        $dto = new GRRow();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("protected $%s;\n", $propertyName));
+
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfEntity()
+    {
+        $missingProperties = array();
+        
+        $entity = new GRRowSnapshot();
+        
+        $dto = new GenericRow();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("protected $%s;\n", $propertyName));
+                
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
 
     /**
      * generete fields.
@@ -203,9 +256,8 @@ class GRRowSnapshotAssembler
                 } else {
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
-                    }
-           }
-            return $snapShot;
+            }
+        }
+        return $snapShot;
     }
-    
 }

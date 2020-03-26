@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryWarehouseLocation
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryWarehouseLocation
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryWarehouseLocation
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryWarehouseLocation
     private $sysNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryWarehouseLocation
     private $token;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryWarehouseLocation
     private $lastChangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryWarehouseLocation
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,7 +64,6 @@ class NmtInventoryWarehouseLocation
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_system_location", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryWarehouseLocation
     private $isSystemLocation;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_return_location", type="boolean", nullable=true)
@@ -87,7 +78,6 @@ class NmtInventoryWarehouseLocation
     private $isReturnLocation;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_scrap_location", type="boolean", nullable=true)
@@ -95,7 +85,6 @@ class NmtInventoryWarehouseLocation
     private $isScrapLocation;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_root_location", type="boolean", nullable=true)
@@ -103,7 +92,6 @@ class NmtInventoryWarehouseLocation
     private $isRootLocation;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location_name", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtInventoryWarehouseLocation
     private $locationName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location_code", type="string", length=45, nullable=true)
@@ -119,7 +106,6 @@ class NmtInventoryWarehouseLocation
     private $locationCode;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="parent_id", type="integer", nullable=true)
@@ -127,7 +113,6 @@ class NmtInventoryWarehouseLocation
     private $parentId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location_type", type="string", length=45, nullable=true)
@@ -135,7 +120,6 @@ class NmtInventoryWarehouseLocation
     private $locationType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -143,7 +127,6 @@ class NmtInventoryWarehouseLocation
     private $isActive;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_locked", type="boolean", nullable=true)
@@ -151,7 +134,6 @@ class NmtInventoryWarehouseLocation
     private $isLocked;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -159,7 +141,6 @@ class NmtInventoryWarehouseLocation
     private $path;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -167,7 +148,6 @@ class NmtInventoryWarehouseLocation
     private $pathDepth;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="has_member", type="boolean", nullable=true)
@@ -175,7 +155,6 @@ class NmtInventoryWarehouseLocation
     private $hasMember;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -183,7 +162,6 @@ class NmtInventoryWarehouseLocation
     private $uuid;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -194,7 +172,6 @@ class NmtInventoryWarehouseLocation
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -205,7 +182,6 @@ class NmtInventoryWarehouseLocation
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -214,6 +190,8 @@ class NmtInventoryWarehouseLocation
      * })
      */
     private $warehouse;
+
+
 
     /**
      * Get id

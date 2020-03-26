@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtProcurePoRow
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtProcurePoRow
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
@@ -31,7 +29,6 @@ class NmtProcurePoRow
     private $rowNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtProcurePoRow
     private $token;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
@@ -47,7 +43,6 @@ class NmtProcurePoRow
     private $quantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit_price", type="decimal", precision=15, scale=4, nullable=false)
@@ -55,7 +50,6 @@ class NmtProcurePoRow
     private $unitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="net_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -63,7 +57,6 @@ class NmtProcurePoRow
     private $netAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtProcurePoRow
     private $unit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_unit", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtProcurePoRow
     private $itemUnit;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="conversion_factor", type="float", precision=10, scale=4, nullable=true)
@@ -87,7 +78,6 @@ class NmtProcurePoRow
     private $conversionFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converstion_text", type="string", length=45, nullable=true)
@@ -95,7 +85,6 @@ class NmtProcurePoRow
     private $converstionText;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="tax_rate", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class NmtProcurePoRow
     private $taxRate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=100, nullable=true)
@@ -111,7 +99,6 @@ class NmtProcurePoRow
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -119,7 +106,6 @@ class NmtProcurePoRow
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -127,7 +113,6 @@ class NmtProcurePoRow
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtProcurePoRow
     private $lastchangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -143,7 +127,6 @@ class NmtProcurePoRow
     private $currentState;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_code", type="string", length=45, nullable=true)
@@ -151,7 +134,6 @@ class NmtProcurePoRow
     private $vendorItemCode;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="trace_stock", type="boolean", nullable=true)
@@ -159,7 +141,6 @@ class NmtProcurePoRow
     private $traceStock;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="gross_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -167,7 +148,6 @@ class NmtProcurePoRow
     private $grossAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="tax_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -175,7 +155,6 @@ class NmtProcurePoRow
     private $taxAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="fa_remarks", type="string", length=200, nullable=true)
@@ -183,7 +162,6 @@ class NmtProcurePoRow
     private $faRemarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
@@ -191,7 +169,6 @@ class NmtProcurePoRow
     private $rowIdentifer;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="discount_rate", type="integer", nullable=true)
@@ -199,7 +176,6 @@ class NmtProcurePoRow
     private $discountRate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -207,7 +183,6 @@ class NmtProcurePoRow
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="target_object", type="string", length=255, nullable=true)
@@ -215,7 +190,6 @@ class NmtProcurePoRow
     private $targetObject;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_object", type="string", length=255, nullable=true)
@@ -223,7 +197,6 @@ class NmtProcurePoRow
     private $sourceObject;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="target_object_id", type="integer", nullable=true)
@@ -231,7 +204,6 @@ class NmtProcurePoRow
     private $targetObjectId;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="source_object_id", type="integer", nullable=true)
@@ -239,7 +211,6 @@ class NmtProcurePoRow
     private $sourceObjectId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -247,7 +218,6 @@ class NmtProcurePoRow
     private $docStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -255,7 +225,6 @@ class NmtProcurePoRow
     private $workflowStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
@@ -263,7 +232,6 @@ class NmtProcurePoRow
     private $transactionStatus;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -271,7 +239,6 @@ class NmtProcurePoRow
     private $isPosted;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -279,7 +246,6 @@ class NmtProcurePoRow
     private $isDraft;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="exw_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -287,7 +253,6 @@ class NmtProcurePoRow
     private $exwUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="total_exw_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -295,7 +260,6 @@ class NmtProcurePoRow
     private $totalExwPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="convert_factor_purchase", type="decimal", precision=14, scale=4, nullable=true)
@@ -303,7 +267,6 @@ class NmtProcurePoRow
     private $convertFactorPurchase;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -311,7 +274,6 @@ class NmtProcurePoRow
     private $convertedPurchaseQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -319,7 +281,6 @@ class NmtProcurePoRow
     private $convertedStandardQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -327,7 +288,6 @@ class NmtProcurePoRow
     private $convertedStockQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -335,7 +295,6 @@ class NmtProcurePoRow
     private $convertedStandardUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -343,7 +302,6 @@ class NmtProcurePoRow
     private $convertedStockUnitPrice;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
@@ -351,7 +309,6 @@ class NmtProcurePoRow
     private $docQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
@@ -359,7 +316,6 @@ class NmtProcurePoRow
     private $docUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -367,7 +323,6 @@ class NmtProcurePoRow
     private $docUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -375,7 +330,6 @@ class NmtProcurePoRow
     private $convertedPurchaseUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -383,7 +337,6 @@ class NmtProcurePoRow
     private $docType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description_text", type="text", length=65535, nullable=true)
@@ -391,7 +344,6 @@ class NmtProcurePoRow
     private $descriptionText;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_name", type="string", length=100, nullable=true)
@@ -399,7 +351,6 @@ class NmtProcurePoRow
     private $vendorItemName;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -407,7 +358,6 @@ class NmtProcurePoRow
     private $reversalBlocked;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="doc_version", type="integer", nullable=true)
@@ -415,7 +365,13 @@ class NmtProcurePoRow
     private $docVersion;
 
     /**
+     * @var string
      *
+     * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -426,7 +382,6 @@ class NmtProcurePoRow
     private $invoice;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -437,7 +392,6 @@ class NmtProcurePoRow
     private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -448,7 +402,6 @@ class NmtProcurePoRow
     private $prRow;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -459,7 +412,6 @@ class NmtProcurePoRow
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -470,7 +422,6 @@ class NmtProcurePoRow
     private $warehouse;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePo
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
@@ -481,7 +432,6 @@ class NmtProcurePoRow
     private $po;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -492,7 +442,6 @@ class NmtProcurePoRow
     private $item;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -501,6 +450,8 @@ class NmtProcurePoRow
      * })
      */
     private $docUom;
+
+
 
     /**
      * Get id
@@ -1686,6 +1637,30 @@ class NmtProcurePoRow
     public function getDocVersion()
     {
         return $this->docVersion;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**

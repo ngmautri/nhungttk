@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfWorkflow
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtWfWorkflow
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtWfWorkflow
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_name", type="string", length=100, nullable=false)
@@ -39,7 +36,6 @@ class NmtWfWorkflow
     private $workflowName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_factory", type="string", length=200, nullable=false)
@@ -47,7 +43,6 @@ class NmtWfWorkflow
     private $workflowFactory;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_class", type="string", length=200, nullable=false)
@@ -55,7 +50,6 @@ class NmtWfWorkflow
     private $workflowClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="subject_class", type="string", length=200, nullable=false)
@@ -63,7 +57,6 @@ class NmtWfWorkflow
     private $subjectClass;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_valid", type="boolean", nullable=true)
@@ -71,7 +64,6 @@ class NmtWfWorkflow
     private $isValid;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtWfWorkflow
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_errors", type="string", length=255, nullable=true)
@@ -87,7 +78,6 @@ class NmtWfWorkflow
     private $workflowErrors;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtWfWorkflow
     private $startDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtWfWorkflow
     private $endDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class NmtWfWorkflow
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
@@ -119,7 +106,6 @@ class NmtWfWorkflow
     private $remarks;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -128,6 +114,8 @@ class NmtWfWorkflow
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

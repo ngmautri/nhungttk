@@ -109,7 +109,8 @@ abstract class AbstractGR extends AbstractEntity implements AggregateRootInterfa
     protected $postingPeriod;
 
     protected $company;
-
+    
+    
     /**
      *
      * @return mixed

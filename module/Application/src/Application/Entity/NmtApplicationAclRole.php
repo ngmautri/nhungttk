@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationAclRole
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationAclRole
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="role", type="string", length=100, nullable=false)
@@ -31,7 +29,6 @@ class NmtApplicationAclRole
     private $role;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="parent_id", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationAclRole
     private $parentId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationAclRole
     private $path;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationAclRole
     private $pathDepth;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationAclRole
     private $status;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationAclRole
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -79,7 +71,6 @@ class NmtApplicationAclRole
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -90,7 +81,6 @@ class NmtApplicationAclRole
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -99,6 +89,8 @@ class NmtApplicationAclRole
      * })
      */
     private $company;
+
+
 
     /**
      * Get id

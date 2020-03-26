@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrSalaryDefault
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrSalaryDefault
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrSalaryDefault
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_type", type="string", nullable=true)
@@ -39,7 +36,6 @@ class NmtHrSalaryDefault
     private $salaryType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_code", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrSalaryDefault
     private $salaryCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_name", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrSalaryDefault
     private $salaryName;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_decorator", type="boolean", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrSalaryDefault
     private $isDecorator;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_pit_payable", type="boolean", nullable=true)
@@ -71,7 +64,6 @@ class NmtHrSalaryDefault
     private $isPitPayable;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_sso_payable", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtHrSalaryDefault
     private $isSsoPayable;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_payable", type="boolean", nullable=true)
@@ -87,7 +78,6 @@ class NmtHrSalaryDefault
     private $isPayable;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtHrSalaryDefault
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="curent_state", type="string", length=45, nullable=true)
@@ -103,7 +92,6 @@ class NmtHrSalaryDefault
     private $curentState;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="decorator_factory", type="string", length=255, nullable=true)
@@ -111,7 +99,6 @@ class NmtHrSalaryDefault
     private $decoratorFactory;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_from", type="datetime", nullable=true)
@@ -119,7 +106,6 @@ class NmtHrSalaryDefault
     private $effectiveFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_to", type="datetime", nullable=true)
@@ -127,7 +113,6 @@ class NmtHrSalaryDefault
     private $effectiveTo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtHrSalaryDefault
     private $lastChangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -143,7 +127,6 @@ class NmtHrSalaryDefault
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -151,7 +134,6 @@ class NmtHrSalaryDefault
     private $description;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -159,7 +141,6 @@ class NmtHrSalaryDefault
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_frequency", type="string", length=45, nullable=true)
@@ -167,7 +148,6 @@ class NmtHrSalaryDefault
     private $paymentFrequency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_factory", type="string", length=255, nullable=true)
@@ -175,7 +155,6 @@ class NmtHrSalaryDefault
     private $salaryFactory;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
@@ -183,7 +162,6 @@ class NmtHrSalaryDefault
     private $isDefault;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -194,7 +172,6 @@ class NmtHrSalaryDefault
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -203,6 +180,8 @@ class NmtHrSalaryDefault
      * })
      */
     private $lastChangeBy;
+
+
 
     /**
      * Get id

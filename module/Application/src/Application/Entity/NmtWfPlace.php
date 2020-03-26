@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfPlace
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtWfPlace
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtWfPlace
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="place_name", type="string", length=80, nullable=false)
@@ -39,7 +36,6 @@ class NmtWfPlace
     private $placeName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="place_type", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtWfPlace
     private $placeType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -55,7 +50,6 @@ class NmtWfPlace
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="place_description", type="string", length=200, nullable=true)
@@ -63,7 +57,6 @@ class NmtWfPlace
     private $placeDescription;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtWfPlace
     private $createdOn;
 
     /**
-     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -82,7 +74,6 @@ class NmtWfPlace
     private $workflow;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -91,6 +82,8 @@ class NmtWfPlace
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

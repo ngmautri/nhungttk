@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class IntProcurementPrItem
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="int", type="integer", nullable=false)
@@ -20,8 +21,6 @@ class IntProcurementPrItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $int;
-
-
 
     /**
      * Get int

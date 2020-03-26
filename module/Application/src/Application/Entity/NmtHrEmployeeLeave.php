@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEmployeeLeave
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrEmployeeLeave
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrEmployeeLeave
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_status", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtHrEmployeeLeave
     private $currentStatus;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="all_day", type="boolean", nullable=true)
@@ -47,7 +43,6 @@ class NmtHrEmployeeLeave
     private $allDay;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtHrEmployeeLeave
     private $startDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrEmployeeLeave
     private $endDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="start_time", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtHrEmployeeLeave
     private $startTime;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="end_time", type="integer", nullable=true)
@@ -79,7 +71,6 @@ class NmtHrEmployeeLeave
     private $endTime;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class NmtHrEmployeeLeave
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -95,7 +85,6 @@ class NmtHrEmployeeLeave
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtHrEmployeeLeave
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class NmtHrEmployeeLeave
     private $lastchangeOn;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -122,7 +109,6 @@ class NmtHrEmployeeLeave
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\NmtHrLeaveReason
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrLeaveReason")
@@ -133,7 +119,6 @@ class NmtHrEmployeeLeave
     private $leaveReason;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -144,7 +129,6 @@ class NmtHrEmployeeLeave
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -153,6 +137,8 @@ class NmtHrEmployeeLeave
      * })
      */
     private $lastchangeBy;
+
+
 
     /**
      * Get id

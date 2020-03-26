@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaDeliveryCart
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaDeliveryCart
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="delivery_date", type="datetime", nullable=true)
@@ -31,7 +29,6 @@ class MlaDeliveryCart
     private $deliveryDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="delivery_id", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class MlaDeliveryCart
     private $deliveryId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=true)
@@ -47,7 +43,6 @@ class MlaDeliveryCart
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=100, nullable=true)
@@ -55,7 +50,6 @@ class MlaDeliveryCart
     private $code;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class MlaDeliveryCart
     private $unit;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="delivered_quantity", type="integer", nullable=false)
@@ -71,7 +64,6 @@ class MlaDeliveryCart
     private $deliveredQuantity;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="price", type="float", precision=10, scale=0, nullable=true)
@@ -79,7 +71,6 @@ class MlaDeliveryCart
     private $price;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency", type="string", length=3, nullable=true)
@@ -87,7 +78,6 @@ class MlaDeliveryCart
     private $currency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", nullable=true)
@@ -95,7 +85,6 @@ class MlaDeliveryCart
     private $paymentMethod;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="created_on", type="string", length=45, nullable=true)
@@ -103,7 +92,6 @@ class MlaDeliveryCart
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -111,7 +99,6 @@ class MlaDeliveryCart
     private $remarks;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="last_workflow_id", type="integer", nullable=true)
@@ -119,7 +106,6 @@ class MlaDeliveryCart
     private $lastWorkflowId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class MlaDeliveryCart
     private $status;
 
     /**
-     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -138,7 +123,6 @@ class MlaDeliveryCart
     private $prItem;
 
     /**
-     *
      * @var \Application\Entity\MlaVendors
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaVendors")
@@ -149,7 +133,6 @@ class MlaDeliveryCart
     private $vendor;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -158,6 +141,8 @@ class MlaDeliveryCart
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

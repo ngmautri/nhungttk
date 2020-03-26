@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrPosition
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrPosition
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="position_name", type="string", length=45, nullable=false)
@@ -31,7 +29,6 @@ class NmtHrPosition
     private $positionName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
@@ -39,7 +36,6 @@ class NmtHrPosition
     private $description;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="cost_center", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrPosition
     private $costCenter;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtHrPosition
     private $validFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrPosition
     private $validTo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtHrPosition
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="job_description", type="text", length=65535, nullable=true)
@@ -79,7 +71,6 @@ class NmtHrPosition
     private $jobDescription;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="accounting_account", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class NmtHrPosition
     private $accountingAccount;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -95,7 +85,6 @@ class NmtHrPosition
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -103,7 +92,6 @@ class NmtHrPosition
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="position_code", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtHrPosition
     private $positionCode;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -119,7 +106,6 @@ class NmtHrPosition
     private $lastChangeOn;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -130,7 +116,6 @@ class NmtHrPosition
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationDepartment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
@@ -141,7 +126,6 @@ class NmtHrPosition
     private $department;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -150,6 +134,8 @@ class NmtHrPosition
      * })
      */
     private $lastChangeBy;
+
+
 
     /**
      * Get id

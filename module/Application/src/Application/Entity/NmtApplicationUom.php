@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationUom
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationUom
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uom_code", type="string", length=45, nullable=false)
@@ -31,7 +29,6 @@ class NmtApplicationUom
     private $uomCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uom_name", type="string", length=100, nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationUom
     private $uomName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uom_description", type="text", length=65535, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationUom
     private $uomDescription;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationUom
     private $conversionFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sector", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationUom
     private $sector;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="symbol", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationUom
     private $symbol;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationUom
     private $status;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -87,7 +78,6 @@ class NmtApplicationUom
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -98,7 +88,6 @@ class NmtApplicationUom
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -107,6 +96,8 @@ class NmtApplicationUom
      * })
      */
     private $company;
+
+
 
     /**
      * Get id

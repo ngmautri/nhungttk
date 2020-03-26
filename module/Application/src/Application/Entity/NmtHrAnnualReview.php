@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrAnnualReview
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrAnnualReview
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="employee", type="integer", nullable=false)
@@ -31,7 +29,6 @@ class NmtHrAnnualReview
     private $employee;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="review_period_from", type="datetime", nullable=true)
@@ -39,12 +36,13 @@ class NmtHrAnnualReview
     private $reviewPeriodFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="review_period_to", type="datetime", nullable=true)
      */
     private $reviewPeriodTo;
+
+
 
     /**
      * Get id

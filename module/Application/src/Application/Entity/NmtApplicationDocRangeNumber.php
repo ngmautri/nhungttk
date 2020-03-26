@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationDocRangeNumber
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationDocRangeNumber
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="company_id", type="integer", nullable=false)
@@ -31,7 +29,6 @@ class NmtApplicationDocRangeNumber
     private $companyId;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="range_no", type="integer", nullable=false)
@@ -39,7 +36,6 @@ class NmtApplicationDocRangeNumber
     private $rangeNo;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="year", type="integer", nullable=false)
@@ -47,7 +43,6 @@ class NmtApplicationDocRangeNumber
     private $year;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="from_number", type="integer", nullable=false)
@@ -55,7 +50,6 @@ class NmtApplicationDocRangeNumber
     private $fromNumber;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="to_number", type="integer", nullable=false)
@@ -63,7 +57,6 @@ class NmtApplicationDocRangeNumber
     private $toNumber;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="current_number", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationDocRangeNumber
     private $currentNumber;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="numeric_size", type="integer", nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationDocRangeNumber
     private $numericSize;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="prefix", type="string", length=10, nullable=true)
@@ -87,7 +78,6 @@ class NmtApplicationDocRangeNumber
     private $prefix;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="suffix", type="string", length=10, nullable=true)
@@ -95,7 +85,6 @@ class NmtApplicationDocRangeNumber
     private $suffix;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -103,7 +92,6 @@ class NmtApplicationDocRangeNumber
     private $status;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_activated", type="boolean", nullable=true)
@@ -111,7 +99,6 @@ class NmtApplicationDocRangeNumber
     private $isActivated;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=false)
@@ -119,12 +106,13 @@ class NmtApplicationDocRangeNumber
     private $createdBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
+
+
 
     /**
      * Get id

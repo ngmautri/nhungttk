@@ -124,6 +124,11 @@ class PORowSnapshot extends AbstractDTO
     public $item;
 
     public $docUom;
+    
+    public $docVersion;
+    
+    public $uuid;
+    
     /**
      * @return mixed
      */
@@ -579,5 +584,21 @@ class PORowSnapshot extends AbstractDTO
     {
         return $this->docUom;
     }
+    /**
+     * @return mixed
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
 
 }

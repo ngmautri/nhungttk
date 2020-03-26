@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrContractRevision
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrContractRevision
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrContractRevision
     private $token;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_number", type="integer", nullable=false)
@@ -39,7 +36,6 @@ class NmtHrContractRevision
     private $revisionNumber;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_from", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class NmtHrContractRevision
     private $effectiveFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_to", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtHrContractRevision
     private $effectiveTo;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrContractRevision
     private $createdBy;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="created_on", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtHrContractRevision
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="postion", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtHrContractRevision
     private $postion;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="postion_id", type="integer", nullable=true)
@@ -87,7 +78,6 @@ class NmtHrContractRevision
     private $postionId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="department_name", type="string", length=45, nullable=true)
@@ -95,7 +85,6 @@ class NmtHrContractRevision
     private $departmentName;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="departmnet_id", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class NmtHrContractRevision
     private $departmnetId;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="working_time_from", type="integer", nullable=true)
@@ -111,7 +99,6 @@ class NmtHrContractRevision
     private $workingTimeFrom;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="wokring_time_to", type="string", length=45, nullable=true)
@@ -119,7 +106,6 @@ class NmtHrContractRevision
     private $wokringTimeTo;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="to_alert", type="boolean", nullable=true)
@@ -127,7 +113,6 @@ class NmtHrContractRevision
     private $toAlert;
 
     /**
-     *
      * @var \Application\Entity\NmtHrContract
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrContract")
@@ -138,7 +123,6 @@ class NmtHrContractRevision
     private $contract;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -147,6 +131,8 @@ class NmtHrContractRevision
      * })
      */
     private $employee;
+
+
 
     /**
      * Get id

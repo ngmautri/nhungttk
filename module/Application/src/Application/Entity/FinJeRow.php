@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinJeRow
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class FinJeRow
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="posting_key", type="string", length=5, nullable=false)
@@ -31,7 +29,6 @@ class FinJeRow
     private $postingKey;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="posting_code", type="string", length=5, nullable=false)
@@ -39,7 +36,6 @@ class FinJeRow
     private $postingCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_amount", type="decimal", precision=14, scale=4, nullable=true)
@@ -47,7 +43,6 @@ class FinJeRow
     private $docAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="local_amount", type="decimal", precision=14, scale=4, nullable=true)
@@ -55,7 +50,6 @@ class FinJeRow
     private $localAmount;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class FinJeRow
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class FinJeRow
     private $sourceId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
@@ -79,7 +71,6 @@ class FinJeRow
     private $sourceClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_token", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class FinJeRow
     private $sourceToken;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_note", type="string", length=45, nullable=true)
@@ -95,7 +85,6 @@ class FinJeRow
     private $jeNote;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_description", type="string", length=255, nullable=true)
@@ -103,7 +92,6 @@ class FinJeRow
     private $jeDescription;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class FinJeRow
     private $sysNumber;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -119,7 +106,6 @@ class FinJeRow
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_memo", type="string", length=100, nullable=true)
@@ -127,7 +113,6 @@ class FinJeRow
     private $jeMemo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_gr_memo", type="string", length=100, nullable=true)
@@ -135,7 +120,6 @@ class FinJeRow
     private $jeGrMemo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_ap_memo", type="string", length=100, nullable=true)
@@ -143,7 +127,6 @@ class FinJeRow
     private $jeApMemo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -151,7 +134,6 @@ class FinJeRow
     private $docType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -159,7 +141,6 @@ class FinJeRow
     private $reversalBlocked;
 
     /**
-     *
      * @var \Application\Entity\FinJe
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinJe")
@@ -170,7 +151,6 @@ class FinJeRow
     private $je;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -181,7 +161,6 @@ class FinJeRow
     private $glAccount;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -192,7 +171,6 @@ class FinJeRow
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -203,7 +181,6 @@ class FinJeRow
     private $subAccount;
 
     /**
-     *
      * @var \Application\Entity\FinCostCenter
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
@@ -214,7 +191,6 @@ class FinJeRow
     private $costCenter;
 
     /**
-     *
      * @var \Application\Entity\NmtProcureGrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
@@ -225,7 +201,6 @@ class FinJeRow
     private $grRow;
 
     /**
-     *
      * @var \Application\Entity\FinVendorInvoiceRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
@@ -236,7 +211,6 @@ class FinJeRow
     private $apRow;
 
     /**
-     *
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -247,7 +221,6 @@ class FinJeRow
     private $ap;
 
     /**
-     *
      * @var \Application\Entity\NmtProcureGr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGr")
@@ -256,6 +229,8 @@ class FinJeRow
      * })
      */
     private $gr;
+
+
 
     /**
      * Get id

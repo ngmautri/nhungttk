@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationAclUserRole
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationAclUserRole
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
@@ -31,7 +29,6 @@ class NmtApplicationAclUserRole
     private $updatedOn;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -42,7 +39,6 @@ class NmtApplicationAclUserRole
     private $user;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -53,7 +49,6 @@ class NmtApplicationAclUserRole
     private $role;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -62,6 +57,8 @@ class NmtApplicationAclUserRole
      * })
      */
     private $updatedBy;
+
+
 
     /**
      * Get id

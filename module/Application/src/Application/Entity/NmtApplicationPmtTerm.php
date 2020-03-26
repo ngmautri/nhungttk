@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationPmtTerm
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationPmtTerm
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="pmt_term_code", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtApplicationPmtTerm
     private $pmtTermCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="pmt_term_name", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationPmtTerm
     private $pmtTermName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationPmtTerm
     private $description;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationPmtTerm
     private $status;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationPmtTerm
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationPmtTerm
     private $lastChangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationPmtTerm
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class NmtApplicationPmtTerm
     private $token;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_prepayment", type="boolean", nullable=true)
@@ -95,7 +85,6 @@ class NmtApplicationPmtTerm
     private $isPrepayment;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="prepayment_percentage", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class NmtApplicationPmtTerm
     private $prepaymentPercentage;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="pay_after_shipment", type="boolean", nullable=true)
@@ -111,7 +99,6 @@ class NmtApplicationPmtTerm
     private $payAfterShipment;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="pay_after_invoice", type="boolean", nullable=true)
@@ -119,7 +106,6 @@ class NmtApplicationPmtTerm
     private $payAfterInvoice;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -127,7 +113,6 @@ class NmtApplicationPmtTerm
     private $isActive;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -138,7 +123,6 @@ class NmtApplicationPmtTerm
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -147,6 +131,8 @@ class NmtApplicationPmtTerm
      * })
      */
     private $lastChangeBy;
+
+
 
     /**
      * Get id

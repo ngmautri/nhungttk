@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryCountingItem
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -21,6 +20,8 @@ class NmtInventoryCountingItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+
 
     /**
      * Get id

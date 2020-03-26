@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPurchaseRequests
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaPurchaseRequests
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="seq_number_of_year", type="integer", nullable=false)
@@ -31,7 +29,6 @@ class MlaPurchaseRequests
     private $seqNumberOfYear;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="auto_pr_number", type="string", length=100, nullable=false)
@@ -39,7 +36,6 @@ class MlaPurchaseRequests
     private $autoPrNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="pr_number", type="string", length=100, nullable=true)
@@ -47,7 +43,6 @@ class MlaPurchaseRequests
     private $prNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=50, nullable=true)
@@ -55,7 +50,6 @@ class MlaPurchaseRequests
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -63,7 +57,6 @@ class MlaPurchaseRequests
     private $description;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="requested_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class MlaPurchaseRequests
     private $requestedOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="verified_by", type="string", length=150, nullable=true)
@@ -79,7 +71,6 @@ class MlaPurchaseRequests
     private $verifiedBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="verified_on", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class MlaPurchaseRequests
     private $verifiedOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="approved_by", type="integer", nullable=true)
@@ -95,7 +85,6 @@ class MlaPurchaseRequests
     private $approvedBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="approved_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class MlaPurchaseRequests
     private $approvedOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="released_by", type="integer", nullable=true)
@@ -111,7 +99,6 @@ class MlaPurchaseRequests
     private $releasedBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="released_on", type="datetime", nullable=true)
@@ -119,7 +106,6 @@ class MlaPurchaseRequests
     private $releasedOn;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -130,7 +116,6 @@ class MlaPurchaseRequests
     private $requestedBy;
 
     /**
-     *
      * @var \Application\Entity\MlaPurchaseRequestsWorkflows
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestsWorkflows")
@@ -139,6 +124,8 @@ class MlaPurchaseRequests
      * })
      */
     private $lastWorkflow;
+
+
 
     /**
      * Get id

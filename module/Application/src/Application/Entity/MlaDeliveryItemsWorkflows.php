@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaDeliveryItemsWorkflows
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaDeliveryItemsWorkflows
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class MlaDeliveryItemsWorkflows
     private $status;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="updated_by", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class MlaDeliveryItemsWorkflows
     private $updatedBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class MlaDeliveryItemsWorkflows
     private $updatedOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="confirmed_quantity", type="integer", nullable=true)
@@ -55,7 +50,6 @@ class MlaDeliveryItemsWorkflows
     private $confirmedQuantity;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="rejected_quantity", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class MlaDeliveryItemsWorkflows
     private $rejectedQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,7 +64,6 @@ class MlaDeliveryItemsWorkflows
     private $remarks;
 
     /**
-     *
      * @var \Application\Entity\MlaDelivery
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDelivery")
@@ -82,7 +74,6 @@ class MlaDeliveryItemsWorkflows
     private $delivery;
 
     /**
-     *
      * @var \Application\Entity\MlaDeliveryItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDeliveryItems")
@@ -93,7 +84,6 @@ class MlaDeliveryItemsWorkflows
     private $dnItem;
 
     /**
-     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -102,6 +92,8 @@ class MlaDeliveryItemsWorkflows
      * })
      */
     private $prItem;
+
+
 
     /**
      * Get id

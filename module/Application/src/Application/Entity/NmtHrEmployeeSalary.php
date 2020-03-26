@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEmployeeSalary
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrEmployeeSalary
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="basic_salary", type="decimal", precision=12, scale=2, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrEmployeeSalary
     private $basicSalary;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transporation_allowance", type="decimal", precision=12, scale=2, nullable=true)
@@ -39,7 +36,6 @@ class NmtHrEmployeeSalary
     private $transporationAllowance;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="housing_allowance", type="decimal", precision=12, scale=2, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrEmployeeSalary
     private $housingAllowance;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="nmt_hr_salarycol", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrEmployeeSalary
     private $nmtHrSalarycol;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -66,7 +60,6 @@ class NmtHrEmployeeSalary
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEvaluation
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEvaluation")
@@ -77,7 +70,6 @@ class NmtHrEmployeeSalary
     private $evaluation;
 
     /**
-     *
      * @var \Application\Entity\NmtHrAnnualReview
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrAnnualReview")
@@ -86,6 +78,8 @@ class NmtHrEmployeeSalary
      * })
      */
     private $annualReview;
+
+
 
     /**
      * Get id

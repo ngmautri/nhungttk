@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticlesCategories
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaArticlesCategories
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
@@ -31,7 +29,6 @@ class MlaArticlesCategories
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -39,7 +36,6 @@ class MlaArticlesCategories
     private $description;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="parent_id", type="integer", nullable=true)
@@ -47,7 +43,6 @@ class MlaArticlesCategories
     private $parentId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -55,7 +50,6 @@ class MlaArticlesCategories
     private $path;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class MlaArticlesCategories
     private $pathDepth;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class MlaArticlesCategories
     private $createdOn;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -80,6 +72,8 @@ class MlaArticlesCategories
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

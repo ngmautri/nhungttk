@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEmployeePosition
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrEmployeePosition
     private $id;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -34,7 +32,6 @@ class NmtHrEmployeePosition
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\NmtHrPosition
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrPosition")
@@ -43,6 +40,8 @@ class NmtHrEmployeePosition
      * })
      */
     private $position;
+
+
 
     /**
      * Get id

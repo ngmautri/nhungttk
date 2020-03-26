@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemPurchasing
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryItemPurchasing
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=50, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryItemPurchasing
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=50, nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryItemPurchasing
     private $checksum;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_preferred_vendor", type="boolean", nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryItemPurchasing
     private $isPreferredVendor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_code", type="string", length=45, nullable=false)
@@ -55,7 +50,6 @@ class NmtInventoryItemPurchasing
     private $vendorItemCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_unit", type="string", length=45, nullable=false)
@@ -63,7 +57,6 @@ class NmtInventoryItemPurchasing
     private $vendorItemUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=false)
@@ -71,7 +64,6 @@ class NmtInventoryItemPurchasing
     private $conversionFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="conversion_text", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryItemPurchasing
     private $conversionText;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_unit_price", type="decimal", precision=15, scale=4, nullable=false)
@@ -87,7 +78,6 @@ class NmtInventoryItemPurchasing
     private $vendorUnitPrice;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="price_valid_from", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtInventoryItemPurchasing
     private $priceValidFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="price_valid_to", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtInventoryItemPurchasing
     private $priceValidTo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="delivery_term_id", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtInventoryItemPurchasing
     private $deliveryTermId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="lead_time", type="string", length=50, nullable=true)
@@ -119,7 +106,6 @@ class NmtInventoryItemPurchasing
     private $leadTime;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class NmtInventoryItemPurchasing
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -135,7 +120,6 @@ class NmtInventoryItemPurchasing
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -143,7 +127,6 @@ class NmtInventoryItemPurchasing
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -151,7 +134,6 @@ class NmtInventoryItemPurchasing
     private $lastChangeOn;
 
     /**
-     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -162,7 +144,6 @@ class NmtInventoryItemPurchasing
     private $vendor;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -173,7 +154,6 @@ class NmtInventoryItemPurchasing
     private $currency;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -184,7 +164,6 @@ class NmtInventoryItemPurchasing
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationPmtTerm
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationPmtTerm")
@@ -195,7 +174,6 @@ class NmtInventoryItemPurchasing
     private $pmtTerm;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationPmtMethod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationPmtMethod")
@@ -206,7 +184,6 @@ class NmtInventoryItemPurchasing
     private $pmtMethod;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -217,7 +194,6 @@ class NmtInventoryItemPurchasing
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -226,6 +202,8 @@ class NmtInventoryItemPurchasing
      * })
      */
     private $item;
+
+
 
     /**
      * Get id

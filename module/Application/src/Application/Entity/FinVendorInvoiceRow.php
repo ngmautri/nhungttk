@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinVendorInvoiceRow
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class FinVendorInvoiceRow
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
@@ -31,7 +29,6 @@ class FinVendorInvoiceRow
     private $rowNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class FinVendorInvoiceRow
     private $token;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
@@ -47,7 +43,6 @@ class FinVendorInvoiceRow
     private $quantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit_price", type="decimal", precision=15, scale=4, nullable=false)
@@ -55,7 +50,6 @@ class FinVendorInvoiceRow
     private $unitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="net_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -63,7 +57,6 @@ class FinVendorInvoiceRow
     private $netAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class FinVendorInvoiceRow
     private $unit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_unit", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class FinVendorInvoiceRow
     private $itemUnit;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="conversion_factor", type="float", precision=10, scale=4, nullable=true)
@@ -87,7 +78,6 @@ class FinVendorInvoiceRow
     private $conversionFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converstion_text", type="string", length=45, nullable=true)
@@ -95,7 +85,6 @@ class FinVendorInvoiceRow
     private $converstionText;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="tax_rate", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class FinVendorInvoiceRow
     private $taxRate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=100, nullable=true)
@@ -111,7 +99,6 @@ class FinVendorInvoiceRow
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -119,7 +106,6 @@ class FinVendorInvoiceRow
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -127,7 +113,6 @@ class FinVendorInvoiceRow
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class FinVendorInvoiceRow
     private $lastchangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -143,7 +127,6 @@ class FinVendorInvoiceRow
     private $currentState;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_code", type="string", length=45, nullable=true)
@@ -151,7 +134,6 @@ class FinVendorInvoiceRow
     private $vendorItemCode;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="trace_stock", type="boolean", nullable=true)
@@ -159,7 +141,6 @@ class FinVendorInvoiceRow
     private $traceStock;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="gross_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -167,7 +148,6 @@ class FinVendorInvoiceRow
     private $grossAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="tax_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -175,7 +155,6 @@ class FinVendorInvoiceRow
     private $taxAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="fa_remarks", type="string", length=200, nullable=true)
@@ -183,7 +162,6 @@ class FinVendorInvoiceRow
     private $faRemarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
@@ -191,7 +169,6 @@ class FinVendorInvoiceRow
     private $rowIdentifer;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="discount_rate", type="integer", nullable=true)
@@ -199,7 +176,6 @@ class FinVendorInvoiceRow
     private $discountRate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -207,7 +183,6 @@ class FinVendorInvoiceRow
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="local_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -215,7 +190,6 @@ class FinVendorInvoiceRow
     private $localUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -223,7 +197,6 @@ class FinVendorInvoiceRow
     private $docUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="exw_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -231,7 +204,6 @@ class FinVendorInvoiceRow
     private $exwUnitPrice;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="exw_currency", type="integer", nullable=true)
@@ -239,7 +211,6 @@ class FinVendorInvoiceRow
     private $exwCurrency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="local_net_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -247,7 +218,6 @@ class FinVendorInvoiceRow
     private $localNetAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="local_gross_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -255,7 +225,6 @@ class FinVendorInvoiceRow
     private $localGrossAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -263,7 +232,6 @@ class FinVendorInvoiceRow
     private $docStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -271,7 +239,6 @@ class FinVendorInvoiceRow
     private $workflowStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
@@ -279,7 +246,6 @@ class FinVendorInvoiceRow
     private $transactionType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -287,7 +253,6 @@ class FinVendorInvoiceRow
     private $isDraft;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -295,7 +260,6 @@ class FinVendorInvoiceRow
     private $isPosted;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
@@ -303,7 +267,6 @@ class FinVendorInvoiceRow
     private $transactionStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="total_exw_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -311,7 +274,6 @@ class FinVendorInvoiceRow
     private $totalExwPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="convert_factor_purchase", type="decimal", precision=14, scale=4, nullable=true)
@@ -319,7 +281,6 @@ class FinVendorInvoiceRow
     private $convertFactorPurchase;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -327,7 +288,6 @@ class FinVendorInvoiceRow
     private $convertedPurchaseQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -335,7 +295,6 @@ class FinVendorInvoiceRow
     private $convertedStockQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -343,7 +302,6 @@ class FinVendorInvoiceRow
     private $convertedStockUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -351,7 +309,6 @@ class FinVendorInvoiceRow
     private $convertedStandardQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -359,7 +316,6 @@ class FinVendorInvoiceRow
     private $convertedStandardUnitPrice;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
@@ -367,7 +323,6 @@ class FinVendorInvoiceRow
     private $docQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
@@ -375,7 +330,6 @@ class FinVendorInvoiceRow
     private $docUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -383,7 +337,6 @@ class FinVendorInvoiceRow
     private $convertedPurchaseUnitPrice;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -391,7 +344,6 @@ class FinVendorInvoiceRow
     private $isReversed;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -399,7 +351,6 @@ class FinVendorInvoiceRow
     private $reversalDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -407,7 +358,6 @@ class FinVendorInvoiceRow
     private $reversalReason;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -415,7 +365,6 @@ class FinVendorInvoiceRow
     private $reversalDoc;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
@@ -423,7 +372,6 @@ class FinVendorInvoiceRow
     private $isReversable;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -431,7 +379,6 @@ class FinVendorInvoiceRow
     private $docType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description_text", type="text", length=65535, nullable=true)
@@ -439,7 +386,6 @@ class FinVendorInvoiceRow
     private $descriptionText;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_name", type="string", length=100, nullable=true)
@@ -447,7 +393,6 @@ class FinVendorInvoiceRow
     private $vendorItemName;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -455,7 +400,6 @@ class FinVendorInvoiceRow
     private $reversalBlocked;
 
     /**
-     *
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -466,7 +410,6 @@ class FinVendorInvoiceRow
     private $invoice;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -477,7 +420,6 @@ class FinVendorInvoiceRow
     private $glAccount;
 
     /**
-     *
      * @var \Application\Entity\FinCostCenter
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
@@ -488,7 +430,6 @@ class FinVendorInvoiceRow
     private $costCenter;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -499,7 +440,6 @@ class FinVendorInvoiceRow
     private $docUom;
 
     /**
-     *
      * @var \Application\Entity\NmtProcureGrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
@@ -510,7 +450,6 @@ class FinVendorInvoiceRow
     private $grRow;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -521,7 +460,6 @@ class FinVendorInvoiceRow
     private $item;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -532,7 +470,6 @@ class FinVendorInvoiceRow
     private $prRow;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -543,7 +480,6 @@ class FinVendorInvoiceRow
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -554,7 +490,6 @@ class FinVendorInvoiceRow
     private $warehouse;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -565,7 +500,6 @@ class FinVendorInvoiceRow
     private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
@@ -574,6 +508,8 @@ class FinVendorInvoiceRow
      * })
      */
     private $poRow;
+
+
 
     /**
      * Get id

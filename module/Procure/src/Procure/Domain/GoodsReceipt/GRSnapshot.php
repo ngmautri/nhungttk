@@ -108,6 +108,7 @@ class GRSnapshot extends AbstractDTO
     public $postingPeriod;
 
     public $company;
+    
     /**
      * @return mixed
      */

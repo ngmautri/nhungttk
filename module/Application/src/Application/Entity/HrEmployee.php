@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class HrEmployee
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class HrEmployee
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="employee_code", type="string", length=45, nullable=false)
@@ -31,7 +29,6 @@ class HrEmployee
     private $employeeCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="employee_name", type="string", length=100, nullable=false)
@@ -39,7 +36,6 @@ class HrEmployee
     private $employeeName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="employee_name_local", type="string", length=45, nullable=false)
@@ -47,7 +43,6 @@ class HrEmployee
     private $employeeNameLocal;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="employee_gender", type="string", length=45, nullable=false)
@@ -55,7 +50,6 @@ class HrEmployee
     private $employeeGender;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="employee_dob", type="datetime", nullable=false)
@@ -63,7 +57,6 @@ class HrEmployee
     private $employeeDob = 'CURRENT_TIMESTAMP';
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="employee_last_status_id", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class HrEmployee
     private $employeeLastStatusId;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class HrEmployee
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -87,7 +78,6 @@ class HrEmployee
     private $remarks;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -96,6 +86,8 @@ class HrEmployee
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

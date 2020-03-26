@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfArc
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtWfArc
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="weight", type="integer", nullable=true)
@@ -31,7 +29,6 @@ class NmtWfArc
     private $weight;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="transition_id", type="integer", nullable=false)
@@ -39,7 +36,6 @@ class NmtWfArc
     private $transitionId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="direction", type="string", nullable=true)
@@ -47,7 +43,6 @@ class NmtWfArc
     private $direction;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="arc_type", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtWfArc
     private $arcType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="condition", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtWfArc
     private $condition;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtWfArc
     private $createdBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class NmtWfArc
     private $createdOn;
 
     /**
-     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -90,7 +81,6 @@ class NmtWfArc
     private $workflow;
 
     /**
-     *
      * @var \Application\Entity\NmtWfPlace
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
@@ -99,6 +89,8 @@ class NmtWfArc
      * })
      */
     private $place;
+
+
 
     /**
      * Get id

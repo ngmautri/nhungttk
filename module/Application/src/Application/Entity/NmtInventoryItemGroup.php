@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemGroup
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryItemGroup
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="group_name", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryItemGroup
     private $groupName;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryItemGroup
     private $createdOn;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryItemGroup
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryItemGroup
     private $description;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryItemGroup
     private $token;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -74,7 +67,6 @@ class NmtInventoryItemGroup
     private $inventoryAccount;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -85,7 +77,6 @@ class NmtInventoryItemGroup
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -96,7 +87,6 @@ class NmtInventoryItemGroup
     private $cogsAccount;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -107,7 +97,6 @@ class NmtInventoryItemGroup
     private $allocationAccount;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -118,7 +107,6 @@ class NmtInventoryItemGroup
     private $revenueAccount;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -129,7 +117,6 @@ class NmtInventoryItemGroup
     private $expenseAccount;
 
     /**
-     *
      * @var \Application\Entity\FinCostCenter
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
@@ -140,7 +127,6 @@ class NmtInventoryItemGroup
     private $costCenter;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -149,6 +135,8 @@ class NmtInventoryItemGroup
      * })
      */
     private $defaultWarehouse;
+
+
 
     /**
      * Get id

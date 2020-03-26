@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaSparepartsPurchasing
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaSparepartsPurchasing
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_article_code", type="string", length=100, nullable=true)
@@ -31,7 +29,6 @@ class MlaSparepartsPurchasing
     private $vendorArticleCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_unit", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class MlaSparepartsPurchasing
     private $vendorUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -47,7 +43,6 @@ class MlaSparepartsPurchasing
     private $vendorUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class MlaSparepartsPurchasing
     private $currency;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="price_valid_from", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class MlaSparepartsPurchasing
     private $priceValidFrom;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_preferred", type="boolean", nullable=true)
@@ -71,7 +64,6 @@ class MlaSparepartsPurchasing
     private $isPreferred;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class MlaSparepartsPurchasing
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=3, nullable=true)
@@ -87,7 +78,6 @@ class MlaSparepartsPurchasing
     private $conversionFactor;
 
     /**
-     *
      * @var \Application\Entity\MlaSpareparts
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
@@ -98,7 +88,6 @@ class MlaSparepartsPurchasing
     private $article;
 
     /**
-     *
      * @var \Application\Entity\MlaVendors
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaVendors")
@@ -109,7 +98,6 @@ class MlaSparepartsPurchasing
     private $vendor;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -118,6 +106,8 @@ class MlaSparepartsPurchasing
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

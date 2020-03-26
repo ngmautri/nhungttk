@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPaymentMethod
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaPaymentMethod
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="method", type="string", length=100, nullable=true)
@@ -31,7 +29,6 @@ class MlaPaymentMethod
     private $method;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class MlaPaymentMethod
     private $createdBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -47,12 +43,13 @@ class MlaPaymentMethod
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="employee_last_status", type="string", length=45, nullable=true)
      */
     private $employeeLastStatus;
+
+
 
     /**
      * Get id

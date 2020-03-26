@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaUserPhotos
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaUserPhotos
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=false)
@@ -31,7 +29,6 @@ class MlaUserPhotos
     private $url;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=50, nullable=false)
@@ -39,7 +36,6 @@ class MlaUserPhotos
     private $size = 'small';
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=false)
@@ -47,7 +43,6 @@ class MlaUserPhotos
     private $visibility = '0';
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
@@ -55,7 +50,6 @@ class MlaUserPhotos
     private $comment;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -64,6 +58,8 @@ class MlaUserPhotos
      * })
      */
     private $user;
+
+
 
     /**
      * Get id

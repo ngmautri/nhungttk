@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtPmProject
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtPmProject
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="project_name", type="string", length=100, nullable=false)
@@ -31,7 +29,6 @@ class NmtPmProject
     private $projectName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
@@ -39,7 +36,6 @@ class NmtPmProject
     private $keywords;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class NmtPmProject
     private $description;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtPmProject
     private $startDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtPmProject
     private $endDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtPmProject
     private $status;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtPmProject
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -87,7 +78,6 @@ class NmtPmProject
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtPmProject
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtPmProject
     private $lastChangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtPmProject
     private $checksum;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -119,7 +106,6 @@ class NmtPmProject
     private $token;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -130,7 +116,6 @@ class NmtPmProject
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -139,6 +124,8 @@ class NmtPmProject
      * })
      */
     private $lastChangeBy;
+
+
 
     /**
      * Get id

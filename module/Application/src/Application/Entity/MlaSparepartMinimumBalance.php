@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaSparepartMinimumBalance
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaSparepartMinimumBalance
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="minimum_balance", type="integer", nullable=false)
@@ -31,7 +29,6 @@ class MlaSparepartMinimumBalance
     private $minimumBalance;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -39,7 +36,6 @@ class MlaSparepartMinimumBalance
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class MlaSparepartMinimumBalance
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class MlaSparepartMinimumBalance
     private $status;
 
     /**
-     *
      * @var \Application\Entity\MlaSpareparts
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
@@ -66,7 +60,6 @@ class MlaSparepartMinimumBalance
     private $sparepart;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -75,6 +68,8 @@ class MlaSparepartMinimumBalance
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

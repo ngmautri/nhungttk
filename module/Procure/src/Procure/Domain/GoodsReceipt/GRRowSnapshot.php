@@ -146,6 +146,13 @@ class GRRowSnapshot extends AbstractDTO
     public $item;
 
     public $poRow;
+    
+    public $lastchangeBy;
+    
+    public $convertFactorPurchase;
+    
+    public $docVersion;
+    
 
     /**
      *
@@ -758,4 +765,28 @@ class GRRowSnapshot extends AbstractDTO
     {
         return $this->poRow;
     }
+    /**
+     * @return mixed
+     */
+    public function getLastchangeBy()
+    {
+        return $this->lastchangeBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConvertFactorPurchase()
+    {
+        return $this->convertFactorPurchase;
+    }
+    /**
+     * @return mixed
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+
 }

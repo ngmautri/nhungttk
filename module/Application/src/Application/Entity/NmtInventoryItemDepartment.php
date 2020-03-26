@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemDepartment
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryItemDepartment
     private $id;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryItemDepartment
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryItemDepartment
     private $createdOn;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationDepartment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
@@ -50,7 +46,6 @@ class NmtInventoryItemDepartment
     private $department;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -61,7 +56,6 @@ class NmtInventoryItemDepartment
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -70,6 +64,8 @@ class NmtInventoryItemDepartment
      * })
      */
     private $item;
+
+
 
     /**
      * Get id

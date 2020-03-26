@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrLog
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrLog
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrLog
     private $token;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtHrLog
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrLog
     private $remarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="triggeredBy", type="string", length=255, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrLog
     private $triggeredby;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="priority", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrLog
     private $priority;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="priority_name", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtHrLog
     private $priorityName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="message", type="text", length=65535, nullable=true)
@@ -79,7 +71,6 @@ class NmtHrLog
     private $message;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="extra_info", type="text", length=65535, nullable=true)
@@ -87,7 +78,6 @@ class NmtHrLog
     private $extraInfo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="event_name", type="string", length=100, nullable=true)
@@ -95,7 +85,6 @@ class NmtHrLog
     private $eventName;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="entity_id", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class NmtHrLog
     private $entityId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="entity_class", type="string", length=150, nullable=true)
@@ -111,7 +99,6 @@ class NmtHrLog
     private $entityClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="entity_token", type="string", length=45, nullable=true)
@@ -119,7 +106,6 @@ class NmtHrLog
     private $entityToken;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -130,7 +116,6 @@ class NmtHrLog
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -139,6 +124,8 @@ class NmtHrLog
      * })
      */
     private $company;
+
+
 
     /**
      * Get id

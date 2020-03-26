@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEmployeeDepartment
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrEmployeeDepartment
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="member_valid_from", type="datetime", nullable=true)
@@ -31,7 +29,6 @@ class NmtHrEmployeeDepartment
     private $memberValidFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="member_valid_to", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtHrEmployeeDepartment
     private $memberValidTo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class NmtHrEmployeeDepartment
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtHrEmployeeDepartment
     private $lastChangeOn;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -66,7 +60,6 @@ class NmtHrEmployeeDepartment
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationDepartment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
@@ -77,7 +70,6 @@ class NmtHrEmployeeDepartment
     private $department;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -88,7 +80,6 @@ class NmtHrEmployeeDepartment
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -97,6 +88,8 @@ class NmtHrEmployeeDepartment
      * })
      */
     private $lastChangeBy;
+
+
 
     /**
      * Get id

@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinJe
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class FinJe
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class FinJe
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_type", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class FinJe
     private $jeType;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class FinJe
     private $postingDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="document_date", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class FinJe
     private $documentDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_reference", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class FinJe
     private $jeReference;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_note", type="string", length=255, nullable=true)
@@ -71,7 +64,6 @@ class FinJe
     private $jeNote;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_remarks", type="text", length=65535, nullable=true)
@@ -79,7 +71,6 @@ class FinJe
     private $jeRemarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=14, scale=4, nullable=true)
@@ -87,7 +78,6 @@ class FinJe
     private $exchangeRate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class FinJe
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -103,7 +92,6 @@ class FinJe
     private $docType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class FinJe
     private $transactionStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -119,7 +106,6 @@ class FinJe
     private $workflowStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class FinJe
     private $transactionType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="je_status", type="string", length=45, nullable=true)
@@ -135,7 +120,6 @@ class FinJe
     private $jeStatus;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -143,7 +127,6 @@ class FinJe
     private $lastChangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -151,7 +134,6 @@ class FinJe
     private $sysNumber;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -159,7 +141,6 @@ class FinJe
     private $revisionNo;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -167,7 +148,6 @@ class FinJe
     private $sourceId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
@@ -175,7 +155,6 @@ class FinJe
     private $sourceClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_token", type="string", length=45, nullable=true)
@@ -183,7 +162,6 @@ class FinJe
     private $sourceToken;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -191,7 +169,6 @@ class FinJe
     private $isReversed;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -199,7 +176,6 @@ class FinJe
     private $reversalDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="reversed_doc", type="integer", nullable=true)
@@ -207,7 +183,6 @@ class FinJe
     private $reversedDoc;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -215,7 +190,6 @@ class FinJe
     private $reversalBlocked;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -226,7 +200,6 @@ class FinJe
     private $currency;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -237,7 +210,6 @@ class FinJe
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -248,7 +220,6 @@ class FinJe
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -259,7 +230,6 @@ class FinJe
     private $localCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -270,7 +240,6 @@ class FinJe
     private $sysCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -281,7 +250,6 @@ class FinJe
     private $docCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -290,6 +258,8 @@ class FinJe
      * })
      */
     private $postingPeriod;
+
+
 
     /**
      * Get id

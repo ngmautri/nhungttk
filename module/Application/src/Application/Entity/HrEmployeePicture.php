@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class HrEmployeePicture
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class HrEmployeePicture
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
@@ -31,7 +29,6 @@ class HrEmployeePicture
     private $url;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class HrEmployeePicture
     private $filetype;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=50, nullable=true)
@@ -47,7 +43,6 @@ class HrEmployeePicture
     private $size;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -55,7 +50,6 @@ class HrEmployeePicture
     private $visibility;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="comments", type="text", nullable=true)
@@ -63,7 +57,6 @@ class HrEmployeePicture
     private $comments;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="uploaded_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class HrEmployeePicture
     private $uploadedOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=200, nullable=true)
@@ -79,7 +71,6 @@ class HrEmployeePicture
     private $filename;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -87,7 +78,6 @@ class HrEmployeePicture
     private $folder;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -95,7 +85,6 @@ class HrEmployeePicture
     private $checksum;
 
     /**
-     *
      * @var \Application\Entity\HrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\HrEmployee")
@@ -104,6 +93,8 @@ class HrEmployeePicture
      * })
      */
     private $employee;
+
+
 
     /**
      * Get id

@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtProcureWfToken
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtProcureWfToken
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="workflow_id", type="integer", nullable=true)
@@ -31,7 +29,6 @@ class NmtProcureWfToken
     private $workflowId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_name", type="string", length=45, nullable=false)
@@ -39,7 +36,6 @@ class NmtProcureWfToken
     private $workflowName;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="place_id", type="integer", nullable=true)
@@ -47,7 +43,6 @@ class NmtProcureWfToken
     private $placeId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="place_name", type="string", length=45, nullable=false)
@@ -55,7 +50,6 @@ class NmtProcureWfToken
     private $placeName;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
@@ -63,12 +57,13 @@ class NmtProcureWfToken
     private $enabledDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="nmt_procure_wf_tokencol", type="string", length=45, nullable=true)
      */
     private $nmtProcureWfTokencol;
+
+
 
     /**
      * Get id

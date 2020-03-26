@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemSerial
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryItemSerial
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryItemSerial
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="serial_number", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryItemSerial
     private $serialNumber;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryItemSerial
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryItemSerial
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryItemSerial
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtInventoryItemSerial
     private $consumedOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_serial_number", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryItemSerial
     private $mfgSerialNumber;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_date", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class NmtInventoryItemSerial
     private $mfgDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="lot_number", type="string", length=45, nullable=true)
@@ -95,7 +85,6 @@ class NmtInventoryItemSerial
     private $lotNumber;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_warranty_start", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtInventoryItemSerial
     private $mfgWarrantyStart;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_warranty_end", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class NmtInventoryItemSerial
     private $mfgWarrantyEnd;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_name", type="string", length=100, nullable=true)
@@ -119,7 +106,6 @@ class NmtInventoryItemSerial
     private $itemName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class NmtInventoryItemSerial
     private $location;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="category", type="string", length=45, nullable=true)
@@ -135,7 +120,6 @@ class NmtInventoryItemSerial
     private $category;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_name", type="string", length=100, nullable=true)
@@ -143,7 +127,6 @@ class NmtInventoryItemSerial
     private $mfgName;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -151,7 +134,6 @@ class NmtInventoryItemSerial
     private $lastchangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -159,7 +141,6 @@ class NmtInventoryItemSerial
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -167,7 +148,6 @@ class NmtInventoryItemSerial
     private $sysNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="serial_number_1", type="string", length=45, nullable=true)
@@ -175,7 +155,6 @@ class NmtInventoryItemSerial
     private $serialNumber1;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="serial_number_2", type="string", length=45, nullable=true)
@@ -183,7 +162,6 @@ class NmtInventoryItemSerial
     private $serialNumber2;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="serial_number_3", type="string", length=45, nullable=true)
@@ -191,7 +169,6 @@ class NmtInventoryItemSerial
     private $serialNumber3;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_model", type="string", length=45, nullable=true)
@@ -199,7 +176,6 @@ class NmtInventoryItemSerial
     private $mfgModel;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_model1", type="string", length=45, nullable=true)
@@ -207,7 +183,6 @@ class NmtInventoryItemSerial
     private $mfgModel1;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_model2", type="string", length=45, nullable=true)
@@ -215,7 +190,6 @@ class NmtInventoryItemSerial
     private $mfgModel2;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_description", type="string", length=255, nullable=true)
@@ -223,7 +197,6 @@ class NmtInventoryItemSerial
     private $mfgDescription;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="capacity", type="integer", nullable=true)
@@ -231,7 +204,6 @@ class NmtInventoryItemSerial
     private $capacity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="erp_asset_number", type="string", length=45, nullable=true)
@@ -239,7 +211,6 @@ class NmtInventoryItemSerial
     private $erpAssetNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="erp_asset_number1", type="string", length=45, nullable=true)
@@ -247,7 +218,6 @@ class NmtInventoryItemSerial
     private $erpAssetNumber1;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -255,7 +225,6 @@ class NmtInventoryItemSerial
     private $isReversed;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -263,7 +232,6 @@ class NmtInventoryItemSerial
     private $reversalDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -271,7 +239,6 @@ class NmtInventoryItemSerial
     private $reversalDoc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -279,7 +246,6 @@ class NmtInventoryItemSerial
     private $reversalReason;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
@@ -287,7 +253,6 @@ class NmtInventoryItemSerial
     private $isReversable;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -298,7 +263,6 @@ class NmtInventoryItemSerial
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -309,7 +273,6 @@ class NmtInventoryItemSerial
     private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -320,7 +283,6 @@ class NmtInventoryItemSerial
     private $item;
 
     /**
-     *
      * @var \Application\Entity\NmtInventorySerial
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventorySerial")
@@ -331,7 +293,6 @@ class NmtInventoryItemSerial
     private $serial;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryTrx
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
@@ -342,7 +303,6 @@ class NmtInventoryItemSerial
     private $inventoryTrx;
 
     /**
-     *
      * @var \Application\Entity\FinVendorInvoiceRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
@@ -353,7 +313,6 @@ class NmtInventoryItemSerial
     private $apRow;
 
     /**
-     *
      * @var \Application\Entity\NmtProcureGrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
@@ -364,7 +323,6 @@ class NmtInventoryItemSerial
     private $grRow;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCountry
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
@@ -373,6 +331,8 @@ class NmtInventoryItemSerial
      * })
      */
     private $originCountry;
+
+
 
     /**
      * Get id

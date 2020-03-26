@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryMv
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryMv
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryMv
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryMv
     private $currencyIso3;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryMv
     private $exchangeRate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryMv
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryMv
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtInventoryMv
     private $currentState;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryMv
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class NmtInventoryMv
     private $trxType;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="lastchange_by", type="integer", nullable=true)
@@ -95,7 +85,6 @@ class NmtInventoryMv
     private $lastchangeBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtInventoryMv
     private $lastchangeOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class NmtInventoryMv
     private $postingDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
@@ -119,7 +106,6 @@ class NmtInventoryMv
     private $sapDoc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class NmtInventoryMv
     private $contractNo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtInventoryMv
     private $contractDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
@@ -143,7 +127,6 @@ class NmtInventoryMv
     private $quotationNo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
@@ -151,7 +134,6 @@ class NmtInventoryMv
     private $quotationDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -159,7 +141,6 @@ class NmtInventoryMv
     private $sysNumber;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -167,7 +148,6 @@ class NmtInventoryMv
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="delivery_mode", type="string", length=45, nullable=true)
@@ -175,7 +155,6 @@ class NmtInventoryMv
     private $deliveryMode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
@@ -183,7 +162,6 @@ class NmtInventoryMv
     private $incoterm;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
@@ -191,7 +169,6 @@ class NmtInventoryMv
     private $incotermPlace;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
@@ -199,7 +176,6 @@ class NmtInventoryMv
     private $paymentTerm;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", length=45, nullable=true)
@@ -207,7 +183,6 @@ class NmtInventoryMv
     private $paymentMethod;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -215,7 +190,6 @@ class NmtInventoryMv
     private $docStatus;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -223,7 +197,6 @@ class NmtInventoryMv
     private $isDraft;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -231,7 +204,6 @@ class NmtInventoryMv
     private $workflowStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -239,7 +211,6 @@ class NmtInventoryMv
     private $transactionStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="movement_type", type="string", length=10, nullable=false)
@@ -247,7 +218,6 @@ class NmtInventoryMv
     private $movementType;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="movement_date", type="datetime", nullable=true)
@@ -255,7 +225,6 @@ class NmtInventoryMv
     private $movementDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="journal_memo", type="string", length=255, nullable=true)
@@ -263,7 +232,6 @@ class NmtInventoryMv
     private $journalMemo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="movement_flow", type="string", length=10, nullable=false)
@@ -271,7 +239,6 @@ class NmtInventoryMv
     private $movementFlow;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="movement_type_memo", type="text", length=65535, nullable=true)
@@ -279,7 +246,6 @@ class NmtInventoryMv
     private $movementTypeMemo;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -287,7 +253,6 @@ class NmtInventoryMv
     private $isPosted;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -295,7 +260,6 @@ class NmtInventoryMv
     private $isReversed;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -303,7 +267,6 @@ class NmtInventoryMv
     private $reversalDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -311,7 +274,6 @@ class NmtInventoryMv
     private $reversalDoc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -319,7 +281,6 @@ class NmtInventoryMv
     private $reversalReason;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
@@ -327,7 +288,6 @@ class NmtInventoryMv
     private $isReversable;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -335,7 +295,6 @@ class NmtInventoryMv
     private $docType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_transfer_transaction", type="boolean", nullable=true)
@@ -343,7 +302,6 @@ class NmtInventoryMv
     private $isTransferTransaction;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -351,7 +309,6 @@ class NmtInventoryMv
     private $reversalBlocked;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -359,7 +316,6 @@ class NmtInventoryMv
     private $uuid;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -370,7 +326,6 @@ class NmtInventoryMv
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -381,7 +336,6 @@ class NmtInventoryMv
     private $company;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -392,7 +346,6 @@ class NmtInventoryMv
     private $warehouse;
 
     /**
-     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -403,7 +356,6 @@ class NmtInventoryMv
     private $postingPeriod;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -414,7 +366,6 @@ class NmtInventoryMv
     private $currency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -425,7 +376,6 @@ class NmtInventoryMv
     private $docCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -436,7 +386,6 @@ class NmtInventoryMv
     private $localCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -447,7 +396,6 @@ class NmtInventoryMv
     private $targetWarehouse;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouseLocation
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouseLocation")
@@ -458,7 +406,6 @@ class NmtInventoryMv
     private $sourceLocation;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouseLocation
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouseLocation")
@@ -467,6 +414,8 @@ class NmtInventoryMv
      * })
      */
     private $tartgetLocation;
+
+
 
     /**
      * Get id

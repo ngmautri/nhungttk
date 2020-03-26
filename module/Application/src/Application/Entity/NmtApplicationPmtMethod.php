@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationPmtMethod
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationPmtMethod
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="method_code", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtApplicationPmtMethod
     private $methodCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="method_name", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationPmtMethod
     private $methodName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationPmtMethod
     private $description;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationPmtMethod
     private $status;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationPmtMethod
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationPmtMethod
     private $lastchangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationPmtMethod
     private $revisionNo;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -90,7 +81,6 @@ class NmtApplicationPmtMethod
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -101,7 +91,6 @@ class NmtApplicationPmtMethod
     private $glAccount;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -112,7 +101,6 @@ class NmtApplicationPmtMethod
     private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -123,7 +111,6 @@ class NmtApplicationPmtMethod
     private $glAccount1;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -132,6 +119,8 @@ class NmtApplicationPmtMethod
      * })
      */
     private $company;
+
+
 
     /**
      * Get id

@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -6,14 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureGrRow
  *
- * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK12_idx", columns={"GL_account_id"}), @ORM\Index(name="nmt_procure_gr_row_FK13_idx", columns={"cost_center_id"}), @ORM\Index(name="nmt_procure_gr_row_FK14_idx", columns={"doc_uom"})})
+ * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK12_idx", columns={"GL_account_id"}), @ORM\Index(name="nmt_procure_gr_row_FK13_idx", columns={"cost_center_id"}), @ORM\Index(name="nmt_procure_gr_row_FK14_idx", columns={"doc_uom"})})
  * @ORM\Entity
  */
 class NmtProcureGrRow
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtProcureGrRow
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtProcureGrRow
     private $token;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class NmtProcureGrRow
     private $rowNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtProcureGrRow
     private $rowIdentifer;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
@@ -55,7 +50,6 @@ class NmtProcureGrRow
     private $quantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit_price", type="decimal", precision=15, scale=4, nullable=false)
@@ -63,7 +57,6 @@ class NmtProcureGrRow
     private $unitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="net_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -71,7 +64,6 @@ class NmtProcureGrRow
     private $netAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtProcureGrRow
     private $unit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_unit", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class NmtProcureGrRow
     private $itemUnit;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="conversion_factor", type="float", precision=10, scale=4, nullable=true)
@@ -95,7 +85,6 @@ class NmtProcureGrRow
     private $conversionFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converstion_text", type="string", length=45, nullable=true)
@@ -103,7 +92,6 @@ class NmtProcureGrRow
     private $converstionText;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="tax_rate", type="integer", nullable=true)
@@ -111,7 +99,6 @@ class NmtProcureGrRow
     private $taxRate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -119,7 +106,6 @@ class NmtProcureGrRow
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -127,7 +113,6 @@ class NmtProcureGrRow
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtProcureGrRow
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -143,7 +127,6 @@ class NmtProcureGrRow
     private $lastchangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -151,7 +134,6 @@ class NmtProcureGrRow
     private $currentState;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_code", type="string", length=45, nullable=true)
@@ -159,7 +141,6 @@ class NmtProcureGrRow
     private $vendorItemCode;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="trace_stock", type="boolean", nullable=true)
@@ -167,7 +148,6 @@ class NmtProcureGrRow
     private $traceStock;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="gross_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -175,7 +155,6 @@ class NmtProcureGrRow
     private $grossAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="tax_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -183,7 +162,6 @@ class NmtProcureGrRow
     private $taxAmount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="fa_remarks", type="string", length=200, nullable=true)
@@ -191,7 +169,6 @@ class NmtProcureGrRow
     private $faRemarks;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="discount_rate", type="integer", nullable=true)
@@ -199,7 +176,6 @@ class NmtProcureGrRow
     private $discountRate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -207,7 +183,6 @@ class NmtProcureGrRow
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="target_object", type="string", length=255, nullable=true)
@@ -215,7 +190,6 @@ class NmtProcureGrRow
     private $targetObject;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_object", type="string", length=255, nullable=true)
@@ -223,7 +197,6 @@ class NmtProcureGrRow
     private $sourceObject;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="target_object_id", type="integer", nullable=true)
@@ -231,7 +204,6 @@ class NmtProcureGrRow
     private $targetObjectId;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="source_object_id", type="integer", nullable=true)
@@ -239,7 +211,6 @@ class NmtProcureGrRow
     private $sourceObjectId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -247,7 +218,6 @@ class NmtProcureGrRow
     private $docStatus;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -255,7 +225,6 @@ class NmtProcureGrRow
     private $isDraft;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -263,7 +232,6 @@ class NmtProcureGrRow
     private $isPosted;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
@@ -271,7 +239,6 @@ class NmtProcureGrRow
     private $grDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -279,7 +246,6 @@ class NmtProcureGrRow
     private $workflowStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_type", type="string", length=30, nullable=true)
@@ -287,7 +253,6 @@ class NmtProcureGrRow
     private $transactionType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
@@ -295,7 +260,6 @@ class NmtProcureGrRow
     private $transactionStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="exw_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -303,7 +267,6 @@ class NmtProcureGrRow
     private $exwUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="total_exw_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -311,7 +274,6 @@ class NmtProcureGrRow
     private $totalExwPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=15, scale=4, nullable=true)
@@ -319,7 +281,6 @@ class NmtProcureGrRow
     private $convertedPurchaseQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=15, scale=4, nullable=true)
@@ -327,7 +288,6 @@ class NmtProcureGrRow
     private $convertedStandardQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -335,7 +295,6 @@ class NmtProcureGrRow
     private $convertedStandardUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=15, scale=4, nullable=true)
@@ -343,7 +302,6 @@ class NmtProcureGrRow
     private $convertedStockQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -351,7 +309,6 @@ class NmtProcureGrRow
     private $convertedStockUnitPrice;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
@@ -359,7 +316,6 @@ class NmtProcureGrRow
     private $docQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -367,7 +323,6 @@ class NmtProcureGrRow
     private $docUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
@@ -375,7 +330,6 @@ class NmtProcureGrRow
     private $docUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -383,7 +337,6 @@ class NmtProcureGrRow
     private $convertedPurchaseUnitPrice;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -391,7 +344,6 @@ class NmtProcureGrRow
     private $isReversed;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -399,7 +351,6 @@ class NmtProcureGrRow
     private $reversalDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -407,7 +358,6 @@ class NmtProcureGrRow
     private $reversalReason;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -415,7 +365,6 @@ class NmtProcureGrRow
     private $reversalDoc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", nullable=true)
@@ -423,7 +372,6 @@ class NmtProcureGrRow
     private $flow;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -431,7 +379,6 @@ class NmtProcureGrRow
     private $docType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_name", type="string", length=100, nullable=true)
@@ -439,7 +386,6 @@ class NmtProcureGrRow
     private $vendorItemName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description_text", type="text", length=65535, nullable=true)
@@ -447,7 +393,6 @@ class NmtProcureGrRow
     private $descriptionText;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -455,7 +400,6 @@ class NmtProcureGrRow
     private $reversalBlocked;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
@@ -463,7 +407,20 @@ class NmtProcureGrRow
     private $uuid;
 
     /**
+     * @var integer
      *
+     * @ORM\Column(name="convert_factor_purchase", type="integer", nullable=true)
+     */
+    private $convertFactorPurchase;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -474,7 +431,6 @@ class NmtProcureGrRow
     private $invoice;
 
     /**
-     *
      * @var \Application\Entity\NmtProcureGr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGr")
@@ -485,7 +441,6 @@ class NmtProcureGrRow
     private $gr;
 
     /**
-     *
      * @var \Application\Entity\FinVendorInvoiceRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
@@ -496,7 +451,6 @@ class NmtProcureGrRow
     private $apInvoiceRow;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -507,7 +461,6 @@ class NmtProcureGrRow
     private $glAccount;
 
     /**
-     *
      * @var \Application\Entity\FinCostCenter
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
@@ -518,7 +471,6 @@ class NmtProcureGrRow
     private $costCenter;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -529,7 +481,6 @@ class NmtProcureGrRow
     private $docUom;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -540,7 +491,6 @@ class NmtProcureGrRow
     private $prRow;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -551,7 +501,6 @@ class NmtProcureGrRow
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -562,18 +511,16 @@ class NmtProcureGrRow
     private $warehouse;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lastchanged_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
      * })
      */
-    private $lastchangedBy;
+    private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -584,7 +531,6 @@ class NmtProcureGrRow
     private $item;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
@@ -593,6 +539,8 @@ class NmtProcureGrRow
      * })
      */
     private $poRow;
+
+
 
     /**
      * Get id
@@ -1925,6 +1873,54 @@ class NmtProcureGrRow
     }
 
     /**
+     * Set convertFactorPurchase
+     *
+     * @param integer $convertFactorPurchase
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setConvertFactorPurchase($convertFactorPurchase)
+    {
+        $this->convertFactorPurchase = $convertFactorPurchase;
+
+        return $this;
+    }
+
+    /**
+     * Get convertFactorPurchase
+     *
+     * @return integer
+     */
+    public function getConvertFactorPurchase()
+    {
+        return $this->convertFactorPurchase;
+    }
+
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -2141,27 +2137,27 @@ class NmtProcureGrRow
     }
 
     /**
-     * Set lastchangedBy
+     * Set lastchangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastchangedBy
+     * @param \Application\Entity\MlaUsers $lastchangeBy
      *
      * @return NmtProcureGrRow
      */
-    public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
-        $this->lastchangedBy = $lastchangedBy;
+        $this->lastchangeBy = $lastchangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastchangedBy
+     * Get lastchangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastchangedBy()
+    public function getLastchangeBy()
     {
-        return $this->lastchangedBy;
+        return $this->lastchangeBy;
     }
 
     /**

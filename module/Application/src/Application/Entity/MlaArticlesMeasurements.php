@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticlesMeasurements
 {
-
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="weight", type="string", length=45, nullable=true)
@@ -21,7 +20,6 @@ class MlaArticlesMeasurements
     private $weight;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="length", type="string", length=45, nullable=true)
@@ -29,7 +27,6 @@ class MlaArticlesMeasurements
     private $length;
 
     /**
-     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\Id
@@ -40,6 +37,8 @@ class MlaArticlesMeasurements
      * })
      */
     private $article;
+
+
 
     /**
      * Set weight

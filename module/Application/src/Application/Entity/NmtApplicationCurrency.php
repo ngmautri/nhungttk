@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationCurrency
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationCurrency
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency", type="string", length=3, nullable=false)
@@ -31,7 +29,6 @@ class NmtApplicationCurrency
     private $currency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency_numeric_code", type="string", length=3, nullable=false)
@@ -39,7 +36,6 @@ class NmtApplicationCurrency
     private $currencyNumericCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=100, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationCurrency
     private $description;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="minor_unit", type="integer", nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationCurrency
     private $minorUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="entity", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationCurrency
     private $entity;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="country_id", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationCurrency
     private $countryId;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationCurrency
     private $status;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -87,7 +78,6 @@ class NmtApplicationCurrency
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtApplicationCurrency
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="decimal_places", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class NmtApplicationCurrency
     private $decimalPlaces;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -111,7 +99,6 @@ class NmtApplicationCurrency
     private $uuid;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -120,6 +107,8 @@ class NmtApplicationCurrency
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

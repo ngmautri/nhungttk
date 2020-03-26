@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrLeaveReason
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrLeaveReason
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrLeaveReason
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="leave_reason", type="string", length=60, nullable=false)
@@ -39,7 +36,6 @@ class NmtHrLeaveReason
     private $leaveReason;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="leave_reason_local", type="string", length=60, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrLeaveReason
     private $leaveReasonLocal;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrLeaveReason
     private $description;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrLeaveReason
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtHrLeaveReason
     private $validFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class NmtHrLeaveReason
     private $validTo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="conditions", type="string", length=80, nullable=true)
@@ -87,7 +78,6 @@ class NmtHrLeaveReason
     private $conditions;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="legal_reference", type="string", length=80, nullable=true)
@@ -95,7 +85,6 @@ class NmtHrLeaveReason
     private $legalReference;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtHrLeaveReason
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class NmtHrLeaveReason
     private $lastchangeOn;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -122,7 +109,6 @@ class NmtHrLeaveReason
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -131,6 +117,8 @@ class NmtHrLeaveReason
      * })
      */
     private $lastchangeBy;
+
+
 
     /**
      * Get id

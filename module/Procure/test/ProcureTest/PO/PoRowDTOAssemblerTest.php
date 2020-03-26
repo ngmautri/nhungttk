@@ -4,6 +4,7 @@ namespace ProcureTest\PR;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Zend\Stdlib\StringWrapper\Intl;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\DTO\Po\PORowDTOAssembler;
 
 class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -24,9 +25,8 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            //PORowDTOAssembler::createStoreMapping();
-            $currencies = Intl::getCurrencyBundle()->getCurrencyNames();
-            var_dump($currencies);
+            $test = PORowDTOAssembler::findMissingProperties();
+            var_dump($test);
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

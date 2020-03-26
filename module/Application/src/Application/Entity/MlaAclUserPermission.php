@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAclUserPermission
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaAclUserPermission
     private $id;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -34,7 +32,6 @@ class MlaAclUserPermission
     private $user;
 
     /**
-     *
      * @var \Application\Entity\MlaAclPermissions
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAclPermissions")
@@ -43,6 +40,8 @@ class MlaAclUserPermission
      * })
      */
     private $permission;
+
+
 
     /**
      * Get id

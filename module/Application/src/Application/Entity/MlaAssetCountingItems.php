@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAssetCountingItems
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaAssetCountingItems
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=100, nullable=true)
@@ -31,7 +29,6 @@ class MlaAssetCountingItems
     private $location;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="counted_by", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class MlaAssetCountingItems
     private $countedBy;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="verified_by", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class MlaAssetCountingItems
     private $verifiedBy;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="acknowledged_by", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class MlaAssetCountingItems
     private $acknowledgedBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="counted_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class MlaAssetCountingItems
     private $countedOn;
 
     /**
-     *
      * @var \Application\Entity\MlaAssetCounting
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAssetCounting")
@@ -74,7 +67,6 @@ class MlaAssetCountingItems
     private $counting;
 
     /**
-     *
      * @var \Application\Entity\MlaAsset
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
@@ -83,6 +75,8 @@ class MlaAssetCountingItems
      * })
      */
     private $asset;
+
+
 
     /**
      * Get id

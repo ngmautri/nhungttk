@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrSalary
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrSalary
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrSalary
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_type", type="string", nullable=true)
@@ -39,7 +36,6 @@ class NmtHrSalary
     private $salaryType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_code", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrSalary
     private $salaryCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_name", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrSalary
     private $salaryName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_amount", type="decimal", precision=14, scale=6, nullable=false)
@@ -63,7 +57,6 @@ class NmtHrSalary
     private $salaryAmount;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_decorator", type="boolean", nullable=true)
@@ -71,7 +64,6 @@ class NmtHrSalary
     private $isDecorator;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_pit_payable", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtHrSalary
     private $isPitPayable;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_sso_payable", type="boolean", nullable=true)
@@ -87,7 +78,6 @@ class NmtHrSalary
     private $isSsoPayable;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_payable", type="boolean", nullable=true)
@@ -95,7 +85,6 @@ class NmtHrSalary
     private $isPayable;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtHrSalary
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="curent_state", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtHrSalary
     private $curentState;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="decorator_factory", type="string", length=255, nullable=true)
@@ -119,7 +106,6 @@ class NmtHrSalary
     private $decoratorFactory;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_from", type="datetime", nullable=true)
@@ -127,7 +113,6 @@ class NmtHrSalary
     private $effectiveFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_to", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtHrSalary
     private $effectiveTo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -143,7 +127,6 @@ class NmtHrSalary
     private $lastChangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -151,7 +134,6 @@ class NmtHrSalary
     private $revisionNo;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -159,7 +141,6 @@ class NmtHrSalary
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_frequency", type="string", length=45, nullable=true)
@@ -167,7 +148,6 @@ class NmtHrSalary
     private $paymentFrequency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="salary_factory", type="string", length=255, nullable=true)
@@ -175,7 +155,6 @@ class NmtHrSalary
     private $salaryFactory;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -186,7 +165,6 @@ class NmtHrSalary
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\NmtHrContract
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrContract")
@@ -197,7 +175,6 @@ class NmtHrSalary
     private $contract;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -208,7 +185,6 @@ class NmtHrSalary
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtHrSalaryDefault
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrSalaryDefault")
@@ -219,7 +195,6 @@ class NmtHrSalary
     private $defaultSalary;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -228,6 +203,8 @@ class NmtHrSalary
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

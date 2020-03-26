@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPoItem
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaPoItem
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="po_id", type="integer", nullable=true)
@@ -31,7 +29,6 @@ class MlaPoItem
     private $poId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=true)
@@ -39,7 +36,6 @@ class MlaPoItem
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=100, nullable=true)
@@ -47,7 +43,6 @@ class MlaPoItem
     private $code;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class MlaPoItem
     private $unit;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="price", type="float", precision=10, scale=0, nullable=true)
@@ -63,7 +57,6 @@ class MlaPoItem
     private $price;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency", type="string", length=3, nullable=true)
@@ -71,7 +64,6 @@ class MlaPoItem
     private $currency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", nullable=true)
@@ -79,7 +71,6 @@ class MlaPoItem
     private $paymentMethod;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="created_on", type="string", length=45, nullable=true)
@@ -87,7 +78,6 @@ class MlaPoItem
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -95,7 +85,6 @@ class MlaPoItem
     private $remarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -103,7 +92,6 @@ class MlaPoItem
     private $status;
 
     /**
-     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -114,7 +102,6 @@ class MlaPoItem
     private $prItem;
 
     /**
-     *
      * @var \Application\Entity\MlaVendors
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaVendors")
@@ -125,7 +112,6 @@ class MlaPoItem
     private $vendor;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -134,6 +120,8 @@ class MlaPoItem
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

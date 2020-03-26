@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEmployeeBank
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrEmployeeBank
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="beneficiary_name", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrEmployeeBank
     private $beneficiaryName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="bank_account", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtHrEmployeeBank
     private $bankAccount;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="bank_name", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrEmployeeBank
     private $bankName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="swift_code", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrEmployeeBank
     private $swiftCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="iban", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtHrEmployeeBank
     private $iban;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="bank_address", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtHrEmployeeBank
     private $bankAddress;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="opened_by_mascot", type="boolean", nullable=true)
@@ -79,7 +71,6 @@ class NmtHrEmployeeBank
     private $openedByMascot;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class NmtHrEmployeeBank
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtHrEmployeeBank
     private $lastChangeOn;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -106,7 +95,6 @@ class NmtHrEmployeeBank
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -117,7 +105,6 @@ class NmtHrEmployeeBank
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -126,6 +113,8 @@ class NmtHrEmployeeBank
      * })
      */
     private $lastChangeBy;
+
+
 
     /**
      * Get id

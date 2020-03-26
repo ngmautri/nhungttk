@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrPayroll
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrPayroll
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="period_name", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrPayroll
     private $periodName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="employee_name", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtHrPayroll
     private $employeeName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtHrPayroll
     private $currentState;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtHrPayroll
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class NmtHrPayroll
     private $createdBy;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtHrPayroll
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_gross", type="decimal", precision=14, scale=4, nullable=true)
@@ -79,7 +71,6 @@ class NmtHrPayroll
     private $sumGross;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_net", type="decimal", precision=14, scale=4, nullable=true)
@@ -87,7 +78,6 @@ class NmtHrPayroll
     private $sumNet;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_sso_employee", type="decimal", precision=14, scale=4, nullable=true)
@@ -95,7 +85,6 @@ class NmtHrPayroll
     private $sumSsoEmployee;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_sso_employer", type="decimal", precision=14, scale=4, nullable=true)
@@ -103,7 +92,6 @@ class NmtHrPayroll
     private $sumSsoEmployer;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_pit", type="decimal", precision=14, scale=4, nullable=true)
@@ -111,7 +99,6 @@ class NmtHrPayroll
     private $sumPit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_basic_salary", type="decimal", precision=14, scale=4, nullable=true)
@@ -119,7 +106,6 @@ class NmtHrPayroll
     private $sumBasicSalary;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_productivity_bonus", type="decimal", precision=14, scale=4, nullable=true)
@@ -127,7 +113,6 @@ class NmtHrPayroll
     private $sumProductivityBonus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sum_loyalty_bonus", type="decimal", precision=14, scale=4, nullable=true)
@@ -135,7 +120,6 @@ class NmtHrPayroll
     private $sumLoyaltyBonus;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -146,7 +130,6 @@ class NmtHrPayroll
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -157,7 +140,6 @@ class NmtHrPayroll
     private $period;
 
     /**
-     *
      * @var \Application\Entity\NmtHrPayrollInput
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrPayrollInput")
@@ -166,6 +148,8 @@ class NmtHrPayroll
      * })
      */
     private $input;
+
+
 
     /**
      * Get id

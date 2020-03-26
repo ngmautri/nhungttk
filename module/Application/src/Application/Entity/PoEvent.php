@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PoEvent
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class PoEvent
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class PoEvent
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="event_type", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class PoEvent
     private $eventType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="object_id", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class PoEvent
     private $objectId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="object_token", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class PoEvent
     private $objectToken;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="object_name", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class PoEvent
     private $objectName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="field_name", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class PoEvent
     private $fieldName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="class_name", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class PoEvent
     private $className;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class PoEvent
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -95,7 +85,6 @@ class PoEvent
     private $createdBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_from", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class PoEvent
     private $effectiveFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_to", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class PoEvent
     private $effectiveTo;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="version", type="integer", nullable=true)
@@ -119,7 +106,6 @@ class PoEvent
     private $version;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -127,7 +113,6 @@ class PoEvent
     private $revisionNo;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_valid", type="boolean", nullable=true)
@@ -135,7 +120,6 @@ class PoEvent
     private $isValid;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="triggered_by", type="string", length=225, nullable=true)
@@ -143,7 +127,6 @@ class PoEvent
     private $triggeredBy;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source", type="string", length=45, nullable=true)
@@ -151,7 +134,6 @@ class PoEvent
     private $source;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -159,7 +141,6 @@ class PoEvent
     private $remarks;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -168,6 +149,8 @@ class PoEvent
      * })
      */
     private $company;
+
+
 
     /**
      * Get id

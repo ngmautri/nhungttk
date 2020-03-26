@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaSpareparts
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaSpareparts
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=50, nullable=true)
@@ -31,7 +29,6 @@ class MlaSpareparts
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name_local", type="string", length=255, nullable=true)
@@ -39,7 +36,6 @@ class MlaSpareparts
     private $nameLocal;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -47,7 +43,6 @@ class MlaSpareparts
     private $description;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=100, nullable=true)
@@ -55,7 +50,6 @@ class MlaSpareparts
     private $code;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="tag", type="string", length=50, nullable=true)
@@ -63,7 +57,6 @@ class MlaSpareparts
     private $tag;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class MlaSpareparts
     private $location;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
@@ -79,12 +71,13 @@ class MlaSpareparts
     private $comment;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
+
+
 
     /**
      * Get id

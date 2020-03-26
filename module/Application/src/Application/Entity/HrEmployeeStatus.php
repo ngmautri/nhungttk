@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class HrEmployeeStatus
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class HrEmployeeStatus
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="old_status_ref", type="integer", nullable=true)
@@ -31,7 +29,6 @@ class HrEmployeeStatus
     private $oldStatusRef;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=false)
@@ -39,7 +36,6 @@ class HrEmployeeStatus
     private $updatedOn = 'CURRENT_TIMESTAMP';
 
     /**
-     *
      * @var \Application\Entity\HrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\HrEmployee")
@@ -50,7 +46,6 @@ class HrEmployeeStatus
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -61,7 +56,6 @@ class HrEmployeeStatus
     private $updateBy;
 
     /**
-     *
      * @var \Application\Entity\HrMasterStatus
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\HrMasterStatus")
@@ -70,6 +64,8 @@ class HrEmployeeStatus
      * })
      */
     private $newStatus;
+
+
 
     /**
      * Get id

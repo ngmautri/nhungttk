@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationIncoterms
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationIncoterms
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="incoterm", type="string", length=3, nullable=false)
@@ -31,7 +29,6 @@ class NmtApplicationIncoterms
     private $incoterm;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="incoterm_description", type="text", length=65535, nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationIncoterms
     private $incotermDescription;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="location_required", type="boolean", nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationIncoterms
     private $locationRequired;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationIncoterms
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revisionNo", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationIncoterms
     private $revisionno;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationIncoterms
     private $lastchangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="incoterm1", type="string", length=55, nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationIncoterms
     private $incoterm1;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -87,7 +78,6 @@ class NmtApplicationIncoterms
     private $uuid;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -98,7 +88,6 @@ class NmtApplicationIncoterms
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -107,6 +96,8 @@ class NmtApplicationIncoterms
      * })
      */
     private $lastchangeBy;
+
+
 
     /**
      * Get id

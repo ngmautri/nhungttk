@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAssetLocation
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaAssetLocation
     private $id;
 
     /**
-     *
      * @var \Application\Entity\MlaDepartments
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDepartments")
@@ -34,7 +32,6 @@ class MlaAssetLocation
     private $department;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -45,7 +42,6 @@ class MlaAssetLocation
     private $user;
 
     /**
-     *
      * @var \Application\Entity\MlaAsset
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
@@ -54,6 +50,8 @@ class MlaAssetLocation
      * })
      */
     private $asset;
+
+
 
     /**
      * Get id

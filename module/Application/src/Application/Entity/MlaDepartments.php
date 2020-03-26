@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaDepartments
 {
-
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=50, nullable=false)
@@ -21,7 +20,6 @@ class MlaDepartments
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="short_name", type="string", length=45, nullable=false)
@@ -29,7 +27,6 @@ class MlaDepartments
     private $shortName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -37,7 +34,6 @@ class MlaDepartments
     private $description;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=150, nullable=true)
@@ -45,7 +41,6 @@ class MlaDepartments
     private $status;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -53,7 +48,6 @@ class MlaDepartments
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -61,7 +55,6 @@ class MlaDepartments
     private $createdBy;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="article_root_category", type="integer", nullable=true)
@@ -69,7 +62,6 @@ class MlaDepartments
     private $articleRootCategory;
 
     /**
-     *
      * @var \Application\Entity\MlaAssetCategories
      *
      * @ORM\Id
@@ -80,6 +72,8 @@ class MlaDepartments
      * })
      */
     private $id;
+
+
 
     /**
      * Set name

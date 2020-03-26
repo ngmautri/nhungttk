@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfNode
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="node_id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtWfNode
     private $nodeId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="node_name", type="string", length=100, nullable=true)
@@ -31,7 +29,6 @@ class NmtWfNode
     private $nodeName;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="node_parent_id", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class NmtWfNode
     private $nodeParentId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="node_type", type="string", length=45, nullable=true)
@@ -47,7 +43,6 @@ class NmtWfNode
     private $nodeType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="node_connection_type", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtWfNode
     private $nodeConnectionType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -63,7 +57,6 @@ class NmtWfNode
     private $path;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtWfNode
     private $pathDepth;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtWfNode
     private $status;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -87,7 +78,6 @@ class NmtWfNode
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="node_created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtWfNode
     private $nodeCreatedOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="transition_id", type="integer", nullable=true)
@@ -103,7 +92,6 @@ class NmtWfNode
     private $transitionId;
 
     /**
-     *
      * @var \Application\Entity\NmtWfPlace
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
@@ -114,7 +102,6 @@ class NmtWfNode
     private $place;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -125,7 +112,6 @@ class NmtWfNode
     private $nodeCreatedBy;
 
     /**
-     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -134,6 +120,8 @@ class NmtWfNode
      * })
      */
     private $workflow;
+
+
 
     /**
      * Get nodeId

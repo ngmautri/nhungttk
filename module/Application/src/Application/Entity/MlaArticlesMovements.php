@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticlesMovements
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaArticlesMovements
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="movement_date", type="datetime", nullable=false)
@@ -31,7 +29,6 @@ class MlaArticlesMovements
     private $movementDate = 'CURRENT_TIMESTAMP';
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class MlaArticlesMovements
     private $flow;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=true)
@@ -47,7 +43,6 @@ class MlaArticlesMovements
     private $quantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="reason", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class MlaArticlesMovements
     private $reason;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="requester", type="string", length=50, nullable=true)
@@ -63,7 +57,6 @@ class MlaArticlesMovements
     private $requester;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
@@ -71,7 +64,6 @@ class MlaArticlesMovements
     private $comment;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class MlaArticlesMovements
     private $createdOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -87,7 +78,6 @@ class MlaArticlesMovements
     private $createdBy;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="movement_type", type="string", length=100, nullable=true)
@@ -95,7 +85,6 @@ class MlaArticlesMovements
     private $movementType;
 
     /**
-     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
@@ -106,7 +95,6 @@ class MlaArticlesMovements
     private $article;
 
     /**
-     *
      * @var \Application\Entity\MlaDeliveryItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDeliveryItems")
@@ -117,7 +105,6 @@ class MlaArticlesMovements
     private $dnItem;
 
     /**
-     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -128,7 +115,6 @@ class MlaArticlesMovements
     private $prItem;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -137,6 +123,8 @@ class MlaArticlesMovements
      * })
      */
     private $wh;
+
+
 
     /**
      * Get id

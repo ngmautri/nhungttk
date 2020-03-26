@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaDeliveryItems
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaDeliveryItems
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="delivery_date", type="datetime", nullable=true)
@@ -31,7 +29,6 @@ class MlaDeliveryItems
     private $deliveryDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="receipt_date", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class MlaDeliveryItems
     private $receiptDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="po_item_id", type="integer", nullable=false)
@@ -47,7 +43,6 @@ class MlaDeliveryItems
     private $poItemId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=true)
@@ -55,7 +50,6 @@ class MlaDeliveryItems
     private $name;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=100, nullable=true)
@@ -63,7 +57,6 @@ class MlaDeliveryItems
     private $code;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class MlaDeliveryItems
     private $unit;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="delivered_quantity", type="integer", nullable=false)
@@ -79,7 +71,6 @@ class MlaDeliveryItems
     private $deliveredQuantity;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="price", type="float", precision=10, scale=0, nullable=true)
@@ -87,7 +78,6 @@ class MlaDeliveryItems
     private $price;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="currency", type="string", length=3, nullable=true)
@@ -95,7 +85,6 @@ class MlaDeliveryItems
     private $currency;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", nullable=true)
@@ -103,7 +92,6 @@ class MlaDeliveryItems
     private $paymentMethod;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="created_on", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class MlaDeliveryItems
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -119,7 +106,6 @@ class MlaDeliveryItems
     private $remarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="invoice_no", type="string", length=100, nullable=true)
@@ -127,7 +113,6 @@ class MlaDeliveryItems
     private $invoiceNo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class MlaDeliveryItems
     private $invoiceDate;
 
     /**
-     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -146,7 +130,6 @@ class MlaDeliveryItems
     private $prItem;
 
     /**
-     *
      * @var \Application\Entity\MlaDelivery
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDelivery")
@@ -157,7 +140,6 @@ class MlaDeliveryItems
     private $delivery;
 
     /**
-     *
      * @var \Application\Entity\MlaVendors
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaVendors")
@@ -168,7 +150,6 @@ class MlaDeliveryItems
     private $vendor;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -179,7 +160,6 @@ class MlaDeliveryItems
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaDeliveryItemsWorkflows
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDeliveryItemsWorkflows")
@@ -188,6 +168,8 @@ class MlaDeliveryItems
      * })
      */
     private $lastWorkflow;
+
+
 
     /**
      * Get id

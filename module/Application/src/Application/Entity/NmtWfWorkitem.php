@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfWorkitem
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtWfWorkitem
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtWfWorkitem
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_name", type="string", length=45, nullable=false)
@@ -39,7 +36,6 @@ class NmtWfWorkitem
     private $workflowName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transition_name", type="string", length=45, nullable=false)
@@ -47,7 +43,6 @@ class NmtWfWorkitem
     private $transitionName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workitem_status", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class NmtWfWorkitem
     private $workitemStatus;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="deadline", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtWfWorkitem
     private $deadline;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="finished_date", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtWfWorkitem
     private $finishedDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class NmtWfWorkitem
     private $enabledDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="cancelled_date", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class NmtWfWorkitem
     private $cancelledDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="agent_role_id", type="integer", nullable=true)
@@ -95,7 +85,6 @@ class NmtWfWorkitem
     private $agentRoleId;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="subject_id", type="integer", nullable=false)
@@ -103,7 +92,6 @@ class NmtWfWorkitem
     private $subjectId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="subject_token", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtWfWorkitem
     private $subjectToken;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="subject_class", type="string", length=80, nullable=false)
@@ -119,7 +106,6 @@ class NmtWfWorkitem
     private $subjectClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=100, nullable=true)
@@ -127,7 +113,6 @@ class NmtWfWorkitem
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtWfWorkitem
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="subject_handler", type="string", length=100, nullable=true)
@@ -143,7 +127,6 @@ class NmtWfWorkitem
     private $subjectHandler;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -154,7 +137,6 @@ class NmtWfWorkitem
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtWfTransition
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
@@ -165,7 +147,6 @@ class NmtWfWorkitem
     private $transition;
 
     /**
-     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -176,7 +157,6 @@ class NmtWfWorkitem
     private $workflow;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -185,6 +165,8 @@ class NmtWfWorkitem
      * })
      */
     private $agent;
+
+
 
     /**
      * Get id

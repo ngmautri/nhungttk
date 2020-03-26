@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationLog
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationLog
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtApplicationLog
     private $token;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationLog
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationLog
     private $remarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="triggeredBy", type="string", length=255, nullable=true)
@@ -55,7 +50,6 @@ class NmtApplicationLog
     private $triggeredby;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="priority", type="integer", nullable=true)
@@ -63,7 +57,6 @@ class NmtApplicationLog
     private $priority;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="priority_name", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationLog
     private $priorityName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="message", type="text", length=65535, nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationLog
     private $message;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="extra_info", type="text", length=65535, nullable=true)
@@ -87,7 +78,6 @@ class NmtApplicationLog
     private $extraInfo;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -96,6 +86,8 @@ class NmtApplicationLog
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

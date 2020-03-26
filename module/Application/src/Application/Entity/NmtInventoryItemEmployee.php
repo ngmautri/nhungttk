@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemEmployee
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryItemEmployee
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryItemEmployee
     private $token;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="assigned_on", type="datetime", nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryItemEmployee
     private $assignedOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="unassigned_on", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryItemEmployee
     private $unassignedOn;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryItemEmployee
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryItemEmployee
     private $status;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -71,7 +64,6 @@ class NmtInventoryItemEmployee
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryItemEmployee
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class NmtInventoryItemEmployee
     private $lastChangeOn;
 
     /**
-     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -98,7 +88,6 @@ class NmtInventoryItemEmployee
     private $employee;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -109,7 +98,6 @@ class NmtInventoryItemEmployee
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -120,7 +108,6 @@ class NmtInventoryItemEmployee
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -129,6 +116,8 @@ class NmtInventoryItemEmployee
      * })
      */
     private $item;
+
+
 
     /**
      * Get id

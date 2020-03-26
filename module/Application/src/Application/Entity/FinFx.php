@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinFx
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class FinFx
     private $id;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="fx_date", type="datetime", nullable=true)
@@ -31,7 +29,6 @@ class FinFx
     private $fxDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="fx_rate", type="decimal", precision=14, scale=5, nullable=true)
@@ -39,7 +36,6 @@ class FinFx
     private $fxRate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -47,7 +43,6 @@ class FinFx
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -55,7 +50,6 @@ class FinFx
     private $token;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -63,7 +57,6 @@ class FinFx
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=100, nullable=true)
@@ -71,7 +64,6 @@ class FinFx
     private $remarks;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -79,7 +71,6 @@ class FinFx
     private $revisionNo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class FinFx
     private $lastchangeOn;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -98,7 +88,6 @@ class FinFx
     private $sourceCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -109,7 +98,6 @@ class FinFx
     private $targetCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -120,7 +108,6 @@ class FinFx
     private $company;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -131,7 +118,6 @@ class FinFx
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -140,6 +126,8 @@ class FinFx
      * })
      */
     private $lastchangeBy;
+
+
 
     /**
      * Get id

@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrAttendanceType
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrAttendanceType
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="attendance_type", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrAttendanceType
     private $attendanceType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -39,7 +36,6 @@ class NmtHrAttendanceType
     private $isActive;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -47,12 +43,13 @@ class NmtHrAttendanceType
     private $validFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
      */
     private $validTo;
+
+
 
     /**
      * Get id

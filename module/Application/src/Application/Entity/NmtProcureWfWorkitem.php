@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtProcureWfWorkitem
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtProcureWfWorkitem
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtProcureWfWorkitem
     private $token;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="workflow_id", type="integer", nullable=true)
@@ -39,7 +36,6 @@ class NmtProcureWfWorkitem
     private $workflowId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_name", type="string", length=45, nullable=false)
@@ -47,7 +43,6 @@ class NmtProcureWfWorkitem
     private $workflowName;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="transition_id", type="integer", nullable=true)
@@ -55,7 +50,6 @@ class NmtProcureWfWorkitem
     private $transitionId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transition_name", type="string", length=45, nullable=false)
@@ -63,7 +57,6 @@ class NmtProcureWfWorkitem
     private $transitionName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workitem_status", type="string", length=45, nullable=true)
@@ -71,7 +64,6 @@ class NmtProcureWfWorkitem
     private $workitemStatus;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="deadline", type="datetime", nullable=true)
@@ -79,7 +71,6 @@ class NmtProcureWfWorkitem
     private $deadline;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="finished_date", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class NmtProcureWfWorkitem
     private $finishedDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtProcureWfWorkitem
     private $enabledDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="cancelled_date", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtProcureWfWorkitem
     private $cancelledDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="subject_id", type="integer", nullable=false)
@@ -111,7 +99,6 @@ class NmtProcureWfWorkitem
     private $subjectId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="subject_class", type="string", length=80, nullable=false)
@@ -119,7 +106,6 @@ class NmtProcureWfWorkitem
     private $subjectClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remark", type="string", length=100, nullable=true)
@@ -127,7 +113,6 @@ class NmtProcureWfWorkitem
     private $remark;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -138,7 +123,6 @@ class NmtProcureWfWorkitem
     private $agent;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -149,7 +133,6 @@ class NmtProcureWfWorkitem
     private $agentRole;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePr")
@@ -160,7 +143,6 @@ class NmtProcureWfWorkitem
     private $pr;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -169,6 +151,8 @@ class NmtProcureWfWorkitem
      * })
      */
     private $prRow;
+
+
 
     /**
      * Get id

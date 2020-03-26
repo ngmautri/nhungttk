@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryFifoLayer
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryFifoLayer
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryFifoLayer
     private $token;
 
     /**
-     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryFifoLayer
     private $quantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryFifoLayer
     private $docUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="total_value", type="decimal", precision=14, scale=4, nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryFifoLayer
     private $totalValue;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryFifoLayer
     private $postingDate;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_closed", type="boolean", nullable=true)
@@ -71,7 +64,6 @@ class NmtInventoryFifoLayer
     private $isClosed;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="open_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryFifoLayer
     private $openQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="open_value", type="decimal", precision=14, scale=4, nullable=true)
@@ -87,7 +78,6 @@ class NmtInventoryFifoLayer
     private $openValue;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtInventoryFifoLayer
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="closed_on", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtInventoryFifoLayer
     private $closedOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -111,7 +99,6 @@ class NmtInventoryFifoLayer
     private $sourceId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
@@ -119,7 +106,6 @@ class NmtInventoryFifoLayer
     private $sourceClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="source_token", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class NmtInventoryFifoLayer
     private $sourceToken;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="onhand_quantity", type="decimal", precision=14, scale=4, nullable=true)
@@ -135,7 +120,6 @@ class NmtInventoryFifoLayer
     private $onhandQuantity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="local_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -143,7 +127,6 @@ class NmtInventoryFifoLayer
     private $localUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=14, scale=4, nullable=true)
@@ -151,7 +134,6 @@ class NmtInventoryFifoLayer
     private $exchangeRate;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -159,7 +141,6 @@ class NmtInventoryFifoLayer
     private $isActive;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_open_balance", type="boolean", nullable=true)
@@ -167,7 +148,6 @@ class NmtInventoryFifoLayer
     private $isOpenBalance;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -175,7 +155,6 @@ class NmtInventoryFifoLayer
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -183,7 +162,6 @@ class NmtInventoryFifoLayer
     private $lastChangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -191,7 +169,6 @@ class NmtInventoryFifoLayer
     private $revisionNo;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -199,7 +176,6 @@ class NmtInventoryFifoLayer
     private $isReversed;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -207,7 +183,6 @@ class NmtInventoryFifoLayer
     private $reversalDate;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -215,7 +190,6 @@ class NmtInventoryFifoLayer
     private $reversalDoc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -223,7 +197,6 @@ class NmtInventoryFifoLayer
     private $reversalReason;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
@@ -231,7 +204,6 @@ class NmtInventoryFifoLayer
     private $isReversable;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -242,7 +214,6 @@ class NmtInventoryFifoLayer
     private $item;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -253,7 +224,6 @@ class NmtInventoryFifoLayer
     private $docCurrency;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -264,7 +234,6 @@ class NmtInventoryFifoLayer
     private $localCurrency;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -275,7 +244,6 @@ class NmtInventoryFifoLayer
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -286,7 +254,6 @@ class NmtInventoryFifoLayer
     private $warehouse;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -297,7 +264,6 @@ class NmtInventoryFifoLayer
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryTrx
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
@@ -306,6 +272,8 @@ class NmtInventoryFifoLayer
      * })
      */
     private $inventoryTrx;
+
+
 
     /**
      * Get id

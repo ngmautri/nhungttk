@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryBatch
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtInventoryBatch
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtInventoryBatch
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="batch_number", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class NmtInventoryBatch
     private $batchNumber;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -47,7 +43,6 @@ class NmtInventoryBatch
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -55,7 +50,6 @@ class NmtInventoryBatch
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -63,7 +57,6 @@ class NmtInventoryBatch
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
@@ -71,7 +64,6 @@ class NmtInventoryBatch
     private $consumedOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_serial_number", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtInventoryBatch
     private $mfgSerialNumber;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_date", type="datetime", nullable=true)
@@ -87,7 +78,6 @@ class NmtInventoryBatch
     private $mfgDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="lot_number", type="string", length=45, nullable=true)
@@ -95,7 +85,6 @@ class NmtInventoryBatch
     private $lotNumber;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_warranty_start", type="datetime", nullable=true)
@@ -103,7 +92,6 @@ class NmtInventoryBatch
     private $mfgWarrantyStart;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_warranty_end", type="datetime", nullable=true)
@@ -111,7 +99,6 @@ class NmtInventoryBatch
     private $mfgWarrantyEnd;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_name", type="string", length=100, nullable=true)
@@ -119,7 +106,6 @@ class NmtInventoryBatch
     private $itemName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
@@ -127,7 +113,6 @@ class NmtInventoryBatch
     private $location;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="category", type="string", length=45, nullable=true)
@@ -135,7 +120,6 @@ class NmtInventoryBatch
     private $category;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="mfg_name", type="string", length=100, nullable=true)
@@ -143,7 +127,6 @@ class NmtInventoryBatch
     private $mfgName;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -151,7 +134,6 @@ class NmtInventoryBatch
     private $lastchangeOn;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -159,7 +141,6 @@ class NmtInventoryBatch
     private $revisionNo;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -170,7 +151,6 @@ class NmtInventoryBatch
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -181,7 +161,6 @@ class NmtInventoryBatch
     private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -190,6 +169,8 @@ class NmtInventoryBatch
      * })
      */
     private $item;
+
+
 
     /**
      * Get id

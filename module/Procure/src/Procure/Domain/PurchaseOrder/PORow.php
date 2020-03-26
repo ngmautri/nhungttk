@@ -5,7 +5,7 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Application\Domain\Shared\AbstractEntity;
+use Procure\Domain\AbstractRow;
 
 /**
  * AP Row
@@ -13,9 +13,8 @@ use Application\Domain\Shared\AbstractEntity;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORow extends AbstractEntity
+class PORow extends AbstractRow
 {
-
     protected $vendorName;
 
     protected $poNumber;
@@ -88,120 +87,6 @@ class PORow extends AbstractEntity
 
     protected $itemVersion;
 
-    protected $id;
-
-    protected $rowNumber;
-
-    protected $token;
-
-    protected $quantity;
-
-    protected $unitPrice;
-
-    protected $netAmount;
-
-    protected $unit;
-
-    protected $itemUnit;
-
-    protected $conversionFactor;
-
-    protected $converstionText;
-
-    protected $taxRate;
-
-    protected $remarks;
-
-    protected $isActive;
-
-    protected $createdOn;
-
-    protected $lastchangeOn;
-
-    protected $currentState;
-
-    protected $vendorItemCode;
-
-    protected $traceStock;
-
-    protected $grossAmount;
-
-    protected $taxAmount;
-
-    protected $faRemarks;
-
-    protected $rowIdentifer;
-
-    protected $discountRate;
-
-    protected $revisionNo;
-
-    protected $targetObject;
-
-    protected $sourceObject;
-
-    protected $targetObjectId;
-
-    protected $sourceObjectId;
-
-    protected $docStatus;
-
-    protected $workflowStatus;
-
-    protected $transactionStatus;
-
-    protected $isPosted;
-
-    protected $isDraft;
-
-    protected $exwUnitPrice;
-
-    protected $totalExwPrice;
-
-    protected $convertFactorPurchase;
-
-    protected $convertedPurchaseQuantity;
-
-    protected $convertedStandardQuantity;
-
-    protected $convertedStockQuantity;
-
-    protected $convertedStandardUnitPrice;
-
-    protected $convertedStockUnitPrice;
-
-    protected $docQuantity;
-
-    protected $docUnit;
-
-    protected $docUnitPrice;
-
-    protected $convertedPurchaseUnitPrice;
-
-    protected $docType;
-
-    protected $descriptionText;
-
-    protected $vendorItemName;
-
-    protected $reversalBlocked;
-
-    protected $invoice;
-
-    protected $lastchangeBy;
-
-    protected $prRow;
-
-    protected $createdBy;
-
-    protected $warehouse;
-
-    protected $po;
-
-    protected $item;
-
-    protected $docUom;
-
     private function __construct()
     {}
 
@@ -215,7 +100,7 @@ class PORow extends AbstractEntity
         $this->isPosted = 1;
         $this->isDraft = 0;
         $this->docStatus = PODocStatus::DOC_STATUS_POSTED;
-        $this->lastchangeOn =(date_format($postedDate, 'Y-m-d H:i:s'));
+        $this->lastchangeOn = (date_format($postedDate, 'Y-m-d H:i:s'));
         $this->lastchangeBy = $postedBy;
     }
 
@@ -1135,12 +1020,11 @@ class PORow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUom()
     {
         return $this->docUom;
     }
-
-
 }

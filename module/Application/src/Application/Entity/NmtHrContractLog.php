@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrContractLog
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtHrContractLog
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -31,7 +29,6 @@ class NmtHrContractLog
     private $token;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="object_id", type="integer", nullable=false)
@@ -39,7 +36,6 @@ class NmtHrContractLog
     private $objectId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="object_token", type="string", length=45, nullable=false)
@@ -47,7 +43,6 @@ class NmtHrContractLog
     private $objectToken;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="class_name", type="string", length=255, nullable=true)
@@ -55,7 +50,6 @@ class NmtHrContractLog
     private $className;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="field_name", type="string", length=100, nullable=true)
@@ -63,7 +57,6 @@ class NmtHrContractLog
     private $fieldName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="column_name", type="string", length=100, nullable=true)
@@ -71,7 +64,6 @@ class NmtHrContractLog
     private $columnName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="old_value", type="string", length=255, nullable=true)
@@ -79,7 +71,6 @@ class NmtHrContractLog
     private $oldValue;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="new_value", type="string", length=255, nullable=true)
@@ -87,7 +78,6 @@ class NmtHrContractLog
     private $newValue;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -95,7 +85,6 @@ class NmtHrContractLog
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -103,7 +92,6 @@ class NmtHrContractLog
     private $remarks;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="field_type", type="string", length=45, nullable=true)
@@ -111,7 +99,6 @@ class NmtHrContractLog
     private $fieldType;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -119,7 +106,6 @@ class NmtHrContractLog
     private $revisionNo;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_from", type="datetime", nullable=true)
@@ -127,7 +113,6 @@ class NmtHrContractLog
     private $effectiveFrom;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_to", type="datetime", nullable=true)
@@ -135,7 +120,6 @@ class NmtHrContractLog
     private $effectiveTo;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_valid", type="boolean", nullable=true)
@@ -143,7 +127,6 @@ class NmtHrContractLog
     private $isValid;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="triggeredBy", type="string", length=255, nullable=true)
@@ -151,7 +134,6 @@ class NmtHrContractLog
     private $triggeredby;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -162,7 +144,6 @@ class NmtHrContractLog
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -171,6 +152,8 @@ class NmtHrContractLog
      * })
      */
     private $company;
+
+
 
     /**
      * Get id

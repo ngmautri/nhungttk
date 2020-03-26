@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPoWorkflow
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class MlaPoWorkflow
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="po_id", type="integer", nullable=false)
@@ -31,7 +29,6 @@ class MlaPoWorkflow
     private $poId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -39,7 +36,6 @@ class MlaPoWorkflow
     private $status;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="updated_by", type="integer", nullable=true)
@@ -47,12 +43,13 @@ class MlaPoWorkflow
     private $updatedBy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
      */
     private $updatedOn;
+
+
 
     /**
      * Get id

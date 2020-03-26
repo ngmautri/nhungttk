@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,9 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationCountry
 {
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,7 +22,6 @@ class NmtApplicationCountry
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="country_name", type="string", length=100, nullable=true)
@@ -31,7 +29,6 @@ class NmtApplicationCountry
     private $countryName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="official_name_en", type="string", length=100, nullable=true)
@@ -39,7 +36,6 @@ class NmtApplicationCountry
     private $officialNameEn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="official_name_fr", type="string", length=100, nullable=true)
@@ -47,7 +43,6 @@ class NmtApplicationCountry
     private $officialNameFr;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="country_code_2", type="string", length=2, nullable=false)
@@ -55,7 +50,6 @@ class NmtApplicationCountry
     private $countryCode2;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="country_code_3", type="string", length=3, nullable=false)
@@ -63,7 +57,6 @@ class NmtApplicationCountry
     private $countryCode3;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="country_numeric_code", type="integer", nullable=true)
@@ -71,7 +64,6 @@ class NmtApplicationCountry
     private $countryNumericCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="country_numeric_code2", type="string", length=45, nullable=true)
@@ -79,7 +71,6 @@ class NmtApplicationCountry
     private $countryNumericCode2;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="MARC", type="string", length=10, nullable=true)
@@ -87,7 +78,6 @@ class NmtApplicationCountry
     private $marc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="WMO", type="string", length=10, nullable=true)
@@ -95,7 +85,6 @@ class NmtApplicationCountry
     private $wmo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="DS", type="string", length=10, nullable=true)
@@ -103,7 +92,6 @@ class NmtApplicationCountry
     private $ds;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="Dial", type="string", length=10, nullable=true)
@@ -111,7 +99,6 @@ class NmtApplicationCountry
     private $dial;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="FIFA", type="string", length=10, nullable=true)
@@ -119,7 +106,6 @@ class NmtApplicationCountry
     private $fifa;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="FIPS", type="string", length=10, nullable=true)
@@ -127,7 +113,6 @@ class NmtApplicationCountry
     private $fips;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="GAUL", type="string", length=10, nullable=true)
@@ -135,7 +120,6 @@ class NmtApplicationCountry
     private $gaul;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="IOC", type="string", length=10, nullable=true)
@@ -143,7 +127,6 @@ class NmtApplicationCountry
     private $ioc;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="ISO4217_currency_alphabetic_code", type="string", length=10, nullable=true)
@@ -151,7 +134,6 @@ class NmtApplicationCountry
     private $iso4217CurrencyAlphabeticCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="ISO4217_currency_country_name", type="string", length=100, nullable=true)
@@ -159,7 +141,6 @@ class NmtApplicationCountry
     private $iso4217CurrencyCountryName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="ISO4217_currency_minor_unit", type="string", length=100, nullable=true)
@@ -167,7 +148,6 @@ class NmtApplicationCountry
     private $iso4217CurrencyMinorUnit;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="ISO4217_currency_name", type="string", length=10, nullable=true)
@@ -175,7 +155,6 @@ class NmtApplicationCountry
     private $iso4217CurrencyName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="ISO4217_currency_numeric_code", type="string", length=10, nullable=true)
@@ -183,7 +162,6 @@ class NmtApplicationCountry
     private $iso4217CurrencyNumericCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="is_independent", type="string", length=100, nullable=true)
@@ -191,7 +169,6 @@ class NmtApplicationCountry
     private $isIndependent;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="capital", type="string", length=45, nullable=true)
@@ -199,7 +176,6 @@ class NmtApplicationCountry
     private $capital;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="continent", type="string", length=45, nullable=true)
@@ -207,7 +183,6 @@ class NmtApplicationCountry
     private $continent;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="TLD", type="string", length=45, nullable=true)
@@ -215,7 +190,6 @@ class NmtApplicationCountry
     private $tld;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="languages", type="string", length=45, nullable=true)
@@ -223,7 +197,6 @@ class NmtApplicationCountry
     private $languages;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="geoname_id", type="string", length=45, nullable=true)
@@ -231,7 +204,6 @@ class NmtApplicationCountry
     private $geonameId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="EDGAR", type="string", length=45, nullable=true)
@@ -239,7 +211,6 @@ class NmtApplicationCountry
     private $edgar;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -247,7 +218,6 @@ class NmtApplicationCountry
     private $isActive;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -255,7 +225,6 @@ class NmtApplicationCountry
     private $status;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -263,7 +232,6 @@ class NmtApplicationCountry
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -271,7 +239,6 @@ class NmtApplicationCountry
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -279,7 +246,6 @@ class NmtApplicationCountry
     private $uuid;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -288,6 +254,8 @@ class NmtApplicationCountry
      * })
      */
     private $createdBy;
+
+
 
     /**
      * Get id

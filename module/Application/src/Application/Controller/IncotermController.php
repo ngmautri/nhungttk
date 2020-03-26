@@ -50,12 +50,11 @@ class IncotermController extends AbstractActionController
         if ($request->isPost()) {
             $errors = array();
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $data['redirectUrl'];
-            
 
             $entity = new NmtApplicationIncoterms();
-            
+
             try {
                 $errors = $this->incotermService->validateHeader($entity, $data);
             } catch (\Exception $e) {
@@ -68,8 +67,8 @@ class IncotermController extends AbstractActionController
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity,
-                    ));
+                    'entity' => $entity
+                ));
 
                 $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
@@ -98,8 +97,8 @@ class IncotermController extends AbstractActionController
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity,
-                     ));
+                    'entity' => $entity
+                ));
 
                 $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
@@ -178,10 +177,10 @@ class IncotermController extends AbstractActionController
      */
     public function editAction()
     {
-     
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-    
+
         $request = $this->getRequest();
 
         // Is Posing
@@ -197,7 +196,7 @@ class IncotermController extends AbstractActionController
             $nTry = $data['n'];
 
             $criteria = array(
-                'id' => $entity_id,
+                'id' => $entity_id
             );
 
             /** @var \Application\Entity\NmtApplicationIncoterms $entity ; */
@@ -221,7 +220,7 @@ class IncotermController extends AbstractActionController
             }
 
             // entity found
-    
+
             $oldEntity = clone ($entity);
 
             try {
@@ -296,12 +295,12 @@ class IncotermController extends AbstractActionController
                 return $viewModel;
             }
 
-            $m = sprintf('[OK] Incoterm #%s updated. Change No.=%s.', $entity->getId(),count($changeArray));
+            $m = sprintf('[OK] Incoterm #%s updated. Change No.=%s.', $entity->getId(), count($changeArray));
 
             // Trigger Change Log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('application.change.log', __METHOD__, array(
                 'priority' => 7,
-                'message' => $m,                                                                            
+                'message' => $m,
                 'objectId' => $entity->getId(),
                 'objectToken' => null,
                 'changeArray' => $changeArray,
@@ -321,7 +320,7 @@ class IncotermController extends AbstractActionController
                 'entity_id' => $entity->getId(),
                 'entity_class' => get_class($entity),
                 'entity_token' => null
-            ));                                                                      
+            ));
 
             $this->flashMessenger()->addMessage($m);
 
@@ -333,15 +332,17 @@ class IncotermController extends AbstractActionController
         // Initiate ......................
         // ================================
         $redirectUrl = null;
-       /*  if ($this->getRequest()->getHeader('Referer') !== null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        } */
+        /*
+         * if ($this->getRequest()->getHeader('Referer') !== null) {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
 
         $id = (int) $this->params()->fromQuery('entity_id');
-         $criteria = array(
-            'id' => $id,
+        $criteria = array(
+            'id' => $id
         );
 
         /** @var \Application\Entity\NmtApplicationIncoterms $entity ; */

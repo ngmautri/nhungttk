@@ -8,6 +8,4 @@ namespace Application\Domain\Attachment;
  */
 class AttachmentDetailsSnapshot extends AttachmentSnapshot
 {
-    
- 
 }

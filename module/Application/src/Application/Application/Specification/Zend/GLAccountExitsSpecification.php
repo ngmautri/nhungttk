@@ -34,7 +34,7 @@ class GLAccountExitsSpecification extends DoctrineSpecification
             "id" => $glAccountId,
             "company" => $companyId
         );
-  
+
         /**
          *
          * @var \Application\Entity\FinAccount $entiy ;

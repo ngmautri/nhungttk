@@ -42,32 +42,31 @@ class ValidationAssemblerTest extends PHPUnit_Framework_TestCase
     {
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-        
+
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-        
+
         $repository = new DoctrineWarehouseQueryRepository($em);
         $wh = $repository->getById(13);
-        
+
         $repository = new DoctrineWarehouseCmdRepository($em);
         $wh->setCmdRepository($repository);
-        
+
         $repository = new DoctrineWarehouseQueryRepository($em);
         $wh->setQueryRepository($repository);
-   
+
         $sharedSpecificationFactory = new ZendSpecificationFactory($em);
         $wh->setSharedSpecificationFactory($sharedSpecificationFactory);
-        
-        //var_dump($wh->makeDTO());
-        
-        
+
+        // var_dump($wh->makeDTO());
+
         $data = array();
         //
         $data["locationName"] = DefaultLocation::ROOT_LOCATION;
         $data["locationName"] = "asddsaf";
         $data["createdBy"] = 39;
         $data["parentId"] = 47;
-        
+
         // create new transaction.
         $dto = LocationDTOAssembler::createDTOFromArray($data);
         // var_dump($dto);
@@ -76,10 +75,5 @@ class ValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $location = new GenericLocation();
         $location->makeFromSnapshot($snapshot);
         var_dump($wh->validateLocation($location));
-     
-        
-      
-        
-        
     }
 }

@@ -111,7 +111,6 @@ class GeneralLocationValidation
             $notification->addError("User is not identified for this transaction. #" . $location->getCreatedBy());
         }
 
-      
         return $notification;
     }
 }

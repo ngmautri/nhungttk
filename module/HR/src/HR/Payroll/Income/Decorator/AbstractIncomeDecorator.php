@@ -31,11 +31,11 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
         if (! $consolidatedPayrollInput instanceof ConsolidatedPayrollInput) {
             throw new InvalidArgumentException(sprintf('No Payroll Input provided!"%s" is wrong "%s".', 1, 1));
         }
-        
+
         if (! $incomeComponent instanceof IncomeInterface) {
             throw new InvalidArgumentException(sprintf('Income Component "%s" is wrong "%s".', 1, 1));
         }
-        
+
         $this->incomeComponent = $incomeComponent;
         $this->consolidatedPayrollInput = $consolidatedPayrollInput;
     }
@@ -203,15 +203,16 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
         // TODO Auto-generated method stub
         return $this->incomeComponent->getIncomeName();
     }
+
     /**
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\IncomeInterface::isDefault()
      */
     public function isDefault()
     {
         return $this->incomeComponent->isDefault();
     }
-    
 }
 
 

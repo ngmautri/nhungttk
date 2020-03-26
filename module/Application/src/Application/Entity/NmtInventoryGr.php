@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryGr
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryGr
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryGr
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryGr
     private $vendorName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryGr
     private $invoiceNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryGr
     private $invoiceDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryGr
     private $currencyIso3;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryGr
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryGr
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryGr
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryGr
     private $currentState;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryGr
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryGr
     private $trxType;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryGr
     private $lastchangeOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryGr
     private $postingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryGr
     private $grDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryGr
     private $sapDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryGr
     private $contractNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryGr
     private $contractDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryGr
     private $quotationNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryGr
     private $quotationDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryGr
     private $sysNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryGr
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="delivery_mode", type="string", length=45, nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryGr
     private $deliveryMode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryGr
     private $incoterm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryGr
     private $incotermPlace;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
@@ -197,6 +223,7 @@ class NmtInventoryGr
     private $paymentTerm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", length=45, nullable=true)
@@ -204,6 +231,7 @@ class NmtInventoryGr
     private $paymentMethod;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -211,6 +239,7 @@ class NmtInventoryGr
     private $docStatus;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -218,6 +247,7 @@ class NmtInventoryGr
     private $isDraft;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -225,6 +255,7 @@ class NmtInventoryGr
     private $workflowStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -232,6 +263,7 @@ class NmtInventoryGr
     private $transactionStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="source_object", type="string", length=255, nullable=true)
@@ -239,6 +271,7 @@ class NmtInventoryGr
     private $sourceObject;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -246,6 +279,7 @@ class NmtInventoryGr
     private $sourceId;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -253,6 +287,7 @@ class NmtInventoryGr
     private $isReversed;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -260,6 +295,7 @@ class NmtInventoryGr
     private $reversalDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -267,6 +303,7 @@ class NmtInventoryGr
     private $reversalDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -274,6 +311,7 @@ class NmtInventoryGr
     private $reversalReason;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -284,6 +322,7 @@ class NmtInventoryGr
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -294,6 +333,7 @@ class NmtInventoryGr
     private $warehouse;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -304,6 +344,7 @@ class NmtInventoryGr
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -314,6 +355,7 @@ class NmtInventoryGr
     private $lastchangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -324,6 +366,7 @@ class NmtInventoryGr
     private $currency;
 
     /**
+     *
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -334,6 +377,7 @@ class NmtInventoryGr
     private $apInvoice;
 
     /**
+     *
      * @var \Application\Entity\NmtProcureGr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGr")
@@ -342,8 +386,6 @@ class NmtInventoryGr
      * })
      */
     private $procureGr;
-
-
 
     /**
      * Get id

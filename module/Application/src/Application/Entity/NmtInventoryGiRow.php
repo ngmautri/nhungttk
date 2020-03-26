@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryGiRow
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryGiRow
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryGiRow
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryGiRow
     private $checksum;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="trx_date", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryGiRow
     private $trxDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="trx_type_id", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryGiRow
     private $trxTypeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", nullable=false)
@@ -57,6 +63,7 @@ class NmtInventoryGiRow
     private $flow;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="issue_for", type="integer", nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryGiRow
     private $issueFor;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=false)
@@ -71,6 +79,7 @@ class NmtInventoryGiRow
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryGiRow
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryGiRow
     private $createdOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_locked", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryGiRow
     private $isLocked;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryGiRow
     private $isDraft;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryGiRow
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryGiRow
     private $lastChangeOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryGiRow
     private $conversionFactor;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_text", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryGiRow
     private $conversionText;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="target_id", type="integer", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryGiRow
     private $targetId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_class", type="string", length=45, nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryGiRow
     private $targetClass;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryGiRow
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryGiRow
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="change_on", type="string", length=45, nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryGiRow
     private $changeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="change_by", type="integer", nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryGiRow
     private $changeBy;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_number", type="integer", nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryGiRow
     private $revisionNumber;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryGiRow
     private $isPosted;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="actual_quantity", type="integer", nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryGiRow
     private $actualQuantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -197,6 +223,7 @@ class NmtInventoryGiRow
     private $transactionStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="stock_remarks", type="string", length=45, nullable=true)
@@ -204,6 +231,7 @@ class NmtInventoryGiRow
     private $stockRemarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
@@ -211,6 +239,7 @@ class NmtInventoryGiRow
     private $sourceClass;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -218,6 +247,7 @@ class NmtInventoryGiRow
     private $sourceId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
@@ -225,6 +255,7 @@ class NmtInventoryGiRow
     private $transactionType;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="GL_account_id", type="integer", nullable=true)
@@ -232,6 +263,7 @@ class NmtInventoryGiRow
     private $glAccountId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="item_cost", type="decimal", precision=14, scale=4, nullable=true)
@@ -239,6 +271,7 @@ class NmtInventoryGiRow
     private $itemCost;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -249,6 +282,7 @@ class NmtInventoryGiRow
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItemBatch
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemBatch")
@@ -259,6 +293,7 @@ class NmtInventoryGiRow
     private $itemBatch;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -269,6 +304,7 @@ class NmtInventoryGiRow
     private $wh;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -279,6 +315,7 @@ class NmtInventoryGiRow
     private $currency;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -289,6 +326,7 @@ class NmtInventoryGiRow
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -299,6 +337,7 @@ class NmtInventoryGiRow
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryGi
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryGi")
@@ -309,6 +348,7 @@ class NmtInventoryGiRow
     private $inventoryGi;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryGr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryGr")
@@ -319,6 +359,7 @@ class NmtInventoryGiRow
     private $inventoryGr;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryTransfer
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTransfer")
@@ -329,6 +370,7 @@ class NmtInventoryGiRow
     private $inventoryTransfer;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItemSerial
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemSerial")
@@ -337,8 +379,6 @@ class NmtInventoryGiRow
      * })
      */
     private $itemSerial;
-
-
 
     /**
      * Get id

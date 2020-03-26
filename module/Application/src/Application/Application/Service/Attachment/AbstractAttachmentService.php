@@ -44,7 +44,7 @@ abstract class AbstractAttachmentService implements EventManagerAwareInterface
     protected $attachmentList;
 
     /**
-     * 
+     *
      * @return NULL|NULL[]|\Application\Domain\Attachment\AttachmentSnapshot[]
      */
     public function getAttachmentDTOList()
@@ -62,7 +62,6 @@ abstract class AbstractAttachmentService implements EventManagerAwareInterface
         return $dtoList;
     }
 
- 
     /**
      *
      * @param int $target_id
@@ -560,8 +559,8 @@ abstract class AbstractAttachmentService implements EventManagerAwareInterface
 
         $criteria = array(
             'id' => $entity_id,
-            //'checksum' => $entity_checksum,
-            //'token' => $entity_token,
+            // 'checksum' => $entity_checksum,
+            // 'token' => $entity_token,
             'markedForDeletion' => 0,
             'isPicture' => 1
         );
@@ -601,11 +600,11 @@ abstract class AbstractAttachmentService implements EventManagerAwareInterface
         $result = array();
 
         $criteria = array(
-            'id' => $entity_id,
-            //'checksum' => $entity_checksum,
-            //'token' => $entity_token,
-            //'markedForDeletion' => 0,
-            //'isPicture' => 1
+            'id' => $entity_id
+            // 'checksum' => $entity_checksum,
+            // 'token' => $entity_token,
+            // 'markedForDeletion' => 0,
+            // 'isPicture' => 1
         );
 
         $pic = new \Application\Entity\NmtApplicationAttachment();
@@ -643,11 +642,11 @@ abstract class AbstractAttachmentService implements EventManagerAwareInterface
         $result = array();
 
         $criteria = array(
-            'id' => $entity_id,
-            //'checksum' => $entity_checksum,
-            //'token' => $entity_token,
-            //'markedForDeletion' => 0,
-            //'isPicture' => 1
+            'id' => $entity_id
+            // 'checksum' => $entity_checksum,
+            // 'token' => $entity_token,
+            // 'markedForDeletion' => 0,
+            // 'isPicture' => 1
         );
 
         $pic = new \Application\Entity\NmtApplicationAttachment();

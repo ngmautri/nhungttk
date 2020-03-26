@@ -6,21 +6,20 @@ use HR\Payroll\Income\IncomeInterface;
 use HR\Payroll\Income\Decorator\ContractedSalaryDecorator;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class ProductivityBonusDecoratorFactory extends AbstractDecoratorFactory
+class ProductivityBonusDecoratorFactory extends AbstractDecoratorFactory
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory::createDecorator()
      */
-    protected function createDecorator(IncomeInterface $incomeComponent,
-        ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
+    protected function createDecorator(IncomeInterface $incomeComponent, ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
     {
-        return new ContractedSalaryDecorator($incomeComponent,$consolidatedPayrollInput);
+        return new ContractedSalaryDecorator($incomeComponent, $consolidatedPayrollInput);
     }
-
 }

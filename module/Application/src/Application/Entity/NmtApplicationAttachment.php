@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationAttachment
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationAttachment
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="document_subject", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationAttachment
     private $documentSubject;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=150, nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationAttachment
     private $keywords;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_picture", type="boolean", nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationAttachment
     private $isPicture;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_contract", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationAttachment
     private $isContract;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="signing_date", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationAttachment
     private $signingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationAttachment
     private $validFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class NmtApplicationAttachment
     private $validTo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=150, nullable=true)
@@ -78,6 +87,7 @@ class NmtApplicationAttachment
     private $url;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=150, nullable=true)
@@ -85,6 +95,7 @@ class NmtApplicationAttachment
     private $filetype;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=100, nullable=true)
@@ -92,6 +103,7 @@ class NmtApplicationAttachment
     private $filename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename_original", type="string", length=150, nullable=true)
@@ -99,6 +111,7 @@ class NmtApplicationAttachment
     private $filenameOriginal;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="file_password", type="string", length=45, nullable=true)
@@ -106,6 +119,7 @@ class NmtApplicationAttachment
     private $filePassword;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtApplicationAttachment
     private $size;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -120,6 +135,7 @@ class NmtApplicationAttachment
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -127,6 +143,7 @@ class NmtApplicationAttachment
     private $folder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attachment_folder", type="string", length=200, nullable=true)
@@ -134,6 +151,7 @@ class NmtApplicationAttachment
     private $attachmentFolder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder_relative", type="string", length=150, nullable=true)
@@ -141,6 +159,7 @@ class NmtApplicationAttachment
     private $folderRelative;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -148,6 +167,7 @@ class NmtApplicationAttachment
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class NmtApplicationAttachment
     private $token;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -162,6 +183,7 @@ class NmtApplicationAttachment
     private $isActive;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
@@ -169,6 +191,7 @@ class NmtApplicationAttachment
     private $markedForDeletion;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -176,6 +199,7 @@ class NmtApplicationAttachment
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -183,6 +207,7 @@ class NmtApplicationAttachment
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -190,6 +215,7 @@ class NmtApplicationAttachment
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="change_for", type="integer", nullable=true)
@@ -197,6 +223,7 @@ class NmtApplicationAttachment
     private $changeFor;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="pr_row_id", type="integer", nullable=true)
@@ -204,6 +231,7 @@ class NmtApplicationAttachment
     private $prRowId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_class", type="string", length=100, nullable=true)
@@ -211,6 +239,7 @@ class NmtApplicationAttachment
     private $targetClass;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="target_id", type="integer", nullable=true)
@@ -218,6 +247,7 @@ class NmtApplicationAttachment
     private $targetId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_token", type="string", length=45, nullable=true)
@@ -225,6 +255,7 @@ class NmtApplicationAttachment
     private $targetToken;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="file_extension", type="string", length=5, nullable=true)
@@ -232,6 +263,7 @@ class NmtApplicationAttachment
     private $fileExtension;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="file_exits", type="boolean", nullable=true)
@@ -239,6 +271,7 @@ class NmtApplicationAttachment
     private $fileExits;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -246,6 +279,7 @@ class NmtApplicationAttachment
     private $uuid;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -256,6 +290,7 @@ class NmtApplicationAttachment
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -266,6 +301,7 @@ class NmtApplicationAttachment
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePo
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
@@ -276,6 +312,7 @@ class NmtApplicationAttachment
     private $po;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
@@ -286,6 +323,7 @@ class NmtApplicationAttachment
     private $poRow;
 
     /**
+     *
      * @var \Application\Entity\NmtProcureQo
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureQo")
@@ -296,6 +334,7 @@ class NmtApplicationAttachment
     private $qo;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -306,6 +345,7 @@ class NmtApplicationAttachment
     private $company;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -316,6 +356,7 @@ class NmtApplicationAttachment
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtPmProject
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
@@ -326,6 +367,7 @@ class NmtApplicationAttachment
     private $project;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -336,6 +378,7 @@ class NmtApplicationAttachment
     private $employee;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -346,6 +389,7 @@ class NmtApplicationAttachment
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItemPurchasing
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemPurchasing")
@@ -356,6 +400,7 @@ class NmtApplicationAttachment
     private $itemPurchasing;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePr")
@@ -366,6 +411,7 @@ class NmtApplicationAttachment
     private $pr;
 
     /**
+     *
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -374,8 +420,6 @@ class NmtApplicationAttachment
      * })
      */
     private $vInvoice;
-
-
 
     /**
      * Get id

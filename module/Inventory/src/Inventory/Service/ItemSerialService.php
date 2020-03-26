@@ -234,7 +234,4 @@ class ItemSerialService extends AbstractService
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-
-    
-
 }

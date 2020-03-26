@@ -8,6 +8,4 @@ namespace Application\Domain\Company;
  */
 class CompanyDetailsSnapshot extends CompanySnapshot
 {
-
-
 }

@@ -1,107 +1,116 @@
 <h5>Counting Asset:</h5>
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
-	
-	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-error">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
 
 
-<?php if ($asset!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Asset Name	: <strong>' .$asset->name . '</strong></li>';
-	 echo '<li>Asset Tag	: <strong>' .$asset->tag . '</strong></li>';
-	 echo '<li>Model		: <strong>' .$asset->model . '</strong></li>';
-	 echo '<li>Serial		: <strong>' .$asset->serial . '</strong></li>';
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
 
-if ($counted==true)
-{	
-	echo '<div class="alert alert-warning">';
-	echo 'already counted </div>';
-	
-}else { ?>
-	
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item1"	method="post" enctype="multipart/form-data" id="CountAssetForm" >
-	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" id="redirectUrl"/>
-	<input type="hidden" name="counting_id" value="<?php echo $counting->id ?>" id="counting_id"/>
-	<input type="hidden" name="asset_id" value="<?php echo $asset->id ?>" id="asset_id" />
-      <div class="control-group">
-        <label class="control-label" for="inputTag">LOCATION: </label>
-        <div class="controls">
-        
-        	<select name="updated_location" id="updated_location" >
-        	
-        		<option value="">---Please select---</option>
+if ($asset !== null) {
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Asset Name	: <strong>' . $asset->name . '</strong></li>';
+    echo '<li>Asset Tag	: <strong>' . $asset->tag . '</strong></li>';
+    echo '<li>Model		: <strong>' . $asset->model . '</strong></li>';
+    echo '<li>Serial		: <strong>' . $asset->serial . '</strong></li>';
+    echo '</ul>';
+    echo '</div>';
+}
+
+if ($counted == true) {
+    echo '<div class="alert alert-warning">';
+    echo 'already counted </div>';
+} else {
+    ?>
+
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item1"
+	method="post" enctype="multipart/form-data" id="CountAssetForm">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" id="redirectUrl" /> <input
+		type="hidden" name="counting_id" value="<?php echo $counting->id ?>"
+		id="counting_id" /> <input type="hidden" name="asset_id"
+		value="<?php echo $asset->id ?>" id="asset_id" />
+	<div class="control-group">
+		<label class="control-label" for="inputTag">LOCATION: </label>
+		<div class="controls">
+
+			<select name="updated_location" id="updated_location">
+
+				<option value="">---Please select---</option>
    	
-   			<?php foreach ($locations as $loc) :
-   				echo $loc===$location ? '<option selected="selected" value="' . $loc. '">' .  $loc. '</option>' :'<option value="' . $loc. '">' .  $loc. '</option>';
-  			endforeach; 
-   			?>
-			</select>
-                    
-        </div>
-      </div>
-	 <div class="control-group">
-        <label class="control-label" for="inputLocation">PICTURES:</label>
-        <div class="controls">
-        <input type="file" name="pictures[]" /><br>
-        <input type="file" name="pictures[]" /><br>
-        <input type="file" name="pictures[]" /><br>
-        <input type="file" name="pictures[]" /><br>
-        <input type="file" name="pictures[]" /><br>
-	     </div>
-      </div>
-      
-       <div class="control-group">
-        <div class="controls">
-             <button type="button" onclick="countAsset()" class="btn" id="count"><i class="icon-plus">  </i> Count</button>
-              <a href="<?php echo $redirectUrl ?>"><i class="icon-back">  </i> BACK</a>
-        </div>
-      </div>
-    </form>
+   			<?php
 
-<div id = "dialog" style="display: none;"></div>
+foreach ($locations as $loc) :
+        echo $loc === $location ? '<option selected="selected" value="' . $loc . '">' . $loc . '</option>' : '<option value="' . $loc . '">' . $loc . '</option>';
+    endforeach
+    ;
+    ?>
+			</select>
+
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputLocation">PICTURES:</label>
+		<div class="controls">
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="button" onclick="countAsset()" class="btn" id="count">
+				<i class="icon-plus"> </i> Count
+			</button>
+			<a href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> BACK</a>
+		</div>
+	</div>
+</form>
+
+<div id="dialog" style="display: none;"></div>
 
 <!-- Modal -->
 <div id="myModal" class="modal hide" role="dialog">
-  <div class="modal-dialog">
-      <div class="modal-body">
-        <p>Processing........Please Wait!</p>
-      </div>
-   </div>
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<p>Processing........Please Wait!</p>
+		</div>
+	</div>
 </div>
 
-<?php }?>	
+<?php }?>
 
 
 
-  <!-- Modal -->
-  <div class="modal hide" id="modal1" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h5 class="modal-title">Mascot International Laos</h5>
-        </div>
-        <div class="modal-body">
-          <p> No picture selected!</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- Modal -->
+<div class="modal hide" id="modal1" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h5 class="modal-title">Mascot International Laos</h5>
+			</div>
+			<div class="modal-body">
+				<p>No picture selected!</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

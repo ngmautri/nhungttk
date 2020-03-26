@@ -453,13 +453,12 @@ class JERowController extends AbstractActionController
         if ($is_active == null) {
             $is_active = 1;
         }
- 
+
         $criteria = array();
 
         $sort_criteria = array(
-            'sysNumber' => 'DESC',
+            'sysNumber' => 'DESC'
         );
-        
 
         $list = $this->doctrineEM->getRepository('Application\Entity\FinJeRow')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
@@ -501,16 +500,18 @@ class JERowController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-    
+
     /**
+     *
      * @return mixed
      */
     public function getJeService()
     {
         return $this->jeService;
     }
-    
+
     /**
+     *
      * @param mixed $jeService
      */
     public function setJeService(\Finance\Service\JEService $jeService)

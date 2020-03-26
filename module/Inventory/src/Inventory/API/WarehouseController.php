@@ -107,5 +107,4 @@ class WarehouseController extends AbstractRestfulController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
 }

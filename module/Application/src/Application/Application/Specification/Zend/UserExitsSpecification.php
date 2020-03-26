@@ -16,21 +16,20 @@ class UserExitsSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-        
         $companyId = null;
         if (isset($subject["companyId"])) {
             $companyId = $subject["companyId"];
         }
-        
+
         $userId = null;
         if (isset($subject["userId"])) {
             $userId = $subject["userId"];
         }
-        
+
         if ($this->doctrineEM == null || $userId == null || $companyId == null) {
             return false;
         }
-     
+
         $criteria = array(
             "id" => $userId,
             "company" => $companyId

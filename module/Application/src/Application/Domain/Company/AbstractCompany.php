@@ -72,7 +72,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
-     * 
+     *
      * @param CompanyDetailsSnapshot $snapshot
      */
     public function makeFromDetailsSnapshot(CompanyDetailsSnapshot $snapshot)
@@ -82,7 +82,9 @@ class AbstractCompany extends AggregateRoot
 
         SnapshotAssembler::makeFromSnapshot($this, $snapshot);
     }
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -91,6 +93,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyCode()
@@ -99,6 +102,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyName()
@@ -107,6 +111,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultLogoId()
@@ -115,6 +120,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStatus()
@@ -123,6 +129,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -131,6 +138,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDefault()
@@ -139,6 +147,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -147,6 +156,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeOn()
@@ -155,6 +165,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -163,6 +174,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -171,6 +183,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultCurrency()
@@ -179,6 +192,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -187,6 +201,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCountry()
@@ -195,6 +210,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultAddress()
@@ -203,6 +219,7 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -211,11 +228,11 @@ class AbstractCompany extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultWarehouse()
     {
         return $this->defaultWarehouse;
     }
-
 }

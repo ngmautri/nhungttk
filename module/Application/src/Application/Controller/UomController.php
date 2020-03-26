@@ -150,25 +150,26 @@ class UomController extends AbstractActionController
         $this->getResponse()
             ->getHeaders()
             ->addHeaderLine('Cache-Control', 'max-age=3800');
-        $this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
-		
-		return new ViewModel ( array (
-				'list' => $list,
-				'total_records'=>$total_records,
-				'paginator'=>null,
-				'context' =>$context,
-		) );
-	}
-	
-	
-	
-	
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
-	
+        $this->getResponse()
+            ->getHeaders()
+            ->addHeaderLine('Pragma', '', true);
+
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => null,
+            'context' => $context
+        ));
+    }
+
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

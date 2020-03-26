@@ -28,10 +28,9 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     protected $options;
 
     protected $handler;
-    
+
     protected $dto;
-    
-    
+
     /**
      *
      * @param EntityManager $doctrineEM
@@ -49,24 +48,23 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         $this->handler = $handler;
         $this->options = $options;
     }
-    
+
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Command\CommandInterface::execute()
      */
     public function execute()
     {
-        if (!$this->handler instanceof AbstractDoctrineCmdHandler) {
-            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())) );
+        if (! $this->handler instanceof AbstractDoctrineCmdHandler) {
+            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())));
         }
-        
+
         $this->handler->run($this);
     }
 
-  
-
     /**
+     *
      * @return mixed
      */
     public function getDto()
@@ -74,7 +72,6 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         return $this->dto;
     }
 
-  
     /**
      *
      * @return mixed
@@ -84,7 +81,6 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         return $this->handler;
     }
 
-  
     public function load()
     {}
 
@@ -180,14 +176,13 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     {
         $this->id = $id;
     }
+
     /**
+     *
      * @return \Application\Domain\Shared\Command\CommandOptions
      */
     public function getOptions()
     {
         return $this->options;
     }
-
-
-  
 }

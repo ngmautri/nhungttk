@@ -1,10 +1,11 @@
 <?php
-if (count ( $message ) > 0) {
-	echo '<div id="flash_message" class="global-notice">';
-	foreach ( $message as $m ) :
-	echo   $m. '<br>';
-	endforeach;
-	echo '</div>';
+if (count($message) > 0) {
+    echo '<div id="flash_message" class="global-notice">';
+    foreach ($message as $m) :
+        echo $m . '<br>';
+    endforeach
+    ;
+    echo '</div>';
 }
 ?>
 
@@ -12,8 +13,10 @@ if (count ( $message ) > 0) {
 
 <hr>
 <ul id="menu">
-	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/add">Create new item</a></li>
-		<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">All items</a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/add">Create
+			new item</a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">All
+			items</a></li>
 </ul>
 
 <script>

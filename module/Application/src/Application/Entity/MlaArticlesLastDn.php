@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticlesLastDn
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaArticlesLastDn
     private $id;
 
     /**
+     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
@@ -32,6 +34,7 @@ class MlaArticlesLastDn
     private $article;
 
     /**
+     *
      * @var \Application\Entity\MlaDeliveryItemsWorkflows
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDeliveryItemsWorkflows")
@@ -40,8 +43,6 @@ class MlaArticlesLastDn
      * })
      */
     private $lastWorkflow;
-
-
 
     /**
      * Get id

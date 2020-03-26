@@ -18,12 +18,12 @@ class MessageStoreController extends AbstractActionController
     protected $doctrineEM;
 
     protected $messageQuery;
-    
+
     /*
      * Defaul Action
      */
-    public function indexAction() {
-    }
+    public function indexAction()
+    {}
 
     /**
      *
@@ -79,7 +79,7 @@ class MessageStoreController extends AbstractActionController
 
         $limit = null;
         $offset = null;
-        $paginator=null;
+        $paginator = null;
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
@@ -87,7 +87,7 @@ class MessageStoreController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $result = $this->getMessageQuery()->getMessagesOf($entity_id,$entity_token, null, null,$limit, $offset);
+        $result = $this->getMessageQuery()->getMessagesOf($entity_id, $entity_token, null, null, $limit, $offset);
 
         return new ViewModel(array(
             'list' => $result,

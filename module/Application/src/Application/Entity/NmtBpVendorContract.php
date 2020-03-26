@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtBpVendorContract
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtBpVendorContract
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_subject", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class NmtBpVendorContract
     private $contractSubject;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
@@ -36,6 +39,7 @@ class NmtBpVendorContract
     private $keywords;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="signing_date", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtBpVendorContract
     private $signingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtBpVendorContract
     private $validFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtBpVendorContract
     private $validTo;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -64,6 +71,7 @@ class NmtBpVendorContract
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtBpVendorContract
     private $filetype;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=100, nullable=true)
@@ -78,6 +87,7 @@ class NmtBpVendorContract
     private $filename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename_original", type="string", length=255, nullable=true)
@@ -85,6 +95,7 @@ class NmtBpVendorContract
     private $filenameOriginal;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="file_pwd", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class NmtBpVendorContract
     private $filePwd;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="size", type="integer", nullable=true)
@@ -99,6 +111,7 @@ class NmtBpVendorContract
     private $size;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -106,6 +119,7 @@ class NmtBpVendorContract
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -113,6 +127,7 @@ class NmtBpVendorContract
     private $folder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder_relative", type="string", length=80, nullable=true)
@@ -120,6 +135,7 @@ class NmtBpVendorContract
     private $folderRelative;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -127,6 +143,7 @@ class NmtBpVendorContract
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -134,6 +151,7 @@ class NmtBpVendorContract
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -141,6 +159,7 @@ class NmtBpVendorContract
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -148,6 +167,7 @@ class NmtBpVendorContract
     private $lastChangeOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
@@ -155,6 +175,7 @@ class NmtBpVendorContract
     private $markedForDeletion;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -165,6 +186,7 @@ class NmtBpVendorContract
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -175,6 +197,7 @@ class NmtBpVendorContract
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -183,8 +206,6 @@ class NmtBpVendorContract
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationDocType
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationDocType
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type_code", type="string", length=10, nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationDocType
     private $docTypeCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type_name", type="string", length=45, nullable=false)
@@ -36,6 +39,7 @@ class NmtApplicationDocType
     private $docTypeName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationDocType
     private $description;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_prefix", type="string", length=10, nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationDocType
     private $docPrefix;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_suffix", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationDocType
     private $docSuffix;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=false)
@@ -64,6 +71,7 @@ class NmtApplicationDocType
     private $createdBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -71,6 +79,7 @@ class NmtApplicationDocType
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationDocRangeNumber
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDocRangeNumber")
@@ -81,6 +90,7 @@ class NmtApplicationDocType
     private $docRangeNumber;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -89,8 +99,6 @@ class NmtApplicationDocType
      * })
      */
     private $company;
-
-
 
     /**
      * Get id

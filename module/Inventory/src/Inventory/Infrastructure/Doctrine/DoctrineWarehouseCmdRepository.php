@@ -335,7 +335,7 @@ class DoctrineWarehouseCmdRepository extends AbstractDoctrineRepository implemen
             return null;
 
         $entity->setId($snapshot->id);
-        
+
         $entity->setCreatedOn($snapshot->createdOn);
 
         $entity->setSysNumber($snapshot->sysNumber);

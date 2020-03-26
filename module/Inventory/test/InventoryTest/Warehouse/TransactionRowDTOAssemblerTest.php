@@ -35,20 +35,20 @@ class TransactionRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
         $data["itemSku"] = "2-3";
         $data["itemName"] = "Special Item";
         $data["docQuantity"] = "19.004";
-        
+
         // WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
         // var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
 
-//        var_dump(TransactionRowDTOAssembler::createDTOProperities());
+        // var_dump(TransactionRowDTOAssembler::createDTOProperities());
 
-        //var_dump(TransactionRowDTOAssembler::createDTOFromArray($data, $em));
-        
+        // var_dump(TransactionRowDTOAssembler::createDTOFromArray($data, $em));
+
         var_dump(TransactionRowDTOAssembler::createMapping());
-        
-       /*  echo($dto->itemName);
-        $missing = ItemAssembler::checkItemDTO();
-        var_dump($missing); */
-        
-       
+
+        /*
+         * echo($dto->itemName);
+         * $missing = ItemAssembler::checkItemDTO();
+         * var_dump($missing);
+         */
     }
 }

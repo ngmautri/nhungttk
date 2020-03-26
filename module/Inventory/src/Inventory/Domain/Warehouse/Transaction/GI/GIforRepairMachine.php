@@ -164,9 +164,7 @@ class GIforRepairMachine extends GoodsIssue implements GoodsIssueInterface
 
     protected function specificHeaderValidation(TransactionSpecificationService $specificationService, Notification $notification = null)
     {}
-    
-    
+
     public function addTransactionRow(TransactionRow $transactionRow)
     {}
-
 }

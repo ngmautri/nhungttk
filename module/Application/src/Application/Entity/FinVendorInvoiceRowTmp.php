@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinVendorInvoiceRowTmp
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class FinVendorInvoiceRowTmp
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
@@ -29,6 +31,7 @@ class FinVendorInvoiceRowTmp
     private $rowNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class FinVendorInvoiceRowTmp
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=false)
@@ -43,6 +47,7 @@ class FinVendorInvoiceRowTmp
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="unit_price", type="decimal", precision=15, scale=4, nullable=false)
@@ -50,6 +55,7 @@ class FinVendorInvoiceRowTmp
     private $unitPrice;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="net_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -57,6 +63,7 @@ class FinVendorInvoiceRowTmp
     private $netAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class FinVendorInvoiceRowTmp
     private $unit;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="item_unit", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class FinVendorInvoiceRowTmp
     private $itemUnit;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
@@ -78,6 +87,7 @@ class FinVendorInvoiceRowTmp
     private $conversionFactor;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="converstion_text", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class FinVendorInvoiceRowTmp
     private $converstionText;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="tax_rate", type="integer", nullable=true)
@@ -92,6 +103,7 @@ class FinVendorInvoiceRowTmp
     private $taxRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=100, nullable=true)
@@ -99,6 +111,7 @@ class FinVendorInvoiceRowTmp
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -106,6 +119,7 @@ class FinVendorInvoiceRowTmp
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class FinVendorInvoiceRowTmp
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class FinVendorInvoiceRowTmp
     private $lastchangeOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class FinVendorInvoiceRowTmp
     private $currentState;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_item_code", type="string", length=45, nullable=true)
@@ -134,6 +151,7 @@ class FinVendorInvoiceRowTmp
     private $vendorItemCode;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="trace_stock", type="boolean", nullable=true)
@@ -141,6 +159,7 @@ class FinVendorInvoiceRowTmp
     private $traceStock;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="gross_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -148,6 +167,7 @@ class FinVendorInvoiceRowTmp
     private $grossAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="tax_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -155,6 +175,7 @@ class FinVendorInvoiceRowTmp
     private $taxAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="fa_remarks", type="string", length=200, nullable=true)
@@ -162,6 +183,7 @@ class FinVendorInvoiceRowTmp
     private $faRemarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="row_indentifer", type="string", length=45, nullable=true)
@@ -169,6 +191,7 @@ class FinVendorInvoiceRowTmp
     private $rowIndentifer;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="discount_rate", type="integer", nullable=true)
@@ -176,6 +199,7 @@ class FinVendorInvoiceRowTmp
     private $discountRate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -183,6 +207,7 @@ class FinVendorInvoiceRowTmp
     private $revisionNo;
 
     /**
+     *
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -193,6 +218,7 @@ class FinVendorInvoiceRowTmp
     private $invoice;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -203,6 +229,7 @@ class FinVendorInvoiceRowTmp
     private $prRow;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -213,6 +240,7 @@ class FinVendorInvoiceRowTmp
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -223,6 +251,7 @@ class FinVendorInvoiceRowTmp
     private $warehouse;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -233,6 +262,7 @@ class FinVendorInvoiceRowTmp
     private $lastchangedBy;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
@@ -243,6 +273,7 @@ class FinVendorInvoiceRowTmp
     private $poRow;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -251,8 +282,6 @@ class FinVendorInvoiceRowTmp
      * })
      */
     private $item;
-
-
 
     /**
      * Get id

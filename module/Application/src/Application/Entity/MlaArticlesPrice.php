@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticlesPrice
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaArticlesPrice
     private $id;
 
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="unit_price", type="float", precision=10, scale=0, nullable=true)
@@ -29,6 +31,7 @@ class MlaArticlesPrice
     private $unitPrice;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="currency", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class MlaArticlesPrice
     private $currency;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_until", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class MlaArticlesPrice
     private $validUntil;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -50,6 +55,7 @@ class MlaArticlesPrice
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
@@ -58,8 +64,6 @@ class MlaArticlesPrice
      * })
      */
     private $article;
-
-
 
     /**
      * Get id

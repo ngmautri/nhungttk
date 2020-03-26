@@ -36,16 +36,15 @@ class ItemSearchService extends AbstractService
         }
 
         $doc = new Document();
-        
+
         $doc->addField(Field::UnIndexed('item_id', $row['id']));
         $doc->addField(Field::UnIndexed('token', $row['token']));
         $doc->addField(Field::UnIndexed('checksum', $row['checksum']));
-        
-        $doc->addField(Field::Keyword('item_token_keyword',"__" . $row['id']));
 
-        $doc->addField(Field::Keyword('item_token_serial_keyword', $row['token'] . "__" . $row['id']. "__" . $row['serial_id']));
-        
-        
+        $doc->addField(Field::Keyword('item_token_keyword', "__" . $row['id']));
+
+        $doc->addField(Field::Keyword('item_token_serial_keyword', $row['token'] . "__" . $row['id'] . "__" . $row['serial_id']));
+
         $doc->addField(Field::Keyword('item_sku_key', $row['item_sku']));
         $doc->addField(Field::Keyword('item_sku1_key', $row['item_sku1']));
         $doc->addField(Field::Keyword('item_sku2_key', $row['item_sku2']));
@@ -99,14 +98,12 @@ class ItemSearchService extends AbstractService
         $doc->addField(Field::text('serial_number_2', $row['serial_no2']));
 
         $doc->addField(Field::text('mfg_name', $row['mfg_name']));
-        $doc->addField(Field::text('mfg_description', $row['mfg_description']));        
+        $doc->addField(Field::text('mfg_description', $row['mfg_description']));
         $doc->addField(Field::text('serial_remarks', $row['serial_remarks']));
 
-        
         $doc->addField(Field::Keyword('mfg_serial_number_key', $row['mfg_serial_number']));
         $doc->addField(Field::text('mfg_serial_number', $row['mfg_serial_number']));
-        
-        
+
         $doc->addField(Field::Keyword('mfg_model_key', $row['mfg_model']));
         $doc->addField(Field::Keyword('mfg_model1_key', $row['mfg_model1']));
         $doc->addField(Field::Keyword('mfg_model2_key', $row['mfg_model2']));
@@ -126,12 +123,11 @@ class ItemSearchService extends AbstractService
         $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
 
         $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
-        
+
         // add item group and account
-       
 
         $index->addDocument($doc);
-     
+
         // =================================
     }
 
@@ -145,10 +141,9 @@ class ItemSearchService extends AbstractService
         set_time_limit(2000);
         try {
             $index = Lucene::create(getcwd() . self::ITEM_INDEX);
-            //Analyzer::setDefault(new CaseInsensitive());
+            // Analyzer::setDefault(new CaseInsensitive());
             Analyzer::setDefault(new \ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive());
-            
-            
+
             /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
 
@@ -270,7 +265,7 @@ class ItemSearchService extends AbstractService
             return $log;
         }
     }
-    
+
     /**
      *
      * @param number $is_new
@@ -280,46 +275,46 @@ class ItemSearchService extends AbstractService
      */
     public function updateItemIndex($is_new = 0, $item, $optimized)
     {
-        
+
         // take long time
         set_time_limit(1500);
         try {
-            
+
             /** @var \Application\Entity\Application\Entity\NmtInventoryItem $row;*/
-            
+
             if ($item instanceof NmtInventoryItem) {
                 $index = Lucene::open(getcwd() . self::ITEM_INDEX);
                 Analyzer::setDefault(new CaseInsensitive());
-                
-                if ($is_new ==0) {
+
+                if ($is_new == 0) {
                     $ck_query = 'item_token_keyword:__' . $item->getId();
                     $ck_hits = $index->find($ck_query);
-                    
-                    if (count($ck_hits) >0 ) {                        
-                        foreach($ck_hits as $hit){
+
+                    if (count($ck_hits) > 0) {
+                        foreach ($ck_hits as $hit) {
                             $index->delete($hit->id);
                         }
-                     }
+                    }
                 }
-                
+
                 /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
                 $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-                
+
                 $records = $res->getAllItemWithSerial($item->getId());
-                
+
                 if (count($records) > 0) {
-                    
+
                     foreach ($records as $row) {
                         $this->_addDocument($index, $row);
                     }
                 } else {
                     return sprintf("[INFO] nothing for indexing");
                 }
-                
+
                 if ($optimized === true) {
                     $index->optimize();
                 }
-                return sprintf("[0k] Search index updated! %s",count($ck_hits));
+                return sprintf("[0k] Search index updated! %s", count($ck_hits));
             } else {
                 return sprintf("[FAILED] Input invalid");
             }
@@ -540,7 +535,7 @@ class ItemSearchService extends AbstractService
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
-            
+
             $final_query = new Boolean();
 
             $q = strtolower($q);
@@ -550,13 +545,13 @@ class ItemSearchService extends AbstractService
             if (count($terms) > 1) {
 
                 foreach ($terms as $t) {
-                    
+
                     $t = preg_replace('/\s+/', '', $t);
-                    
-                    if(strlen($t) == 0 ){
+
+                    if (strlen($t) == 0) {
                         continue;
-                    }                        
-                    
+                    }
+
                     if (strpos($t, '*') != false) {
                         $pattern = new Term($t);
                         $query = new Wildcard($pattern);
@@ -615,10 +610,7 @@ class ItemSearchService extends AbstractService
 
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
-            
-            
-            
-            
+
             if (strpos($q, '*') != false) {
                 $pattern = new Term($q);
                 $query = new Wildcard($pattern);
@@ -670,7 +662,7 @@ class ItemSearchService extends AbstractService
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
-            
+
             $final_query = new Boolean();
 
             if (strpos($q, '*') != false) {
@@ -716,7 +708,7 @@ class ItemSearchService extends AbstractService
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
-            
+
             $final_query = new Boolean();
 
             if (strpos($q, '*') != false) {

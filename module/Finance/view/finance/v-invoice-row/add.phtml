@@ -69,7 +69,10 @@ switch ($action) {
 					<li><a href="#general"><?php echo $form_title;?></a></li>
 					
 				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-            		<li ><a title="<?php echo $this->translate("Change Logs");?>" href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+            		<li><a
+						title="<?php echo $this->translate("Change Logs");?>"
+						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 				<?php endif;?>
             			
 				</ul>
@@ -92,9 +95,9 @@ if (count($errors) > 0) {
 ?>
 	
 					<form id="New_Invoice_Row" class="form-horizontal"
-						action="<?php echo $form_action;?>"
-						method="post" enctype="multipart/form-data">
-						
+						action="<?php echo $form_action;?>" method="post"
+						enctype="multipart/form-data">
+
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							id="target_id" name="target_id"
@@ -123,7 +126,8 @@ if (count($errors) > 0) {
 
 							<label class="control-label col-sm-2"></label>
 							<div class="col-sm-3">
-								<input <?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								<input
+									<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 									type="checkbox" name="isActive" value="1">&nbsp;Is
 								Active&nbsp;&nbsp;&nbsp;&nbsp;
 							</div>
@@ -168,7 +172,7 @@ if (count($errors) > 0) {
 									class="glyphicon glyphicon-new-window"></i></small>
 							</div>
 						</div>
-						
+
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">PO Item: </label>
 							<div class="col-sm-3">
@@ -208,7 +212,7 @@ if (count($errors) > 0) {
 									class="glyphicon glyphicon-new-window"></i></small>
 							</div>
 						</div>
-						
+
 
 						<div class="form-group margin-bottom  required">
 							<label class="control-label col-sm-2">Item: </label>
@@ -363,7 +367,7 @@ if (count($errors) > 0) {
                     if ($entity !== null) :
                         if ($entity->getGlAccount() !== null) :
                             if ($entity->getGlAccount()->getId() == $gl->getId()) :
-                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                             else :
                                 echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                             endif;
@@ -381,12 +385,12 @@ if (count($errors) > 0) {
    					</select>
 							</div>
 
-							
+
 
 						</div>
-						
+
 						<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
+							<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
 							<div class="col-sm-3">
 								<select tabindex="10" name="cost_center_id" id="cost_center_id"
 									class="form-control input-sm">
@@ -416,10 +420,10 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-								</div>
+							</div>
 						</div>
-						
-						 <div class="form-group margin-bottom required">
+
+						<div class="form-group margin-bottom required">
 
 							<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
 							<div class="col-sm-3">
@@ -427,23 +431,23 @@ if (count($errors) > 0) {
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("...");?></option>
    	    							<?php
-   	    	 if ($wh_list !== null) :
-   	    	 foreach ($wh_list as $gl) :
+            if ($wh_list !== null) :
+                foreach ($wh_list as $gl) :
 
                     /**@var \Application\Entity\NmtInventoryWarehouse $gl ; */
 
                     if ($entity !== null) :
                         if ($entity->getWarehouse() !== null) :
-                        if ($entity->getWarehouse()->getId() == $gl->getId()) :
-                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            if ($entity->getWarehouse()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                             else :
-                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $gl->getId() . '">' . $gl->getWhName()  . '</option>';
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                     endif;
                 endforeach
                 ;
@@ -451,8 +455,8 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-							</div>	
 							</div>
+						</div>
 
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">Remark:</label>
@@ -704,7 +708,7 @@ if (count($errors) > 0) {
 	}
 
 	<?php
-    if ($entity != null) :
+if ($entity != null) :
     if ($entity->getItem() != null) :
         ?>
 

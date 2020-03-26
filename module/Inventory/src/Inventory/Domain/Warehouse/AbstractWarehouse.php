@@ -61,25 +61,25 @@ abstract class AbstractWarehouse
     protected $location;
 
     protected $uuid;
-    
+
     /**
      *
      * @var AbstractSpecificationFactory $sharedSpecificationFactory;
      */
     protected $sharedSpecificationFactory;
-    
+
     /**
      *
      * @var WarehouseCmdRepositoryInterface $cmdRepository;
      */
     protected $cmdRepository;
-    
+
     /**
      *
      * @var WarehouseQueryRepositoryInterface $queryRepository;
      */
     protected $queryRepository;
-    
+
     /**
      *
      * @return \Inventory\Domain\Warehouse\WarehouseCmdRepositoryInterface
@@ -88,7 +88,7 @@ abstract class AbstractWarehouse
     {
         return $this->cmdRepository;
     }
-    
+
     /**
      *
      * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
@@ -97,17 +97,19 @@ abstract class AbstractWarehouse
     {
         return $this->queryRepository;
     }
-    
+
     /**
      *
-     * @param WarehouseCmdRepositoryInterface $cmdRepository ;
+     * @param WarehouseCmdRepositoryInterface $cmdRepository
+     *            ;
      */
     public function setCmdRepository(WarehouseCmdRepositoryInterface $cmdRepository)
     {
         $this->cmdRepository = $cmdRepository;
     }
-    
+
     /**
+     *
      * @param mixed $queryRepository
      */
     public function setQueryRepository(WarehouseQueryRepositoryInterface $queryRepository)
@@ -162,7 +164,7 @@ abstract class AbstractWarehouse
         $this->whController = $snapshot->whController;
         $this->location = $snapshot->location;
         $this->uuid = $snapshot->uuid;
-   }
+    }
 
     /**
      *
@@ -399,7 +401,7 @@ abstract class AbstractWarehouse
     {
         return $this->location;
     }
-    
+
     /**
      *
      * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
@@ -408,7 +410,7 @@ abstract class AbstractWarehouse
     {
         return $this->sharedSpecificationFactory;
     }
-    
+
     /**
      *
      * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
@@ -417,5 +419,4 @@ abstract class AbstractWarehouse
     {
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;
     }
-    
 }

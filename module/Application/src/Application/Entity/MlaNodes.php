@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaNodes
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="node", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaNodes
     private $node;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="label", type="string", length=45, nullable=false)
@@ -29,6 +31,7 @@ class MlaNodes
     private $label;
 
     /**
+     *
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Application\Entity\MlaNodes", inversedBy="ancestor")
@@ -50,7 +53,6 @@ class MlaNodes
     {
         $this->descendant = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 
     /**
      * Get node

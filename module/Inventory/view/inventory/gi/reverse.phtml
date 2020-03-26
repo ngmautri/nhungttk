@@ -1,15 +1,16 @@
-<?php /**@var \Application\Entity\NmtInventoryMv $entity ;*/
+<?php
 
+/**@var \Application\Entity\NmtInventoryMv $entity ;*/
 if ($entity !== null) {
     $form_action = '/inventory/gi/reverse';
 }
 
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
-    echo '<li>' . $error . '</li>';
+        echo '<li>' . $error . '</li>';
     endforeach
     ;
     echo '</ul>';
@@ -63,7 +64,8 @@ if (count($errors) > 0) {
 						<label class="control-label col-sm-2 required"><?php echo $this->translate("Reversal Date");?> :</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text"
-								id="reversalDate" name="reversalDate" value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
+								id="reversalDate" name="reversalDate"
+								value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
 						</div>
 					</div>
@@ -102,7 +104,7 @@ if (count($errors) > 0) {
 		</form>
 		<hr style="margin: 20pt 1pt 5pt 1pt;">
 
-<!-- /////////////////////////////// -->
+		<!-- /////////////////////////////// -->
 
 
 		<form id="Create_Inv_Form" class="form-horizontal" action=""

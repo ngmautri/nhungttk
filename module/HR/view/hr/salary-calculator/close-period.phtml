@@ -3,21 +3,23 @@
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
 	</ul>
-<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt">
 
-<div class="row">
-  <div class="col-xs-6 col-md-3">
+		<div class="row">
+			<div class="col-xs-6 col-md-3">
  
-				 <?php 
-    					$current_step="STEP4";
-    					include ('calculator-wizard.php'); 
-  				  ?>
+				 <?php
+    $current_step = "STEP4";
+    include ('calculator-wizard.php');
+    ?>
  
   </div>
-  
-  <div class="col-xs-12 col-sm-6 col-md-9" style=""><h3><?php echo $this->translate('Input check'); ?></h3></div>
-  
-</div>	
 
-</div>
+			<div class="col-xs-12 col-sm-6 col-md-9" style="">
+				<h3><?php echo $this->translate('Input check'); ?></h3>
+			</div>
+
+		</div>
+
+	</div>
 </div>

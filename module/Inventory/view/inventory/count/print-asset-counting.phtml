@@ -1,87 +1,91 @@
 <h3>Asset Counting Report:</h3>
 
-<?php if ($counting!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Task Name	: <strong>' . $counting->name . '</strong></li>';
-	 echo '<li>Start date	: <strong>' .$counting-> start_date . '</strong> - End date	: <strong>' .$counting->end_date . '</strong></li>';
-	 echo '<li>Status	: <strong>' .$counting-> status . '</strong></li>';
-	 echo '<li>Counted	: <strong>' .$total_counted . ' /' . $total_to_count  . '</strong></li>';
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if ($counting !== null) {
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Task Name	: <strong>' . $counting->name . '</strong></li>';
+    echo '<li>Start date	: <strong>' . $counting->start_date . '</strong> - End date	: <strong>' . $counting->end_date . '</strong></li>';
+    echo '<li>Status	: <strong>' . $counting->status . '</strong></li>';
+    echo '<li>Counted	: <strong>' . $total_counted . ' /' . $total_to_count . '</strong></li>';
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
 
 <table class="pure-table pure-table-bordered">
-<thead>
-	<tr>
-		<td><b>N0.</b></td>
-		<td><b>Picture </b></td>
-		<td><b>Asset </b></td>
-		<td><b>Location</b></td>
-		<td><b>Counted by <br> /Counted on</b></td>
-		<td><b>Verified by</b></td>
-		<td><b>Remarks</b></td>
-		
-	</tr>
-</thead>
-
- <tbody>
-<?php	 
-	 $count = 0;
-	 foreach ($items as $a) : 
-	 	 $count++;
-	 	//echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
+	<thead>
 		<tr>
-  		<td><b><?php echo $count;?></b></td>
-  		
-  			 	<td>
-			<?php 
-			if($a->asset_picture_id!=null):
-			?>
-			<a target="_blank" href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" style="min-height:120px;height:120px;min-width:120px;width:120px;" src="/inventory/image/asset-thumbnail-200?id=<?php echo $a->asset_picture_id;?>"/>
-		</a>			
-			<?php 
-			else:
-			?>
-			<img class= "img-rounded" width="50" height="50" src="/images/no-pic.jpg"/>
+			<td><b>N0.</b></td>
+			<td><b>Picture </b></td>
+			<td><b>Asset </b></td>
+			<td><b>Location</b></td>
+			<td><b>Counted by <br> /Counted on
+			</b></td>
+			<td><b>Verified by</b></td>
+			<td><b>Remarks</b></td>
+
+		</tr>
+	</thead>
+
+	<tbody>
+<?php
+$count = 0;
+foreach ($items as $a) :
+    $count ++;
+    // echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+    ?>
+		<tr>
+			<td><b><?php echo $count;?></b></td>
+
+			<td>
+			<?php
+    if ($a->asset_picture_id != null) :
+        ?>
+			<a target="_blank"
+				href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+					<img class="img-rounded"
+					style="min-height: 120px; height: 120px; min-width: 120px; width: 120px;"
+					src="/inventory/image/asset-thumbnail-200?id=<?php echo $a->asset_picture_id;?>" />
+			</a>			
+			<?php
+    else :
+        ?>
+			<img class="img-rounded" width="50" height="50"
+				src="/images/no-pic.jpg" />
 				
-			<?php 
-			endif;
-			?>
+			<?php
+    endif;
+    ?>
 			
 			</td>
-  	
- 		<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.'<b>'. $a['tag'].'</b>'.'</span>': '<b>'. $a['tag'].'</b>';?>
- 				<div style="color: gray; font-size: 8pt;	">
- <?php	
- 				$asset_name = $a->name;
- 				if (strlen($asset_name) > 45) {
 
-				    // truncate string
-				    $stringCut = substr($asset_name, 0, 45);
-				
-				    // make sure it ends in a word so assassinate doesn't become ass...
-				    $asset_name = substr($stringCut, 0, strrpos($stringCut, ' ')).'<a title="'. $a->name.'">... </a>'; 
-				}
-?>
+			<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.'<b>'. $a['tag'].'</b>'.'</span>': '<b>'. $a['tag'].'</b>';?>
+ 				<div style="color: gray; font-size: 8pt;">
+ <?php
+    $asset_name = $a->name;
+    if (strlen($asset_name) > 45) {
+
+        // truncate string
+        $stringCut = substr($asset_name, 0, 45);
+
+        // make sure it ends in a word so assassinate doesn't become ass...
+        $asset_name = substr($stringCut, 0, strrpos($stringCut, ' ')) . '<a title="' . $a->name . '">... </a>';
+    }
+    ?>
  				
  				Name: <span id="<?php echo $this->escapeHtml($a->id);?>_name"><?php echo $asset_name ;?></span><br>
-				Model: <span id="<?php echo $this->escapeHtml($a->id);?>_model"><?php echo $this->escapeHtml($a->model);?></span><br>
-				Serial: <span id="<?php echo $this->escapeHtml($a->id);?>_serial"><?php echo $this->escapeHtml($a->serial);?></span>
-				</div>
- 		
- 		</td>
-		<td><?php echo $a['counted_location'];?></td>
-		<td><?php echo $a['counted_by'];?><br>/<?php echo $a['counted_on'];?></td>
-		<td><?php echo $a['verified_by'];?></td>
-		<td>	</td>
-	</tr>
+					Model: <span id="<?php echo $this->escapeHtml($a->id);?>_model"><?php echo $this->escapeHtml($a->model);?></span><br>
+					Serial: <span id="<?php echo $this->escapeHtml($a->id);?>_serial"><?php echo $this->escapeHtml($a->serial);?></span>
+				</div></td>
+			<td><?php echo $a['counted_location'];?></td>
+			<td><?php echo $a['counted_by'];?><br>/<?php echo $a['counted_on'];?></td>
+			<td><?php echo $a['verified_by'];?></td>
+			<td></td>
+		</tr>
 <?php endforeach; ?>
 
  </tbody>

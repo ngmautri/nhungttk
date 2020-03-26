@@ -110,7 +110,8 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 												<?php echo $layout=='list'? "selected='selected'":"";?>
 												value="list">List</option>
 
-											<option <?php echo $layout=='grid'? "selected='selected'":"";?>
+											<option
+												<?php echo $layout=='grid'? "selected='selected'":"";?>
 												value=grid>Gird</option>
 										</select>
 
@@ -177,18 +178,18 @@ if ($total_records <= 0) {
     } else {
         echo $total_records . ' records found!';
     }
-    
-    $url = sprintf( $this->baseUrl . '/inventory/item/list2?layout=grid&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s'
-        ,$is_active, $item_type,$sort_by,$sort,$is_fixed_asset,$per_pape,$page);
-    
+
+    $url = sprintf($this->baseUrl . '/inventory/item/list2?layout=grid&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s', $is_active, $item_type, $sort_by, $sort, $is_fixed_asset, $per_pape, $page);
 
     ?>
     
-&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 1pt 5pt; margin:1pt 5pt 5pt 1pt;" title="Grid View" href="<?php echo $url;?>">
-	<i class="fa fa-th" aria-hidden="true"></i></a>
+&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm"
+			style="color: black; padding: 1pt 5pt 1pt 5pt; margin: 1pt 5pt 5pt 1pt;"
+			title="Grid View" href="<?php echo $url;?>"> <i class="fa fa-th"
+			aria-hidden="true"></i></a>
 
-	
-<table id="mytable26" style="font-size: 9.2pt; color: graytext;"
+
+		<table id="mytable26" style="font-size: 9.2pt; color: graytext;"
 			class="table table-bordered table-hover">
 			<thead>
 				<tr>
@@ -265,22 +266,22 @@ if ($total_records <= 0) {
         }
 
         for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

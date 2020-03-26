@@ -8,7 +8,10 @@ namespace Application\Domain\Company\PostingPeriod;
  */
 Interface PostingPeriodQueryRepositoryInterface
 {
+
     public function getPostingPeriod($postingDate);
+
     public function getPostingPeriodStatus($postingDate);
+
     public function getLatestFX($sourceCurrencyId, $targetCurrencyId);
 }

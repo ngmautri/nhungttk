@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinAccount
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,6 +24,7 @@ class FinAccount
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -30,6 +32,7 @@ class FinAccount
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="account_number", type="integer", nullable=true)
@@ -37,6 +40,7 @@ class FinAccount
     private $accountNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="account_type", type="string", length=10, nullable=true)
@@ -44,6 +48,7 @@ class FinAccount
     private $accountType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="account_class", type="string", length=45, nullable=true)
@@ -51,6 +56,7 @@ class FinAccount
     private $accountClass;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="account_group", type="string", length=45, nullable=true)
@@ -58,6 +64,7 @@ class FinAccount
     private $accountGroup;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -65,6 +72,7 @@ class FinAccount
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -72,6 +80,7 @@ class FinAccount
     private $description;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -79,6 +88,7 @@ class FinAccount
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -86,6 +96,7 @@ class FinAccount
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -93,6 +104,7 @@ class FinAccount
     private $revisionNo;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -103,6 +115,7 @@ class FinAccount
     private $company;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -113,6 +126,7 @@ class FinAccount
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -121,8 +135,6 @@ class FinAccount
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

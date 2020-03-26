@@ -28,7 +28,7 @@ abstract class AbstractItemFactory
             case ItemType::NONE_INVENTORY_ITEM_TYPE:
                 $factory = new NoneInventoryItemFactory();
                 break;
-                
+
             case ItemType::FIXED_ASSET_ITEM_TYPE:
                 $factory = new FixedAssetItemFactory();
                 break;
@@ -141,6 +141,4 @@ abstract class AbstractItemFactory
      * create item;
      */
     abstract function specifyItem();
-    
-   
 }

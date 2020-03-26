@@ -29,7 +29,7 @@ class MessageQueryFactory implements FactoryInterface
 
         $sv = $container->get(MessageStoreRepository::class);
         $service->setMessageReposiory($sv);
-        
+
         return $service;
     }
 }

@@ -1,31 +1,37 @@
 <div id="dashboard_calender" style="padding-top: 5pt">
 
-<?php echo '<strong>'. $mm_name . ' '. $yy . '</strong>&nbsp;&nbsp;' ; 
+<?php
 
-$n_mm =  $mm+1;
-$p_mm =  $mm-1;
+echo '<strong>' . $mm_name . ' ' . $yy . '</strong>&nbsp;&nbsp;';
 
-$next = "'/calendar/index/month1?mm=".$n_mm . "&yy= ". $yy. "'";
-$pre = "'/calendar/index/month1?mm=".$p_mm . "&yy= ". $yy. "'";
+$n_mm = $mm + 1;
+$p_mm = $mm - 1;
+
+$next = "'/calendar/index/month1?mm=" . $n_mm . "&yy= " . $yy . "'";
+$pre = "'/calendar/index/month1?mm=" . $p_mm . "&yy= " . $yy . "'";
 $td = "'/calendar/index/month1'";
 
 ?>
 
 <?php if($isCurrentMonth == 0):?>
-<a class="" style="color: navy" href="javascript:;" onclick="doPaginator(<?php echo $td;?>,'calendar_containter');">Today</a>				
+<a class="" style="color: navy" href="javascript:;"
+		onclick="doPaginator(<?php echo $td;?>,'calendar_containter');">Today</a>				
 |
 <?php endif;?>
 
-<a class="" style="color: navy" href="javascript:;" onclick="doPaginator(<?php echo $pre;?>,'calendar_containter');"><i
-				class="fa fa-caret-left" aria-hidden="true"></i> Previous&nbsp;</a>|				
-<a class="" style="color: navy" href="javascript:;" onclick="doPaginator(<?php echo $next;?>,'calendar_containter');">&nbsp;Next <i
-				class="fa fa-caret-right" aria-hidden="true"></i> </a>				
-				
+<a class="" style="color: navy" href="javascript:;"
+		onclick="doPaginator(<?php echo $pre;?>,'calendar_containter');"><i
+		class="fa fa-caret-left" aria-hidden="true"></i> Previous&nbsp;</a>| <a
+		class="" style="color: navy" href="javascript:;"
+		onclick="doPaginator(<?php echo $next;?>,'calendar_containter');">&nbsp;Next
+		<i class="fa fa-caret-right" aria-hidden="true"></i>
+	</a>
 
 
-		</div>
 
-		<div id="calendar-wrap">
+</div>
+
+<div id="calendar-wrap">
 			<?php echo $calendar ?>
 		</div>
 

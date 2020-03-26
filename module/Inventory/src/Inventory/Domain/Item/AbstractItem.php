@@ -257,7 +257,6 @@ abstract class AbstractItem
         $this->lastTrxRow = $itemSnapshot->lastTrxRow;
         $this->lastPurchasing = $itemSnapshot->lastPurchasing;
         $this->itemTypeId = $itemSnapshot->itemTypeId;
-        
     }
 
     /**
@@ -279,12 +278,11 @@ abstract class AbstractItem
         $itemSnapshot = ItemSnapshotAssembler::createSnapshotFrom($this);
         return $itemSnapshot;
     }
-    
+
     protected function setItemType($itemType)
     {
         $this->itemType = $itemType;
     }
-    
 
     /**
      *
@@ -684,7 +682,9 @@ abstract class AbstractItem
     {
         return $this->lastPurchasing;
     }
+
     /**
+     *
      * @param mixed $warehouseId
      */
     protected function setWarehouseId($warehouseId)
@@ -693,6 +693,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemSku
      */
     protected function setItemSku($itemSku)
@@ -701,6 +702,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemName
      */
     protected function setItemName($itemName)
@@ -709,6 +711,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemNameForeign
      */
     protected function setItemNameForeign($itemNameForeign)
@@ -717,6 +720,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemDescription
      */
     protected function setItemDescription($itemDescription)
@@ -725,6 +729,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemCategory
      */
     protected function setItemCategory($itemCategory)
@@ -733,6 +738,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $keywords
      */
     protected function setKeywords($keywords)
@@ -741,6 +747,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $isActive
      */
     protected function setIsActive($isActive)
@@ -749,6 +756,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $isStocked
      */
     protected function setIsStocked($isStocked)
@@ -757,6 +765,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $isSaleItem
      */
     protected function setIsSaleItem($isSaleItem)
@@ -765,6 +774,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $isPurchased
      */
     protected function setIsPurchased($isPurchased)
@@ -773,6 +783,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $isFixedAsset
      */
     protected function setIsFixedAsset($isFixedAsset)
@@ -781,6 +792,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $isSparepart
      */
     protected function setIsSparepart($isSparepart)
@@ -789,6 +801,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $uom
      */
     protected function setUom($uom)
@@ -797,6 +810,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $barcode
      */
     protected function setBarcode($barcode)
@@ -805,6 +819,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $barcode39
      */
     protected function setBarcode39($barcode39)
@@ -813,6 +828,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $barcode128
      */
     protected function setBarcode128($barcode128)
@@ -821,6 +837,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $status
      */
     protected function setStatus($status)
@@ -829,6 +846,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $createdOn
      */
     protected function setCreatedOn($createdOn)
@@ -837,6 +855,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $manufacturer
      */
     protected function setManufacturer($manufacturer)
@@ -845,6 +864,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $manufacturerCode
      */
     protected function setManufacturerCode($manufacturerCode)
@@ -853,6 +873,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $manufacturerCatalog
      */
     protected function setManufacturerCatalog($manufacturerCatalog)
@@ -861,6 +882,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $manufacturerModel
      */
     protected function setManufacturerModel($manufacturerModel)
@@ -869,6 +891,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $manufacturerSerial
      */
     protected function setManufacturerSerial($manufacturerSerial)
@@ -877,6 +900,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $origin
      */
     protected function setOrigin($origin)
@@ -885,6 +909,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $serialNumber
      */
     protected function setSerialNumber($serialNumber)
@@ -893,6 +918,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastPurchasePrice
      */
     protected function setLastPurchasePrice($lastPurchasePrice)
@@ -901,6 +927,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastPurchaseCurrency
      */
     protected function setLastPurchaseCurrency($lastPurchaseCurrency)
@@ -909,6 +936,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastPurchaseDate
      */
     protected function setLastPurchaseDate($lastPurchaseDate)
@@ -917,6 +945,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $leadTime
      */
     protected function setLeadTime($leadTime)
@@ -925,6 +954,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $validFromDate
      */
     protected function setValidFromDate($validFromDate)
@@ -933,6 +963,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $validToDate
      */
     protected function setValidToDate($validToDate)
@@ -941,6 +972,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $location
      */
     protected function setLocation($location)
@@ -949,6 +981,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemInternalLabel
      */
     protected function setItemInternalLabel($itemInternalLabel)
@@ -957,6 +990,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $assetLabel
      */
     protected function setAssetLabel($assetLabel)
@@ -965,6 +999,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $sparepartLabel
      */
     protected function setSparepartLabel($sparepartLabel)
@@ -973,6 +1008,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $remarks
      */
     protected function setRemarks($remarks)
@@ -981,6 +1017,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $localAvailabiliy
      */
     protected function setLocalAvailabiliy($localAvailabiliy)
@@ -989,6 +1026,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastChangeOn
      */
     protected function setLastChangeOn($lastChangeOn)
@@ -997,6 +1035,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $token
      */
     protected function setToken($token)
@@ -1005,6 +1044,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $checksum
      */
     protected function setChecksum($checksum)
@@ -1013,6 +1053,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $currentState
      */
     protected function setCurrentState($currentState)
@@ -1021,6 +1062,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $docNumber
      */
     protected function setDocNumber($docNumber)
@@ -1029,6 +1071,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $monitoredBy
      */
     protected function setMonitoredBy($monitoredBy)
@@ -1037,6 +1080,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $sysNumber
      */
     protected function setSysNumber($sysNumber)
@@ -1045,6 +1089,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $remarksText
      */
     protected function setRemarksText($remarksText)
@@ -1053,6 +1098,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $revisionNo
      */
     protected function setRevisionNo($revisionNo)
@@ -1061,6 +1107,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemSku1
      */
     protected function setItemSku1($itemSku1)
@@ -1069,6 +1116,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemSku2
      */
     protected function setItemSku2($itemSku2)
@@ -1077,6 +1125,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $assetGroup
      */
     protected function setAssetGroup($assetGroup)
@@ -1085,6 +1134,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $assetClass
      */
     protected function setAssetClass($assetClass)
@@ -1093,6 +1143,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $stockUomConvertFactor
      */
     protected function setStockUomConvertFactor($stockUomConvertFactor)
@@ -1101,6 +1152,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $purchaseUomConvertFactor
      */
     protected function setPurchaseUomConvertFactor($purchaseUomConvertFactor)
@@ -1109,6 +1161,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $salesUomConvertFactor
      */
     protected function setSalesUomConvertFactor($salesUomConvertFactor)
@@ -1117,6 +1170,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $capacity
      */
     protected function setCapacity($capacity)
@@ -1125,6 +1179,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $avgUnitPrice
      */
     protected function setAvgUnitPrice($avgUnitPrice)
@@ -1133,6 +1188,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $standardPrice
      */
     protected function setStandardPrice($standardPrice)
@@ -1141,6 +1197,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $uuid
      */
     protected function setUuid($uuid)
@@ -1149,6 +1206,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemTypeId
      */
     protected function setItemTypeId($itemTypeId)
@@ -1157,6 +1215,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $createdBy
      */
     protected function setCreatedBy($createdBy)
@@ -1165,6 +1224,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $itemGroup
      */
     protected function setItemGroup($itemGroup)
@@ -1173,6 +1233,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $stockUom
      */
     protected function setStockUom($stockUom)
@@ -1181,6 +1242,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $cogsAccount
      */
     protected function setCogsAccount($cogsAccount)
@@ -1189,6 +1251,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $purchaseUom
      */
     protected function setPurchaseUom($purchaseUom)
@@ -1197,6 +1260,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $salesUom
      */
     protected function setSalesUom($salesUom)
@@ -1205,6 +1269,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $inventoryAccount
      */
     protected function setInventoryAccount($inventoryAccount)
@@ -1213,6 +1278,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $expenseAccount
      */
     protected function setExpenseAccount($expenseAccount)
@@ -1221,6 +1287,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $revenueAccount
      */
     protected function setRevenueAccount($revenueAccount)
@@ -1229,6 +1296,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $defaultWarehouse
      */
     protected function setDefaultWarehouse($defaultWarehouse)
@@ -1237,6 +1305,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastChangeBy
      */
     protected function setLastChangeBy($lastChangeBy)
@@ -1245,6 +1314,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $standardUom
      */
     protected function setStandardUom($standardUom)
@@ -1253,6 +1323,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $company
      */
     protected function setCompany($company)
@@ -1261,6 +1332,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastPrRow
      */
     protected function setLastPrRow($lastPrRow)
@@ -1269,6 +1341,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastPoRow
      */
     protected function setLastPoRow($lastPoRow)
@@ -1277,6 +1350,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastApInvoiceRow
      */
     protected function setLastApInvoiceRow($lastApInvoiceRow)
@@ -1285,6 +1359,7 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastTrxRow
      */
     protected function setLastTrxRow($lastTrxRow)
@@ -1293,11 +1368,11 @@ abstract class AbstractItem
     }
 
     /**
+     *
      * @param mixed $lastPurchasing
      */
     protected function setLastPurchasing($lastPurchasing)
     {
         $this->lastPurchasing = $lastPurchasing;
     }
-
 }

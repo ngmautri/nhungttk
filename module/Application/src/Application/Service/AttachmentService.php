@@ -1,35 +1,31 @@
 <?php
 namespace Application\Service;
+
 use Doctrine\ORM\EntityManager;
-
-
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\FinVendorInvoiceRow;
 use Application\Utility\Attachment\FinVInvoiceAttachmentFactory;
-
 
 class AttachmentService
 {
 
     protected $doctrineEM;
+
     protected $supportedSubjects = array();
 
-   
     public function getAttachmentFactory($target)
     {
-        
-        switch (true) {            
-            case ($target instanceof FinVendorInvoice):                
+        switch (true) {
+            case ($target instanceof FinVendorInvoice):
                 $factory = new FinVInvoiceAttachmentFactory($target, $attachmentHeader, $attachmentFile);
                 $factory->setDoctrineEM($this->doctrineEM);
                 return $factory;
-            
+
             case ($target instanceof FinVendorInvoiceRow):
                 return null;
         }
     }
-    
-   
+
     /**
      *
      * @return \Doctrine\ORM\EntityManager
@@ -49,5 +45,4 @@ class AttachmentService
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
 }

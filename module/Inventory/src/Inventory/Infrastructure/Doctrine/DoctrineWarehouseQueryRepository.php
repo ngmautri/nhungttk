@@ -210,15 +210,14 @@ class DoctrineWarehouseQueryRepository extends AbstractDoctrineRepository implem
             $snapshot->warehouse = $entity->getWarehouse()->getId();
         }
 
-           
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
         }
-        
+
         if ($entity->getLastChangeBy() !== null) {
             $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
         }
-        
+
         return $snapshot;
     }
 }

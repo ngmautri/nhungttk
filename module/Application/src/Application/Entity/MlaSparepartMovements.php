@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaSparepartMovements
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaSparepartMovements
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="movement_date", type="datetime", nullable=false)
@@ -29,6 +31,7 @@ class MlaSparepartMovements
     private $movementDate = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="asset_id", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class MlaSparepartMovements
     private $assetId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class MlaSparepartMovements
     private $flow;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class MlaSparepartMovements
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="reason", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class MlaSparepartMovements
     private $reason;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="requester", type="string", length=50, nullable=true)
@@ -64,6 +71,7 @@ class MlaSparepartMovements
     private $requester;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
@@ -71,6 +79,7 @@ class MlaSparepartMovements
     private $comment;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class MlaSparepartMovements
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="asset_name", type="string", length=100, nullable=true)
@@ -85,6 +95,7 @@ class MlaSparepartMovements
     private $assetName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="movement_type", type="string", length=100, nullable=true)
@@ -92,6 +103,7 @@ class MlaSparepartMovements
     private $movementType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="asset_location", type="string", length=100, nullable=true)
@@ -99,6 +111,7 @@ class MlaSparepartMovements
     private $assetLocation;
 
     /**
+     *
      * @var \Application\Entity\MlaSpareparts
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
@@ -109,6 +122,7 @@ class MlaSparepartMovements
     private $sparepart;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -117,8 +131,6 @@ class MlaSparepartMovements
      * })
      */
     private $wh;
-
-
 
     /**
      * Get id

@@ -113,8 +113,8 @@ class TransferRowController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'form_action' => '/inventory/transfer-row/add',
-                    'form_title' => $nmtPlugin->translate("New Goods Transfer Row"),                    
-                    
+                    'form_title' => $nmtPlugin->translate("New Goods Transfer Row"),
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
@@ -136,8 +136,7 @@ class TransferRowController extends AbstractActionController
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'form_action' => '/inventory/transfer-row/add',
                     'form_title' => $nmtPlugin->translate("New Goods Transfer Line"),
-                    
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -204,7 +203,7 @@ class TransferRowController extends AbstractActionController
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'form_action' => '/inventory/transfer-row/add',
             'form_title' => $nmtPlugin->translate("New Goods Transfer Line"),
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -617,5 +616,4 @@ class TransferRowController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-  
 }

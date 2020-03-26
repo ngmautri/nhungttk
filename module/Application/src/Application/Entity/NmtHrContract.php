@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrContract
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtHrContract
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtHrContract
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class NmtHrContract
     private $revisionNo;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="last_revision_id", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class NmtHrContract
     private $lastRevisionId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_number", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class NmtHrContract
     private $contractNumber;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtHrContract
     private $contractDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="siging_date", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtHrContract
     private $sigingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_working_date", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class NmtHrContract
     private $startWorkingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_from", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtHrContract
     private $effectiveFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="effective_to", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class NmtHrContract
     private $effectiveTo;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="working_time_from", type="integer", nullable=true)
@@ -92,6 +103,7 @@ class NmtHrContract
     private $workingTimeFrom;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="working_time_to", type="integer", nullable=true)
@@ -99,6 +111,7 @@ class NmtHrContract
     private $workingTimeTo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -106,6 +119,7 @@ class NmtHrContract
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="position_name", type="string", length=100, nullable=true)
@@ -113,6 +127,7 @@ class NmtHrContract
     private $positionName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -120,6 +135,7 @@ class NmtHrContract
     private $currentState;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="basic_salary", type="decimal", precision=14, scale=4, nullable=true)
@@ -127,6 +143,7 @@ class NmtHrContract
     private $basicSalary;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -134,6 +151,7 @@ class NmtHrContract
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -141,6 +159,7 @@ class NmtHrContract
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -148,6 +167,7 @@ class NmtHrContract
     private $remarks;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="termination_id", type="integer", nullable=true)
@@ -155,6 +175,7 @@ class NmtHrContract
     private $terminationId;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="termination_notice_date", type="datetime", nullable=true)
@@ -162,6 +183,7 @@ class NmtHrContract
     private $terminationNoticeDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="termination_date", type="datetime", nullable=true)
@@ -169,6 +191,7 @@ class NmtHrContract
     private $terminationDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="termination_type", type="string", nullable=true)
@@ -176,6 +199,7 @@ class NmtHrContract
     private $terminationType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="termination_reason", type="text", length=65535, nullable=true)
@@ -183,6 +207,7 @@ class NmtHrContract
     private $terminationReason;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_working_date", type="datetime", nullable=true)
@@ -190,6 +215,7 @@ class NmtHrContract
     private $lastWorkingDate;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_terminated", type="boolean", nullable=true)
@@ -197,6 +223,7 @@ class NmtHrContract
     private $isTerminated;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_status", type="string", length=45, nullable=true)
@@ -204,6 +231,7 @@ class NmtHrContract
     private $contractStatus;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_gross", type="boolean", nullable=true)
@@ -211,6 +239,7 @@ class NmtHrContract
     private $isGross;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -218,6 +247,7 @@ class NmtHrContract
     private $lastChangeOn;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -228,6 +258,7 @@ class NmtHrContract
     private $employee;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -238,6 +269,7 @@ class NmtHrContract
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -248,6 +280,7 @@ class NmtHrContract
     private $currency;
 
     /**
+     *
      * @var \Application\Entity\NmtHrPosition
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrPosition")
@@ -258,6 +291,7 @@ class NmtHrContract
     private $position;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -266,8 +300,6 @@ class NmtHrContract
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

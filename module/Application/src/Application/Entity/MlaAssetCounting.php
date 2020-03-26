@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAssetCounting
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAssetCounting
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=true)
@@ -29,6 +31,7 @@ class MlaAssetCounting
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -36,6 +39,7 @@ class MlaAssetCounting
     private $description;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class MlaAssetCounting
     private $startDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class MlaAssetCounting
     private $endDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class MlaAssetCounting
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="created_by", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class MlaAssetCounting
     private $createdBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class MlaAssetCounting
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaAssetCategories
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAssetCategories")
@@ -79,8 +88,6 @@ class MlaAssetCounting
      * })
      */
     private $assetCat;
-
-
 
     /**
      * Get id

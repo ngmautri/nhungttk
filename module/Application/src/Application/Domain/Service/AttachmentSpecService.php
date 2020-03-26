@@ -9,12 +9,10 @@ use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\GenericAttachment;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class AttachmentPosingService
 {
-
-
 }

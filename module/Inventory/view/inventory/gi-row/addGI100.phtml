@@ -9,18 +9,17 @@ $form_action = '';
 $form_title = '';
 
 switch ($action) {
-    
+
     case \Application\Model\Constants::FORM_ACTION_ADD:
         $form_action = '/inventory/gi-row/add';
         $form_title = $this->translate("Add Good Issue Row:");
-        
+
         break;
     case \Application\Model\Constants::FORM_ACTION_EDIT:
         $form_action = '/inventory/gi-row/edit';
         $form_title = $this->translate("Edit Good Issue Row:");
         break;
 }
-
 
 ?>
 
@@ -29,9 +28,9 @@ switch ($action) {
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
 	<?php
-        $current_step = "STEP2";
-        include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
-    ?>
+$current_step = "STEP2";
+include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+?>
 
 
 	</div>
@@ -56,22 +55,21 @@ switch ($action) {
 						href="<?php echo $this->baseUrl ?>/procure/gr-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 								class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current
 							Rows</a></li>
-							
-								<li><a title="<?php echo $this->translate("Change Logs");?>"
-			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
-				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
-							
+
+					<li><a title="<?php echo $this->translate("Change Logs");?>"
+						href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+
 				</ul>
 
 				<div id="general" style="font-size: 9pt">
 					<!-- Tab1 -->
 					
 						<?php
-						
-						echo "GI100-";
-						echo (! $target == null) ? $target->getSysNumber() : "";
-						
-						
+
+    echo "GI100-";
+    echo (! $target == null) ? $target->getSysNumber() : "";
+
     if (count($errors) > 0) {
         echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
 
@@ -168,27 +166,27 @@ switch ($action) {
 										value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
 								</div>
 							</div>
-							
+
 							<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Issue for: </label>
-						<div class="col-sm-3">
-							<input disabled class="form-control input-sm" type="text"
-								id="issue_for_name" placeholder="Select Item if any"
-								name="issue_for_name"
-								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
-							<input type="hidden" id="issue_for_id" placeholder=""
-								name="issue_for_id"
-								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
-						</div>
+								<label class="control-label col-sm-2">Issue for: </label>
+								<div class="col-sm-3">
+									<input disabled class="form-control input-sm" type="text"
+										id="issue_for_name" placeholder="Select Item if any"
+										name="issue_for_name"
+										value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
+									<input type="hidden" id="issue_for_id" placeholder=""
+										name="issue_for_id"
+										value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
+								</div>
 
 
-						<a style="color: #0080ff;" href="javascript:;"
-							onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-							class="glyphicon glyphicon-folder-open"></i>
-						</a>
+								<a style="color: #0080ff;" href="javascript:;"
+									onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+									class="glyphicon glyphicon-folder-open"></i>
+								</a>
 
-					</div>
-							
+							</div>
+
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
 

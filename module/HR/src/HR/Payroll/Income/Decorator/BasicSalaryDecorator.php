@@ -8,9 +8,10 @@ namespace HR\Payroll\Income\Decorator;
  */
 class BasicSalaryDecorator extends AbstractIncomeDecorator
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
      */
     public function getCalculatedAmount()
@@ -24,16 +25,14 @@ class BasicSalaryDecorator extends AbstractIncomeDecorator
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
      */
     public function getDescription()
-    {   
-        $des=$this->incomeComponent->getDescription() ."\n";
-        $des= $des."Calculation: Base on paid days divided by total working days in period";
-         return  $des;
+    {
+        $des = $this->incomeComponent->getDescription() . "\n";
+        $des = $des . "Calculation: Base on paid days divided by total working days in period";
+        return $des;
     }
-
-   
 }

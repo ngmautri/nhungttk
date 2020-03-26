@@ -8,6 +8,6 @@ namespace Inventory\Application\DTO\Warehouse\Transaction;
  */
 class TransactionRowDetailDTO extends TransactionRowDTO
 {
-   public $itemName;
-    
+
+    public $itemName;
 }

@@ -37,18 +37,18 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $em ; */
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            //$resources = $em->getRepository('Application\Entity\MlaUsers')->findall();
-            //echo count($resources);
+            // $resources = $em->getRepository('Application\Entity\MlaUsers')->findall();
+            // echo count($resources);
 
-            //$company = new Company(new CompanyId(Uuid::uuid4()->toString()), "Mascot", new Currency("LAK"));
-            //var_dump ($company);
+            // $company = new Company(new CompanyId(Uuid::uuid4()->toString()), "Mascot", new Currency("LAK"));
+            // var_dump ($company);
 
             $uuid = "466829bf-b754-4341-aafe-11e3ac841847";
             $rep = new DoctrineCompanyRepository($em);
             var_dump($rep->getByUUID($uuid));
-            
-            //$rep = new DoctrineSharedService($em);
-            //var_dump($rep->getCurrencyList());
+
+            // $rep = new DoctrineSharedService($em);
+            // var_dump($rep->getCurrencyList());
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

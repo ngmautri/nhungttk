@@ -1,9 +1,6 @@
 <?php
 namespace Inventory\Application\DTO\QuantityBill;
 
-
-
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com

@@ -1,121 +1,138 @@
 <?php
 /**@var \Application\Entity\NmtFinPostingPeriod $entity ; */
 /**@var \Application\Model\Constants $const ; */
+$const = new \Application\Model\Constants();
 
-$const = new \Application\Model\Constants;
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 
-
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general" ><?php echo $this->translate('New Posting Period'); ?></a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('New Posting Period'); ?></a></li>
+	</ul>
 
-<div id="general" style="font-size: 9pt"> 
+	<div id="general" style="font-size: 9pt">
 
-<form id="Create_Form" class="form-horizontal" action="/finance/posting-period/add" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+		<form id="Create_Form" class="form-horizontal"
+			action="/finance/posting-period/add" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Period Code'); ?>:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="periodCode" value="<?php echo (!$entity == null)? $entity->getPeriodCode():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Period Name'); ?>:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				id = "periodName" name="periodName" value="<?php echo (!$entity == null)? $entity->getPeriodName():"";?>">
-		</div>
-		
-	</div>
-	
-	<div class="form-group margin-bottom">
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate('Period Code'); ?>:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="periodCode"
+						value="<?php echo (!$entity == null)? $entity->getPeriodCode():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate('Period Name'); ?>:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						id="periodName" name="periodName"
+						value="<?php echo (!$entity == null)? $entity->getPeriodName():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Status'); ?></label>
 				<div class="col-sm-3">
 					<select name="periodStatus" class="form-control input-sm">
-						<option <?php if(!$entity == null): if ($entity->getPeriodStatus()== $const::PERIOD_STATUS_OPEN): echo " selected='selected'"; endif; endif;?> value="<?php echo $const::PERIOD_STATUS_OPEN; ?>"><?php echo $this->translate('Open'); ?></option>
-						<option <?php if(!$entity == null): if ($entity->getPeriodStatus()==$const::PERIOD_STATUS_CLOSED): echo " selected='selected'"; endif; endif;?> value="<?php echo $const::PERIOD_STATUS_CLOSED; ?>"><?php echo $this->translate('Closed'); ?></option>
+						<option
+							<?php if(!$entity == null): if ($entity->getPeriodStatus()== $const::PERIOD_STATUS_OPEN): echo " selected='selected'"; endif; endif;?>
+							value="<?php echo $const::PERIOD_STATUS_OPEN; ?>"><?php echo $this->translate('Open'); ?></option>
+						<option
+							<?php if(!$entity == null): if ($entity->getPeriodStatus()==$const::PERIOD_STATUS_CLOSED): echo " selected='selected'"; endif; endif;?>
+							value="<?php echo $const::PERIOD_STATUS_CLOSED; ?>"><?php echo $this->translate('Closed'); ?></option>
 					</select>
 				</div>
 			</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Period Start'); ?>:</label>
-		<div class="col-sm-3">
-<input placeholder="Please select" class="form-control input-sm" type="text" id = "postingFromDate" name="postingFromDate" 
-value="<?php if(!$entity == null): if ($entity->getPostingFromDate() !== null): echo date_format($entity->getPostingFromDate(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
-		</div>
-		
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Period End'); ?>:</label>
-		<div class="col-sm-3">
-<input placeholder="Please select" class="form-control input-sm" type="text" id = "postingToDate" name="postingToDate" 
-value="<?php if(!$entity == null): if ($entity->getPostingToDate() !== null): echo date_format($entity->getPostingToDate(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
-		</div>
-		
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate('Period Start'); ?>:</label>
+				<div class="col-sm-3">
+					<input placeholder="Please select" class="form-control input-sm"
+						type="text" id="postingFromDate" name="postingFromDate"
+						value="<?php if(!$entity == null): if ($entity->getPostingFromDate() !== null): echo date_format($entity->getPostingFromDate(),"Y-m-d"); endif; endif;?>"
+						placeholder=" please select" />
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate('Period End'); ?>:</label>
+				<div class="col-sm-3">
+					<input placeholder="Please select" class="form-control input-sm"
+						type="text" id="postingToDate" name="postingToDate"
+						value="<?php if(!$entity == null): if ($entity->getPostingToDate() !== null): echo date_format($entity->getPostingToDate(),"Y-m-d"); endif; endif;?>"
+						placeholder=" please select" />
+				</div>
+
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate('Plan Working Days'); ?>:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="planWorkingDays"
+						value="<?php echo (!$entity == null)? $entity->getPlanWorkingDays():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate('Actual Working Days'); ?>:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="actualWorkdingDays"
+						value="<?php echo (!$entity == null)? $entity->getActualWorkdingDays():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate('National Holidays'); ?>:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="nationalHolidays"
+						value="<?php echo (!$entity == null)? $entity->getNationalHolidays():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate('Cooperate Leaves'); ?>:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="cooperateLeave"
+						value="<?php echo (!$entity == null)? $entity->getCooperateLeave():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate('Remarks'); ?>:</label>
+				<div class="col-sm-3">
+					<textarea class="form-control input-sm" type="text" rows="4"
+						placeholder="" name="remarks" style="font-size: 9pt;"></textarea>
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Create_Form');"
+						class="btn btn-default btn-sm">
+						<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;<?php echo $this->translate('Save'); ?></button>
+				</div>
+			</div>
+
+
+		</form>
 	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Plan Working Days'); ?>:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="planWorkingDays" value="<?php echo (!$entity == null)? $entity->getPlanWorkingDays():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Actual Working Days'); ?>:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="actualWorkdingDays" value="<?php echo (!$entity == null)? $entity->getActualWorkdingDays():"";?>">
-		</div>
-		
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" ><?php echo $this->translate('National Holidays'); ?>:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="nationalHolidays" value="<?php echo (!$entity == null)? $entity->getNationalHolidays():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Cooperate Leaves'); ?>:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="cooperateLeave" value="<?php echo (!$entity == null)? $entity->getCooperateLeave():"";?>">
-		</div>
-		
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" ><?php echo $this->translate('Remarks'); ?>:</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control input-sm" type="text" rows="4" placeholder=""
-				name="remarks" style="font-size: 9pt;"></textarea>
-		</div>
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;<?php echo $this->translate('Save'); ?></button>
-  		</div>
-	</div> 
-		
-	
-</form>
-</div>
 </div>
 
 <script>

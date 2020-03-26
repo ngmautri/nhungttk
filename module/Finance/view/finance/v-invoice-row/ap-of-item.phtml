@@ -1,13 +1,17 @@
-<?php if (count($rows)==0): 
+<?php
 
-?>
+if (count($rows) == 0) :
+
+    ?>
 
 <h5>no thing found!</h5>
 
-<?php else: 
-$nid = \Application\Model\Constants::FINANCE_HASH_ID;
-?>
-<h4 style="color:graytext;"><?php echo $this->translate("AP Invoice");?>:</h4>
+<?php
+
+else :
+    $nid = \Application\Model\Constants::FINANCE_HASH_ID;
+    ?>
+<h4 style="color: graytext;"><?php echo $this->translate("AP Invoice");?>:</h4>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
@@ -15,22 +19,28 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<td><b>#</b></td>
 			<td><b>PR No.</b></td>
 			<td><b>PO No.</b></td>
-			<td><b>AP Invoice</b></td>			
-			<td><b>Vendor</b></td>				
-			<td><b><?php echo $this->translate("Item Name");?></b></td>			
-		    <td><b><?php echo $this->translate("Vendor Item code");?></b></td>			
-		
+			<td><b>AP Invoice</b></td>
+			<td><b>Vendor</b></td>
+			<td><b><?php echo $this->translate("Item Name");?></b></td>
+			<td><b><?php echo $this->translate("Vendor Item code");?></b></td>
+
 			<td><b>Pr Date</b></td>
 			<td><b>Unit</b></td>
-			<td><b>Quantity <br> Q'ty</b></td>
+			<td><b>Quantity <br> Q'ty
+			</b></td>
 			<td><b>Unit</b></td>
-			<td><b>Convert Factor</b></td>	
-			<td><b>U/P<br>Doc.</b></td>
-			<td><b>Total<br>Doc.</b></td>
-			<td><b>Doc.<br>Curr</b></td>
-			<td><b>U/P.<br>Loc.</b></td>
-			<td><b>Total.<br>Loc.</b></td>
-	
+			<td><b>Convert Factor</b></td>
+			<td><b>U/P<br>Doc.
+			</b></td>
+			<td><b>Total<br>Doc.
+			</b></td>
+			<td><b>Doc.<br>Curr
+			</b></td>
+			<td><b>U/P.<br>Loc.
+			</b></td>
+			<td><b>Total.<br>Loc.
+			</b></td>
+
 			<td><b>Status</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -38,56 +48,61 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	//$total_ordered = 0;
-	//$total_received = 0;
-	//$total_balance = 0;
-	foreach ( $rows as $r ) :
-		$count ++;
-		/**@var \Application\Entity\FinVendorInvoiceRow $a ;*/		
-		$a = $r[0];
-		
-		?>
-	 <tr style="color:graytext;">
-	 <td><?php echo $count;?></td>
+
+    $count = 0;
+    // $total_ordered = 0;
+    // $total_received = 0;
+    // $total_balance = 0;
+    foreach ($rows as $r) :
+        $count ++;
+        /**@var \Application\Entity\FinVendorInvoiceRow $a ;*/
+        $a = $r[0];
+
+        ?>
+	 <tr style="color: graytext;">
+			<td><?php echo $count;?></td>
 			<?php if($a->getPrRow()!==null):?>			
-			<td><a href="/procure/pr/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrNumber();?></a></td>
+			<td><a
+				href="/procure/pr/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>"
+				target="_blank"><?php echo $a->getPrRow()->getPr()->getPrNumber();?></a></td>
 			<?php else:?>
 			<td>N/A</td>
 			<?php endif; ?>
 			
 			<?php if($a->getPoRow()!==null):?>			
-			<td><a href="/procure/po/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getToken();?>" target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
+			<td><a
+				href="/procure/po/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getToken();?>"
+				target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
 			<?php else:?>
 			<td>N/A</td>
 			<?php endif; ?>
 			
-	 		<td><a href="/finance/v-invoice/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getInvoice()->getId();?>&token=<?php echo $a->getInvoice()->getToken();?>" target="_blank"><?php if($a->getInvoice()->getSysNumber()==null):echo "N/A";else: echo $a->getInvoice()->getSysNumber();endif;?></a></td>
-			
+	 		<td><a
+				href="/finance/v-invoice/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getInvoice()->getId();?>&token=<?php echo $a->getInvoice()->getToken();?>"
+				target="_blank"><?php if($a->getInvoice()->getSysNumber()==null):echo "N/A";else: echo $a->getInvoice()->getSysNumber();endif;?></a></td>
+
 			<td><?php if(!$a->getInvoice()->getVendor()==null): echo $a->getInvoice()->getVendor()->getVendorName();endif;?> </td>
 			<td><?php echo $a->getVendorItemCode();?></td>
 			<td><?php echo $a->getVendorItemName();?></td>
-	
-	
+
+
 			<td><?php if(!$a->getInvoice()->getInvoiceDate()==null): echo date_format ( $a->getInvoice()->getInvoiceDate(), "d/m/y");endif;?> </td>
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
-		
+
 			<td><?php echo $a->getQuantity();?></td>
-		
+
 			<td><?php echo $a->getUnit();?></td>
 			<td><?php echo $a->getConversionFactor();?></td>
-	
+
 			<td><?php echo number_format($a->getUnitPrice(),$a->getInvoice()->getCurrency()->getDecimalPlaces());?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),$a->getInvoice()->getCurrency()->getDecimalPlaces());?></td>
 			<td><?php echo $a->getInvoice()->getCurrency()->getCurrency();?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getInvoice()->getExchangeRate(),0);?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getInvoice()->getExchangeRate()*$a->getQuantity(),0);?></td>
-		
+
 			<td><?php echo $a->getDocStatus();?></td>
-			<td>
-			</td>
-			
+			<td></td>
+
 		</tr>
 <?php endforeach; ?>
 

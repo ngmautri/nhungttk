@@ -2,98 +2,108 @@
 <h4><?php echo (!$target == null)? "Employee: " . $target->getEmployeeName() ." - ". $target->getEmployeeCode():"";?></h4>
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Apply New Leave</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Apply New Leave</a></li>
+	</ul>
 
-<div id="general"> 
-<div class="alert alert-info">
- 	<ul>
- 		<li>Total Taken Annual Leave: 02 days (left 01 days)</li>
- 		<li>Total Sick Leave Paid: 10 days (left 5 days)</li>
- 	</ul>
-</div>
+	<div id="general">
+		<div class="alert alert-info">
+			<ul>
+				<li>Total Taken Annual Leave: 02 days (left 01 days)</li>
+				<li>Total Sick Leave Paid: 10 days (left 5 days)</li>
+			</ul>
+		</div>
 
 
-<form id="create_employee_form" class="form-horizontal" action="/hr/employee-leave/add" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+		<form id="create_employee_form" class="form-horizontal"
+			action="/hr/employee-leave/add" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group margin-bottom required">
-		<label class="control-label col-sm-2" >Leave Reason</label>
-		<div class="col-sm-3">
-			<select class="form-control input-sm required" name="leaveReason">
-				<option value="">Please select</option>
-				<?php foreach ($leaveReasons as $r):
-				/**@var \Application\Entity\NmtHrLeaveReason $r ;*/
-				
-				?>
-				<option <?php if(!$r == null):	echo ($r->getLeaveReason()=='M')?'selected="selected"':''; endif;?> value="M"><?php echo $r->getLeaveReason();?></option>
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Leave Reason</label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm required" name="leaveReason">
+						<option value="">Please select</option>
+				<?php
+
+foreach ($leaveReasons as $r) :
+        /**@var \Application\Entity\NmtHrLeaveReason $r ;*/
+
+        ?>
+				<option
+							<?php if(!$r == null):	echo ($r->getLeaveReason()=='M')?'selected="selected"':''; endif;?>
+							value="M"><?php echo $r->getLeaveReason();?></option>
 				<?php endforeach;?>
 			
 			</select>
-		</div>
+				</div>
+			</div>
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Leave From Date</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" name="birthday"
+						value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>"
+						placeholder=" please select" id="birthday" />
+				</div>
+
+				<label class="control-label col-sm-2">Leave To Date</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" name="birthday"
+						value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>"
+						placeholder=" please select" id="birthday" />
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag">Attachment</label>
+				<div class="col-sm-3">
+					<input style="" type="file" id="attachments" name="attachments" />
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Remarks:</label>
+				<div class="col-sm-8">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="itemDescription"
+						value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+				</div>
+			</div>
+
+			<hr>
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<a tabindex="10" class="btn btn-default"
+						onclick="submitForm('create_employee_form');" href="javascript:;"><small><i
+							class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
+					<a tabindex="11" class="btn btn-default"
+						href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
+							class=""></i></small>&nbsp;Cancel</a>
+				</div>
+			</div>
+
+
+		</form>
 	</div>
-	<div class="form-group margin-bottom required">
-		<label class="control-label col-sm-2" >Leave From Date</label>
-		<div class="col-sm-3">
-		<input class="form-control input-sm" type="text" name="birthday" 
-		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
-		</div>
-		
-		<label class="control-label col-sm-2" >Leave To Date</label>
-		<div class="col-sm-3">
-		<input class="form-control input-sm" type="text" name="birthday" 
-		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
-		</div>
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
-		<div class="col-sm-3">
-			<input style=";" type="file" id= "attachments" name="attachments" />
-		</div>		
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" >Remarks:</label>
-		<div class="col-sm-8">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="itemDescription" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-		</div>
-	</div>
-	
-	<hr>
-	
-		
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	 			<a tabindex="10" class="btn btn-default" onclick="submitForm('create_employee_form');"
-								href="javascript:;"><small><i
-									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
- 					<a tabindex="11" class="btn btn-default"
-								href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
-									class=""></i></small>&nbsp;Cancel</a>
-  		</div>
-	</div> 
-		
-	
-</form>
-</div>
 </div>
 
 <script>

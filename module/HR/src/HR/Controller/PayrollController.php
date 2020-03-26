@@ -36,7 +36,6 @@ class PayrollController extends AbstractActionController
     public function indexAction()
     {}
 
-   
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -45,13 +44,13 @@ class PayrollController extends AbstractActionController
     {
         $request = $this->getRequest();
         $redirectUrl = null;
-        
+
         if ($request->getHeader('Referer') == null) {
             // return $this->redirect ()->toRoute ( 'access_denied' );
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
-        
+
         $entity_id = (int) $this->params()->fromQuery('entity_id');
         $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
@@ -60,17 +59,17 @@ class PayrollController extends AbstractActionController
             'checksum' => $checksum,
             'token' => $token
         );
-        
+
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-        
+
         if (! $entity == null) {
-            
+
             /**
              *
              * @todo Update Target
              */
             $target = $entity->getEmployee();
-            
+
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
@@ -82,7 +81,6 @@ class PayrollController extends AbstractActionController
         }
     }
 
-    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -98,30 +96,30 @@ class PayrollController extends AbstractActionController
     public function list1Action()
     {
         $request = $this->getRequest();
-        
+
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
         ;
-        
+
         $this->layout("layout/user/ajax");
-        
+
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
             'token' => $token
         );
-        
+
         /**
          *
          * @todo : Change Target
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
-        
+
         if ($target !== null) {
-            
+
             /**
              *
              * @todo : Change Target
@@ -131,11 +129,11 @@ class PayrollController extends AbstractActionController
                 'isActive' => 1,
                 'markedForDeletion' => 0
             );
-            
+
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findBy($criteria);
             $total_records = count($list);
             $paginator = null;
-            
+
             return new ViewModel(array(
                 'list' => $list,
                 'total_records' => $total_records,
@@ -152,17 +150,17 @@ class PayrollController extends AbstractActionController
      * @return \Zend\View\Model\ViewModel
      */
     public function updateTokenAction()
-    {        
+    {
         /**
          *
          * @todo : update target
          */
         $query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.employee > :n';
-        
+
         $list = $this->doctrineEM->createQuery($query)
             ->setParameter('n', 0)
             ->getResult();
-        
+
         if (count($list) > 0) {
             foreach ($list as $entity) {
                 /**
@@ -172,30 +170,33 @@ class PayrollController extends AbstractActionController
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
             }
         }
-        
+
         $this->doctrineEM->flush();
-        
+
         $total_records = count($list);
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records
         ));
     }
-	
-	/**
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	
-	/**
-	 *
-	 * @return \Zend\Stdlib\ResponseInterface
-	 */
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

@@ -12,21 +12,20 @@
 	<li><a href="<?php echo $this->baseUrl ?>/workflow/wf"><i
 			class="fa fa-tasks" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Workflow Management")?></a></li>
 	<li class="divider"></li>
-	
-	<li class="dropdown-submenu">
-        <a class="test" tabindex="-1" href="#">Scheduler&nbsp;&nbsp;<i class="fa fa-caret-right" aria-hidden="true"></i></a>
-        <ul class="dropdown-menu">
-          <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
-          <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
-          <li class="dropdown-submenu">
-            <a class="test" href="#">Another dropdown&nbsp;&nbsp;<i class="fa fa-caret-right" aria-hidden="true"></i></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">3rd level dropdown</a></li>
-              <li><a href="#">3rd level dropdown</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
+
+	<li class="dropdown-submenu"><a class="test" tabindex="-1" href="#">Scheduler&nbsp;&nbsp;<i
+			class="fa fa-caret-right" aria-hidden="true"></i></a>
+		<ul class="dropdown-menu">
+			<li><a tabindex="-1" href="#">2nd level dropdown</a></li>
+			<li><a tabindex="-1" href="#">2nd level dropdown</a></li>
+			<li class="dropdown-submenu"><a class="test" href="#">Another
+					dropdown&nbsp;&nbsp;<i class="fa fa-caret-right" aria-hidden="true"></i>
+			</a>
+				<ul class="dropdown-menu">
+					<li><a href="#">3rd level dropdown</a></li>
+					<li><a href="#">3rd level dropdown</a></li>
+				</ul></li>
+		</ul></li>
 	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/backup/db"><i
 			class="fa fa-database" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Backup Database")?></a></li>
@@ -69,20 +68,20 @@
 			class="fa fa-info" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("System Information")?></a></li>
 
 	<li class="divider"></li>
-	
-	 
+
+
 
 </ul>
 
 <style>
 .dropdown-submenu {
-  position: relative;
+	position: relative;
 }
 
 .dropdown-submenu .dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -1px;
+	top: 0;
+	left: 100%;
+	margin-top: -1px;
 }
 </style>
 

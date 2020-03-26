@@ -33,7 +33,7 @@ class FIFOLayerServiceFactory implements FactoryInterface
         $eventManager = $container->get('EventManager');
         $eventManager->attachAggregate($grListener);
         $service->setEventManager($eventManager);
-		
-		return $service;
-	}
+
+        return $service;
+    }
 }

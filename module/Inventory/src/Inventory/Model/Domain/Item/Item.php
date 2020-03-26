@@ -11,7 +11,8 @@ class Item
 {
 
     private $id;
+
     private $itemName;
+
     private $itemSKU;
-    
 }

@@ -1,66 +1,78 @@
-<h5> <a
-			href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset->id);?>">Edit
-		</a>| Add Repair Request | Dispone Request | Show Repair History </h5>
+<h5>
+	<a
+		href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset->id);?>">Edit
+	</a>| Add Repair Request | Dispone Request | Show Repair History
+</h5>
 
 <hr>
 
-<h4> Asset Barcode: <img alt="" src="/inventory/asset/barcode?id=<?php echo $this->escapeHtml($asset->id);?>">
-</h4> 
+<h4>
+	Asset Barcode: <img alt=""
+		src="/inventory/asset/barcode?id=<?php echo $this->escapeHtml($asset->id);?>">
+</h4>
 <hr>
 
 <table cellpadding="3">
 
-<tr>
-	<td><label for="category">Asset Name:</label> </td>
-	<td><?php echo $this->escapeHtml($asset->name);?></td>
-</tr>
-<tr>
-	<td><label for="category">Description:</label> 
-	<td><?php echo $this->escapeHtml($asset->description);?></td>
-</tr>
-<tr>
-	<td><label for="tag">Tag: </label> </td>
-	<td><?php echo $this->escapeHtml($asset->tag);?></td>
-</tr>
+	<tr>
+		<td><label for="category">Asset Name:</label></td>
+		<td><?php echo $this->escapeHtml($asset->name);?></td>
+	</tr>
+	<tr>
+		<td><label for="category">Description:</label>
+		
+		<td><?php echo $this->escapeHtml($asset->description);?></td>
+	</tr>
+	<tr>
+		<td><label for="tag">Tag: </label></td>
+		<td><?php echo $this->escapeHtml($asset->tag);?></td>
+	</tr>
 
 
 
-<tr>
-	<td><label for="model">Model:</label> </td>
-	<td><?php echo $this->escapeHtml($asset->model);?></td>
-</tr>
-<tr>
-	<td><label for="serial">Serial:</label> </td>
-	<td><?php echo $this->escapeHtml($asset->serial);?></td>
-</tr>
-<tr>
-	<td><label for="origin">Origin:</label></td>
-	<td><?php echo $this->escapeHtml($asset->origin);?></td>
-</tr>
+	<tr>
+		<td><label for="model">Model:</label></td>
+		<td><?php echo $this->escapeHtml($asset->model);?></td>
+	</tr>
+	<tr>
+		<td><label for="serial">Serial:</label></td>
+		<td><?php echo $this->escapeHtml($asset->serial);?></td>
+	</tr>
+	<tr>
+		<td><label for="origin">Origin:</label></td>
+		<td><?php echo $this->escapeHtml($asset->origin);?></td>
+	</tr>
 
 
-<tr>
-	<td><label for="location">Location:</label></td>
-	<td><?php echo $this->escapeHtml($asset->location);?></td>
+	<tr>
+		<td><label for="location">Location:</label></td>
+		<td><?php echo $this->escapeHtml($asset->location);?></td>
 
-</tr>
+	</tr>
 
-<tr>
-	<td><label for="location">Note:</label></td>
-	<td><?php echo $this->escapeHtml($asset->comment);?></td>
+	<tr>
+		<td><label for="location">Note:</label></td>
+		<td><?php echo $this->escapeHtml($asset->comment);?></td>
 
-</tr>
+	</tr>
 </table>
 
 
 
-<h5>    <a href="/inventory/asset/pictures?asset_id=<?php echo $this->escapeHtml($asset->id);?>">asset pictures</a></h5>
+<h5>
+	<a
+		href="/inventory/asset/pictures?asset_id=<?php echo $this->escapeHtml($asset->id);?>">asset
+		pictures</a>
+</h5>
 
 <div id="lightgallery">
  <?php foreach ($pictures as $pic) : ?>
-    <a href="/inventory/image/index?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img class= "img-rounded" width="150" height="150" title="<?php  echo $this->escapeHtml($pic->comments);?>" src="/inventory/image/assetthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
-    </a>
+    <a
+		href="/inventory/image/index?id=<?php  echo $this->escapeHtml($pic->id);?>">
+		<img class="img-rounded" width="150" height="150"
+		title="<?php  echo $this->escapeHtml($pic->comments);?>"
+		src="/inventory/image/assetthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>" />
+	</a>
 	
 <?php endforeach; ?>
 </div>

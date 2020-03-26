@@ -8,24 +8,23 @@ use HR\Payroll\Income\Decorator\Factory\FullPaymentDecoratorFactory;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-Class Overtime300Factory extends AbstractIncomeFactory
+class Overtime300Factory extends AbstractIncomeFactory
 {
-    
+
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
-    protected function createIncome($amount=0, $currency=null)
+    protected function createIncome($amount = 0, $currency = null)
     {
-        $incomeComponent = new GenericIncomeComponent("Overtime 300%", $amount, 0, $currency,FALSE, TRUE, FALSE, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Overtime 300%", $amount, 0, $currency, FALSE, TRUE, FALSE, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::ONE_TIME);
         $f = FullPaymentDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
         $incomeComponent->setDescription("Overtime from 16:00-22:00 on offical holiday, weekly restday (article 114 Labor Law)");
         return $incomeComponent;
     }
-    
 }

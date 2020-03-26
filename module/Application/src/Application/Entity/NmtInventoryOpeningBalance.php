@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryOpeningBalance
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryOpeningBalance
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryOpeningBalance
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="amount", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryOpeningBalance
     private $amount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryOpeningBalance
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryOpeningBalance
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryOpeningBalance
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryOpeningBalance
     private $postingDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryOpeningBalance
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryOpeningBalance
     private $sysNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryOpeningBalance
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryOpeningBalance
     private $workflowStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryOpeningBalance
     private $transactionStatus;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryOpeningBalance
     private $isPosted;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryOpeningBalance
     private $docType;
 
     /**
+     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -123,6 +138,7 @@ class NmtInventoryOpeningBalance
     private $postingPeriod;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -133,6 +149,7 @@ class NmtInventoryOpeningBalance
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -143,6 +160,7 @@ class NmtInventoryOpeningBalance
     private $warehouse;
 
     /**
+     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -153,6 +171,7 @@ class NmtInventoryOpeningBalance
     private $glAccount;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -163,6 +182,7 @@ class NmtInventoryOpeningBalance
     private $currency;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -171,8 +191,6 @@ class NmtInventoryOpeningBalance
      * })
      */
     private $localCurrency;
-
-
 
     /**
      * Get id

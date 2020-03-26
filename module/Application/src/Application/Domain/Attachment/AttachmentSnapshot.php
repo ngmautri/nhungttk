@@ -10,55 +10,101 @@ use Application\Domain\Shared\AbstractValueObject;
  */
 class AttachmentSnapshot extends AbstractValueObject
 {
-    
+
     public $id;
+
     public $documentSubject;
+
     public $keywords;
+
     public $isPicture;
+
     public $isContract;
+
     public $signingDate;
+
     public $validFrom;
+
     public $validTo;
+
     public $url;
+
     public $filetype;
+
     public $filename;
+
     public $filenameOriginal;
+
     public $filePassword;
+
     public $size;
+
     public $visibility;
+
     public $folder;
+
     public $attachmentFolder;
+
     public $folderRelative;
+
     public $checksum;
+
     public $token;
+
     public $isActive;
+
     public $markedForDeletion;
+
     public $remarks;
+
     public $createdOn;
+
     public $lastChangeOn;
+
     public $changeFor;
+
     public $prRowId;
+
     public $targetClass;
+
     public $targetId;
+
     public $targetToken;
+
     public $fileExtension;
+
     public $fileExits;
+
     public $uuid;
+
     public $createdBy;
+
     public $item;
+
     public $po;
+
     public $poRow;
+
     public $qo;
+
     public $company;
+
     public $lastChangeBy;
+
     public $project;
+
     public $employee;
+
     public $vendor;
+
     public $itemPurchasing;
+
     public $pr;
+
     public $vInvoice;
-    
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -67,6 +113,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocumentSubject()
@@ -75,6 +122,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getKeywords()
@@ -83,6 +131,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPicture()
@@ -91,6 +140,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsContract()
@@ -99,6 +149,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSigningDate()
@@ -107,6 +158,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getValidFrom()
@@ -115,6 +167,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getValidTo()
@@ -123,6 +176,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUrl()
@@ -131,6 +185,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFiletype()
@@ -139,6 +194,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFilename()
@@ -147,6 +203,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFilenameOriginal()
@@ -155,6 +212,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFilePassword()
@@ -163,6 +221,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSize()
@@ -171,6 +230,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVisibility()
@@ -179,6 +239,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFolder()
@@ -187,6 +248,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAttachmentFolder()
@@ -195,6 +257,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFolderRelative()
@@ -203,6 +266,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChecksum()
@@ -211,6 +275,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -219,6 +284,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -227,6 +293,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMarkedForDeletion()
@@ -235,6 +302,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -243,6 +311,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -251,6 +320,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeOn()
@@ -259,6 +329,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChangeFor()
@@ -267,6 +338,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowId()
@@ -275,6 +347,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetClass()
@@ -283,6 +356,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetId()
@@ -291,6 +365,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetToken()
@@ -299,6 +374,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFileExtension()
@@ -307,6 +383,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFileExits()
@@ -315,6 +392,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -323,6 +401,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -331,6 +410,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()
@@ -339,6 +419,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()
@@ -347,6 +428,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoRow()
@@ -355,6 +437,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQo()
@@ -363,6 +446,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
@@ -371,6 +455,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -379,6 +464,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProject()
@@ -387,6 +473,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getEmployee()
@@ -395,6 +482,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -403,6 +491,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemPurchasing()
@@ -411,6 +500,7 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPr()
@@ -419,11 +509,11 @@ class AttachmentSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVInvoice()
     {
         return $this->vInvoice;
     }
-    
 }

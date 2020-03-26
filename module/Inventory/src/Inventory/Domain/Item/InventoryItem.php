@@ -30,28 +30,27 @@ class InventoryItem extends GenericItem
             $notification->addError("Item SKU is null or empty. It is required for inventory item.");
         }
 
-        
-        $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();        
+        $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         $spec1 = $this->sharedSpecificationFactory->getMeasureUnitExitsSpecification();
         $spec1->setCompanyId($this->company);
-        
-        if (!$spec1->isSatisfiedBy($this->getStandardUom())) {
+
+        if (! $spec1->isSatisfiedBy($this->getStandardUom())) {
             $notification->addError("Measurement unit is invalid or empty. It is required for inventory item.");
         }
 
-        if (!$spec1->isSatisfiedBy($this->getStockUom())) {
+        if (! $spec1->isSatisfiedBy($this->getStockUom())) {
             $notification->addError("Inventory measurement unit is invalid");
         }
-        
-        if (!$spec->isSatisfiedBy($this->getStockUomConvertFactor())) {
+
+        if (! $spec->isSatisfiedBy($this->getStockUomConvertFactor())) {
             $notification->addError("Inventory measurement conversion factor invalid!");
         }
 
-        if ($spec1->isSatisfiedBy($this->getPurchaseUom()) && !$spec->isSatisfiedBy($this->getPurchaseUomConvertFactor())) {
+        if ($spec1->isSatisfiedBy($this->getPurchaseUom()) && ! $spec->isSatisfiedBy($this->getPurchaseUomConvertFactor())) {
             $notification->addError("Purchase measurement unit is set, but no conversion factor!");
         }
 
-        if ($spec1->isSatisfiedBy($this->getSalesUom()) && !$spec->isSatisfiedBy($this->getSalesUomConvertFactor())) {
+        if ($spec1->isSatisfiedBy($this->getSalesUom()) && ! $spec->isSatisfiedBy($this->getSalesUomConvertFactor())) {
             $notification->addError("Sales measurement unit is set, but no conversion factor!");
         }
 

@@ -3,7 +3,7 @@
 	<ul>
 		<li><a href="#general">Search Result</a></li>
 	</ul>
-<div id="general">
+	<div id="general">
 
 <?php
 echo '<span>';
@@ -11,45 +11,46 @@ echo $message;
 echo '</span>';
 
 if (! $hits == null) :
-	
-	?>
-<table style = "font-size: 10pt;" class="table table-hover table-bordered">
-	<thead>
-		<tr style = "">
-			<td><b>#</b></td>
-			<td><b>Code</b></td>
-			<td><b>Name</b></td>
-			<td><b>Birthday</b></td>
-			<td><b>Matched</b></td>
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+
+    ?>
+<table style="font-size: 10pt;" class="table table-hover table-bordered">
+			<thead>
+				<tr style="">
+					<td><b>#</b></td>
+					<td><b>Code</b></td>
+					<td><b>Name</b></td>
+					<td><b>Birthday</b></td>
+					<td><b>Matched</b></td>
+					<td><b>Action</b></td>
+				</tr>
+			</thead>
+			<tbody>
 
 	 <?php
-	
-	$count = 0;
-	foreach ( $hits as $hit ) :
-		$count ++;
-		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-		
-		?>
+
+    $count = 0;
+    foreach ($hits as $hit) :
+        $count ++;
+        // echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+        ?>
 	 <tr>
-	
-			<td> <?php echo $count;?></td>
-	
-				<td><span id=""><?php echo $this->escapeHtml($hit->employee_code);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->employee_name);?></span></td>
-				<td><span id=""></span></td>
-				<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
-	<td>
-	<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $hit->token;?>&checksum=<?php echo $hit->checksum;?>&entity_id=<?php echo $this->escapeHtml($hit->employee_id);?>">show</a>
-	</td>	
-		</tr>
+
+					<td> <?php echo $count;?></td>
+
+					<td><span id=""><?php echo $this->escapeHtml($hit->employee_code);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->employee_name);?></span></td>
+					<td><span id=""></span></td>
+					<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
+					<td><a
+						href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $hit->token;?>&checksum=<?php echo $hit->checksum;?>&entity_id=<?php echo $this->escapeHtml($hit->employee_id);?>">show</a>
+					</td>
+				</tr>
 <?php endforeach; ?>
 </tbody>
-</table>
+		</table>
 
 
 <?php endif; ?>
-</div></div>
+</div>
+</div>

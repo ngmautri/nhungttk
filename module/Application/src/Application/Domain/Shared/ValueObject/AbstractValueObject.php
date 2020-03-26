@@ -12,11 +12,10 @@ abstract class AbstractValueObject
 {
 
     protected $specFactory;
-    
+
     function __construct($value, AbstractSpecificationFactory $specFactory = null)
     {}
-    
+
     // abstract public function equals(AbstractValueObject $obj);
-    
     abstract public function __toString();
 }

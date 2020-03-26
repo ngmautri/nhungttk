@@ -118,7 +118,7 @@ abstract class GenericTransaction extends AbstractTransaction
      *
      * @param TransactionRow $transactionRow
      */
-    public function addRowFromSnapshot(TransactionSpecificationService $specificationService, TransactionRowSnapshot $snapshot, Notification $notification=null)
+    public function addRowFromSnapshot(TransactionSpecificationService $specificationService, TransactionRowSnapshot $snapshot, Notification $notification = null)
     {
         if (! $snapshot instanceof TransactionRowSnapshot)
             return null;
@@ -176,7 +176,7 @@ abstract class GenericTransaction extends AbstractTransaction
      *
      * @return Notification
      */
-    public function validate(TransactionSpecificationService $specificationService, Notification $notification=null, $isPosting = false)
+    public function validate(TransactionSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
     {
         if ($specificationService == null) {
             throw new InvalidArgumentException("Specification service not found");
@@ -275,7 +275,7 @@ abstract class GenericTransaction extends AbstractTransaction
      *
      * @return Notification
      */
-    public function validateRow(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification=null, $isPosting = false)
+    public function validateRow(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {
         if ($notification == null)
             $notification = new Notification();

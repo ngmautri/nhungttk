@@ -43,17 +43,17 @@ class EmployeeOTController extends AbstractActionController
         $redirectUrl = null;
         $target = null;
         $entity = null;
-        
+
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
-        
+
         // Target: Employee
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
-        
+
         if ($target !== null) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -73,13 +73,13 @@ class EmployeeOTController extends AbstractActionController
     {
         $request = $this->getRequest();
         $redirectUrl = null;
-        
+
         if ($request->getHeader('Referer') == null) {
             // return $this->redirect ()->toRoute ( 'access_denied' );
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
-        
+
         $entity_id = (int) $this->params()->fromQuery('entity_id');
         $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
@@ -88,17 +88,17 @@ class EmployeeOTController extends AbstractActionController
             'checksum' => $checksum,
             'token' => $token
         );
-        
+
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-        
+
         if (! $entity == null) {
-            
+
             /**
              *
              * @todo Update Target
              */
             $target = $entity->getEmployee();
-            
+
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
@@ -117,27 +117,27 @@ class EmployeeOTController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
-        
+
         if ($request->isPost()) {
-            
+
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
-            
+
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
-            
+
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $token
             );
-            
+
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-            
+
             if ($entity == null) {
-                
+
                 $errors[] = 'Entity object can\'t be empty!';
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -145,10 +145,10 @@ class EmployeeOTController extends AbstractActionController
                     'target' => null,
                     'entity' => null
                 ));
-                
+
                 // might need redirect
             } else {
-                
+
                 $vendor_id = $request->getPost('vendor_id');
                 $documentSubject = $request->getPost('documentSubject');
                 $validFrom = $request->getPost('validFrom');
@@ -158,57 +158,57 @@ class EmployeeOTController extends AbstractActionController
                 $filePassword = $request->getPost('filePassword');
                 $visibility = $request->getPost('visibility');
                 $filePassword = $request->getPost('filePassword');
-                
+
                 /**
                  *
                  * @todo : Change Target
                  */
                 $target = $entity->getEmployee();
-                
+
                 // to Add
                 $target_id = null;
                 if ($target !== null) {
                     $target_id = $target->getId();
                 }
-                
+
                 // to Comment
                 // $entity = new NmtApplicationAttachment ();
-                
+
                 $remarks = $request->getPost('remarks');
-                
+
                 if ($documentSubject == null) {
                     $errors[] = 'Please give document subject!';
                 } else {
                     $entity->setDocumentSubject($documentSubject);
                 }
-                
+
                 if ($isActive != 1) {
                     $isActive = 0;
                 }
-                
+
                 if ($markedForDeletion != 1) {
                     $markedForDeletion = 0;
                 }
-                
+
                 if ($visibility != 1) {
                     $visibility = 0;
                 }
-                
+
                 $entity->setFilePassword($filePassword);
-                
+
                 $entity->setIsActive($isActive);
                 $entity->setMarkedForDeletion($markedForDeletion);
                 $entity->setVisibility($visibility);
-                
+
                 if ($filePassword === null or $filePassword == "") {
                     $filePassword = self::PDF_PASSWORD;
                 }
-                
+
                 // validator.
                 $validator = new Date();
                 $date_to_validate = 2;
                 $date_validated = 0;
-                
+
                 // EMPTY is ok
                 if ($validFrom !== null) {
                     if ($validFrom !== "") {
@@ -220,11 +220,11 @@ class EmployeeOTController extends AbstractActionController
                         }
                     }
                 }
-                
+
                 // EMPTY is ok
                 if ($validTo !== null) {
                     if ($validTo !== "") {
-                        
+
                         if (! $validator->isValid($validTo)) {
                             $errors[] = 'End date is not correct or empty!';
                         } else {
@@ -233,25 +233,25 @@ class EmployeeOTController extends AbstractActionController
                         }
                     }
                 }
-                
+
                 // all date corrected
                 if ($date_validated == $date_to_validate) {
-                    
+
                     if ($validFrom > $validTo) {
                         $errors[] = 'End date must be in future!';
                     }
                 }
-                
+
                 $entity->setRemarks($remarks);
-                
+
                 $vendor = null;
                 if ($vendor_id > 0) {
                     $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
                     // $entity->setVendor ( $vendor );
                 }
-                
+
                 $entity->setVendor($vendor);
-                
+
                 // handle attachment
                 if (isset($_FILES['attachments'])) {
                     $file_name = $_FILES['attachments']['name'];
@@ -259,13 +259,13 @@ class EmployeeOTController extends AbstractActionController
                     $file_tmp = $_FILES['attachments']['tmp_name'];
                     $file_type = $_FILES['attachments']['type'];
                     $file_ext = strtolower(end(explode('.', $_FILES['attachments']['name'])));
-                    
+
                     // attachement required?
                     if ($file_tmp == "" or $file_tmp === null) {
-                        
+
                         // $errors [] = 'Attachment can\'t be empby!';
                         if (count($errors) > 0) {
-                            
+
                             $this->flashMessenger()->addMessage('Something wrong!');
                             return new ViewModel(array(
                                 'redirectUrl' => $redirectUrl,
@@ -274,16 +274,16 @@ class EmployeeOTController extends AbstractActionController
                                 'entity' => $entity
                             ));
                         }
-                        
+
                         $entity->setLastChangeBy($u);
                         $entity->setLastChangeOn(new \DateTime());
-                        
+
                         // update last change, without Attachment
                         $this->doctrineEM->flush();
                         $this->flashMessenger()->addMessage('Attachment "' . $entity_id . '" has been updated. File is not changed!');
                         return $this->redirect()->toUrl($redirectUrl);
                     } else {
-                        
+
                         $ext = '';
                         $isPicture = 0;
                         if (preg_match('/(jpg|jpeg)$/', $file_type)) {
@@ -310,7 +310,7 @@ class EmployeeOTController extends AbstractActionController
                         } else if (preg_match('/(octet-stream)$/', $file_type)) {
                             $ext = $file_ext;
                         }
-                        
+
                         $expensions = array(
                             "jpeg",
                             "jpg",
@@ -323,17 +323,17 @@ class EmployeeOTController extends AbstractActionController
                             "zip",
                             "msg"
                         );
-                        
+
                         if (in_array($ext, $expensions) === false) {
                             $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","pdf","xlsx","xlx", "docx"!';
                         }
-                        
+
                         if ($file_size > 2097152) {
                             $errors[] = 'File size must be excately 2 MB';
                         }
-                        
+
                         $checksum = md5_file($file_tmp);
-                        
+
                         /**
                          *
                          * @todo : Change Target
@@ -343,11 +343,11 @@ class EmployeeOTController extends AbstractActionController
                             "employee" => $target_id
                         );
                         $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
-                        
+
                         if (count($ck) > 0) {
                             $errors[] = 'Document: "' . $file_name . '"  exits already';
                         }
-                        
+
                         if (count($errors) > 0) {
                             $this->flashMessenger()->addMessage('Something wrong!');
                             return new ViewModel(array(
@@ -358,43 +358,43 @@ class EmployeeOTController extends AbstractActionController
                             ));
                         }
                         ;
-                        
+
                         // deactive current
                         $entity->setIsactive(0);
                         $entity->setMarkedForDeletion(1);
                         $entity->setLastChangeBy($u);
                         $entity->setLastChangeOn(new \DateTime());
-                        
+
                         $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);
                         $name = md5($target_id . $checksum . uniqid(microtime())) . '_' . $name_part1 . '.' . $ext;
-                        
+
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
                         $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
-                        
+
                         if (! is_dir($folder)) {
                             mkdir($folder, 0777, true); // important
                         }
-                        
+
                         move_uploaded_file($file_tmp, "$folder/$name");
-                        
+
                         if ($ext == "pdf") {
                             $pdf_box = ROOT . self::PDFBOX_FOLDER;
-                            
+
                             // java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
                             exec('java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name");
-                            
+
                             // extract text:
                             exec('java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar ExtractText -password ' . $filePassword . ' ' . "$folder/$name" . ' ' . "$folder/$name" . '.txt');
                         }
-                        
+
                         // if new attachment upload, then clone new one
                         $cloned_entity = clone $entity;
-                        
+
                         // copy new one
                         $cloned_entity->setIsactive(1);
                         $cloned_entity->setMarkedForDeletion(0);
                         $cloned_entity->setChangeFor($entity->getId());
-                        
+
                         $cloned_entity->setFilePassword($filePassword);
                         $cloned_entity->setIsPicture($isPicture);
                         $cloned_entity->setFilename($name);
@@ -402,7 +402,7 @@ class EmployeeOTController extends AbstractActionController
                         $cloned_entity->setFilenameOriginal($file_name);
                         $cloned_entity->setSize($file_size);
                         $cloned_entity->setFolder($folder);
-                        
+
                         // new
                         $cloned_entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR);
                         $cloned_entity->setFolderRelative($folder_relative . DIRECTORY_SEPARATOR);
@@ -412,22 +412,22 @@ class EmployeeOTController extends AbstractActionController
                         $cloned_entity->setCreatedOn(new \DateTime());
                         $this->doctrineEM->persist($cloned_entity);
                         $this->doctrineEM->flush();
-                        
+
                         $this->flashMessenger()->addMessage('Attachment "' . $entity_id . '" has been updated with new file uploaded');
                         return $this->redirect()->toUrl($redirectUrl);
                     }
                 }
             }
         }
-        
+
         $redirectUrl = null;
-        
+
         if ($request->getHeader('Referer') == null) {
             // return $this->redirect ()->toRoute ( 'access_denied' );
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
-        
+
         $entity_id = (int) $this->params()->fromQuery('entity_id');
         $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
@@ -436,17 +436,17 @@ class EmployeeOTController extends AbstractActionController
             'checksum' => $checksum,
             'token' => $token
         );
-        
+
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-        
+
         if (! $entity == null) {
-            
+
             /**
              *
              * @todo : Update Target
              */
             $target = $entity->getEmployee();
-            
+
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
@@ -473,30 +473,30 @@ class EmployeeOTController extends AbstractActionController
     public function list1Action()
     {
         $request = $this->getRequest();
-        
+
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
         ;
-        
+
         $this->layout("layout/user/ajax");
-        
+
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
             'token' => $token
         );
-        
+
         /**
          *
          * @todo : Change Target
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
-        
+
         if ($target !== null) {
-            
+
             /**
              *
              * @todo : Change Target
@@ -506,11 +506,11 @@ class EmployeeOTController extends AbstractActionController
                 'isActive' => 1,
                 'markedForDeletion' => 0
             );
-            
+
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findBy($criteria);
             $total_records = count($list);
             $paginator = null;
-            
+
             return new ViewModel(array(
                 'list' => $list,
                 'total_records' => $total_records,
@@ -528,17 +528,17 @@ class EmployeeOTController extends AbstractActionController
      */
     public function updateTokenAction()
     {
-        
+
         /**
          *
          * @todo : update target
          */
         $query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.employee > :n';
-        
+
         $list = $this->doctrineEM->createQuery($query)
             ->setParameter('n', 0)
             ->getResult();
-        
+
         if (count($list) > 0) {
             foreach ($list as $entity) {
                 /**
@@ -548,30 +548,33 @@ class EmployeeOTController extends AbstractActionController
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
             }
         }
-        
+
         $this->doctrineEM->flush();
-        
+
         $total_records = count($list);
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records
         ));
     }
-	
-	/**
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	
-	/**
-	 *
-	 * @return \Zend\Stdlib\ResponseInterface
-	 */
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

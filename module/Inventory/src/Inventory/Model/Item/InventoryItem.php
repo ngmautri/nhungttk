@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Model\GI;
 
-
 use Inventory\Service\FIFOLayerService;
 
 /**
@@ -47,8 +46,7 @@ class InventoryItem extends AbstractGIStrategy
         if ($trx->getIssueFor() === $item) {
             throw new \Exception("Invalid Argument! It is not posible to use the same item. Please select other!");
         }
-
-       }
+    }
 
     /**
      *
@@ -76,7 +74,7 @@ class InventoryItem extends AbstractGIStrategy
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
         $entity->setIsDraft(0);
         $entity->setIsPosted(1);
-        
+
         $this->contextService->getDoctrineEM()->persist($entity);
 
         $fifoLayerService = new FIFOLayerService();
@@ -86,7 +84,7 @@ class InventoryItem extends AbstractGIStrategy
         $total_credit = 0;
         $total_local_credit = 0;
 
-        // Create JE     
+        // Create JE
         $je = new \Application\Entity\FinJe();
         $je->setCurrency($entity->getCurrency());
         $je->setLocalCurrency($entity->getCurrency());
@@ -121,7 +119,7 @@ class InventoryItem extends AbstractGIStrategy
             // update FIFO Layer
             $cogs = $fifoLayerService->valuateTrx($r, $r->getItem(), $r->getQuantity(), $u);
             $r->setCogsLocal($cogs);
-            
+
             // Exchanging Part.
             $item_ex = new \Application\Entity\NmtInventoryItemExchange();
             $item_ex->setItem($r->getItem());
@@ -200,9 +198,10 @@ class InventoryItem extends AbstractGIStrategy
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
             $this->contextService->getDoctrineEM()->persist($je_row);
         }
-        
-        if($entity->getSysNumber()==\Application\Model\Constants::SYS_NUMBER_UNASSIGNED){
-            $entity->setSysNumber('GI-'.$this->contextService->getControllerPlugin()->getDocNumber($entity));
+
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber('GI-' . $this->contextService->getControllerPlugin()
+                ->getDocNumber($entity));
         }
 
         $this->contextService->getDoctrineEM()->flush();

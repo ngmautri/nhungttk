@@ -12,9 +12,11 @@ namespace HR\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class ReportingController extends AbstractActionController {
-	
-	public function indexAction() {
-		return new ViewModel ();
-	}
+class ReportingController extends AbstractActionController
+{
+
+    public function indexAction()
+    {
+        return new ViewModel();
+    }
 }

@@ -36,7 +36,5 @@ class CompanyQueryRepositoryTest extends PHPUnit_Framework_TestCase
         $rep = new DoctrineCompanyQueryRepository($em);
         $companySN = $rep->getById(1);
         var_dump($companySN);
-        
-        
-      }
+    }
 }

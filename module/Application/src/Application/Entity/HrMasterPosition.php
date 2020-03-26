@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class HrMasterPosition
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class HrMasterPosition
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="position_name", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class HrMasterPosition
     private $positionName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="position_description", type="text", length=65535, nullable=false)
@@ -36,6 +39,7 @@ class HrMasterPosition
     private $positionDescription;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="cost_center", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class HrMasterPosition
     private $costCenter;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="department", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class HrMasterPosition
     private $department;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -57,6 +63,7 @@ class HrMasterPosition
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -65,8 +72,6 @@ class HrMasterPosition
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

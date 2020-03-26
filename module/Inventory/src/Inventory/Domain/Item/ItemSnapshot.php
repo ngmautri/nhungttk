@@ -168,7 +168,9 @@ class ItemSnapshot extends AbstractValueObject
     public $lastPurchasing;
 
     public $itemTypeId;
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -177,6 +179,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseId()
@@ -185,6 +188,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSku()
@@ -193,6 +197,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemName()
@@ -201,6 +206,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemNameForeign()
@@ -209,6 +215,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemDescription()
@@ -217,6 +224,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemType()
@@ -225,6 +233,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemCategory()
@@ -233,6 +242,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getKeywords()
@@ -241,6 +251,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -249,6 +260,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsStocked()
@@ -257,6 +269,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsSaleItem()
@@ -265,6 +278,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPurchased()
@@ -273,6 +287,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsFixedAsset()
@@ -281,6 +296,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsSparepart()
@@ -289,6 +305,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUom()
@@ -297,6 +314,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBarcode()
@@ -305,6 +323,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBarcode39()
@@ -313,6 +332,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBarcode128()
@@ -321,6 +341,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStatus()
@@ -329,6 +350,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -337,6 +359,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getManufacturer()
@@ -345,6 +368,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getManufacturerCode()
@@ -353,6 +377,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getManufacturerCatalog()
@@ -361,6 +386,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getManufacturerModel()
@@ -369,6 +395,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getManufacturerSerial()
@@ -377,6 +404,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOrigin()
@@ -385,6 +413,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSerialNumber()
@@ -393,6 +422,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastPurchasePrice()
@@ -401,6 +431,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastPurchaseCurrency()
@@ -409,6 +440,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastPurchaseDate()
@@ -417,6 +449,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLeadTime()
@@ -425,6 +458,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getValidFromDate()
@@ -433,6 +467,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getValidToDate()
@@ -441,6 +476,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocation()
@@ -449,6 +485,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemInternalLabel()
@@ -457,6 +494,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAssetLabel()
@@ -465,6 +503,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSparepartLabel()
@@ -473,6 +512,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -481,6 +521,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalAvailabiliy()
@@ -489,6 +530,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeOn()
@@ -497,6 +539,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -505,6 +548,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChecksum()
@@ -513,6 +557,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -521,6 +566,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocNumber()
@@ -529,6 +575,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMonitoredBy()
@@ -537,6 +584,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSysNumber()
@@ -545,6 +593,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarksText()
@@ -553,6 +602,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -561,6 +611,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSku1()
@@ -569,6 +620,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSku2()
@@ -577,6 +629,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAssetGroup()
@@ -585,6 +638,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAssetClass()
@@ -593,6 +647,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStockUomConvertFactor()
@@ -601,6 +656,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPurchaseUomConvertFactor()
@@ -609,6 +665,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSalesUomConvertFactor()
@@ -617,6 +674,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCapacity()
@@ -625,6 +683,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAvgUnitPrice()
@@ -633,6 +692,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStandardPrice()
@@ -641,6 +701,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -649,6 +710,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -657,6 +719,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemGroup()
@@ -665,6 +728,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStockUom()
@@ -673,6 +737,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCogsAccount()
@@ -681,6 +746,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPurchaseUom()
@@ -689,6 +755,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSalesUom()
@@ -697,6 +764,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInventoryAccount()
@@ -705,6 +773,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExpenseAccount()
@@ -713,6 +782,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevenueAccount()
@@ -721,6 +791,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultWarehouse()
@@ -729,6 +800,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -737,6 +809,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStandardUom()
@@ -745,6 +818,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
@@ -753,6 +827,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastPrRow()
@@ -761,6 +836,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastPoRow()
@@ -769,6 +845,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastApInvoiceRow()
@@ -777,6 +854,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastTrxRow()
@@ -785,6 +863,7 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastPurchasing()
@@ -793,11 +872,11 @@ class ItemSnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemTypeId()
     {
         return $this->itemTypeId;
     }
-
 }

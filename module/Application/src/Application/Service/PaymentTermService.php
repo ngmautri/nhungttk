@@ -43,17 +43,15 @@ class PaymentTermService extends AbstractService
             'pmtTermCode' => $pmtTermCode
         ));
 
-       
-
         if ($pmtTermCode == "") {
             $errors[] = $this->controllerPlugin->translate('Payment term code is not correct or empty!');
         } else {
-            
+
             if ($isNew == TRUE) {
                 if (count($r) >= 1) {
                     $errors[] = $pmtTermCode . ' exists already';
                 }
-            }              
+            }
             $entity->setPmtTermCode($pmtTermCode);
         }
 
@@ -93,7 +91,6 @@ class PaymentTermService extends AbstractService
 
         // validated.
         $oldEntity = clone ($entity);
-        
 
         $ck = $this->validateHeader($entity, $data, $isNew);
 
@@ -110,7 +107,6 @@ class PaymentTermService extends AbstractService
             $m = sprintf('[OK] Payment Term #%s created.', $entity->getId());
         } else {
 
-      
             $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
             if (count($changeArray) == 0) {
                 $errors[] = sprintf('Nothing changed!');

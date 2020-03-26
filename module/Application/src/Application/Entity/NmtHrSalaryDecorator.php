@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrSalaryDecorator
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtHrSalaryDecorator
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtHrSalaryDecorator
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="income_name", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtHrSalaryDecorator
     private $incomeName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="income_amount", type="decimal", precision=14, scale=6, nullable=false)
@@ -43,6 +47,7 @@ class NmtHrSalaryDecorator
     private $incomeAmount;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_pit_payable", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class NmtHrSalaryDecorator
     private $isPitPayable;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_sso_payable", type="boolean", nullable=true)
@@ -57,6 +63,7 @@ class NmtHrSalaryDecorator
     private $isSsoPayable;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtHrSalaryDecorator
     private $createdOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -71,6 +79,7 @@ class NmtHrSalaryDecorator
     private $createdBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="income_type", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtHrSalaryDecorator
     private $incomeType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="income_code", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtHrSalaryDecorator
     private $incomeCode;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -95,6 +106,7 @@ class NmtHrSalaryDecorator
     private $employee;
 
     /**
+     *
      * @var \Application\Entity\NmtHrContractRevision
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrContractRevision")
@@ -103,8 +115,6 @@ class NmtHrSalaryDecorator
      * })
      */
     private $contractRevision;
-
-
 
     /**
      * Get id

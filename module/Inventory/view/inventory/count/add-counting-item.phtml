@@ -1,81 +1,89 @@
 <h5>Counting Asset:</h5>
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
-	
-	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-error">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
 
 
-<?php if ($asset!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Asset Name	: <strong>' .$asset->name . '</strong></li>';
-	 echo '<li>Asset Tag	: <strong>' .$asset->tag . '</strong></li>';
-	 echo '<li>Model		: <strong>' .$asset->model . '</strong></li>';
-	 echo '<li>Serial		: <strong>' .$asset->serial . '</strong></li>';
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
 
-if ($counted==true)
-{
-	
-	echo '<div class="alert alert-warning">';
-		
-	echo 'already counted </div>';
-	
-}else { ?>
-	
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item"	method="post" enctype="multipart/form-data" id="NewSP" >
-	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-	<input type="hidden" name="counting_id" value="<?php echo $counting->id ?>" />
-	<input type="hidden" name="asset_id" value="<?php echo $asset->id ?>" />
-      <div class="control-group">
-        <label class="control-label" for="inputTag">LOCATION: </label>
-        <div class="controls">
-        
-        	<select name="updated_location" >
-        	
-        		<option value="">---Please select---</option>
+if ($asset !== null) {
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Asset Name	: <strong>' . $asset->name . '</strong></li>';
+    echo '<li>Asset Tag	: <strong>' . $asset->tag . '</strong></li>';
+    echo '<li>Model		: <strong>' . $asset->model . '</strong></li>';
+    echo '<li>Serial		: <strong>' . $asset->serial . '</strong></li>';
+    echo '</ul>';
+    echo '</div>';
+}
+
+if ($counted == true) {
+
+    echo '<div class="alert alert-warning">';
+
+    echo 'already counted </div>';
+} else {
+    ?>
+
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item"
+	method="post" enctype="multipart/form-data" id="NewSP">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+		name="counting_id" value="<?php echo $counting->id ?>" /> <input
+		type="hidden" name="asset_id" value="<?php echo $asset->id ?>" />
+	<div class="control-group">
+		<label class="control-label" for="inputTag">LOCATION: </label>
+		<div class="controls">
+
+			<select name="updated_location">
+
+				<option value="">---Please select---</option>
    	
-   			<?php foreach ($locations as $loc) :
-   				echo $loc===$location ? '<option selected="selected" value="' . $loc. '">' .  $loc. '</option>' :'<option value="' . $loc. '">' .  $loc. '</option>';
-  			endforeach; 
-   			?>
+   			<?php
+
+foreach ($locations as $loc) :
+        echo $loc === $location ? '<option selected="selected" value="' . $loc . '">' . $loc . '</option>' : '<option value="' . $loc . '">' . $loc . '</option>';
+    endforeach
+    ;
+    ?>
 			</select>
-                    
-        </div>
-      </div>
-	 <div class="control-group">
-        <label class="control-label" for="inputLocation">PICTURES:</label>
-        <div class="controls">
-        <input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-	     </div>
-      </div>
-      
-       <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn"><i class="icon-plus">  </i> Count</button>
-        </div>
-      </div>
-    </form>
+
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputLocation">PICTURES:</label>
+		<div class="controls">
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">
+				<i class="icon-plus"> </i> Count
+			</button>
+		</div>
+	</div>
+</form>
 
 
 
-<div id = "dialog" style="display: none;">Check code...</div>
+<div id="dialog" style="display: none;">Check code...</div>
 
 <?php }?>	

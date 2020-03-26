@@ -1,106 +1,115 @@
 <h3><?php echo $this->escapeHtml($category)?></h3>
 
- <P><a href="<?php echo $this->baseUrl ?>/inventory/asset/add?category_id=<?php echo $this->escapeHtml($category_id)?>&category=<?php echo $this->escapeHtml($category)?>">Add new asset</a></P>
+<P>
+	<a
+		href="<?php echo $this->baseUrl ?>/inventory/asset/add?category_id=<?php echo $this->escapeHtml($category_id)?>&category=<?php echo $this->escapeHtml($category)?>">Add
+		new asset</a>
+</P>
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
-   </form>
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory/search/asset"
+	method="get" enctype="multipart/form-data">
+	<input type="text" name="query" class="">
+	<button type="submit" class="btn">
+		<i class="icon-search"> </i>Search
+	</button>
+</form>
 
 
 
 
 
- <?php if ($total_asset <= 0){
-  	echo 'No assets found!';
- 	
- } else {
- 	
- 		if (! is_null ( $paginator )) {
- 			echo '<strong>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_asset . ' assets found!</strong>';
- 		}else{
- 			echo '<strong>'.$total_asset . ' asset(s) found!</strong>';
- 		}
- 	
- ?>
- 
+<?php
+
+if ($total_asset <= 0) {
+    echo 'No assets found!';
+} else {
+
+    if (! is_null($paginator)) {
+        echo '<strong>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_asset . ' assets found!</strong>';
+    } else {
+        echo '<strong>' . $total_asset . ' asset(s) found!</strong>';
+    }
+
+    ?>
+
 <table class="pure-table pure-table-bordered">
-<thead>
-<tr>
-		<td><b>Asset Name</b></td>
-		<td><b>Model</b></td>
-		<td><b>Serial</b></td>
-		<td><b>Brand </b></td>
-		<td><b>Tag </b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
-<tbody>
-	 <?php 
-	 
-	 $count = 0;
-	 foreach ($assets as $asset) : 
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
+	<thead>
+		<tr>
+			<td><b>Asset Name</b></td>
+			<td><b>Model</b></td>
+			<td><b>Serial</b></td>
+			<td><b>Brand </b></td>
+			<td><b>Tag </b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+	 <?php
+
+    $count = 0;
+    foreach ($assets as $asset) :
+        $count ++;
+        echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+        ?>
 
  		<td><?php echo $this->escapeHtml($asset['name']);?></td>
 		<td><?php echo $this->escapeHtml($asset['model']);?></td>
 		<td><?php echo $this->escapeHtml($asset['serial']);?></td>
 		<td><?php echo $this->escapeHtml($asset['brand']);?></td>
 		<td><?php echo $this->escapeHtml($asset['tag']);?></td>
-		<td>
-         <a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset['id']);?>">  Edit </a>
-      	 <a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">  Detail</a>
-     	
-     	</td>
-	</tr>
+		<td><a
+			href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset['id']);?>">
+				Edit </a> <a
+			href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">
+				Detail</a></td>
+		</tr>
 <?php endforeach; ?>
+
+
 
 </table>
 
 <br>
-<?php 
+<?php
 
-		
- 	if (! is_null ( $paginator )) {
-		
-		//change it only
-		$base=$this->baseUrl . '/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category;
-		
-		$last 	= $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;		
-		$first 	= $base . '&page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page)-1;
-		$p2 = ($paginator->page)+1;
-		
-		$prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		
-		echo '<ul class="pagination">';
-		
-		if($paginator->page != 1){
-			echo '<li><a href="'.  $first.'"> |< </a></li>';
-			echo '<li><a href="'.  $prev .'"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base. '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-		
-			
-			if ($i == $paginator->page) {
-				echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-			} else {
-				echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-			}
-		}
-		if($paginator->page != $paginator->totalPages){
-			echo '<li><a href="'.  $next.'"> > </a></li>';
-			echo '<li><a href="'.  $last .'"> >| </a></li>';
-		}
-		echo '</ul>';
-	}
-}?>
+    if (! is_null($paginator)) {
+
+        // change it only
+        $base = $this->baseUrl . '/inventory/asset/categorydetail?category_id=' . $category_id . '&category=' . $category;
+
+        $last = $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . '&page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination">';
+
+        if ($paginator->page != 1) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
+    }
+}
+?>

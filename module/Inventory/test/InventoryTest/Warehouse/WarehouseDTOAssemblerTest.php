@@ -28,8 +28,8 @@ class WarehouseDTOAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-       
-        //var_dump(WarehouseDTOAssembler::findMissingProperties());
+
+        // var_dump(WarehouseDTOAssembler::findMissingProperties());
         WarehouseDTOAssembler::createStoreMapping();
     }
 }

@@ -3,9 +3,9 @@
 <h5>no thing found!</h5>
 
 <?php else: ?>
-<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
-<div style="color: gray;font-size: 9pt;" id="total_received"></div>
-<div style="color: gray;font-size: 9pt;" id="total_balance"></div>
+<div style="color: gray; font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray; font-size: 9pt;" id="total_received"></div>
+<div style="color: gray; font-size: 9pt;" id="total_balance"></div>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
@@ -18,43 +18,44 @@
 			<td><b>Q'ty</b></td>
 			<td><b>UP Price</b></td>
 			<td><b>Total</b></td>
-		
+
 			<td><b>Currency</b></td>
 			<td><b>Status</b></td>
-	
+
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	//$total_ordered = 0;
-	//$total_received = 0;
-	//$total_balance = 0;
-	foreach ( $rows as $r ) :
-		$count ++;
-		/**@var \Application\Entity\NmtProcurePoRow $a ;*/		
-		$a = $r[0];
-		
-		?>
+
+    $count = 0;
+    // $total_ordered = 0;
+    // $total_received = 0;
+    // $total_balance = 0;
+    foreach ($rows as $r) :
+        $count ++;
+        /**@var \Application\Entity\NmtProcurePoRow $a ;*/
+        $a = $r[0];
+
+        ?>
 	 <tr>
-	 <td><?php echo $count;?></td>
-	 		<td><a href="/procure/po/add1?entity_id=<?php echo $a->getPo()->getId();?>&token=<?php echo $a->getPo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPo()->getSysNumber());?></a></td>
+			<td><?php echo $count;?></td>
+			<td><a
+				href="/procure/po/add1?entity_id=<?php echo $a->getPo()->getId();?>&token=<?php echo $a->getPo()->getToken();?>"
+				target="_blank"><?php echo $this->escapeHtml($a->getPo()->getSysNumber());?></a></td>
 			<td><?php if(!$a->getPo()==null): if($a->getPo()->getVendor()!==null): echo $a->getPo()->getVendor()->getVendorName();endif;endif;?> </td>
-			
+
 			<td><?php if(!$a->getPo()->getContractDate()==null): echo date_format ( $a->getPo()->getContractDate(), "d/m/y");endif;?> </td>
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
-		
+
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
-			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),2);?></td>		
-			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>			
+			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),2);?></td>
+			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>
 			<td><?php echo $a->getCurrentState();?></td>
-			<td>
-			</td>
-			
+			<td></td>
+
 		</tr>
 <?php endforeach; ?>
 

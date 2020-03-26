@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticles
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaArticles
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="article_tag", type="string", length=60, nullable=true)
@@ -29,6 +31,7 @@ class MlaArticles
     private $articleTag;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=150, nullable=false)
@@ -36,6 +39,7 @@ class MlaArticles
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name_local", type="string", length=150, nullable=true)
@@ -43,6 +47,7 @@ class MlaArticles
     private $nameLocal;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -50,6 +55,7 @@ class MlaArticles
     private $description;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=255, nullable=true)
@@ -57,6 +63,7 @@ class MlaArticles
     private $keywords;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=100, nullable=false)
@@ -64,6 +71,7 @@ class MlaArticles
     private $type = 'Stocked Product';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=50, nullable=true)
@@ -71,6 +79,7 @@ class MlaArticles
     private $unit;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=150, nullable=true)
@@ -78,6 +87,7 @@ class MlaArticles
     private $code;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="barcode", type="string", length=150, nullable=true)
@@ -85,6 +95,7 @@ class MlaArticles
     private $barcode;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -92,6 +103,7 @@ class MlaArticles
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="visibility", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class MlaArticles
     private $visibility = 'Private';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -106,6 +119,7 @@ class MlaArticles
     private $status = 'Actived';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -113,6 +127,7 @@ class MlaArticles
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_fixed_asset", type="boolean", nullable=true)
@@ -120,6 +135,7 @@ class MlaArticles
     private $isFixedAsset;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -128,8 +144,6 @@ class MlaArticles
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

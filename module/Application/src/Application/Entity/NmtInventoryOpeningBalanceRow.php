@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryOpeningBalanceRow
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryOpeningBalanceRow
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryOpeningBalanceRow
     private $token;
 
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryOpeningBalanceRow
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryOpeningBalanceRow
     private $unitPrice;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="gross_amount", type="decimal", precision=14, scale=4, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryOpeningBalanceRow
     private $grossAmount;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryOpeningBalanceRow
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="net_amount", type="decimal", precision=14, scale=4, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryOpeningBalanceRow
     private $netAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryOpeningBalanceRow
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryOpeningBalanceRow
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryOpeningBalanceRow
     private $workflowStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryOpeningBalanceRow
     private $transactionStatus;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryOpeningBalanceRow
     private $isActive;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryOpeningBalanceRow
     private $isPosted;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryOpeningBalanceRow
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=10, scale=0, nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryOpeningBalanceRow
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryOpeningBalanceRow
     private $docType;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -137,6 +154,7 @@ class NmtInventoryOpeningBalanceRow
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryOpeningBalance
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryOpeningBalance")
@@ -147,6 +165,7 @@ class NmtInventoryOpeningBalanceRow
     private $openingBalance;
 
     /**
+     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -157,6 +176,7 @@ class NmtInventoryOpeningBalanceRow
     private $glAccount;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -167,6 +187,7 @@ class NmtInventoryOpeningBalanceRow
     private $currency;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -175,8 +196,6 @@ class NmtInventoryOpeningBalanceRow
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

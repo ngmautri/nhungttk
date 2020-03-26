@@ -15,12 +15,13 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
 {
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::validateRow()
      */
     public function validateRow($entity, $data, $u, $isNew, $isPosting)
     {}
+
     /**
      *
      * {@inheritdoc}
@@ -111,11 +112,11 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
      */
-    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null)
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger = null)
     {
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -140,7 +141,6 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
 
         $mv = new \Application\Entity\NmtInventoryMv();
 
-        
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
         $mv->setTrxType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
@@ -150,7 +150,7 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
         $mv->setIsDraft(0);
         $mv->setIsActive(1);
         $mv->setIsReversed(1);
-        
+
         $mv->setRemarks('[Reversal]');
         $this->contextService->getDoctrineEM()->persist($mv);
 
@@ -229,12 +229,12 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
                 ->getDocNumber($mv));
             $this->contextService->getDoctrineEM()->persist($mv);
         }
-        
+
         if ($isFlush == true) {
             $this->contextService->getDoctrineEM()->flush();
         }
 
-        if ($trigger==null){
+        if ($trigger == null) {
             $trigger = __METHOD__;
         }
         $m = sprintf('[OK] Warehouse Goods Receipt %s reversed', $mv->getSysNumber());
@@ -243,9 +243,7 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $createdOn,
-            'isFlush' => $isFlush,
+            'isFlush' => $isFlush
         ));
     }
-   
-
 }

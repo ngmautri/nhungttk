@@ -15,11 +15,11 @@ class NotSpecification extends AbstractSpecification
      */
     private $spec1;
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Application\Domain\Shared\Specification\AbstractSpecification::isSatisfiedBy()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecification::isSatisfiedBy()
+     */
     public function isSatisfiedBy($subject)
     {
         return ! $this->spec1->isSatisfiedBy($subject);

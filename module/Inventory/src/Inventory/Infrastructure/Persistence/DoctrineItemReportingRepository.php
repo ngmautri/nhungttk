@@ -276,11 +276,10 @@ AND nmt_inventory_fifo_layer.is_closed=0", $transactionDate, $itemId, $wareHouse
             ->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
-        
+
         if (count($results) == 1) {
             return $results[0]['current_onhand'];
         }
         return 0;
     }
-   
 }

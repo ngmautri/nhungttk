@@ -38,38 +38,34 @@ class InventoryTest extends PHPUnit_Framework_TestCase
             $rep = new \Inventory\Infrastructure\Doctrine\DoctrineItemRepository($em);
 
             $item = $rep->getById(1010);
-            
+
             /**
-             * 
+             *
              * @var \Inventory\Domain\Item\InventoryItem $newItem ;
              */
-            $newItem = clone($item);
-            
-            
+            $newItem = clone ($item);
+
             /**
-             * 
+             *
              * @var \Inventory\Domain\Item\ItemSnapshot $itemSnapShot
              */
             $itemSnapShot = $item->createItemSnapshot();
-            //var_dump($itemSnapShot);
-            
+            // var_dump($itemSnapShot);
+
             /**
-             * 
+             *
              * @var \Inventory\Domain\Item\ItemSnapshot $newItemSnapShot ;
              */
-            $newItemSnapShot = clone($itemSnapShot);
+            $newItemSnapShot = clone ($itemSnapShot);
             $data = array();
-       
-            $data["id"]="2-3";
-            
-            $data["itemSku"]="2-3";
-            $data["itemName"]="Special Item test";
+
+            $data["id"] = "2-3";
+
+            $data["itemSku"] = "2-3";
+            $data["itemName"] = "Special Item test";
             $newItemSnapShot = ItemSnapshotAssembler::updateItemSnapshotFromArray($newItemSnapShot, $data);
-            
-              
+
             var_dump($itemSnapShot->compare($newItemSnapShot));
-            
-            
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

@@ -36,34 +36,30 @@ class ItemCreate extends PHPUnit_Framework_TestCase
 
             /** @var EntityManager $em ; */
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-             
-            
+
             /**
-             * 
+             *
              * @var \Inventory\Application\Service\Item\ItemCRUDService $sv ;
              */
             $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Item\ItemCRUDService');
-            
+
             $data = array();
-            
-            $data["itemSku"]="2-7-5";
-            $data["isActive"]=1;
-            $data["itemName"]="Special Item 2-5 updated7";
-            $data["itemDescription"]="Special Item itemDescription";
-            $data["remarks"]="Special Item itemDescription";
-            
-            $data["standardUom"]=1;
-            $data["stockUom"]=1;
-            $data["stockUomConvertFactor"]=2;
-            $data["keywords"]="gerber";
-            
-            $data["monitoredBy"]= MonitorMethod::ITEM_WITH_BATCH_NO;
+
+            $data["itemSku"] = "2-7-5";
+            $data["isActive"] = 1;
+            $data["itemName"] = "Special Item 2-5 updated7";
+            $data["itemDescription"] = "Special Item itemDescription";
+            $data["remarks"] = "Special Item itemDescription";
+
+            $data["standardUom"] = 1;
+            $data["stockUom"] = 1;
+            $data["stockUomConvertFactor"] = 2;
+            $data["keywords"] = "gerber";
+
+            $data["monitoredBy"] = MonitorMethod::ITEM_WITH_BATCH_NO;
             $dto = ItemAssembler::createItemDTOFromArray($data);
-            
-            
-            var_dump($sv->create($dto, 1 ,39 , __METHOD__));
-                
-            
+
+            var_dump($sv->create($dto, 1, 39, __METHOD__));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

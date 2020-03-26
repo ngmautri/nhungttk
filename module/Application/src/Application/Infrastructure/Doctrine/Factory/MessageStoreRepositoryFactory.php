@@ -23,9 +23,8 @@ class MessageStoreRepositoryFactory implements FactoryInterface
     {
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        
+
         $service = new MessageStoreRepository($sv);
-         return $service;
+        return $service;
     }
-    
 }

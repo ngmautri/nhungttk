@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemSimilarFk4
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemSimilarFk4
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryItemSimilarFk4
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemSimilarFk4
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemSimilarFk4
     private $token;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemSimilarFk4
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryItemSimilarFk4
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryItemSimilarFk4
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -74,6 +82,7 @@ class NmtInventoryItemSimilarFk4
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -84,6 +93,7 @@ class NmtInventoryItemSimilarFk4
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -94,6 +104,7 @@ class NmtInventoryItemSimilarFk4
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -102,8 +113,6 @@ class NmtInventoryItemSimilarFk4
      * })
      */
     private $similarItem;
-
-
 
     /**
      * Get id

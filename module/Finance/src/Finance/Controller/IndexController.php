@@ -14,45 +14,45 @@ use Doctrine\ORM\EntityManager;
 
 /**
  * 02/07
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class IndexController extends AbstractActionController {
-	
-	protected $doctrineEM;
-	
-	/*
-	 * Defaul Action
-	 */
-	public function indexAction()
-	{
-		$em = $this->doctrineEM;
-		$data = $em->getRepository('Application\Entity\NmtWfWorkflow')->findAll();
-		foreach($data as $row)
-		{
-			echo $row->getWorkflowName();
-			echo '<br />';
-		}
-	}
-	
-	
-	/**
-	 * 
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	
-	/**
-	 * 
-	 * @param EntityManager $doctrineEM
-	 * @return \PM\Controller\IndexController
-	 */
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
-	
-	
+class IndexController extends AbstractActionController
+{
+
+    protected $doctrineEM;
+
+    /*
+     * Defaul Action
+     */
+    public function indexAction()
+    {
+        $em = $this->doctrineEM;
+        $data = $em->getRepository('Application\Entity\NmtWfWorkflow')->findAll();
+        foreach ($data as $row) {
+            echo $row->getWorkflowName();
+            echo '<br />';
+        }
+    }
+
+    /**
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @return \PM\Controller\IndexController
+     */
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

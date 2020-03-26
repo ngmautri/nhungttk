@@ -16,7 +16,6 @@ Interface TransactionCmdRepositoryInterface
     public function storeHeader(GenericTransaction $trxAggregate, $generateSysNumber = false, $isPosting = false);
 
     public function storeRow(GenericTransaction $trx, TransactionRow $row, $isPosting = false);
-    
+
     public function createRow($trxId, TransactionRow $row, $isPosting = false);
-    
 }

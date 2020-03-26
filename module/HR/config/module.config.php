@@ -38,7 +38,7 @@ return array(
                 'action' => 'applicant-list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
-            
+
             array(
                 'label' => 'Salary Calculation',
                 'route' => 'hr/default',
@@ -59,9 +59,8 @@ return array(
                 'controller' => 'setting',
                 'action' => 'index',
                 'icon' => 'glyphicon glyphicon-wrench'
-            
             ),
-            
+
             array(
                 'label' => 'Log',
                 'route' => 'hr/default',
@@ -102,23 +101,21 @@ return array(
                     )
                 )
             )
-        
         )
     ),
-    
+
     'service_manager' => array(
         'factories' => array(
             'HR\Service\EmployeeSearchService' => 'HR\Service\EmployeeSearchServiceFactory',
             'hr_navi' => 'HR\Service\HrNavigationFactory' // <-- add this
-        
         )
     ),
-    
+
     'controllers' => array(
-        
+
         'factories' => array(
             // 'HR\Controller\Image' => 'HR\Controller\ImageControllerFactory',
-            
+
             'HR\Controller\Index' => 'HR\Controller\IndexControllerFactory',
             'HR\Controller\Employee' => 'HR\Controller\EmployeeControllerFactory',
             'HR\Controller\EmployeePicture' => 'HR\Controller\EmployeePictureControllerFactory',
@@ -130,9 +127,9 @@ return array(
             'HR\Controller\EmployeeOT' => 'HR\Controller\EmployeeOTControllerFactory',
             'HR\Controller\leaveReason' => 'HR\Controller\LeaveReasonControllerFactory',
             'HR\Controller\Position' => 'HR\Controller\PositionControllerFactory',
-            
+
             'HR\Controller\Fingerscan' => 'HR\Controller\FingerscanControllerFactory',
-            
+
             'HR\Controller\Payroll' => 'HR\Controller\PayrollControllerFactory',
             'HR\Controller\PayrollInput' => 'HR\Controller\PayrollInputControllerFactory',
             'HR\Controller\Setting' => 'HR\Controller\SettingControllerFactory',
@@ -148,7 +145,6 @@ return array(
             'HR\Controller\EntityChangeLog' => 'HR\Controller\EntityChangeLogControllerFactory',
             'HR\Controller\SalaryCalculator' => 'HR\Controller\SalaryCalculatorControllerFactory',
             'HR\Controller\ActivityLog' => 'HR\Controller\ActivityLogControllerFactory'
-        
         )
     ),
     'view_manager' => array(

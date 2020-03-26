@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrPayrollInput
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -23,6 +24,7 @@ class NmtHrPayrollInput
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -30,6 +32,7 @@ class NmtHrPayrollInput
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="period_name", type="string", length=45, nullable=true)
@@ -37,6 +40,7 @@ class NmtHrPayrollInput
     private $periodName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="employee_name", type="string", length=45, nullable=true)
@@ -44,6 +48,7 @@ class NmtHrPayrollInput
     private $employeeName;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="present_day", type="integer", nullable=true)
@@ -51,6 +56,7 @@ class NmtHrPayrollInput
     private $presentDay;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="out_of_office_day", type="integer", nullable=true)
@@ -58,6 +64,7 @@ class NmtHrPayrollInput
     private $outOfOfficeDay;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="annual_leave", type="integer", nullable=true)
@@ -65,6 +72,7 @@ class NmtHrPayrollInput
     private $annualLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="approved_leave", type="integer", nullable=true)
@@ -72,6 +80,7 @@ class NmtHrPayrollInput
     private $approvedLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="unapproved_leave", type="integer", nullable=true)
@@ -79,6 +88,7 @@ class NmtHrPayrollInput
     private $unapprovedLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="sick_leave", type="integer", nullable=true)
@@ -86,6 +96,7 @@ class NmtHrPayrollInput
     private $sickLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="personal_paid_leave", type="integer", nullable=true)
@@ -93,6 +104,7 @@ class NmtHrPayrollInput
     private $personalPaidLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="maternity_leave", type="integer", nullable=true)
@@ -100,6 +112,7 @@ class NmtHrPayrollInput
     private $maternityLeave;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="other_leave1", type="integer", nullable=true)
@@ -107,6 +120,7 @@ class NmtHrPayrollInput
     private $otherLeave1;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="other_leave2", type="integer", nullable=true)
@@ -114,6 +128,7 @@ class NmtHrPayrollInput
     private $otherLeave2;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="other_leave3", type="integer", nullable=true)
@@ -121,6 +136,7 @@ class NmtHrPayrollInput
     private $otherLeave3;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="overtime1", type="integer", nullable=true)
@@ -128,6 +144,7 @@ class NmtHrPayrollInput
     private $overtime1;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="overtime2", type="integer", nullable=true)
@@ -135,6 +152,7 @@ class NmtHrPayrollInput
     private $overtime2;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="overtime3", type="integer", nullable=true)
@@ -142,6 +160,7 @@ class NmtHrPayrollInput
     private $overtime3;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="overtime4", type="integer", nullable=true)
@@ -149,6 +168,7 @@ class NmtHrPayrollInput
     private $overtime4;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="overtime5", type="integer", nullable=true)
@@ -156,6 +176,7 @@ class NmtHrPayrollInput
     private $overtime5;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_number", type="integer", nullable=true)
@@ -163,6 +184,7 @@ class NmtHrPayrollInput
     private $revisionNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -170,6 +192,7 @@ class NmtHrPayrollInput
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -177,6 +200,7 @@ class NmtHrPayrollInput
     private $currentState;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -184,6 +208,7 @@ class NmtHrPayrollInput
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
@@ -191,6 +216,7 @@ class NmtHrPayrollInput
     private $consumedOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -198,6 +224,7 @@ class NmtHrPayrollInput
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -205,6 +232,7 @@ class NmtHrPayrollInput
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks_text", type="text", length=65535, nullable=true)
@@ -212,6 +240,7 @@ class NmtHrPayrollInput
     private $remarksText;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="loaded_container", type="integer", nullable=true)
@@ -219,6 +248,7 @@ class NmtHrPayrollInput
     private $loadedContainer;
 
     /**
+     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -229,6 +259,7 @@ class NmtHrPayrollInput
     private $period;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -239,6 +270,7 @@ class NmtHrPayrollInput
     private $employee;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -247,8 +279,6 @@ class NmtHrPayrollInput
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

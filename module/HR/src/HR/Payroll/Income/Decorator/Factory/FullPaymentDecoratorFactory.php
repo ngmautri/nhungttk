@@ -6,21 +6,20 @@ use HR\Payroll\Income\IncomeInterface;
 use HR\Payroll\Income\Decorator\FullPaymentDecorator;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class FullPaymentDecoratorFactory extends AbstractDecoratorFactory
+class FullPaymentDecoratorFactory extends AbstractDecoratorFactory
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory::createDecorator()
      */
-    protected function createDecorator(IncomeInterface $incomeComponent,
-        ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
+    protected function createDecorator(IncomeInterface $incomeComponent, ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
     {
-        return new FullPaymentDecorator($incomeComponent,$consolidatedPayrollInput);
+        return new FullPaymentDecorator($incomeComponent, $consolidatedPayrollInput);
     }
-
 }

@@ -29,6 +29,7 @@ class GRWithInvoice extends GoodsReceipt implements GoodsReceiptInterface
         $this->movementType = TransactionType::GR_WITH_INVOICE;
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
     }
+
     protected function specificRowValidationByFlow(TransactionSpecificationService $specificationService, TransactionRow $row, Notification $notification = null, $isPosting = false)
     {}
 
@@ -49,7 +50,4 @@ class GRWithInvoice extends GoodsReceipt implements GoodsReceiptInterface
 
     public function addTransactionRow(TransactionRow $transactionRow)
     {}
-
-
-   
 }

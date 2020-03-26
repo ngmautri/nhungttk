@@ -205,7 +205,7 @@ class ItemMapper
         $snapshot->standardPrice = $entity->getStandardPrice();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->itemTypeId = $entity->getItemTypeId();
-      
+
         return $snapshot;
     }
 }

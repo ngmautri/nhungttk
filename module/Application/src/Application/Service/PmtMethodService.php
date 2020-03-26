@@ -1,7 +1,6 @@
 <?php
 namespace Application\Service;
 
-
 /**
  * Payment Method Service.
  *
@@ -42,7 +41,7 @@ class PmtMethodService extends AbstractService
         } else {
             $entity->setMethodCode($methodCode);
         }
-        
+
         if ($methodName == "") {
             $errors[] = $this->controllerPlugin->translate('Method Name is not correct or empty!');
         } else {
@@ -81,7 +80,7 @@ class PmtMethodService extends AbstractService
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($changeOn);
         } else {
-             $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
         }
@@ -89,6 +88,4 @@ class PmtMethodService extends AbstractService
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-
-  
 }

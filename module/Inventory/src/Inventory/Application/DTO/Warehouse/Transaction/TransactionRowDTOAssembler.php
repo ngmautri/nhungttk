@@ -12,7 +12,7 @@ class TransactionRowDTOAssembler
 {
 
     /**
-     * 
+     *
      * @param array $data
      * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDetailDTO
      */
@@ -150,7 +150,7 @@ class TransactionRowDTOAssembler
             print "\n" . "\$dto->" . $propertyName . "=\$entity->get" . ucfirst($propertyName) . "();";
         }
     }
-    
+
     /**
      * generete Get Mapping File.
      */
@@ -162,8 +162,7 @@ class TransactionRowDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" .  "\$snapshot->" . $propertyName . "= " . "\$entity->get" . ucfirst($propertyName) . "();" ;
+            print "\n" . "\$snapshot->" . $propertyName . "= " . "\$entity->get" . ucfirst($propertyName) . "();";
         }
     }
-    
 }

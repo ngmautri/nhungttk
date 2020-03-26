@@ -8,7 +8,10 @@ namespace Application\Domain\Company;
  */
 class GenericCompany extends AbstractCompany
 {
-   protected $warehouses;
-   protected $departments;
-   protected $postingPeriods;      
+
+    protected $warehouses;
+
+    protected $departments;
+
+    protected $postingPeriods;
 }

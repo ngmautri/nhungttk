@@ -1,52 +1,52 @@
 <h4>Department:  <?php echo $department->name ?></h4>
 
 <ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/application/department/add-member?id=<?php echo $this->escapeHtml($department->id);?>">Add-member</a>
- 
+	<li><a
+		href="<?php echo $this->baseUrl ?>/application/department/add-member?id=<?php echo $this->escapeHtml($department->id);?>">Add-member</a>
+
 </ul>
 
 <?php
 
 if ($total_users <= 0) {
-	
-	echo 'No spare part found!';
+
+    echo 'No spare part found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_users . ' members found! </h5>';
-	;
-	}else{
-		echo '<h5>'. $total_users . ' members found! </h5>';
-		
-	}
-?>
-		
+
+    if (! is_null($paginator)) {
+        echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_users . ' members found! </h5>';
+        ;
+    } else {
+        echo '<h5>' . $total_users . ' members found! </h5>';
+    }
+    ?>
+
 
 <table class="pure-table pure-table-bordered">
-<thead>
-	<tr>
-		<td><b>First Name</b></td>
-		<td><b>Last Name</b></td>
-		<td><b>Email</b></td>
-		<td><b>Action</b></td>
-		
-	</tr>
-</thead>
- <tbody>
-	  <?php 
-	 
-	 $count = 0;
-	 foreach ($users as $a) : 
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
+	<thead>
+		<tr>
+			<td><b>First Name</b></td>
+			<td><b>Last Name</b></td>
+			<td><b>Email</b></td>
+			<td><b>Action</b></td>
+
+		</tr>
+	</thead>
+	<tbody>
+	  <?php
+
+    $count = 0;
+    foreach ($users as $a) :
+        $count ++;
+        echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+        ?>
 		<td><?php echo $a['firstname'];?></td>
 		<td><?php echo $a['lastname'];?></td>
-			<td><?php echo $a['email'];?></td>
-		
+		<td><?php echo $a['email'];?></td>
+
 		<td><b></b></td>
-		
+
 		</tr>
 <?php endforeach; ?>
 </tbody>
@@ -56,47 +56,43 @@ if ($total_users <= 0) {
 
 <?php
 
-if (! is_null ( $paginator )) {
+    if (! is_null($paginator)) {
 
-	//change it only
-	$base=$this->baseUrl . '/inventory/spareparts/show-category?id='.$department->id;
+        // change it only
+        $base = $this->baseUrl . '/inventory/spareparts/show-category?id=' . $department->id;
 
-	$last 	= $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-	$first 	= $base . '&page=1&perPage=' . $paginator->resultsPerPage;
+        $last = $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . '&page=1&perPage=' . $paginator->resultsPerPage;
 
-	$p1 = ($paginator->page)-1;
-	$p2 = ($paginator->page)+1;
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
 
-	$prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-	$next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
 
+        echo '<ul class="pagination">';
 
-	echo '<ul class="pagination">';
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
 
-	if($paginator->page != 1 AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $first.'"> |< </a></li>';
-		echo '<li><a href="'.  $prev .'"> < </a></li>';
-	}
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
 
-	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-		$url = $base. '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            $url = $base . '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
 
-			
-		if ($i == $paginator->page) {
-			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-		} else {
-			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-		}
-	}
-	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $next.'"> > </a></li>';
-		echo '<li><a href="'.  $last .'"> >| </a></li>';
-	}
-	echo '</ul>';
-}
-
-	
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
+    }
 }
 ?>
 

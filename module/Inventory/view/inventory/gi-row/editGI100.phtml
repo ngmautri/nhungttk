@@ -9,10 +9,10 @@
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-					<?php 
-					$current_step = "STEP2";
-					include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
-					?>
+					<?php
+    $current_step = "STEP2";
+    include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+    ?>
 
 
 	</div>
@@ -26,162 +26,163 @@
 			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
 				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
 				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-				Menu <span></a>
+					Menu <span></a>
 
 
-<div id="tabs" style="font-size: 10pt">
-	<ul>
-		<li><a href="#general">New A/P Invoice:</a></li>
-	</ul>
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general">New A/P Invoice:</a></li>
+				</ul>
 
-	<div id="general" style="font-size: 9pt">
-	<!-- Tab1 -->
+				<div id="general" style="font-size: 9pt">
+					<!-- Tab1 -->
 	
 	
 	<?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 <form id="New_Invoice_Row" class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/inventory/gi-row/add"
-			method="post" enctype="multipart/form-data">
-			
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-				id="entity_id" name="entity_id"
-				value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
-			<input type="hidden" id="token" name="token"
-				value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
+						action="<?php echo $this->baseUrl ?>/inventory/gi-row/add"
+						method="post" enctype="multipart/form-data">
+
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							id="entity_id" name="entity_id"
+							value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+						<input type="hidden" id="token" name="token"
+							value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
 
 
-			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a style="font-size: 9pt; color: gray;" href="#new_row" class=""
-						data-toggle="collapse">NEW ROW:</a>
-				</legend>
-				<div id="new_row" class="collapse in">
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2"></label>
-						<div class="col-sm-3">
-							<input
-								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Is
-							Active&nbsp;&nbsp;&nbsp;&nbsp;
-						</div>
-					</div>
-					<div class="form-group margin-bottom  required">
-						<label class="control-label col-sm-2">Item: </label>
-						<div class="col-sm-3">
-							<input tabindex="2" class="form-control" type="text"
-								id="item_name" placeholder="Enter keyword to search item..."
-								name="item_name"
-								value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
+						<fieldset>
+							<legend style="font-size: 9pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a style="font-size: 9pt; color: gray;" href="#new_row" class=""
+									data-toggle="collapse">NEW ROW:</a>
+							</legend>
+							<div id="new_row" class="collapse in">
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"></label>
+									<div class="col-sm-3">
+										<input
+											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Is
+										Active&nbsp;&nbsp;&nbsp;&nbsp;
+									</div>
+								</div>
+								<div class="form-group margin-bottom  required">
+									<label class="control-label col-sm-2">Item: </label>
+									<div class="col-sm-3">
+										<input tabindex="2" class="form-control" type="text"
+											id="item_name" placeholder="Enter keyword to search item..."
+											name="item_name"
+											value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
 
 
-							<input type="hidden" id="item_id" placeholder="" name="item_id"
-								value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
-						</div>
-						<div class="col-sm-2">
-							<a style="color: #0080ff;" href="javascript:;"
-								onclick="showJqueryDialog('Select Item','1280',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-								class="glyphicon glyphicon-folder-open"></i>
-							</a>
+										<input type="hidden" id="item_id" placeholder=""
+											name="item_id"
+											value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
+									</div>
+									<div class="col-sm-2">
+										<a style="color: #0080ff;" href="javascript:;"
+											onclick="showJqueryDialog('Select Item','1280',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+											class="glyphicon glyphicon-folder-open"></i>
+										</a>
 
 
 
 
-						</div>
+									</div>
 
-						<div class="col-sm-2">
-							<a target="_blank" style="font-size: 9pt;"
-								href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
-								class="glyphicon glyphicon-new-window"></i></small>
-						</div>
+									<div class="col-sm-2">
+										<a target="_blank" style="font-size: 9pt;"
+											href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
 
-						<div id="item_detail">
-							&nbsp;&nbsp;<a title="Item Detail" href="javascript:;"
-								onclick="showSelectedItem();"><i style="color: navy"
-								class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a> <br>&nbsp;
-						</div>
-					</div>
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
-						<div class="col-sm-3">
-							<input tabindex="6" class="form-control input-sm" type="text"
-								id="quantity" name="quantity"
-								value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
-						</div>
-					</div>
+									<div id="item_detail">
+										&nbsp;&nbsp;<a title="Item Detail" href="javascript:;"
+											onclick="showSelectedItem();"><i style="color: navy"
+											class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a> <br>&nbsp;
+									</div>
+								</div>
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+									<div class="col-sm-3">
+										<input tabindex="6" class="form-control input-sm" type="text"
+											id="quantity" name="quantity"
+											value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
+									</div>
+								</div>
 
 
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Issue for: </label>
-						<div class="col-sm-3">
-							<input disabled class="form-control input-sm" type="text"
-								id="issue_for_name" placeholder="Select Item if any"
-								name="issue_for_name"
-								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
-							<input type="hidden" id="issue_for_id" placeholder=""
-								name="issue_for_id"
-								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
-						</div>
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Issue for: </label>
+									<div class="col-sm-3">
+										<input disabled class="form-control input-sm" type="text"
+											id="issue_for_name" placeholder="Select Item if any"
+											name="issue_for_name"
+											value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
+										<input type="hidden" id="issue_for_id" placeholder=""
+											name="issue_for_id"
+											value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
+									</div>
 
-						<div class="col-sm-3">
-						<a style="color: #0080ff;" href="javascript:;"
-							onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-							class="glyphicon glyphicon-folder-open"></i>
-						</a>
-						</div>
+									<div class="col-sm-3">
+										<a style="color: #0080ff;" href="javascript:;"
+											onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+											class="glyphicon glyphicon-folder-open"></i>
+										</a>
+									</div>
 
-					</div>
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Remark:</label>
-						<div class="col-sm-8">
-							<input tabindex="9" class="form-control input-sm" type="text"
-								placeholder="" name="remarks"
-								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-						</div>
-					</div>
+								</div>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Remark:</label>
+									<div class="col-sm-8">
+										<input tabindex="9" class="form-control input-sm" type="text"
+											placeholder="" name="remarks"
+											value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+									</div>
+								</div>
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag"></label>
-						<div class="col-sm-3">
-							<a tabindex="10" class="btn btn-default btn-sm"
-								onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
-									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
-							<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2" for="inputTag"></label>
+									<div class="col-sm-3">
+										<a tabindex="10" class="btn btn-default btn-sm"
+											onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
+												class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
+										<a tabindex="11" class="btn btn-default btn-sm"
+											href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+												class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
-						</div>
-					</div>
+									</div>
+								</div>
 
+							</div>
+						</fieldset>
+					</form>
+
+
+
+					<!-- end tab -->
 				</div>
-			</fieldset>
-		</form>
-
-	
-
-<!-- end tab -->
-</div>
+			</div>
 		</div>
+		<!-- /#page-content-wrapper -->
+
 	</div>
-	<!-- /#page-content-wrapper -->
+	<!-- /#wrapper -->
 
-</div>
-<!-- /#wrapper -->
-
-<script type="text/javascript">
+	<script type="text/javascript">
 
     $( "#item_name" ).autocomplete({
         source: "/inventory/item-search/auto-complete",

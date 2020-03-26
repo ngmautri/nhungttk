@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAsset
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAsset
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
@@ -29,6 +31,7 @@ class MlaAsset
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -36,6 +39,7 @@ class MlaAsset
     private $description;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="group_id", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class MlaAsset
     private $groupId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="tag", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class MlaAsset
     private $tag;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="brand", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class MlaAsset
     private $brand;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="model", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class MlaAsset
     private $model;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="serial", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class MlaAsset
     private $serial;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="origin", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class MlaAsset
     private $origin;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="received_on", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class MlaAsset
     private $receivedOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class MlaAsset
     private $location;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class MlaAsset
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
@@ -106,6 +119,7 @@ class MlaAsset
     private $comment;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class MlaAsset
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaAssetCategories
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAssetCategories")
@@ -121,8 +136,6 @@ class MlaAsset
      * })
      */
     private $category;
-
-
 
     /**
      * Get id

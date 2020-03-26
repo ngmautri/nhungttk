@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAclWhitelist
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAclWhitelist
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaAclWhitelist
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class MlaAclWhitelist
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaAclResources
      *
      * @ORM\Id
@@ -46,8 +50,6 @@ class MlaAclWhitelist
      * })
      */
     private $resource;
-
-
 
     /**
      * Set id

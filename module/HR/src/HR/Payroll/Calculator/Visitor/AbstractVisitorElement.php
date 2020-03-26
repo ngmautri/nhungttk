@@ -6,11 +6,12 @@ namespace HR\Payroll\Calculator\Visitor;
  * @author Nguyen Mau Tri
  *        
  */
-Abstract Class AbstractVisitorElement
+abstract class AbstractVisitorElement
 {
+
     /**
-     * 
-     *  @param VisitorInterface $visitor
+     *
+     * @param VisitorInterface $visitor
      */
     abstract public function accept(VisitorInterface $visitor);
 }

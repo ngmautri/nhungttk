@@ -133,9 +133,9 @@ class OpeningBalanceService extends AbstractService
         if ($n == 0) {
             throw new \Exception("Opening Balace is empty. No Posting will be made!");
         }
-        
+
         $this->jeService->postInventoryOB($entity, $rows, $u);
-                
+
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }

@@ -21,37 +21,42 @@ use Zend\Validator\Date;
  * @author nmt
  *        
  */
-class EmployeePictureController extends AbstractActionController {
-	protected $authService;
-	protected $SmtpTransportService;
-	protected $userTable;
-	protected $doctrineEM;
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
-	 */
-	public function indexAction() {
-	}
-	
-	/**
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	public function getAction() {
-	
-	}
-	
+class EmployeePictureController extends AbstractActionController
+{
 
-	
-	// SETTER AND GETTER
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
+    protected $authService;
+
+    protected $SmtpTransportService;
+
+    protected $userTable;
+
+    protected $doctrineEM;
+
+    /**
+     *
+     * {@inheritdoc}
+     *
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function indexAction()
+    {}
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function getAction()
+    {}
+
+    // SETTER AND GETTER
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

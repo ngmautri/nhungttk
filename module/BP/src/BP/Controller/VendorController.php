@@ -229,19 +229,18 @@ class VendorController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $gl_list = $nmtPlugin->glAccountList();
-        
 
         // Is Posing
         // =============================
-        
+
         if ($request->isPost()) {
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            
+
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
             $nTry = $request->getPost('n');
@@ -262,8 +261,7 @@ class VendorController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'n' => $nTry,
-                    'gl_list' => $gl_list,
-                    
+                    'gl_list' => $gl_list
                 ));
 
                 // might need redirect
@@ -278,17 +276,16 @@ class VendorController extends AbstractActionController
                 $isActive = (int) $request->getPost('isActive');
 
                 $country_id = (int) $request->getPost('country_id');
-                
+
                 $gl_account_id = $request->getPost('gl_account_id');
-                
+
                 $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-                
+
                 if ($gl == null) {
                     $errors[] = 'G/L account can\'t be empty!';
                 } else {
                     $entity->setGlAccount($gl);
                 }
-                
 
                 $street = $request->getPost('street');
                 $city = $request->getPost('city');
@@ -358,15 +355,14 @@ class VendorController extends AbstractActionController
                         'redirectUrl' => $redirectUrl,
                         'entity' => $entity,
                         'n' => $nTry,
-                        'gl_list' => $gl_list,
-                        
+                        'gl_list' => $gl_list
                     ));
                 }
 
                 // NO ERROR
                 // Saving into Database..........
                 // ++++++++++++++++++++++++++++++
-                
+
                 try {
 
                     $changeOn = new \DateTime();
@@ -448,8 +444,7 @@ class VendorController extends AbstractActionController
                 'errors' => null,
                 'entity' => $entity,
                 'n' => 0,
-                'gl_list' => $gl_list,
-                
+                'gl_list' => $gl_list
             ));
         }
 

@@ -224,14 +224,14 @@ if (count($errors) > 0) {
 											id="rowNumber" name="rowNumber"
 											value="<?php if (!$entity== null): echo $entity->getRowNumber(); endif;?>">
 									</div>
-									
-														<div class="col-sm-3">
+
+									<div class="col-sm-3">
 										<input id="is_active"
 											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 											type="checkbox" name="isActive" value="1">&nbsp;Is
 										Active&nbsp;&nbsp;&nbsp;&nbsp;
 									</div>
-				
+
 									<div class="col-sm-3" style="color: gray">
 				<?php echo 'Current State:'. strtoupper($entity->getCurrentState());?>
 		</div>
@@ -419,8 +419,8 @@ if (count($errors) > 0) {
 									</div>
 
 								</div>
-	<hr style="margin: 1pt 1pt 5pt 1pt;">
-							
+								<hr style="margin: 1pt 1pt 5pt 1pt;">
+
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 									<div class="col-sm-3">
@@ -678,6 +678,6 @@ if ($entity !== null) :
 	        	    	    		endif;
 
 
-	            ?>
+?>
 
  </script>

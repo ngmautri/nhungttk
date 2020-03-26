@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemAttachment
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemAttachment
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="document_type", type="string", length=50, nullable=false)
@@ -29,6 +31,7 @@ class NmtInventoryItemAttachment
     private $documentType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemAttachment
     private $url;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemAttachment
     private $filetype;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=100, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemAttachment
     private $filename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename_original", type="string", length=100, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryItemAttachment
     private $filenameOriginal;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryItemAttachment
     private $size;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryItemAttachment
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryItemAttachment
     private $folder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder_relative", type="string", length=100, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryItemAttachment
     private $folderRelative;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryItemAttachment
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryItemAttachment
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryItemAttachment
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryItemAttachment
     private $validFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryItemAttachment
     private $validTo;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryItemAttachment
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryItemAttachment
     private $lastChangeOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryItemAttachment
     private $markedForDeletion;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -151,6 +170,7 @@ class NmtInventoryItemAttachment
     private $item;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -161,6 +181,7 @@ class NmtInventoryItemAttachment
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -171,6 +192,7 @@ class NmtInventoryItemAttachment
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItemPurchasing
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemPurchasing")
@@ -181,6 +203,7 @@ class NmtInventoryItemAttachment
     private $itemPurchasing;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -189,8 +212,6 @@ class NmtInventoryItemAttachment
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

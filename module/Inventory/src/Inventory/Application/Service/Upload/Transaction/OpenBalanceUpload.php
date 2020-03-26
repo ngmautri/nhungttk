@@ -24,9 +24,8 @@ class OpenBalanceUpload extends AbstractUploadStrategy
         $objPHPExcel = IOFactory::load($file);
 
         try {
-            
+
             $trx = TransactionFactory::createTransaction(TransactionType::GR_FROM_OPENNING_BALANCE);
-            
 
             foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
                 // echo $worksheet->getTitle();
@@ -44,11 +43,11 @@ class OpenBalanceUpload extends AbstractUploadStrategy
 
                 $transactionRows = array();
 
-                $n=1;
+                $n = 1;
                 for ($row = 2; $row <= $highestRow; ++ $row) {
 
                     $transactionRowDTO = new TransactionRowDTO();
-                    $n++;
+                    $n ++;
                     // new A=1
                     for ($col = 1; $col < $highestColumnIndex; ++ $col) {
 
@@ -86,7 +85,7 @@ class OpenBalanceUpload extends AbstractUploadStrategy
                 }
 
                 var_dump($transactionRows);
-                echo($n);
+                echo ($n);
             }
         } catch (\Exception $e) {
             echo $e->getMessage();

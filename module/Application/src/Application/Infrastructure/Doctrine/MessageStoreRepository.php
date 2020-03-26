@@ -117,8 +117,6 @@ WHERE message_store.sent_on IS NULL";
 WHERE entity_id=%s AND entity_token="%s"  order by revision_no desc ';
 
         $sql = sprintf($sql, $entityId, $entityToken);
-        
-        
 
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
@@ -140,6 +138,4 @@ WHERE entity_id=%s AND entity_token="%s"  order by revision_no desc ';
             return null;
         }
     }
-    
-
 }

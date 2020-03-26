@@ -37,16 +37,12 @@ class Constants
     const INVENTORY_GR_FROM_OPENNING_BALANCE = 'GR000';
 
     const INVENTORY_GR_FROM_PURCHASING = 'GR100';
-    
+
     const INVENTORY_GR_FROM_TRANSFER_WAREHOUSE = 'GR101';
-    
+
     const INVENTORY_GR_FROM_TRANSFER_LOCATION = 'GR102';
-    
 
     const INVENTORY_GR_FROM_PURCHASING_REVERSAL = 'GR100-1';
-    
-    
-    
 
     // ========================================
     const INVENTORY_TRANSFER_WAREHOUSE = 'warehouse';
@@ -119,12 +115,12 @@ class Constants
                     "type_name" => $translator->translate("Issue for return PO"),
                     "type_description" => $translator->translate("goods will be issued for returning to supplier. PO is required!")
                 ),
-                
+
                 self::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE => array(
                     "type_name" => $translator->translate("Transfer to other warehouse"),
                     "type_description" => $translator->translate("goods will be issued for other warehouse.")
                 ),
-                
+
                 self::INVENTORY_GI_FOR_TRANSFER_LOCATION => array(
                     "type_name" => $translator->translate("Transfer to other location"),
                     "type_description" => $translator->translate("goods will be issued for other location in warehouse.")

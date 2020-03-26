@@ -9,10 +9,12 @@ namespace BP\Model\Domain\Vendor;
  */
 class Vendor
 {
+
     private $id;
+
     private $uuid;
-    
+
     private $vendorName;
+
     private $vendorCode;
-    
 }

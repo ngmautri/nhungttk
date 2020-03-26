@@ -80,8 +80,7 @@ class GRfromPurchasing extends AbstractTransactionStrategy
      * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
      */
     public function doPosting($entity, $u, $isFlush = false)
-    {        
-    }
+    {}
 
     /**
      *
@@ -172,7 +171,8 @@ class GRfromPurchasing extends AbstractTransactionStrategy
         $mv->setCreatedBy($u);
         $mv->setCreatedOn($createdOn);
         $mv->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        $mv->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($mv));
+        $mv->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($mv));
         $this->contextService->getDoctrineEM()->persist($mv);
 
         if ($isFlush == TRUE) {

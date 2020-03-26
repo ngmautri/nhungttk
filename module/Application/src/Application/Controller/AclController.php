@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -10,17 +9,20 @@ use MLA\Paginator;
 use Zend\Math\Rand;
 
 /**
- * @copyright 2018 
+ *
+ * @copyright 2018
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  * @since 19/6/2018
  * @version 1.0
- *
+ *         
  */
 class AclController extends AbstractActionController
 {
+
     const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-    
+
     protected $appService;
+
     protected $doctrineEM;
 
     /*
@@ -29,24 +31,21 @@ class AclController extends AbstractActionController
     public function indexAction()
     {}
 
-   /**
-    * 
-    * @return \Zend\View\Model\ViewModel
-    */
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
     public function listAction()
     {
         $modules = $this->appService->getLoadedModules();
-        
+
         // var_dump($modules);
-        
+
         return new ViewModel(array(
             'modules' => $modules,
             'e' => $this->getEvent()
-        
         ));
     }
-    
-   
 
     /**
      *
@@ -60,31 +59,32 @@ class AclController extends AbstractActionController
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
         ;
-        
+
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
         ;
-        
+
         $criteria = array(
-            'isActive' => 1,
-          );
-        $sort=array(
+            'isActive' => 1
+        );
+        $sort = array(
             'module' => 'ASC',
             'controller' => 'ASC',
-            'action' => 'ASC');
-        
-        $resources = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy($criteria,$sort);
+            'action' => 'ASC'
+        );
+
+        $resources = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy($criteria, $sort);
         $totalResults = count($resources);
         $paginator = null;
-        
+
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
-            $resources = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy($criteria,$sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $resources = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy($criteria, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
-        
+
         return new ViewModel(array(
             'total_resources' => $totalResults,
             'resources' => $resources,
@@ -92,40 +92,38 @@ class AclController extends AbstractActionController
         ));
     }
 
-   /**
-    * changed 19/6
-    * @version: 1.0
-    * @return \Zend\View\Model\ViewModel
-    */
-   
+    /**
+     * changed 19/6
+     *
+     * @version: 1.0
+     * @return \Zend\View\Model\ViewModel
+     */
     public function updateSysResourcesAction()
     {
         $resources = $this->appService->getAppLoadedResources();
-         
+
         /** @var \Application\Entity\MlaUsers $u */
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
-        
+
         // Set all resources as inactive;
         $q = $this->doctrineEM->createQuery("UPDATE Application\Entity\NmtApplicationAclResource res SET res.isActive = 0, res.currentState = ''");
         $q->execute();
-        
+
         $new_counter = 0;
         $updated_counter = 0;
-        
-        //echo count($resources);
-        
+
+        // echo count($resources);
+
         foreach ($resources as $res) {
-            
-             /** @var \Application\Entity\NmtApplicationAclResource $saved_res */
+
+            /** @var \Application\Entity\NmtApplicationAclResource $saved_res */
             $saved_res = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findOneBy(array(
                 'resource' => $res['resource']
             ));
-            
-            
-            if (!$saved_res instanceof \Application\Entity\NmtApplicationAclResource) {
+
+            if (! $saved_res instanceof \Application\Entity\NmtApplicationAclResource) {
                 $new_counter ++;
                 $input = new \Application\Entity\NmtApplicationAclResource();
                 $input->setModule($res['module']);
@@ -140,26 +138,25 @@ class AclController extends AbstractActionController
                 $input->setRemarks("created by " . $u->getFirstname() . " " . $u->getLastname());
                 $input->setCreatedBy($u);
                 $this->doctrineEM->persist($input);
-            }else{
-                $updated_counter++;
+            } else {
+                $updated_counter ++;
                 $saved_res->setIsActive(1);
-                $saved_res->setCurrentState("ACTIVE");                
+                $saved_res->setCurrentState("ACTIVE");
                 $saved_res->setChangeOn(new \DateTime());
                 $saved_res->setRemarks("updated by " . $u->getFirstname() . " " . $u->getLastname());
-                
+
                 $saved_res->setChangeBy($u);
                 $saved_res->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                
-                $this->doctrineEM->persist($saved_res); 
+
+                $this->doctrineEM->persist($saved_res);
             }
         }
-        
+
         $this->doctrineEM->flush();
-        
+
         return new ViewModel(array(
             'new_counter' => $new_counter,
-            'updated_counter' => $updated_counter,
-            
+            'updated_counter' => $updated_counter
         ));
     }
 
@@ -174,13 +171,13 @@ class AclController extends AbstractActionController
         $identity = $this->authService->getIdentity();
         $user = $this->userTable->getUserByEmail($identity);
         $resources = $this->appService->getAppLoadedResources();
-        
+
         $counter = 0;
         foreach ($resources as $res) {
             $saved_res = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(
                 'resource' => $res['resource']
             ));
-            
+
             if ($saved_res == null) {
                 $counter ++;
                 $input = new \Application\Entity\NmtApplicationAclResource();
@@ -197,7 +194,7 @@ class AclController extends AbstractActionController
                 $this->doctrineEM->persist($input);
                 $this->doctrineEM->flush();
             }
-            
+
             /*
              * if(!$this->aclResourceTable->isResourceExits($res))
              * {
@@ -210,12 +207,10 @@ class AclController extends AbstractActionController
         }
         return new ViewModel(array(
             'counter' => $counter
-        
         ));
     }
 
     // SETTER AND GETTER
-   
     public function getAppService()
     {
         return $this->appService;
@@ -227,18 +222,14 @@ class AclController extends AbstractActionController
         return $this;
     }
 
-      public function getDoctrineEM()
+    public function getDoctrineEM()
     {
         return $this->doctrineEM;
     }
 
-    public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
-	
-	
-	
-	
-
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

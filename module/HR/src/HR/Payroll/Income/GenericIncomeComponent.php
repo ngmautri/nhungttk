@@ -3,39 +3,49 @@ namespace HR\Payroll\Income;
 
 /**
  * Generic Income Component
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class GenericIncomeComponent extends AbstractIncomeComponent{
-    
+class GenericIncomeComponent extends AbstractIncomeComponent
+{
+
     private $incomeName;
+
     private $isDefault;
+
     private $isPITPayable;
+
     private $isSSOPayable;
+
     private $isPayable;
+
     private $currency;
+
     private $amount;
+
     private $calculatedAmount;
-   
+
     private $paymentFrequency;
+
     private $decoratorFactory;
+
     private $description;
-    
+
     /**
-     *  Mutable Object
-     *  @param string $incomeName
-     *  @param number $amount
-     *  @param number $calculatedAmount
-     *  @param string $currency
-     *  @param boolean $isDefault
-     *  @param boolean $isPITPayable
-     *  @param boolean $isSSOPayable
-     *  @param boolean $isPayable
-     *  @param string $decoratorFactory
+     * Mutable Object
+     *
+     * @param string $incomeName
+     * @param number $amount
+     * @param number $calculatedAmount
+     * @param string $currency
+     * @param boolean $isDefault
+     * @param boolean $isPITPayable
+     * @param boolean $isSSOPayable
+     * @param boolean $isPayable
+     * @param string $decoratorFactory
      */
-    function __construct($incomeName=null, $amount, $calculatedAmount=null,$currency,$isDefault,
-        $isPITPayable,$isSSOPayable,$isPayable,$decoratorFactory=null)
+    function __construct($incomeName = null, $amount, $calculatedAmount = null, $currency, $isDefault, $isPITPayable, $isSSOPayable, $isPayable, $decoratorFactory = null)
     {
         $this->incomeName = $incomeName;
         $this->amount = $amount;
@@ -45,42 +55,42 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
         $this->isPayable = $isPayable;
         $this->isPITPayable = $isPITPayable;
         $this->isSSOPayable = $isSSOPayable;
-        $this->decoratorFactory=$decoratorFactory;        
+        $this->decoratorFactory = $decoratorFactory;
     }
-    
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \HR\Payroll\Income\AbstractIncomeComponent::isPITPayable()
-    */
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \HR\Payroll\Income\AbstractIncomeComponent::isPITPayable()
+     */
     public function isPITPayable()
     {
         return $this->isPITPayable;
     }
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
+     */
     public function getCalculatedAmount()
     {
         return $this->calculatedAmount;
     }
-    
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \HR\Payroll\Income\AbstractIncomeComponent::isSSOPayable()
-    */
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \HR\Payroll\Income\AbstractIncomeComponent::isSSOPayable()
+     */
     public function isSSOPayable()
     {
         return $this->isSSOPayable;
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\IncomeInterface::getIncomeName()
      */
     public function getIncomeName()
@@ -89,8 +99,8 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\AbstractIncomeComponent::isPayable()
      */
     public function isPayable()
@@ -99,36 +109,35 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\IncomeInterface::getAmount()
      */
     public function getAmount()
     {
         return $this->amount;
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\AbstractIncomeComponent::getIncomeDecoratorFactory()
      */
     public function getIncomeDecoratorFactory()
     {
         return $this->decoratorFactory;
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\IncomeInterface::getCurrency()
      */
     public function getCurrency()
-    {
-        
-    }
-   
+    {}
+
     /**
+     *
      * @return string
      */
     public function getDecoratorFactory()
@@ -137,35 +146,42 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     }
 
     /**
+     *
      * @param string $decoratorFactory
      */
     public function setDecoratorFactory($decoratorFactory)
     {
         $this->decoratorFactory = $decoratorFactory;
     }
+
     /**
+     *
      * @param mixed $paymentFrequency
      */
     public function setPaymentFrequency($paymentFrequency)
     {
         $this->paymentFrequency = $paymentFrequency;
     }
+
     public function getPaymentFrequency()
     {
         return $this->paymentFrequency;
     }
-    
+
     public function getDescription()
     {
         return $this->description;
     }
+
     /**
+     *
      * @param mixed $description
      */
     public function setDescription($description)
     {
         $this->description = $description;
     }
+
     public function isDefault()
     {
         return $this->isDefault;

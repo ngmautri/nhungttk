@@ -36,28 +36,27 @@ class ItemFactoryTest extends PHPUnit_Framework_TestCase
 
             /** @var EntityManager $em ; */
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-            
+
             $data = array();
-            
-            $data["company"]=1;
-            $data["createdBy"]=39;
-            $data["itemName"]="Special Item";
-            $data["itemSku"]="3-5";
-            $data["standardUom"]=1;
-            $data["stockUom"]=1;
-            $data["stockUomConvertFactor"]=1;
-            
+
+            $data["company"] = 1;
+            $data["createdBy"] = 39;
+            $data["itemName"] = "Special Item";
+            $data["itemSku"] = "3-5";
+            $data["standardUom"] = 1;
+            $data["stockUom"] = 1;
+            $data["stockUomConvertFactor"] = 1;
+
             $snapshot = ItemSnapshotAssembler::createSnapshotFromArray($data);
-            
-            
+
             $item = ItemFactory::createItem(ItemType::INVENTORY_ITEM_TYPE);
             $item->makeFromSnapshot($snapshot);
-             $sharedSpecificationFactory= new ZendSpecificationFactory($em);
+            $sharedSpecificationFactory = new ZendSpecificationFactory($em);
             $item->setSharedSpecificationFactory($sharedSpecificationFactory);
-            
+
             var_dump($item->validate());
-            
-            //var_dump($item->createSnapshot());
+
+            // var_dump($item->createSnapshot());
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

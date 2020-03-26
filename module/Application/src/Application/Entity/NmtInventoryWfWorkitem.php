@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryWfWorkitem
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryWfWorkitem
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryWfWorkitem
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="workflow_id", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryWfWorkitem
     private $workflowId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_name", type="string", length=45, nullable=false)
@@ -43,6 +47,7 @@ class NmtInventoryWfWorkitem
     private $workflowName;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="transition_id", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryWfWorkitem
     private $transitionId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transition_name", type="string", length=45, nullable=false)
@@ -57,6 +63,7 @@ class NmtInventoryWfWorkitem
     private $transitionName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workitem_status", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryWfWorkitem
     private $workitemStatus;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="deadline", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryWfWorkitem
     private $deadline;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="finished_date", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryWfWorkitem
     private $finishedDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryWfWorkitem
     private $enabledDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="cancelled_date", type="datetime", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryWfWorkitem
     private $cancelledDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="agent_id", type="integer", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryWfWorkitem
     private $agentId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="agent_role_id", type="integer", nullable=true)
@@ -106,13 +119,12 @@ class NmtInventoryWfWorkitem
     private $agentRoleId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_id", type="integer", nullable=true)
      */
     private $itemId;
-
-
 
     /**
      * Get id

@@ -299,8 +299,6 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
             $entity->setCreatedOn(new \DateTime());
         }
 
-     
-
         if ($snapshot->warehouse > 0) {
 
             /**
@@ -445,14 +443,14 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
         // $entity->setTargetWarehouse($snapshot->targetWarehouse);
         // $entity->setSourceLocation($snapshot->sourceLocation);
         // $entity->setTartgetLocation($snapshot->tartgetLocation);
-        
+
         if ($isPosting) {
             $entity->setLastChangeOn(new \DateTime());
             $entity->setDocStatus(\Application\Domain\Shared\Constants::DOC_STATUS_POSTED);
             $entity->setIsDraft(0);
             $entity->setIsPosted(1);
         }
-        
+
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));
         }
@@ -768,35 +766,36 @@ class DoctrineTransactionCmdRepository extends AbstractDoctrineRepository implem
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setMvUuid($snapshot->mvUuid);
 
-        //$entity->setCreatedBy($snapshot->createdBy);
-        //$entity->setLastChangeBy($snapshot->lastChangeBy);
+        // $entity->setCreatedBy($snapshot->createdBy);
+        // $entity->setLastChangeBy($snapshot->lastChangeBy);
 
-        /* 
-         $entity->setItem($snapshot->item);
-        $entity->setPr($snapshot->pr);
-        $entity->setPo($snapshot->po);
-        $entity->setVendorInvoice($snapshot->vendorInvoice);
-        $entity->setPoRow($snapshot->poRow);
-        $entity->setGrRow($snapshot->grRow);
-        $entity->setInventoryGi($snapshot->inventoryGi);
-        $entity->setInventoryGr($snapshot->inventoryGr);
-        $entity->setInventoryTransfer($snapshot->inventoryTransfer);
-        $entity->setWh($snapshot->wh);
-        $entity->setGr($snapshot->gr);
-        $entity->setMovement($snapshot->movement);
-        $entity->setIssueFor($snapshot->issueFor);
-        $entity->setDocCurrency($snapshot->docCurrency);
-        $entity->setLocalCurrency($snapshot->localCurrency);
-        $entity->setProject($snapshot->project);
-        $entity->setCostCenter($snapshot->costCenter);
-        $entity->setDocUom($snapshot->docUom);
-        $entity->setPostingPeriod($snapshot->postingPeriod);
-        $entity->setWhLocation($snapshot->whLocation);
-        $entity->setPrRow($snapshot->prRow);
-        $entity->setVendor($snapshot->vendor);
-        $entity->setCurrency($snapshot->currency);
-        $entity->setPmtMethod($snapshot->pmtMethod);
-        $entity->setInvoiceRow($snapshot->invoiceRow); */
+        /*
+         * $entity->setItem($snapshot->item);
+         * $entity->setPr($snapshot->pr);
+         * $entity->setPo($snapshot->po);
+         * $entity->setVendorInvoice($snapshot->vendorInvoice);
+         * $entity->setPoRow($snapshot->poRow);
+         * $entity->setGrRow($snapshot->grRow);
+         * $entity->setInventoryGi($snapshot->inventoryGi);
+         * $entity->setInventoryGr($snapshot->inventoryGr);
+         * $entity->setInventoryTransfer($snapshot->inventoryTransfer);
+         * $entity->setWh($snapshot->wh);
+         * $entity->setGr($snapshot->gr);
+         * $entity->setMovement($snapshot->movement);
+         * $entity->setIssueFor($snapshot->issueFor);
+         * $entity->setDocCurrency($snapshot->docCurrency);
+         * $entity->setLocalCurrency($snapshot->localCurrency);
+         * $entity->setProject($snapshot->project);
+         * $entity->setCostCenter($snapshot->costCenter);
+         * $entity->setDocUom($snapshot->docUom);
+         * $entity->setPostingPeriod($snapshot->postingPeriod);
+         * $entity->setWhLocation($snapshot->whLocation);
+         * $entity->setPrRow($snapshot->prRow);
+         * $entity->setVendor($snapshot->vendor);
+         * $entity->setCurrency($snapshot->currency);
+         * $entity->setPmtMethod($snapshot->pmtMethod);
+         * $entity->setInvoiceRow($snapshot->invoiceRow);
+         */
 
         return $entity;
     }

@@ -28,12 +28,12 @@ class TransferRowControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-     	$sv = $sm->get('Inventory\Service\Report\ItemReportService' );
-		$controller->setItemReportService($sv );
-		
-		$sv =  $sm->get('Inventory\Service\InventoryTransactionService');
-		$controller->setInventoryTransactionService($sv);
-		
-			return $controller;
-	}
+        $sv = $sm->get('Inventory\Service\Report\ItemReportService');
+        $controller->setItemReportService($sv);
+
+        $sv = $sm->get('Inventory\Service\InventoryTransactionService');
+        $controller->setInventoryTransactionService($sv);
+
+        return $controller;
+    }
 }

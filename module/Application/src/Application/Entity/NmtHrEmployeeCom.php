@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEmployeeCom
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtHrEmployeeCom
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="com_type", type="string", nullable=true)
@@ -29,6 +31,7 @@ class NmtHrEmployeeCom
     private $comType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="com_value", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtHrEmployeeCom
     private $comValue;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -43,6 +47,7 @@ class NmtHrEmployeeCom
     private $isActive;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -51,8 +56,6 @@ class NmtHrEmployeeCom
      * })
      */
     private $employee;
-
-
 
     /**
      * Get id

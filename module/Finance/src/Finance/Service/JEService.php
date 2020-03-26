@@ -28,7 +28,7 @@ class JEService extends AbstractService
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function postAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1, $trigger =null)
+    public function postAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1, $trigger = null)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is expected");
@@ -191,16 +191,15 @@ class JEService extends AbstractService
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }
-        
-        
+
         $m = sprintf('[OK] Journal Entry #%s posted. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
-        
+
         $this->getEventManager()->trigger('finance.activity.log', $trigger, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $entity->getCreatedOn(),
-            'isFlush' =>$isFlush,
+            'isFlush' => $isFlush
         ));
     }
 
@@ -216,7 +215,7 @@ class JEService extends AbstractService
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function reverseAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1,$trigger=null)
+    public function reverseAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1, $trigger = null)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is expected");
@@ -363,20 +362,18 @@ class JEService extends AbstractService
             $this->doctrineEM->persist($je_row);
         }
 
-        
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }
-        
-        
+
         $m = sprintf('[OK] Journal Entry #%s posted. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
-        
+
         $this->getEventManager()->trigger('finance.activity.log', $trigger, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $entity->getCreatedOn(),
-            'isFlush' =>$isFlush,
+            'isFlush' => $isFlush
         ));
     }
 
@@ -392,7 +389,7 @@ class JEService extends AbstractService
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function reverseGR($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1, $trigger=null)
+    public function reverseGR($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1, $trigger = null)
     {
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
             throw new \Exception("Invalid Argument! GRPO is expected");
@@ -507,15 +504,15 @@ class JEService extends AbstractService
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }
-        
+
         $m = sprintf('[OK] Journal Entry #%s reversed. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
-        
+
         $this->getEventManager()->trigger('finance.activity.log', $trigger, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $entity->getCreatedOn(),
-            'isFlush' =>$isFlush,
+            'isFlush' => $isFlush
         ));
     }
 
@@ -630,7 +627,7 @@ class JEService extends AbstractService
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $entity->getCreatedOn(),
-            'isFlush' =>$isFlush,
+            'isFlush' => $isFlush
         ));
     }
 
@@ -970,13 +967,13 @@ class JEService extends AbstractService
         }
 
         $m = sprintf('[OK] Journal Entry #%s posted [Reserval]. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
-       
+
         $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $entity->getCreatedOn(),
-            'isFlush' =>$isFlush,
+            'isFlush' => $isFlush
         ));
     }
 
@@ -990,7 +987,7 @@ class JEService extends AbstractService
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function postGR($entity, $rows, $u, $nmtPlugin, $isFlush = true, $trigger=null)
+    public function postGR($entity, $rows, $u, $nmtPlugin, $isFlush = true, $trigger = null)
     {
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
             throw new \Exception("Invalid Argument");
@@ -1104,15 +1101,15 @@ class JEService extends AbstractService
         if ($isFlush == True) {
             $this->doctrineEM->flush();
         }
-        
+
         $m = sprintf('[OK] Journal Entry #%s posted. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
-        
+
         $this->getEventManager()->trigger('finance.activity.log', $trigger, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $entity->getCreatedOn(),
-            'isFlush' =>$isFlush,
+            'isFlush' => $isFlush
         ));
     }
 

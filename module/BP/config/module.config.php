@@ -7,8 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array(
-    
-  
+
     'navigation' => array(
         'bp_navi' => array(
             array(
@@ -35,14 +34,13 @@ return array(
                 'controller' => 'activity-log',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
-                
             )
         )
     ),
-    
+
     'router' => array(
         'routes' => array(
-            
+
             'bp' => array(
                 'type' => 'Literal',
                 'options' => array(
@@ -68,36 +66,31 @@ return array(
                     )
                 )
             )
-        
         )
-    
     ),
-    
+
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'bp_navi' => 'BP\Service\BpNavigationFactory', // <-- add this
-            
+
             'BP\Service\VendorSearchService' => 'BP\Service\VendorSearchServiceFactory'
-        
         )
     ),
-    
+
     'controllers' => array(
         'factories' => array(
             'BP\Controller\Vendor' => 'BP\Controller\VendorControllerFactory',
             'BP\Controller\VendorContract' => 'BP\Controller\VendorContractControllerFactory',
             'BP\Controller\VendorSearch' => 'BP\Controller\VendorSearchControllerFactory',
             'BP\Controller\VendorAttachment' => 'BP\Controller\VendorAttachmentControllerFactory',
-            
+
             'BP\Controller\Debtor' => 'BP\Controller\DebtorControllerFactory',
             'BP\Controller\DebtorContract' => 'BP\Controller\DebtorContractControllerFactory',
-            
+
             'BP\Controller\ChangeLog' => 'BP\Controller\ChangeLogControllerFactory',
-            'BP\Controller\ActivityLog' => 'BP\Controller\ActivityLogControllerFactory',
-            
+            'BP\Controller\ActivityLog' => 'BP\Controller\ActivityLogControllerFactory'
         )
-    
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -117,5 +110,4 @@ return array(
             __DIR__ . '/../view'
         )
     )
-   
 );

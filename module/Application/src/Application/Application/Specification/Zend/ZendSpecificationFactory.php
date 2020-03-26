@@ -273,9 +273,5 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     public function getGLAccountExitsSpecification()
     {
         return new GLAccountExitsSpecification($this->doctrineEM);
-        
     }
-
-
-
 }

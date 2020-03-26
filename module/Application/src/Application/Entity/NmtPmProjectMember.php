@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtPmProjectMember
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtPmProjectMember
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtPmProjectMember
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="assigned_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class NmtPmProjectMember
     private $assignedOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="unassigned_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtPmProjectMember
     private $unassignedOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtPmProjectMember
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtPmProjectMember
     private $lastChangeOn;
 
     /**
+     *
      * @var \Application\Entity\NmtPmProject
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
@@ -67,6 +74,7 @@ class NmtPmProjectMember
     private $project;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -77,6 +85,7 @@ class NmtPmProjectMember
     private $user;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -87,6 +96,7 @@ class NmtPmProjectMember
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -95,8 +105,6 @@ class NmtPmProjectMember
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

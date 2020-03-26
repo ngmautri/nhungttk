@@ -8,20 +8,26 @@
         <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')?>
 
  <link rel="icon" href="/img/favicon.ico">
- <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
- <link href="/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css">
-<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+<link href="/css/bootstrap-responsive.min.css" media="screen"
+	rel="stylesheet" type="text/css">
+<link href="/css/style.css" media="screen" rel="stylesheet"
+	type="text/css">
 <link rel="stylesheet" href="/css/tables.css" type="text/css">
 <link rel="stylesheet" href="/css/lightgallery.css" type="text/css">
-<link rel="stylesheet" href="/css/lg-transitions.min.css" type="text/css">
+<link rel="stylesheet" href="/css/lg-transitions.min.css"
+	type="text/css">
 
 <link rel="stylesheet" href="/css/jstree/style.css" type="text/css">
-<link rel="stylesheet" href="/css/bootstrap-editable.css" type="text/css">
+<link rel="stylesheet" href="/css/bootstrap-editable.css"
+	type="text/css">
 
 
 <link rel="stylesheet" href="/jquery/jquery-ui.min.css" type="text/css">
-<link rel="stylesheet" href="/jquery/jquery-ui.theme.min.css" type="text/css">
-<link rel="stylesheet" href="/jquery/jquery-ui.structure.min.css" type="text/css">
+<link rel="stylesheet" href="/jquery/jquery-ui.theme.min.css"
+	type="text/css">
+<link rel="stylesheet" href="/jquery/jquery-ui.structure.min.css"
+	type="text/css">
 
 
 <!-- Scripts -->
@@ -32,8 +38,8 @@
 <script type="text/javascript" src="/js/mla-hr.js"></script>
 <script type="text/javascript" src="/js/mla-proc.js"></script>
 <script type="text/javascript" src="/js/nmt-inventory.js"></script>
-<script type="text/javascript" src="/js/exif.js"></script>	
-										
+<script type="text/javascript" src="/js/exif.js"></script>
+
 <script src="/js/lightgallery-all.min.js"></script>
 <script src="/js/lg-thumbnail.js"></script>
 <script src="/js/lg-fullscreen.min.js"></script>
@@ -43,7 +49,7 @@
 <script src="/js/jstree.min.js"></script>
 <script src="/js/jquery.tabledit.min.js"></script>
 <script src="/jquery/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap-editable.min.js"></script>	
+<script type="text/javascript" src="/js/bootstrap-editable.min.js"></script>
 
 
 
@@ -82,7 +88,7 @@
 
 </head>
 <body>
-<div style="display: none" id="global-notice"></div>
+	<div style="display: none" id="global-notice"></div>
 
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
@@ -119,10 +125,10 @@
 						    <?php if ($this->cart_items >0): ?>
 						    <span id="cart_items" class="label label-warning">
 						    <?php
-											
-											echo $this->cart_items;
-										 else :
-											?>
+
+                    echo $this->cart_items;
+                else :
+                    ?>
 	  					    <span id="cart_items" class="">
 						    <?php endif;?>
 						    
@@ -154,33 +160,49 @@
 								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show
 										all articles</a></li>
 								<li class="divider"></li>
-								<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update Asset Index</a></li>
-								<li><a href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update Sparepart Index</a></li>
-								
-							<li><a href="<?php echo $this->baseUrl ?>/user/admin/article-index">Update Item Index</a></li>
-							<li><a href="<?php echo $this->baseUrl ?>/user/admin/vendor-index">Update Vendor Index</a></li>
-							<li class="divider"></li>
-							<li><a href="<?php echo $this->baseUrl ?>/hr/employee/create-index">Update Employee Index</a></li>
-	
-	
+								<li><a
+									href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update
+										Asset Index</a></li>
+								<li><a
+									href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update
+										Sparepart Index</a></li>
+
+								<li><a
+									href="<?php echo $this->baseUrl ?>/user/admin/article-index">Update
+										Item Index</a></li>
+								<li><a
+									href="<?php echo $this->baseUrl ?>/user/admin/vendor-index">Update
+										Vendor Index</a></li>
+								<li class="divider"></li>
+								<li><a
+									href="<?php echo $this->baseUrl ?>/hr/employee/create-index">Update
+										Employee Index</a></li>
+
+
 							</ul></li>
 						  <?php endif;?>
 						  
 						  	<?php if ($this->isProcurement==true): ?>
 							<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#"><span class="label label-default"></span> PROCUREMENT <span class="caret"></span></a>
+							data-toggle="dropdown" href="#"><span class="label label-default"></span>
+								PROCUREMENT <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/all-pr">All PR</a> </li>
-								<li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/pr-items">All PR Items</a> </li>
+								<li><a href="<?php echo $this->baseUrl ?>/procurement/pr/all-pr">All
+										PR</a></li>
+								<li><a
+									href="<?php echo $this->baseUrl ?>/procurement/pr/pr-items">All
+										PR Items</a></li>
 								<li class="divider"></li>
-								
-								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show all items</a></li>
-							
-							<li class="divider"></li>
-								
-								<li><a href="<?php echo $this->baseUrl ?>/procurement/vendor/list">Show all vendors
-									 </a></li>
-							
+
+								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show
+										all items</a></li>
+
+								<li class="divider"></li>
+
+								<li><a
+									href="<?php echo $this->baseUrl ?>/procurement/vendor/list">Show
+										all vendors </a></li>
+
 							</ul></li>
 						  <?php endif;?>
 						
@@ -204,12 +226,12 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="container">
 	
             <?php echo $this->content; ?>
             <hr>
-           
+
 		<footer>
 			<p>Email: nmt@mascot.dk</p>
 		</footer>

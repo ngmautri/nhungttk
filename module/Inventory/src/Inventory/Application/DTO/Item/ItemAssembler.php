@@ -5,9 +5,9 @@ use Inventory\Domain\Item\AbstractItem;
 use Inventory\Domain\Item\InventoryItem;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com 1
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com 1
+ *        
  */
 class ItemAssembler
 {
@@ -43,12 +43,11 @@ class ItemAssembler
             $propertyName = $property->getName();
 
             if (property_exists($dto, $propertyName)) {
-                if($property->getValue($item) == null || $property->getValue($item) == ""){
+                if ($property->getValue($item) == null || $property->getValue($item) == "") {
                     $dto->$propertyName = null;
-                }else{
+                } else {
                     $dto->$propertyName = $property->getValue($item);
                 }
-                
             }
         }
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Application\DTO\Company;
 
 use Application\Domain\Company\CompanySnapshot;
@@ -11,6 +10,4 @@ use Application\Domain\Company\CompanySnapshot;
  */
 class CompanyDTO extends CompanySnapshot
 {
-
- 
 }

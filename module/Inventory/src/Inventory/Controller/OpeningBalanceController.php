@@ -1335,22 +1335,22 @@ class OpeningBalanceController extends AbstractActionController
         $this->itemSearchService = $itemSearchService;
         return $this;
     }
-    
+
     /**
      *
-     *  @return \Inventory\Service\OpeningBalanceService
+     * @return \Inventory\Service\OpeningBalanceService
      */
     public function getObService()
     {
         return $this->obService;
     }
-    
+
     /**
+     *
      * @param mixed $obService
      */
     public function setObService(\Inventory\Service\OpeningBalanceService $obService)
     {
         $this->obService = $obService;
     }
-    
 }

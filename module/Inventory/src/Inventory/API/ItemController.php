@@ -107,5 +107,4 @@ class ItemController extends AbstractRestfulController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
 }

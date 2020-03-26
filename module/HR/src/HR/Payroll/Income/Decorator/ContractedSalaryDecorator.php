@@ -8,9 +8,10 @@ namespace HR\Payroll\Income\Decorator;
  */
 class ContractedSalaryDecorator extends AbstractIncomeDecorator
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
      */
     public function getCalculatedAmount()
@@ -27,6 +28,4 @@ class ContractedSalaryDecorator extends AbstractIncomeDecorator
     {
         return "Calculated base on paid days divided by total working days in period";
     }
-
-   
 }

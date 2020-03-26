@@ -46,27 +46,27 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data["docCurrency"] = 1;
         $data["localCurrency"] = 1;
         $data["createdBy"] = 46;
-     
+
         // create new transaction.
         $dto = TransactionDTOAssembler::createDTOFromArray($data);
         // var_dump($dto);
 
         $snapshot = TransactionSnapshotAssembler::createSnapshotFromArray($data);
-        
+
         $trx = TransactionFactory::createTransaction(TransactionType::GI_FOR_REPAIR_MACHINE_WITH_EX);
 
-   
         $trx->makeFromSnapshot($snapshot);
-        
-        
+
         $data = array();
 
-      /*   $data["item"] = 1010;
-        $data["docQuantity"] = 1;
-        $data["costCenter"] = 4;
-        $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data); */
+        /*
+         * $data["item"] = 1010;
+         * $data["docQuantity"] = 1;
+         * $data["costCenter"] = 4;
+         * $rowSnapshot = TransactionRowSnapshotAssembler::createSnapshotFromArray($data);
+         */
 
-//        $trx->addRowFromSnapshot($rowSnapshot);
+        // $trx->addRowFromSnapshot($rowSnapshot);
 
         $data["item"] = 2427;
         $data["docQuantity"] = 4;
@@ -76,24 +76,17 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
         $sharedSpecificationFactory = new ZendSpecificationFactory($em);
         $specService = new TransactionSpecificationService($sharedSpecificationFactory, $domainSpecificationFactory);
-        
 
         $trx->addRowFromSnapshot($specService, $rowSnapshot);
 
         $em->getConnection()->beginTransaction(); // suspend auto-commit
-        try{
-            
-               
+        try {
+
             var_dump($trx->validate($specService));
-            //var_dump($trx->post());
-            
+            // var_dump($trx->post());
         } catch (\Exception $e) {
             echo $e->getMessage();
             $em->getConnection()->rollBack();
-            
         }
-        
-        
-        
     }
 }

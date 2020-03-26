@@ -8,6 +8,7 @@ namespace Inventory\Application\DTO\Warehouse\Transaction;
  */
 class TransactionRowDTO
 {
+
     /**
      *
      * @system_genereted
@@ -301,8 +302,6 @@ class TransactionRowDTO
     public $pmtMethod;
 
     public $invoiceRow;
-    
+
     public $mvUuid;
-    
-    
 }

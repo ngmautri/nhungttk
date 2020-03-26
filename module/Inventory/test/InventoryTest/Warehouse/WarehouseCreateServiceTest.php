@@ -45,18 +45,18 @@ class WarehouseCreateServiceTest extends PHPUnit_Framework_TestCase
          * @var WarehouseService $sv
          */
         $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Warehouse\WarehouseService');
-        
+
         $data = array();
         $data["whName"] = "NMT";
         $data["whCode"] = "WH12";
         $data["company"] = 1;
         $data["whCountry"] = 2;
         $data["createdBy"] = 39;
-     
+
         // create new transaction.
         $dto = WarehouseDTOAssembler::createDTOFromArray($data);
-        //var_dump($dto);
+        // var_dump($dto);
 
-        var_dump($sv->createHeader($dto, 1, 39, ""));  
+        var_dump($sv->createHeader($dto, 1, 39, ""));
     }
 }

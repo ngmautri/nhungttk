@@ -1,5 +1,6 @@
 <?php
 namespace Application\Domain\Shared\Specification;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -21,8 +22,8 @@ class OrSpecification extends AbstractSpecification
     private $spec2;
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecification::isSatisfiedBy()
      */
     public function isSatisfiedBy($subject)

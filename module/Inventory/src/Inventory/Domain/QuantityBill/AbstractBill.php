@@ -8,5 +8,4 @@ namespace Inventory\Domain\QuantityBill;
  */
 abstract class AbstractBill
 {
-    
 }

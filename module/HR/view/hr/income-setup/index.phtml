@@ -1,69 +1,73 @@
-<h4><a href="/hr/setting/index"><i class="fa fa-cog" aria-hidden="true"></i> <?php echo $this->translate('HR SETTING'); ?></a></h4>
+<h4>
+	<a href="/hr/setting/index"><i class="fa fa-cog" aria-hidden="true"></i> <?php echo $this->translate('HR SETTING'); ?></a>
+</h4>
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Income Setup'); ?></a></li>
 	</ul>
 	<div id="general" style="font-size: 9.5pt">
-	
 
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/income-setup/add"><i class="fa fa-plus"
-			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Income'); ?></a>
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/income-setup/update">&nbsp;<?php echo $this->translate('Update...'); ?></a>
 
-<hr>
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('default income name'); ?></b></td>
-			<td><b><?php echo $this->translate('default income name'); ?></b></td>
-	
-			<td><b><?php echo $this->translate('default description'); ?></b></td>
-			<td><b><?php echo $this->translate('Default'); ?></b></td>		
-			<td><b><?php echo $this->translate('SSO Payable'); ?></b></td>
-			<td><b><?php echo $this->translate('PIT Payable'); ?></b></td>
-			<td><b><?php echo $this->translate('payment frequency'); ?></b></td>
-			<td><b><?php echo $this->translate('Type'); ?></b></td>
-			<td><b><?php echo $this->translate('Action'); ?></b></td>
-			</tr>
-	</thead>
+		<a class="btn btn-default btn-sm"
+			href="<?php echo $this->baseUrl ?>/hr/income-setup/add"><i
+			class="fa fa-plus" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Income'); ?></a>
+		<a class="btn btn-default btn-sm"
+			href="<?php echo $this->baseUrl ?>/hr/income-setup/update">&nbsp;<?php echo $this->translate('Update...'); ?></a>
 
-	<tbody>
+		<hr>
+		<table style="font-size: 10pt;"
+			class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b><?php echo $this->translate('default income name'); ?></b></td>
+					<td><b><?php echo $this->translate('default income name'); ?></b></td>
+
+					<td><b><?php echo $this->translate('default description'); ?></b></td>
+					<td><b><?php echo $this->translate('Default'); ?></b></td>
+					<td><b><?php echo $this->translate('SSO Payable'); ?></b></td>
+					<td><b><?php echo $this->translate('PIT Payable'); ?></b></td>
+					<td><b><?php echo $this->translate('payment frequency'); ?></b></td>
+					<td><b><?php echo $this->translate('Type'); ?></b></td>
+					<td><b><?php echo $this->translate('Action'); ?></b></td>
+				</tr>
+			</thead>
+
+			<tbody>
 		
-	<?php 
-	$count = 0;
-	
-	foreach ($incomes as $key => $d):	
-	/**@var \HR\Payroll\Income\Factory\AbstractIncomeFactory $d ; */
-	$count ++;
-	
-	/**@var \HR\Payroll\Income\IncomeInterface $incomeComponent ; */
-	$incomeComponent = $d;
-	
-	?>
+	<?php
+$count = 0;
+
+foreach ($incomes as $key => $d) :
+    /**@var \HR\Payroll\Income\Factory\AbstractIncomeFactory $d ; */
+    $count ++;
+
+    /**@var \HR\Payroll\Income\IncomeInterface $incomeComponent ; */
+    $incomeComponent = $d;
+
+    ?>
 	
 		 <tr>
-	  		<td><?php echo $count;?></td>
-	  		<td><?php echo $incomeComponent->getIncomeName();?></td>
-	  		<td><?php echo $incomeComponent->getIncomeDecoratorFactory();?></td>
-	  
-	  		<td><?php echo $incomeComponent->getDescription();?></td>
-			<td><?php echo ($incomeComponent->isDefault()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>		
-			<td><?php echo ($incomeComponent->isSSOPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
-			<td><?php echo ($incomeComponent->isPITPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
-	   		<td><?php echo $incomeComponent->getPaymentFrequency();?></td>
-	  		<td><?php echo "default";?></td>
-	
-	      <td>
-<a style="color: navy;" href="#"><?php echo $this->translate('Show'); ?></a>
-<a style="color: navy;" href="#"><?php echo $this->translate('Edit'); ?></a>
-</td>		
-		</tr>
+					<td><?php echo $count;?></td>
+					<td><?php echo $incomeComponent->getIncomeName();?></td>
+					<td><?php echo $incomeComponent->getIncomeDecoratorFactory();?></td>
+
+					<td><?php echo $incomeComponent->getDescription();?></td>
+					<td><?php echo ($incomeComponent->isDefault()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+					<td><?php echo ($incomeComponent->isSSOPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+					<td><?php echo ($incomeComponent->isPITPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+					<td><?php echo $incomeComponent->getPaymentFrequency();?></td>
+					<td><?php echo "default";?></td>
+
+					<td><a style="color: navy;" href="#"><?php echo $this->translate('Show'); ?></a>
+						<a style="color: navy;" href="#"><?php echo $this->translate('Edit'); ?></a>
+					</td>
+				</tr>
 <?php endforeach; ?>
 
 </tbody>
-</table>
+		</table>
 
 
 	</div>

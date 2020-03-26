@@ -18,12 +18,12 @@ class InventoryTransactionStrategyFactory
     public static function getMovementStrategy($tTransaction)
     {
         switch ($tTransaction) {
-            
+
             // GOOD RECEIPT
 
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_OPENNING_BALANCE:
                 return new \Inventory\Model\GR\GRfromOpeningBalance();
-                
+
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING:
                 return new \Inventory\Model\GR\GRfromPurchasing();
 
@@ -36,17 +36,16 @@ class InventoryTransactionStrategyFactory
 
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
                 return new \Inventory\Model\GI\GIforRepairMachineWithoutExchange();
-                
+
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_COST_CENTER:
                 return new \Inventory\Model\GI\GIforCostCenter();
-                
+
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
                 return new \Inventory\Model\GI\GIforTransferToWH();
-      
+
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
                 return new \Inventory\Model\GI\GIforTransferToLocation();
-                
-                
+
             default:
                 return null;
         }

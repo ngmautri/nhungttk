@@ -16,7 +16,7 @@ class AttachmentQueryRepImpl extends AbstractDoctrineRepository implements Attac
 {
 
     /**
-     * 
+     *
      * @param int $id
      * @return NULL|NULL|\Application\Domain\Attachment\AttachmentSnapshot
      */

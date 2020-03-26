@@ -13,14 +13,14 @@ use Inventory\Model\AbstractTransactionStrategy;
  */
 class GRfromOpeningBalance extends AbstractTransactionStrategy
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::validateRow()
      */
     public function validateRow($entity, $data, $u, $isNew, $isPosting)
     {}
-    
 
     /**
      *
@@ -112,11 +112,11 @@ class GRfromOpeningBalance extends AbstractTransactionStrategy
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
      */
-    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null)
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger = null)
     {
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -140,13 +140,13 @@ class GRfromOpeningBalance extends AbstractTransactionStrategy
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
         $mv->setLocalCurrency($default_cur);
-        
+
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
         $mv->setTrxType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
@@ -167,7 +167,7 @@ class GRfromOpeningBalance extends AbstractTransactionStrategy
 
             $n ++;
             $r->setMovement($mv);
-            
+
             $r->setDocStatus($mv->getDocStatus());
             $r->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
@@ -229,8 +229,8 @@ class GRfromOpeningBalance extends AbstractTransactionStrategy
         if ($isFlush == TRUE) {
             $this->contextService->getDoctrineEM()->flush();
         }
-        
-        if ($trigger==null){
+
+        if ($trigger == null) {
             $trigger = __METHOD__;
         }
 
@@ -240,8 +240,7 @@ class GRfromOpeningBalance extends AbstractTransactionStrategy
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $createdOn,
-            'isFlush' => $isFlush,
+            'isFlush' => $isFlush
         ));
     }
-  
 }

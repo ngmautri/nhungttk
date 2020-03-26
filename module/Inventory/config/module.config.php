@@ -138,7 +138,7 @@ return array(
                     )
                 )
             ),
-            
+
             'item-api' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -151,7 +151,7 @@ return array(
                     )
                 )
             ),
-            
+
             'warehouse-api' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -164,7 +164,7 @@ return array(
                     )
                 )
             ),
-            
+
             'inventory-trx-api' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -176,7 +176,7 @@ return array(
                         'controller' => 'Inventory\API\TransactionController'
                     )
                 )
-            ),
+            )
         )
     ),
 
@@ -217,35 +217,27 @@ return array(
 
             'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
-            
 
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
             'Inventory\Application\Service\Item\FIFOService' => 'Inventory\Application\Service\Item\FIFOServiceFactory',
             'Inventory\Application\Service\Item\ItemCategoryService' => 'Inventory\Application\Service\Item\ItemCategoryServiceFactory',
-            
-            
+
             'Inventory\Application\Service\Warehouse\TransactionService' => 'Inventory\Application\Service\Warehouse\TransactionServiceFactory',
             'Inventory\Application\Service\Warehouse\WarehouseService' => 'Inventory\Application\Service\Warehouse\WarehouseServiceFactory',
-            
+
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemUpdatedEventListener' => 'Inventory\Application\Event\Listener\ItemUpdatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemLoggingListener' => 'Inventory\Application\Event\Listener\ItemLoggingListenerFactory',
             'Inventory\Application\Event\Listener\WarehouseLoggingListener' => 'Inventory\Application\Event\Listener\WarehouseLoggingListenerFactory',
-            
-            
-            
+
             'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
 
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
             'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory',
-       
-            
-        
+
             // Repository Service
-            'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
-            
-            
+            'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory'
         )
     ),
 
@@ -296,13 +288,11 @@ return array(
 
             'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
             'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
-            
+
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',
             'Inventory\API\WarehouseController' => 'Inventory\API\WarehouseControllerFactory',
-            'Inventory\API\TransactionController' => 'Inventory\API\TransactionControllerFactory',
-            
-            
+            'Inventory\API\TransactionController' => 'Inventory\API\TransactionControllerFactory'
         )
     ),
     'view_manager' => array(
@@ -318,7 +308,7 @@ return array(
             'Inventory/gi-create-layout' => __DIR__ . '/../view/layout/create_gi_layout.phtml',
             'Inventory/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
             'Inventory/layout-blank' => __DIR__ . '/../view/layout/layout-blank.phtml',
-            
+
             'layout/no-layout' => __DIR__ . '/../view/layout/no-layout.phtml',
             'inventory/index/index' => __DIR__ . '/../view/inventory/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',

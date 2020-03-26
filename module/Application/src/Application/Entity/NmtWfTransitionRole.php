@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfTransitionRole
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtWfTransitionRole
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -29,6 +31,7 @@ class NmtWfTransitionRole
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\NmtWfTransition
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
@@ -39,6 +42,7 @@ class NmtWfTransitionRole
     private $transition;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -49,6 +53,7 @@ class NmtWfTransitionRole
     private $role;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -57,8 +62,6 @@ class NmtWfTransitionRole
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

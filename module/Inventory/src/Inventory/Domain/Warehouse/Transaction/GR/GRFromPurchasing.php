@@ -14,17 +14,17 @@ use Inventory\Domain\Warehouse\Transaction\TransactionType;
  */
 class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\AbstractTransaction::specify()
      */
     public function specify()
     {
-        $this->movementType =  TransactionType::GR_FROM_PURCHASING;
-        $this->movementFlow =  TransactionFlow::WH_TRANSACTION_IN;
+        $this->movementType = TransactionType::GR_FROM_PURCHASING;
+        $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
     }
-    
 
     /**
      *
@@ -42,19 +42,15 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
     public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
     {}
 
-
-
     public function specificRowValidation($row, $notification = null, $isPosting = false)
     {}
+
     public function specificHeaderValidation($notification = null)
     {}
+
     protected function afterPost(TransactionPostingService $postingService = null)
     {}
 
     protected function prePost(TransactionPostingService $postingService = null)
     {}
-
-
-    
-
 }

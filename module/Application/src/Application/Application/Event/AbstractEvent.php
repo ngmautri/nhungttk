@@ -19,6 +19,7 @@ abstract class AbstractEvent extends Event implements EventInterface
     private $trigger;
 
     /**
+     *
      * @return string
      */
     public function getTrigger()

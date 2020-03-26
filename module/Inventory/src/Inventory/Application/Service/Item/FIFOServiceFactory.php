@@ -30,7 +30,7 @@ class ItemCRUDServiceFactory implements FactoryInterface
         $service->setDoctrineEM($sv);
 
         $eventManager = $container->get('EventManager');
-             
+
         $service->setEventManager($eventManager);
 
         return $service;

@@ -220,13 +220,15 @@
                             if ($entity->getStandardUom()->getId() == $uom->getId()) :
                                 echo sprintf('<option selected value="%s">%s - %s </option>', ucwords($uom->getId()), ucwords($uom->getUomCode()), ucwords($uom->getUomName()));
                             endif;
+
                         else :
                             echo sprintf('<option value="%s">%s - %s </option>', ucwords($uom->getId()), ucwords($uom->getUomCode()), ucwords($uom->getUomName()));
                         endif;
                     else :
                         echo sprintf('<option  value="%s">%s - %s </option>', ucwords($uom->getId()), ucwords($uom->getUomCode()), ucwords($uom->getUomName()));
                     endif;
-                endforeach;
+                endforeach
+                ;
    	    	endif;
 
             ?>
@@ -237,11 +239,11 @@
 	onclick="showBootstrapDialog('Select Unit of Measurement','/application/uom/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
  -->
-<!-- 
+				<!-- 
 				<a style="color: #0080ff;" href="javascript:;"
 					onclick="showJqueryDialog('Select Unit of Measurement','450','500', '/application/uom/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 					class="glyphicon glyphicon-folder-open"></i>
- -->	
+ -->
 				</a>
 
 			</div>
@@ -260,7 +262,7 @@
 					</select>
 				</div>
 			</div>
-			
+
 			<div class="form-group margin-bottom required">
 
 				<label class="control-label col-sm-2"><?php echo $this->translate("Item Group");?>:</label>
@@ -293,7 +295,7 @@
             ?>
    					</select>
 				</div>
-				</div>
+			</div>
 
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Item Category</label>

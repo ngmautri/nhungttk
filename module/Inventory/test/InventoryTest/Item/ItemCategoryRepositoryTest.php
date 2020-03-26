@@ -34,6 +34,6 @@ class ItemCategoryRepositoryTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $repository = new ItemCategoryRepositoryImpl($em);
-        var_dump($repository->addItemToCategory(2217,57,39));      
+        var_dump($repository->addItemToCategory(2217, 57, 39));
     }
 }

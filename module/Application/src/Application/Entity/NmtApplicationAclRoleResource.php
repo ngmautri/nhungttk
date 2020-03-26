@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationAclRoleResource
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationAclRoleResource
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationAclRoleResource
     private $updatedOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="nmt_application_acl_role_resourcecol", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationAclRoleResource
     private $nmtApplicationAclRoleResourcecol;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -46,6 +50,7 @@ class NmtApplicationAclRoleResource
     private $role;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationAclResource
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclResource")
@@ -56,6 +61,7 @@ class NmtApplicationAclRoleResource
     private $resource;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -64,8 +70,6 @@ class NmtApplicationAclRoleResource
      * })
      */
     private $updatedBy;
-
-
 
     /**
      * Get id

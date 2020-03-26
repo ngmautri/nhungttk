@@ -182,7 +182,7 @@ abstract class GenericGR extends AbstractGR
     }
 
     /**
-     * 
+     *
      * @param GRRowSnapshot $snapshot
      * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators
@@ -270,7 +270,7 @@ abstract class GenericGR extends AbstractGR
     }
 
     /**
-     * 
+     *
      * @param GRRowSnapshot $snapshot
      * @param CommandOptions $options
      * @param array $params
@@ -452,12 +452,19 @@ abstract class GenericGR extends AbstractGR
     public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
     {
         if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new GrInvalidArgumentException("PO Validators not given!");
+            throw new GrInvalidArgumentException("GR Validators not given!");
         }
 
         $headerValidators->validate($this);
     }
 
+    /**
+     *
+     * @param GrRow $row
+     * @param RowValidatorCollection $rowValidators
+     * @param boolean $isPosting
+     * @throws GrInvalidArgumentException
+     */
     public function validateRow(GrRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         if (! $row instanceof GrRow) {
@@ -477,8 +484,11 @@ abstract class GenericGR extends AbstractGR
         }
     }
 
-    
-      public function makeDetailsDTO()
+    /**
+     *
+     * @return NULL|object
+     */
+    public function makeDetailsDTO()
     {
         $dto = new GrDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
@@ -495,10 +505,10 @@ abstract class GenericGR extends AbstractGR
     }
 
     /**
-     * 
+     *
      * @return NULL|object
      */
-     public function makeHeaderDTO()
+    public function makeHeaderDTO()
     {
         $dto = new GrDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
@@ -507,9 +517,10 @@ abstract class GenericGR extends AbstractGR
 
     /**
      *
-     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
+     * @param object $dto
+     * @return NULL|object
      */
-    public function makeDTOForGrid()
+    public function makeDTOForGrid($dto)
     {
         $dto = DTOFactory::createDTOFrom($this, $dto);
         $rowDTOList = [];

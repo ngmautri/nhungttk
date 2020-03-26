@@ -8,26 +8,25 @@ use HR\Payroll\Income\Decorator\Factory\ContractedSalaryDecoratorFactory;
 use HR\Payroll\Income\Decorator\Factory\LoyaltyBonusDecoratorFactory;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class LoyaltyBonusFactory extends AbstractIncomeFactory
+class LoyaltyBonusFactory extends AbstractIncomeFactory
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
-    protected function createIncome($amount=0, $currency=null)
-    {        
-        $incomeComponent = new GenericIncomeComponent("Loyalty Bonus", $amount, 0, $currency,FALSE, TRUE, False, TRUE);
+    protected function createIncome($amount = 0, $currency = null)
+    {
+        $incomeComponent = new GenericIncomeComponent("Loyalty Bonus", $amount, 0, $currency, FALSE, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
-        $f =  LoyaltyBonusDecoratorFactory::class;
+        $f = LoyaltyBonusDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
-        $incomeComponent->setDescription("Loyalty has been applied since 1st January 2018.");        
+        $incomeComponent->setDescription("Loyalty has been applied since 1st January 2018.");
         return $incomeComponent;
     }
-
 }

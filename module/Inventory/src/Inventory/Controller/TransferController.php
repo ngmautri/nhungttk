@@ -114,11 +114,11 @@ class TransferController extends AbstractActionController
             'id' => $sourceWhID
         );
 
-        $sourceWh =null;
-        $location =null;
-        
+        $sourceWh = null;
+        $location = null;
+
         $sourceWh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy($criteria);
-       
+
         if ($sourceWh !== null) {
             $criteria = array(
                 'warehouse' => $sourceWh
@@ -1150,12 +1150,10 @@ class TransferController extends AbstractActionController
     {
         return $this->itemSearchService;
     }
-    
+
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {
         $this->itemSearchService = $itemSearchService;
         return $this;
     }
-    
-  
 }

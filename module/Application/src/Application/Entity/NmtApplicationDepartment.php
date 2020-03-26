@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationDepartment
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="node_id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationDepartment
     private $nodeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="node_name", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationDepartment
     private $nodeName;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="node_parent_id", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationDepartment
     private $nodeParentId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationDepartment
     private $path;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationDepartment
     private $pathDepth;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationDepartment
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationDepartment
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -71,6 +79,7 @@ class NmtApplicationDepartment
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -78,6 +87,7 @@ class NmtApplicationDepartment
     private $uuid;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -88,6 +98,7 @@ class NmtApplicationDepartment
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -96,8 +107,6 @@ class NmtApplicationDepartment
      * })
      */
     private $company;
-
-
 
     /**
      * Get nodeId

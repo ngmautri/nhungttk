@@ -125,8 +125,8 @@ class GeneralHeaderValidation
             $spec = $specificationService->getSharedSpecificationFactory()->getCurrencyExitsSpecification();
             if (! $spec->isSatisfiedBy($this->localCurrency))
                 $notification->addError("Local currency not exits..." . $this->localCurrency);
-                    }
-                    
-                    return $notification;
+        }
+
+        return $notification;
     }
 }

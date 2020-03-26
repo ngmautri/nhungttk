@@ -9,7 +9,8 @@ namespace Application\Domain\Service;
  */
 Interface CompanyServiceInterface
 {
+
     public function checkAndReturnFX($companyId, $sourceCurrencyId, $targetCurrencyId, $fxRate);
-    
+
     public function getLocalCurrency($companyId);
 }

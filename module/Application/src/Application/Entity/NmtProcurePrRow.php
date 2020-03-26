@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtProcurePrRow
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -21,218 +22,249 @@ class NmtProcurePrRow
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
      */
     private $rowNumber;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
      */
     private $rowIdentifer;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
      */
     private $checksum;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="priority", type="string", length=45, nullable=true)
      */
     private $priority;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="row_name", type="string", length=60, nullable=true)
      */
     private $rowName;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="row_description", type="string", length=255, nullable=true)
      */
     private $rowDescription;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="row_code", type="string", length=100, nullable=true)
      */
     private $rowCode;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="row_unit", type="string", length=45, nullable=true)
      */
     private $rowUnit;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
      */
     private $conversionFactor;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_text", type="string", length=100, nullable=true)
      */
     private $conversionText;
-    
+
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=0, nullable=false)
      */
     private $quantity;
-    
+
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="edt", type="datetime", nullable=true)
      */
     private $edt;
-    
+
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
      */
     private $isDraft;
-    
+
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-    
+
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-    
+
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="fa_remarks", type="string", length=100, nullable=true)
      */
     private $faRemarks;
-    
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
      */
     private $docStatus;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
      */
     private $workflowStatus;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
      */
     private $transactionStatus;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $convertedStockQuantity;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="converted_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $convertedStandardQuantiy;
-    
+
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
      */
     private $docQuantity;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
      */
     private $docUnit;
-    
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
      */
     private $docType;
-    
+
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
      */
     private $reversalBlocked;
-    
+
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -241,8 +273,9 @@ class NmtProcurePrRow
      * })
      */
     private $createdBy;
-    
+
     /**
+     *
      * @var \Application\Entity\NmtProcurePr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePr")
@@ -251,8 +284,9 @@ class NmtProcurePrRow
      * })
      */
     private $pr;
-    
+
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -261,8 +295,9 @@ class NmtProcurePrRow
      * })
      */
     private $item;
-    
+
     /**
+     *
      * @var \Application\Entity\NmtPmProject
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
@@ -271,8 +306,9 @@ class NmtProcurePrRow
      * })
      */
     private $project;
-    
+
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -281,8 +317,9 @@ class NmtProcurePrRow
      * })
      */
     private $lastChangeBy;
-    
+
     /**
+     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -291,8 +328,9 @@ class NmtProcurePrRow
      * })
      */
     private $docUom;
-    
+
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -301,9 +339,7 @@ class NmtProcurePrRow
      * })
      */
     private $warehouse;
-    
-    
-    
+
     /**
      * Get id
      *
@@ -313,7 +349,7 @@ class NmtProcurePrRow
     {
         return $this->id;
     }
-    
+
     /**
      * Set rowNumber
      *
@@ -324,10 +360,10 @@ class NmtProcurePrRow
     public function setRowNumber($rowNumber)
     {
         $this->rowNumber = $rowNumber;
-        
+
         return $this;
     }
-    
+
     /**
      * Get rowNumber
      *
@@ -337,7 +373,7 @@ class NmtProcurePrRow
     {
         return $this->rowNumber;
     }
-    
+
     /**
      * Set rowIdentifer
      *
@@ -348,10 +384,10 @@ class NmtProcurePrRow
     public function setRowIdentifer($rowIdentifer)
     {
         $this->rowIdentifer = $rowIdentifer;
-        
+
         return $this;
     }
-    
+
     /**
      * Get rowIdentifer
      *
@@ -361,7 +397,7 @@ class NmtProcurePrRow
     {
         return $this->rowIdentifer;
     }
-    
+
     /**
      * Set token
      *
@@ -372,10 +408,10 @@ class NmtProcurePrRow
     public function setToken($token)
     {
         $this->token = $token;
-        
+
         return $this;
     }
-    
+
     /**
      * Get token
      *
@@ -385,7 +421,7 @@ class NmtProcurePrRow
     {
         return $this->token;
     }
-    
+
     /**
      * Set checksum
      *
@@ -396,10 +432,10 @@ class NmtProcurePrRow
     public function setChecksum($checksum)
     {
         $this->checksum = $checksum;
-        
+
         return $this;
     }
-    
+
     /**
      * Get checksum
      *
@@ -409,7 +445,7 @@ class NmtProcurePrRow
     {
         return $this->checksum;
     }
-    
+
     /**
      * Set priority
      *
@@ -420,10 +456,10 @@ class NmtProcurePrRow
     public function setPriority($priority)
     {
         $this->priority = $priority;
-        
+
         return $this;
     }
-    
+
     /**
      * Get priority
      *
@@ -433,7 +469,7 @@ class NmtProcurePrRow
     {
         return $this->priority;
     }
-    
+
     /**
      * Set rowName
      *
@@ -444,10 +480,10 @@ class NmtProcurePrRow
     public function setRowName($rowName)
     {
         $this->rowName = $rowName;
-        
+
         return $this;
     }
-    
+
     /**
      * Get rowName
      *
@@ -457,7 +493,7 @@ class NmtProcurePrRow
     {
         return $this->rowName;
     }
-    
+
     /**
      * Set rowDescription
      *
@@ -468,10 +504,10 @@ class NmtProcurePrRow
     public function setRowDescription($rowDescription)
     {
         $this->rowDescription = $rowDescription;
-        
+
         return $this;
     }
-    
+
     /**
      * Get rowDescription
      *
@@ -481,7 +517,7 @@ class NmtProcurePrRow
     {
         return $this->rowDescription;
     }
-    
+
     /**
      * Set rowCode
      *
@@ -492,10 +528,10 @@ class NmtProcurePrRow
     public function setRowCode($rowCode)
     {
         $this->rowCode = $rowCode;
-        
+
         return $this;
     }
-    
+
     /**
      * Get rowCode
      *
@@ -505,7 +541,7 @@ class NmtProcurePrRow
     {
         return $this->rowCode;
     }
-    
+
     /**
      * Set rowUnit
      *
@@ -516,10 +552,10 @@ class NmtProcurePrRow
     public function setRowUnit($rowUnit)
     {
         $this->rowUnit = $rowUnit;
-        
+
         return $this;
     }
-    
+
     /**
      * Get rowUnit
      *
@@ -529,7 +565,7 @@ class NmtProcurePrRow
     {
         return $this->rowUnit;
     }
-    
+
     /**
      * Set conversionFactor
      *
@@ -540,10 +576,10 @@ class NmtProcurePrRow
     public function setConversionFactor($conversionFactor)
     {
         $this->conversionFactor = $conversionFactor;
-        
+
         return $this;
     }
-    
+
     /**
      * Get conversionFactor
      *
@@ -553,7 +589,7 @@ class NmtProcurePrRow
     {
         return $this->conversionFactor;
     }
-    
+
     /**
      * Set conversionText
      *
@@ -564,10 +600,10 @@ class NmtProcurePrRow
     public function setConversionText($conversionText)
     {
         $this->conversionText = $conversionText;
-        
+
         return $this;
     }
-    
+
     /**
      * Get conversionText
      *
@@ -577,7 +613,7 @@ class NmtProcurePrRow
     {
         return $this->conversionText;
     }
-    
+
     /**
      * Set quantity
      *
@@ -588,10 +624,10 @@ class NmtProcurePrRow
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
-        
+
         return $this;
     }
-    
+
     /**
      * Get quantity
      *
@@ -601,7 +637,7 @@ class NmtProcurePrRow
     {
         return $this->quantity;
     }
-    
+
     /**
      * Set edt
      *
@@ -612,10 +648,10 @@ class NmtProcurePrRow
     public function setEdt($edt)
     {
         $this->edt = $edt;
-        
+
         return $this;
     }
-    
+
     /**
      * Get edt
      *
@@ -625,7 +661,7 @@ class NmtProcurePrRow
     {
         return $this->edt;
     }
-    
+
     /**
      * Set isDraft
      *
@@ -636,10 +672,10 @@ class NmtProcurePrRow
     public function setIsDraft($isDraft)
     {
         $this->isDraft = $isDraft;
-        
+
         return $this;
     }
-    
+
     /**
      * Get isDraft
      *
@@ -649,7 +685,7 @@ class NmtProcurePrRow
     {
         return $this->isDraft;
     }
-    
+
     /**
      * Set isActive
      *
@@ -660,10 +696,10 @@ class NmtProcurePrRow
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-        
+
         return $this;
     }
-    
+
     /**
      * Get isActive
      *
@@ -673,7 +709,7 @@ class NmtProcurePrRow
     {
         return $this->isActive;
     }
-    
+
     /**
      * Set createdOn
      *
@@ -684,10 +720,10 @@ class NmtProcurePrRow
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdOn
      *
@@ -697,7 +733,7 @@ class NmtProcurePrRow
     {
         return $this->createdOn;
     }
-    
+
     /**
      * Set remarks
      *
@@ -708,10 +744,10 @@ class NmtProcurePrRow
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-        
+
         return $this;
     }
-    
+
     /**
      * Get remarks
      *
@@ -721,7 +757,7 @@ class NmtProcurePrRow
     {
         return $this->remarks;
     }
-    
+
     /**
      * Set lastChangeOn
      *
@@ -732,10 +768,10 @@ class NmtProcurePrRow
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get lastChangeOn
      *
@@ -745,7 +781,7 @@ class NmtProcurePrRow
     {
         return $this->lastChangeOn;
     }
-    
+
     /**
      * Set currentState
      *
@@ -756,10 +792,10 @@ class NmtProcurePrRow
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-        
+
         return $this;
     }
-    
+
     /**
      * Get currentState
      *
@@ -769,7 +805,7 @@ class NmtProcurePrRow
     {
         return $this->currentState;
     }
-    
+
     /**
      * Set faRemarks
      *
@@ -780,10 +816,10 @@ class NmtProcurePrRow
     public function setFaRemarks($faRemarks)
     {
         $this->faRemarks = $faRemarks;
-        
+
         return $this;
     }
-    
+
     /**
      * Get faRemarks
      *
@@ -793,7 +829,7 @@ class NmtProcurePrRow
     {
         return $this->faRemarks;
     }
-    
+
     /**
      * Set revisionNo
      *
@@ -804,10 +840,10 @@ class NmtProcurePrRow
     public function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get revisionNo
      *
@@ -817,7 +853,7 @@ class NmtProcurePrRow
     {
         return $this->revisionNo;
     }
-    
+
     /**
      * Set docStatus
      *
@@ -828,10 +864,10 @@ class NmtProcurePrRow
     public function setDocStatus($docStatus)
     {
         $this->docStatus = $docStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docStatus
      *
@@ -841,7 +877,7 @@ class NmtProcurePrRow
     {
         return $this->docStatus;
     }
-    
+
     /**
      * Set workflowStatus
      *
@@ -852,10 +888,10 @@ class NmtProcurePrRow
     public function setWorkflowStatus($workflowStatus)
     {
         $this->workflowStatus = $workflowStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get workflowStatus
      *
@@ -865,7 +901,7 @@ class NmtProcurePrRow
     {
         return $this->workflowStatus;
     }
-    
+
     /**
      * Set transactionStatus
      *
@@ -876,10 +912,10 @@ class NmtProcurePrRow
     public function setTransactionStatus($transactionStatus)
     {
         $this->transactionStatus = $transactionStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get transactionStatus
      *
@@ -889,7 +925,7 @@ class NmtProcurePrRow
     {
         return $this->transactionStatus;
     }
-    
+
     /**
      * Set convertedStockQuantity
      *
@@ -900,10 +936,10 @@ class NmtProcurePrRow
     public function setConvertedStockQuantity($convertedStockQuantity)
     {
         $this->convertedStockQuantity = $convertedStockQuantity;
-        
+
         return $this;
     }
-    
+
     /**
      * Get convertedStockQuantity
      *
@@ -913,7 +949,7 @@ class NmtProcurePrRow
     {
         return $this->convertedStockQuantity;
     }
-    
+
     /**
      * Set convertedStandardQuantiy
      *
@@ -924,10 +960,10 @@ class NmtProcurePrRow
     public function setConvertedStandardQuantiy($convertedStandardQuantiy)
     {
         $this->convertedStandardQuantiy = $convertedStandardQuantiy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get convertedStandardQuantiy
      *
@@ -937,7 +973,7 @@ class NmtProcurePrRow
     {
         return $this->convertedStandardQuantiy;
     }
-    
+
     /**
      * Set docQuantity
      *
@@ -948,10 +984,10 @@ class NmtProcurePrRow
     public function setDocQuantity($docQuantity)
     {
         $this->docQuantity = $docQuantity;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docQuantity
      *
@@ -961,7 +997,7 @@ class NmtProcurePrRow
     {
         return $this->docQuantity;
     }
-    
+
     /**
      * Set docUnit
      *
@@ -972,10 +1008,10 @@ class NmtProcurePrRow
     public function setDocUnit($docUnit)
     {
         $this->docUnit = $docUnit;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docUnit
      *
@@ -985,7 +1021,7 @@ class NmtProcurePrRow
     {
         return $this->docUnit;
     }
-    
+
     /**
      * Set docType
      *
@@ -996,10 +1032,10 @@ class NmtProcurePrRow
     public function setDocType($docType)
     {
         $this->docType = $docType;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docType
      *
@@ -1009,7 +1045,7 @@ class NmtProcurePrRow
     {
         return $this->docType;
     }
-    
+
     /**
      * Set reversalBlocked
      *
@@ -1020,10 +1056,10 @@ class NmtProcurePrRow
     public function setReversalBlocked($reversalBlocked)
     {
         $this->reversalBlocked = $reversalBlocked;
-        
+
         return $this;
     }
-    
+
     /**
      * Get reversalBlocked
      *
@@ -1033,7 +1069,7 @@ class NmtProcurePrRow
     {
         return $this->reversalBlocked;
     }
-    
+
     /**
      * Set createdBy
      *
@@ -1044,10 +1080,10 @@ class NmtProcurePrRow
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdBy
      *
@@ -1057,7 +1093,7 @@ class NmtProcurePrRow
     {
         return $this->createdBy;
     }
-    
+
     /**
      * Set pr
      *
@@ -1068,10 +1104,10 @@ class NmtProcurePrRow
     public function setPr(\Application\Entity\NmtProcurePr $pr = null)
     {
         $this->pr = $pr;
-        
+
         return $this;
     }
-    
+
     /**
      * Get pr
      *
@@ -1081,7 +1117,7 @@ class NmtProcurePrRow
     {
         return $this->pr;
     }
-    
+
     /**
      * Set item
      *
@@ -1092,10 +1128,10 @@ class NmtProcurePrRow
     public function setItem(\Application\Entity\NmtInventoryItem $item = null)
     {
         $this->item = $item;
-        
+
         return $this;
     }
-    
+
     /**
      * Get item
      *
@@ -1105,7 +1141,7 @@ class NmtProcurePrRow
     {
         return $this->item;
     }
-    
+
     /**
      * Set project
      *
@@ -1116,10 +1152,10 @@ class NmtProcurePrRow
     public function setProject(\Application\Entity\NmtPmProject $project = null)
     {
         $this->project = $project;
-        
+
         return $this;
     }
-    
+
     /**
      * Get project
      *
@@ -1129,7 +1165,7 @@ class NmtProcurePrRow
     {
         return $this->project;
     }
-    
+
     /**
      * Set lastChangeBy
      *
@@ -1140,10 +1176,10 @@ class NmtProcurePrRow
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
         $this->lastChangeBy = $lastChangeBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get lastChangeBy
      *
@@ -1153,7 +1189,7 @@ class NmtProcurePrRow
     {
         return $this->lastChangeBy;
     }
-    
+
     /**
      * Set docUom
      *
@@ -1164,10 +1200,10 @@ class NmtProcurePrRow
     public function setDocUom(\Application\Entity\NmtApplicationUom $docUom = null)
     {
         $this->docUom = $docUom;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docUom
      *
@@ -1177,7 +1213,7 @@ class NmtProcurePrRow
     {
         return $this->docUom;
     }
-    
+
     /**
      * Set warehouse
      *
@@ -1188,10 +1224,10 @@ class NmtProcurePrRow
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
         $this->warehouse = $warehouse;
-        
+
         return $this;
     }
-    
+
     /**
      * Get warehouse
      *

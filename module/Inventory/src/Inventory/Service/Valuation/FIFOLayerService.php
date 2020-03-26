@@ -130,10 +130,10 @@ class FIFOLayerService extends AbstractService
                 $fifo_consume->setQuantity($consumpted_qty);
                 $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
                 $fifo_consume->setDocTotalValue($fifo_consume->getQuantity() * $fifo_consume->getDocUnitPrice());
-                
-                $fifo_consume->setExchangeRate($layer->getExchangeRate());                
+
+                $fifo_consume->setExchangeRate($layer->getExchangeRate());
                 $fifo_consume->setTotalValue($fifo_consume->getDocTotalValue() * $fifo_consume->getExchangeRate());
-                
+
                 $fifo_consume->setInventoryTrx($trx);
                 $fifo_consume->setCreatedOn($trx->getTrxDate());
                 $fifo_consume->setCreatedBy($u);

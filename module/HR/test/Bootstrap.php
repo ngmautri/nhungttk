@@ -16,9 +16,9 @@ chdir(__DIR__);
  */
 class Bootstrap
 {
-    
+
     protected static $serviceManager;
-    
+
     public static function init()
     {
         $zf2ModulePaths = array(
@@ -30,26 +30,26 @@ class Bootstrap
         if (($path = static::findParentPath('module')) !== $zf2ModulePaths[0]) {
             $zf2ModulePaths[] = $path;
         }
-        
+
         static::initAutoloader();
-        
+
         $rootPath = dirname(static::findParentPath('module'));
-        
+
         // use ModuleManager to load this module and it's dependencies
-        
+
         // application config
         $config = array(
-            
+
             'modules' => array(
                 'DoctrineModule',
                 'DoctrineORMModule',
                 'Application',
-                'HR',
+                'HR'
             ),
-            
+
             'module_listener_options' => array(
                 'module_paths' => $zf2ModulePaths,
-                
+
                 // An array of paths from which to glob configuration files after
                 // modules are loaded. These effectively overide configuration
                 // provided by modules themselves. Paths may use GLOB_BRACE notation.
@@ -59,34 +59,34 @@ class Bootstrap
                 )
             )
         );
-        
+
         // ServiceManager Config
         $smConfig = array();
-        
+
         $serviceManager = new ServiceManager(new ServiceManagerConfig($smConfig));
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
     }
-    
+
     public static function chroot()
     {
         $rootPath = dirname(static::findParentPath('module'));
         // echo $rootPath;
-        
+
         chdir($rootPath);
     }
-    
+
     public static function getServiceManager()
     {
         return static::$serviceManager;
     }
-    
+
     protected static function initAutoloader()
     {
         $vendorPath = static::findParentPath('vendor');
         $modulePath = static::findParentPath('module');
-        
+
         $zf2Path = getenv('ZF2_PATH');
         if (! $zf2Path) {
             if (defined('ZF2_PATH')) {
@@ -97,17 +97,17 @@ class Bootstrap
                 $zf2Path = $vendorPath . '/zendframework/zendframework/library';
             }
         }
-        
+
         if (! $zf2Path) {
             throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or' . ' define a ZF2_PATH environment variable.');
         }
-        
+
         if (file_exists($vendorPath . '/autoload.php')) {
             include $vendorPath . '/autoload.php';
         }
-        
+
         include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
-        
+
         AutoloaderFactory::factory(array(
             'Zend\Loader\StandardAutoloader' => array(
                 'autoregister_zf' => true,
@@ -119,7 +119,7 @@ class Bootstrap
             )
         ));
     }
-    
+
     protected static function findParentPath($path)
     {
         $dir = __DIR__;
@@ -128,7 +128,7 @@ class Bootstrap
             $dir = dirname($dir);
             if ($previousDir === $dir)
                 return false;
-                $previousDir = $dir;
+            $previousDir = $dir;
         }
         return $dir . DIRECTORY_SEPARATOR . $path;
     }

@@ -13,37 +13,41 @@ class ItemCategoryService extends AbstractService
 {
 
     private $itemCategoryRepository;
-    
-    public function getNoneCategorizedItems($limit, $offset){
+
+    public function getNoneCategorizedItems($limit, $offset)
+    {
         return $this->getItemCategoryRepository()->getNoneCategorizedItems($limit, $offset);
     }
-    
-    public function getNoneCategorizedItemsTotal(){
+
+    public function getNoneCategorizedItemsTotal()
+    {
         return $this->getItemCategoryRepository()->getNoneCategorizedItemsTotal();
     }
-        
-    public function addItemToCategory($itemId, $catId,$userId){
+
+    public function addItemToCategory($itemId, $catId, $userId)
+    {
         return $this->getItemCategoryRepository()->addItemToCategory($itemId, $catId, $userId);
     }
-    
+
     /**
-     * 
+     *
      * @param int $catId
      * @return NULL|NULL[]|\Inventory\Domain\Item\ItemSnapshot[]
      */
-    public function getItemsByCategory($catId,$limit, $offset){
-        return $this->getItemCategoryRepository()->getItemsByCategory($catId,$limit, $offset);        
+    public function getItemsByCategory($catId, $limit, $offset)
+    {
+        return $this->getItemCategoryRepository()->getItemsByCategory($catId, $limit, $offset);
     }
-    
-    
-    public function getTotalItemsByCategory($catId){
+
+    public function getTotalItemsByCategory($catId)
+    {
         return $this->getItemCategoryRepository()->getTotalItemsByCategory($catId);
     }
-    
-   /**
-    * 
-    * @return \Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl
-    */
+
+    /**
+     *
+     * @return \Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl
+     */
     public function getItemCategoryRepository()
     {
         return $this->itemCategoryRepository;

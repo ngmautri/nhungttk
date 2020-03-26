@@ -9,11 +9,14 @@ namespace Application\Model\Domain\Shared;
  */
 class Money
 {
+
     private $id;
+
     private $uuid;
-    
+
     private $street;
+
     private $city;
+
     private $postalCode;
-    
 }

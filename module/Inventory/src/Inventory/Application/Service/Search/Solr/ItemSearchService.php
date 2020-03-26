@@ -142,8 +142,7 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
             'item_id' => $row['id'],
             'token' => $row['token'],
             'item_name' => $row['item_name'],
-            'item_token_serial_keyword'=> $row['token'] . "__" . $row['id'] . "__" . $row['serial_id'],
-            
+            'item_token_serial_keyword' => $row['token'] . "__" . $row['id'] . "__" . $row['serial_id']
         );
 
         return $data;

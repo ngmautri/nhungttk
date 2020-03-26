@@ -35,11 +35,11 @@ class ConsoleController extends AbstractActionController
         $rep = new MessageStoreRepository($this->getDoctrineEM());
         $results = $rep->getUnsentMessage();
         if ($results == null) {
-            echo  "no thing sent!";
-            
+            echo "no thing sent!";
+
             return;
         }
-        
+
         $sentIDs = array();
 
         try {
@@ -60,43 +60,42 @@ class ConsoleController extends AbstractActionController
 
                 $msg = new AMQPMessage($m);
                 $channel->basic_publish($msg, '', $binding_key);
-                
+
                 $sentIDs[] = $result->getId();
             }
 
             $channel->close();
             $connection->close();
-            
+
             $rep->setSentDate($sentIDs);
 
             echo $n . " messages sent!";
-            
-            //sleep(20);
+
+            // sleep(20);
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
     }
-    
-   
+
     public function receiveMsgAction()
     {
         // send send massage to RabbitQP
         $connection = new AMQPStreamConnection($this->host, $this->post, $this->user, $this->pass, $this->vhost);
         $channel = $connection->channel();
         $channel->queue_declare('inventory.item', false, false, false, false);
-        
+
         echo " [*] Waiting for messages. To exit press CTRL+C\n";
-        
+
         $callback = function ($msg) {
             echo ' [x] Received ', $msg->body, "\n";
         };
-        
+
         $channel->basic_consume('inventory.item', '', false, true, false, false, $callback);
-        
+
         while ($channel->is_consuming()) {
             $channel->wait();
         }
-        
+
         $channel->close();
         $connection->close();
     }

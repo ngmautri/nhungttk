@@ -53,12 +53,12 @@ if (count($errors) > 0) {
 							<div class="form-group margin-bottom">
 								<label class="control-label col-sm-2"><?php echo $this->translate('Account Number')?>:</label>
 								<div class="col-sm-3">
-									<input class="form-control input-sm"
-										type="text" placeholder="" id="accountNumber" name="accountNumber"
+									<input class="form-control input-sm" type="text" placeholder=""
+										id="accountNumber" name="accountNumber"
 										value="<?php echo (!$entity == null)? $entity->getAccountNumber():"";?>">
 								</div>
-								
-									<div class="col-sm-3">
+
+								<div class="col-sm-3">
 									<input
 										<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 										type="checkbox" name="isActive" value="1">&nbsp;Is

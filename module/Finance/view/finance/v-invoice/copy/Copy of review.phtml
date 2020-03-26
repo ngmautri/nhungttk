@@ -3,7 +3,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -14,7 +14,7 @@ if (count($errors) > 0) {
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt; padding:0;margin: 0">
+<div id="tabs" style="font-size: 9.5pt; padding: 0; margin: 0">
 	<ul>
 		<li><a href="#general"><small><i class="fa fa-calculator"
 					aria-hidden="true"></i></small>&nbsp;A/P Invoice</a></li>
@@ -36,7 +36,8 @@ if (count($errors) > 0) {
 		<div class="row">
 			<!-- ROW-->
 
-			<div class="col-xs-5 col-md-2" 	style="font-size: 9pt; padding: 10px 10px 1px 5px">
+			<div class="col-xs-5 col-md-2"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
 				<!-- C1 -->
   					<?php
     $current_step = "STEP3";
@@ -67,15 +68,16 @@ if (count($errors) > 0) {
 				<!-- C1 ends-->
 			</div>
 
-			<div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+			<div class="col-xs-12 col-sm-6 col-md-10"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
 				<!-- C2 -->
 
 				<div style="position: relative; float: right;">
 
 					<a class="btn btn-primary btn-sm" style="color: white"
 						onclick="confirmPost();" href="javascript:;"><i
-						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a> <a
-						class="btn btn-default btn-sm" href="javascript:;"
+						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+					<a class="btn btn-default btn-sm" href="javascript:;"
 						onclick="refreshGird();"><i class="fa fa-refresh"
 						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a> <a
 						class="btn btn-default btn-sm"
@@ -89,7 +91,9 @@ if (count($errors) > 0) {
 				</div>
 				<h4>
 <?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
-<h4 style="color: graytext;"><strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
+<h4 style="color: graytext;">
+						<strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
+					</h4>
 				</h4>
 
 				<form id="Invoice_Posting_Form" class="form-horizontal"
@@ -109,7 +113,8 @@ if (count($errors) > 0) {
 							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 							<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 						</legend>
-						<div id="invoice_header" class="collapse <?php if (count($errors) > 0): echo 'in'; endif;?>">
+						<div id="invoice_header"
+							class="collapse <?php if (count($errors) > 0): echo 'in'; endif;?>">
 
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2">Current State:</label>
@@ -198,7 +203,7 @@ if (count($errors) > 0) {
                 endforeach
                 ;
    	    							endif;
-            
+
             ?>
    					</select>
 								</div>

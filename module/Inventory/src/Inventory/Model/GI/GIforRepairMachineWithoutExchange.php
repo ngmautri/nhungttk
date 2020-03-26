@@ -218,11 +218,11 @@ class GIforRepairMachineWithoutExchange extends \Inventory\Model\AbstractTransac
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
      */
-    public function reverse($entity, $u, $reversalDate,$isFlush = false)
+    public function reverse($entity, $u, $reversalDate, $isFlush = false)
     {}
 
     public function validateRow($trx)

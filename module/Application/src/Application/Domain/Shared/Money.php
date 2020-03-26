@@ -1,5 +1,6 @@
 <?php
 namespace Application\Domain\Shared\ValueObject;
+
 use Money\Currency;
 
 /**
@@ -40,7 +41,7 @@ class Money extends AbstractValueObject
         $this->currency = $currency;
         $this->exchangeRate = $exchangeRate;
     }
+
     public function __toString()
     {}
-
 }

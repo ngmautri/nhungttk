@@ -1,19 +1,22 @@
 <h1>asset/category/add</h1>
 
-<form action="<?php echo $this->baseUrl ?>/inventory/asset/addcategory" method="post">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<form action="<?php echo $this->baseUrl ?>/inventory/asset/addcategory"
+	method="post">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
 
-<div>
-    <label for="category">Asset Category</label>
-    <input type="text" name="category" value=""/>
-</div>
-<div>
-    <label for="description">Description</label>
-    <textarea cols="45" name="description" id="description" style="background:#FFFFFF" rows="4"></textarea>
-  
-</div>
-<div id="formbutton">
-<input type="submit" name="add" value="Add" />
-</div>
+	<div>
+		<label for="category">Asset Category</label> <input type="text"
+			name="category" value="" />
+	</div>
+	<div>
+		<label for="description">Description</label>
+		<textarea cols="45" name="description" id="description"
+			style="background: #FFFFFF" rows="4"></textarea>
+
+	</div>
+	<div id="formbutton">
+		<input type="submit" name="add" value="Add" />
+	</div>
 
 </form>

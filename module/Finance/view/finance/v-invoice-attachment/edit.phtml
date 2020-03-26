@@ -1,7 +1,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -98,8 +98,8 @@ if (count($errors) > 0) {
 					Attachment: </label>
 				<div class="col-sm-3">
 					<div style="padding-top: 10px">
-					<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a
-						href="<?php echo $this->baseUrl ?>/finance/v-invoice-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+						<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a
+							href="<?php echo $this->baseUrl ?>/finance/v-invoice-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
 					</div>
 				</div>
 			</div>
@@ -110,11 +110,11 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2" for="inputTag"></label>
 				<div class="col-sm-3">
 
-<a class="btn btn-default" style="" href="javascript:;"
-	onClick="doUploadAttachment('attachment_upload_form','attachments','/finance/v-invoice-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','','<?php echo $target!==null ? $target->getToken():""?>','0','<?php echo (!$entity== null)? $entity->getId():"";?>','<?php echo (!$entity== null)? $entity->getToken():"";?>');">
-	<small><i class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp; Edit
-</a>
-						</a> <a tabindex="11" class="btn btn-default"
+					<a class="btn btn-default" style="" href="javascript:;"
+						onClick="doUploadAttachment('attachment_upload_form','attachments','/finance/v-invoice-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','','<?php echo $target!==null ? $target->getToken():""?>','0','<?php echo (!$entity== null)? $entity->getId():"";?>','<?php echo (!$entity== null)? $entity->getToken():"";?>');">
+						<small><i class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;
+						Edit
+					</a> </a> <a tabindex="11" class="btn btn-default"
 						href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 							class="glyphicon glyphicon-ok"></i></small>&nbsp;Cancel</a>
 				</div>

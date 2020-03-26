@@ -1,39 +1,45 @@
-<h4><i class="icon-upload">  </i> Upload picture:</h4>
+<h4>
+	<i class="icon-upload"> </i> Upload picture:
+</h4>
 
-<?php if ($article!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Item Name	: <strong>' .$article->name . '</strong></li>';
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if ($article !== null) {
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Item Name	: <strong>' . $article->name . '</strong></li>';
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
-	
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/article/upload-picture"	method="post" enctype="multipart/form-data" id="NewSP" >
- <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
- <input type="hidden" name="id" value="<?php echo $article!==null ? ($article->id) :""?>"/>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputLocation">Pictures:</label>
-        <div class="controls">
-        <input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
 
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn"><i class="icon-upload">  </i> Upload</button>
-        </div>
-      </div>
-    </form>
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/article/upload-picture"
+	method="post" enctype="multipart/form-data" id="NewSP">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" /> <input type="hidden" name="id"
+		value="<?php echo $article!==null ? ($article->id) :""?>" />
+
+	<div class="control-group">
+		<label class="control-label" for="inputLocation">Pictures:</label>
+		<div class="controls">
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
+
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">
+				<i class="icon-upload"> </i> Upload
+			</button>
+		</div>
+	</div>
+</form>
 
 

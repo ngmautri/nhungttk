@@ -17,7 +17,6 @@ use Ramsey;
 class DoctrineItemRepository extends AbstractDoctrineRepository implements ItemRepositoryInterface
 {
 
-  
     /**
      *
      * {@inheritdoc}

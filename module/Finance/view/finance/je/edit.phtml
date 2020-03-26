@@ -1,16 +1,16 @@
 <?php /**@var \Application\Entity\FinFx $entity ;*/?>
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
@@ -19,114 +19,123 @@ if (count ( $errors ) > 0) {
 		<li><a href="#general">New Exchange Rate</a></li>
 	</ul>
 
-<div id="general" style="font-size: 9pt">
- 
+	<div id="general" style="font-size: 9pt">
+
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/fx/edit" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
-				<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
-<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
-<input type="hidden" name="n" value="<?php echo $n;?>" />
-				
-	
-					
-					<div class="form-group margin-bottom required">
-					
-					<label class="control-label col-sm-2">Source Currency:</label>
-					<div class="col-sm-3">
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="entity_id"
+				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
+				type="hidden" name="n" value="<?php echo $n;?>" />
+
+
+
+			<div class="form-group margin-bottom required">
+
+				<label class="control-label col-sm-2">Source Currency:</label>
+				<div class="col-sm-3">
 					<select name="source_currency_id" class="form-control input-sm">
-								<option value="">Select Currency</option>
+						<option value="">Select Currency</option>
    	    							<?php
-   	    							if($currency_list!== null):
-       	    							foreach ( $currency_list as $curr ) :
-       	    							 if($entity!==null):
-       	    							     if($entity->getSourceCurrency()!==null):
-       	    							     if($entity->getSourceCurrency()->getCurrency() == $curr->getCurrency()):
-       	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-   	    							             else:
-   	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							         endif;
-       	    							     else:
-       	    							            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							     endif;
-       	    							 else:
-       	    							     echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							 endif;
-       									endforeach;
+            if ($currency_list !== null) :
+                foreach ($currency_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getSourceCurrency() !== null) :
+                            if ($entity->getSourceCurrency()->getCurrency() == $curr->getCurrency()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            else :
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                    endif;
+                endforeach
+                ;
    	    							endif;
-									?>
+
+            ?>
    					</select>
-   					</div>
-   					</div>
-   					
-   					<div class="form-group margin-bottom required">
-					
-					<label class="control-label col-sm-2">Target Currency:</label>
-					<div class="col-sm-3">
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+
+				<label class="control-label col-sm-2">Target Currency:</label>
+				<div class="col-sm-3">
 					<select name="target_currency_id" class="form-control input-sm">
-								<option value="">Select Currency</option>
+						<option value="">Select Currency</option>
    	    							<?php
-   	    							if($currency_list!== null):
-       	    							foreach ( $currency_list as $curr ) :
-       	    							 if($entity!==null):
-       	    							     if($entity->getTargetCurrency()!==null):
-       	    							     if($entity->getTargetCurrency()->getCurrency() == $curr->getCurrency()):
-       	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-   	    							             else:
-   	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							         endif;
-       	    							     else:
-       	    							            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							     endif;
-       	    							 else:
-       	    							     echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							 endif;
-       									endforeach;
+            if ($currency_list !== null) :
+                foreach ($currency_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getTargetCurrency() !== null) :
+                            if ($entity->getTargetCurrency()->getCurrency() == $curr->getCurrency()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            else :
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                    endif;
+                endforeach
+                ;
    	    							endif;
-									?>
+
+            ?>
    					</select>
-   					</div>
-   					
-					</div>
-					
-					<div class="form-group margin-bottom required">
+				</div>
 
-						<label class="control-label col-sm-2 required">FX Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
-								id="fxDate" name="fxDate"
-								value="<?php if(!$entity == null): if ($entity->getFxDate() !== null): echo date_format($entity->getFxDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
-					</div>
-						<div class="form-group margin-bottom required">
+			</div>
 
-				
+			<div class="form-group margin-bottom required">
+
+				<label class="control-label col-sm-2 required">FX Date:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" id="fxDate"
+						name="fxDate"
+						value="<?php if(!$entity == null): if ($entity->getFxDate() !== null): echo date_format($entity->getFxDate(),"Y-m-d"); endif; endif;?>"
+						placeholder=" please select" />
+				</div>
+			</div>
+			<div class="form-group margin-bottom required">
+
+
 				<label class="control-label col-sm-2">Exchange Rate:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="fxRate" name="fxRate" 
-								value="<?php echo (!$entity == null)? $entity->getFxRate():"";?>">
-						</div>
-   					</div>
-   					</
-					
-				<hr>
-				<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag"></label>
-						<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
-							<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/fx/list"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
-	
-						</div>
-					</div>
-		</form>
-		
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						id="fxRate" name="fxRate"
+						value="<?php echo (!$entity == null)? $entity->getFxRate():"";?>">
+				</div>
+			</div>
+			</
 
-	<!-- Tab1 -->
+			<hr>
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Create_Inv_Form');"
+						class="btn btn-default btn-sm">
+						<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+					</button>
+					<a tabindex="11" class="btn btn-default btn-sm"
+						href="<?php echo $this->baseUrl ?>/finance/fx/list"><small><i
+							class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+				</div>
+			</div>
+		</form>
+
+
+		<!-- Tab1 -->
 	</div>
 </div>
 

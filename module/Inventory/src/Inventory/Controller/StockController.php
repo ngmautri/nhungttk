@@ -24,6 +24,7 @@ class StockController extends AbstractActionController
 {
 
     protected $doctrineEM;
+
     protected $itemSearchService;
 
     /**
@@ -224,8 +225,6 @@ class StockController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-
-    
 
     /**
      *
@@ -557,7 +556,7 @@ class StockController extends AbstractActionController
             'target' => $target
         ));
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -565,43 +564,43 @@ class StockController extends AbstractActionController
     public function summaryAction()
     {
         $request = $this->getRequest();
-        
+
         // accepted only ajax request
-        
+
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $this->layout("layout/user/ajax");
-        
+
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
-         
+
         $criteria = array(
             'id' => $target_id,
             'token' => $token
         );
-        
+
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-        
+
         if ($target == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $criteria = array(
             'item' => $target,
-            'isClosed'=>0
+            'isClosed' => 0
         );
-        
+
         $sort_criteria = array(
             'postingDate' => "ASC"
         );
-        
+
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFifoLayer')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
-        
-       return new ViewModel(array(
+
+        return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,

@@ -1,71 +1,81 @@
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/bp/search/vendor"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="25" type="text" name = "q">
-   </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
+
+<form class="form-inline"
+	action="<?php echo $this->baseUrl ?>/bp/search/vendor" method="get"
+	enctype="multipart/form-data">
+	<div class="form-group">
+		<input class="form-control" size="25" type="text" name="q">
+	</div>
+	<div class="form-group">
+		<button type="submit" class="btn btn-default">
+			<small><i class="glyphicon glyphicon-search"> </i></small> Search
+		</button>
+	</div>
+
 </form>
 <hr>
 
- <div class="panel-group"  >
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" href="#collapse1">
-<small><span class="glyphicon glyphicon-filter"></span></small>
-        Filter</a>
-      </h4>
-    </div>
-    <div id="collapse1" class="panel-collapse collapse">
-      <div class="panel-body" style="padding: 0px;">
-  <div
-					style="padding: 3px; font-size:10pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
-					    
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/bp/vendor/list" method="get" enctype="multipart/form-data">
-	
-	 
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Active Vendors</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="is_active">
-									<option
-									<?php echo $is_active ==''? "selected='selected'":"";?>
+<div class="panel-group">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" href="#collapse1"> <small><span
+						class="glyphicon glyphicon-filter"></span></small> Filter
+				</a>
+			</h4>
+		</div>
+		<div id="collapse1" class="panel-collapse collapse">
+			<div class="panel-body" style="padding: 0px;">
+				<div
+					style="padding: 3px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+
+					<form class="form-horizontal"
+						action="<?php echo $this->baseUrl ?>/bp/vendor/list" method="get"
+						enctype="multipart/form-data">
+
+
+						<div class="form-group">
+							<label class="control-label col-sm-2" for="inputTag">Active
+								Vendors</label>
+							<div class="col-sm-3">
+								<select class="form-control" name="is_active">
+									<option <?php echo $is_active ==''? "selected='selected'":"";?>
 										value="">All</option>
-									<option
-									<?php echo $is_active=='1'? "selected='selected'":"";?>
+									<option <?php echo $is_active=='1'? "selected='selected'":"";?>
 										value="1">Active</option>
 									<option
-									<?php echo $is_active=='-1'? "selected='selected'":"";?>
+										<?php echo $is_active=='-1'? "selected='selected'":"";?>
 										value="-1">Inactive</option>
-									</select>
-		</div>
-	</div>
+								</select>
+							</div>
+						</div>
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Sort by</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="sort_by">
+						<div class="form-group">
+							<label class="control-label col-sm-2" for="inputTag">Sort by</label>
+							<div class="col-sm-3">
+								<select class="form-control" name="sort_by">
 									<option value="">None</option>
 									<option
 										<?php echo $sort_by=='contractSubject'? "selected='selected'":"";?>
 										value="contractSubject">Vendor Name</option>
-						
-									<option <?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
+
+									<option
+										<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
 										value="createdOn">Created Date</option>
- 			</select>
- 			<input <?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?> type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp;
- 			<input <?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?> type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
- 							
-		</div>
-	</div>
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Result per page</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="perPage">
+								</select> <input
+									<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
+									type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
+									<?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?>
+									type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
+
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<label class="control-label col-sm-2" for="inputTag">Result per
+								page</label>
+							<div class="col-sm-3">
+								<select class="form-control" name="perPage">
 									<option value="">None</option>
 									<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
 										value="15">15</option>
@@ -85,37 +95,37 @@
 										<?php echo $per_pape=='200'? "selected='selected'":"";?>
 										value="200">200</option>
 								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" class="btn btn-default">Show</button>
+							</div>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
 		</div>
 	</div>
-	
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Show</button>
-		</div>
-	</div>     
-	     
- </form>
- 
-     </div> 
-      </div>
-     </div>
-  </div>
 </div>
 
 <?php
 
 if ($total_records <= 0) {
-	
-	echo 'No record found!';
+
+    echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
 
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
@@ -125,7 +135,7 @@ if ($total_records <= 0) {
 			<td><b>Contract Subject</b></td>
 			<td><b>File Name</b></td>
 			<td><b>File Size</b></td>
-	
+
 			<td><b>Created Date</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -134,22 +144,22 @@ if ($total_records <= 0) {
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+        $count ++;
+        ?>
 	 <tr>
-	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td><?php echo $this->escapeHtml($a->getVendor()->getVendorName());?></td>
 			<td><?php echo $this->escapeHtml($a->getContractSubject());?></td>
 			<td><?php echo $this->escapeHtml($a->getFilenameOriginal());?></td>
 			<td><?php echo $this->escapeHtml($a->getSize());?></td>
 			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>
-			<td>
-<i class="glyphicon glyphicon-download-alt"></i><a href="<?php echo $this->baseUrl ?>/bp/vendor-contract/download?target_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
+			<td><i class="glyphicon glyphicon-download-alt"></i><a
+				href="<?php echo $this->baseUrl ?>/bp/vendor-contract/download?target_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
 			</td>
-		
+
 		</tr>
 <?php endforeach; ?>
 
@@ -157,47 +167,47 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/bp/vendor/list?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
-		$_connector_symbol = '&';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/bp/vendor/list?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort;
+        $_connector_symbol = '&';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

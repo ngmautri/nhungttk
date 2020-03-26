@@ -27,7 +27,7 @@ class GRNIpostedEventHandler implements EventSubscriberInterface
     }
 
     /**
-     * 
+     *
      * @param GRNIpostedEvent $event
      */
     public function onGRNIPosted(GRNIpostedEvent $event)

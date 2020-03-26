@@ -120,8 +120,7 @@ class GIRowController extends AbstractActionController
 
             $session->offsetSet('rowDTO', $rowDTO);
             $session->offsetSet('errors', $notification->getErrors());
-            
-            
+
             $url = sprintf("/inventory/gi-row/create?token=%s&target_id=%s", $token, $trxId);
             return $this->redirect()->toUrl($url);
         }
@@ -911,7 +910,7 @@ class GIRowController extends AbstractActionController
     {
         $this->giService = $giService;
     }
-    
+
     /**
      *
      * @return \Inventory\Application\Service\Warehouse\TransactionService
@@ -920,11 +919,11 @@ class GIRowController extends AbstractActionController
     {
         return $this->transactionService;
     }
-    
-  /**
-   * 
-   * @param TransactionService $transactionService
-   */
+
+    /**
+     *
+     * @param TransactionService $transactionService
+     */
     public function setTransactionService(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;

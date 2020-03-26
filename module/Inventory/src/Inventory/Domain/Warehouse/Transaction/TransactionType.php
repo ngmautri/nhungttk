@@ -33,7 +33,6 @@ class TransactionType
 
     const GI_FOR_DISPOSAL = 'GI999';
 
-    
     // ========================================
     const GR_FROM_OPENNING_BALANCE = 'GR000';
 
@@ -44,14 +43,12 @@ class TransactionType
     const GR_FROM_TRANSFER_LOCATION = 'GR102';
 
     const GR_FROM_PURCHASING_REVERSAL = 'GR100-1';
-    
+
     const GR_FROM_EXCHANGE = 'GR103';
-    
+
     const GR_WITH_INVOICE = 'GR104';
-    
+
     const GR_WITHOUT_INVOICE = 'GR105';
-    
-    
 
     public static function getSupportedTransaction()
     {
@@ -72,7 +69,7 @@ class TransactionType
         $list[] = self::GR_FROM_TRANSFER_WAREHOUSE;
         $list[] = self::GR_FROM_PURCHASING_REVERSAL;
         $list[] = self::GR_FROM_EXCHANGE;
-        
+
         return $list;
     }
 }

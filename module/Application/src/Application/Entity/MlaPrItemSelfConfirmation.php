@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPrItemSelfConfirmation
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaPrItemSelfConfirmation
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaPrItemSelfConfirmation
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class MlaPrItemSelfConfirmation
     private $updatedOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="confirmed_quantity", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class MlaPrItemSelfConfirmation
     private $confirmedQuantity;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="rejected_quantity", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class MlaPrItemSelfConfirmation
     private $rejectedQuantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -57,6 +63,7 @@ class MlaPrItemSelfConfirmation
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -67,6 +74,7 @@ class MlaPrItemSelfConfirmation
     private $prItem;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -75,8 +83,6 @@ class MlaPrItemSelfConfirmation
      * })
      */
     private $updatedBy;
-
-
 
     /**
      * Get id

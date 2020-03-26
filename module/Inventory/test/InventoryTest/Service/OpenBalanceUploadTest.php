@@ -33,11 +33,10 @@ class WarehouseDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
         echo $root;
-       
+
         $uploader = new OpenBalanceUpload();
-        
+
         $file = $root . "/InventoryTest/Data/ob.xlsx";
         $uploader->doUploading($file);
-        
     }
 }

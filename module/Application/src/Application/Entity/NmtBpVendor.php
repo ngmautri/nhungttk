@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtBpVendor
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtBpVendor
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtBpVendor
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtBpVendor
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_number", type="string", length=15, nullable=true)
@@ -43,6 +47,7 @@ class NmtBpVendor
     private $vendorNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=false)
@@ -50,6 +55,7 @@ class NmtBpVendor
     private $vendorName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_short_name", type="string", length=50, nullable=true)
@@ -57,6 +63,7 @@ class NmtBpVendor
     private $vendorShortName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=50, nullable=true)
@@ -64,6 +71,7 @@ class NmtBpVendor
     private $keywords;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -71,6 +79,7 @@ class NmtBpVendor
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtBpVendor
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -85,6 +95,7 @@ class NmtBpVendor
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -92,6 +103,7 @@ class NmtBpVendor
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -99,6 +111,7 @@ class NmtBpVendor
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="street", type="string", length=100, nullable=true)
@@ -106,6 +119,7 @@ class NmtBpVendor
     private $street;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtBpVendor
     private $city;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="telephone", type="string", length=45, nullable=true)
@@ -120,6 +135,7 @@ class NmtBpVendor
     private $telephone;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtBpVendor
     private $email;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="fax", type="string", length=45, nullable=true)
@@ -134,6 +151,7 @@ class NmtBpVendor
     private $fax;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="website", type="string", length=45, nullable=true)
@@ -141,6 +159,7 @@ class NmtBpVendor
     private $website;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_person", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtBpVendor
     private $contractPerson;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -158,6 +178,7 @@ class NmtBpVendor
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCountry
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
@@ -168,6 +189,7 @@ class NmtBpVendor
     private $country;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -178,6 +200,7 @@ class NmtBpVendor
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -186,8 +209,6 @@ class NmtBpVendor
      * })
      */
     private $glAccount;
-
-
 
     /**
      * Get id

@@ -3,78 +3,91 @@
 </h4>
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Assignment</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Assignment</a></li>
+	</ul>
 
-<div id="general"> 
+	<div id="general">
 
-<form id="Create_Purchase_Form" class="form-horizontal" action="/inventory/item-assignment/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
-<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+		<form id="Create_Purchase_Form" class="form-horizontal"
+			action="/inventory/item-assignment/edit" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="entity_id"
+				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
+				type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Employee:</label>
-		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="employee_name" placeholder="Please find Employee" name="employee_name" 
-value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getEmployeeName();endif;endif;?>">
-				
-<input type="hidden" id="employee_id" placeholder="" 	name="employee_id" 
-value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getId();endif;endif;?>">
-		<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-		
-		</div>
-		
+			<div class="form-group">
+				<label class="control-label col-sm-2">Employee:</label>
+				<div class="col-sm-3">
+					<input disabled class="form-control" type="text" id="employee_name"
+						placeholder="Please find Employee" name="employee_name"
+						value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getEmployeeName();endif;endif;?>">
 
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Employee','680','500', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
+					<input type="hidden" id="employee_id" placeholder=""
+						name="employee_id"
+						value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getId();endif;endif;?>">
+					<input
+						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 
+				</div>
+
+
+				<a style="color: #0080ff;" href="javascript:;"
+					onclick="showJqueryDialog('Select Employee','680','500', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+					class="glyphicon glyphicon-folder-open"></i>
+				</a>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Assigned On:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="assignedOn"
+						value="<?php if(!$entity == null): echo ($entity->getAssignedOn() !== null)? date_format($entity->getAssignedOn(),"Y-m-d"):""; endif;?>"
+						placeholder=" please select" id="assigned_on" />
+				</div>
+
+			</div>
+
+
+			<div class="form-group">
+
+				<label class="control-label col-sm-2">Remarks</label>
+				<div class="col-sm-3">
+					<textarea class="form-control" type="text" rows="4" placeholder=""
+						name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Create_Purchase_Form');" type="submit"
+						id="save" class="btn btn-default">
+						<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save
+					</button>
+				</div>
+			</div>
+
+		</form>
 	</div>
-
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Assigned On:</label>
-		<div class="col-sm-3">
-<input class="form-control" type="text" name="assignedOn" 
-value="<?php if(!$entity == null): echo ($entity->getAssignedOn() !== null)? date_format($entity->getAssignedOn(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="assigned_on" />
-		</div>
-		
-	</div>
-
-	
-	<div class="form-group">
-		
-		<label class="control-label col-sm-2" >Remarks</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
-				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Purchase_Form');" type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
-  		</div>
-	</div> 
-	
-</form>
-</div>
 </div>
 
 <script>

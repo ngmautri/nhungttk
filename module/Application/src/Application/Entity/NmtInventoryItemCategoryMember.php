@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemCategoryMember
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemCategoryMember
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryItemCategoryMember
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemCategoryMember
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -46,6 +50,7 @@ class NmtInventoryItemCategoryMember
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItemCategory
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemCategory")
@@ -56,6 +61,7 @@ class NmtInventoryItemCategoryMember
     private $category;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -64,8 +70,6 @@ class NmtInventoryItemCategoryMember
      * })
      */
     private $item;
-
-
 
     /**
      * Get id

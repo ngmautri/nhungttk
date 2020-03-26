@@ -6,9 +6,9 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class NmtFinPostingPeriodRepository extends EntityRepository
 {
@@ -28,7 +28,7 @@ class NmtFinPostingPeriodRepository extends EntityRepository
         FROM Application\Entity\NmtFinPostingPeriod p
         WHERE p.postingFromDate <= :date AND p.postingToDate >= :date')->setParameter('date', $date);
         $result = $query->getResult();
-        
+
         if (count($result) == 1) {
             return $result[0];
         }
@@ -46,19 +46,19 @@ class NmtFinPostingPeriodRepository extends EntityRepository
         FROM Application\Entity\NmtFinPostingPeriod p
         WHERE p.postingFromDate <= :date AND p.postingToDate >= :date')->setParameter('date', $date);
         $result = $query->getResult();
-        
+
         if (count($result) == 1) {
             return $result[0]->getPeriodStatus();
         }
         return "Period not found";
     }
 
-     /**
-      * 
-      *  @param int $source_id
-      *  @param int $target_id
-      *  @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
-      */
+    /**
+     *
+     * @param int $source_id
+     * @param int $target_id
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     */
     public function getLatestFX($source_id, $target_id)
     {
         $sql = "
@@ -78,9 +78,9 @@ AS  fin_fx1
 ON fin_fx1.fx_date = fin_fx.fx_date AND fin_fx.source_currency = fin_fx1.source_currency
 WHERE 1
 ";
-        
+
         $sql = $sql . sprintf(" AND fin_fx.source_currency=%s and fin_fx.target_currency=%s", $source_id, $target_id);
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinFx', 'fix_fx');
@@ -89,7 +89,7 @@ WHERE 1
             return $result;
         } catch (NoResultException $e) {
             var_dump($e->getMessage());
-            
+
             return null;
         }
     }

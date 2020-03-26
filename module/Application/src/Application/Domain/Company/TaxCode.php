@@ -15,14 +15,12 @@ class TaxCode
      */
     private $code;
 
-   /**
-    * 
-    * @param string $id
-    */
+    /**
+     *
+     * @param string $id
+     */
     public function __construct($code)
     {
         $this->code = $code;
     }
-
-  
 }

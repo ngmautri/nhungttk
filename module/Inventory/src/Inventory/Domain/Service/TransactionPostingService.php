@@ -65,14 +65,11 @@ class TransactionPostingService
     }
 
     /**
-     * 
+     *
      * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
      */
     public function getWhQueryRepository()
     {
         return $this->whQueryRepository;
     }
-
-
-    
 }

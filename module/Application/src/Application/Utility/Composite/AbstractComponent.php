@@ -14,14 +14,17 @@ abstract class AbstractComponent
      * @var AbstractComponent;
      */
     protected $parent;
+
     protected $componentName;
+
     protected $components;
-    
 
     abstract public function operation();
+
     abstract public function generateJsTree();
+
     abstract public function getNumberOfChildren();
-    
+
     /**
      *
      * @param AbstractComponent $parent

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaSparepartCatsMembers
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaSparepartCatsMembers
     private $id;
 
     /**
+     *
      * @var \Application\Entity\MlaSpareparts
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
@@ -32,6 +34,7 @@ class MlaSparepartCatsMembers
     private $sparepart;
 
     /**
+     *
      * @var \Application\Entity\MlaSparepartCats
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSparepartCats")
@@ -40,8 +43,6 @@ class MlaSparepartCatsMembers
      * })
      */
     private $sparepartCat;
-
-
 
     /**
      * Get id

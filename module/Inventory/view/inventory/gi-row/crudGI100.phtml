@@ -176,10 +176,12 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
 								<label class="control-label col-sm-2">Issue For: </label>
 								<div class="col-sm-3">
 									<input tabindex="2" class="form-control" type="text"
-										id="issueFor_name" placeholder="Enter keyword to search item..."
+										id="issueFor_name"
+										placeholder="Enter keyword to search item..."
 										name="issueFor_name"
 										value="<?php if (!$rowDTO== null): echo $rowDTO->issueFor;endif;?>">
-									<input type="hidden" id="issueFor" placeholder="" name="issueFor"
+									<input type="hidden" id="issueFor" placeholder=""
+										name="issueFor"
 										value="<?php if (!$rowDTO== null): echo $rowDTO->issueFor;endif;?>">
 
 									<div id="issueFor_url" style="display: none;"></div>

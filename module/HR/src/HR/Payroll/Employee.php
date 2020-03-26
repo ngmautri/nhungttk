@@ -6,43 +6,47 @@ use HR\Payroll\Exception\InvalidArgumentException;
 
 /**
  * Employee
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class Employee
+class Employee
 {
+
     private $employeeCode;
+
     private $employeeName;
+
     private $basicSalary;
+
     private $email;
+
     private $status;
+
     private $startWorkingDate;
-    
-    
+
     /**
-     * 
-     *  @param string $employeeCode
-     *  @param string $employeeName
-     *  @throws InvalidArgumentException
+     *
+     * @param string $employeeCode
+     * @param string $employeeName
+     * @throws InvalidArgumentException
      */
-    public function __construct($employeeCode, $employeeName){
-        
+    public function __construct($employeeCode, $employeeName)
+    {
         if ($employeeCode == null) {
             throw new InvalidArgumentException(sprintf('Invalid Argurment. "%s" is expected!', 'Employee Code'));
         }
-        
+
         if ($employeeName == null) {
             throw new InvalidArgumentException(sprintf('Invalid Argurment. "%s" is expected!', 'Employee Name'));
         }
-        
+
         $this->employeeCode = $employeeCode;
         $this->employeeName = $employeeName;
     }
-    
-    
-    
+
     /**
+     *
      * @return mixed
      */
     public function getEmployeeCode()
@@ -50,9 +54,8 @@ Class Employee
         return $this->employeeCode;
     }
 
-    
-
     /**
+     *
      * @return mixed
      */
     public function getStatus()
@@ -60,9 +63,8 @@ Class Employee
         return $this->status;
     }
 
-   
-
     /**
+     *
      * @param mixed $employeeCode
      */
     public function setEmployeeCode($employeeCode)
@@ -71,6 +73,7 @@ Class Employee
     }
 
     /**
+     *
      * @param mixed $name
      */
     public function setName($name)
@@ -79,13 +82,16 @@ Class Employee
     }
 
     /**
+     *
      * @param mixed $status
      */
     public function setStatus($status)
     {
         $this->status = $status;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getEmployeeName()
@@ -94,6 +100,7 @@ Class Employee
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStartWorkingDate()
@@ -102,6 +109,7 @@ Class Employee
     }
 
     /**
+     *
      * @param mixed $employeeName
      */
     public function setEmployeeName($employeeName)
@@ -110,13 +118,16 @@ Class Employee
     }
 
     /**
+     *
      * @param mixed $startWorkingDate
      */
     public function setStartWorkingDate($startWorkingDate)
     {
         $this->startWorkingDate = $startWorkingDate;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getBasicSalary()
@@ -125,15 +136,11 @@ Class Employee
     }
 
     /**
-     * 
+     *
      * @param IncomeInterface $basicSalary
      */
     public function setBasicSalary(IncomeInterface $basicSalary)
     {
         $this->basicSalary = $basicSalary;
     }
-
-
-
-   
 }

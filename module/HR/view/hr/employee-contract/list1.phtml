@@ -1,21 +1,23 @@
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/add?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>">
-<i class="fa fa-plus" aria-hidden="true"></i> &nbsp;Add new contract</a>
+<a class="btn btn-default btn-sm"
+	href="<?php echo $this->baseUrl ?>/hr/employee-contract/add?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>">
+	<i class="fa fa-plus" aria-hidden="true"></i> &nbsp;Add new contract
+</a>
 <hr>
 
 <?php
 
 if ($total_records <= 0) {
-	
-	echo 'No record found!';
+
+    echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
 
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
@@ -24,42 +26,46 @@ if ($total_records <= 0) {
 			<td><b><?php echo $this->translate("Contract Number")?></b></td>
 			<td><b><?php echo $this->translate("Contract Date")?></b></td>
 			<td><b><?php echo $this->translate("Contract Status")?></b></td>
-		
+
 			<td><b><?php echo $this->translate("Valid From")?></b></td>
 			<td><b><?php echo $this->translate("Valid To")?></b></td>
 			<td><b><?php echo $this->translate("Basic Salary")?></b></td>
 			<td><b><?php echo $this->translate("Currency")?></b></td>
 			<td><b><?php echo $this->translate("Action")?></b></td>
-	
-			</tr>
+
+		</tr>
 	</thead>
 
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-	   /**@var \Application\Entity\NmtHrContract $a ; */
-	
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+        /**@var \Application\Entity\NmtHrContract $a ; */
+
+        $count ++;
+        ?>
 	 <tr>
-  		    <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 		<td><?php echo $this->escapeHtml($a->getContractNumber());?></td>
-	        <td><?php if( $a->getContractDate()!==null): echo date_format ( $a->getContractDate(), "d/m/y"); endif;?> </td>
-	        <td><?php if( $a->getContractStatus()!==null): echo $a->getContractStatus(); endif;?> </td>
-	        <td><?php if( $a->getEffectiveFrom()!==null): echo date_format ( $a->getEffectiveFrom(), "d/m/y"); endif;?> </td>
-	        <td><?php if( $a->getEffectiveTo()!==null): echo date_format ( $a->getEffectiveTo(), "d/m/y"); endif;?> </td>
-        	<td><?php if( $a->getBasicSalary()!==null): echo number_format($a->getBasicSalary(),2); endif;?> </td>
-	        <td><?php if( $a->getCurrency()!==null): echo $a->getCurrency()->getCurrency(); endif;?> </td>
-        	 <td>
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Show")?></a>
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Edit")?></a>
-<a style="color:red;" class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/terminate?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Terminate")?></a>
-      
-</td>
- 
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo $this->escapeHtml($a->getContractNumber());?></td>
+			<td><?php if( $a->getContractDate()!==null): echo date_format ( $a->getContractDate(), "d/m/y"); endif;?> </td>
+			<td><?php if( $a->getContractStatus()!==null): echo $a->getContractStatus(); endif;?> </td>
+			<td><?php if( $a->getEffectiveFrom()!==null): echo date_format ( $a->getEffectiveFrom(), "d/m/y"); endif;?> </td>
+			<td><?php if( $a->getEffectiveTo()!==null): echo date_format ( $a->getEffectiveTo(), "d/m/y"); endif;?> </td>
+			<td><?php if( $a->getBasicSalary()!==null): echo number_format($a->getBasicSalary(),2); endif;?> </td>
+			<td><?php if( $a->getCurrency()!==null): echo $a->getCurrency()->getCurrency(); endif;?> </td>
+			<td><a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/hr/employee-contract/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Show")?></a>
+				<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i
+					class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Edit")?></a>
+				<a style="color: red;" class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/hr/employee-contract/terminate?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i
+					class="fa fa-times" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Terminate")?></a>
+
+			</td>
+
 		</tr>
 <?php endforeach; ?>
 &nbsp;
@@ -67,9 +73,6 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
-	
-	
 }
 // ===============================
 ?>

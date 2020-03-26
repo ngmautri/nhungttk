@@ -33,8 +33,8 @@ class ItemSearchServiceFactory implements FactoryInterface
         $eventManager = $container->get('EventManager');
 
         $eventManager->attachAggregate($grListener);
-        $service->setEventManager($eventManager);		
-		
-		return $service;
-	}
+        $service->setEventManager($eventManager);
+
+        return $service;
+    }
 }

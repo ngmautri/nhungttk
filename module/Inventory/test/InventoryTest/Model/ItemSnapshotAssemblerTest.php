@@ -27,14 +27,11 @@ class ItemSnapshotTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         $data = array();
-        
-        $data["company"]=1;
-        $data["createdBy"]=39;
-        $data["itemName"]="Special Item";
-        
-        
-       var_dump(ItemSnapshotAssembler::createSnapshotFromArray($data));
-        
-       
+
+        $data["company"] = 1;
+        $data["createdBy"] = 39;
+        $data["itemName"] = "Special Item";
+
+        var_dump(ItemSnapshotAssembler::createSnapshotFromArray($data));
     }
 }

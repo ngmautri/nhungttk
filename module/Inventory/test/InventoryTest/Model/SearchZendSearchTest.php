@@ -34,8 +34,8 @@ class SearchZendSearchTest extends PHPUnit_Framework_TestCase
         try {
 
             $searcher = new \Inventory\Application\Service\Search\ZendSearch\ItemSearchService();
-            
-            //var_dump($searcher->optimizeIndex());
+
+            // var_dump($searcher->optimizeIndex());
             $result = $searcher->search("juki foot*");
             var_dump($result->getMessage());
         } catch (InvalidArgumentException $e) {

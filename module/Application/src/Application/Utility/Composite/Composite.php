@@ -65,43 +65,41 @@ class Composite extends AbstractComponent
         }
         return "Branch(" . implode("+", $results) . ")";
     }
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Utility\Composite\AbstractComponent::generateJsTree()
      */
     public function generateJsTree()
     {
-        
-        $results= '';
-        
-        $results =  $results . sprintf("<li data-jstree='{ \"opened\" : true}'>%s\n", "branch-" .  $this->getNumberOfChildren());
-        $results =  $results . sprintf("<ul>\n");
-        
+        $results = '';
+
+        $results = $results . sprintf("<li data-jstree='{ \"opened\" : true}'>%s\n", "branch-" . $this->getNumberOfChildren());
+        $results = $results . sprintf("<ul>\n");
+
         foreach ($this->children as $child) {
-            $results = $results.  $child->generateJsTree();
+            $results = $results . $child->generateJsTree();
         }
-        
-        $results =  $results . sprintf("</ul>\n");
-        $results =  $results . sprintf("</li>\n");
-        
+
+        $results = $results . sprintf("</ul>\n");
+        $results = $results . sprintf("</li>\n");
+
         return $results;
-        
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Utility\Composite\AbstractComponent::getNumberOfChildren()
      */
     public function getNumberOfChildren()
     {
-        $total = 01; 
+        $total = 01;
         foreach ($this->children as $child) {
             $total = $total + $child->getNumberOfChildren();
         }
-        
+
         return $total;
     }
-
 }

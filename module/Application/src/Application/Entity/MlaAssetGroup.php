@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAssetGroup
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAssetGroup
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaAssetGroup
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class MlaAssetGroup
     private $description;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class MlaAssetGroup
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaAssetCategories
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAssetCategories")
@@ -51,8 +56,6 @@ class MlaAssetGroup
      * })
      */
     private $category;
-
-
 
     /**
      * Get id

@@ -126,5 +126,4 @@ abstract class AbstractService implements EventManagerAwareInterface
     {
         $this->controllerPlugin = $controllerPlugin;
     }
-
 }

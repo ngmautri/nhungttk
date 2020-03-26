@@ -4,7 +4,6 @@ namespace Application\Application\Specification\Zend;
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Zend\Validator\Date;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com

@@ -39,7 +39,7 @@ class WarehouseSnapshotAssembler
         if ($data == null)
             return null;
 
-            $snapShot = new WarehouseSnapshot();
+        $snapShot = new WarehouseSnapshot();
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
@@ -88,7 +88,7 @@ class WarehouseSnapshotAssembler
         if (! $dto instanceof WarehouseDTO)
             return null;
 
-            $snapShot = new WarehouseSnapshot();
+        $snapShot = new WarehouseSnapshot();
 
         $reflectionClass = new \ReflectionClass(get_class($dto));
         $itemProperites = $reflectionClass->getProperties();
@@ -129,9 +129,9 @@ class WarehouseSnapshotAssembler
             "sysNumber",
             "company",
             "location",
-            "revisionNo",
+            "revisionNo"
         );
-        
+
         $changeableProperties = array(
             "movementType",
             "movementDate",
@@ -139,8 +139,8 @@ class WarehouseSnapshotAssembler
             "remarks"
         );
 
-        //$dto->isSparepart;
-        
+        // $dto->isSparepart;
+
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
@@ -152,17 +152,17 @@ class WarehouseSnapshotAssembler
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
             }
-            
-            
-           /*  if (property_exists($snapShot, $propertyName) && in_array($propertyName, $changeableProperties)) {
-                
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
-            } */
-            
+
+            /*
+             * if (property_exists($snapShot, $propertyName) && in_array($propertyName, $changeableProperties)) {
+             *
+             * if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+             * $snapShot->$propertyName = null;
+             * } else {
+             * $snapShot->$propertyName = $property->getValue($dto);
+             * }
+             * }
+             */
         }
         return $snapShot;
     }
@@ -195,10 +195,9 @@ class WarehouseSnapshotAssembler
                 } else {
                     $snapShot->$propertyName = $property->getValue($obj);
                 }
-                
             }
         }
-          
+
         return $snapShot;
     }
 }

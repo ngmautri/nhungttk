@@ -8,8 +8,8 @@ namespace Application\Domain\Attachment;
  */
 Interface AttachmentQueryRepInterface
 {
+
     public function findAll();
-    
+
     public function getById($id);
-    
 }

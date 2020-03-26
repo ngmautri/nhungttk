@@ -1,13 +1,18 @@
 <h1>asset/category/delete</h1>
 
-<form action="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory" method="post">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<form
+	action="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory"
+	method="post">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
 
 	<p>
 		Are you sure that you want to delete asset category <strong>'<?php echo $this->escapeHtml($category->category); ?>'</strong>
 	</p>
 	<div>
-		<input type="hidden" name="id" value="<?php echo (int) $category->id; ?>" /> 
-		<input type="submit" name="delete_confirmation" value="YES" /> <input type="submit" name="delete_confirmation" value="NO" />
+		<input type="hidden" name="id"
+			value="<?php echo (int) $category->id; ?>" /> <input type="submit"
+			name="delete_confirmation" value="YES" /> <input type="submit"
+			name="delete_confirmation" value="NO" />
 	</div>
 </form>

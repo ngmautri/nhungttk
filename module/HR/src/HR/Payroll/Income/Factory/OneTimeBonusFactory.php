@@ -10,26 +10,25 @@ use HR\Payroll\Income\Decorator\Factory\TransportationAllowanceDecoratorFactory;
 use HR\Payroll\Income\Decorator\Factory\FullPaymentDecoratorFactory;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class OneTimeBonusFactory extends AbstractIncomeFactory
+class OneTimeBonusFactory extends AbstractIncomeFactory
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
-    protected function createIncome($amount=0, $currency=null)
-    {        
-        $incomeComponent = new GenericIncomeComponent("One-time Bonus", $amount, 0, $currency,FALSE, TRUE, False, TRUE);
+    protected function createIncome($amount = 0, $currency = null)
+    {
+        $incomeComponent = new GenericIncomeComponent("One-time Bonus", $amount, 0, $currency, FALSE, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::ONE_TIME);
         $f = FullPaymentDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
-        $incomeComponent->setDescription("One Time bonus");        
+        $incomeComponent->setDescription("One Time bonus");
         return $incomeComponent;
     }
-
 }

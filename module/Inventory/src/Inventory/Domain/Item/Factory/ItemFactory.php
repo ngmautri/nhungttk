@@ -22,8 +22,7 @@ class ItemFactory
             case ItemType::INVENTORY_ITEM_TYPE:
                 $item = new InventoryItem();
                 break;
-                
-                
+
             case ItemType::NONE_INVENTORY_ITEM_TYPE:
                 $item = new NoneInventoryItem();
                 break;
@@ -31,7 +30,6 @@ class ItemFactory
             case ItemType::SERVICE_ITEM_TYPE:
                 $item = new ServiceItem();
                 break;
-
 
             case ItemType::FIXED_ASSET_ITEM_TYPE:
                 $item = new FixedAssetItem();

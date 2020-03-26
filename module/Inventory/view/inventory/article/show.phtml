@@ -1,73 +1,90 @@
- <form class="form-search" action="<?php echo $back ?>"	method="get" enctype="multipart/form-data">
-      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
+
+<form class="form-search" action="<?php echo $back ?>" method="get"
+	enctype="multipart/form-data">
+	<button type="submit" class="btn">
+		<i class="icon-arrow-left"> </i> Back
+	</button>
 </form>
 <hr>
 <h4> <?php echo $this->escapeHtml($article->name);?></h4>
 
 <div id="tabs">
-  <ul>
-  <li ><a href="#general">General</a></li>
-  <li><a href="/inventory/purchasing/list?id=<?php echo $this->escapeHtml($article->id);?>&type=article&layout=ajax">Purchasing Data</a></li>
-  <li><a href="/inventory/transaction/balance?article_id=<?php echo $this->escapeHtml($article->id);?>">Inventory</a></li>
-  
-  <li><a href="/inventory/article/movements?article_id=<?php echo $this->escapeHtml($article->id);?>">Stock Movemements</a></li>
- <li><a href="/procurement/pr/history?article_id=<?php echo $this->escapeHtml($article->id);?>&layout=ajax">Orders History</a></li>
- 
- <li><a href="#attachments">Attachments</a></li>
+	<ul>
+		<li><a href="#general">General</a></li>
+		<li><a
+			href="/inventory/purchasing/list?id=<?php echo $this->escapeHtml($article->id);?>&type=article&layout=ajax">Purchasing
+				Data</a></li>
+		<li><a
+			href="/inventory/transaction/balance?article_id=<?php echo $this->escapeHtml($article->id);?>">Inventory</a></li>
 
- 
-  </ul>
- <div id="attachments">No data found!</div>
-<div id="general">
-<table>
+		<li><a
+			href="/inventory/article/movements?article_id=<?php echo $this->escapeHtml($article->id);?>">Stock
+				Movemements</a></li>
+		<li><a
+			href="/procurement/pr/history?article_id=<?php echo $this->escapeHtml($article->id);?>&layout=ajax">Orders
+				History</a></li>
 
-	<tr>
-		<td><label for="tag">Tag:</label></td>
-		<td><?php echo $this->escapeHtml($article->article_tag);?></td>
-	</tr>
-
-	<tr>
-		<td><label for="name_local">Description:</label>
-		
-		<td><?php echo $article->description;?></td>
-	</tr>
-	<tr>
-		<td><label for="description">Type: </label></td>
-		<td><?php echo $article->type;?></td>
-	</tr>
-
-	<tr>
-		<td><label for="code">Supplier Code /Serial:</label></td>
-		<td><?php echo $this->escapeHtml($article->code);?></td>
-	</tr>
+		<li><a href="#attachments">Attachments</a></li>
 
 
-	<tr>
-		<td><label for="location">Location:</label></td>
-		<td><?php echo $this->escapeHtml($article->visibility);?></td>
-	</tr>
-	<tr>
-		<td><label for="comment">Comment:</label></td>
-		<td><?php echo $this->escapeHtml($article->remarks);?></td>
-	</tr>
+	</ul>
+	<div id="attachments">No data found!</div>
+	<div id="general">
+		<table>
 
-</table>
+			<tr>
+				<td><label for="tag">Tag:</label></td>
+				<td><?php echo $this->escapeHtml($article->article_tag);?></td>
+			</tr>
 
-<div id="pictures">
- <h5>    <a href="/inventory/article/pictures?article_id=<?php echo $this->escapeHtml($article->id);?>">Item pictures:</a></h5>
+			<tr>
+				<td><label for="name_local">Description:</label>
+				
+				<td><?php echo $article->description;?></td>
+			</tr>
+			<tr>
+				<td><label for="description">Type: </label></td>
+				<td><?php echo $article->type;?></td>
+			</tr>
 
-<div id="lightgallery">
+			<tr>
+				<td><label for="code">Supplier Code /Serial:</label></td>
+				<td><?php echo $this->escapeHtml($article->code);?></td>
+			</tr>
+
+
+			<tr>
+				<td><label for="location">Location:</label></td>
+				<td><?php echo $this->escapeHtml($article->visibility);?></td>
+			</tr>
+			<tr>
+				<td><label for="comment">Comment:</label></td>
+				<td><?php echo $this->escapeHtml($article->remarks);?></td>
+			</tr>
+
+		</table>
+
+		<div id="pictures">
+			<h5>
+				<a
+					href="/inventory/article/pictures?article_id=<?php echo $this->escapeHtml($article->id);?>">Item
+					pictures:</a>
+			</h5>
+
+			<div id="lightgallery">
  
  <?php foreach ($pictures as $pic) : ?>
   	
-    <a href="/inventory/image/article?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img class= "img-rounded" width="150" height="150" src="/inventory/image/articlethumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
-    </a>
+    <a
+					href="/inventory/image/article?id=<?php  echo $this->escapeHtml($pic->id);?>">
+					<img class="img-rounded" width="150" height="150"
+					src="/inventory/image/articlethumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>" />
+				</a>
 	
 <?php endforeach; ?>
- </div>	
-</div>
-</div>
+ </div>
+		</div>
+	</div>
 
 
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationDocNumber
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationDocNumber
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="company_id", type="integer", nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationDocNumber
     private $companyId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="range_no", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationDocNumber
     private $rangeNo;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="year", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationDocNumber
     private $year;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="from_number", type="integer", nullable=false)
@@ -50,6 +55,7 @@ class NmtApplicationDocNumber
     private $fromNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="to_number", type="integer", nullable=false)
@@ -57,6 +63,7 @@ class NmtApplicationDocNumber
     private $toNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="current_number", type="integer", nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationDocNumber
     private $currentNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="numeric_size", type="integer", nullable=true)
@@ -71,6 +79,7 @@ class NmtApplicationDocNumber
     private $numericSize;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="prefix", type="string", length=10, nullable=true)
@@ -78,6 +87,7 @@ class NmtApplicationDocNumber
     private $prefix;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="suffix", type="string", length=10, nullable=true)
@@ -85,6 +95,7 @@ class NmtApplicationDocNumber
     private $suffix;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class NmtApplicationDocNumber
     private $status;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -99,6 +111,7 @@ class NmtApplicationDocNumber
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtApplicationDocNumber
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_number_name", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtApplicationDocNumber
     private $docNumberName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_number_name1", type="string", length=45, nullable=true)
@@ -120,6 +135,7 @@ class NmtApplicationDocNumber
     private $docNumberName1;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_number_code", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtApplicationDocNumber
     private $docNumberCode;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -134,6 +151,7 @@ class NmtApplicationDocNumber
     private $validFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -141,6 +159,7 @@ class NmtApplicationDocNumber
     private $validTo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="issuing_date", type="datetime", nullable=true)
@@ -148,6 +167,7 @@ class NmtApplicationDocNumber
     private $issuingDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class NmtApplicationDocNumber
     private $currentState;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="subject_class", type="string", length=200, nullable=true)
@@ -162,6 +183,7 @@ class NmtApplicationDocNumber
     private $subjectClass;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -169,6 +191,7 @@ class NmtApplicationDocNumber
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -176,6 +199,7 @@ class NmtApplicationDocNumber
     private $token;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -183,6 +207,7 @@ class NmtApplicationDocNumber
     private $lastchangeOn;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -193,6 +218,7 @@ class NmtApplicationDocNumber
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -201,8 +227,6 @@ class NmtApplicationDocNumber
      * })
      */
     private $lastchangeBy;
-
-
 
     /**
      * Get id

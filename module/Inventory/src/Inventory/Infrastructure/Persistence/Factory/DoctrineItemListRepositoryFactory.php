@@ -23,10 +23,9 @@ class DoctrineItemListRepositoryFactory implements FactoryInterface
     {
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        
+
         $service = new DoctrineItemListRepository($sv);
 
-   	return $service;
-	}	
-	
+        return $service;
+    }
 }

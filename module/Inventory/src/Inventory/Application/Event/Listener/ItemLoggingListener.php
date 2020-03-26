@@ -21,9 +21,11 @@ use Application\Entity\NmtInventoryLog;
  */
 class ItemLoggingListener implements ListenerAggregateInterface
 {
+
     const ITEM_CREATED_LOG = "inventory.item.created.log";
+
     const ITEM_UPDATED_LOG = "inventory.item.updated.log";
-    
+
     protected $listeners = array();
 
     protected $events;
@@ -101,8 +103,7 @@ class ItemLoggingListener implements ListenerAggregateInterface
      */
     public function onItemUpdatedLog(EventInterface $e)
     {
-        //var_dump($e->getParams());
-        
+        // var_dump($e->getParams());
         $log_priority = 6;
         $log_message = $e->getParam('message');
         $objectId = $e->getParam('objectId');

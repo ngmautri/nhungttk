@@ -23,13 +23,17 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
         if (isset($data['target_wh_id'])) {
             $target_wh_id = $data['target_wh_id'];
         } else {
-            $errors[] = $this->getContextService()->getControllerPlugin()->translate('No input given "target_warehouse_id"');
+            $errors[] = $this->getContextService()
+                ->getControllerPlugin()
+                ->translate('No input given "target_warehouse_id"');
         }
 
         if (isset($data['source_wh_id'])) {
             $source_wh_id = $data['source_wh_id'];
         } else {
-            $errors[] = $this->getContextService()->getControllerPlugin()->translate('No input given "source_wh_id"');
+            $errors[] = $this->getContextService()
+                ->getControllerPlugin()
+                ->translate('No input given "source_wh_id"');
         }
 
         if (count($errors) > 0) {

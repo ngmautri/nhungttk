@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryGi
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryGi
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryGi
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryGi
     private $vendorName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryGi
     private $invoiceNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryGi
     private $invoiceDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryGi
     private $currencyIso3;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryGi
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryGi
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryGi
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryGi
     private $currentState;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryGi
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryGi
     private $trxType;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryGi
     private $lastchangeOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryGi
     private $postingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryGi
     private $grDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryGi
     private $sapDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryGi
     private $contractNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryGi
     private $contractDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryGi
     private $quotationNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryGi
     private $quotationDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryGi
     private $sysNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryGi
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="delivery_mode", type="string", length=45, nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryGi
     private $deliveryMode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryGi
     private $incoterm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryGi
     private $incotermPlace;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
@@ -197,6 +223,7 @@ class NmtInventoryGi
     private $paymentTerm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", length=45, nullable=true)
@@ -204,6 +231,7 @@ class NmtInventoryGi
     private $paymentMethod;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -211,6 +239,7 @@ class NmtInventoryGi
     private $docStatus;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -218,6 +247,7 @@ class NmtInventoryGi
     private $isDraft;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -225,6 +255,7 @@ class NmtInventoryGi
     private $workflowStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -232,6 +263,7 @@ class NmtInventoryGi
     private $transactionStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="movement_type", type="string", length=10, nullable=true)
@@ -239,6 +271,7 @@ class NmtInventoryGi
     private $movementType;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -246,6 +279,7 @@ class NmtInventoryGi
     private $isReversed;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -253,6 +287,7 @@ class NmtInventoryGi
     private $reversalDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -260,6 +295,7 @@ class NmtInventoryGi
     private $reversalReason;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -267,6 +303,7 @@ class NmtInventoryGi
     private $reversalDoc;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -277,6 +314,7 @@ class NmtInventoryGi
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -287,6 +325,7 @@ class NmtInventoryGi
     private $warehouse;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -297,6 +336,7 @@ class NmtInventoryGi
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -307,6 +347,7 @@ class NmtInventoryGi
     private $lastchangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -315,8 +356,6 @@ class NmtInventoryGi
      * })
      */
     private $currency;
-
-
 
     /**
      * Get id

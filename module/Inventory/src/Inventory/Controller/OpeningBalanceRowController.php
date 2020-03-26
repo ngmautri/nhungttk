@@ -268,9 +268,9 @@ class OpeningBalanceRowController extends AbstractActionController
             $entity->setDocStatus($target->getDocStatus());
             $entity->setCreatedBy($u);
             $entity->setCreatedOn(new \DateTime());
-            
+
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            
+
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
 
@@ -375,7 +375,7 @@ class OpeningBalanceRowController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-   
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -412,23 +412,23 @@ class OpeningBalanceRowController extends AbstractActionController
             }
 
             $oldEntity = clone ($entity);
-          
+
             $item_id = (int) $request->getPost('item_id');
             $isActive = (int) $request->getPost('isActive');
             $quantity = $request->getPost('quantity');
             $unitPrice = $request->getPost('unitPrice');
-            
+
             $remarks = $request->getPost('remarks');
-            
+
             if ($isActive != 1) {
                 $isActive = 0;
             }
-            
+
             $entity->setIsActive($isActive);
-            
+
             /**@var \Application\Entity\NmtInventoryItem $item ;*/
             $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-            
+
             if ($item == null) {
                 $errors[] = $nmtPlugin->translate('No Item is selected');
             } else {
@@ -438,12 +438,12 @@ class OpeningBalanceRowController extends AbstractActionController
                     $entity->setItem($item);
                 }
             }
-            
+
             $n_validated = 0;
             if ($quantity == null) {
                 $errors[] = 'Please  enter quantity!';
             } else {
-                
+
                 if (! is_numeric($quantity)) {
                     $errors[] = $nmtPlugin->translate('Quantity must be a number!');
                 } else {
@@ -455,11 +455,11 @@ class OpeningBalanceRowController extends AbstractActionController
                     }
                 }
             }
-            
+
             if ($unitPrice == null) {
                 $errors[] = 'Please  enter unit!';
             } else {
-                
+
                 if (! is_numeric($unitPrice)) {
                     $errors[] = $nmtPlugin->translate('Unit Price must be a number!');
                 } else {
@@ -471,14 +471,13 @@ class OpeningBalanceRowController extends AbstractActionController
                     }
                 }
             }
-            
+
             if ($n_validated == 2) {
                 $entity->setNetAmount($entity->getQuantity() * $entity->getUnitPrice());
             }
-            
+
             $entity->setRemarks($remarks);
-            
-            
+
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
             if (count($changeArray) == 0) {
@@ -510,8 +509,8 @@ class OpeningBalanceRowController extends AbstractActionController
 
             $changeOn = new \DateTime();
 
-            //$entity->setLastchangeBy($u);
-            //$entity->setLastchangeOn($changeOn);
+            // $entity->setLastchangeBy($u);
+            // $entity->setLastchangeOn($changeOn);
 
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
@@ -732,22 +731,22 @@ class OpeningBalanceRowController extends AbstractActionController
         $this->itemSearchService = $itemSearchService;
         return $this;
     }
-   
+
     /**
-    * 
-    *  @return \Inventory\Service\OpeningBalanceService
-    */
+     *
+     * @return \Inventory\Service\OpeningBalanceService
+     */
     public function getObService()
     {
         return $this->obService;
     }
 
     /**
+     *
      * @param mixed $obService
      */
     public function setObService(\Inventory\Service\OpeningBalanceService $obService)
     {
         $this->obService = $obService;
     }
-
 }

@@ -1,52 +1,53 @@
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#picture_manager">Picture Management</a></li>
-  
-  </ul>
- 
- 
- <div id="picture_manager">
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#picture_manager">Picture Management</a></li>
+
+	</ul>
+
+
+	<div id="picture_manager">
 
 
 <?php if( count($brokenFile)>0): ?>
 
 
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Item</b></td>
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Item</b></td>
+					<td><b>Action</b></td>
+				</tr>
+			</thead>
 
-	<tbody>
+			<tbody>
 		
 
 
-	<?php 
-	$n=1;
-	foreach ($brokenFile as $pic) : ?>
+	<?php
+    $n = 1;
+    foreach ($brokenFile as $pic) :
+        ?>
 	
 	<?php /** @var Application\Entity\NmtInventoryItemPicture $pic ;*/?>
 	
 	<tr>
-	<td><?php echo $n++;?> </td>
-	<td><?php echo $pic->getItem()->getItemName(); ?></td>
-	
-	<td>
-<a target="_blank"  href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($pic->getItem()->getToken());?>&entity_id=<?php echo $this->escapeHtml($pic->getItem()->getId());?>&checksum=<?php echo $this->escapeHtml($pic->getItem()->getId());?>">Show</a>
-	</td>
-	</tr>
+					<td><?php echo $n++;?> </td>
+					<td><?php echo $pic->getItem()->getItemName(); ?></td>
+
+					<td><a target="_blank"
+						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($pic->getItem()->getToken());?>&entity_id=<?php echo $this->escapeHtml($pic->getItem()->getId());?>&checksum=<?php echo $this->escapeHtml($pic->getItem()->getId());?>">Show</a>
+					</td>
+				</tr>
 	<?php endforeach; ?>
 
 	
 
 	</tbody>
-	
-</table>
+
+		</table>
+	</div>
 </div>
- </div> 
 <?php else:?>
 No record found!
 <?php endif; ?>

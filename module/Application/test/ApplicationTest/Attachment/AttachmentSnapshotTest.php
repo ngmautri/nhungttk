@@ -29,6 +29,6 @@ class AttachmentSnapshotTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-          AttachmentSnapshotAssembler::createProperities();
+        AttachmentSnapshotAssembler::createProperities();
     }
 }

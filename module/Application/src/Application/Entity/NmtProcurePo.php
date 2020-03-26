@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtProcurePo
 {
-    
+
     /**
      *
      * @var integer
@@ -22,7 +22,7 @@ class NmtProcurePo
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      *
      * @var string
@@ -30,7 +30,7 @@ class NmtProcurePo
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-    
+
     /**
      *
      * @var string
@@ -38,7 +38,7 @@ class NmtProcurePo
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
      */
     private $vendorName;
-    
+
     /**
      *
      * @var string
@@ -46,7 +46,7 @@ class NmtProcurePo
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
      */
     private $invoiceNo;
-    
+
     /**
      *
      * @var \DateTime
@@ -54,7 +54,7 @@ class NmtProcurePo
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
      */
     private $invoiceDate;
-    
+
     /**
      *
      * @var string
@@ -62,7 +62,7 @@ class NmtProcurePo
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
      */
     private $currencyIso3;
-    
+
     /**
      *
      * @var string
@@ -70,7 +70,7 @@ class NmtProcurePo
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
      */
     private $exchangeRate;
-    
+
     /**
      *
      * @var string
@@ -78,7 +78,7 @@ class NmtProcurePo
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
      */
     private $remarks;
-    
+
     /**
      *
      * @var \DateTime
@@ -86,7 +86,7 @@ class NmtProcurePo
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-    
+
     /**
      *
      * @var string
@@ -94,7 +94,7 @@ class NmtProcurePo
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-    
+
     /**
      *
      * @var boolean
@@ -102,7 +102,7 @@ class NmtProcurePo
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-    
+
     /**
      *
      * @var string
@@ -110,7 +110,7 @@ class NmtProcurePo
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
      */
     private $trxType;
-    
+
     /**
      *
      * @var \DateTime
@@ -118,7 +118,7 @@ class NmtProcurePo
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
      */
     private $lastchangeOn;
-    
+
     /**
      *
      * @var \DateTime
@@ -126,7 +126,7 @@ class NmtProcurePo
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
      */
     private $postingDate;
-    
+
     /**
      *
      * @var \DateTime
@@ -134,7 +134,7 @@ class NmtProcurePo
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
      */
     private $grDate;
-    
+
     /**
      *
      * @var string
@@ -142,7 +142,7 @@ class NmtProcurePo
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
      */
     private $sapDoc;
-    
+
     /**
      *
      * @var string
@@ -150,7 +150,7 @@ class NmtProcurePo
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
      */
     private $contractNo;
-    
+
     /**
      *
      * @var \DateTime
@@ -158,7 +158,7 @@ class NmtProcurePo
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
      */
     private $contractDate;
-    
+
     /**
      *
      * @var string
@@ -166,7 +166,7 @@ class NmtProcurePo
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
      */
     private $quotationNo;
-    
+
     /**
      *
      * @var \DateTime
@@ -174,7 +174,7 @@ class NmtProcurePo
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
      */
     private $quotationDate;
-    
+
     /**
      *
      * @var string
@@ -182,7 +182,7 @@ class NmtProcurePo
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
      */
     private $sysNumber;
-    
+
     /**
      *
      * @var integer
@@ -190,7 +190,7 @@ class NmtProcurePo
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
-    
+
     /**
      *
      * @var string
@@ -198,7 +198,7 @@ class NmtProcurePo
      * @ORM\Column(name="delivery_mode", type="string", length=45, nullable=true)
      */
     private $deliveryMode;
-    
+
     /**
      *
      * @var string
@@ -206,7 +206,7 @@ class NmtProcurePo
      * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
      */
     private $incoterm;
-    
+
     /**
      *
      * @var string
@@ -214,7 +214,7 @@ class NmtProcurePo
      * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
      */
     private $incotermPlace;
-    
+
     /**
      *
      * @var string
@@ -222,7 +222,7 @@ class NmtProcurePo
      * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
      */
     private $paymentTerm;
-    
+
     /**
      *
      * @var string
@@ -230,7 +230,7 @@ class NmtProcurePo
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
      */
     private $docStatus;
-    
+
     /**
      *
      * @var string
@@ -238,7 +238,7 @@ class NmtProcurePo
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
      */
     private $workflowStatus;
-    
+
     /**
      *
      * @var string
@@ -246,7 +246,7 @@ class NmtProcurePo
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
      */
     private $transactionStatus;
-    
+
     /**
      *
      * @var string
@@ -254,7 +254,7 @@ class NmtProcurePo
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
      */
     private $docType;
-    
+
     /**
      *
      * @var string
@@ -262,7 +262,7 @@ class NmtProcurePo
      * @ORM\Column(name="payment_status", type="string", length=10, nullable=true)
      */
     private $paymentStatus;
-    
+
     /**
      *
      * @var string
@@ -270,7 +270,7 @@ class NmtProcurePo
      * @ORM\Column(name="total_doc_value", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $totalDocValue;
-    
+
     /**
      *
      * @var string
@@ -278,7 +278,7 @@ class NmtProcurePo
      * @ORM\Column(name="total_doc_tax", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $totalDocTax;
-    
+
     /**
      *
      * @var string
@@ -286,7 +286,7 @@ class NmtProcurePo
      * @ORM\Column(name="total_doc_discount", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $totalDocDiscount;
-    
+
     /**
      *
      * @var string
@@ -294,7 +294,7 @@ class NmtProcurePo
      * @ORM\Column(name="total_local_value", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $totalLocalValue;
-    
+
     /**
      *
      * @var string
@@ -302,7 +302,7 @@ class NmtProcurePo
      * @ORM\Column(name="total_local_tax", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $totalLocalTax;
-    
+
     /**
      *
      * @var string
@@ -310,7 +310,7 @@ class NmtProcurePo
      * @ORM\Column(name="total_local_discount", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $totalLocalDiscount;
-    
+
     /**
      *
      * @var boolean
@@ -318,7 +318,7 @@ class NmtProcurePo
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
      */
     private $reversalBlocked;
-    
+
     /**
      *
      * @var string
@@ -326,7 +326,7 @@ class NmtProcurePo
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
      */
     private $uuid;
-    
+
     /**
      *
      * @var integer
@@ -334,7 +334,7 @@ class NmtProcurePo
      * @ORM\Column(name="doc_version", type="integer", nullable=true)
      */
     private $docVersion;
-    
+
     /**
      *
      * @var \Application\Entity\NmtBpVendor
@@ -345,7 +345,7 @@ class NmtProcurePo
      * })
      */
     private $vendor;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationPmtTerm
@@ -356,7 +356,7 @@ class NmtProcurePo
      * })
      */
     private $pmtTerm;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationCompany
@@ -367,7 +367,7 @@ class NmtProcurePo
      * })
      */
     private $company;
-    
+
     /**
      *
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -378,7 +378,7 @@ class NmtProcurePo
      * })
      */
     private $warehouse;
-    
+
     /**
      *
      * @var \Application\Entity\MlaUsers
@@ -389,7 +389,7 @@ class NmtProcurePo
      * })
      */
     private $createdBy;
-    
+
     /**
      *
      * @var \Application\Entity\MlaUsers
@@ -400,7 +400,7 @@ class NmtProcurePo
      * })
      */
     private $lastchangeBy;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationCurrency
@@ -411,7 +411,7 @@ class NmtProcurePo
      * })
      */
     private $currency;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationPmtMethod
@@ -422,7 +422,7 @@ class NmtProcurePo
      * })
      */
     private $paymentMethod;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationCurrency
@@ -433,7 +433,7 @@ class NmtProcurePo
      * })
      */
     private $localCurrency;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationCurrency
@@ -444,7 +444,7 @@ class NmtProcurePo
      * })
      */
     private $docCurrency;
-    
+
     /**
      *
      * @var \Application\Entity\NmtApplicationIncoterms
@@ -455,7 +455,7 @@ class NmtProcurePo
      * })
      */
     private $incoterm2;
-    
+
     /**
      * Get id
      *
@@ -465,7 +465,7 @@ class NmtProcurePo
     {
         return $this->id;
     }
-    
+
     /**
      * Set token
      *
@@ -476,10 +476,10 @@ class NmtProcurePo
     public function setToken($token)
     {
         $this->token = $token;
-        
+
         return $this;
     }
-    
+
     /**
      * Get token
      *
@@ -489,7 +489,7 @@ class NmtProcurePo
     {
         return $this->token;
     }
-    
+
     /**
      * Set vendorName
      *
@@ -500,10 +500,10 @@ class NmtProcurePo
     public function setVendorName($vendorName)
     {
         $this->vendorName = $vendorName;
-        
+
         return $this;
     }
-    
+
     /**
      * Get vendorName
      *
@@ -513,7 +513,7 @@ class NmtProcurePo
     {
         return $this->vendorName;
     }
-    
+
     /**
      * Set invoiceNo
      *
@@ -524,10 +524,10 @@ class NmtProcurePo
     public function setInvoiceNo($invoiceNo)
     {
         $this->invoiceNo = $invoiceNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get invoiceNo
      *
@@ -537,7 +537,7 @@ class NmtProcurePo
     {
         return $this->invoiceNo;
     }
-    
+
     /**
      * Set invoiceDate
      *
@@ -548,10 +548,10 @@ class NmtProcurePo
     public function setInvoiceDate($invoiceDate)
     {
         $this->invoiceDate = $invoiceDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get invoiceDate
      *
@@ -561,7 +561,7 @@ class NmtProcurePo
     {
         return $this->invoiceDate;
     }
-    
+
     /**
      * Set currencyIso3
      *
@@ -572,10 +572,10 @@ class NmtProcurePo
     public function setCurrencyIso3($currencyIso3)
     {
         $this->currencyIso3 = $currencyIso3;
-        
+
         return $this;
     }
-    
+
     /**
      * Get currencyIso3
      *
@@ -585,7 +585,7 @@ class NmtProcurePo
     {
         return $this->currencyIso3;
     }
-    
+
     /**
      * Set exchangeRate
      *
@@ -596,10 +596,10 @@ class NmtProcurePo
     public function setExchangeRate($exchangeRate)
     {
         $this->exchangeRate = $exchangeRate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get exchangeRate
      *
@@ -609,7 +609,7 @@ class NmtProcurePo
     {
         return $this->exchangeRate;
     }
-    
+
     /**
      * Set remarks
      *
@@ -620,10 +620,10 @@ class NmtProcurePo
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-        
+
         return $this;
     }
-    
+
     /**
      * Get remarks
      *
@@ -633,7 +633,7 @@ class NmtProcurePo
     {
         return $this->remarks;
     }
-    
+
     /**
      * Set createdOn
      *
@@ -644,10 +644,10 @@ class NmtProcurePo
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdOn
      *
@@ -657,7 +657,7 @@ class NmtProcurePo
     {
         return $this->createdOn;
     }
-    
+
     /**
      * Set currentState
      *
@@ -668,10 +668,10 @@ class NmtProcurePo
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-        
+
         return $this;
     }
-    
+
     /**
      * Get currentState
      *
@@ -681,7 +681,7 @@ class NmtProcurePo
     {
         return $this->currentState;
     }
-    
+
     /**
      * Set isActive
      *
@@ -692,10 +692,10 @@ class NmtProcurePo
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-        
+
         return $this;
     }
-    
+
     /**
      * Get isActive
      *
@@ -705,7 +705,7 @@ class NmtProcurePo
     {
         return $this->isActive;
     }
-    
+
     /**
      * Set trxType
      *
@@ -716,10 +716,10 @@ class NmtProcurePo
     public function setTrxType($trxType)
     {
         $this->trxType = $trxType;
-        
+
         return $this;
     }
-    
+
     /**
      * Get trxType
      *
@@ -729,7 +729,7 @@ class NmtProcurePo
     {
         return $this->trxType;
     }
-    
+
     /**
      * Set lastchangeOn
      *
@@ -740,10 +740,10 @@ class NmtProcurePo
     public function setLastchangeOn($lastchangeOn)
     {
         $this->lastchangeOn = $lastchangeOn;
-        
+
         return $this;
     }
-    
+
     /**
      * Get lastchangeOn
      *
@@ -753,7 +753,7 @@ class NmtProcurePo
     {
         return $this->lastchangeOn;
     }
-    
+
     /**
      * Set postingDate
      *
@@ -764,10 +764,10 @@ class NmtProcurePo
     public function setPostingDate($postingDate)
     {
         $this->postingDate = $postingDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get postingDate
      *
@@ -777,7 +777,7 @@ class NmtProcurePo
     {
         return $this->postingDate;
     }
-    
+
     /**
      * Set grDate
      *
@@ -788,10 +788,10 @@ class NmtProcurePo
     public function setGrDate($grDate)
     {
         $this->grDate = $grDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get grDate
      *
@@ -801,7 +801,7 @@ class NmtProcurePo
     {
         return $this->grDate;
     }
-    
+
     /**
      * Set sapDoc
      *
@@ -812,10 +812,10 @@ class NmtProcurePo
     public function setSapDoc($sapDoc)
     {
         $this->sapDoc = $sapDoc;
-        
+
         return $this;
     }
-    
+
     /**
      * Get sapDoc
      *
@@ -825,7 +825,7 @@ class NmtProcurePo
     {
         return $this->sapDoc;
     }
-    
+
     /**
      * Set contractNo
      *
@@ -836,10 +836,10 @@ class NmtProcurePo
     public function setContractNo($contractNo)
     {
         $this->contractNo = $contractNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get contractNo
      *
@@ -849,7 +849,7 @@ class NmtProcurePo
     {
         return $this->contractNo;
     }
-    
+
     /**
      * Set contractDate
      *
@@ -860,10 +860,10 @@ class NmtProcurePo
     public function setContractDate($contractDate)
     {
         $this->contractDate = $contractDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get contractDate
      *
@@ -873,7 +873,7 @@ class NmtProcurePo
     {
         return $this->contractDate;
     }
-    
+
     /**
      * Set quotationNo
      *
@@ -884,10 +884,10 @@ class NmtProcurePo
     public function setQuotationNo($quotationNo)
     {
         $this->quotationNo = $quotationNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get quotationNo
      *
@@ -897,7 +897,7 @@ class NmtProcurePo
     {
         return $this->quotationNo;
     }
-    
+
     /**
      * Set quotationDate
      *
@@ -908,10 +908,10 @@ class NmtProcurePo
     public function setQuotationDate($quotationDate)
     {
         $this->quotationDate = $quotationDate;
-        
+
         return $this;
     }
-    
+
     /**
      * Get quotationDate
      *
@@ -921,7 +921,7 @@ class NmtProcurePo
     {
         return $this->quotationDate;
     }
-    
+
     /**
      * Set sysNumber
      *
@@ -932,10 +932,10 @@ class NmtProcurePo
     public function setSysNumber($sysNumber)
     {
         $this->sysNumber = $sysNumber;
-        
+
         return $this;
     }
-    
+
     /**
      * Get sysNumber
      *
@@ -945,7 +945,7 @@ class NmtProcurePo
     {
         return $this->sysNumber;
     }
-    
+
     /**
      * Set revisionNo
      *
@@ -956,10 +956,10 @@ class NmtProcurePo
     public function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
-        
+
         return $this;
     }
-    
+
     /**
      * Get revisionNo
      *
@@ -969,7 +969,7 @@ class NmtProcurePo
     {
         return $this->revisionNo;
     }
-    
+
     /**
      * Set deliveryMode
      *
@@ -980,10 +980,10 @@ class NmtProcurePo
     public function setDeliveryMode($deliveryMode)
     {
         $this->deliveryMode = $deliveryMode;
-        
+
         return $this;
     }
-    
+
     /**
      * Get deliveryMode
      *
@@ -993,7 +993,7 @@ class NmtProcurePo
     {
         return $this->deliveryMode;
     }
-    
+
     /**
      * Set incoterm
      *
@@ -1004,10 +1004,10 @@ class NmtProcurePo
     public function setIncoterm($incoterm)
     {
         $this->incoterm = $incoterm;
-        
+
         return $this;
     }
-    
+
     /**
      * Get incoterm
      *
@@ -1017,7 +1017,7 @@ class NmtProcurePo
     {
         return $this->incoterm;
     }
-    
+
     /**
      * Set incotermPlace
      *
@@ -1028,10 +1028,10 @@ class NmtProcurePo
     public function setIncotermPlace($incotermPlace)
     {
         $this->incotermPlace = $incotermPlace;
-        
+
         return $this;
     }
-    
+
     /**
      * Get incotermPlace
      *
@@ -1041,7 +1041,7 @@ class NmtProcurePo
     {
         return $this->incotermPlace;
     }
-    
+
     /**
      * Set paymentTerm
      *
@@ -1052,10 +1052,10 @@ class NmtProcurePo
     public function setPaymentTerm($paymentTerm)
     {
         $this->paymentTerm = $paymentTerm;
-        
+
         return $this;
     }
-    
+
     /**
      * Get paymentTerm
      *
@@ -1065,7 +1065,7 @@ class NmtProcurePo
     {
         return $this->paymentTerm;
     }
-    
+
     /**
      * Set docStatus
      *
@@ -1076,10 +1076,10 @@ class NmtProcurePo
     public function setDocStatus($docStatus)
     {
         $this->docStatus = $docStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docStatus
      *
@@ -1089,7 +1089,7 @@ class NmtProcurePo
     {
         return $this->docStatus;
     }
-    
+
     /**
      * Set workflowStatus
      *
@@ -1100,10 +1100,10 @@ class NmtProcurePo
     public function setWorkflowStatus($workflowStatus)
     {
         $this->workflowStatus = $workflowStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get workflowStatus
      *
@@ -1113,7 +1113,7 @@ class NmtProcurePo
     {
         return $this->workflowStatus;
     }
-    
+
     /**
      * Set transactionStatus
      *
@@ -1124,10 +1124,10 @@ class NmtProcurePo
     public function setTransactionStatus($transactionStatus)
     {
         $this->transactionStatus = $transactionStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get transactionStatus
      *
@@ -1137,7 +1137,7 @@ class NmtProcurePo
     {
         return $this->transactionStatus;
     }
-    
+
     /**
      * Set docType
      *
@@ -1148,10 +1148,10 @@ class NmtProcurePo
     public function setDocType($docType)
     {
         $this->docType = $docType;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docType
      *
@@ -1161,7 +1161,7 @@ class NmtProcurePo
     {
         return $this->docType;
     }
-    
+
     /**
      * Set paymentStatus
      *
@@ -1172,10 +1172,10 @@ class NmtProcurePo
     public function setPaymentStatus($paymentStatus)
     {
         $this->paymentStatus = $paymentStatus;
-        
+
         return $this;
     }
-    
+
     /**
      * Get paymentStatus
      *
@@ -1185,7 +1185,7 @@ class NmtProcurePo
     {
         return $this->paymentStatus;
     }
-    
+
     /**
      * Set totalDocValue
      *
@@ -1196,10 +1196,10 @@ class NmtProcurePo
     public function setTotalDocValue($totalDocValue)
     {
         $this->totalDocValue = $totalDocValue;
-        
+
         return $this;
     }
-    
+
     /**
      * Get totalDocValue
      *
@@ -1209,7 +1209,7 @@ class NmtProcurePo
     {
         return $this->totalDocValue;
     }
-    
+
     /**
      * Set totalDocTax
      *
@@ -1220,10 +1220,10 @@ class NmtProcurePo
     public function setTotalDocTax($totalDocTax)
     {
         $this->totalDocTax = $totalDocTax;
-        
+
         return $this;
     }
-    
+
     /**
      * Get totalDocTax
      *
@@ -1233,7 +1233,7 @@ class NmtProcurePo
     {
         return $this->totalDocTax;
     }
-    
+
     /**
      * Set totalDocDiscount
      *
@@ -1244,10 +1244,10 @@ class NmtProcurePo
     public function setTotalDocDiscount($totalDocDiscount)
     {
         $this->totalDocDiscount = $totalDocDiscount;
-        
+
         return $this;
     }
-    
+
     /**
      * Get totalDocDiscount
      *
@@ -1257,7 +1257,7 @@ class NmtProcurePo
     {
         return $this->totalDocDiscount;
     }
-    
+
     /**
      * Set totalLocalValue
      *
@@ -1268,10 +1268,10 @@ class NmtProcurePo
     public function setTotalLocalValue($totalLocalValue)
     {
         $this->totalLocalValue = $totalLocalValue;
-        
+
         return $this;
     }
-    
+
     /**
      * Get totalLocalValue
      *
@@ -1281,7 +1281,7 @@ class NmtProcurePo
     {
         return $this->totalLocalValue;
     }
-    
+
     /**
      * Set totalLocalTax
      *
@@ -1292,10 +1292,10 @@ class NmtProcurePo
     public function setTotalLocalTax($totalLocalTax)
     {
         $this->totalLocalTax = $totalLocalTax;
-        
+
         return $this;
     }
-    
+
     /**
      * Get totalLocalTax
      *
@@ -1305,7 +1305,7 @@ class NmtProcurePo
     {
         return $this->totalLocalTax;
     }
-    
+
     /**
      * Set totalLocalDiscount
      *
@@ -1316,10 +1316,10 @@ class NmtProcurePo
     public function setTotalLocalDiscount($totalLocalDiscount)
     {
         $this->totalLocalDiscount = $totalLocalDiscount;
-        
+
         return $this;
     }
-    
+
     /**
      * Get totalLocalDiscount
      *
@@ -1329,7 +1329,7 @@ class NmtProcurePo
     {
         return $this->totalLocalDiscount;
     }
-    
+
     /**
      * Set reversalBlocked
      *
@@ -1340,10 +1340,10 @@ class NmtProcurePo
     public function setReversalBlocked($reversalBlocked)
     {
         $this->reversalBlocked = $reversalBlocked;
-        
+
         return $this;
     }
-    
+
     /**
      * Get reversalBlocked
      *
@@ -1353,7 +1353,7 @@ class NmtProcurePo
     {
         return $this->reversalBlocked;
     }
-    
+
     /**
      * Set uuid
      *
@@ -1364,10 +1364,10 @@ class NmtProcurePo
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
-        
+
         return $this;
     }
-    
+
     /**
      * Get uuid
      *
@@ -1377,7 +1377,7 @@ class NmtProcurePo
     {
         return $this->uuid;
     }
-    
+
     /**
      * Set docVersion
      *
@@ -1388,10 +1388,10 @@ class NmtProcurePo
     public function setDocVersion($docVersion)
     {
         $this->docVersion = $docVersion;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docVersion
      *
@@ -1401,7 +1401,7 @@ class NmtProcurePo
     {
         return $this->docVersion;
     }
-    
+
     /**
      * Set vendor
      *
@@ -1412,10 +1412,10 @@ class NmtProcurePo
     public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
     {
         $this->vendor = $vendor;
-        
+
         return $this;
     }
-    
+
     /**
      * Get vendor
      *
@@ -1425,7 +1425,7 @@ class NmtProcurePo
     {
         return $this->vendor;
     }
-    
+
     /**
      * Set pmtTerm
      *
@@ -1436,10 +1436,10 @@ class NmtProcurePo
     public function setPmtTerm(\Application\Entity\NmtApplicationPmtTerm $pmtTerm = null)
     {
         $this->pmtTerm = $pmtTerm;
-        
+
         return $this;
     }
-    
+
     /**
      * Get pmtTerm
      *
@@ -1449,7 +1449,7 @@ class NmtProcurePo
     {
         return $this->pmtTerm;
     }
-    
+
     /**
      * Set company
      *
@@ -1460,10 +1460,10 @@ class NmtProcurePo
     public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
     {
         $this->company = $company;
-        
+
         return $this;
     }
-    
+
     /**
      * Get company
      *
@@ -1473,7 +1473,7 @@ class NmtProcurePo
     {
         return $this->company;
     }
-    
+
     /**
      * Set warehouse
      *
@@ -1484,10 +1484,10 @@ class NmtProcurePo
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
         $this->warehouse = $warehouse;
-        
+
         return $this;
     }
-    
+
     /**
      * Get warehouse
      *
@@ -1497,7 +1497,7 @@ class NmtProcurePo
     {
         return $this->warehouse;
     }
-    
+
     /**
      * Set createdBy
      *
@@ -1508,10 +1508,10 @@ class NmtProcurePo
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get createdBy
      *
@@ -1521,7 +1521,7 @@ class NmtProcurePo
     {
         return $this->createdBy;
     }
-    
+
     /**
      * Set lastchangeBy
      *
@@ -1532,10 +1532,10 @@ class NmtProcurePo
     public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
         $this->lastchangeBy = $lastchangeBy;
-        
+
         return $this;
     }
-    
+
     /**
      * Get lastchangeBy
      *
@@ -1545,7 +1545,7 @@ class NmtProcurePo
     {
         return $this->lastchangeBy;
     }
-    
+
     /**
      * Set currency
      *
@@ -1556,10 +1556,10 @@ class NmtProcurePo
     public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
     {
         $this->currency = $currency;
-        
+
         return $this;
     }
-    
+
     /**
      * Get currency
      *
@@ -1569,7 +1569,7 @@ class NmtProcurePo
     {
         return $this->currency;
     }
-    
+
     /**
      * Set paymentMethod
      *
@@ -1580,10 +1580,10 @@ class NmtProcurePo
     public function setPaymentMethod(\Application\Entity\NmtApplicationPmtMethod $paymentMethod = null)
     {
         $this->paymentMethod = $paymentMethod;
-        
+
         return $this;
     }
-    
+
     /**
      * Get paymentMethod
      *
@@ -1593,7 +1593,7 @@ class NmtProcurePo
     {
         return $this->paymentMethod;
     }
-    
+
     /**
      * Set localCurrency
      *
@@ -1604,10 +1604,10 @@ class NmtProcurePo
     public function setLocalCurrency(\Application\Entity\NmtApplicationCurrency $localCurrency = null)
     {
         $this->localCurrency = $localCurrency;
-        
+
         return $this;
     }
-    
+
     /**
      * Get localCurrency
      *
@@ -1617,7 +1617,7 @@ class NmtProcurePo
     {
         return $this->localCurrency;
     }
-    
+
     /**
      * Set docCurrency
      *
@@ -1628,10 +1628,10 @@ class NmtProcurePo
     public function setDocCurrency(\Application\Entity\NmtApplicationCurrency $docCurrency = null)
     {
         $this->docCurrency = $docCurrency;
-        
+
         return $this;
     }
-    
+
     /**
      * Get docCurrency
      *
@@ -1641,7 +1641,7 @@ class NmtProcurePo
     {
         return $this->docCurrency;
     }
-    
+
     /**
      * Set incoterm2
      *
@@ -1652,10 +1652,10 @@ class NmtProcurePo
     public function setIncoterm2(\Application\Entity\NmtApplicationIncoterms $incoterm2 = null)
     {
         $this->incoterm2 = $incoterm2;
-        
+
         return $this;
     }
-    
+
     /**
      * Get incoterm2
      *

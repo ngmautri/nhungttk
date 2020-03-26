@@ -73,7 +73,6 @@ class LocationDTOAssembler
         }
     }
 
-   
     /**
      * generete DTO File.
      */
@@ -88,7 +87,7 @@ class LocationDTOAssembler
             print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
     }
-    
+
     /**
      * generete DTO File.
      */
@@ -100,10 +99,10 @@ class LocationDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" .  "\$snapshot->" . $propertyName . "= " . "\$entity->get" . ucfirst($propertyName) . "();" ;
+            print "\n" . "\$snapshot->" . $propertyName . "= " . "\$entity->get" . ucfirst($propertyName) . "();";
         }
     }
-    
+
     /**
      *
      * @return array;

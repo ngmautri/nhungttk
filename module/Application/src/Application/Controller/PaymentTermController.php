@@ -44,8 +44,7 @@ class PaymentTermController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
 
         $request = $this->getRequest();
-        
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -158,12 +157,11 @@ class PaymentTermController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
 
         $request = $this->getRequest();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
 
         // Is Posing
         // =============================

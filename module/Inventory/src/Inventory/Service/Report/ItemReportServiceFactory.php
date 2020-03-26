@@ -1,42 +1,41 @@
 <?php
-
 namespace Inventory\Service\Report;
-
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class ItemReportServiceFactory implements FactoryInterface {
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator) {
-		
-		$container = $serviceLocator;
-		
-		$service = new ItemReportService();
-		
-		$sv =  $container->get('ControllerPluginManager');
-		$service->setControllerPlugin($sv->get('NmtPlugin'));
-		
-		$sv =  $container->get('doctrine.entitymanager.orm_default');
-		$service->setDoctrineEM($sv);
-		
-		$grListener = $container->get('Application\Listener\LoggingListener');
-	
-		$eventManager =  $container->get('EventManager');
-		$eventManager->attachAggregate($grListener);
-		
-		$service->setEventManager($eventManager);
-		
-		return $service;
-	}
+class ItemReportServiceFactory implements FactoryInterface
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Zend\ServiceManager\FactoryInterface::createService()
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $container = $serviceLocator;
+
+        $service = new ItemReportService();
+
+        $sv = $container->get('ControllerPluginManager');
+        $service->setControllerPlugin($sv->get('NmtPlugin'));
+
+        $sv = $container->get('doctrine.entitymanager.orm_default');
+        $service->setDoctrineEM($sv);
+
+        $grListener = $container->get('Application\Listener\LoggingListener');
+
+        $eventManager = $container->get('EventManager');
+        $eventManager->attachAggregate($grListener);
+
+        $service->setEventManager($eventManager);
+
+        return $service;
+    }
 }

@@ -8,6 +8,4 @@ namespace Inventory\Domain\Item;
  */
 class ItemSKU
 {
-
-    
 }

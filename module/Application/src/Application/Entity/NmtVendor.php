@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtVendor
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtVendor
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
@@ -29,6 +31,7 @@ class NmtVendor
     private $vendorName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtVendor
     private $keywords;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtVendor
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -50,13 +55,12 @@ class NmtVendor
     private $createdOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
      */
     private $createdBy;
-
-
 
     /**
      * Get id

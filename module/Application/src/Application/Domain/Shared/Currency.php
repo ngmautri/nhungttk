@@ -43,7 +43,6 @@ class Currency extends AbstractValueObject
         return $this->code;
     }
 
-    
     /**
      *
      * @return string

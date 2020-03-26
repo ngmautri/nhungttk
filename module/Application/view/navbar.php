@@ -11,7 +11,7 @@
 							<?php include (ROOT.'/module/Application/view/inbox_menu.php'); ?>
 							</li>
  -->
- 
+
 <!-- FINANCE MENU -->
 <li
 	class="dropdown <?php if ($current_module=="PAYMENT"): echo "active";endif;?>"><a
@@ -43,7 +43,8 @@
 <li
 	class="dropdown <?php if ($current_module=="PRODUCTION"): echo "active";endif;?>"><a
 	class="dropdown-toggle" data-toggle="dropdown" href="#"
-	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Production");?> <span class="caret"></span></a>
+	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Production");?> <span
+		class="caret"></span></a>
 							<?php include (ROOT.'/module/Application/view/production_menu.php'); ?>
 						  </li>
 
@@ -68,8 +69,8 @@
 						    <?php if ($this->cart_items >0): ?>
 						 	   <span id="cart_items" class="badge">
 						    <?php
-            
-echo $this->cart_items;
+
+            echo $this->cart_items;
         else :
             ?>
 	  					   		<span id="cart_items" class="">
@@ -108,8 +109,10 @@ echo $this->cart_items;
 
 <li
 	class="dropdown <?php if ($current_module=="APPLICATION"): echo "active";endif;?>"><a
-	class="dropdown-toggle" data-toggle="dropdown" href="#" title="<?php echo $this->translate("Setup");?> "
-	style="padding-left: 10px; padding-right: 10px;"> <i class="fa fa-cog fa-lg" aria-hidden="true"></i>&nbsp;</small>&nbsp;<span
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	title="<?php echo $this->translate("Setup");?> "
+	style="padding-left: 10px; padding-right: 10px;"> <i
+		class="fa fa-cog fa-lg" aria-hidden="true"></i>&nbsp;</small>&nbsp;<span
 		class="caret"></span></a>
 								  <?php include (ROOT.'/module/Application/view/setting_menu.php'); ?>
 				 			</li>
@@ -142,9 +145,9 @@ echo $this->cart_items;
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
 	href="#" style="padding-left: 10px; padding-right: 10px;"> <!-- <i class="fa fa-globe fa-lg" aria-hidden="true"></i>  -->
 	<?php
-        
+
         switch ($this->currentLocale) {
-            
+
             case 'en_US':
                 echo '<img alt="" src="/images/flag/flag_uk.png">&nbsp;EN';
                 ;
@@ -158,7 +161,7 @@ echo $this->cart_items;
             case 'de_DE':
                 echo '<img alt="" src="/images/flag/flag_germany.png">&nbsp;DE';
         }
-        
+
         ?>
 	<span class="caret"></span></a>
 							 <?php include (ROOT.'/module/Application/view/locale_menu.php'); ?>

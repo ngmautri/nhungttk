@@ -1,5 +1,4 @@
 <?php
-
 namespace BP\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
@@ -10,24 +9,24 @@ use BP\Controller\DebtorContractController;
  * @author nmt
  *
  */
-class DebtorContractControllerFactory implements FactoryInterface {
-	
-	/**
-	 *
-	 * {@inheritDoc}
-	 *
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator) {
-		
-		$sm = $serviceLocator->getServiceLocator();
-			
-		$controller = new DebtorContractController();
-			
-		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
-		$controller->setDoctrineEM($sv );
-		
-		
-		return $controller;
-	}
+class DebtorContractControllerFactory implements FactoryInterface
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     *
+     * @see \Zend\ServiceManager\FactoryInterface::createService()
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $sm = $serviceLocator->getServiceLocator();
+
+        $controller = new DebtorContractController();
+
+        $sv = $sm->get('doctrine.entitymanager.orm_default');
+        $controller->setDoctrineEM($sv);
+
+        return $controller;
+    }
 }

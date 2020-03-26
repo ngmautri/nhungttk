@@ -26,17 +26,15 @@ class ServiceItemFactory extends AbstractItemFactory
         $this->item = new ServiceItem();
         return $this->item;
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::specifyItem()
      */
     public function specifyItem()
     {
         $item = $this->item;
         $item->setItemType("SERVICE");
-        
     }
-
 }

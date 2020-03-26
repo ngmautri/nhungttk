@@ -1,120 +1,128 @@
 
-<div id="tabs" style="font-size: 10pt"> 
-  <ul>
-  <li ><a href="#general">ACL Recources</a></li>
-   </ul>
+<div id="tabs" style="font-size: 10pt">
+	<ul>
+		<li><a href="#general">ACL Recources</a></li>
+	</ul>
 
-<div id="general"> 
-<ul class="nav nav-pills">
-	<li><a href="<?php echo $this->baseUrl ?>/application/role/list">Role</a></li>
-	<li><a href="<?php echo $this->baseUrl ?>/application/acl/update-sys-resources">Update ACL Resources</a></li>
-	<li><a href="<?php echo $this->baseUrl ?>/application/acl/list-resources">List ACL Resources</a></li>	
-</ul>
+	<div id="general">
+		<ul class="nav nav-pills">
+			<li><a href="<?php echo $this->baseUrl ?>/application/role/list">Role</a></li>
+			<li><a
+				href="<?php echo $this->baseUrl ?>/application/acl/update-sys-resources">Update
+					ACL Resources</a></li>
+			<li><a
+				href="<?php echo $this->baseUrl ?>/application/acl/list-resources">List
+					ACL Resources</a></li>
+		</ul>
 
-<hr>
+		<hr>
 
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/application/search/resource"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q" class="">
-  </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
-</form>
-<hr>
+		<form class="form-inline"
+			action="<?php echo $this->baseUrl ?>/application/search/resource"
+			method="get" enctype="multipart/form-data">
+			<div class="form-group">
+				<input class="form-control" size="28" type="text" name="q" class="">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-default">
+					<small><i class="glyphicon glyphicon-search"> </i></small> Search
+				</button>
+			</div>
+
+		</form>
+		<hr>
 
 <?php
 
 if ($total_resources <= 0) {
-	
-	echo 'No records found!';
+
+    echo 'No records found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_resources . ' records found!';
-	} else {
-		echo $total_resources . ' record found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_resources . ' records found!';
+    } else {
+        echo $total_resources . ' record found!';
+    }
+
+    ?>
 
 <table class="table table-bordered table-striped">
-	<thead>
-		<tr>
-			<td><b>Module</b></td>
-			<td><b>Controller</b></td>
-			<td><b>Action</b></td>
-			<td><b>Resource</b></td>
-			<td><b>Updated on</b></td>
-			<td><b>Status</b></td>	
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
+			<thead>
+				<tr>
+					<td><b>Module</b></td>
+					<td><b>Controller</b></td>
+					<td><b>Action</b></td>
+					<td><b>Resource</b></td>
+					<td><b>Updated on</b></td>
+					<td><b>Status</b></td>
+					<td><b>Action</b></td>
+				</tr>
+			</thead>
 
-	<tbody>
+			<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $resources as $a ) :
-		$count ++;
-		/** @var \Application\Entity\NmtApplicationAclResource $a */
-		
-	?>
-	 <tr>
-			<td><?php echo $this->escapeHtml($a->getModule());?></td>
-			<td><?php echo $this->escapeHtml($a->getController());?></td>
-			<td><?php echo $this->escapeHtml($a->getAction());?></td>
-			<td><?php echo $this->escapeHtml($a->getResource());?></td>
-			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
-			<td><?php echo $this->escapeHtml($a->getCurrentState());?></td>
 
-			<td></td>
-		</tr>
+    $count = 0;
+    foreach ($resources as $a) :
+        $count ++;
+        /** @var \Application\Entity\NmtApplicationAclResource $a */
+
+        ?>
+	 <tr>
+					<td><?php echo $this->escapeHtml($a->getModule());?></td>
+					<td><?php echo $this->escapeHtml($a->getController());?></td>
+					<td><?php echo $this->escapeHtml($a->getAction());?></td>
+					<td><?php echo $this->escapeHtml($a->getResource());?></td>
+					<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
+					<td><?php echo $this->escapeHtml($a->getCurrentState());?></td>
+
+					<td></td>
+				</tr>
 <?php endforeach; ?>
 
  </tbody>
-</table>
+		</table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-		$base = $this->baseUrl . '/application/acl/list-resources';
-		$_connector_symbol = '?';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/application/acl/list-resources';
+        $_connector_symbol = '?';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
 		}
 		echo '</ul>';
 endif;
@@ -124,4 +132,5 @@ endif;
 ?>
 
 
-</div></div>
+</div>
+</div>

@@ -43,7 +43,7 @@ class ItemUpdatedEventListener implements ListenerAggregateInterface
     {
         $searcher = new \Inventory\Application\Service\Search\ZendSearch\ItemSearchService();
         $searcher->setDoctrineEM($this->getDoctrineEM());
-        
+
         $itemId = $e->getParam('itemId');
         $searcher->updateItemIndex($itemId, FALSE, FALSE);
     }

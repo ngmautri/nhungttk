@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryMvRow
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryMvRow
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryMvRow
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryMvRow
     private $checksum;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="wh_id", type="integer", nullable=false)
@@ -43,6 +47,7 @@ class NmtInventoryMvRow
     private $whId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_id", type="integer", nullable=false)
@@ -50,6 +55,7 @@ class NmtInventoryMvRow
     private $itemId;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="trx_date", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryMvRow
     private $trxDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="trx_type_id", type="integer", nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryMvRow
     private $trxTypeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", nullable=false)
@@ -71,6 +79,7 @@ class NmtInventoryMvRow
     private $flow;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="issue_for", type="integer", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryMvRow
     private $issueFor;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=false)
@@ -85,6 +95,7 @@ class NmtInventoryMvRow
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryMvRow
     private $remarks;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=false)
@@ -99,6 +111,7 @@ class NmtInventoryMvRow
     private $createdBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryMvRow
     private $createdOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_locked", type="boolean", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryMvRow
     private $isLocked;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryMvRow
     private $isDraft;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryMvRow
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryMvRow
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="last_change_by", type="integer", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryMvRow
     private $lastChangeBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryMvRow
     private $conversionFactor;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_text", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryMvRow
     private $conversionText;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="currency_id", type="integer", nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryMvRow
     private $currencyId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="target_id", type="integer", nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryMvRow
     private $targetId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_class", type="string", length=45, nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryMvRow
     private $targetClass;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryMvRow
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryMvRow
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="change_on", type="string", length=45, nullable=true)
@@ -197,6 +223,7 @@ class NmtInventoryMvRow
     private $changeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="change_by", type="integer", nullable=true)
@@ -204,6 +231,7 @@ class NmtInventoryMvRow
     private $changeBy;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_number", type="integer", nullable=true)
@@ -211,6 +239,7 @@ class NmtInventoryMvRow
     private $revisionNumber;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -218,6 +247,7 @@ class NmtInventoryMvRow
     private $isPosted;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="actual_quantity", type="integer", nullable=true)
@@ -225,6 +255,7 @@ class NmtInventoryMvRow
     private $actualQuantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -232,6 +263,7 @@ class NmtInventoryMvRow
     private $transactionStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="stock_remarks", type="string", length=45, nullable=true)
@@ -239,6 +271,7 @@ class NmtInventoryMvRow
     private $stockRemarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
@@ -246,6 +279,7 @@ class NmtInventoryMvRow
     private $sourceClass;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -253,6 +287,7 @@ class NmtInventoryMvRow
     private $sourceId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="inventory_gr_id", type="integer", nullable=true)
@@ -260,6 +295,7 @@ class NmtInventoryMvRow
     private $inventoryGrId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="inventory_transfer_id", type="integer", nullable=true)
@@ -267,6 +303,7 @@ class NmtInventoryMvRow
     private $inventoryTransferId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="inventory_gi_id", type="integer", nullable=true)
@@ -274,6 +311,7 @@ class NmtInventoryMvRow
     private $inventoryGiId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
@@ -281,6 +319,7 @@ class NmtInventoryMvRow
     private $transactionType;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_serial_id", type="integer", nullable=true)
@@ -288,6 +327,7 @@ class NmtInventoryMvRow
     private $itemSerialId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_batch_id", type="integer", nullable=true)
@@ -295,6 +335,7 @@ class NmtInventoryMvRow
     private $itemBatchId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="GL_account_id", type="integer", nullable=true)
@@ -302,13 +343,12 @@ class NmtInventoryMvRow
     private $glAccountId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="item_cost", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $itemCost;
-
-
 
     /**
      * Get id

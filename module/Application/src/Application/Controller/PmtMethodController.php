@@ -66,10 +66,10 @@ class PmtMethodController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'gl_list' => $gl_list,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity,
+                    'entity' => $entity
                 ));
 
                 $viewModel->setTemplate("application/pmt-method/crud");
@@ -183,7 +183,6 @@ class PmtMethodController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $gl_list = $nmtPlugin->glAccountList();
-        
 
         $request = $this->getRequest();
 
@@ -215,7 +214,7 @@ class PmtMethodController extends AbstractActionController
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'gl_list' => $gl_list,
-                    
+
                     'errors' => $errors,
                     'entity' => $entity,
                     'n' => $nTry
@@ -261,7 +260,7 @@ class PmtMethodController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'gl_list' => $gl_list,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -292,7 +291,7 @@ class PmtMethodController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'gl_list' => $gl_list,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -410,6 +409,4 @@ class PmtMethodController extends AbstractActionController
     {
         $this->pmtMethodService = $pmtMethodService;
     }
-    
-
 }

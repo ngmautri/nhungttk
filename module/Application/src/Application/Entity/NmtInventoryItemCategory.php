@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemCategory
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="node_id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemCategory
     private $nodeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="node_name", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class NmtInventoryItemCategory
     private $nodeName;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="node_parent_id", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemCategory
     private $nodeParentId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemCategory
     private $path;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemCategory
     private $pathDepth;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryItemCategory
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryItemCategory
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="node_created_on", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryItemCategory
     private $nodeCreatedOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="company_id", type="integer", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryItemCategory
     private $companyId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="node_type", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryItemCategory
     private $nodeType;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="has_member", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryItemCategory
     private $hasMember;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -100,8 +112,6 @@ class NmtInventoryItemCategory
      * })
      */
     private $nodeCreatedBy;
-
-
 
     /**
      * Get nodeId

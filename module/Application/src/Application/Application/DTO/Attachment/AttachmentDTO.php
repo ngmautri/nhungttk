@@ -3,7 +3,6 @@ namespace Application\DTO\Attachment;
 
 use Application\Domain\Attachment\AttachmentSnapshot;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -11,5 +10,4 @@ use Application\Domain\Attachment\AttachmentSnapshot;
  */
 class AttachmentDTO extends AttachmentSnapshot
 {
-
 }

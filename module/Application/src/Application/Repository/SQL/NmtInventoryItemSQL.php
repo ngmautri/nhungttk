@@ -8,9 +8,10 @@ namespace Application\Repository\SQL;
  */
 class NmtInventoryItemSQL
 {
-    
+
     /**
      * SQL for get inventory stock
+     *
      * @var string
      */
     const ITEM_STOCK_SQL = "
@@ -67,7 +68,5 @@ class NmtInventoryItemSQL
     WHERE 1 %s
     GROUP BY nmt_inventory_item.id
 ";
-
-
 }
 

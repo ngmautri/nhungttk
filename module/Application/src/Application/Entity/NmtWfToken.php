@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfToken
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtWfToken
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="place_name", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtWfToken
     private $placeName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token_status", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtWfToken
     private $tokenStatus;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtWfToken
     private $enabledDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="cancelled_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtWfToken
     private $cancelledDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_date", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtWfToken
     private $consumedDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="subject_id", type="integer", nullable=true)
@@ -64,6 +71,7 @@ class NmtWfToken
     private $subjectId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="subject_token", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtWfToken
     private $subjectToken;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="subject_class", type="string", length=100, nullable=true)
@@ -78,6 +87,7 @@ class NmtWfToken
     private $subjectClass;
 
     /**
+     *
      * @var \Application\Entity\NmtWfCase
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfCase")
@@ -88,6 +98,7 @@ class NmtWfToken
     private $case;
 
     /**
+     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -98,6 +109,7 @@ class NmtWfToken
     private $workflow;
 
     /**
+     *
      * @var \Application\Entity\NmtWfPlace
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
@@ -108,6 +120,7 @@ class NmtWfToken
     private $place;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -118,6 +131,7 @@ class NmtWfToken
     private $tokenEnabledBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -128,6 +142,7 @@ class NmtWfToken
     private $tokenCancelledBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -138,6 +153,7 @@ class NmtWfToken
     private $tokenConsumedBy;
 
     /**
+     *
      * @var \Application\Entity\NmtWfNode
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfNode")
@@ -146,8 +162,6 @@ class NmtWfToken
      * })
      */
     private $note;
-
-
 
     /**
      * Get id

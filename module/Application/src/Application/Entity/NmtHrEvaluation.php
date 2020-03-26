@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrEvaluation
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtHrEvaluation
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="eval_by", type="integer", nullable=false)
@@ -31,6 +33,7 @@ class NmtHrEvaluation
     private $evalBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="eval_period", type="string", length=45, nullable=true)
@@ -38,6 +41,7 @@ class NmtHrEvaluation
     private $evalPeriod;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="eval_score", type="integer", nullable=true)
@@ -45,6 +49,7 @@ class NmtHrEvaluation
     private $evalScore;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="eval_result", type="string", length=45, nullable=true)
@@ -52,6 +57,7 @@ class NmtHrEvaluation
     private $evalResult;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="eval_on", type="datetime", nullable=true)
@@ -59,6 +65,7 @@ class NmtHrEvaluation
     private $evalOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="old_contract_type", type="string", length=45, nullable=true)
@@ -66,6 +73,7 @@ class NmtHrEvaluation
     private $oldContractType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="new_contract_type", type="string", length=45, nullable=true)
@@ -73,6 +81,7 @@ class NmtHrEvaluation
     private $newContractType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -80,6 +89,7 @@ class NmtHrEvaluation
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -88,8 +98,6 @@ class NmtHrEvaluation
      * })
      */
     private $employee;
-
-
 
     /**
      * Set id

@@ -6,21 +6,20 @@ use HR\Payroll\Income\IncomeInterface;
 use HR\Payroll\Income\Decorator\LoadingBonusDecorator;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class LoadingBonusDecoratorFactory extends AbstractDecoratorFactory
+class LoadingBonusDecoratorFactory extends AbstractDecoratorFactory
 {
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory::createDecorator()
-    */
-    protected function createDecorator(IncomeInterface $incomeComponent,
-        ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
-    {
-        return new LoadingBonusDecorator($incomeComponent,$consolidatedPayrollInput);
-    }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory::createDecorator()
+     */
+    protected function createDecorator(IncomeInterface $incomeComponent, ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
+    {
+        return new LoadingBonusDecorator($incomeComponent, $consolidatedPayrollInput);
+    }
 }

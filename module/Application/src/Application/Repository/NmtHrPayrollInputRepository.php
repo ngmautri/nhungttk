@@ -16,7 +16,6 @@ class NmtHrPayrollInputRepository extends EntityRepository
 
     /** @var \Application\Entity\NmtHrPayrollInput $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtHrPayrollInputRepository")
-    
     private $sql = "
 SELECT
 	nmt_hr_payroll_input.*
@@ -39,13 +38,12 @@ AND nmt_hr_payroll_input1.last_revision_no=nmt_hr_payroll_input.revision_number
 WHERE 1
 ";
 
-  
     public function getLastRevisionInput($employee_id, $period_id)
     {
         $sql = $this->sql;
-        
-        $sql = $sql . " AND nmt_hr_payroll_input.employee_id =" . $employee_id . " AND nmt_hr_payroll_input.period_id=".$period_id;
-        
+
+        $sql = $sql . " AND nmt_hr_payroll_input.employee_id =" . $employee_id . " AND nmt_hr_payroll_input.period_id=" . $period_id;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtHrPayrollInput', 'nmt_hr_payroll_input');
@@ -56,6 +54,5 @@ WHERE 1
             return null;
         }
     }
-
 }
 

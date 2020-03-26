@@ -29,7 +29,7 @@ class VInvoiceControllerFactory implements FactoryInterface
 
         $sv = $sm->get('Procure\Service\APInvoiceService');
         $controller->setApService($sv);
-		
-		return $controller;
-	}
+
+        return $controller;
+    }
 }

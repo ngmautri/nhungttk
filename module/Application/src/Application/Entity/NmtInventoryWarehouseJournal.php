@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryWarehouseJournal
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryWarehouseJournal
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_id", type="integer", nullable=false)
@@ -29,6 +31,7 @@ class NmtInventoryWarehouseJournal
     private $itemId;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryWarehouseJournal
     private $createdOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity_in", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryWarehouseJournal
     private $quantityIn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity_out", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryWarehouseJournal
     private $quantityOut;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", precision=14, scale=4, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryWarehouseJournal
     private $price;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -67,6 +74,7 @@ class NmtInventoryWarehouseJournal
     private $wh;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -77,6 +85,7 @@ class NmtInventoryWarehouseJournal
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -85,8 +94,6 @@ class NmtInventoryWarehouseJournal
      * })
      */
     private $currency;
-
-
 
     /**
      * Get id

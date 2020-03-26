@@ -1,22 +1,26 @@
 <h1>asset/category/edit</h1>
 
-<form action="<?php echo $this->baseUrl ?>/inventory/asset/editcategory" method="post">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<form action="<?php echo $this->baseUrl ?>/inventory/asset/editcategory"
+	method="post">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
 
-<div>
-	<input type="hidden" name="id" value="<?php echo (int) $category->id; ?>" />
-    <label for="category">Asset Category</label>
-    <input type="text" name="category" value="<?php echo $this->escapeHtml($category->category) ?>"/>
-</div>
-<div>
-    <label for="description">Description</label>
-    <textarea cols="45" name="description" id="description" style="background:#FFFFFF">
+	<div>
+		<input type="hidden" name="id"
+			value="<?php echo (int) $category->id; ?>" /> <label for="category">Asset
+			Category</label> <input type="text" name="category"
+			value="<?php echo $this->escapeHtml($category->category) ?>" />
+	</div>
+	<div>
+		<label for="description">Description</label>
+		<textarea cols="45" name="description" id="description"
+			style="background: #FFFFFF">
     <?php echo $this->escapeHtml($category->description) ?>
     </textarea>
-  
-</div>
-<div id="formbutton">
-<input type="submit" name="summit" value="sumbmit" />
-</div>
+
+	</div>
+	<div id="formbutton">
+		<input type="submit" name="summit" value="sumbmit" />
+	</div>
 
 </form>

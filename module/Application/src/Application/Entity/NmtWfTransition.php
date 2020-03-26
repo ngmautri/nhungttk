@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfTransition
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtWfTransition
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtWfTransition
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_name", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtWfTransition
     private $workflowName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transition_name", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtWfTransition
     private $transitionName;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class NmtWfTransition
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtWfTransition
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
@@ -64,6 +71,7 @@ class NmtWfTransition
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="froms", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtWfTransition
     private $froms;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="tos", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtWfTransition
     private $tos;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -88,6 +98,7 @@ class NmtWfTransition
     private $agent;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -98,6 +109,7 @@ class NmtWfTransition
     private $role;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -108,6 +120,7 @@ class NmtWfTransition
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -116,8 +129,6 @@ class NmtWfTransition
      * })
      */
     private $workflow;
-
-
 
     /**
      * Get id

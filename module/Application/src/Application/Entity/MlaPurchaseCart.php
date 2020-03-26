@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPurchaseCart
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaPurchaseCart
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="priority", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaPurchaseCart
     private $priority;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class MlaPurchaseCart
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -43,6 +47,7 @@ class MlaPurchaseCart
     private $description;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=150, nullable=true)
@@ -50,6 +55,7 @@ class MlaPurchaseCart
     private $code;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=255, nullable=true)
@@ -57,6 +63,7 @@ class MlaPurchaseCart
     private $keywords;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class MlaPurchaseCart
     private $unit;
 
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=0, nullable=false)
@@ -71,6 +79,7 @@ class MlaPurchaseCart
     private $quantity;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="EDT", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class MlaPurchaseCart
     private $edt;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="other_res_id", type="integer", nullable=true)
@@ -85,6 +95,7 @@ class MlaPurchaseCart
     private $otherResId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="asset_name", type="string", length=255, nullable=true)
@@ -92,6 +103,7 @@ class MlaPurchaseCart
     private $assetName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="purpose", type="text", length=65535, nullable=true)
@@ -99,6 +111,7 @@ class MlaPurchaseCart
     private $purpose;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -106,6 +119,7 @@ class MlaPurchaseCart
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class MlaPurchaseCart
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -120,6 +135,7 @@ class MlaPurchaseCart
     private $status;
 
     /**
+     *
      * @var \Application\Entity\MlaSpareparts
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
@@ -130,6 +146,7 @@ class MlaPurchaseCart
     private $sparepart;
 
     /**
+     *
      * @var \Application\Entity\MlaAsset
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
@@ -140,6 +157,7 @@ class MlaPurchaseCart
     private $asset;
 
     /**
+     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
@@ -150,6 +168,7 @@ class MlaPurchaseCart
     private $article;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -158,8 +177,6 @@ class MlaPurchaseCart
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

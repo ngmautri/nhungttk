@@ -52,7 +52,7 @@ class GeneralRowValidation
         $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
         if (! $spec->isSatisfiedBy($row->getDocQuantity()))
             $notification->addError("Quantity is not valid! " . $row->getDocQuantity());
-                        
+
         return $notification;
     }
 }

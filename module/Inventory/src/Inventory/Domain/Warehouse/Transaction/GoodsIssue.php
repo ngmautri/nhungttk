@@ -78,7 +78,7 @@ abstract class GoodsIssue extends GenericTransaction
         // Recording Events
         $this->recordedEvents[] = new GoodsIssuePostedEvent($this);
     }
-   
+
     /**
      *
      * {@inheritdoc}

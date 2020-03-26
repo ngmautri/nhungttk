@@ -1,33 +1,38 @@
 
 <ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/admin-add"><i class="icon-plus">  </i> Add New Item</a></li>
- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/all?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
-</li>
-<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all?output=xlxs"><i class="icon-download-alt">  </i> Download (xlxs)</a> 
-</li>
- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/category"><i class="icon-list">  </i> Category</a> 
-	</li>
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/article/admin-add"><i
+			class="icon-plus"> </i> Add New Item</a></li>
+	<li><a
+		href="<?php echo $this->baseUrl ?>/inventory/article/all?output=csv"><i
+			class="icon-download-alt"> </i> Download (csv)</a></li>
+	<li><a
+		href="<?php echo $this->baseUrl ?>/inventory/article/all?output=xlxs"><i
+			class="icon-download-alt"> </i> Download (xlxs)</a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/article/category"><i
+			class="icon-list"> </i> Category</a></li>
 </ul>
 
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/all-article"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search"></i>Search</button>
-   </form>
-   
- 
- <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-  Link with href
-</a>
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-  Button with data-target
-</button>
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory/search/all-article"
+	method="get" enctype="multipart/form-data">
+	<input type="text" name="query" class="">
+	<button type="submit" class="btn">
+		<i class="icon-search"></i>Search
+	</button>
+</form>
+
+
+<a class="btn btn-primary" role="button" data-toggle="collapse"
+	href="#collapseExample" aria-expanded="false"
+	aria-controls="collapseExample"> Link with href </a>
+<button class="btn btn-primary" type="button" data-toggle="collapse"
+	data-target="#collapseExample" aria-expanded="false"
+	aria-controls="collapseExample">Button with data-target</button>
 <div class="collapse" id="collapseExample">
-  <div class="well">
-    ...
-  </div>
+	<div class="well">...</div>
 </div>
- 
+
 <div class="panel-group">
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -40,27 +45,31 @@
 		<div id="collapse1"
 			class="panel-collapse collapse <?php echo count($articles)>0?"":"in"?>">
 			<div class="panel-body">
-				<div style="background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+				<div
+					style="background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 					<form class="form-horizontal"
 						action="<?php echo $this->baseUrl ?>/inventory/article/all"
 						method="get" enctype="multipart/form-data" id="ReportForm">
 						<div class="control-group">
 							<label class="control-label" for="inputNameLocal">Department: </label>
-						<div class="controls">
-				        	<select name="department_id" >
-				        		<option value="">All departments</option>
-				    	    <?php foreach ($departments as $dept) :
-				        		if($dept->id === $department_id):
-				        			$department_selected = "Department = ".  $dept->name;
-					   				echo '<option selected="selected" value="' . $dept->id. '">' .  $dept->name. '</option>';
-				        		else:
-				        			echo '<option value="' . $dept->id. '">' .  $dept->name. '</option>';
-				        		endif;
-							endforeach; 
-							?>   		
+							<div class="controls">
+								<select name="department_id">
+									<option value="">All departments</option>
+				    	    <?php
+
+foreach ($departments as $dept) :
+                if ($dept->id === $department_id) :
+                    $department_selected = "Department = " . $dept->name;
+                    echo '<option selected="selected" value="' . $dept->id . '">' . $dept->name . '</option>';
+                else :
+                    echo '<option value="' . $dept->id . '">' . $dept->name . '</option>';
+                endif;
+            endforeach
+            ;
+            ?>   		
 				   			</select>
-					     </div>
-					    </div>
+							</div>
+						</div>
 						<div class="control-group">
 							<label class="control-label" for="inputNameLocal">Item Type: </label>
 							<div class="controls">
@@ -75,10 +84,10 @@
 									<option
 										<?php echo $item_type=='Service'? "selected='selected'":"";?>
 										value="Service">Service</option>
-									</select>
+								</select>
 							</div>
 						</div>
-						
+
 
 						<div class="control-group">
 							<label class="control-label" for="inputNameLocal">Item Status: </label>
@@ -91,11 +100,11 @@
 									<option
 										<?php echo $item_status=='Deactivated'? "selected='selected'":"";?>
 										value="Deactivated">Deactivated</option>
-									</select>
+								</select>
 							</div>
 						</div>
 
-						
+
 						<div class="control-group">
 							<label class="control-label" for="inputNameLocal">Sort by: </label>
 							<div class="controls">
@@ -104,8 +113,9 @@
 									<option
 										<?php echo $sort_by=='item_name'? "selected='selected'":"";?>
 										value="item_name">Item Name</option>
-						
-									<option <?php echo $sort_by=='created_date'? "selected='selected'":"";?>
+
+									<option
+										<?php echo $sort_by=='created_date'? "selected='selected'":"";?>
 										value="created_date">Created Date</option>
 								</select>
 
@@ -145,7 +155,7 @@
 							</div>
 						</div>
 					</form>
-				<hr>
+					<hr>
 				</div>
 
 			</div>
@@ -156,114 +166,119 @@
 <?php
 
 if ($total_articles <= 0) {
-	
-	echo 'No items found!';
+
+    echo 'No items found!';
 } else {
 
-	if (! is_null ( $paginator )) {
-		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_articles . ' items found!';
-	}else{	
-		echo $total_articles . ' items found!';
-	}
-	
-?>
+    if (! is_null($paginator)) {
+        echo 'Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_articles . ' items found!';
+    } else {
+        echo $total_articles . ' items found!';
+    }
+
+    ?>
 
 <table class="table table-striped table-bordered">
-<thead>
-	<tr>
-		<td><b>#</b></td>
-		<td><b>Picture</b></td>
-		<td><b>Name</b></td>
-		<!-- td><b>Name-LA</b></td> -->
-		<td><b>Item Type</b></td>
-		<td><b>Created Date</b></td>
-		<td ><b data-toggle="tooltip" title = "Balance">Current <br> Balance</b></td>	
-		<td><b>Department</b></td>
-		<td><b>Remark</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Picture</b></td>
+			<td><b>Name</b></td>
+			<!-- td><b>Name-LA</b></td> -->
+			<td><b>Item Type</b></td>
+			<td><b>Created Date</b></td>
+			<td><b data-toggle="tooltip" title="Balance">Current <br> Balance
+			</b></td>
+			<td><b>Department</b></td>
+			<td><b>Remark</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
 
- <tbody>
+	<tbody>
  
-	 <?php 
-	 
-	 $count = 0;
-	 foreach ($articles as $a) : 
-	 	 $count++;
- ?>
+	 <?php
+
+    $count = 0;
+    foreach ($articles as $a) :
+        $count ++;
+        ?>
 	 
 	 <tr>
-	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 	<td>
-			<?php 
-			if($a->article_pic_id!==null):
-			?>
-			<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" style="min-height:100px;height:100px;min-width:100px;width:100px;" src="/inventory/image/articlethumbnail200?id=<?php echo $a->article_pic_id;?>"/>
-		</a>			
-			<?php 
-			else:
-			?>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td>
+			<?php
+        if ($a->article_pic_id !== null) :
+            ?>
+			<a
+				href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+					<img class="img-rounded"
+					style="min-height: 100px; height: 100px; min-width: 100px; width: 100px;"
+					src="/inventory/image/articlethumbnail200?id=<?php echo $a->article_pic_id;?>" />
+			</a>			
+			<?php
+        else :
+            ?>
 			
-					<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" width="70" height="70" src="/images/no-pic.jpg"/>
-		</a>			
+					<a
+				href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+					<img class="img-rounded" width="70" height="70"
+					src="/images/no-pic.jpg" />
+			</a>			
 	
 				
-			<?php 
-			endif;
-			?>
+			<?php
+        endif;
+        ?>
 			
 			</td>
-	 
-	 
-		<td>
-		
-		<div class="dropdown">
-					<a style="" class="dropdown-toggle" type="button" data-toggle="dropdown"
-						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
+
+
+			<td>
+
+				<div class="dropdown">
+					<a style="" class="dropdown-toggle" type="button"
+						data-toggle="dropdown" href="#"><span style="color: black;"
+						id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
 						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>"><i class="icon-pencil"></i> Edit</a>
+						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>"><i
+								class="icon-pencil"></i> Edit</a></li>
+						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>"><i
+								class="icon-list"></i> Detail</a></li>
+						<li class="divider"></li>
+						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/article/upload-picture1?id=<?php echo $this->escapeHtml($a['id']);?>">Upload
+								Picture</a></li>
 
-						</li>
-						<li>	<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>"><i class="icon-list"></i> Detail</a>
-	
-						</li>
- 						<li class="divider"></li>
- 						<li><a
-							href="<?php echo $this->baseUrl ?>/inventory/article/upload-picture1?id=<?php echo $this->escapeHtml($a['id']);?>">Upload Picture</a>
-						</li>
- 	
- 							<li class="divider"></li>
- 						<li><a
-				href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement</a>
-						</li>
-						</ul>
+						<li class="divider"></li>
+						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a['id']);?>">Stock
+								movement</a></li>
+					</ul>
 				</div>
-		<div style="color: gray;">
-				Code: <span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span><br>
-				Unit: <span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
+				<div style="color: gray;">
+					Code: <span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span><br>
+					Unit: <span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
 				</div>
-		
-		</td>
-		<td><?php echo $this->escapeHtml($a->type);?> </td>
-		<td><?php echo $this->escapeHtml($a->created_on);?> </td>
-		
-		<td>
-		
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a->id);?>"><?php echo $this->escapeHtml($a->article_balance);?></a>
-		</td>
-		
-		
-		<!-- <td><?php echo$this->escapeHtml($a->name_local);?> -->
-		<td><?php echo $this->escapeHtml($a->department_name);?> </td>
-		<td><?php echo $this->escapeHtml($a->remarks);?> </td>
-		 
-		<td>
-		</td>
-	</tr>
+
+			</td>
+			<td><?php echo $this->escapeHtml($a->type);?> </td>
+			<td><?php echo $this->escapeHtml($a->created_on);?> </td>
+
+			<td><a
+				href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a->id);?>"><?php echo $this->escapeHtml($a->article_balance);?></a>
+			</td>
+
+
+			<!-- <td><?php echo$this->escapeHtml($a->name_local);?> -->
+			<td><?php echo $this->escapeHtml($a->department_name);?> </td>
+			<td><?php echo $this->escapeHtml($a->remarks);?> </td>
+
+			<td></td>
+		</tr>
 <?php endforeach; ?>
 
  </tbody>
@@ -274,47 +289,44 @@ if ($total_articles <= 0) {
 
 <?php
 
-//===============================
-if (! is_null ( $paginator )):
-		
-	
-	//change it only
-	$base=$this->baseUrl . '/inventory/article/all?department_id='.$department_id.'&item_type='.$item_type.'&item_status='.$item_status.'&sort_by='.$sort_by;
-	$_connector_symbol = '&';
+    // ===============================
+    if (! is_null($paginator)) :
 
-	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+        // change it only
+        $base = $this->baseUrl . '/inventory/article/all?department_id=' . $department_id . '&item_type=' . $item_type . '&item_status=' . $item_status . '&sort_by=' . $sort_by;
+        $_connector_symbol = '&';
 
-	$p1 = ($paginator->page)-1;
-	$p2 = ($paginator->page)+1;
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
 
-	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
 
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
 
-	echo '<ul class="pagination">';
+        echo '<ul class="pagination">';
 
-	if($paginator->page != 1 AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $first.'"> |< </a></li>';
-		echo '<li><a href="'.  $prev .'"> < </a></li>';
-	}
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
 
-	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
 
-			
-		if ($i == $paginator->page) {
-			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-		} else {
-			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-		}
-	}
-	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $next.'"> > </a></li>';
-		echo '<li><a href="'.  $last .'"> >| </a></li>';
-	}
-	echo '</ul>';
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
 
 }

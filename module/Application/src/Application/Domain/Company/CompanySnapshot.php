@@ -44,7 +44,9 @@ class CompanySnapshot extends AbstractValueObject
     public $lastChangeBy;
 
     public $defaultWarehouse;
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -53,6 +55,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyCode()
@@ -61,6 +64,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyName()
@@ -69,6 +73,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultLogoId()
@@ -77,6 +82,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStatus()
@@ -85,6 +91,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -93,6 +100,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDefault()
@@ -101,6 +109,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -109,6 +118,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeOn()
@@ -117,6 +127,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -125,6 +136,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -133,6 +145,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultCurrency()
@@ -141,6 +154,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -149,6 +163,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCountry()
@@ -157,6 +172,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultAddress()
@@ -165,6 +181,7 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -173,11 +190,11 @@ class CompanySnapshot extends AbstractValueObject
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDefaultWarehouse()
     {
         return $this->defaultWarehouse;
     }
-
 }

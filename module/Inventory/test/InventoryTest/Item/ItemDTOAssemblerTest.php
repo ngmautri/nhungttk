@@ -8,21 +8,19 @@ use PHPUnit_Framework_TestCase;
 class ItemDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
-
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        // echo $root;
         require ($root . '/Bootstrap.php');
     }
 
     public function testOther()
     {
         try {
-            
-       
+
             ItemDTOAssembler::createGetMapping();
-           } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

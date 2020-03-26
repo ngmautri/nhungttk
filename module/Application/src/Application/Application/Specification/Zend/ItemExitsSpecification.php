@@ -34,7 +34,7 @@ class ItemExitsSpecification extends DoctrineSpecification
             "id" => $itemId,
             "company" => $companyId
         );
-  
+
         /**
          *
          * @var \Application\Entity\NmtInventoryItem $entiy ;

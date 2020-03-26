@@ -185,12 +185,11 @@ class TransactionRow extends AbstractEntity
     protected $pmtMethod;
 
     protected $invoiceRow;
-    
+
     protected $mvUuid;
-    
-    
 
     /**
+     *
      * @return mixed
      */
     public function getMvUuid()
@@ -313,9 +312,10 @@ class TransactionRow extends AbstractEntity
         $this->pmtMethod = $snapshot->pmtMethod;
         $this->invoiceRow = $snapshot->invoiceRow;
         $this->mvUuid = $snapshot->mvUuid;
-        
     }
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -324,6 +324,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -332,6 +333,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChecksum()
@@ -340,6 +342,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTrxDate()
@@ -348,6 +351,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTrxTypeId()
@@ -356,6 +360,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFlow()
@@ -364,6 +369,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuantity()
@@ -372,6 +378,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -380,6 +387,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -388,6 +396,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsLocked()
@@ -396,6 +405,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -404,6 +414,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -412,6 +423,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeOn()
@@ -420,6 +432,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPreferredVendor()
@@ -428,6 +441,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemUnit()
@@ -436,6 +450,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -444,6 +459,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -452,6 +468,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionText()
@@ -460,6 +477,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorUnitPrice()
@@ -468,6 +486,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPmtTermId()
@@ -476,6 +495,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDeliveryTermId()
@@ -484,6 +504,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLeadTime()
@@ -492,6 +513,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxRate()
@@ -500,6 +522,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -508,6 +531,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentStatus()
@@ -516,6 +540,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetId()
@@ -524,6 +549,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetClass()
@@ -532,6 +558,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceId()
@@ -540,6 +567,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceClass()
@@ -548,6 +576,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -556,6 +585,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSysNumber()
@@ -564,6 +594,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChangeOn()
@@ -572,6 +603,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChangeBy()
@@ -580,6 +612,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNumber()
@@ -588,6 +621,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -596,6 +630,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getActualQuantity()
@@ -604,6 +639,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -612,6 +648,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStockRemarks()
@@ -620,6 +657,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionType()
@@ -628,6 +666,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemSerialId()
@@ -636,6 +675,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemBatchId()
@@ -644,6 +684,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCogsLocal()
@@ -652,6 +693,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCogsDoc()
@@ -660,6 +702,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExchangeRate()
@@ -668,6 +711,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -676,6 +720,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -684,6 +729,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -692,6 +738,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -700,6 +747,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -708,6 +756,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -716,6 +765,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -724,6 +774,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnit()
@@ -732,6 +783,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversed()
@@ -740,6 +792,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDate()
@@ -748,6 +801,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDoc()
@@ -756,6 +810,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalReason()
@@ -764,6 +819,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversable()
@@ -772,6 +828,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -780,6 +837,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalUnitPrice()
@@ -788,6 +846,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -796,6 +855,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -804,6 +864,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -812,6 +873,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()
@@ -820,6 +882,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPr()
@@ -828,6 +891,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()
@@ -836,6 +900,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorInvoice()
@@ -844,6 +909,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoRow()
@@ -852,6 +918,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrRow()
@@ -860,6 +927,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInventoryGi()
@@ -868,6 +936,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInventoryGr()
@@ -876,6 +945,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInventoryTransfer()
@@ -884,6 +954,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWh()
@@ -892,6 +963,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGr()
@@ -900,6 +972,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMovement()
@@ -908,6 +981,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIssueFor()
@@ -916,6 +990,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrency()
@@ -924,6 +999,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrency()
@@ -932,6 +1008,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProject()
@@ -940,6 +1017,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCostCenter()
@@ -948,6 +1026,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUom()
@@ -956,6 +1035,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingPeriod()
@@ -964,6 +1044,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWhLocation()
@@ -972,6 +1053,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRow()
@@ -980,6 +1062,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -988,6 +1071,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrency()
@@ -996,6 +1080,7 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPmtMethod()
@@ -1004,11 +1089,11 @@ class TransactionRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceRow()
     {
         return $this->invoiceRow;
     }
-
 }

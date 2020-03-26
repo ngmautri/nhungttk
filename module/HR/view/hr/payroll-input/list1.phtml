@@ -1,6 +1,6 @@
    <?php      /**@var \Application\Entity\NmtFinPostingPeriod $period ; */?>
-   	
-	      <div>
+
+<div>
 	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
 		href="#list_filter" class="" data-toggle="collapse">FILTER</a>
 </div>
@@ -8,199 +8,235 @@
 
 	<div
 		style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
-      
-      
-      <form class="form-horizontal" action="" method="get" enctype="multipart/form-data">
+
+
+		<form class="form-horizontal" action="" method="get"
+			enctype="multipart/form-data">
 
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag">Salary Period:</label>
-					<div class="col-sm-2">
+				<div class="col-sm-2">
 					<select name="periodId" class="form-control input-sm">
-								<option value="">Select</option>
+						<option value="">Select</option>
    	    							<?php
-   	    							if($periods!== null):
-   	    							     foreach ( $periods as $p ) :   	    							     
-   	    							     /**@var \Application\Entity\NmtFinPostingPeriod $p ; */
-   	    							
-   	    							if($period!==null):
-   	    							 if($period->getId() == $p->getId() ):
-   	    							     echo '<option selected value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
-   	    							 else:
-   	    							     echo '<option value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
-   	    							 endif;
-   	    							else:
-   	    						  	   echo '<option value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+            if ($periods !== null) :
+                foreach ($periods as $p) :
+                    /**@var \Application\Entity\NmtFinPostingPeriod $p ; */
+
+                    if ($period !== null) :
+                        if ($period->getId() == $p->getId()) :
+                            echo '<option selected value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+                        else :
+                            echo '<option value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+                    endif;
+                endforeach
+                ;
    	    							endif;
-   	    							
-       	    							endforeach;
-   	    							endif;
-									?>
+
+            ?>
    					</select>
-   				</div>
+				</div>
 			</div>
-		
-		
-			
+
+
+
 			<div class="form-group margin-bottom">
 				<div class="col-sm-offset-2 col-sm-10">
-     <button type="submit" class="btn btn-default" 
-     onclick="searchEntity('/hr/payroll-input/list1','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+					<button type="submit" class="btn btn-default"
+						onclick="searchEntity('/hr/payroll-input/list1','<?php echo $context;?>');">
+						<small><i class="glyphicon glyphicon-search"> </i></small> Search
+					</button>
 				</div>
 			</div>
 
 		</form>
-    	</div>
-</div>  
-	<hr>
-	<ul class="nav nav-tabs">
-  		<li class="active"><a data-toggle="tab" href="#home1">INPUT</a></li>
-  		<li><a data-toggle="tab" href="#salary_history1">PAYROLL</a></li>
-	</ul>
-
-    <div class="tab-content">
-    
-      <div id="home1" class="tab-pane fade in active">
-      
-      
-
-
-      
- 	
-   <h4 style="">Period <?php if($period!==null): echo $period->getPeriodName(); endif;?></h4>
-   <?php if($lastRevision!==null): 
-if($lastRevision->getCurrentState()=="ARCHIVED"):?>
-<div style="padding-bottom: 1px;">      
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/payroll-input/revise?<?php if($target!==null): echo 'target_id='.$target->getId().'&token='.$target->getToken(); endif;?><?php if($period!==null): echo '&period_id='.$period->getId().'&period_token='.$period->getToken(); endif?>"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;Create New Revision</a>
+	</div>
 </div>
+<hr>
+<ul class="nav nav-tabs">
+	<li class="active"><a data-toggle="tab" href="#home1">INPUT</a></li>
+	<li><a data-toggle="tab" href="#salary_history1">PAYROLL</a></li>
+</ul>
+
+<div class="tab-content">
+
+	<div id="home1" class="tab-pane fade in active">
+
+
+
+
+
+
+		<h4 style="">Period <?php if($period!==null): echo $period->getPeriodName(); endif;?></h4>
+   <?php
+
+if ($lastRevision !== null) :
+    if ($lastRevision->getCurrentState() == "ARCHIVED") :
+        ?>
+<div style="padding-bottom: 1px;">
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/hr/payroll-input/revise?<?php if($target!==null): echo 'target_id='.$target->getId().'&token='.$target->getToken(); endif;?><?php if($period!==null): echo '&period_id='.$period->getId().'&period_token='.$period->getToken(); endif?>"><small><i
+					class="glyphicon glyphicon-plus"> </i></small>&nbsp;Create New
+				Revision</a>
+		</div>
 <?php
 endif;
 endif;
 
+
+
 ?>
 <br>
-  <table style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Revision<br>Number</b></td>
-			<td><b>Current<br>State</b></td>
-			<td><b>Present <br>Days</b></td>
-			<td><b>Out of<br>Office</b></td>
-			<td><b>Sick<br>Leave</b></td>
-			<td><b>Annual <br>Leave</b></td>
-			<td><b>Personal <br> Paid Leave</b></td>
-			<td><b>Maternity <br> Leave</b></td>
-			<td><b>Unappoved <br> Leave</b></td>
-			<td><b>Approved <br> Leave</b></td>
-			<td><b>OT1</b></td>
-			<td><b>OT12</b></td>
-			<td><b>OT3</b></td>
-			<td><b>Doc.</b></td>
-			<td><b>action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+		<table style="font-size: 9pt;"
+			class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Revision<br>Number
+					</b></td>
+					<td><b>Current<br>State
+					</b></td>
+					<td><b>Present <br>Days
+					</b></td>
+					<td><b>Out of<br>Office
+					</b></td>
+					<td><b>Sick<br>Leave
+					</b></td>
+					<td><b>Annual <br>Leave
+					</b></td>
+					<td><b>Personal <br> Paid Leave
+					</b></td>
+					<td><b>Maternity <br> Leave
+					</b></td>
+					<td><b>Unappoved <br> Leave
+					</b></td>
+					<td><b>Approved <br> Leave
+					</b></td>
+					<td><b>OT1</b></td>
+					<td><b>OT12</b></td>
+					<td><b>OT3</b></td>
+					<td><b>Doc.</b></td>
+					<td><b>action</b></td>
+				</tr>
+			</thead>
+			<tbody>
     	
     <?php
-        $count = 0;
-        foreach ( $list as $a ) :
+    $count = 0;
+    foreach ($list as $a) :
         $count ++;
-        	/**@var \Application\Entity\NmtHrPayrollInput $a ;*/
-    ?>  
+        /**@var \Application\Entity\NmtHrPayrollInput $a ;*/
+        ?>  
      <tr>
-			<td><?php echo $count;?></td>
-			<td><?php echo $a->getRevisionNumber();?></td>
-			<td>
+					<td><?php echo $count;?></td>
+					<td><?php echo $a->getRevisionNumber();?></td>
+					<td>
 			
 			<?php echo $a->getCurrentState();?></td>
-			<td>
-			<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Present Days (Finger Scan): <?php echo $a->getEmployee()->getEmployeeName() .'-'.$a->getEmployee()->getEmployeeCode();?> // Period: <?php if($period!==null): echo $period->getPeriodName(); endif;?>','680',$(window).height()-100, '/hr/finger-scan/show1','j_loaded_data', true);"><?php echo $a->getPresentDay();?></a>
-			</td>
-			<td><?php echo $a->getOutOfOfficeDay();?></td>
-			<td><?php echo $a->getSickLeave();?></td>
-			<td><?php echo $a->getAnnualLeave();?></td>
-			<td><?php echo $a->getPersonalPaidLeave();?></td>
-			<td><?php echo $a->getPersonalPaidLeave();?></td>
-			<td><?php echo $a->getUnapprovedLeave();?></td>
-			<td><?php echo $a->getApprovedLeave();?></td>
-			<td><?php echo $a->getOvertime1();?></td>
-			<td><?php echo $a->getOvertime2();?></td>
-			<td><?php echo $a->getOtherLeave3();?></td>
-			<td><b>Doc.</b></td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;<?php echo $a->getId();?></a></td>
-		</tr>
+					<td><a style="color: #0080ff;" href="javascript:;"
+						onclick="showJqueryDialog('Present Days (Finger Scan): <?php echo $a->getEmployee()->getEmployeeName() .'-'.$a->getEmployee()->getEmployeeCode();?> // Period: <?php if($period!==null): echo $period->getPeriodName(); endif;?>','680',$(window).height()-100, '/hr/finger-scan/show1','j_loaded_data', true);"><?php echo $a->getPresentDay();?></a>
+					</td>
+					<td><?php echo $a->getOutOfOfficeDay();?></td>
+					<td><?php echo $a->getSickLeave();?></td>
+					<td><?php echo $a->getAnnualLeave();?></td>
+					<td><?php echo $a->getPersonalPaidLeave();?></td>
+					<td><?php echo $a->getPersonalPaidLeave();?></td>
+					<td><?php echo $a->getUnapprovedLeave();?></td>
+					<td><?php echo $a->getApprovedLeave();?></td>
+					<td><?php echo $a->getOvertime1();?></td>
+					<td><?php echo $a->getOvertime2();?></td>
+					<td><?php echo $a->getOtherLeave3();?></td>
+					<td><b>Doc.</b></td>
+					<td><a style="color: navy" href="#"><small><span
+								class="glyphicon glyphicon-print"></span></small>&nbsp;<?php echo $a->getId();?></a></td>
+				</tr>
 		
 		<?php endforeach; ?>
 	</tbody>
-</table>
-      </div>
-      
-      <div id="salary_history1" class="tab-pane fade">
-   <h4 style="">Period <?php if($period!==null): echo $period->getPeriodName(); endif;?></h4>
-        <table style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Revision<br>Number</b></td>
-			<td><b>Current<br>State</b></td>			
-			<td><b>Contracted<br>Salary</b></td>
-			<td><b>Housing <br>Allowance</b></td>
-			<td><b>Transportation<br>Allowance</b></td>
-			<td><b>Attendance<br>Bonus</b></td>
-			<td><b>SSO <br>Deduction</b></td>
-			<td><b>PIT <br>Deduction</b></td>
-			<td><b>Net <br>Salary</b></td>
-			<td><b>action</b></td>
-		</tr>
-	</thead>
-	<tbody>
-	<tr>
-			<td>1</td>
-			<td>0</td>
-			<td>APPROVED</td>
-			<td>900.000</td>
-			<td>0</td>
-			<td>120.000</td>
-			<td>350.000</td>
-			<td>0</td>
-			<td>0</td>
-			<td>850.000</td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
-			
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>1</td>
-			<td>APPROVED</td>
-			<td>900.000</td>
-			<td>0</td>
-			<td>120.000</td>
-			<td>350.000</td>
-			<td>0</td>
-			<td>0</td>
-			<td>890.000</td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
-			
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>2</td>
-			<td>APPROVED</td>
-			<td>900.000</td>
-			<td>0</td>
-			<td>120.000</td>
-			<td>350.000</td>
-			<td>0</td>
-			<td>0</td>
-			<td>750.000</td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
-			
-		</tr>
-	</tbody>
-</table>
-      </div>
-    
+		</table>
+	</div>
 
-      
-    </div>
+	<div id="salary_history1" class="tab-pane fade">
+		<h4 style="">Period <?php if($period!==null): echo $period->getPeriodName(); endif;?></h4>
+		<table style="font-size: 9pt;"
+			class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Revision<br>Number
+					</b></td>
+					<td><b>Current<br>State
+					</b></td>
+					<td><b>Contracted<br>Salary
+					</b></td>
+					<td><b>Housing <br>Allowance
+					</b></td>
+					<td><b>Transportation<br>Allowance
+					</b></td>
+					<td><b>Attendance<br>Bonus
+					</b></td>
+					<td><b>SSO <br>Deduction
+					</b></td>
+					<td><b>PIT <br>Deduction
+					</b></td>
+					<td><b>Net <br>Salary
+					</b></td>
+					<td><b>action</b></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>0</td>
+					<td>APPROVED</td>
+					<td>900.000</td>
+					<td>0</td>
+					<td>120.000</td>
+					<td>350.000</td>
+					<td>0</td>
+					<td>0</td>
+					<td>850.000</td>
+					<td><a style="color: navy" href="#"><small><span
+								class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>1</td>
+					<td>APPROVED</td>
+					<td>900.000</td>
+					<td>0</td>
+					<td>120.000</td>
+					<td>350.000</td>
+					<td>0</td>
+					<td>0</td>
+					<td>890.000</td>
+					<td><a style="color: navy" href="#"><small><span
+								class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>2</td>
+					<td>APPROVED</td>
+					<td>900.000</td>
+					<td>0</td>
+					<td>120.000</td>
+					<td>350.000</td>
+					<td>0</td>
+					<td>0</td>
+					<td>750.000</td>
+					<td><a style="color: navy" href="#"><small><span
+								class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+
+
+</div>

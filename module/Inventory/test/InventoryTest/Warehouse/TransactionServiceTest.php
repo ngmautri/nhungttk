@@ -44,19 +44,17 @@ class TransactionServiceTest extends PHPUnit_Framework_TestCase
         $data["docCurrency"] = 9;
         $data["localCurrency"] = 1;
 
-        $dto= TransactionDTOAssembler::createDTOFromArray($data);
+        $dto = TransactionDTOAssembler::createDTOFromArray($data);
         /**
          *
          * @var \Inventory\Application\Service\Warehouse\TransactionService $sv ;
          */
         $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Warehouse\TransactionService');
-        
-        //var_dump($sv->getHeader(689));
-        
-        var_dump($sv->post(699,null, null));
-        
-        
-        //var_dump(TransactionFactory::getGoodIssueTransactions());
-        
+
+        // var_dump($sv->getHeader(689));
+
+        var_dump($sv->post(699, null, null));
+
+        // var_dump(TransactionFactory::getGoodIssueTransactions());
     }
 }

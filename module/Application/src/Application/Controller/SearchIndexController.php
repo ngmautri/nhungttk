@@ -1,6 +1,4 @@
 <?php
-
-
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -11,55 +9,56 @@ use Inventory\Service\ItemSearchService;
 use Inventory\Service\ItemSerialSearchService;
 use Procure\Service\PrSearchService;
 use PM\Service\ProjectSearchService;
+
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class SearchIndexController extends AbstractActionController
 {
 
     protected $doctrineEM;
+
     protected $itemSearchService;
+
     protected $itemSerialSearchService;
+
     protected $prSearchService;
+
     protected $projectSearchService;
-    
 
     /*
      * Defaul Action
      */
     public function indexAction()
     {}
-    
+
     /**
-     * 
+     *
      * @return \Zend\View\Model\ViewModel
      */
     public function updateAllAction()
     {
         $result = array();
-       // $result[] = "ITEM ". $this->itemSearchService->createItemIndex();
-        $result[] = "ITEM Serial". $this->itemSearchService->createItemIndex();
-        
-        $result[] = "PR ". $this->prSearchService->createIndex();
+        // $result[] = "ITEM ". $this->itemSearchService->createItemIndex();
+        $result[] = "ITEM Serial" . $this->itemSearchService->createItemIndex();
+
+        $result[] = "PR " . $this->prSearchService->createIndex();
         $result[] = "PROJECT " . $this->projectSearchService->createIndex();
-     
-        
+
         // trigger uploadPicture. AbtractController is EventManagerAware.
         $this->getEventManager()->trigger('system.log', __CLASS__, array(
             'priority' => 7,
             'message' => 'Search Indexes updated!'
         ));
-        
+
         return new ViewModel(array(
-            "result"=>$result
+            "result" => $result
         ));
-        
     }
 
     /**
-     * 
      */
     public function listAction()
     {
@@ -69,54 +68,55 @@ class SearchIndexController extends AbstractActionController
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
         ;
-        
+
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
         ;
-        
-        $criteria = array(
-         );
+
+        $criteria = array();
         $sort = array(
-            'firstname' => 'ASC',
-         );
-        
+            'firstname' => 'ASC'
+        );
+
         $resources = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findBy($criteria, $sort);
         $totalResults = count($resources);
         $paginator = null;
-        
+
         if ($totalResults > $resultsPerPage) {
             $paginator = new Paginator($totalResults, $page, $resultsPerPage);
             $resources = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findBy($criteria, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
-        
+
         return new ViewModel(array(
             'total_resources' => $totalResults,
-	        'resources' => $resources,
-	        'paginator' => $paginator
-	    ));
-	}
-	
+            'resources' => $resources,
+            'paginator' => $paginator
+        ));
+    }
+
     /**
-     * 
-     *  @return \Doctrine\ORM\EntityManager
+     *
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
     }
 
-   /**
-    * 
-    *  @param EntityManager $doctrineEM
-    */
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getItemSearchService()
@@ -125,13 +125,16 @@ class SearchIndexController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $itemSearchService
      */
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {
         $this->itemSearchService = $itemSearchService;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getPrSearchService()
@@ -140,13 +143,16 @@ class SearchIndexController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $prSearchService
      */
     public function setPrSearchService(PrSearchService $prSearchService)
     {
         $this->prSearchService = $prSearchService;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getProjectSearchService()
@@ -155,13 +161,16 @@ class SearchIndexController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $projectSearchService
      */
     public function setProjectSearchService(ProjectSearchService $projectSearchService)
     {
         $this->projectSearchService = $projectSearchService;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getItemSerialSearchService()
@@ -170,18 +179,11 @@ class SearchIndexController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $itemSerialSearchService
      */
     public function setItemSerialSearchService(ItemSerialSearchService $itemSerialSearchService)
     {
         $this->itemSerialSearchService = $itemSerialSearchService;
     }
-
-
-
-
-
-	
-
-	
 }

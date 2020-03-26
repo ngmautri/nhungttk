@@ -3,13 +3,9 @@ namespace ProcureTest\PO;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Reporting\PR\PrRowStatusReporter;
-use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
-use PHPUnit_Framework_TestCase;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
+use PHPUnit_Framework_TestCase;
 
 class GRQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {

@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -9,6 +8,4 @@ namespace Inventory\Domain\Warehouse\Transaction;
  */
 interface GoodsReceiptInterface
 {
-
-   
 }

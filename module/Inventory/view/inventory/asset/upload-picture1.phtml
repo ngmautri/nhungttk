@@ -1,76 +1,82 @@
-<h4><i class="icon-upload">  </i> Upload picture:</h4>
+<h4>
+	<i class="icon-upload"> </i> Upload picture:
+</h4>
 
-<?php 
+<?php
+if ($asset !== null) {
+    echo '<div class="alert alert-info">';
 
-if ($asset!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Asset Name	: <strong>' .$asset->name . '</strong></li>';
-	 echo '<li>Asset Tag	: <strong>' .$asset->tag . '</strong></li>';
-	 echo '<li>Model		: <strong>' .$asset->model . '</strong></li>';
-	 echo '<li>Serial		: <strong>' .$asset->serial . '</strong></li>';
-	 
-	 echo '</ul>';
-	 echo '</div>';
-} 
+    echo '<ul>';
+    echo '<li>Asset Name	: <strong>' . $asset->name . '</strong></li>';
+    echo '<li>Asset Tag	: <strong>' . $asset->tag . '</strong></li>';
+    echo '<li>Model		: <strong>' . $asset->model . '</strong></li>';
+    echo '<li>Serial		: <strong>' . $asset->serial . '</strong></li>';
+
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
-	
-  
-  <!--  <div class="alert alert-warning">
+
+
+<!--  <div class="alert alert-warning">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     <strong>Info!</strong> This alert box could indicate a neutral informative change or action.
   </div>
   -->
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/asset/upload-picture1" method="post" enctype="multipart/form-data" id="UploadPicsForm" >
- <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" id="redirectUrl" />
- <input type="hidden" name="id" value="<?php echo $asset!==null ? ($asset->id) :""?>" id="asset_id"/>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputLocation">Pictures:</label>
-        <div class="controls">
-        	<input type="file" name="pictures[]"/><br>
-         	<input type="file" name="pictures[]"/><br>
-          	<input type="file" name="pictures[]"/><br>
-           	<input type="file" name="pictures[]"/><br>
-            <input type="file" name="pictures[]"/><br>
-          </div>
-      </div>
-      
-      <div class="control-group">
-        <div class="controls">
-             <button type="button" onclick="uploadAssetPictures()" class="btn" id="upload"><i class="icon-upload">  </i> Upload</button>
-             <a href="<?php echo $redirectUrl ?>"><i class="icon-back">  </i> BACK</a>
-        </div>
-      </div>
-    </form>
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/asset/upload-picture1"
+	method="post" enctype="multipart/form-data" id="UploadPicsForm">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" id="redirectUrl" /> <input
+		type="hidden" name="id"
+		value="<?php echo $asset!==null ? ($asset->id) :""?>" id="asset_id" />
+
+	<div class="control-group">
+		<label class="control-label" for="inputLocation">Pictures:</label>
+		<div class="controls">
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="button" onclick="uploadAssetPictures()" class="btn"
+				id="upload">
+				<i class="icon-upload"> </i> Upload
+			</button>
+			<a href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> BACK</a>
+		</div>
+	</div>
+</form>
 
 
 <!-- Modal -->
 <div id="myModal" class="modal hide" role="dialog">
-  <div class="modal-dialog">
-      <div class="modal-body">
-        <p>Processing........Please Wait!</p>
-      </div>
-   </div>
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<p>Processing........Please Wait!</p>
+		</div>
+	</div>
 </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="modal1" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h5 class="modal-title">Mascot International Laos</h5>
-        </div>
-        <div class="modal-body">
-          <p> No picture selected!</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- Modal -->
+<div class="modal fade" id="modal1" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h5 class="modal-title">Mascot International Laos</h5>
+			</div>
+			<div class="modal-body">
+				<p>No picture selected!</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -29,8 +29,7 @@ class StockControllerFactory implements FactoryInterface
 
         $sv = $container->get('Inventory\Service\ItemSearchService');
         $controller->setItemSearchService($sv);
-		
-	    return $controller;
-	}	
-	
+
+        return $controller;
+    }
 }

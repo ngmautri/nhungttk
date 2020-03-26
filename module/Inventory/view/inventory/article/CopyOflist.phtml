@@ -1,84 +1,90 @@
 
 <ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add New Item</a></li>
-  <!-- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/category">Item category</a></li> -->
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add
+			New Item</a></li>
+	<!-- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/category">Item category</a></li> -->
 </ul>
 
- 	 
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/article"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search"></i>Search</button>
-   </form>
- 
+
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory/search/article"
+	method="get" enctype="multipart/form-data">
+	<input type="text" name="query" class="">
+	<button type="submit" class="btn">
+		<i class="icon-search"></i>Search
+	</button>
+</form>
+
 
 
 <?php
 
 if ($total_articles <= 0) {
-	
-	echo 'No items found!';
+
+    echo 'No items found!';
 } else {
 
-	if (! is_null ( $paginator )) {
-		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_articles . ' items found!';
-	}else{	
-		echo $total_articles . ' items found!';
-	}
-	
-?>
+    if (! is_null($paginator)) {
+        echo 'Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_articles . ' items found!';
+    } else {
+        echo $total_articles . ' items found!';
+    }
+
+    ?>
 
 <table class="pure-table pure-table-bordered">
-<thead>
-	<tr>
-		<td><b>Name</b></td>
-		<!-- td><b>Name-LA</b></td> -->
-		<td ><b data-toggle="tooltip" title = "Balance">Bal.</b></td>	
-		<td><b>Code</b></td>
-		<td><b>Unit</b></td>
-		<td><b>Remark</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
+	<thead>
+		<tr>
+			<td><b>Name</b></td>
+			<!-- td><b>Name-LA</b></td> -->
+			<td><b data-toggle="tooltip" title="Balance">Bal.</b></td>
+			<td><b>Code</b></td>
+			<td><b>Unit</b></td>
+			<td><b>Remark</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
 
- <tbody>
+	<tbody>
  
-	 <?php 
-	 
-	 $count = 0;
-	 foreach ($articles as $a) : 
-	 	 $count++;
-	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-	 
-	 	 
-	 ?>
+	 <?php
+
+    $count = 0;
+    foreach ($articles as $a) :
+        $count ++;
+        echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+        // $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+
+        ?>
 	 
 	 
 		<td><span id="<?php echo $this->escapeHtml($a->id);?>_name"><?php echo $this->escapeHtml($a->name);?></span>
 		</td>
-		
-		<td>
-		
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a->id);?>"><?php echo $this->escapeHtml($a->article_balance);?></a>
+
+		<td><a
+			href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a->id);?>"><?php echo $this->escapeHtml($a->article_balance);?></a>
 		</td>
-		
-		
+
+
 		<!-- <td><?php echo$this->escapeHtml($a->name_local);?> -->
-		<td><span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span></td> 
+		<td><span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span></td>
 		<td><span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span></td>
 		<td><?php echo $this->escapeHtml($a->remarks);?> </td>
-		 
-		<td>
-		<a href="#" onclick="openPRCart('<?php echo $a->id?>');"><i class="icon-shopping-cart"></i>Order</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($a->id);?>">Receive</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
-	
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
-		
+
+		<td><a href="#" onclick="openPRCart('<?php echo $a->id?>');"><i
+				class="icon-shopping-cart"></i>Order</a> <a
+			href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($a->id);?>">Receive</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
+
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
+
 		</td>
-	</tr>
+		</tr>
 <?php endforeach; ?>
 
  </tbody>
@@ -89,51 +95,48 @@ if ($total_articles <= 0) {
 
 <?php
 
-//===============================
-if (! is_null ( $paginator )):
-		
-	
-	//change it only
-	$base=$this->baseUrl . '/inventory/article/list';
-	$_connector_symbol = '?';
+    // ===============================
+    if (! is_null($paginator)) :
 
-	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+        // change it only
+        $base = $this->baseUrl . '/inventory/article/list';
+        $_connector_symbol = '?';
 
-	$p1 = ($paginator->page)-1;
-	$p2 = ($paginator->page)+1;
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
 
-	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
 
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
 
-	echo '<ul class="pagination">';
+        echo '<ul class="pagination">';
 
-	if($paginator->page != 1 AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $first.'"> |< </a></li>';
-		echo '<li><a href="'.  $prev .'"> < </a></li>';
-	}
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
 
-	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
 
-			
-		if ($i == $paginator->page) {
-			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-		} else {
-			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-		}
-	}
-	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $next.'"> > </a></li>';
-		echo '<li><a href="'.  $last .'"> >| </a></li>';
-	}
-	echo '</ul>';
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
 
 }
-//===============================
+// ===============================
 ?>
 
 
@@ -173,7 +176,7 @@ endif;
 							value="article">
 					</div>
 				</div>
-	
+
 				<div class="control-group">
 					<label class="control-label" for="inputTag">Code:</label>
 					<div class="controls">
@@ -181,7 +184,7 @@ endif;
 							value="">
 					</div>
 				</div>
-				
+
 				<div class="control-group">
 					<label class="control-label" for="inputTag">Unit:</label>
 					<div class="controls">
@@ -189,7 +192,7 @@ endif;
 							value="">
 					</div>
 				</div>
-				
+
 
 				<div class="control-group">
 					<label class="control-label" for="inputTag">Quantity:</label>
@@ -233,4 +236,4 @@ endif;
 			<p>Working on it........Please Wait!</p>
 		</div>
 	</div>
-</div>	
+</div>

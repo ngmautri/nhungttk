@@ -23,6 +23,6 @@ class WarehouseLoggingListenerFactory implements FactoryInterface
         $listener = new WarehouseLoggingListener();
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $listener->setDoctrineEM($sv);
-		return $listener;
-	}
+        return $listener;
+    }
 }

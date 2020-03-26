@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  *
@@ -6,7 +6,6 @@
  * @var \Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO $rowDTO ;
  *
  */
-
 ?>
 
 <div style="font-size: 9pt; margin: 5pt 2pt 5pt 5pt">

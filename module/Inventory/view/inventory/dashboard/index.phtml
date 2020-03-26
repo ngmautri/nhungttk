@@ -1,84 +1,97 @@
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Inventory Dashboard</a></li>
-  </ul>
-  
-<div id="general" style="font-size: 9pt; padding: 10px 6px 1px 5px"> 
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Inventory Dashboard</a></li>
+	</ul>
 
-<div style="padding: 0px; font-size: 9pt; color: gray;">
+	<div id="general" style="font-size: 9pt; padding: 10px 6px 1px 5px">
 
-		<div class="row">
-			<div class="col-sm-4" style="font-size: 9pt; padding: 2px 2px 1px 15px">
-			
-			<div class="panel panel-default">
-					<div style="height: 28px;padding:5px" class="panel-heading"><strong>Random Item</strong></div>
-					<div class="panel-body" style="padding: 2px;">
-						<div id="random_item_containter" style="height: 230px;">
+		<div style="padding: 0px; font-size: 9pt; color: gray;">
+
+			<div class="row">
+				<div class="col-sm-4"
+					style="font-size: 9pt; padding: 2px 2px 1px 15px">
+
+					<div class="panel panel-default">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<strong>Random Item</strong>
+						</div>
+						<div class="panel-body" style="padding: 2px;">
+							<div id="random_item_containter" style="height: 230px;"></div>
+						</div>
+					</div>
+
+					<div class="panel panel-info">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<strong>Most Valuable Items</strong>
+						</div>
+						<div class="panel-body" style="padding: 2px;">
+							<div id="most_value_items_container" style=""></div>
 						</div>
 					</div>
 				</div>
-			
-			<div class="panel panel-info">
-					<div  style="height: 28px;padding:5px" class="panel-heading"><strong>Most Valuable Items</strong></div>
-					<div class="panel-body" style="padding: 2px;">
-						<div id="most_value_items_container" style="">							
+
+
+				<div class="col-sm-4"
+					style="font-size: 9pt; padding: 2px 2px 1px 10px">
+
+					<div class="panel panel-default">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<strong>Recent Created Items</strong>
+						</div>
+						<div class="panel-body" style="padding: 2px;">
+							<div id="last_created_items_containter" style=""></div>
 						</div>
 					</div>
-				</div>
-				</div>
+
+					<div class="panel panel-default">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<i class="fa fa-truck" aria-hidden="true"></i> <strong><?php echo $this->translate('Recently received items');?></strong>
+						</div>
+						<div class="panel-body" style="padding: 2px;">
+							<div id="recent_received_items_containter" style=""></div>
+						</div>
+					</div>
 
 
-			<div class="col-sm-4" style="font-size: 9pt; padding: 2px 2px 1px 10px">
-			
-			<div class="panel panel-default">
-					<div style="height: 28px;padding:5px" class="panel-heading"><strong>Recent Created Items</strong></div>
-					<div class="panel-body" style="padding: 2px;">
-						<div id="last_created_items_containter" style=""></div>
-					</div>
-				</div>
-			
-			<div class="panel panel-default">
-					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-truck" aria-hidden="true"></i> 
-					<strong><?php echo $this->translate('Recently received items');?></strong></div>
-					<div class="panel-body" style="padding: 2px;">
-						<div id="recent_received_items_containter" style=""></div>
-					</div>
-				</div>
-			
-				
-			
-				<div class="panel panel-warning">
-					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-shopping-cart" aria-hidden="true"></i>
-					 <strong>Recent Ordered Items</strong></div>
-					<div class="panel-body" style="padding:2px;">
-						<div id="last_ordered_items_containter" style=""></div>
-					</div>
-				</div>
 
-			</div>
-			<div class="col-sm-4">
-				<div class="panel panel-primary">
-					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-calendar" aria-hidden="true"></i> <strong>Calendar</strong></div>
-					<div class="panel-body" style="padding:0px;">
-						<div id="calendar_containter" style=""></div>
+					<div class="panel panel-warning">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<i class="fa fa-shopping-cart" aria-hidden="true"></i> <strong>Recent
+								Ordered Items</strong>
+						</div>
+						<div class="panel-body" style="padding: 2px;">
+							<div id="last_ordered_items_containter" style=""></div>
+						</div>
 					</div>
+
 				</div>
-				
-				<div class="panel panel-success">
-					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-shopping-cart" aria-hidden="true"></i>
-					 <strong>Most Order Items</strong></div>
-					<div class="panel-body" style="padding: 1px;">
-						<div id="most_order_items_containter" style=""></div>
+				<div class="col-sm-4">
+					<div class="panel panel-primary">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<i class="fa fa-calendar" aria-hidden="true"></i> <strong>Calendar</strong>
+						</div>
+						<div class="panel-body" style="padding: 0px;">
+							<div id="calendar_containter" style=""></div>
+						</div>
 					</div>
+
+					<div class="panel panel-success">
+						<div style="height: 28px; padding: 5px" class="panel-heading">
+							<i class="fa fa-shopping-cart" aria-hidden="true"></i> <strong>Most
+								Order Items</strong>
+						</div>
+						<div class="panel-body" style="padding: 1px;">
+							<div id="most_order_items_containter" style=""></div>
+						</div>
+					</div>
+
 				</div>
-				
 			</div>
 		</div>
-</div>
-</div>
+	</div>
 
 
-<script>
+	<script>
 	doPaginator('/inventory/dashboard/random-item','random_item_containter');
 	doPaginator('/inventory/dashboard/most-order-items','most_order_items_containter');
 	doPaginator('/inventory/dashboard/last-created-items','last_created_items_containter');

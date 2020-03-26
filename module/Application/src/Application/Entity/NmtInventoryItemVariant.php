@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemVariant
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemVariant
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryItemVariant
     private $token;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemVariant
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemVariant
     private $lastChangeOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="variant_name", type="string", length=100, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemVariant
     private $variantName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="varriant_description", type="string", length=255, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryItemVariant
     private $varriantDescription;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="variant_text", type="text", length=65535, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryItemVariant
     private $variantText;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="variant_colour", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryItemVariant
     private $variantColour;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="variant_size", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryItemVariant
     private $variantSize;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="variant_origin", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryItemVariant
     private $variantOrigin;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attribute1", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryItemVariant
     private $attribute1;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attribute2", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryItemVariant
     private $attribute2;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attribute3", type="string", length=45, nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryItemVariant
     private $attribute3;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attribute4", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryItemVariant
     private $attribute4;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attribute5", type="string", length=45, nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryItemVariant
     private $attribute5;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -130,6 +146,7 @@ class NmtInventoryItemVariant
     private $item;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -140,6 +157,7 @@ class NmtInventoryItemVariant
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -148,8 +166,6 @@ class NmtInventoryItemVariant
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

@@ -3,26 +3,27 @@
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
 	</ul>
-<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt">
 
-<div class="row">
-  <div class="col-xs-5 col-md-2">
+		<div class="row">
+			<div class="col-xs-5 col-md-2">
   
-  					<?php 
-    					$current_step="";
-    					include ('calculator-wizard.php'); 
-  					?>
+  					<?php
+    $current_step = "";
+    include ('calculator-wizard.php');
+    ?>
 				
   </div>
-  <div class="col-xs-12 col-sm-6 col-md-10" style="">
-  <h3><?php echo $this->translate('Start Payroll Calculation'); ?></h3>
-  <hr>
-   <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/payroll-period"><?php echo $this->translate('Start'); ?>&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
- 
-  
-  </div>
-</div>	
+			<div class="col-xs-12 col-sm-6 col-md-10" style="">
+				<h3><?php echo $this->translate('Start Payroll Calculation'); ?></h3>
+				<hr>
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/payroll-period"><?php echo $this->translate('Start'); ?>&nbsp;<i
+					class="fa fa-chevron-right" aria-hidden="true"></i></a>
 
+
+			</div>
+		</div>
+
+	</div>
 </div>
-</div>
-	

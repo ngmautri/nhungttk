@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryTransaction
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryTransaction
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_id", type="integer", nullable=false)
@@ -29,6 +31,7 @@ class NmtInventoryTransaction
     private $itemId;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="transaction_date", type="datetime", nullable=false)
@@ -36,6 +39,7 @@ class NmtInventoryTransaction
     private $transactionDate = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="transaction_type_id", type="integer", nullable=false)
@@ -43,6 +47,7 @@ class NmtInventoryTransaction
     private $transactionTypeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", length=10, nullable=false)
@@ -50,6 +55,7 @@ class NmtInventoryTransaction
     private $flow;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryTransaction
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryTransaction
     private $remarks;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=false)
@@ -71,13 +79,12 @@ class NmtInventoryTransaction
     private $createdBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
-
 
     /**
      * Get id

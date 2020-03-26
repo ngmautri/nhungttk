@@ -1,83 +1,91 @@
 <h4>Stock Transfer: <?php echo $article->name?></h4>
-<hr> 
+<hr>
 
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
-	
-	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-error">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
-	
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/transaction/transfer"	method="post" enctype="multipart/form-data" id="NewSP" >
-	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-	<input type="hidden" id="article_id" name="article_id" value="<?php echo $article->id?>" />
+
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/transaction/transfer"
+	method="post" enctype="multipart/form-data" id="NewSP">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+		id="article_id" name="article_id" value="<?php echo $article->id?>" />
 	<input type="hidden" id="source_wh_id" name="source_wh_id" value="" />
 	<input type="hidden" id="target_wh_id" name="target_wh_id" value="" />
-	
-      <div class="control-group">
-        <label class="control-label" for="inputName">Transfer date:</label>
-        <div class="controls">
-  			<input type="text" name="movement_date" value="" placeholder =" please select" id="movement_date" />
-         </div>
-      </div>
-      
-      <div class="control-group">
+
+	<div class="control-group">
+		<label class="control-label" for="inputName">Transfer date:</label>
+		<div class="controls">
+			<input type="text" name="movement_date" value=""
+				placeholder=" please select" id="movement_date" />
+		</div>
+	</div>
+
+	<div class="control-group">
 		<label class="control-label" for="inputTag">FROM Warehouse:</label>
 		<div class="controls">
-			<input readonly type="text" id="source_wh_name" placeholder="" name="source_wh"
-				value="Default Warehouse"> 
-				<a href="javascript:;" onclick="showWHDialog('SOURCE_WH');"
-				class="helper"> Select Warehouse <i class=" icon-folder-open"></i></a>
+			<input readonly type="text" id="source_wh_name" placeholder=""
+				name="source_wh" value="Default Warehouse"> <a href="javascript:;"
+				onclick="showWHDialog('SOURCE_WH');" class="helper"> Select
+				Warehouse <i class=" icon-folder-open"></i>
+			</a>
 		</div>
-		
+
 	</div>
-	
+
 	<div class="control-group">
 		<label class="control-label" for="inputTag">TO Warehouse:</label>
 		<div class="controls">
-			<input readonly type="text" id="target_wh_name" placeholder="" name="target_wh"
-				value=""> 
-				<a href="javascript:;" onclick="showWHDialog('TARGET_WH');"
-				class="helper"> Select Warehouse <i class=" icon-folder-open"></i></a>
+			<input readonly type="text" id="target_wh_name" placeholder=""
+				name="target_wh" value=""> <a href="javascript:;"
+				onclick="showWHDialog('TARGET_WH');" class="helper"> Select
+				Warehouse <i class=" icon-folder-open"></i>
+			</a>
 		</div>
-		
+
 	</div>
-      
 
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Quantity:</label>
-        <div class="controls">
-			<input type="text" name="quantity" value=""> <a href="javascript:;" onclick="showBalance('<?php echo $article->id?>','<?php echo $article->name?>');"
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Quantity:</label>
+		<div class="controls">
+			<input type="text" name="quantity" value=""> <a href="javascript:;"
+				onclick="showBalance('<?php echo $article->id?>','<?php echo $article->name?>');"
 				class="helper">Check Balance <i class=" icon-folder-open"></i></a>
-     
-		</div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputDescription">Comment:</label>
-        <div class="controls">
-          <textarea class="form-control" id="inputDescription" placeholder="" rows="2" name="comment">
-          </textarea>
-        </div>
-      </div>
-      
- 	  
-      <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn">Transfer</button>
-        </div>
-      </div>
-    </form>
 
-    <?php include (ROOT.'\module\Inventory\view\inventory\select_wh.php'); ?>
-    
-<div id="dialog1" style="display: none; padding-top: 4pt">
-</div>    
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputDescription">Comment:</label>
+		<div class="controls">
+			<textarea class="form-control" id="inputDescription" placeholder=""
+				rows="2" name="comment">
+          </textarea>
+		</div>
+	</div>
+
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">Transfer</button>
+		</div>
+	</div>
+</form>
+
+<?php include (ROOT.'\module\Inventory\view\inventory\select_wh.php'); ?>
+
+<div id="dialog1" style="display: none; padding-top: 4pt"></div>

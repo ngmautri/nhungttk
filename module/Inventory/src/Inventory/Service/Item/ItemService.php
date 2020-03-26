@@ -37,7 +37,7 @@ class ItemService extends AbstractService
             return $errors;
         }
 
-        //====== VALIDATED 1 ====== //
+        // ====== VALIDATED 1 ====== //
 
         if (isset($data['groupName'])) {
             $groupName = $data['groupName'];
@@ -204,19 +204,18 @@ class ItemService extends AbstractService
 
             if ($isNew == TRUE) {
 
-                //$entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+                // $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
-                //$entity->setRevisionNo($entity->getRevisionNo() + 1);
-                //$entity->setLastchangeBy($u);
-                //$entity->setLastchangeOn($changeOn);
+                // $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                // $entity->setLastchangeBy($u);
+                // $entity->setLastchangeOn($changeOn);
             }
 
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }

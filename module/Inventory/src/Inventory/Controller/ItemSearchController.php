@@ -251,8 +251,9 @@ class ItemSearchController extends AbstractActionController
         return $this->itemSearchService;
     }
 
-    public function setItemSearchService(ItemSearchService $itemSearchService) {
-		$this->itemSearchService = $itemSearchService;
-		return $this;
-	}
+    public function setItemSearchService(ItemSearchService $itemSearchService)
+    {
+        $this->itemSearchService = $itemSearchService;
+        return $this;
+    }
 }

@@ -30,9 +30,10 @@ class FixedAssetItemFactory extends AbstractItemFactory
     public function specifyItem()
     {
         /**
+         *
          * @var GenericItem $item ;
          */
-        $item =  $this->item;
+        $item = $this->item;
         $item->setItemType("ITEM");
     }
 }

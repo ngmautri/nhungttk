@@ -86,10 +86,11 @@ class ItemCRUDService extends AbstractService
             $itemId = $rep->store($item, $generateSysNumber);
 
             // event
-            /* $event = new ItemCreatedEvent($item);
-            $dispatcher = new EventDispatcher();
-            $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
-            $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
+            /*
+             * $event = new ItemCreatedEvent($item);
+             * $dispatcher = new EventDispatcher();
+             * $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
+             * $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
              */
             $m = sprintf("[OK] Item # %s created", $itemId);
 
@@ -197,11 +198,13 @@ class ItemCRUDService extends AbstractService
 
             $rep->store($newItem, False);
 
-          /*   $event = new ItemUpdatedEvent($newItem);
-
-            $dispatcher = new EventDispatcher();
-            $dispatcher->addSubscriber(new ItemUpdatedEventHandler($newItem));
-            $dispatcher->dispatch(ItemUpdatedEvent::EVENT_NAME, $event); */
+            /*
+             * $event = new ItemUpdatedEvent($newItem);
+             *
+             * $dispatcher = new EventDispatcher();
+             * $dispatcher->addSubscriber(new ItemUpdatedEventHandler($newItem));
+             * $dispatcher->dispatch(ItemUpdatedEvent::EVENT_NAME, $event);
+             */
 
             $m = sprintf("Item #%s updated", $itemId);
             $changeOn = new \DateTime();
@@ -225,7 +228,6 @@ class ItemCRUDService extends AbstractService
 
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
-            
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());

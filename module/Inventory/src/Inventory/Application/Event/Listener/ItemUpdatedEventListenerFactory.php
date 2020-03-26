@@ -23,10 +23,10 @@ class ItemUpdatedEventListenerFactory implements FactoryInterface
         $listener = new ItemUpdatedEventListener();
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $listener->setDoctrineEM($sv);
-  
+
         $sv = $container->get('doctrine.entitymanager.orm_messages');
         $listener->setMessagesDoctrineEM($sv);
-        
+
         return $listener;
     }
 }

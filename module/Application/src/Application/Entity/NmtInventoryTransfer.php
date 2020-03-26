@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryTransfer
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryTransfer
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryTransfer
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryTransfer
     private $vendorName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryTransfer
     private $invoiceNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryTransfer
     private $invoiceDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryTransfer
     private $currencyIso3;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryTransfer
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryTransfer
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryTransfer
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryTransfer
     private $currentState;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryTransfer
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryTransfer
     private $trxType;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryTransfer
     private $lastchangeOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryTransfer
     private $postingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryTransfer
     private $grDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryTransfer
     private $sapDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryTransfer
     private $contractNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryTransfer
     private $contractDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryTransfer
     private $quotationNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryTransfer
     private $quotationDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryTransfer
     private $sysNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryTransfer
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="delivery_mode", type="string", length=45, nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryTransfer
     private $deliveryMode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryTransfer
     private $incoterm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryTransfer
     private $incotermPlace;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
@@ -197,6 +223,7 @@ class NmtInventoryTransfer
     private $paymentTerm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_method", type="string", length=45, nullable=true)
@@ -204,6 +231,7 @@ class NmtInventoryTransfer
     private $paymentMethod;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -211,6 +239,7 @@ class NmtInventoryTransfer
     private $docStatus;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -218,6 +247,7 @@ class NmtInventoryTransfer
     private $isDraft;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -225,6 +255,7 @@ class NmtInventoryTransfer
     private $workflowStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -232,6 +263,7 @@ class NmtInventoryTransfer
     private $transactionStatus;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -242,6 +274,7 @@ class NmtInventoryTransfer
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -252,6 +285,7 @@ class NmtInventoryTransfer
     private $warehouse;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -262,6 +296,7 @@ class NmtInventoryTransfer
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -272,6 +307,7 @@ class NmtInventoryTransfer
     private $lastchangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -280,8 +316,6 @@ class NmtInventoryTransfer
      * })
      */
     private $currency;
-
-
 
     /**
      * Get id

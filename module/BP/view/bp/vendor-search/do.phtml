@@ -1,9 +1,9 @@
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Vendor</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Vendor</a></li>
+	</ul>
 
-<div id="general">
+	<div id="general">
 
 
 <?php
@@ -12,55 +12,57 @@ echo $message;
 echo '</span>';
 
 if (! $hits == null) :
-	
-	?>
-<table style = "font-size: 10pt;" class="table table-hover table-bordered">
-	<thead>
-		<tr style = "">
-			<td><b>#</b></td>
-			<td><b>Number</b></td>
-			<td><b>Name</b></td>
-			<td><b>Keywords</b></td>
-			<td><b>Country</b></td>
-			<td><b>Matched</b></td>
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+
+    ?>
+<table style="font-size: 10pt;" class="table table-hover table-bordered">
+			<thead>
+				<tr style="">
+					<td><b>#</b></td>
+					<td><b>Number</b></td>
+					<td><b>Name</b></td>
+					<td><b>Keywords</b></td>
+					<td><b>Country</b></td>
+					<td><b>Matched</b></td>
+					<td><b>Action</b></td>
+				</tr>
+			</thead>
+			<tbody>
 
 	 <?php
-	
-	$count = 0;
-	foreach ( $hits as $hit ) :
-		$count ++;
-		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-		
-		?>
+
+    $count = 0;
+    foreach ($hits as $hit) :
+        $count ++;
+        // echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+        ?>
 	 <tr>
-	
-			<td> <?php echo $count;?></td>
-				<td>
-	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>"><?php echo $this->escapeHtml($hit->vendor_number);?></a>
-				</td>
-				
-				
-				<td>
-	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>"><?php echo $this->escapeHtml($hit->vendor_name);?></a>
-				
-				</td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->keywords);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->country_name);?></span></td>
+
+					<td> <?php echo $count;?></td>
+					<td><a
+						href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>"><?php echo $this->escapeHtml($hit->vendor_number);?></a>
+					</td>
+
+
+					<td><a
+						href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>"><?php echo $this->escapeHtml($hit->vendor_name);?></a>
+
+					</td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->keywords);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->country_name);?></span></td>
 					<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
-	<td>
-	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/bp/vendor/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>">Edit</a>
-	
-	</td>	
-		</tr>
+					<td><a
+						href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
+						<a
+						href="<?php echo $this->baseUrl ?>/bp/vendor/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>">Edit</a>
+
+					</td>
+				</tr>
 <?php endforeach; ?>
 </tbody>
-</table>
+		</table>
 
 
 <?php endif; ?>
-</div></div>
+</div>
+</div>

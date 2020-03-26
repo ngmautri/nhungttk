@@ -1,24 +1,26 @@
 
- <div class="panel-group"  >
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" href="#collapse1">
-<small><span class="glyphicon glyphicon-filter"></span></small>
-        Filter</a>
-      </h4>
-    </div>
-    <div id="collapse1" class="panel-collapse collapse">
-      <div class="panel-body" style="padding: 0px;">
-  <div
-					style="padding: 3px; font-size:9.5pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
-					    
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/list" method="get" enctype="multipart/form-data">
-	
-	 <div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag">Item  Type</label>
-		<div class="col-sm-3">
-			<select class="form-control input-sm" name="item_type">
+<div class="panel-group">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" href="#collapse1"> <small><span
+						class="glyphicon glyphicon-filter"></span></small> Filter
+				</a>
+			</h4>
+		</div>
+		<div id="collapse1" class="panel-collapse collapse">
+			<div class="panel-body" style="padding: 0px;">
+				<div
+					style="padding: 3px; font-size: 9.5pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+
+					<form class="form-horizontal"
+						action="<?php echo $this->baseUrl ?>/inventory/item/list"
+						method="get" enctype="multipart/form-data">
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">Item Type</label>
+							<div class="col-sm-3">
+								<select class="form-control input-sm" name="item_type">
 									<option value="All">All</option>
 									<option
 										<?php echo $item_type=='ITEM'? "selected='selected'":"";?>
@@ -29,69 +31,70 @@
 									<option
 										<?php echo $item_type=='SOFTWARE'? "selected='selected'":"";?>
 										value="SOFTWARE">Software</option>
-									</select>
-		</div>
-		<div class="col-sm-4">
-	 	</div>
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag">Active Items</label>
-		<div class="col-sm-3">
-			<select class="form-control input-sm" name="is_active">
-									<option
-									<?php echo $is_active ==''? "selected='selected'":"";?>
+								</select>
+							</div>
+							<div class="col-sm-4"></div>
+						</div>
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">Active Items</label>
+							<div class="col-sm-3">
+								<select class="form-control input-sm" name="is_active">
+									<option <?php echo $is_active ==''? "selected='selected'":"";?>
 										value="2">All</option>
-									<option
-									<?php echo $is_active=='1'? "selected='selected'":"";?>
+									<option <?php echo $is_active=='1'? "selected='selected'":"";?>
 										value="1">Active</option>
 									<option
-									<?php echo $is_active=='-1'? "selected='selected'":"";?>
+										<?php echo $is_active=='-1'? "selected='selected'":"";?>
 										value="-1">Inactive</option>
-									</select>
-		</div>
-	</div>
+								</select>
+							</div>
+						</div>
 
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
-		<div class="col-sm-3">
-			<select class="form-control input-sm" name="is_fixed_asset">
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
+							<div class="col-sm-3">
+								<select class="form-control input-sm" name="is_fixed_asset">
 									<option
-									<?php echo $is_fixed_asset==''? "selected='selected'":"";?>
+										<?php echo $is_fixed_asset==''? "selected='selected'":"";?>
 										value="">All</option>
 									<option
-									<?php echo $is_fixed_asset=='1'? "selected='selected'":"";?>
+										<?php echo $is_fixed_asset=='1'? "selected='selected'":"";?>
 										value="1">Fixed Asset</option>
 									<option
-									<?php echo $is_fixed_asset=='-1'? "selected='selected'":"";?>
+										<?php echo $is_fixed_asset=='-1'? "selected='selected'":"";?>
 										value="-1">None Fixed Asset</option>
-									</select>
-		</div>
-	</div>
+								</select>
+							</div>
+						</div>
 
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag">Sort by</label>
-		<div class="col-sm-3">
-			<select class="form-control input-sm" name="sort_by">
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">Sort by</label>
+							<div class="col-sm-3">
+								<select class="form-control input-sm" name="sort_by">
 									<option value="">None</option>
 									<option
 										<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
 										value="itemName">Item Name</option>
-						
-									<option <?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
+
+									<option
+										<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
 										value="createdOn">Created Date</option>
- 			</select>
- 			<input <?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?> type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp;
- 			<input <?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?> type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
- 							
-		</div>
-	</div>
-	
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag">Result per page</label>
-		<div class="col-sm-3">
-			<select class="form-control input-sm" name="perPage">
+								</select> <input
+									<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
+									type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
+									<?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?>
+									type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
+
+							</div>
+						</div>
+
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">Result per
+								page</label>
+							<div class="col-sm-3">
+								<select class="form-control input-sm" name="perPage">
 									<option value="">None</option>
 									<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
 										value="15">15</option>
@@ -111,45 +114,42 @@
 										<?php echo $per_pape=='200'? "selected='selected'":"";?>
 										value="200">200</option>
 								</select>
+							</div>
+						</div>
+
+						<div class="form-group margin-bottom">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" class="btn btn-default">Show</button>
+							</div>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
 		</div>
 	</div>
-	
-	<div class="form-group margin-bottom">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Show</button>
-		</div>
-	</div>     
-	     
- </form>
- 
-     </div> 
-      </div>
-     </div>
-  </div>
 </div>
 
 
 
 <?php
 
-	
-    
-
 if ($total_records <= 0) {
-	
-	echo 'No record found!';
+
+    echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
 
 
-	
+
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
@@ -166,33 +166,34 @@ if ($total_records <= 0) {
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+        $count ++;
+        ?>
 	 <tr>
-	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 		<td>
-<a style="color: navy;" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a['token'] ;?>&entity_id=<?php echo $a['id'];?>&checksum=<?php echo $a['checksum'];?>"><?php echo $a['sys_number'];?></a>
-	 		
-	 		</td>
-	
-			<td><?php echo $this->escapeHtml(($a['item_sku']));?></td>
-			<td>
-			 	<span class="dropdown"><a class="dropdown-toggle"	data-toggle="dropdown" href="#" title="<?php echo $this->escapeHtml($a['item_name']);?>" style="padding-left: 20px;padding-right: 10px; "><?php echo substr($this->escapeHtml($a['item_name']),0,45);?> <span class="caret"></span></a>
-				</span>
-				
-			
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><a style="color: navy;"
+				href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a['token'] ;?>&entity_id=<?php echo $a['id'];?>&checksum=<?php echo $a['checksum'];?>"><?php echo $a['sys_number'];?></a>
+
 			</td>
+
+			<td><?php echo $this->escapeHtml(($a['item_sku']));?></td>
+			<td><span class="dropdown"><a class="dropdown-toggle"
+					data-toggle="dropdown" href="#"
+					title="<?php echo $this->escapeHtml($a['item_name']);?>"
+					style="padding-left: 20px; padding-right: 10px;"><?php echo substr($this->escapeHtml($a['item_name']),0,45);?> <span
+						class="caret"></span></a> </span></td>
 			<td><?php echo substr($this->escapeHtml($a['manufacturer_model']),0,30);?></td>
 			<td><?php echo $this->escapeHtml($a['serial_number']);?></td>
-	
+
 			<!-- <td><?php echo date_format ( $a['created_on'], "d/m/y");?> </td>  -->
-			<td>
-	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a['id']);?>" item_name="<?php echo $this->escapeHtml($a['item_name']);?>" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
+			<td><a style="cursor: pointer;" title="picture" item-pic=""
+				id="<?php echo $this->escapeHtml($a['id']);?>"
+				item_name="<?php echo $this->escapeHtml($a['item_name']);?>"
+				href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
 			</td>
-		
+
 		</tr>
 <?php endforeach; ?>
 
@@ -200,58 +201,53 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
-// ===============================
-if (! is_null ( $paginator )) :
 
-// change it only
-$base = $this->baseUrl . '/inventory/item/list1?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
-$_connector_symbol = '&';
+    // ===============================
+    if (! is_null($paginator)) :
 
-$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        // change it only
+        $base = $this->baseUrl . '/inventory/item/list1?is_active=' . $is_active . '&item_type=' . $item_type . '&sort_by=' . $sort_by . '&sort=' . $sort . '&is_fixed_asset=' . $is_fixed_asset;
+        $_connector_symbol = '&';
 
-$first_js = "doPaginator('".$first . "','item_list_id')";
-$last_js = "doPaginator('". $last . "','item_list_id')";
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 
+        $first_js = "doPaginator('" . $first . "','item_list_id')";
+        $last_js = "doPaginator('" . $last . "','item_list_id')";
 
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
 
-$p1 = ($paginator->page) - 1;
-$p2 = ($paginator->page) + 1;
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $next_js = "doPaginator('" . $next . "','item_list_id')";
+        $prev_js = "doPaginator('" . $prev . "','item_list_id')";
 
-$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-$next_js = "doPaginator('". $next . "','item_list_id')";
-$prev_js = "doPaginator('". $prev . "','item_list_id')";
+        echo '<ul class="pagination pagination-sm">';
 
-echo '<ul class="pagination pagination-sm">';
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            // echo '<li><a href="' . $first . '"> |< </a></li>';
+            // echo '<li><a href="' . $prev . '"> < </a></li>';
 
-if ($paginator->page != 1 and $paginator->totalPages > 10) {
-    //echo '<li><a href="' . $first . '"> |< </a></li>';
-    //echo '<li><a href="' . $prev . '"> < </a></li>';
-    
-    echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
-    echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
-    
-}
+            echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+            echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+        }
 
-for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-    
-    $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-    $url_js = "doPaginator('". $url . "','item_list_id')";
-    
-    
-    if ($i == $paginator->page) {
-        echo '<li><a class="active" href="#">' . $i . '</a></li>';
-    } else {
-        //echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-        echo '<li><a href="javascript:;" onclick="' . $url_js . '">'.$i.'</a></li>';
-        
-    }
-}
-if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-    //echo '<li><a href="' . $next . '"> > </a></li>';
-    echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            $url_js = "doPaginator('" . $url . "','item_list_id')";
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                // echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+                echo '<li><a href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            // echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
     echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
     
 }

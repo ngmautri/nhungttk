@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticleDepartment
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaArticleDepartment
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=false)
@@ -29,6 +31,7 @@ class MlaArticleDepartment
     private $updatedOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \Application\Entity\MlaDepartments
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDepartments")
@@ -39,6 +42,7 @@ class MlaArticleDepartment
     private $department;
 
     /**
+     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
@@ -49,6 +53,7 @@ class MlaArticleDepartment
     private $article;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -57,8 +62,6 @@ class MlaArticleDepartment
      * })
      */
     private $updatedBy;
-
-
 
     /**
      * Get id

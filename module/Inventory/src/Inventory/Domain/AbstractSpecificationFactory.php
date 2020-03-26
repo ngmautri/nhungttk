@@ -8,8 +8,12 @@ namespace Inventory\Domain;
  */
 abstract class AbstractSpecificationFactory
 {
+
     abstract function getWarehouseExitsSpecification();
+
     abstract function getItemExitsSpecification();
+
     abstract function getTranactionExitsSpecification();
+
     abstract function getOnhandQuantitySpecification();
 }

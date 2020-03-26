@@ -72,7 +72,7 @@ class GIforCostCenter extends \Inventory\Model\AbstractTransactionStrategy
      * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
      */
     public function doPosting($entity, $u, $isFlush = false)
-    {       
+    {
         // no need to do any thing.
     }
 

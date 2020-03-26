@@ -1,17 +1,16 @@
 <?php
-
 if ($total_records <= 0) {
-	
-	echo 'No records found!';
+
+    echo 'No records found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' recor found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' recor found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
 
 <table style="font-size: 10pt" class="table table-bordered table-hover">
 	<thead>
@@ -20,76 +19,76 @@ if ($total_records <= 0) {
 			<td><b>Select</b></td>
 			<td><b>Currency</b></td>
 			<td><b>Description</b></td>
-	
+
 		</tr>
 	</thead>
 
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+        $count ++;
+        ?>
 	 <tr>
-	 		<td><?php echo $count;?></td>
-	 
-	<td>		
-<a href="javascript:;"
-	onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','currency_id','<?php echo $this->escapeHtml($a->getCurrency()) .' - '. $this->escapeHtml($a->getDescription());?>','currency_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
-</a></td>	 
+			<td><?php echo $count;?></td>
+
+			<td><a href="javascript:;"
+				onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','currency_id','<?php echo $this->escapeHtml($a->getCurrency()) .' - '. $this->escapeHtml($a->getDescription());?>','currency_name');"><small><i
+						class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+			</a></td>
 			<td><?php echo $this->escapeHtml($a->getCurrency());?></td>
 			<td><?php echo $this->escapeHtml($a->getDescription());?></td>
-	
-			</tr>
+
+		</tr>
 <?php endforeach; ?>
 
  </tbody>
 </table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-		$base = $this->baseUrl . '/application/country/list';
-		$_connector_symbol = '?';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/application/country/list';
+        $_connector_symbol = '?';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

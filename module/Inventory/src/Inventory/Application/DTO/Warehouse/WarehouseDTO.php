@@ -54,6 +54,6 @@ class WarehouseDTO
     public $whController;
 
     public $location;
-    
+
     public $uuid;
 }

@@ -19,7 +19,7 @@ class UploadService extends AbstractService
      * @param array $data
      * @/param boolean $isPosting
      */
-    public function validateHeader(\Application\Entity\NmtApplicationAttachment $entity,$data,$target_class, $target_id)
+    public function validateHeader(\Application\Entity\NmtApplicationAttachment $entity, $data, $target_class, $target_id)
     {
         $errors = array();
 
@@ -39,12 +39,12 @@ class UploadService extends AbstractService
     }
 
     /**
-     * 
+     *
      * @param \Application\Entity\NmtApplicationAttachment $entity
      * @param array $uploaded_file
      * @return string[]
      */
-    public function validateAttachment(\Application\Entity\NmtApplicationAttachment $entity, $uploaded_file,$target_class, $target_id)
+    public function validateAttachment(\Application\Entity\NmtApplicationAttachment $entity, $uploaded_file, $target_class, $target_id)
     {
         $errors = array();
 
@@ -58,7 +58,6 @@ class UploadService extends AbstractService
         $file_type = $uploaded_file['type'];
         $file_ext = strtolower(end(explode('.', $uploaded_file['name'])));
 
-     
         // attachement required?
         if ($file_tmp == "" or $file_tmp === null) {
             $errors[] = 'Attachment can\'t be empty!';
@@ -90,9 +89,8 @@ class UploadService extends AbstractService
             } else if (preg_match('/(octet-stream)$/', $file_type)) {
                 $ext = $file_ext;
             }
-            
+
             $entity->setIsPicture($isPicture);
-            
 
             $expensions = array(
                 "jpeg",
@@ -116,7 +114,7 @@ class UploadService extends AbstractService
             }
 
             $checksum = md5_file($file_tmp);
-            
+
             /**
              *
              * @todo : Update Targert
@@ -126,13 +124,13 @@ class UploadService extends AbstractService
                 'targetId' => $target_id,
                 'targetClass' => $target_class
             );
-            
+
             $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
-            
+
             if (count($ck) > 0) {
                 $errors[] = 'Document: "' . $file_name . '"  exits already';
             }
-        
+
             return $errors;
         }
     }
@@ -158,24 +156,24 @@ class UploadService extends AbstractService
         // validated.
 
         $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);
-        
+
         $name = md5($target_id . $checksum . uniqid(microtime())) . '_' . $name_part1 . '.' . $ext;
-        
+
         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
         $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
-        
+
         /**
          * Important! for UBUNTU
          */
         $folder = str_replace('\\', '/', $folder);
-        
+
         if (! is_dir($folder)) {
             mkdir($folder, 0777, true); // important
         }
-        
+
         // echo ("$folder/$name");
         move_uploaded_file($file_tmp, "$folder/$name");
-        
+
         if ($isPicture == 1) {
             // trigger uploadPicture. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('uploadPicture', __CLASS__, array(
@@ -183,13 +181,13 @@ class UploadService extends AbstractService
                 'pictures_dir' => $folder
             ));
         }
-        
+
         if ($ext == "pdf") {
             $pdf_box = ROOT . self::PDFBOX_FOLDER;
-            
+
             // java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
             exec('java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name");
-            
+
             // extract text:
             exec('java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar ExtractText -password ' . $filePassword . ' ' . "$folder/$name" . ' ' . "$folder/$name" . '.txt');
         }
@@ -203,17 +201,16 @@ class UploadService extends AbstractService
         $entity->setFolder($folder);
         // new
         $entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR);
-        
+
         $entity->setFolderRelative($folder_relative . DIRECTORY_SEPARATOR);
         $entity->setChecksum($checksum);
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-        
+
         $createdOn = new \DateTime();
-        
+
         $entity->setCreatedBy($u);
         $entity->setCreatedOn($createdOn);
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-        
     }
 }

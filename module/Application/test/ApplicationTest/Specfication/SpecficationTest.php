@@ -33,8 +33,8 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
         $subject = array(
             "companyId" => 1,
             "warehouseId" => 6,
-            "userId" => 46,
+            "userId" => 46
         );
-        var_dump($spec->isSatisfiedBy($subject)); 
+        var_dump($spec->isSatisfiedBy($subject));
     }
 }

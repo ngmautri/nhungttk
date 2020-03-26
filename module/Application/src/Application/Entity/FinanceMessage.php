@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinanceMessage
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class FinanceMessage
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
@@ -29,6 +31,7 @@ class FinanceMessage
     private $uuid;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="msg_header", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class FinanceMessage
     private $msgHeader;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="msg_body", type="text", nullable=true)
@@ -43,6 +47,7 @@ class FinanceMessage
     private $msgBody;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="queue_name", type="string", length=100, nullable=true)
@@ -50,6 +55,7 @@ class FinanceMessage
     private $queueName;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class FinanceMessage
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="available_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class FinanceMessage
     private $availableOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -71,6 +79,7 @@ class FinanceMessage
     private $createdBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="messagecol", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class FinanceMessage
     private $messagecol;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="sent_on", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class FinanceMessage
     private $sentOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
@@ -92,13 +103,12 @@ class FinanceMessage
     private $consumedOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="event_name", type="string", length=255, nullable=true)
      */
     private $eventName;
-
-
 
     /**
      * Get id

@@ -4,20 +4,21 @@ namespace Inventory\Model\GI;
 use Inventory\Model\AbstractTransactionStrategy;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class GIforRepair extends AbstractTransactionStrategy
 {
-    
+
     public function getTransactionIdentifer()
     {
         return "NO NAME";
     }
-    
+
     public function execute()
     {}
+
     public function doPosting($entity, $u)
     {}
 
@@ -32,14 +33,10 @@ class GIforRepair extends AbstractTransactionStrategy
 
     public function getTransactionIdentifer()
     {}
+
     public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null)
     {}
 
     public function getFlow()
     {}
-
-
-
-
-  
 }

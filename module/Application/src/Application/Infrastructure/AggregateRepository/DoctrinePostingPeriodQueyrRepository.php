@@ -14,8 +14,8 @@ class DoctrinePostingPeriodQueyrRepository extends AbstractDoctrineRepository im
 {
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Company\PostingPeriod\PostingPeriodQueryRepositoryInterface::getPostingPeriodStatus()
      */
     public function getPostingPeriodStatus($postingDate)

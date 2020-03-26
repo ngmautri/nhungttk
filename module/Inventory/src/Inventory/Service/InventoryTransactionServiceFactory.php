@@ -35,7 +35,7 @@ class InventoryTransactionServiceFactory implements FactoryInterface
         $eventManager->attachAggregate($grListener);
 
         $service->setEventManager($eventManager);
-		
-		return $service;
-	}
+
+        return $service;
+    }
 }

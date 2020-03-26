@@ -11,7 +11,6 @@ use Application\Application\DTO\Attachment\AttachmentDTOAssembler;
 class AttachmentDTOTest extends PHPUnit_Framework_TestCase
 {
 
-
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
@@ -21,6 +20,6 @@ class AttachmentDTOTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-       AttachmentDTOAssembler::createStoreMapping();
+        AttachmentDTOAssembler::createStoreMapping();
     }
 }

@@ -68,7 +68,7 @@ class AccountController extends AbstractActionController
             $entity->setAccountType($accountType);
             $entity->setDescription($description);
             $entity->setIsActive($isActive);
-            
+
             if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
                 $entity->setCompany($u->getCompany());
             } else {

@@ -1,84 +1,96 @@
 <h4>Create New Asset Counting:</h4>
 <hr>
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
-	
-	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-error">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
-	
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/count/create-asset-counting"	method="post" enctype="multipart/form-data" id="NewSP" >
- <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
- 
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Name</label>
-        <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="name" value="">
-        </div>
-      </div>
-      
-     <div class="control-group">
-        <label class="control-label" for="inputDescription">Description</label>
-        <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="3" cols="5" name="description"></textarea>
-        </div>
-      </div>
-       
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Start Date</label>
-        <div class="controls">
-          <input type="text" id="start_date" placeholder="click to select" name="start_date" value="">
-        </div>
-       </div>
-  
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">End Date</label>
-        <div class="controls">
-          <input type="text" id="end_date" placeholder="click to select" name="end_date" value="">
-        </div>
-      </div>
-  
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Asset Category</label>
-        <div class="controls">
-        	<select name="asset_category" >
-        	
-        		<option value="">Please select a category</option>
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/count/create-asset-counting"
+	method="post" enctype="multipart/form-data" id="NewSP">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
+
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Name</label>
+		<div class="controls">
+			<input type="text" id="inputTag" placeholder="" name="name" value="">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputDescription">Description</label>
+		<div class="controls">
+			<textarea id="inputDescription" placeholder="" rows="3" cols="5"
+				name="description"></textarea>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Start Date</label>
+		<div class="controls">
+			<input type="text" id="start_date" placeholder="click to select"
+				name="start_date" value="">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">End Date</label>
+		<div class="controls">
+			<input type="text" id="end_date" placeholder="click to select"
+				name="end_date" value="">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Asset Category</label>
+		<div class="controls">
+			<select name="asset_category">
+
+				<option value="">Please select a category</option>
    	
-   			<?php foreach ($asset_cats as $cat) : 
-        		 echo '<option value="' . $cat->id . '">' .  $cat->category. '</option>';
-   			
-			endforeach; 
-   			?>
+   			<?php
+
+foreach ($asset_cats as $cat) :
+        echo '<option value="' . $cat->id . '">' . $cat->category . '</option>';
+    endforeach
+    ;
+    ?>
 			</select>
-	     </div>
-      </div>
-      
-      
-       <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Status</label>
-        <div class="controls">
-          <input type="text" id="sparepart_code" placeholder="" name="code" value="Started"> 
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn"><i class="icon-plus">  </i> Create</button>
-        </div>
-      </div>
-    </form>
+		</div>
+	</div>
+
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Status</label>
+		<div class="controls">
+			<input type="text" id="sparepart_code" placeholder="" name="code"
+				value="Started">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">
+				<i class="icon-plus"> </i> Create
+			</button>
+		</div>
+	</div>
+</form>
 
 
 
-<div id = "dialog" style="display: none;">Check code...</div>
-	
+<div id="dialog" style="display: none;">Check code...</div>
+

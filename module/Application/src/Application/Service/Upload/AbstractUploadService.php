@@ -62,7 +62,7 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
     abstract function doLogging($priority, $m, $u, $createdOn);
 
     abstract function doLoggingForChange($priority, $m, $objectId, $objectToken, $changeArray, $u, $createdOn);
-    
+
     /**
      *
      * @param \Application\Entity\NmtApplicationAttachment $entity
@@ -284,14 +284,14 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         if ($u == null) {
             $errors[] = $this->controllerPlugin->translate("Invalid Argument! User can't be indentided for this transaction.");
         }
-        
+
         if ($entity == null) {
             $errors[] = $this->controllerPlugin->translate("Invalid Argument! Entity not found.");
         }
-        
+
         $createdOn = new \DateTime();
-        
-        $oldEntity = clone ($entity);        
+
+        $oldEntity = clone ($entity);
 
         // validate header.
         $ck1 = $this->validateHeader($entity, $header_data);
@@ -304,15 +304,15 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
             $result['status'] = 'FAILED';
             $result['nTry'] = $nTry;
             $result['errors'] = $errors;
-            
+
             $m = sprintf('[FAILED] No update for attachment #%s', $entity->getId());
             $this->doLogging(\Zend\Log\Logger::WARN, $m, $u, $createdOn);
-            
+
             return $result;
-        }        
-        
+        }
+
         $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
-        
+
         if (count($changeArray) == 0) {
             $nTry ++;
             $errors[] = sprintf('Nothing changed! n = %s', $nTry);
@@ -326,27 +326,25 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
             $this->doLogging(\Zend\Log\Logger::WARN, $m, $u, $createdOn);
             return $result;
         }
-        
-     
+
         $entity->setLastChangeBy($u);
         $entity->setLastChangeOn($createdOn);
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-        
+
         $result['status'] = 'OK';
         $result['errors'] = $errors;
         $result['nTry'] = $nTry;
-        
+
         $m = sprintf('[OK] Attachment #%s updated', $entity->getId());
         $this->doLogging(\Zend\Log\Logger::INFO, $m, $u, $createdOn);
-     
-        
+
         $m = sprintf('[OK] Attachment #%s updated', $entity->getId());
-        
-        $objectId=$entity->getId();
+
+        $objectId = $entity->getId();
         $objectToken = $entity->getToken();
         $this->doLoggingForChange(\Zend\Log\Logger::INFO, $m, $objectId, $objectToken, $changeArray, $u, $createdOn);
-        
+
         return $result;
     }
 
@@ -387,7 +385,6 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         // validate header.
         $ck1 = $this->validateHeader($entity, $header_data);
 
-        
         if (count($ck1) > 0) {
             $errors = array_merge($errors, $ck1);
         }
@@ -401,7 +398,7 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         }
 
         $createdOn = new \DateTime();
-        
+
         if (count($errors) > 0) {
             $m = sprintf('[Failed] Attachment not uploaded!');
             $this->doLogging(\Zend\Log\Logger::INFO, $m, $u, $createdOn);
@@ -438,7 +435,6 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         $entity->setFolderRelative($folder_relative . DIRECTORY_SEPARATOR);
         $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
-     
         if ($isNew == TRUE) {
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
@@ -631,8 +627,8 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
 
         $criteria = array(
             'id' => $entity_id,
-            //'checksum' => $entity_checksum,
-            //'token' => $entity_token,
+            // 'checksum' => $entity_checksum,
+            // 'token' => $entity_token,
             'markedForDeletion' => 0,
             'isPicture' => 1
         );
@@ -672,11 +668,11 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         $result = array();
 
         $criteria = array(
-            'id' => $entity_id,
-            //'checksum' => $entity_checksum,
-            //'token' => $entity_token,
-            //'markedForDeletion' => 0,
-            //'isPicture' => 1
+            'id' => $entity_id
+            // 'checksum' => $entity_checksum,
+            // 'token' => $entity_token,
+            // 'markedForDeletion' => 0,
+            // 'isPicture' => 1
         );
 
         $pic = new \Application\Entity\NmtApplicationAttachment();
@@ -714,11 +710,11 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         $result = array();
 
         $criteria = array(
-            'id' => $entity_id,
-            //'checksum' => $entity_checksum,
-            //'token' => $entity_token,
-            //'markedForDeletion' => 0,
-            //'isPicture' => 1
+            'id' => $entity_id
+            // 'checksum' => $entity_checksum,
+            // 'token' => $entity_token,
+            // 'markedForDeletion' => 0,
+            // 'isPicture' => 1
         );
 
         $pic = new \Application\Entity\NmtApplicationAttachment();

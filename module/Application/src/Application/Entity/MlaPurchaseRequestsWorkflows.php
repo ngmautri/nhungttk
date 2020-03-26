@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPurchaseRequestsWorkflows
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaPurchaseRequestsWorkflows
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaPurchaseRequestsWorkflows
     private $status;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="updated_by", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class MlaPurchaseRequestsWorkflows
     private $updatedBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class MlaPurchaseRequestsWorkflows
     private $updatedOn;
 
     /**
+     *
      * @var \Application\Entity\MlaPurchaseRequests
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequests")
@@ -51,8 +56,6 @@ class MlaPurchaseRequestsWorkflows
      * })
      */
     private $purchaseRequest;
-
-
 
     /**
      * Get id

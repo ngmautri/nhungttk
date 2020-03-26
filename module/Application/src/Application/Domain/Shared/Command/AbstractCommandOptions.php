@@ -18,7 +18,9 @@ abstract class AbstractCommandOptions implements CommandOptions
     private $triggeredBy;
 
     private $triggeredOn;
+
     /**
+     *
      * @return mixed
      */
     public function getUserId()
@@ -27,6 +29,7 @@ abstract class AbstractCommandOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVersion()
@@ -35,6 +38,7 @@ abstract class AbstractCommandOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTriggeredBy()
@@ -43,14 +47,11 @@ abstract class AbstractCommandOptions implements CommandOptions
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTriggeredOn()
     {
         return $this->triggeredOn;
     }
-
-
-    
- 
 }

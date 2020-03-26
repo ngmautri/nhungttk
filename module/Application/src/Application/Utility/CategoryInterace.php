@@ -1,16 +1,15 @@
 <?php
-
 namespace Applicatio\Utility;
 
 /**
- * 
- * @author nmt
  *
+ * @author nmt
+ *        
  */
-Interface CategoryInterface {
-		
-		/**
-		 * 
-		 */
-		public function getCategoryID();
+Interface CategoryInterface
+{
+
+    /**
+     */
+    public function getCategoryID();
 }

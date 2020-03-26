@@ -24,11 +24,11 @@ class MessageStoreControllerFactory implements FactoryInterface
         $controller = new MessageStoreController();
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        $controller->setDoctrineEM ( $sv );
-		
-		$sv = $container->get ( \Application\Application\Service\MessageStore\MessageQuery::class );
-		$controller->setMessageQuery( $sv );
-		
-		return $controller;
-	}
+        $controller->setDoctrineEM($sv);
+
+        $sv = $container->get(\Application\Application\Service\MessageStore\MessageQuery::class);
+        $controller->setMessageQuery($sv);
+
+        return $controller;
+    }
 }

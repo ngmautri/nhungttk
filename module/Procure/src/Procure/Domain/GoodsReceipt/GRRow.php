@@ -1,11 +1,8 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
-use Application\Domain\Shared\DTOFactory;
-use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Application\DTO\Po\PORowDTO;
-use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\SnapshotAssembler;
 
 /**
  * Goods Receipt Row
@@ -152,12 +149,41 @@ class GRRow extends AbstractEntity
 
     protected $poRow;
 
-    
     /**
      * Private Constructor:
      */
     private function __construct()
     {}
+
+    /**
+     * this should be called when posted.
+     *
+     * @return \Procure\Domain\PurchaseOrder\PORow
+     */
+    public function setAsPosted($postedBy, $postedDate)
+    {
+        $this->isPosted = 1;
+        $this->isDraft = 0;
+        $this->docStatus = GRDocStatus::DOC_STATUS_POSTED;
+        $this->lastchangeOn = (date_format($postedDate, 'Y-m-d H:i:s'));
+        $this->lastchangeBy = $postedBy;
+    }
+
+    /**
+     *
+     * @return \Procure\Domain\GoodsReceipt\GRRow
+     */
+    public function refresh()
+    {
+        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+        $taxAmount = $netAmount * $this->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $this->netAmount = $netAmount;
+        $this->taxAmount = $taxAmount;
+        $this->grossAmount = $grosAmount;
+        return $this;
+    }
 
     /**
      *

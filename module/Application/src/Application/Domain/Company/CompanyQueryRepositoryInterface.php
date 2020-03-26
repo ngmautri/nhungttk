@@ -1,8 +1,6 @@
 <?php
 namespace Application\Domain\Company;
 
-
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -10,8 +8,12 @@ namespace Application\Domain\Company;
  */
 Interface CompanyQueryRepositoryInterface
 {
+
     public function findAll();
+
     public function getById($id);
+
     public function getByUUID($uuid);
-    public function getPostingPeriod($periodId);        
+
+    public function getPostingPeriod($periodId);
 }

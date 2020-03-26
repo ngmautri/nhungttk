@@ -168,7 +168,7 @@ class WarehouseService extends AbstractService
                 nmt_inventory_warehouse.is_default=1 and nmt_inventory_warehouse.company_id=%s ", $entity->getCompany()->getId());
                 $stmt = $this->doctrineEM->getConnection()->prepare($sql);
                 $stmt->execute();
-              
+
                 $entity->setIsDefault(1);
                 $entity->getCompany()->setDefaultWarehouse($entity);
                 $this->doctrineEM->persist($entity);

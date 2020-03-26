@@ -10,26 +10,25 @@ use HR\Payroll\Income\Decorator\Factory\TransportationAllowanceDecoratorFactory;
 use HR\Payroll\Income\Decorator\Factory\FullPaymentDecoratorFactory;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class AnnualBonusFactory extends AbstractIncomeFactory
+class AnnualBonusFactory extends AbstractIncomeFactory
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
-    protected function createIncome($amount=0, $currency=null)
-    {   
+    protected function createIncome($amount = 0, $currency = null)
+    {
         $incomeComponent = new GenericIncomeComponent("Annual Bonus", $amount, 0, $currency, False, TRUE, FALSE, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::YEARLY);
         $f = FullPaymentDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
-        $incomeComponent->setDescription("It is also called 13th month salary!");        
+        $incomeComponent->setDescription("It is also called 13th month salary!");
         return $incomeComponent;
     }
-
 }

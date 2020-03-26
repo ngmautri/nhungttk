@@ -40,9 +40,9 @@ class ItemSpecification extends AbstractSpecification
         if ($subject->itemName == null)
             return false;
 
-            if (preg_match('/[#$%*@]/', $subject->itemName) == 1) {
+        if (preg_match('/[#$%*@]/', $subject->itemName) == 1) {
             return false;
-            }
+        }
 
         return true;
     }

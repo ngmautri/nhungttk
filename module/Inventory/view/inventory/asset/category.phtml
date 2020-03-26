@@ -2,42 +2,53 @@
 
 
 <ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/inventory/asset/addcategory"><i class="icon-download-plus"> </i> Add new category</a> </li>
- <li><a href="<?php echo $this->baseUrl ?>/inventory/count/create-asset-counting">Create New Checking Task</a></li>
-  <li><a href="<?php echo $this->baseUrl ?>/inventory/count/list-asset-counting">Checking Overview </a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/asset/addcategory"><i
+			class="icon-download-plus"> </i> Add new category</a></li>
+	<li><a
+		href="<?php echo $this->baseUrl ?>/inventory/count/create-asset-counting">Create
+			New Checking Task</a></li>
+	<li><a
+		href="<?php echo $this->baseUrl ?>/inventory/count/list-asset-counting">Checking
+			Overview </a></li>
 
 </ul>
 <hr>
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
-   </form>
- 
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory/search/asset"
+	method="get" enctype="multipart/form-data">
+	<input type="text" name="query" class="">
+	<button type="submit" class="btn">
+		<i class="icon-search"> </i>Search
+	</button>
+</form>
+
 
 <table class="pure-table pure-table-bordered">
-<thead>
-<tr>
-		<td><b>Asset Category</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
-<tbody>
- <?php 
-	 
-	 $count = 0;
-	 foreach ($assetCategories as $category) :
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
+	<thead>
+		<tr>
+			<td><b>Asset Category</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+ <?php
+
+$count = 0;
+foreach ($assetCategories as $category) :
+    $count ++;
+    echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+    ?>
  		<td><?php echo $this->escapeHtml($category->category);?></td>
-		<td>
-         <a href="<?php echo $this->baseUrl ?>/inventory/asset/editcategory?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
-         <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
-     	 <a href="<?php echo $this->baseUrl ?>/inventory/asset/categorydetail?category_id=<?php echo $this->escapeHtml($category->id);?>&category=<?php echo $this->escapeHtml($category->category);?>">detail</a>
-     	
-     	</td>
-	</tr>
+		<td><a
+			href="<?php echo $this->baseUrl ?>/inventory/asset/editcategory?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/asset/categorydetail?category_id=<?php echo $this->escapeHtml($category->id);?>&category=<?php echo $this->escapeHtml($category->category);?>">detail</a>
+
+		</td>
+		</tr>
 <?php endforeach; ?>
 </tbody>
 </table>

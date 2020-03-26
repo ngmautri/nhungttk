@@ -15,10 +15,10 @@ class MessageQuery extends AbstractService
 
     private $messageReposiory;
 
-   /**
-    * 
-    * @return \Application\Infrastructure\Doctrine\MessageStoreRepository
-    */
+    /**
+     *
+     * @return \Application\Infrastructure\Doctrine\MessageStoreRepository
+     */
     public function getMessageReposiory()
     {
         return $this->messageReposiory;

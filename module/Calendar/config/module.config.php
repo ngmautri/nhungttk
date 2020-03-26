@@ -23,10 +23,10 @@ return array(
             )
         )
     ),
-    
+
     'router' => array(
         'routes' => array(
-            
+
             'calendar' => array(
                 'type' => 'Literal',
                 'options' => array(
@@ -52,25 +52,21 @@ return array(
                     )
                 )
             )
-        
         )
-    
     ),
-    
+
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'calendar_navi' => 'Calendar\Service\CalendarNavigationFactory', // <-- add this
             'Calendar\Service\CalendarService' => 'Calendar\Service\CalendarServiceFactory'
-        
         )
     ),
-    
+
     'controllers' => array(
         'factories' => array(
             'Calendar\Controller\Index' => 'Calendar\Controller\IndexControllerFactory'
         )
-    
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -89,5 +85,4 @@ return array(
             __DIR__ . '/../view'
         )
     )
-
 );

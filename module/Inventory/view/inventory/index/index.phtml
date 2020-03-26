@@ -5,53 +5,53 @@
 	<ul>
 		<li><a href="#general">Contract /PO List:</a></li>
 	</ul>
-<div id="general" style="padding: 10px 10px 1px 3px">
+	<div id="general" style="padding: 10px 10px 1px 3px">
 
 
 
 <?php
-if ($total_records <= 0): 
-	echo 'No record found!';
-else:
-	
-	if (! is_null ( $paginator)):
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
-	else:
-		echo $total_records . ' records found!';
-	endif;
-	
-	?>
+if ($total_records <= 0) :
+    echo 'No record found!';
+else :
 
-<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Status</b></td>
-			</tr>
-	</thead>
+    if (! is_null($paginator)) :
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    else :
+        echo $total_records . ' records found!';
+    endif;
 
-	<tbody>
+    ?>
+
+<table style="font-size: 9.3pt;"
+			class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Status</b></td>
+				</tr>
+			</thead>
+
+			<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $l ) :	
-		$count ++;
-	
-		
-     /**@var \Application\Entity\NmtInventoryItem $a ; */ 
-		$a = $l;
-		?>
+
+    $count = 0;
+    foreach ($list as $l) :
+        $count ++;
+
+        /**@var \Application\Entity\NmtInventoryItem $a ; */
+        $a = $l;
+        ?>
 		
 	<tr>
-			<td>
+					<td>
 				<?php echo $count;?>
 			</td>
-			<td><?php echo $a->getItemName();?></td>
-			
-	</tr>
+					<td><?php echo $a->getItemName();?></td>
+
+				</tr>
 	<?php endforeach; ?>
  </tbody>
-</table>
+		</table>
 
 <?php endif;?>

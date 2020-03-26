@@ -10,7 +10,8 @@ use Inventory\Domain\Item\GenericItem;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemTypeChangedEvent extends Event{
+class ItemTypeChangedEvent extends Event
+{
 
     const EVENT_NAME = "item.type.changed";
 

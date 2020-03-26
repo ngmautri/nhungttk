@@ -185,7 +185,7 @@ class ItemCategoryController extends AbstractActionController
     }
 
     /**
-     * 
+     *
      * @return \Zend\View\Model\ViewModel
      */
     public function listAction()
@@ -216,7 +216,7 @@ class ItemCategoryController extends AbstractActionController
         $viewModel->setTemplate("inventory/item-category/list2");
         return $viewModel;
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -224,17 +224,17 @@ class ItemCategoryController extends AbstractActionController
     public function updateListAction()
     {
         $this->layout("Inventory/layout-blank");
-        
+
         $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
             "nodeName" => "_ROOT_"
         ));
-        
+
         $this->itemCategoryService->initCategory();
         $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
         $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
-        
+
         $request = $this->getRequest();
-        
+
         /*
          * if ($request->isXmlHttpRequest ()) {
          * $this->layout ( "layout/user/ajax" );
@@ -245,11 +245,11 @@ class ItemCategoryController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'jsTree' => $jsTree
         ));
-        
+
         $viewModel->setTemplate("inventory/item-category/list3");
         return $viewModel;
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -257,17 +257,17 @@ class ItemCategoryController extends AbstractActionController
     public function changeListAction()
     {
         $this->layout("Inventory/layout-blank");
-        
+
         $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
             "nodeName" => "_ROOT_"
         ));
-        
+
         $this->itemCategoryService->initCategory();
         $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
         $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
-        
+
         $request = $this->getRequest();
-        
+
         /*
          * if ($request->isXmlHttpRequest ()) {
          * $this->layout ( "layout/user/ajax" );
@@ -278,11 +278,10 @@ class ItemCategoryController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'jsTree' => $jsTree
         ));
-        
+
         $viewModel->setTemplate("inventory/item-category/list3");
         return $viewModel;
     }
-    
 
     /**
      *
@@ -345,7 +344,6 @@ class ItemCategoryController extends AbstractActionController
 
         $catId = $this->params()->fromQuery('cat_id');
         $catName = $this->params()->fromQuery('cat_name');
-        
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 16;
@@ -361,29 +359,28 @@ class ItemCategoryController extends AbstractActionController
         }
         ;
 
-        $limit =0;
-        $offset =0;
+        $limit = 0;
+        $offset = 0;
         $paginator = null;
-        
-        if ($catId == 50) {
-            $total_records = $this->getItemCatService()->getNoneCategorizedItemsTotal($limit,$offset);
-        } else {
-            $total_records = $this->getItemCatService()->getTotalItemsByCategory($catId,$limit,$offset);
-        }
-        
-        if ($total_records > $resultsPerPage) {
-            $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit =($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset =$paginator->minInPage - 1;
-        } 
 
         if ($catId == 50) {
-            $records = $this->getItemCatService()->getNoneCategorizedItems($limit,$offset);
+            $total_records = $this->getItemCatService()->getNoneCategorizedItemsTotal($limit, $offset);
         } else {
-            $records = $this->getItemCatService()->getItemsByCategory($catId,$limit,$offset);
+            $total_records = $this->getItemCatService()->getTotalItemsByCategory($catId, $limit, $offset);
         }
-        
-        
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        if ($catId == 50) {
+            $records = $this->getItemCatService()->getNoneCategorizedItems($limit, $offset);
+        } else {
+            $records = $this->getItemCatService()->getItemsByCategory($catId, $limit, $offset);
+        }
+
         $viewModel = new ViewModel(array(
             'list' => $records,
             'total_records' => $total_records,

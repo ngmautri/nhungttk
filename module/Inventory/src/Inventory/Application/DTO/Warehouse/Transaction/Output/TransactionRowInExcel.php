@@ -1,5 +1,5 @@
 <?php
-Namespace Inventory\Application\DTO\Warehouse\Transaction\Output;
+namespace Inventory\Application\DTO\Warehouse\Transaction\Output;
 
 use Zend\Escaper\Escaper;
 use Zend\Validator\InArray;
@@ -80,31 +80,34 @@ class TransactionRowInExcel extends TransactionRowOutputStrategy
             } else {
                 $dto->itemName = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
             }
-            
-            $decimalNo =0;
-            $curency = array("USD","THB","EUR");
-            if(in_array($a['currency_iso3'], $curency)){
-                $decimalNo=2;
+
+            $decimalNo = 0;
+            $curency = array(
+                "USD",
+                "THB",
+                "EUR"
+            );
+            if (in_array($a['currency_iso3'], $curency)) {
+                $decimalNo = 2;
             }
             $dto->lastCurrency = $a['currency_iso3'];
 
             $dto->lastVendor = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $a['vendor_name']);
-             if ($a['unit_price'] !== null) {
-                
-                 $dto->lastUP = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',  number_format($a['unit_price'], $decimalNo));
-                
+            if ($a['unit_price'] !== null) {
+
+                $dto->lastUP = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', number_format($a['unit_price'], $decimalNo));
             } else {
                 $dto->lastUP = "";
             }
 
-             $dto->lastCurrency = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $a['currency_iso3']);
-            
+            $dto->lastCurrency = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $a['currency_iso3']);
+
             $output[] = $dto;
         }
 
         return $output;
     }
+
     public function createRowOutputFromSnapshot($result)
     {}
-
 }

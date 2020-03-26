@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAclRoles
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAclRoles
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="role", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class MlaAclRoles
     private $role;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="parent_id", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class MlaAclRoles
     private $parentId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -43,6 +47,7 @@ class MlaAclRoles
     private $path;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="path_depth", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class MlaAclRoles
     private $pathDepth;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class MlaAclRoles
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -64,6 +71,7 @@ class MlaAclRoles
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="created_on", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class MlaAclRoles
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -79,8 +88,6 @@ class MlaAclRoles
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

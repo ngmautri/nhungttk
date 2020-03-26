@@ -25,21 +25,19 @@ class ItemSpecTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-       
-        
         $data = array();
-        
-        $data["itemSku"]="2-3";
-        $data["itemName"]="Special Item";
-        
+
+        $data["itemSku"] = "2-3";
+        $data["itemName"] = "Special Item";
+
         $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
         $dto = $itemAssembler->createItemDTOFromArray($data);
         ItemAssembler::createItemDTOProperities();
-        
-       /*  echo($dto->itemName);
-        $missing = ItemAssembler::checkItemDTO();
-        var_dump($missing); */
-        
-       
+
+        /*
+         * echo($dto->itemName);
+         * $missing = ItemAssembler::checkItemDTO();
+         * var_dump($missing);
+         */
     }
 }

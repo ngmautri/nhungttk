@@ -11,8 +11,7 @@ use Application\Application\DTO\Company\CompanyDTO;
 class CompanySnapshotAssembler
 {
 
-   
-     /**
+    /**
      * generete fields.
      */
     public static function createProperities()
@@ -27,10 +26,8 @@ class CompanySnapshotAssembler
         }
     }
 
-   
-
     /**
-     * 
+     *
      * @param CompanySnapshot $snapShot
      * @param CompanyDTO $dto
      * @return NULL|\Application\Domain\Company\CompanySnapshot
@@ -83,7 +80,4 @@ class CompanySnapshotAssembler
         }
         return $snapShot;
     }
-
-   
-   
 }

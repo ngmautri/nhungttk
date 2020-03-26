@@ -68,6 +68,7 @@ class Company
     private $warehouse;
 
     /**
+     *
      * @return \Application\Domain\Company\CompanyRepositoryInterface
      */
     protected function getCompanyRepository()
@@ -76,6 +77,7 @@ class Company
     }
 
     /**
+     *
      * @param \Application\Domain\Company\CompanyRepositoryInterface $companyRepository
      */
     protected function setCompanyRepository($companyRepository)

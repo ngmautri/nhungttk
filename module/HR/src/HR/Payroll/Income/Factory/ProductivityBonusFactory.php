@@ -9,26 +9,25 @@ use HR\Payroll\Income\Decorator\Factory\LoyaltyBonusDecoratorFactory;
 use HR\Payroll\Income\Decorator\Factory\TransportationAllowanceDecoratorFactory;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class ProductivityBonusFactory extends AbstractIncomeFactory
+class ProductivityBonusFactory extends AbstractIncomeFactory
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
-    protected function createIncome($amount=0, $currency=null)
-    {        
-        $incomeComponent = new GenericIncomeComponent("Productivity Bonus", $amount, 0, $currency,FALSE, TRUE, False, TRUE);
+    protected function createIncome($amount = 0, $currency = null)
+    {
+        $incomeComponent = new GenericIncomeComponent("Productivity Bonus", $amount, 0, $currency, FALSE, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f = TransportationAllowanceDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
-        $incomeComponent->setDescription("Productivity bonus is applied for production.");        
+        $incomeComponent->setDescription("Productivity bonus is applied for production.");
         return $incomeComponent;
     }
-
 }

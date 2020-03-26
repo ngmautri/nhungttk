@@ -1,4 +1,4 @@
-<?php    	    
+<?php
 /**@var \Application\Entity\NmtFinPostingPeriod $period*/
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -6,65 +6,70 @@
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
 	</ul>
-<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt">
 
-<div class="row">
-  <div class="col-xs-6 col-md-2">
+		<div class="row">
+			<div class="col-xs-6 col-md-2">
  
-				 <?php 
-    					$current_step="STEP5";
-    					include ('calculator-wizard.php'); 
-  				  ?>
+				 <?php
+    $current_step = "STEP5";
+    include ('calculator-wizard.php');
+    ?>
  
   </div>
-  
-  <div class="col-xs-12 col-sm-6 col-md-10" style="">
-   <!-- col2 -->
-  
-  <h4><?php echo $this->translate('Draft Payroll'); ?> <?php if($period!=null):echo sprintf('// Period %s',$period->getPeriodName()) ;endif;?></h4>
-  
-   
-  
-  <table id="mytable26" style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Code</b></td>
-			<td><b>Name</b></td>
-			<td><b>Income</b></td>
-			</tr>
-	</thead>
-	<tbody>
+
+			<div class="col-xs-12 col-sm-6 col-md-10" style="">
+				<!-- col2 -->
+
+				<h4><?php echo $this->translate('Draft Payroll'); ?> <?php if($period!=null):echo sprintf('// Period %s',$period->getPeriodName()) ;endif;?></h4>
+
+
+
+				<table id="mytable26" style="font-size: 9pt;"
+					class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<td><b>#</b></td>
+							<td><b>Code</b></td>
+							<td><b>Name</b></td>
+							<td><b>Income</b></td>
+						</tr>
+					</thead>
+					<tbody>
     	
     <?php
-        $count = 0;
-        foreach ( $list as $a ) :
+    $count = 0;
+    foreach ($list as $a) :
         $count ++;
-        	/**@var \HR\Payroll\Payroll $a ;*/
-    ?>  
+        /**@var \HR\Payroll\Payroll $a ;*/
+        ?>  
      <tr>
-			<td><?php echo $count;?></td>
-			<td><?php echo $a->getEmployee()->getEmployeeCode();?></td>
-			<td><?php echo $a->getEmployee()->getEmployeeName();?></td>
-			<td style="color:gray">
-			 <?php 
-			 foreach ( $a->getCalculatedIncomeList() as $i ) :
-			 	 /**@var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator $i ;*/
-			 echo "" . $i->getIncomeName() . ': '. number_format($i->getAmount(),0) . ' => Pay: <strong>' . number_format($i->getCalculatedAmount(),0) . '</strong><br>';			
-			 
-			 endforeach;
-			 ?>
+							<td><?php echo $count;?></td>
+							<td><?php echo $a->getEmployee()->getEmployeeCode();?></td>
+							<td><?php echo $a->getEmployee()->getEmployeeName();?></td>
+							<td style="color: gray">
+			 <?php
+        foreach ($a->getCalculatedIncomeList() as $i) :
+            /**@var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator $i ;*/
+            echo "" . $i->getIncomeName() . ': ' . number_format($i->getAmount(), 0) . ' => Pay: <strong>' . number_format($i->getCalculatedAmount(), 0) . '</strong><br>';
+        endforeach
+        ;
+        ?>
 			</td>
-		</tr>		
+						</tr>		
 		<?php endforeach; ?>
 	</tbody>
-</table>
+				</table>
 
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/simulate"><?php echo $this->translate('Next'); ?>&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
- 
-  <!-- col2 -->
-  </div>	
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><i
+					class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/simulate"><?php echo $this->translate('Next'); ?>&nbsp;<i
+					class="fa fa-chevron-right" aria-hidden="true"></i></a>
 
-</div>
-</div>
+				<!-- col2 -->
+			</div>
+
+		</div>
+	</div>

@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Service;
 
-
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;
@@ -27,7 +26,6 @@ class ItemSerialSearchService extends AbstractService
 
     const ITEM_INDEX = "/data/inventory/indexes/item-serial";
 
-  
     /**
      *
      * @return string[]|NULL[]
@@ -111,7 +109,6 @@ class ItemSerialSearchService extends AbstractService
 
                         // Adding serial part
                         $doc->addField(Field::text('item_sn', $r['sn']));
-                        
 
                         $index->addDocument($doc);
                         $m = sprintf('[OK] item #%s   indexed!', $row->getSysNumber());
@@ -568,6 +565,4 @@ class ItemSerialSearchService extends AbstractService
      * break;
      * }
      */
-
-  
 }

@@ -5,7 +5,8 @@
 		<li><a href="#general">Personal</a></li>
 		<li><a href="#cv">CV</a></li>
 		<li><a href="#application">Application</a></li>
-		<li><a href="/hr/employee-contract/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Contract</a></li>
+		<li><a
+			href="/hr/employee-contract/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Contract</a></li>
 		<!-- <li><a href="#employment">Employment</a></li> -->
 		<!-- <li><a href="#remuneration">Remuneration <small><iclass="glyphicon glyphicon-lock"> </i></small></a></li> -->
 		<li><a
@@ -35,8 +36,10 @@
 		<li><a
 			href="/inventory/item-assignment/to-employee?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
 				class="glyphicon glyphicon-paperclip"></span>&nbsp;Asset</a></li>
-		<li><a	href="/hr/payroll-input/list1?period_id=2&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-			<i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;Caculation</a></li>
+		<li><a
+			href="/hr/payroll-input/list1?period_id=2&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;Caculation
+		</a></li>
 
 	</ul>
 
@@ -116,7 +119,8 @@
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 					<a href="#general_info" class="" data-toggle="collapse">GENERAL:</a>
 				</legend>
-				<div id="general_info" class="collapse in" style="padding: 0px; margin: 0" >
+				<div id="general_info" class="collapse in"
+					style="padding: 0px; margin: 0">
 
 
 					<div class="form-group margin-bottom">
@@ -471,8 +475,8 @@
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Company</label>
 						<div class="col-sm-3">
-							<input disabled="disabled" class="form-control input-sm" type="text"
-								placeholder="" name="employeeCode"
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" placeholder="" name="employeeCode"
 								value="Mascot International Laos Sole">
 						</div>
 					</div>
@@ -549,10 +553,10 @@
 								id="startDate" />
 						</div>
 						<label class="control-label col-sm-2">Restart Date:</label>
-							<div class="col-sm-3">
-								<input disabled="disabled" class="form-control input-sm" type="text"
-									name="startDate" id="reStartDate" />
-							</div>
+						<div class="col-sm-3">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" name="startDate" id="reStartDate" />
+						</div>
 
 					</div>
 			
@@ -586,7 +590,7 @@
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 					<a href="#termination" class="" data-toggle="collapse">TERMINATION:</a>
 				</legend>
-				<div id="termination" class="collapse in"> 
+				<div id="termination" class="collapse in">
 					<div class="form-group margin-bottom">
 
 
@@ -815,234 +819,246 @@
 
 	<!-- REMUNERATION -->
 	<div id="remuneration" style="font-size: 9pt">
-	
-	<ul class="nav nav-tabs">
-  		<li class="active"><a data-toggle="tab" href="#home">Current Salary</a></li>
-  		<li><a data-toggle="tab" href="#salary_history">History</a></li>
-	</ul>
 
-    <div class="tab-content">
-      <div id="home" class="tab-pane fade in active">
-        <form id="remuneration_form" class="form-horizontal" action=""
-			method="post" enctype="multipart/form-data">
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#home">Current Salary</a></li>
+			<li><a data-toggle="tab" href="#salary_history">History</a></li>
+		</ul>
 
-			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#salary_info" class="" data-toggle="collapse">SALARY:</a>
-				</legend>
-				<div id="salary_info" class="collapse in">
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Contracted Salary:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="900000"> <input checked
-								type="checkbox" name="isActive" value="1">&nbsp;13 Month
-							Salary&nbsp;&nbsp;
-						</div>
-						
+		<div class="tab-content">
+			<div id="home" class="tab-pane fade in active">
+				<form id="remuneration_form" class="form-horizontal" action=""
+					method="post" enctype="multipart/form-data">
 
-						<label class="control-label col-sm-2" for="inputTag">Currency: </label>
-						<div class="col-sm-3">
-							<select class="form-control input-sm" name="gender">
-								<option
-									<?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?>
-									value="M">LAK</option>
-								<option
-									<?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?>
-									value="F">USD</option>
-							</select>
-						</div>
-<div class="col-sm-4">
-							<a target="blank" style="font-size: 9pt; color: navy;" href="#">Last
-								Evaluation&nbsp;&nbsp;</a><small><i
-								class="glyphicon glyphicon-new-window"></i></small>
-						</div>
-					</div>
-				</div>
-			</fieldset>
-
-			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#fixed_bonus" class="" data-toggle="collapse">FIXED BONUS:</a>
-				</legend>
-				<div id="fixed_bonus" class="collapse in">
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Factory Rate</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="125000">
-						</div>
-					</div>
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Attendance Bonus</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="350000">
-						</div>
-						<label class="control-label col-sm-2">Loyality Bonus:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="120000">
-						</div>
-					</div>
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Other Bonus</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="0"> <a target="blank"
-								style="font-size: 9pt; color: navy;" href="#"><small><i
-									class="glyphicon glyphicon-plus"></i></small> New
-								Bonus&nbsp;&nbsp;</a>
-						</div>
-					</div>
-				</div>
-			</fieldset>
-
-			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#allowance_info" class="" data-toggle="collapse">ALLOWANCE:</a>
-				</legend>
-				<div id="allowance_info" class="collapse in">
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Housing Allowance</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="0">
-						</div>
-						<label class="control-label col-sm-2">Transporation Allowance</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="120000">
-						</div>
-					</div>
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Other Allowance</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value=""> <a target="blank"
-								style="font-size: 9pt; color: navy;" href="#"><small><i
-									class="glyphicon glyphicon-plus"></i></small> New
-								Allowance&nbsp;&nbsp;</a>
-						</div>
-					</div>
-
-				</div>
-			</fieldset>
-
-			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#salary_pmt_method" class="" data-toggle="collapse">SALARY
-						PAYMENT METHOD:</a>
-				</legend>
-				<div id="salary_pmt_method" class="collapse in">
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2"></label>
-						<div class="col-sm-3">
-							<input type="radio" name="sort" value="ASC">&nbsp;CASH&nbsp;&nbsp;
-							<input checked type="radio" name="sort" value="DESC">&nbsp;Bank
-							Transfer&nbsp;&nbsp;
-						</div>
-					</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Beneficiary Name</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="CHONE">
-						</div>
-						<label class="control-label col-sm-2">Account Number</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="120000">
-						</div>
-					</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Bank Name</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="BCEL">
-						</div>
-						<label class="control-label col-sm-2">Swiftcode</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="BCEL">
-						</div>
-
-					</div>
-					<div class="form-group margin-bottom">
-					
-						<label class="control-label col-sm-2">Bank Address:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="employeeCode" value="Langxane Vientiane">
-						</div>
-					</div>
-				</div>
-			</fieldset>
+					<fieldset>
+						<legend style="font-size: 9pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#salary_info" class="" data-toggle="collapse">SALARY:</a>
+						</legend>
+						<div id="salary_info" class="collapse in">
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Contracted Salary:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="900000"> <input checked
+										type="checkbox" name="isActive" value="1">&nbsp;13 Month
+									Salary&nbsp;&nbsp;
+								</div>
 
 
-		</form>
-		
-      </div>
-      
-      <div id="salary_history" class="tab-pane fade">
-        <h5>Salary History</h5>
-        <table style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Salary<br>Period</b></td>
-			<td><b>Contracted<br>Salary</b></td>
-			<td><b>Housing <br>Allowance</b></td>
-			<td><b>Transportation<br>Allowance</b></td>
-			<td><b>Attendance<br>Bonus</b></td>
-			<td><b>SSO <br>Deduction</b></td>
-			<td><b>PIT <br>Deduction</b></td>
-			<td><b>Net <br>Salary</b></td>
-			<td><b>Status</b></td>
-			<td><b>action</b></td>
-		</tr>
-	</thead>
-	<tbody>
-	<tr>
-			<td>1</td>
-			<td>05-2017</td>
-			<td>900.000</td>
-			<td>0</td>
-			<td>120.000</td>
-			<td>350.000</td>
-			<td>0</td>
-			<td>0</td>
-			<td>850.000</td>
-			<td>final</td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
-			
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>06-2017</td>
-			<td>900.000</td>
-			<td>0</td>
-			<td>120.000</td>
-			<td>350.000</td>
-			<td>0</td>
-			<td>0</td>
-			<td>850.000</td>
-			<td>final</td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
-			
-		</tr>
-	</tbody>
-</table>
-      </div>
-    </div>
+								<label class="control-label col-sm-2" for="inputTag">Currency: </label>
+								<div class="col-sm-3">
+									<select class="form-control input-sm" name="gender">
+										<option
+											<?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?>
+											value="M">LAK</option>
+										<option
+											<?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?>
+											value="F">USD</option>
+									</select>
+								</div>
+								<div class="col-sm-4">
+									<a target="blank" style="font-size: 9pt; color: navy;" href="#">Last
+										Evaluation&nbsp;&nbsp;</a><small><i
+										class="glyphicon glyphicon-new-window"></i></small>
+								</div>
+							</div>
+						</div>
+					</fieldset>
 
-		
+					<fieldset>
+						<legend style="font-size: 9pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#fixed_bonus" class="" data-toggle="collapse">FIXED
+								BONUS:</a>
+						</legend>
+						<div id="fixed_bonus" class="collapse in">
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Factory Rate</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="125000">
+								</div>
+							</div>
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Attendance Bonus</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="350000">
+								</div>
+								<label class="control-label col-sm-2">Loyality Bonus:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="120000">
+								</div>
+							</div>
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Other Bonus</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="0"> <a target="blank"
+										style="font-size: 9pt; color: navy;" href="#"><small><i
+											class="glyphicon glyphicon-plus"></i></small> New
+										Bonus&nbsp;&nbsp;</a>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend style="font-size: 9pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#allowance_info" class="" data-toggle="collapse">ALLOWANCE:</a>
+						</legend>
+						<div id="allowance_info" class="collapse in">
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Housing Allowance</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="0">
+								</div>
+								<label class="control-label col-sm-2">Transporation Allowance</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="120000">
+								</div>
+							</div>
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Other Allowance</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value=""> <a target="blank"
+										style="font-size: 9pt; color: navy;" href="#"><small><i
+											class="glyphicon glyphicon-plus"></i></small> New
+										Allowance&nbsp;&nbsp;</a>
+								</div>
+							</div>
+
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend style="font-size: 9pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#salary_pmt_method" class="" data-toggle="collapse">SALARY
+								PAYMENT METHOD:</a>
+						</legend>
+						<div id="salary_pmt_method" class="collapse in">
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2"></label>
+								<div class="col-sm-3">
+									<input type="radio" name="sort" value="ASC">&nbsp;CASH&nbsp;&nbsp;
+									<input checked type="radio" name="sort" value="DESC">&nbsp;Bank
+									Transfer&nbsp;&nbsp;
+								</div>
+							</div>
+
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Beneficiary Name</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="CHONE">
+								</div>
+								<label class="control-label col-sm-2">Account Number</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="120000">
+								</div>
+							</div>
+
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Bank Name</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="BCEL">
+								</div>
+								<label class="control-label col-sm-2">Swiftcode</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="BCEL">
+								</div>
+
+							</div>
+							<div class="form-group margin-bottom">
+
+								<label class="control-label col-sm-2">Bank Address:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="employeeCode" value="Langxane Vientiane">
+								</div>
+							</div>
+						</div>
+					</fieldset>
+
+
+				</form>
+
+			</div>
+
+			<div id="salary_history" class="tab-pane fade">
+				<h5>Salary History</h5>
+				<table style="font-size: 9pt;"
+					class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<td><b>#</b></td>
+							<td><b>Salary<br>Period
+							</b></td>
+							<td><b>Contracted<br>Salary
+							</b></td>
+							<td><b>Housing <br>Allowance
+							</b></td>
+							<td><b>Transportation<br>Allowance
+							</b></td>
+							<td><b>Attendance<br>Bonus
+							</b></td>
+							<td><b>SSO <br>Deduction
+							</b></td>
+							<td><b>PIT <br>Deduction
+							</b></td>
+							<td><b>Net <br>Salary
+							</b></td>
+							<td><b>Status</b></td>
+							<td><b>action</b></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>05-2017</td>
+							<td>900.000</td>
+							<td>0</td>
+							<td>120.000</td>
+							<td>350.000</td>
+							<td>0</td>
+							<td>0</td>
+							<td>850.000</td>
+							<td>final</td>
+							<td><a style="color: navy" href="#"><small><span
+										class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>06-2017</td>
+							<td>900.000</td>
+							<td>0</td>
+							<td>120.000</td>
+							<td>350.000</td>
+							<td>0</td>
+							<td>0</td>
+							<td>850.000</td>
+							<td>final</td>
+							<td><a style="color: navy" href="#"><small><span
+										class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
 
 	</div>
 	<!-- REMUNERATION -->

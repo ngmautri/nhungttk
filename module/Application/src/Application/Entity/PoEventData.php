@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PoEventData
 {
+
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="field_name", type="string", length=255, nullable=true)
@@ -20,6 +21,7 @@ class PoEventData
     private $fieldName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="field_type", type="string", nullable=true)
@@ -27,6 +29,7 @@ class PoEventData
     private $fieldType;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="string_value", type="string", length=255, nullable=true)
@@ -34,6 +37,7 @@ class PoEventData
     private $stringValue;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="string_value_old", type="string", length=255, nullable=true)
@@ -41,6 +45,7 @@ class PoEventData
     private $stringValueOld;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="int_value", type="integer", nullable=true)
@@ -48,6 +53,7 @@ class PoEventData
     private $intValue;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="int_value_old", type="integer", nullable=true)
@@ -55,6 +61,7 @@ class PoEventData
     private $intValueOld;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="date_value", type="datetime", nullable=true)
@@ -62,6 +69,7 @@ class PoEventData
     private $dateValue;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="date_value_old", type="datetime", nullable=true)
@@ -69,6 +77,7 @@ class PoEventData
     private $dateValueOld;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="text_value", type="text", length=65535, nullable=true)
@@ -76,6 +85,7 @@ class PoEventData
     private $textValue;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="text_value_old", type="text", length=65535, nullable=true)
@@ -83,6 +93,7 @@ class PoEventData
     private $textValueOld;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="boolean_value", type="boolean", nullable=true)
@@ -90,6 +101,7 @@ class PoEventData
     private $booleanValue;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="boolean_value_old", type="boolean", nullable=true)
@@ -97,6 +109,7 @@ class PoEventData
     private $booleanValueOld;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -104,6 +117,7 @@ class PoEventData
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\PoEvent
      *
      * @ORM\Id
@@ -114,8 +128,6 @@ class PoEventData
      * })
      */
     private $event;
-
-
 
     /**
      * Set fieldName

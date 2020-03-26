@@ -53,11 +53,10 @@ WHERE 1
     {
         $sql = $this->sql;
 
-        if($token!==null){
+        if ($token !== null) {
             $sql = $sql . " AND nmt_procure_po.id =" . $po_id . " AND nmt_procure_po.token='" . $token . "' GROUP BY nmt_procure_po.id";
-        }else{
+        } else {
             $sql = $sql . " AND nmt_procure_po.id =" . $po_id . " GROUP BY nmt_procure_po.id";
-            
         }
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
@@ -79,7 +78,7 @@ WHERE 1
         }
     }
 
-    public function getPoList($is_active = 1, $current_state = null,$docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getPoList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
 
@@ -92,18 +91,18 @@ WHERE 1
         if ($current_state != null) {
             $sql = $sql . " AND nmt_procure_po.current_state = '" . $current_state . "'";
         }
-        
+
         if ($docStatus != null) {
             $sql = $sql . " AND nmt_procure_po.doc_status = '" . $docStatus . "'";
         }
-        
+
         $sql = $sql . " GROUP BY nmt_procure_po.id";
-        
+
         switch ($sort_by) {
             case "sysNumber":
                 $sql = $sql . " ORDER BY nmt_procure_po.sys_number " . $sort;
                 break;
-                
+
             case "poDate":
                 $sql = $sql . " ORDER BY nmt_procure_po.contract_date " . $sort;
                 break;
@@ -243,7 +242,7 @@ WHERE 1
     }
 
     /**
-     * 
+     *
      * @param int $item_id
      * @param string $token
      * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
@@ -282,9 +281,9 @@ WHERE 1
             return null;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param number $vendor_id
      * @param string $token
      * @param static $sort_by
@@ -294,7 +293,7 @@ WHERE 1
      * @param number $offset
      * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      */
-    public function getPoRowOfVendor($vendor_id=null, $vendor_token=null, $sort_by=null, $order='DESC', $limit=0, $offset=0)
+    public function getPoRowOfVendor($vendor_id = null, $vendor_token = null, $sort_by = null, $order = 'DESC', $limit = 0, $offset = 0)
     {
         $sql = "
 SELECT
@@ -315,18 +314,18 @@ LEFT JOIN nmt_inventory_item
 ON nmt_inventory_item.id = nmt_procure_po_row.item_id
 WHERE 1            
 ";
-        
+
         // $sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
-        
+
         $sql = $sql . sprintf(" AND nmt_procure_po.vendor_id=%s", $vendor_id);
-    
+
         switch ($sort_by) {
             case "createdOn":
                 $sql = $sql . " ORDER BY nmt_procure_po_row.created_on " . $order;
                 break;
             case "transactionStatus":
                 $sql = $sql . " ORDER BY nmt_procure_po_row.transaction_status " . $order;
-                break;                
+                break;
             case "itemName":
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $order;
                 break;
@@ -342,27 +341,27 @@ WHERE 1
             case "rowUnitPrice":
                 $sql = $sql . " ORDER BY nmt_procure_po_row.doc_unit_price " . $order;
                 break;
-           }
-        
+        }
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-        
-        //echo $sql;
-        
+
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'procure_po_row');
             $rsm->addScalarResult("item_name", "item_name");
-            
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
-            
+
             return $result;
         } catch (NoResultException $e) {
             return null;
@@ -490,7 +489,7 @@ WHERE nmt_procure_gr_row.gr_id=%s
 GROUP BY nmt_procure_gr_row.id
 ";
 
-        //$sql2 = "";
+        // $sql2 = "";
 
         $sql = "
 SELECT
@@ -663,7 +662,7 @@ GROUP BY nmt_procure_po_row.id
                     }
 
                     // close row
-                    if ($r['open_gr_qty'] == 0 AND $r['open_ap_qty'] == 0) {
+                    if ($r['open_gr_qty'] == 0 and $r['open_ap_qty'] == 0) {
                         $po_row->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_COMPLETED);
                     } else {
                         $completed = false;
@@ -918,9 +917,9 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
     /**
      * GR List
      */
-    public function getGrList($is_active = 1, $current_state = null, $docStatus=null,$filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getGrList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
-$sql = "SELECT
+        $sql = "SELECT
    nmt_procure_gr.*,
    count(nmt_procure_gr_row.id) as total_row
 FROM nmt_procure_gr
@@ -938,14 +937,13 @@ WHERE 1
         if ($current_state != null) {
             $sql = $sql . " AND nmt_procure_gr.current_state = '" . $current_state . "'";
         }
-        
+
         if ($docStatus != null) {
             $sql = $sql . " AND nmt_procure_gr.doc_status = '" . $docStatus . "'";
         }
-      
 
         $sql = $sql . " GROUP BY nmt_procure_gr.id";
-        
+
         switch ($sort_by) {
             case "createdOn":
                 $sql = $sql . " ORDER BY nmt_procure_gr.created_on " . $sort;
@@ -953,11 +951,11 @@ WHERE 1
             case "sysNumber":
                 $sql = $sql . " ORDER BY nmt_procure_gr.sys_number " . $sort;
                 break;
-     
+
             case "docStatus":
                 $sql = $sql . " ORDER BY nmt_procure_gr.doc_status " . $sort;
                 break;
-                
+
             case "currencyCode":
                 $sql = $sql . " ORDER BY nmt_procure_po.currency_iso3 " . $sort;
                 break;
@@ -996,7 +994,7 @@ WHERE 1
     /**
      * GR List
      */
-    public function getQOList($is_active = 1, $current_state = null, $docStatus =null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getQOList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = "SELECT
    nmt_procure_qo.*,
@@ -1016,7 +1014,7 @@ WHERE 1
         if ($current_state != null) {
             $sql = $sql . " AND nmt_procure_qo.current_state = '" . $current_state . "'";
         }
-        
+
         if ($docStatus != null) {
             $sql = $sql . " AND nmt_procure_qo.doc_status = '" . $docStatus . "'";
         }
@@ -1131,14 +1129,13 @@ WHERE 1
 
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
-            
+
             return $result;
         } catch (NoResultException $e) {
             return null;
         }
     }
-    
-    
+
     /**
      *
      * @param int $item_id
@@ -1149,14 +1146,12 @@ WHERE 1
     {
         $sql = \Application\Repository\SQL\NmtProcurePoRepositorySQL::ITEM_PRICE_SQL;
         $sql = sprintf($sql, $item_id, $item_id);
-        
-        try {
-           } catch (NoResultException $e) {
+
+        try {} catch (NoResultException $e) {
             return null;
         }
     }
-    
-    
+
     /**
      *
      * @param int $item_id
@@ -1165,12 +1160,12 @@ WHERE 1
      */
     public function getPriceOfItem($item_id, $token)
     {
-        $sql = sprintf(\Application\Repository\SQL\NmtProcurePoRepositorySQL::ITEM_PRICE_SQL,$item_id,$item_id,$item_id);
-      
-         try {
-             $stmt = $this->_em->getConnection()->prepare($sql);
-             $stmt->execute();
-             return $stmt->fetchAll();
+        $sql = sprintf(\Application\Repository\SQL\NmtProcurePoRepositorySQL::ITEM_PRICE_SQL, $item_id, $item_id, $item_id);
+
+        try {
+            $stmt = $this->_em->getConnection()->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll();
         } catch (NoResultException $e) {
             return null;
         }

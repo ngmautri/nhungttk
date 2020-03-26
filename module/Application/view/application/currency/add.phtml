@@ -1,81 +1,81 @@
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Create New Currency</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Create New Currency</a></li>
+	</ul>
 
-<div id="general">
+	<div id="general">
 
-<form class="form-horizontal"
-	action="<?php echo $this->baseUrl ?>/application/currency/add"
-	method="post" enctype="multipart/form-data">
-	<input type="hidden" name="redirectUrl"
-		value="<?php echo $redirectUrl ?>" />
+		<form class="form-horizontal"
+			action="<?php echo $this->baseUrl ?>/application/currency/add"
+			method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
 
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Currency</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
-				name="currency" value="">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Numeric Code</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
-				name="currency_numeric_code" value="">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Detail</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
-				name="description" value="">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Entity</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
-				name="entity" value="">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Status</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="status">
-				<option selected="selected" value="1">Activated</option>
-				<option value="0">Deactivated</option>
-			</select>
-		</div>
-	</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Currency</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" id="inputTag"
+						placeholder="" name="currency" value="">
+				</div>
+			</div>
 
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Submit</button>
-		</div>
-	</div>
-</form>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Numeric Code</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" id="inputTag"
+						placeholder="" name="currency_numeric_code" value="">
+				</div>
+			</div>
 
-</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Detail</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" id="inputTag"
+						placeholder="" name="description" value="">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Entity</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" id="inputTag"
+						placeholder="" name="entity" value="">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Status</label>
+				<div class="col-sm-3">
+					<select class="form-control" name="status">
+						<option selected="selected" value="1">Activated</option>
+						<option value="0">Deactivated</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default">Submit</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
 </div>
 
 <div id="dialog" style="display: none;">Check code...</div>

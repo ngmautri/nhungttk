@@ -107,5 +107,4 @@ class TransactionController extends AbstractRestfulController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
 }

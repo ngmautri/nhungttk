@@ -1,6 +1,7 @@
 <?php if (count($list) > 0): ?>
 
-<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
+<table style="font-size: 9.3pt;"
+	class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
@@ -8,32 +9,33 @@
 			<td><b>Clock In</b></td>
 			<td><b>Clock Out</b></td>
 			<td><b>Remarks</b></td>
-	
-			</tr>
+
+		</tr>
 	</thead>
 
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $l ) :	
-		$count ++;
-	
-		
-     /**@var \Application\Entity\NmtHrFingerscan $a ; */ 
-		$a = $l;
-	?>
+
+    $count = 0;
+    foreach ($list as $l) :
+        $count ++;
+
+        /**@var \Application\Entity\NmtHrFingerscan $a ; */
+        $a = $l;
+        ?>
 		
 	<tr>
 			<td><?php echo $count; ?> </td>
-				<td><?php if($a->getAttendanceDate()!==null): echo date_format($a->getAttendanceDate(), "d-m-Y"); endif;?></td>
+			<td><?php if($a->getAttendanceDate()!==null): echo date_format($a->getAttendanceDate(), "d-m-Y"); endif;?></td>
 			<td><?php if($a->getClockIn()!==null): echo $a->getClockIn(); endif;?></td>
 			<td><?php if($a->getClockOut()!==null): echo $a->getClockOut(); endif;?></td>
 			<td><?php echo $a->getRemarks();?></td>
 			
 	<?php endforeach; ?>
- </tbody>
+ 
+	
+	</tbody>
 </table>
 
 <?php endif;?>

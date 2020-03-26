@@ -114,7 +114,6 @@ class VInvoiceController extends AbstractActionController
                 $errors[] = $nmtPlugin->translate('Company currency can\'t be defined!');
             }
             $entity->setLocalCurrency($default_cur);
-            
 
             $currency = null;
             if ($currency_id > 0) {
@@ -122,7 +121,6 @@ class VInvoiceController extends AbstractActionController
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
 
-       
             // check if posting period is close
             /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
             $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
@@ -380,9 +378,9 @@ class VInvoiceController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            
+
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $request->getPost('redirectUrl');
             $id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
@@ -1045,7 +1043,7 @@ class VInvoiceController extends AbstractActionController
 
             $vendor_id = (int) $request->getPost('vendor_id');
             $currency_id = (int) $request->getPost('currency_id');
-      
+
             $postingDate = $request->getPost('postingDate');
             // $grDate = $request->getPost('grDate');
             $invoiceDate = $request->getPost('invoiceDate');
@@ -1187,7 +1185,7 @@ class VInvoiceController extends AbstractActionController
                     'currency_list' => $currency_list
                 ));
             }
-            
+
             $m = sprintf("[OK] AP #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
@@ -2044,8 +2042,8 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     }
 
     /**
-     * 
-     *  @return \Procure\Service\APInvoiceService
+     *
+     * @return \Procure\Service\APInvoiceService
      */
     public function getApService()
     {
@@ -2053,8 +2051,8 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     }
 
     /**
-     * 
-     *  @param \Procure\Service\APInvoiceService $apService
+     *
+     * @param \Procure\Service\APInvoiceService $apService
      */
     public function setApService(\Procure\Service\APInvoiceService $apService)
     {

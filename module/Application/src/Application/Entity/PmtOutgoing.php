@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PmtOutgoing
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class PmtOutgoing
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class PmtOutgoing
     private $token;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="doc_date", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class PmtOutgoing
     private $docDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=10, nullable=true)
@@ -43,6 +47,7 @@ class PmtOutgoing
     private $docStatus;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class PmtOutgoing
     private $postingDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="local_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -57,6 +63,7 @@ class PmtOutgoing
     private $localAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -64,6 +71,7 @@ class PmtOutgoing
     private $docAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class PmtOutgoing
     private $vendorName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_document", type="string", nullable=true)
@@ -78,6 +87,7 @@ class PmtOutgoing
     private $targetDocument;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="target_id", type="integer", nullable=true)
@@ -85,6 +95,7 @@ class PmtOutgoing
     private $targetId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_class", type="string", length=45, nullable=true)
@@ -92,6 +103,7 @@ class PmtOutgoing
     private $targetClass;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -99,6 +111,7 @@ class PmtOutgoing
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class PmtOutgoing
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -113,6 +127,7 @@ class PmtOutgoing
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="discount_amount", type="decimal", precision=15, scale=4, nullable=true)
@@ -120,6 +135,7 @@ class PmtOutgoing
     private $discountAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class PmtOutgoing
     private $sysNumber;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -134,6 +151,7 @@ class PmtOutgoing
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=10, scale=4, nullable=true)
@@ -141,6 +159,7 @@ class PmtOutgoing
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class PmtOutgoing
     private $sapDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
@@ -155,6 +175,7 @@ class PmtOutgoing
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -162,6 +183,7 @@ class PmtOutgoing
     private $isDraft;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -169,6 +191,7 @@ class PmtOutgoing
     private $docType;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -176,6 +199,7 @@ class PmtOutgoing
     private $isReversed;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="posting_key", type="string", length=1, nullable=true)
@@ -183,6 +207,7 @@ class PmtOutgoing
     private $postingKey;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -190,6 +215,7 @@ class PmtOutgoing
     private $reversalDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -197,6 +223,7 @@ class PmtOutgoing
     private $reversalDoc;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -207,6 +234,7 @@ class PmtOutgoing
     private $docCurrency;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationPmtMethod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationPmtMethod")
@@ -217,6 +245,7 @@ class PmtOutgoing
     private $pmtMethod;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -227,6 +256,7 @@ class PmtOutgoing
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -237,6 +267,7 @@ class PmtOutgoing
     private $apInvoice;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -247,6 +278,7 @@ class PmtOutgoing
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -257,6 +289,7 @@ class PmtOutgoing
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -267,6 +300,7 @@ class PmtOutgoing
     private $localCurrency;
 
     /**
+     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -277,6 +311,7 @@ class PmtOutgoing
     private $postingPeriod;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePo
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
@@ -285,8 +320,6 @@ class PmtOutgoing
      * })
      */
     private $po;
-
-
 
     /**
      * Get id

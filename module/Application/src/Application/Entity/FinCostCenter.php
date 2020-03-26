@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinCostCenter
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class FinCostCenter
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="cost_center_name", type="string", length=45, nullable=false)
@@ -29,6 +31,7 @@ class FinCostCenter
     private $costCenterName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -36,6 +39,7 @@ class FinCostCenter
     private $description;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class FinCostCenter
     private $validFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class FinCostCenter
     private $validTo;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -57,6 +63,7 @@ class FinCostCenter
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class FinCostCenter
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class FinCostCenter
     private $sysNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -78,6 +87,7 @@ class FinCostCenter
     private $revisionNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class FinCostCenter
     private $lastChangeOn;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -95,6 +106,7 @@ class FinCostCenter
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -105,6 +117,7 @@ class FinCostCenter
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -113,8 +126,6 @@ class FinCostCenter
      * })
      */
     private $company;
-
-
 
     /**
      * Get id

@@ -1,7 +1,6 @@
 <?php
 namespace Application\Domain\MessageStore;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com

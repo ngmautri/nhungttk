@@ -50,5 +50,4 @@ class GRWithoutInvoice extends GoodsReceipt implements GoodsReceiptInterface
 
     public function addTransactionRow(TransactionRow $transactionRow)
     {}
-
 }

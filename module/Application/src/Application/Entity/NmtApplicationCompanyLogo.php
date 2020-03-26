@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationCompanyLogo
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationCompanyLogo
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationCompanyLogo
     private $url;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=255, nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationCompanyLogo
     private $filename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="original_filename", type="string", length=100, nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationCompanyLogo
     private $originalFilename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationCompanyLogo
     private $filetype;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=50, nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationCompanyLogo
     private $size;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationCompanyLogo
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -71,6 +79,7 @@ class NmtApplicationCompanyLogo
     private $folder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder_relative", type="string", length=100, nullable=true)
@@ -78,6 +87,7 @@ class NmtApplicationCompanyLogo
     private $folderRelative;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -85,6 +95,7 @@ class NmtApplicationCompanyLogo
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -92,6 +103,7 @@ class NmtApplicationCompanyLogo
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
@@ -99,6 +111,7 @@ class NmtApplicationCompanyLogo
     private $isDefault;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -106,6 +119,7 @@ class NmtApplicationCompanyLogo
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -116,6 +130,7 @@ class NmtApplicationCompanyLogo
     private $company;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -124,8 +139,6 @@ class NmtApplicationCompanyLogo
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

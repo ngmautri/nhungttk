@@ -11,8 +11,8 @@
 
 		
 			<?php
-			
-//var_dump($errors);
+
+// var_dump($errors);
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
 
@@ -28,10 +28,11 @@ if (count($errors) > 0) {
 
 <?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
 		<div style="position: relative; float: right;">
-		
-							<a title="<?php echo $this->translate("Edit Document Header");?>" class="btn btn-default btn-sm" 
-						href="<?php echo $this->baseUrl ?>/inventory/gi/edit?token=<?php echo $entity->getToken();?>&entity_id=<?php echo $entity->getId();?>"><?php echo $this->translate("Edit");?></a>
-		
+
+			<a title="<?php echo $this->translate("Edit Document Header");?>"
+				class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/inventory/gi/edit?token=<?php echo $entity->getToken();?>&entity_id=<?php echo $entity->getId();?>"><?php echo $this->translate("Edit");?></a>
+
 			<a class="btn btn-primary btn-sm" style="color: white"
 				onclick="confirmPost();" href="javascript:;"><i
 				class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>

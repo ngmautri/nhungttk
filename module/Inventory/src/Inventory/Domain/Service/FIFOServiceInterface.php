@@ -39,9 +39,9 @@ Interface FIFOServiceInterface
      * @param TransactionRow $row
      */
     public function closeLayers(GenericTransaction $trx, TransactionRow $row);
-    
+
     /**
-     * 
+     *
      * @param GenericTransaction $trx
      */
     public function closeLayersOf(GenericTransaction $trx);

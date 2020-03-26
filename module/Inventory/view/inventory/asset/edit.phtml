@@ -4,71 +4,81 @@
 
 
 
-<form action="<?php echo $this->baseUrl ?>/inventory/asset/edit"	method="post" enctype="multipart/form-data" id="NewAsset">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<form action="<?php echo $this->baseUrl ?>/inventory/asset/edit"
+	method="post" enctype="multipart/form-data" id="NewAsset">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" /> <input type="hidden" name="id"
+		value="<?php echo (int) $asset->id; ?>" /> <input type="hidden"
+		name="category_id" value="<?php echo (int) $asset->category_id; ?>" />
+	<table>
 
-<input type="hidden" name="id" value="<?php echo (int) $asset->id; ?>" />
+		<tr>
+			<td><label for="category">Name</label></td>
+			<td><input type="text" name="name"
+				value="<?php echo  $asset->name; ?>" /></td>
+		</tr>
+		<tr>
+			<td><label for="category">Description</label>
+			
+			<td><textarea cols="45" name="description" id="description"
+					style="background: #FFFFFF" rows="3"><?php echo  $asset->description; ?></textarea></td>
+		</tr>
+		<tr>
+			<td><label for="group_id">Asset Group</label></td>
+			<td><input type="text" name="group_id"
+				value="<?php echo  $asset->group_id; ?>" /></td>
+		</tr>
+		<tr>
+			<td><label for="tag">Tag</label></td>
+			<td><input type="text" name="tag" value="<?php echo  $asset->tag; ?>" /></td>
+		</tr>
 
-<input type="hidden" name="category_id" value="<?php echo (int) $asset->category_id; ?>" />
-<table>
+		<tr>
+			<td><label for="brand">Brand</label></td>
+			<td><input type="text" name="brand"
+				value="<?php echo  $asset->brand; ?>" /></td>
+		</tr>
 
-<tr>
-	<td><label for="category">Name</label> </td>
-	<td><input type="text"	name="name" value="<?php echo  $asset->name; ?>" /></td>
-</tr>
-<tr>
-	<td><label for="category">Description</label> 
-	<td><textarea cols="45" name="description" id="description" style="background:#FFFFFF" rows="3"><?php echo  $asset->description; ?></textarea></td>
-</tr>
-<tr>
-	<td><label for="group_id">Asset Group</label> </td>
-	<td><input type="text"	name="group_id" value="<?php echo  $asset->group_id; ?>" /></td>
-</tr>
-<tr>
-	<td><label for="tag">Tag</label> </td>
-	<td><input type="text"	name="tag" value="<?php echo  $asset->tag; ?>" /></td>
-</tr>
-
-<tr>
-	<td><label for="brand">Brand</label> </td>
-	<td><input type="text"	name="brand" value="<?php echo  $asset->brand; ?>"/></td>
-</tr>
-
-<tr>
-	<td><label for="model">Model</label> </td>
-	<td><input type="text"	name="model" value="<?php echo  $asset->model; ?>" /></td>
-</tr>
-<tr>
-	<td><label for="serial">Serial</label> </td>
-	<td><input type="text"	name="serial" value="<?php echo  $asset->serial; ?>" /></td>
-</tr>
-<tr>
-	<td><label for="origin">Origin</label></td>
-	<td><input type="text"	name="origin" value="<?php echo  $asset->origin; ?>" /></td>
-</tr>
-
-
-<tr>
-	<td><label for="origin">Location</label></td>
-	<td><input type="text"	name="location" value="<?php echo  $asset->location; ?>" /></td>
-</tr>
-
-<tr>
-	<td><label for="comment">Note: </label> 
-	<td><textarea cols="60" name="comment" id="comment" style="background:#FFFFFF" rows="5"><?php echo  $asset->comment; ?></textarea></td>
-</tr>
+		<tr>
+			<td><label for="model">Model</label></td>
+			<td><input type="text" name="model"
+				value="<?php echo  $asset->model; ?>" /></td>
+		</tr>
+		<tr>
+			<td><label for="serial">Serial</label></td>
+			<td><input type="text" name="serial"
+				value="<?php echo  $asset->serial; ?>" /></td>
+		</tr>
+		<tr>
+			<td><label for="origin">Origin</label></td>
+			<td><input type="text" name="origin"
+				value="<?php echo  $asset->origin; ?>" /></td>
+		</tr>
 
 
-<tr>
-	<td></td> 
-	<td><input type="submit" name="add" value="update" />	</td>
-</tr>
+		<tr>
+			<td><label for="origin">Location</label></td>
+			<td><input type="text" name="location"
+				value="<?php echo  $asset->location; ?>" /></td>
+		</tr>
 
-</table>
+		<tr>
+			<td><label for="comment">Note: </label>
+			
+			<td><textarea cols="60" name="comment" id="comment"
+					style="background: #FFFFFF" rows="5"><?php echo  $asset->comment; ?></textarea></td>
+		</tr>
 
-<p>Pictures:</p>
-<input type="file" name="pictures[]" /><br>
-<input type="file" name="pictures[]" /><br>
-<input type="file" name="pictures[]" /><br>
+
+		<tr>
+			<td></td>
+			<td><input type="submit" name="add" value="update" /></td>
+		</tr>
+
+	</table>
+
+	<p>Pictures:</p>
+	<input type="file" name="pictures[]" /><br> <input type="file"
+		name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
 
 </form>

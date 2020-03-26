@@ -5,42 +5,41 @@
 		<li><a href="#general"><?php echo $this->translate('Income Calculation Method'); ?></a></li>
 	</ul>
 	<div id="general" style="font-size: 9.5pt">
-	
-	<ul>
 
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('Income Calculation Method'); ?></b></td>
-			<td><b><?php echo $this->translate('Action'); ?></b></td>
-			</tr>
-	</thead>
+		<ul>
 
-	<tbody>
+			<table style="font-size: 10pt;"
+				class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td><b>#</b></td>
+						<td><b><?php echo $this->translate('Income Calculation Method'); ?></b></td>
+						<td><b><?php echo $this->translate('Action'); ?></b></td>
+					</tr>
+				</thead>
+
+				<tbody>
 
 		
-	<?php 
-	$count = 0;
-	
-	foreach ($decorators as $d):	
-	/**@var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator $d ; */
-	$count ++;
-	
-	?>
+	<?php
+$count = 0;
+
+foreach ($decorators as $d) :
+    /**@var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator $d ; */
+    $count ++;
+
+    ?>
 	
 		 <tr>
-	  		<td><?php echo $count;?></td>
-	  		<td><?php echo $d;?></td>
-		 <td>
-        </td>
-		
-		</tr>
+						<td><?php echo $count;?></td>
+						<td><?php echo $d;?></td>
+						<td></td>
+
+					</tr>
 <?php endforeach; ?>
 
 </tbody>
-</table>
-
-
+			</table>
+	
 	</div>
 </div>

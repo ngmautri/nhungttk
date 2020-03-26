@@ -11,26 +11,25 @@ use HR\Payroll\Income\Decorator\Factory\FullPaymentDecoratorFactory;
 use HR\Payroll\Income\Decorator\Factory\LoadingBonusDecoratorFactory;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class LoadingBonusFactory extends AbstractIncomeFactory
+class LoadingBonusFactory extends AbstractIncomeFactory
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
-    protected function createIncome($amount=0, $currency=null)
-    {        
-        $incomeComponent = new GenericIncomeComponent("Loading Bonus", $amount, 0, $currency, FALSE,TRUE, False, TRUE);
+    protected function createIncome($amount = 0, $currency = null)
+    {
+        $incomeComponent = new GenericIncomeComponent("Loading Bonus", $amount, 0, $currency, FALSE, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f = LoadingBonusDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
-        $incomeComponent->setDescription("Loading Bonus is only applied for worker to load garment for export.");        
+        $incomeComponent->setDescription("Loading Bonus is only applied for worker to load garment for export.");
         return $incomeComponent;
     }
-
 }

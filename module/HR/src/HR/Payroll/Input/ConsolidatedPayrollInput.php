@@ -1,37 +1,49 @@
 <?php
-
 namespace HR\Payroll\Input;
 
 /**
  * Consolidated Payroll Input
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-Class ConsolidatedPayrollInput extends AbstractPayrollInput
+class ConsolidatedPayrollInput extends AbstractPayrollInput
 {
+
     private $totalWorkingDays;
+
     private $publicHolidays;
+
     private $coporateLeaves;
-    
+
     private $actualWorkedDays;
+
     private $outOfOfficeDays;
+
     private $annualLeaves;
+
     private $paidSickleaves;
+
     private $personalPaidLeaves;
+
     private $approvedLeaves;
+
     private $unapprovedLeaves;
+
     private $maternityLeaves;
+
     private $sickLeavesPaidBySSO;
-    
+
     private $overTime;
-    
-    private $numberOfWarningsLetter;    
+
+    private $numberOfWarningsLetter;
+
     private $numberOfLoadedContainer;
-    
-    private $otherLeaves;    
-    
+
+    private $otherLeaves;
+
     /**
+     *
      * @return mixed
      */
     public function getTotalWorkingDays()
@@ -40,6 +52,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPublicHolidays()
@@ -48,6 +61,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCoporateLeaves()
@@ -56,6 +70,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getActualWorkedDays()
@@ -64,6 +79,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOutOfOfficeDays()
@@ -72,6 +88,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAnnualLeaves()
@@ -80,6 +97,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaidSickleaves()
@@ -88,6 +106,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPersonalPaidLeaves()
@@ -96,6 +115,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getApprovedLeaves()
@@ -104,6 +124,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnapprovedLeaves()
@@ -112,6 +133,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMaternityLeaves()
@@ -120,6 +142,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOtherLeaves()
@@ -128,6 +151,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSickLeavesPaidBySSO()
@@ -136,6 +160,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $totalWorkingDays
      */
     public function setTotalWorkingDays($totalWorkingDays)
@@ -144,6 +169,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $publicHolidays
      */
     public function setPublicHolidays($publicHolidays)
@@ -152,6 +178,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $coporateLeaves
      */
     public function setCoporateLeaves($coporateLeaves)
@@ -160,6 +187,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $actualWorkedDays
      */
     public function setActualWorkedDays($actualWorkedDays)
@@ -168,6 +196,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $outOfOfficeDays
      */
     public function setOutOfOfficeDays($outOfOfficeDays)
@@ -176,6 +205,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $annualLeaves
      */
     public function setAnnualLeaves($annualLeaves)
@@ -184,6 +214,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $paidSickleaves
      */
     public function setPaidSickleaves($paidSickleaves)
@@ -192,6 +223,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $personalPaidLeaves
      */
     public function setPersonalPaidLeaves($personalPaidLeaves)
@@ -200,6 +232,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $approvedLeaves
      */
     public function setApprovedLeaves($approvedLeaves)
@@ -208,6 +241,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $unapprovedLeaves
      */
     public function setUnapprovedLeaves($unapprovedLeaves)
@@ -216,6 +250,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $maternityLeaves
      */
     public function setMaternityLeaves($maternityLeaves)
@@ -224,6 +259,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $otherLeaves
      */
     public function setOtherLeaves($otherLeaves)
@@ -232,13 +268,16 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $sickLeavesPaidBySSO
      */
     public function setSickLeavesPaidBySSO($sickLeavesPaidBySSO)
     {
         $this->sickLeavesPaidBySSO = $sickLeavesPaidBySSO;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getOverTime()
@@ -247,13 +286,16 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $overTime
      */
     public function setOverTime($overTime)
     {
         $this->overTime = $overTime;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getNumberOfWarningsLetter()
@@ -262,13 +304,16 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $numberOfWarningsLetter
      */
     public function setNumberOfWarningsLetter($numberOfWarningsLetter)
     {
         $this->numberOfWarningsLetter = $numberOfWarningsLetter;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getNumberOfLoadedContainer()
@@ -277,16 +322,11 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput
     }
 
     /**
+     *
      * @param mixed $numberOfLoadedContainer
      */
     public function setNumberOfLoadedContainer($numberOfLoadedContainer)
     {
         $this->numberOfLoadedContainer = $numberOfLoadedContainer;
     }
-
-
-
-
-      
-  
 }

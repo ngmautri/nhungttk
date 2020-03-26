@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AllMessageStore
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class AllMessageStore
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class AllMessageStore
     private $uuid;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="msg_header", type="string", length=255, nullable=true)
@@ -36,6 +39,7 @@ class AllMessageStore
     private $msgHeader;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="msg_body", type="text", nullable=true)
@@ -43,6 +47,7 @@ class AllMessageStore
     private $msgBody;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class AllMessageStore
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="available_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class AllMessageStore
     private $availableOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="expired_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class AllMessageStore
     private $expiredOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -71,6 +79,7 @@ class AllMessageStore
     private $createdBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="sent_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class AllMessageStore
     private $sentOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class AllMessageStore
     private $consumedOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="queue_name", type="string", length=100, nullable=true)
@@ -92,6 +103,7 @@ class AllMessageStore
     private $queueName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="event_name", type="string", length=255, nullable=true)
@@ -99,6 +111,7 @@ class AllMessageStore
     private $eventName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -106,6 +119,7 @@ class AllMessageStore
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="class_name", type="string", length=255, nullable=true)
@@ -113,13 +127,12 @@ class AllMessageStore
     private $className;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="triggered_by", type="string", length=255, nullable=true)
      */
     private $triggeredBy;
-
-
 
     /**
      * Get id

@@ -11,17 +11,17 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
  */
 class GoodsExchangePostedEvent extends Event
 {
-    
+
     protected $trx;
 
     const EVENT_NAME = "inventory.goods_exchange.posted";
 
     /**
-     * 
+     *
      * @param GenericTransaction $trx
      */
     public function __construct(GenericTransaction $trx)
     {
-        $this->trx = $trx; 
+        $this->trx = $trx;
     }
 }

@@ -38,10 +38,9 @@ class GIRowControllerFactory implements FactoryInterface
         $controller->setInventoryTransactionService($sv);
 
         $sv = $sm->get('Inventory\Application\Service\Warehouse\TransactionService');
-		
-		$controller->setTransactionService($sv);
-		
-		
-			return $controller;
-	}
+
+        $controller->setTransactionService($sv);
+
+        return $controller;
+    }
 }

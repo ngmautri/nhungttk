@@ -217,50 +217,48 @@ class WarehouseService extends AbstractService
 
                 $rootLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
                 $rootLocation->setWarehouse($entity);
-                $rootLocation->setLocationCode($entity->getId().'-ROOT-LOCATION') ;
+                $rootLocation->setLocationCode($entity->getId() . '-ROOT-LOCATION');
                 $rootLocation->setCreatedBy($u);
                 $rootLocation->setCreatedOn($changeOn);
                 $rootLocation->setIsActive(1);
                 $rootLocation->setIsRootLocation(1);
                 $rootLocation->setIsSystemLocation(1);
-                $rootLocation->setLocationName($entity->getId().'-ROOT-LOCATION');
+                $rootLocation->setLocationName($entity->getId() . '-ROOT-LOCATION');
                 $rootLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
-                
 
                 $this->doctrineEM->persist($rootLocation);
                 $this->doctrineEM->flush();
-                
-                $rootLocation->setPath($rootLocation->getId().'/');
+
+                $rootLocation->setPath($rootLocation->getId() . '/');
                 $rootLocation->setPathDepth(1);
                 $this->doctrineEM->persist($rootLocation);
                 $this->doctrineEM->flush();
-                
-                
+
                 $entity->setLocation($rootLocation);
 
                 $returnLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
                 $returnLocation->setWarehouse($entity);
-                $returnLocation->setLocationCode($entity->getId().'-RETURN-LOCATION');
+                $returnLocation->setLocationCode($entity->getId() . '-RETURN-LOCATION');
                 $returnLocation->setCreatedBy($u);
                 $returnLocation->setCreatedOn($changeOn);
                 $returnLocation->setIsActive(1);
                 $returnLocation->setIsRootLocation(0);
                 $returnLocation->setIsSystemLocation(0);
                 $returnLocation->setIsReturnLocation(1);
-                $returnLocation->setLocationName($entity->getId().'-RETURN-LOCATION');
+                $returnLocation->setLocationName($entity->getId() . '-RETURN-LOCATION');
                 $returnLocation->setParentId($rootLocation->getId()); // important
-                
+
                 $returnLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
                 $this->doctrineEM->persist($returnLocation);
                 $this->doctrineEM->flush();
-                
-                $returnLocation->setPath($rootLocation->getPath().$returnLocation->getId().'/');
+
+                $returnLocation->setPath($rootLocation->getPath() . $returnLocation->getId() . '/');
                 $returnLocation->setPathDepth($rootLocation->getPathDepth() + 1);
                 $this->doctrineEM->persist($returnLocation);
-                
+
                 $scrapLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
                 $scrapLocation->setWarehouse($entity);
-                $scrapLocation->setLocationCode($entity->getId().'-SCRAP-LOCATION');
+                $scrapLocation->setLocationCode($entity->getId() . '-SCRAP-LOCATION');
                 $scrapLocation->setCreatedBy($u);
                 $scrapLocation->setCreatedOn($changeOn);
                 $scrapLocation->setIsActive(1);
@@ -268,19 +266,18 @@ class WarehouseService extends AbstractService
                 $scrapLocation->setIsSystemLocation(0);
                 $scrapLocation->setIsReturnLocation(0);
                 $scrapLocation->setIsScrapLocation(1);
-                $scrapLocation->setLocationName($entity->getId().'-SCRAP-LOCATION');
+                $scrapLocation->setLocationName($entity->getId() . '-SCRAP-LOCATION');
                 $scrapLocation->setParentId($rootLocation->getId()); // important
-                
+
                 $scrapLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
-                
+
                 $this->doctrineEM->persist($scrapLocation);
                 $this->doctrineEM->flush();
-                
-                $scrapLocation->setPath($rootLocation->getPath().$scrapLocation->getId().'/');
-                $scrapLocation->setPathDepth($rootLocation->getPathDepth() + 1);                
+
+                $scrapLocation->setPath($rootLocation->getPath() . $scrapLocation->getId() . '/');
+                $scrapLocation->setPathDepth($rootLocation->getPathDepth() + 1);
                 $this->doctrineEM->persist($scrapLocation);
                 $this->doctrineEM->flush();
-                   
             }
 
             // LOGGING

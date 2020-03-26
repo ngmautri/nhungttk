@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAssetRepairRequests
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAssetRepairRequests
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaAssetRepairRequests
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class MlaAssetRepairRequests
     private $description;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="requested_by", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class MlaAssetRepairRequests
     private $requestedBy;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="approved_by", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class MlaAssetRepairRequests
     private $approvedBy;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="assigned_to", type="integer", nullable=true)
@@ -57,6 +63,7 @@ class MlaAssetRepairRequests
     private $assignedTo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="assigned_to_name", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class MlaAssetRepairRequests
     private $assignedToName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="result", type="string", length=100, nullable=true)
@@ -71,6 +79,7 @@ class MlaAssetRepairRequests
     private $result;
 
     /**
+     *
      * @var \Application\Entity\MlaAsset
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
@@ -79,8 +88,6 @@ class MlaAssetRepairRequests
      * })
      */
     private $asset;
-
-
 
     /**
      * Get id

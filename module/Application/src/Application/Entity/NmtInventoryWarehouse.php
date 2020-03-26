@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryWarehouse
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryWarehouse
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_code", type="string", length=45, nullable=false)
@@ -29,6 +31,7 @@ class NmtInventoryWarehouse
     private $whCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_name", type="string", length=100, nullable=false)
@@ -36,6 +39,7 @@ class NmtInventoryWarehouse
     private $whName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_address", type="string", length=100, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryWarehouse
     private $whAddress;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_contact_person", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryWarehouse
     private $whContactPerson;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_telephone", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryWarehouse
     private $whTelephone;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_email", type="string", length=45, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryWarehouse
     private $whEmail;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_locked", type="boolean", nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryWarehouse
     private $isLocked;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="wh_status", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryWarehouse
     private $whStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryWarehouse
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryWarehouse
     private $isDefault;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryWarehouse
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryWarehouse
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryWarehouse
     private $token;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryWarehouse
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryWarehouse
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryWarehouse
     private $uuid;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -144,6 +162,7 @@ class NmtInventoryWarehouse
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -154,6 +173,7 @@ class NmtInventoryWarehouse
     private $company;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCountry
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
@@ -164,6 +184,7 @@ class NmtInventoryWarehouse
     private $whCountry;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -174,6 +195,7 @@ class NmtInventoryWarehouse
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -184,6 +206,7 @@ class NmtInventoryWarehouse
     private $stockkeeper;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -194,6 +217,7 @@ class NmtInventoryWarehouse
     private $whController;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouseLocation
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouseLocation")
@@ -202,8 +226,6 @@ class NmtInventoryWarehouse
      * })
      */
     private $location;
-
-
 
     /**
      * Get id

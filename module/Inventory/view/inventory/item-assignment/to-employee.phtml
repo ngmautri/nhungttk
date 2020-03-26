@@ -1,26 +1,29 @@
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/inventory/item-assignment/add?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Assignment</a>
+<a class="btn btn-default"
+	href="<?php echo $this->baseUrl ?>/inventory/item-assignment/add?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
+		class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Assignment</a>
 <hr>
 <?php
 
 if ($total_records <= 0) {
-	
-	echo 'No record found!';
+
+    echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Item Name</b></td>
-			<td><b>Assignment<br>Date</b></td>
+			<td><b>Assignment<br>Date
+			</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -28,20 +31,21 @@ if ($total_records <= 0) {
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+        $count ++;
+        ?>
 	 <tr>
-	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	<td><?php echo $this->escapeHtml($a->getItem()->getItemName());?></td>
-	<td><?php echo ($a->getAssignedOn()!==null )? date_format ( $a->getAssignedOn(), "d/m/y"):"N/A";?> </td>
-		 <td>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-assignment/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-assignment/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>">Edit</a>
-</td>
-						
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo $this->escapeHtml($a->getItem()->getItemName());?></td>
+			<td><?php echo ($a->getAssignedOn()!==null )? date_format ( $a->getAssignedOn(), "d/m/y"):"N/A";?> </td>
+			<td><a
+				href="<?php echo $this->baseUrl ?>/inventory/item-assignment/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>">Show</a>
+				<a
+				href="<?php echo $this->baseUrl ?>/inventory/item-assignment/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>">Edit</a>
+			</td>
+
 		</tr>
 <?php endforeach; ?>
 
@@ -49,47 +53,47 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
-		$_connector_symbol = '&';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/inventory/item/list?is_active=' . $is_active . '&item_type=' . $item_type . '&sort_by=' . $sort_by . '&sort=' . $sort . '&is_fixed_asset=' . $is_fixed_asset;
+        $_connector_symbol = '&';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

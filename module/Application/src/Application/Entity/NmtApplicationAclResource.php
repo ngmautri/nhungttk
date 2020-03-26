@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationAclResource
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationAclResource
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="module", type="string", length=100, nullable=true)
@@ -29,6 +31,7 @@ class NmtApplicationAclResource
     private $module;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="controller", type="string", length=100, nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationAclResource
     private $controller;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="action", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationAclResource
     private $action;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="resource", type="string", length=255, nullable=false)
@@ -50,6 +55,7 @@ class NmtApplicationAclResource
     private $resource;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationAclResource
     private $type;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationAclResource
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -71,6 +79,7 @@ class NmtApplicationAclResource
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -78,6 +87,7 @@ class NmtApplicationAclResource
     private $currentState;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -85,6 +95,7 @@ class NmtApplicationAclResource
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="change_on", type="datetime", nullable=true)
@@ -92,6 +103,7 @@ class NmtApplicationAclResource
     private $changeOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtApplicationAclResource
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="company_id", type="integer", nullable=true)
@@ -106,6 +119,7 @@ class NmtApplicationAclResource
     private $companyId;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -116,6 +130,7 @@ class NmtApplicationAclResource
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -124,8 +139,6 @@ class NmtApplicationAclResource
      * })
      */
     private $changeBy;
-
-
 
     /**
      * Get id

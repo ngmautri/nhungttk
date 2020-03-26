@@ -1,92 +1,108 @@
 
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Edit Employee</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Edit Employee</a></li>
+	</ul>
 
-<div id="general"> 
+	<div id="general">
 
-<form id="edit_employee_form" class="form-horizontal" action="/hr/employee/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
-<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+		<form id="edit_employee_form" class="form-horizontal"
+			action="/hr/employee/edit" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="entity_id"
+				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Employee Code</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="employeeCode" value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
-		</div>		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Employee Name</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeName" value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Employee Name Local:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeNameLocal" value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
-		</div>
-	</div>
-	
+			<div class="form-group">
+				<label class="control-label col-sm-2">Employee Code</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="employeeCode"
+						value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
+				</div>
+			</div>
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Birthday</label>
-		<div class="col-sm-3">
-		<input class="form-control" type="text" name="birthday" 
-		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
-		</div>
-		
-		<label class="control-label col-sm-2" for="inputTag">Gender</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="gender">
-				<option value="">Please select</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Male</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Female</option>
-			</select>
-		</div>
-		
-		
+			<div class="form-group">
+				<label class="control-label col-sm-2">Employee Name</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						id="employeeName" name="employeeName"
+						value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Employee Name Local:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						id="employeeName" name="employeeNameLocal"
+						value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Birthday</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="birthday"
+						value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>"
+						placeholder=" please select" id="birthday" />
+				</div>
+
+				<label class="control-label col-sm-2" for="inputTag">Gender</label>
+				<div class="col-sm-3">
+					<select class="form-control" name="gender">
+						<option value="">Please select</option>
+						<option
+							<?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?>
+							value="M">Male</option>
+						<option
+							<?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?>
+							value="F">Female</option>
+					</select>
+				</div>
+
+
+			</div>
+
+			<div class="form-group">
+
+				<label class="control-label col-sm-2">Remarks</label>
+				<div class="col-sm-3">
+					<textarea class="form-control" type="text" rows="4" placeholder=""
+						name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('edit_employee_form');" id="save"
+						class="btn btn-default">
+						<i class="glyphicon glyphicon-pencil"> </i> Edit
+					</button>
+				</div>
+			</div>
+
+
+		</form>
 	</div>
-	
-	<div class="form-group">
-		
-		<label class="control-label col-sm-2" >Remarks</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
-				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-   	<button onclick="submitForm('edit_employee_form');" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-pencil"> </i> Edit</button>
-  		</div>
-	</div> 
-		
-	
-</form>
-</div>
 </div>
 
 <script>

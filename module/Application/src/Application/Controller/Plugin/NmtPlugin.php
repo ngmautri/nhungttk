@@ -53,7 +53,7 @@ class NmtPlugin extends AbstractPlugin
 
             $thumbnail_file = "/thumbnail/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
             $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
-            
+
             return $thumbnail_file;
         }
 
@@ -619,7 +619,7 @@ class NmtPlugin extends AbstractPlugin
         $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
 
         if ($docNumber instanceof \Application\Entity\NmtApplicationDocNumber) {
-             $maxLen = strlen($docNumber->getToNumber());
+            $maxLen = strlen($docNumber->getToNumber());
             $currentLen = 1;
             $currentDoc = $docNumber->getPrefix();
             $current_no = $docNumber->getCurrentNumber();
@@ -638,7 +638,7 @@ class NmtPlugin extends AbstractPlugin
 
                 $tmp = $tmp . "0";
             }
-            
+
             $this->doctrineEM->persist($docNumber);
             $currentDoc = $currentDoc . $tmp . $current_no;
             return $currentDoc;

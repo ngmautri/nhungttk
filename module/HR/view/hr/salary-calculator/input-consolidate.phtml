@@ -1,4 +1,4 @@
-<?php    	    
+<?php
 /**@var \Application\Entity\NmtFinPostingPeriod $period*/
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -6,37 +6,41 @@
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
 	</ul>
-<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt">
 
-<div class="row">
-  <div class="col-xs-6 col-md-2">
+		<div class="row">
+			<div class="col-xs-6 col-md-2">
  
-				 <?php 
-    					$current_step="STEP2";
-    					include ('calculator-wizard.php'); 
-  				  ?>
+				 <?php
+    $current_step = "STEP2";
+    include ('calculator-wizard.php');
+    ?>
  
   </div>
-  
-  <div class="col-xs-12 col-sm-6 col-md-109" style="">
-  <!-- Col2 -->
-  
-  <h4><?php echo $this->translate('Payroll Input consolidate'); ?> <?php if($period!=null):echo sprintf('// Period %s',$period->getPeriodName()) ;endif;?></h4>
-  
-  <span class="color:gray">
-  		Input for salary calulation has been consolidated!<br>
+
+			<div class="col-xs-12 col-sm-6 col-md-109" style="">
+				<!-- Col2 -->
+
+				<h4><?php echo $this->translate('Payroll Input consolidate'); ?> <?php if($period!=null):echo sprintf('// Period %s',$period->getPeriodName()) ;endif;?></h4>
+
+				<span class="color:gray"> Input for salary calulation has been
+					consolidated!<br>
   		<?php if($period!=null):echo sprintf('Period %s is closed!',$period->getPeriodName()) ;endif;?> 	
   </span>
-    
- <hr>
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-check"><?php echo $this->translate('Next'); ?>&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
- 
-  
-  <!-- Col2 -->  
-  </div>
-  
-</div>	
 
-</div>
+				<hr>
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><i
+					class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-check"><?php echo $this->translate('Next'); ?>&nbsp;<i
+					class="fa fa-chevron-right" aria-hidden="true"></i></a>
+
+
+				<!-- Col2 -->
+			</div>
+
+		</div>
+
+	</div>
 </div>

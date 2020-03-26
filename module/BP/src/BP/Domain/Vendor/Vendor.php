@@ -1,7 +1,6 @@
 <?php
 namespace BP\Domain\Vendor;
 
-
 /**
  * AP Invoice Aggregate.
  *
@@ -10,11 +9,10 @@ namespace BP\Domain\Vendor;
  */
 class Vendor
 {
-    
+
     /**
-     * 
+     *
      * @var VendorId
      */
     private $id;
-
 }

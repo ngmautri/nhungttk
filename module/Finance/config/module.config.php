@@ -34,7 +34,7 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
-            
+
             array(
                 'label' => 'A/P Report',
                 'route' => 'procure/default',
@@ -42,7 +42,7 @@ return array(
                 'action' => 'row-status',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
-            
+
             array(
                 'label' => 'Log',
                 'route' => 'finance/default',
@@ -52,10 +52,10 @@ return array(
             )
         )
     ),
-    
+
     'router' => array(
         'routes' => array(
-            
+
             'finance' => array(
                 'type' => 'Literal',
                 'options' => array(
@@ -81,22 +81,19 @@ return array(
                     )
                 )
             )
-        
         )
-    
     ),
-    
+
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'finance_navi' => 'Finance\Service\FinanceNavigationFactory', // <-- add this
             'Finance\Service\APInvoiceService' => 'Finance\Service\APInvoiceServiceFactory',
             'Finance\Service\JEService' => 'Finance\Service\JEServiceFactory',
-            'Finance\Service\AccountService' => 'Finance\Service\AccountServiceFactory',
-            
+            'Finance\Service\AccountService' => 'Finance\Service\AccountServiceFactory'
         )
     ),
-    
+
     'controllers' => array(
         'factories' => array(
             'Finance\Controller\Index' => 'Finance\Controller\IndexControllerFactory',
@@ -109,10 +106,8 @@ return array(
             'Finance\Controller\Fx' => 'Finance\Controller\FxControllerFactory',
             'Finance\Controller\Account' => 'Finance\Controller\AccountControllerFactory',
             'Finance\Controller\JE' => 'Finance\Controller\JEControllerFactory',
-            'Finance\Controller\JERow' => 'Finance\Controller\JERowControllerFactory',
-            
-          )
-    
+            'Finance\Controller\JERow' => 'Finance\Controller\JERowControllerFactory'
+        )
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -122,7 +117,7 @@ return array(
         'exception_template' => 'error/index',
         'template_map' => array(
             'Finance/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
-            'Finance/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',            
+            'Finance/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
             'Finance/index/index' => __DIR__ . '/../view/procure/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',
@@ -132,5 +127,4 @@ return array(
             __DIR__ . '/../view'
         )
     )
-
 );

@@ -4,117 +4,124 @@
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Posting Period'); ?></a></li>
 	</ul>
-<div id="general">
+	<div id="general">
 
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate('New Posting Period'); ?></a>
-<hr>
+		<a class="btn btn-default btn-sm"
+			href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><small><i
+				class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate('New Posting Period'); ?></a>
+		<hr>
 
 <?php
 if ($total_records <= 0) {
-	echo 'No record found!';
+    echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
-	} else {
-	    echo $total_records . ' ' . $this->translate('records');
-	}
-	
-	?>
 
-<table style="font-size: 9.5pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('Period Name'); ?></b></td>
-			<td><b><?php echo $this->translate('Period Start'); ?></b></td>
-			<td><b><?php echo $this->translate('Period End'); ?></b></td>
-			<td><b><?php echo $this->translate('Plan Working Days'); ?></b></td>
-			<td><b><?php echo $this->translate('Actual Working Days'); ?></b></td>
-			<td><b><?php echo $this->translate('National Holidays'); ?></b></td>
-			<td><b><?php echo $this->translate('Cooperate Leaves'); ?></b></td>
-			<td><b><?php echo $this->translate('Status'); ?></b></td>
-			<td><b><?php echo $this->translate('Action'); ?></b></td>
-			<td><b><?php echo $this->translate('Edit'); ?></b></td>
-	
-		</tr>
-	</thead>
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' ' . $this->translate('records');
+    }
 
-	<tbody>
+    ?>
+
+<table style="font-size: 9.5pt;"
+			class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b><?php echo $this->translate('Period Name'); ?></b></td>
+					<td><b><?php echo $this->translate('Period Start'); ?></b></td>
+					<td><b><?php echo $this->translate('Period End'); ?></b></td>
+					<td><b><?php echo $this->translate('Plan Working Days'); ?></b></td>
+					<td><b><?php echo $this->translate('Actual Working Days'); ?></b></td>
+					<td><b><?php echo $this->translate('National Holidays'); ?></b></td>
+					<td><b><?php echo $this->translate('Cooperate Leaves'); ?></b></td>
+					<td><b><?php echo $this->translate('Status'); ?></b></td>
+					<td><b><?php echo $this->translate('Action'); ?></b></td>
+					<td><b><?php echo $this->translate('Edit'); ?></b></td>
+
+				</tr>
+			</thead>
+
+			<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-	
-	    /**@var \Application\Entity\NmtFinPostingPeriod $a*/
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+
+        /**@var \Application\Entity\NmtFinPostingPeriod $a*/
+        $count ++;
+        ?>
 	<tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td><a href="/finance/posting-period/show?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>"><?php echo $a->getPeriodName();?></a></td>
-			<td><?php echo date_format($a->getPostingFromDate(),"Y-m-d") ?></td>
-			<td><?php echo date_format($a->getPostingToDate(),"Y-m-d") ?></td>
-			<td><?php echo $a->getPlanWorkingDays();?></td>
-			<td><?php echo $a->getActualWorkdingDays();?></td>
-			<td><?php echo $a->getNationalHolidays();?>	</td>
-			<td><?php echo $a->getCooperateLeave();?></td>
+					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+					<td><a
+						href="/finance/posting-period/show?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>"><?php echo $a->getPeriodName();?></a></td>
+					<td><?php echo date_format($a->getPostingFromDate(),"Y-m-d") ?></td>
+					<td><?php echo date_format($a->getPostingToDate(),"Y-m-d") ?></td>
+					<td><?php echo $a->getPlanWorkingDays();?></td>
+					<td><?php echo $a->getActualWorkdingDays();?></td>
+					<td><?php echo $a->getNationalHolidays();?>	</td>
+					<td><?php echo $a->getCooperateLeave();?></td>
 			
 <?php if($a->getPeriodStatus()=="C"): ?>
 <td><span class="glyphicon glyphicon-lock"></span></td>
-<td><a style="color:blue;" href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=open"><?php echo $this->translate('Open'); ?></a></td>
+					<td><a style="color: blue;"
+						href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=open"><?php echo $this->translate('Open'); ?></a></td>
 <?php else: ?>
 <td><?php echo $this->translate('Opened'); ?></td>
-<td><a style="color:blue;" href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=close"><?php echo $this->translate('Close'); ?></a>
-</td>
+					<td><a style="color: blue;"
+						href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=close"><?php echo $this->translate('Close'); ?></a>
+					</td>
 <?php endif; ?>
 
-<td><a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/posting-period/edit?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>"><?php echo $this->translate('Edit'); ?></a>
-
-		</tr>
+<td><a style="color: navy;"
+						href="<?php echo $this->baseUrl ?>/finance/posting-period/edit?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>"><?php echo $this->translate('Edit'); ?></a>
+				
+				</tr>
 <?php endforeach; ?>
 
  </tbody>
-</table>
+		</table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/finance/posting-period/list';
-		$_connector_symbol = '?';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/finance/posting-period/list';
+        $_connector_symbol = '?';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
 		}
 		echo '</ul>';
 endif;

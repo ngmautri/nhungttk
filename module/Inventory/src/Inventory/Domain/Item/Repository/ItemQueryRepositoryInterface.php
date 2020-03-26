@@ -8,8 +8,12 @@ namespace Inventory\Domain\Item\Repository;
  */
 Interface ItemQueryRepositoryInterface
 {
+
     public function findAll();
+
     public function getById($id);
+
     public function getByUUID($uuid);
-    public function generateSysNumber($obj);    
+
+    public function generateSysNumber($obj);
 }

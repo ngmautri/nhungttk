@@ -39,7 +39,7 @@ if (count($errors) > 0) {
 				class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/inventory/gi/reverse?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 				<i class="fa fa-undo" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Reverse");?> 
-								</a> 
+								</a>
 		</div>
 		<?php endif;?>
 

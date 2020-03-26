@@ -1,4 +1,6 @@
-<?php /**@var \Application\Entity\NmtApplicationCompany $entity ;*/
+<?php
+
+/**@var \Application\Entity\NmtApplicationCompany $entity ;*/
 $url = sprintf('/application/company/show?token=%s&entity_id=%s', $entity->getToken(), $entity->getId());
 
 ?>
@@ -7,7 +9,7 @@ $url = sprintf('/application/company/show?token=%s&entity_id=%s', $entity->getTo
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -19,7 +21,9 @@ if (count($errors) > 0) {
 ?>
 
 <div>
-<h4><a href="<?php echo $url; ?>"><?php echo (!$entity == null)?$entity->getCompanyName():"";?></a></h4>
+	<h4>
+		<a href="<?php echo $url; ?>"><?php echo (!$entity == null)?$entity->getCompanyName():"";?></a>
+	</h4>
 </div>
 
 
@@ -90,7 +94,7 @@ if (count($errors) > 0) {
                 endforeach
                 ;
    	    							endif;
-            
+
             ?>
    					</select>
 				</div>

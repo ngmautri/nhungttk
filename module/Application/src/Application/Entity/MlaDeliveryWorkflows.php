@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaDeliveryWorkflows
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaDeliveryWorkflows
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaDeliveryWorkflows
     private $status;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="updated_by", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class MlaDeliveryWorkflows
     private $updatedBy;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class MlaDeliveryWorkflows
     private $updatedOn;
 
     /**
+     *
      * @var \Application\Entity\MlaDelivery
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDelivery")
@@ -51,8 +56,6 @@ class MlaDeliveryWorkflows
      * })
      */
     private $delivery;
-
-
 
     /**
      * Get id

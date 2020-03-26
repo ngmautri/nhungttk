@@ -27,5 +27,4 @@ abstract class GenericAttachment extends AbstractAttachment
     abstract protected function afterPost(AttachmentSpecService $specService, AttachmentPosingService $postingService, Notification $notification = null);
 
     abstract protected function specificHeaderValidation(AttachmentSpecService $specService, Notification $notification, $isPosting = false);
-
 }

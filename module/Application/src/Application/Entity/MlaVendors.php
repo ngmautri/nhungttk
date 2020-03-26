@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaVendors
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaVendors
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaVendors
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=255, nullable=true)
@@ -36,6 +39,7 @@ class MlaVendors
     private $keywords;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class MlaVendors
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class MlaVendors
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -58,8 +64,6 @@ class MlaVendors
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

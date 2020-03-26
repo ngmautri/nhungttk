@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPurchaseRequestItemsPics
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaPurchaseRequestItemsPics
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
@@ -29,6 +31,7 @@ class MlaPurchaseRequestItemsPics
     private $url;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=50, nullable=true)
@@ -36,6 +39,7 @@ class MlaPurchaseRequestItemsPics
     private $size;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=50, nullable=true)
@@ -43,6 +47,7 @@ class MlaPurchaseRequestItemsPics
     private $filetype;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class MlaPurchaseRequestItemsPics
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="comments", type="text", nullable=true)
@@ -57,6 +63,7 @@ class MlaPurchaseRequestItemsPics
     private $comments;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="uploaded_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class MlaPurchaseRequestItemsPics
     private $uploadedOn;
 
     /**
+     *
      * @var \Application\Entity\MlaPurchaseRequestItems
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
@@ -74,6 +82,7 @@ class MlaPurchaseRequestItemsPics
     private $requestItem;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -82,8 +91,6 @@ class MlaPurchaseRequestItemsPics
      * })
      */
     private $uploadedBy;
-
-
 
     /**
      * Get id

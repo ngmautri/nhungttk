@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemBatch
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemBatch
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryItemBatch
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="batch_number", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemBatch
     private $batchNumber;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemBatch
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemBatch
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryItemBatch
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryItemBatch
     private $consumedOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="mfg_serial_number", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryItemBatch
     private $mfgSerialNumber;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_date", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryItemBatch
     private $mfgDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="lot_number", type="string", length=45, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryItemBatch
     private $lotNumber;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_warranty_start", type="datetime", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryItemBatch
     private $mfgWarrantyStart;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="mfg_warranty_end", type="datetime", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryItemBatch
     private $mfgWarrantyEnd;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="item_name", type="string", length=100, nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryItemBatch
     private $itemName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryItemBatch
     private $location;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="category", type="string", length=45, nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryItemBatch
     private $category;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="mfg_name", type="string", length=100, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryItemBatch
     private $mfgName;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryItemBatch
     private $lastchangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryItemBatch
     private $revisionNo;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryItemBatch
     private $isReversed;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryItemBatch
     private $reversalDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryItemBatch
     private $reversalDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryItemBatch
     private $reversalReason;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryItemBatch
     private $isReversable;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryItemBatch
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="last_change_by", type="integer", nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryItemBatch
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -200,6 +226,7 @@ class NmtInventoryItemBatch
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -210,6 +237,7 @@ class NmtInventoryItemBatch
     private $lastchangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -220,6 +248,7 @@ class NmtInventoryItemBatch
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtProcureGrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
@@ -230,6 +259,7 @@ class NmtInventoryItemBatch
     private $grRow;
 
     /**
+     *
      * @var \Application\Entity\FinVendorInvoiceRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
@@ -238,8 +268,6 @@ class NmtInventoryItemBatch
      * })
      */
     private $apRow;
-
-
 
     /**
      * Get id

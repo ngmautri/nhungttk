@@ -63,11 +63,11 @@ AND company_id=%s";
             }
 
             if ($postingPeriod == null) {
-                 return false;
+                return false;
             }
 
-            if ($postingPeriod->getPeriodStatus() == PostingPeriodstatus::PERIOD_STATUS_CLOSED){
-                 return false;
+            if ($postingPeriod->getPeriodStatus() == PostingPeriodstatus::PERIOD_STATUS_CLOSED) {
+                return false;
             }
 
             return true;
@@ -75,5 +75,4 @@ AND company_id=%s";
             return false;
         }
     }
-
 }

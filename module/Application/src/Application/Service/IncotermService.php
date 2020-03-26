@@ -38,7 +38,7 @@ class IncotermService extends AbstractService
         $incoterm = $data['incoterm'];
         $incoterm1 = $data['incoterm1'];
         $locationRequired = $data['locationRequired'];
-        
+
         $incotermDescription = $data['incotermDescription'];
 
         if ($incoterm == "") {
@@ -46,7 +46,7 @@ class IncotermService extends AbstractService
         } else {
             $entity->setIncoterm($incoterm);
         }
-        
+
         if ($incoterm1 == "") {
             $errors[] = $this->controllerPlugin->translate('Incoterm is not correct or empty!');
         } else {
@@ -86,7 +86,7 @@ class IncotermService extends AbstractService
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($changeOn);
         } else {
-             $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
         }
@@ -94,6 +94,4 @@ class IncotermService extends AbstractService
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-
-  
 }

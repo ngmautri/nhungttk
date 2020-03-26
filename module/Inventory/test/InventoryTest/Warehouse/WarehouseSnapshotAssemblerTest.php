@@ -31,18 +31,17 @@ class WarehouseSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
         $data["itemSku"] = "2-3";
         $data["itemName"] = "Special Item";
 
-        //WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
-        //var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
-        
+        // WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
+        // var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
+
         var_dump(WarehouseSnapshotAssembler::createFromSnapshotCode());
-        
-        
-        //$trx = new GIforRepairMachine();
-        
-       /*  echo($dto->itemName);
-        $missing = ItemAssembler::checkItemDTO();
-        var_dump($missing); */
-        
-       
+
+        // $trx = new GIforRepairMachine();
+
+        /*
+         * echo($dto->itemName);
+         * $missing = ItemAssembler::checkItemDTO();
+         * var_dump($missing);
+         */
     }
 }

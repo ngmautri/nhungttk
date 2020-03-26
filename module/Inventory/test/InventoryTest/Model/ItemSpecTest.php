@@ -21,7 +21,7 @@ class ItemAssemblerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        // echo $root;
         require ($root . '/Bootstrap.php');
     }
 
@@ -29,13 +29,13 @@ class ItemAssemblerTest extends PHPUnit_Framework_TestCase
     {
         $item = new InventoryItem();
         $item->itemName = "Test %service";
-        
+
         var_dump(preg_match('/[#$%*@]/', $item->itemName));
-            
-        $spec =  new ItemSpecification();
-        $spec1 =  new InventoryItemSpecification($item);
+
+        $spec = new ItemSpecification();
+        $spec1 = new InventoryItemSpecification($item);
         $spec3 = $spec->andSpec($spec1);
-        
-        //var_dump($spec3->isSatisfiedBy($item));
+
+        // var_dump($spec3->isSatisfiedBy($item));
     }
 }

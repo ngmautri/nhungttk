@@ -88,7 +88,6 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
 
         $message->setClassName($className);
         $message->setTriggeredBy($e->getTarget());
-        
 
         $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
         $message->setMsgBody(json_encode((array) $item->createDTO()));
@@ -97,22 +96,23 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
         $this->getDoctrineEM()->persist($message);
         $this->getDoctrineEM()->flush();
 
-        /* $message = new AllMessageStore();
+        /*
+         * $message = new AllMessageStore();
+         *
+         * $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
+         * $message->setClassName($className);
+         * $message->setTriggeredBy($e->getTarget());
+         *
+         * $message->setQueueName("inventory.item");
+         * $message->setMsgBody(json_encode((array) $item->createDTO()));
+         * $message->setCreatedOn(new \DateTime());
+         * $message->setEventName($e->getName());
+         * $this->getMessagesDoctrineEM()->persist($message);
+         * $this->getMessagesDoctrineEM()->flush();
+         */
 
-        $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
-        $message->setClassName($className);
-        $message->setTriggeredBy($e->getTarget());
-        
-        $message->setQueueName("inventory.item");
-        $message->setMsgBody(json_encode((array) $item->createDTO()));
-        $message->setCreatedOn(new \DateTime());
-        $message->setEventName($e->getName());
-        $this->getMessagesDoctrineEM()->persist($message);
-        $this->getMessagesDoctrineEM()->flush(); */
-        
-        //$exe_string = 'D:\Application\xampp\php\php.exe "D:\Software Development\php-2019-12-R\mla-2.6.7\public\index.php" "send_to_rabitmq"';
-        //exec($exe_string);
-        
+        // $exe_string = 'D:\Application\xampp\php\php.exe "D:\Software Development\php-2019-12-R\mla-2.6.7\public\index.php" "send_to_rabitmq"';
+        // exec($exe_string);
     }
 
     public function detach(EventManagerInterface $events)

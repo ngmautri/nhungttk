@@ -49,19 +49,16 @@ class CompanyTest extends PHPUnit_Framework_TestCase
         // var_dump($dto);
 
         $snapshot = CompanySnapshotAssembler::createSnapshotFromDTO($dto);
-        //var_dump($snapshot);
-        
-        $company = new GenericCompany();        
+        // var_dump($snapshot);
+
+        $company = new GenericCompany();
         $company->setSharedSpecificationFactory(new ZendSpecificationFactory($em));
         $company->makeFromSnapshot($snapshot);
-        
-        
-        //var_dump($company->validate());
-        
+
+        // var_dump($company->validate());
+
         $rep = new DoctrineCompanyRepository($em);
         $companySN = $rep->getById(1);
         var_dump($companySN);
-        
-        
-      }
+    }
 }

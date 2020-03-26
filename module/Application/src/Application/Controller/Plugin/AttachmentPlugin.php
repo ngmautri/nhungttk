@@ -1,16 +1,18 @@
 <?php
 namespace Application\Controller\Plugin;
+
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
- * 
- * @author nmt
  *
+ * @author nmt
+ *        
  */
 class AttachmentPlugin extends AbstractPlugin
 {
 
     protected $serviceManager;
+
     protected $doctrineEM;
 
     public function getAttachmentSerive()
@@ -18,7 +20,6 @@ class AttachmentPlugin extends AbstractPlugin
         return $this->getServiceManager()->get("Application\Service\AttachmentService");
     }
 
-    
     public function getServiceManager()
     {
         return $this->serviceManager;

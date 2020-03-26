@@ -1,19 +1,27 @@
 <?php
-
 namespace Application\Utility\Attachment;
 
 class AttachmentHeader
 {
+
     private $documentSubject;
-    private $validFrom; 
+
+    private $validFrom;
+
     private $validTo;
-    private $validFrom; 
-    
-    private $isActive; 
-    private $markedForDeletion; 
-    private $filePassword; 
+
+    private $validFrom;
+
+    private $isActive;
+
+    private $markedForDeletion;
+
+    private $filePassword;
+
     private $visibility;
+
     /**
+     *
      * @return the $documentSubject
      */
     public function getDocumentSubject()
@@ -22,6 +30,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $validFrom
      */
     public function getValidFrom()
@@ -30,6 +39,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $validTo
      */
     public function getValidTo()
@@ -38,6 +48,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $validFrom
      */
     public function getValidFrom()
@@ -46,6 +57,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $isActive
      */
     public function getIsActive()
@@ -54,6 +66,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $markedForDeletion
      */
     public function getMarkedForDeletion()
@@ -62,6 +75,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $filePassword
      */
     public function getFilePassword()
@@ -70,6 +84,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @return the $visibility
      */
     public function getVisibility()
@@ -78,6 +93,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $documentSubject
      */
     public function setDocumentSubject($documentSubject)
@@ -86,6 +102,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $validFrom
      */
     public function setValidFrom($validFrom)
@@ -94,6 +111,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $validTo
      */
     public function setValidTo($validTo)
@@ -102,6 +120,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $validFrom
      */
     public function setValidFrom($validFrom)
@@ -110,6 +129,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $isActive
      */
     public function setIsActive($isActive)
@@ -118,6 +138,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $markedForDeletion
      */
     public function setMarkedForDeletion($markedForDeletion)
@@ -126,6 +147,7 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $filePassword
      */
     public function setFilePassword($filePassword)
@@ -134,13 +156,11 @@ class AttachmentHeader
     }
 
     /**
+     *
      * @param field_type $visibility
      */
     public function setVisibility($visibility)
     {
         $this->visibility = $visibility;
     }
-
-   
-    
 }

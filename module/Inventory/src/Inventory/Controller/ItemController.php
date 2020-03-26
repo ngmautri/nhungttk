@@ -31,7 +31,7 @@ class ItemController extends AbstractActionController
 {
 
     protected $doctrineEM;
-    
+
     protected $itemListRepository;
 
     protected $itemReportingRepository;
@@ -50,7 +50,6 @@ class ItemController extends AbstractActionController
      */
     protected $itemCRUDService;
 
-   
     /**
      *
      * @return \Inventory\Service\Report\ItemReportService
@@ -277,7 +276,7 @@ class ItemController extends AbstractActionController
 
         // create new session
         $session = new Container('MLA_FORM');
-       
+
         $prg = $this->prg('/inventory/item/create', true);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -287,7 +286,7 @@ class ItemController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
             $hasFormToken = $session->offsetExists('form_token');
-            
+
             if (! $hasFormToken) {
                 $tk = Ramsey\Uuid\Uuid::uuid4()->toString();
                 $session->offsetSet('form_token', $tk);
@@ -316,7 +315,6 @@ class ItemController extends AbstractActionController
         $form_token = $data['form_token'];
 
         $tk = $session->offsetGet('form_token');
-        
 
         if ($form_token != $tk) {
             return $this->redirect()->toRoute('access_denied');
@@ -348,11 +346,12 @@ class ItemController extends AbstractActionController
             $viewModel->setTemplate("inventory/item/crud");
             return $viewModel;
         }
-        
-        $session->getManager()->getStorage()->clear('MLA_FORM');
-        
-        
-        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n'.$tk);
+
+        $session->getManager()
+            ->getStorage()
+            ->clear('MLA_FORM');
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n' . $tk);
         $redirectUrl = "/inventory/item/list2";
 
         return $this->redirect()->toUrl($redirectUrl);
@@ -2005,7 +2004,7 @@ class ItemController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            //'checksum' => $checksum,
+            // 'checksum' => $checksum,
             'token' => $token
         );
 

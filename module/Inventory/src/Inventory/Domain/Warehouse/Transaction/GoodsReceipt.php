@@ -63,5 +63,4 @@ abstract class GoodsReceipt extends GenericTransaction
         // Recording Events
         $this->recordedEvents[] = new GoodsReceiptPostedEvent($this);
     }
-    
 }

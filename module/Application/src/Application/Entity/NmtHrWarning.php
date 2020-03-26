@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrWarning
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtHrWarning
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="warning_date", type="datetime", nullable=true)
@@ -29,6 +31,7 @@ class NmtHrWarning
     private $warningDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="warning_reason", type="string", length=255, nullable=true)
@@ -36,6 +39,7 @@ class NmtHrWarning
     private $warningReason;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="created_by", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class NmtHrWarning
     private $createdBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="created_on", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class NmtHrWarning
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -58,8 +64,6 @@ class NmtHrWarning
      * })
      */
     private $employee;
-
-
 
     /**
      * Get id

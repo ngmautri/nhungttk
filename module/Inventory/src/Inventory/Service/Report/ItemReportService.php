@@ -75,7 +75,7 @@ GROUP BY nmt_inventory_fifo_layer.item_id, nmt_inventory_fifo_layer.warehouse_id
 AND nmt_inventory_fifo_layer.item_id = %s 
 AND nmt_inventory_fifo_layer.warehouse_id = %s 
 AND nmt_inventory_fifo_layer.is_closed=0", $entity->getTrxDate()->format('Y-m-d H:i:s'), $item->getId(), $entity->getWh()->getId());
-        
+
         $sql = sprintf($sql, $sql1);
         $stmt = $this->getDoctrineEM()
             ->getConnection()
@@ -87,19 +87,18 @@ AND nmt_inventory_fifo_layer.is_closed=0", $entity->getTrxDate()->format('Y-m-d 
             return $results[0]['current_onhand'];
         }
         return 0;
-    
     }
-    
+
     /**
-     * 
+     *
      * @param int $warehouse_id
      * @param int $item_id
      * @param int $is_active
      * @param int $is_posted
      */
-    public function getItemsInWarehouse($warehouse_id, $item_id, $is_active, $is_posted){
-        $sql  = 
-        "SELECT
+    public function getItemsInWarehouse($warehouse_id, $item_id, $is_active, $is_posted)
+    {
+        $sql = "SELECT
         nmt_inventory_trx.item_id,
         nmt_inventory_item.item_name,
         nmt_inventory_trx.wh_id,
@@ -115,10 +114,5 @@ AND nmt_inventory_fifo_layer.is_closed=0", $entity->getTrxDate()->format('Y-m-d 
         
         WHERE 1 %s
         GROUP BY nmt_inventory_trx.item_id,  nmt_inventory_trx.wh_id, nmt_inventory_trx.wh_location";
-        
-        
-        
-    
     }
- 
 }

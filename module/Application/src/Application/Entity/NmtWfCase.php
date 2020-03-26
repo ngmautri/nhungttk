@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtWfCase
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="case_id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtWfCase
     private $caseId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="context", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtWfCase
     private $context;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="case_status", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtWfCase
     private $caseStatus;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtWfCase
     private $startDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
@@ -50,6 +55,7 @@ class NmtWfCase
     private $endDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="case_created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtWfCase
     private $caseCreatedOn;
 
     /**
+     *
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
@@ -67,6 +74,7 @@ class NmtWfCase
     private $workflow;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -75,8 +83,6 @@ class NmtWfCase
      * })
      */
     private $caseCreatedBy;
-
-
 
     /**
      * Get caseId

@@ -691,7 +691,6 @@ class GIController extends AbstractActionController
     {
         // create new session
         $session = new Container('MLA_FORM');
-         
 
         $this->layout("Inventory/layout-fullscreen");
 
@@ -744,10 +743,10 @@ class GIController extends AbstractActionController
                 'isAllowed' => $isAllowed,
                 'n' => 0
             ));
-            
+
             $session->getManager()
-            ->getStorage()
-            ->clear('MLA_FORM');
+                ->getStorage()
+                ->clear('MLA_FORM');
 
             $viewModel->setTemplate("inventory/gi/crud");
             return $viewModel;
@@ -793,7 +792,7 @@ class GIController extends AbstractActionController
 
         $userId = $u->getId();
 
-        $notification = $this->transactionService->updateHeader($entity_id, $token, $dto,$userId, __METHOD__);
+        $notification = $this->transactionService->updateHeader($entity_id, $token, $dto, $userId, __METHOD__);
 
         if ($notification->hasErrors()) {
 
@@ -817,6 +816,7 @@ class GIController extends AbstractActionController
     /**
      * Review and Post GR.
      * Document can't be changed.
+     *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function reviewAction()
@@ -886,12 +886,10 @@ class GIController extends AbstractActionController
             }
 
             /**
-             * 
+             *
              * @var Notification $notification
              */
-            $notification = $this->transactionService->post($entity_id,$entity_token, __METHOD__);
-            
-            
+            $notification = $this->transactionService->post($entity_id, $entity_token, __METHOD__);
 
             if ($notification->hasErrors()) {
                 return new ViewModel(array(

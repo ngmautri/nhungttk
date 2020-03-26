@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Application\DTO\Warehouse\Transaction;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -191,8 +190,8 @@ class TransactionDTO
     public $sourceLocation;
 
     public $tartgetLocation;
-    
+
     public $company;
-    
+
     public $uuid;
 }

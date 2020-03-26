@@ -2,6 +2,7 @@
 namespace Inventory\Model\GI;
 
 /**
+ *
  * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -10,15 +11,12 @@ abstract class AbstractGIStrategy implements \Inventory\Model\InventoryTransacti
 {
 
     protected $contextService;
-    
-    
+
     /**
      *
      * @param \Application\Entity\NmtInventoryTrx $entity
      */
     abstract public function validateRow($entity);
-       
-    
 
     /**
      *
@@ -43,19 +41,19 @@ abstract class AbstractGIStrategy implements \Inventory\Model\InventoryTransacti
      */
     abstract public function reverse($entity, $u, $reversalDate);
 
-   /**
-    * 
-    *  @return \Application\Service\AbstractService
-    */
+    /**
+     *
+     * @return \Application\Service\AbstractService
+     */
     public function getContextService()
     {
         return $this->contextService;
     }
 
-   /**
-    * 
-    *  @param \Application\Service\AbstractService $contextService
-    */
+    /**
+     *
+     * @param \Application\Service\AbstractService $contextService
+     */
     public function setContextService(\Application\Service\AbstractService $contextService)
     {
         $this->contextService = $contextService;

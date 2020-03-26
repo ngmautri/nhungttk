@@ -50,7 +50,4 @@ class GRFromExchange extends GoodsReceipt implements GoodsReceiptInterface
 
     public function addTransactionRow(TransactionRow $transactionRow)
     {}
-
-    
-
 }

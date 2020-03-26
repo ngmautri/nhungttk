@@ -1,67 +1,79 @@
 <h4>Asset Counting:</h4>
-<?php if ($counting!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Task Name: <strong>' . $counting->name . '</strong></li>';
-	 //echo '<li>Start date	: <strong>' .$counting-> start_date . '</strong> - End date	: <strong>' .$counting->end_date . '</strong></li>';
-	 echo '<li>You\'re checking at	: <strong>' .$location . '</strong></li>';
-	 echo '<li>Please enter last digits of asset\'s tag (e.g. 	119) to search....</li>';
-		
-	 echo '</ul>';
-	 echo '</div>';
-} 
-?>
-		
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/count/asset"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <input type="hidden" name = "id" value="<?php echo $counting_id ?>"> 
-      <input type="hidden" name = "location" value="<?php echo $location ?>">      
-      <button type="submit" class="btn"><i class="icon-search">  </i> Search & Count</button>
-   </form>
+<?php
 
-<?php if (!$hits==null): 
-echo '<span class="label label-info">';
-echo count($hits).' result(s) found for query: "' . $query;
-echo '</span>';
+if ($counting !== null) {
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Task Name: <strong>' . $counting->name . '</strong></li>';
+    // echo '<li>Start date : <strong>' .$counting-> start_date . '</strong> - End date : <strong>' .$counting->end_date . '</strong></li>';
+    echo '<li>You\'re checking at	: <strong>' . $location . '</strong></li>';
+    echo '<li>Please enter last digits of asset\'s tag (e.g. 	119) to search....</li>';
+
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
+
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory/count/asset"
+	method="get" enctype="multipart/form-data">
+	<input type="text" name="query" class=""> <input type="hidden"
+		name="id" value="<?php echo $counting_id ?>"> <input type="hidden"
+		name="location" value="<?php echo $location ?>">
+	<button type="submit" class="btn">
+		<i class="icon-search"> </i> Search & Count
+	</button>
+</form>
+
+<?php
+
+if (! $hits == null) :
+    echo '<span class="label label-info">';
+    echo count($hits) . ' result(s) found for query: "' . $query;
+    echo '</span>';
+    ?>
 <table class="pure-table pure-table-bordered">
-<thead>
-	<tr>
-		<td><b>Tag</b></td>
-		<td><b>Asset Name</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
-<tbody>
+	<thead>
+		<tr>
+			<td><b>Tag</b></td>
+			<td><b>Asset Name</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+	<tbody>
 
-	 <?php 
-	 
-	 $count = 0;
-	foreach ($hits as $hit) :
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
+	 <?php
+
+    $count = 0;
+    foreach ($hits as $hit) :
+        $count ++;
+        echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+
+        ?>
 	 
      	<td><?php echo $this->escapeHtml($hit['tag']);?></td>
-     	<td><?php echo $this->escapeHtml($hit['name']);?></td>
+		<td><?php echo $this->escapeHtml($hit['name']);?></td>
 		<td>
 		
 		<?php if ($hit['status'] !== "COUNTED") { ?>
 		
-		<a href="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item1?id=<?php echo $counting_id?>
+		<a
+			href="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item1?id=<?php echo $counting_id?>
 		&asset_id=<?php echo $hit['id']?>&location=<?php echo $location?>">Count</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $hit['id']?>">  Detail</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $hit['id']?>">
+				Detail</a>
 
-		<?php }else {
-		echo '<span class="label label-success">Counted!</span>';	
+		<?php
 
-		} ?>
+} else {
+            echo '<span class="label label-success">Counted!</span>';
+        }
+        ?>
 		
 		</td>
-	</tr>
+		</tr>
 <?php endforeach; ?>
 </tbody>
 </table>

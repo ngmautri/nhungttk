@@ -29,8 +29,8 @@ class AttachmentMapper
         }
 
         // DATE MAPPING
-        //==================
-        
+        // ==================
+
         // $entity->setValidFrom($snapshot->validFrom);
         if ($snapshot->validFrom !== null) {
             $entity->setCreatedOn(new \DateTime($snapshot->validFrom));

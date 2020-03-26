@@ -716,15 +716,14 @@ where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null
         }
     }
 
-   /**
-    * 
-    * @param integer $item_id
-    * @return array
-    */
-    public function getAllItemWithSerial($item_id =null)
+    /**
+     *
+     * @param integer $item_id
+     * @return array
+     */
+    public function getAllItemWithSerial($item_id = null)
     {
-        $sql = 
-'SELECT 
+        $sql = 'SELECT 
 nmt_inventory_item_serial.id AS serial_id,
 nmt_inventory_item_serial.serial_number as serial_no,
 nmt_inventory_item_serial.serial_number_1 as serial_no1,
@@ -744,10 +743,10 @@ ON nmt_inventory_item_serial.item_id = nmt_inventory_item.id
 
 Where 1 and nmt_inventory_item.is_active=1
 ';
-        if($item_id > 0){
-            $sql = $sql. ' and nmt_inventory_item.id = '. $item_id;
+        if ($item_id > 0) {
+            $sql = $sql . ' and nmt_inventory_item.id = ' . $item_id;
         }
-        
+
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();

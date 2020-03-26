@@ -8,5 +8,6 @@ namespace Inventory\Model\Valuation\Strategy;
  */
 abstract class AbstractValuationMethod
 {
+
     abstract public function doValuation($receivingList);
 }

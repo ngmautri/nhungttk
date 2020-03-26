@@ -1,5 +1,4 @@
 <?php
-
 namespace Inventory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
@@ -10,40 +9,40 @@ use Inventory\Controller\ReportController;
  * @author nmt
  *
  */
-class ReportControllerFactory implements FactoryInterface {
-	
-	/**
-	 *
-	 * {@inheritDoc}
-	 *
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator) {
-		
-		$sm = $serviceLocator->getServiceLocator();
-			
-		$controller = new ReportController ();
-		
-		// Spare Part table
-		$tbl =  $sm->get ('Inventory\Model\MLASparepartTable' );
-		$controller->setSparePartTable($tbl);
-		
-		$tbl =  $sm->get ('Inventory\Model\SparepartPictureTable' );
-		$controller->setSparePartPictureTable( $tbl );
-		
-		$tbl =  $sm->get ('Inventory\Model\SparepartMovementsTable' );
-		$controller->setSparepartMovementsTable( $tbl );
+class ReportControllerFactory implements FactoryInterface
+{
 
-		$tbl =  $sm->get ('Inventory\Model\SparepartCategoryTable' );
-		$controller->setSparePartCategoryTable( $tbl );
+    /**
+     *
+     * {@inheritdoc}
+     *
+     * @see \Zend\ServiceManager\FactoryInterface::createService()
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $sm = $serviceLocator->getServiceLocator();
 
-		$tbl =  $sm->get ('Inventory\Model\SparepartCategoryMemberTable' );
-		$controller->setSparePartCategoryMemberTable( $tbl );
-		
-		$tbl =  $sm->get ('Inventory\Services\SparepartService' );
-		$controller->setSparePartService( $tbl );
-		
-		
-		return $controller;
-	}
+        $controller = new ReportController();
+
+        // Spare Part table
+        $tbl = $sm->get('Inventory\Model\MLASparepartTable');
+        $controller->setSparePartTable($tbl);
+
+        $tbl = $sm->get('Inventory\Model\SparepartPictureTable');
+        $controller->setSparePartPictureTable($tbl);
+
+        $tbl = $sm->get('Inventory\Model\SparepartMovementsTable');
+        $controller->setSparepartMovementsTable($tbl);
+
+        $tbl = $sm->get('Inventory\Model\SparepartCategoryTable');
+        $controller->setSparePartCategoryTable($tbl);
+
+        $tbl = $sm->get('Inventory\Model\SparepartCategoryMemberTable');
+        $controller->setSparePartCategoryMemberTable($tbl);
+
+        $tbl = $sm->get('Inventory\Services\SparepartService');
+        $controller->setSparePartService($tbl);
+
+        return $controller;
+    }
 }

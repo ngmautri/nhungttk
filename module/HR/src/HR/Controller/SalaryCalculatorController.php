@@ -44,17 +44,17 @@ class SalaryCalculatorController extends AbstractActionController
     public function payrollPeriodAction()
     {
         $this->layout("HR/layout-fullscreen");
-        
+
         $criteria = array();
-        
+
         $sort_criteria = array(
             "postingToDate" => "DESC"
         );
         ;
-        
+
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
-        
+
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
@@ -76,11 +76,11 @@ class SalaryCalculatorController extends AbstractActionController
         $criteria = array(
             "id" => $period_id
         );
-        
+
         $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        
+
         return new ViewModel(array(
-            'period' => $period,
+            'period' => $period
         ));
     }
 
@@ -93,33 +93,30 @@ class SalaryCalculatorController extends AbstractActionController
     public function inputCheckAction()
     {
         $this->layout("HR/layout-fullscreen");
-        
+
         $request = $this->getRequest();
         $period_id = $this->params()->fromQuery('period_id');
-        
+
         $period_id = 2;
         $criteria = array(
             'period' => $period_id
         );
-        
-        
-        
+
         /**@var \Application\Entity\NmtHrPayrollInput */
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrPayrollInput')->findBy($criteria);
         $total_records = count($list);
-        
+
         $criteria = array(
             'id' => $period_id
         );
-        
+
         /**@var \Application\Entity\NmtFinPostingPeriod $period*/
         $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        
+
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'period' => $period
-        
         ));
     }
 
@@ -132,7 +129,7 @@ class SalaryCalculatorController extends AbstractActionController
     public function closePeriodAction()
     {
         $this->layout("HR/layout-fullscreen");
-        
+
         return new ViewModel();
     }
 
@@ -155,72 +152,70 @@ class SalaryCalculatorController extends AbstractActionController
     public function simulateAction()
     {
         $this->layout("HR/layout-fullscreen");
-        
+
         $criteria = array(
             'isActive' => 1
         );
-        
+
         /**@var \Application\Entity\NmtHrContract $target ; */
         $contracts = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findBy($criteria);
-        
+
         $payrollList = array();
-        
+
         foreach ($contracts as $target) {
-            
+
             $criteria = array(
                 'contract' => $target->getId()
             );
             $incomes = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalary')->findby($criteria);
-            
+
             if (count($incomes) > 0) {
-                
+
                 $incomeList = array();
                 $employee = new Employee($target->getEmployee()->getEmployeeCode(), $target->getEmployee()->getEmployeeName());
-                
+
                 $employee->setStatus($target->getContractStatus());
                 $employee->setStartWorkingdate($target->getEffectiveFrom());
-                
+
                 $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31 10:30:00'));
                 $input->setactualworkeddays(24);
                 $input->setpaidsickleaves(0);
                 $input->settotalworkingdays(26);
                 $ytd = 2018;
-                
+
                 foreach ($incomes as $income) {
-                    
+
                     /**@var \Application\Entity\NmtHrSalary $income ; */
                     $salaryFactory = $income->getSalaryFactory();
                     $incomeFactory = new $salaryFactory($income->getSalaryAmount(), "LAK");
-                    
+
                     if ($incomeFactory instanceof AbstractIncomeFactory) {
                         $incomeComponent = $incomeFactory->createIncomeComponent();
                         $incomeList[] = $incomeComponent;
                     }
                 }
-                
+
                 $payroll = new Payroll($employee, $input, $incomeList);
                 $payrollList[] = $payroll;
             }
         }
-        
+
         $calculator = new PayrollCalculator(null, $payrollList, null);
-        $list=$calculator->calculate();
-        
+        $list = $calculator->calculate();
+
         $v1 = new PayslipVisitor();
         $calculator->accept($v1);
-        
-        
+
         $criteria = array(
-            'id' => 2   
+            'id' => 2
         );
-        
+
         /**@var \Application\Entity\NmtFinPostingPeriod $period*/
         $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        
-        
+
         return new ViewModel(array(
-            "list"=>$list,     
-            "period"=>$period,
+            "list" => $list,
+            "period" => $period
         ));
     }
 
@@ -233,7 +228,7 @@ class SalaryCalculatorController extends AbstractActionController
     public function adjustPayrollAction()
     {
         $this->layout("HR/layout-fullscreen");
-        
+
         return new ViewModel();
     }
 
@@ -246,7 +241,7 @@ class SalaryCalculatorController extends AbstractActionController
     public function submitAction()
     {
         $this->layout("HR/layout-fullscreen");
-        
+
         return new ViewModel();
     }
 

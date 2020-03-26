@@ -35,41 +35,39 @@ class CRUDTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $em ; */
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $eventManager = Bootstrap::getServiceManager()->get('EventManager');
-            
-            
+
             /**
-             * 
+             *
              * @var \Inventory\Application\Service\Item\ItemCRUDService $sv ;
              */
             $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Item\ItemCRUDService');
-            
+
             $data = array();
-            
-            $data["itemSku"]="2-7-5";
-            $data["isActive"]=1;
-            $data["itemName"]="Special Item 2-5 updated5";
-            $data["itemDescription"]="Special Item itemDescription";
-            $data["remarks"]="Special Item itemDescription";
-            
-            $data["standardUom"]=80;
-            $data["stockUom"]=1;
-            $data["stockUomConvertFactor"]=1;;
-            $data["itemTypeId"]=ItemType::INVENTORY_ITEM_TYPE;
-            
+
+            $data["itemSku"] = "2-7-5";
+            $data["isActive"] = 1;
+            $data["itemName"] = "Special Item 2-5 updated5";
+            $data["itemDescription"] = "Special Item itemDescription";
+            $data["remarks"] = "Special Item itemDescription";
+
+            $data["standardUom"] = 80;
+            $data["stockUom"] = 1;
+            $data["stockUomConvertFactor"] = 1;
+            ;
+            $data["itemTypeId"] = ItemType::INVENTORY_ITEM_TYPE;
+
             $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
             $dto = $itemAssembler->createItemDTOFromArray($data);
-            
-            
-            /* $service = new ItemCRUDService();
-            $service->setEventManager($eventManager);
-            $service->setDoctrineEM($em);
+
+            /*
+             * $service = new ItemCRUDService();
+             * $service->setEventManager($eventManager);
+             * $service->setDoctrineEM($em);
              */
-            
-            //var_dump($notificattion = $sv->update(4292, $data,390 , __METHOD__));
-            
-            var_dump($notificattion = $sv->create($dto, 1, 39,__METHOD__, false));
-            
-            
+
+            // var_dump($notificattion = $sv->update(4292, $data,390 , __METHOD__));
+
+            var_dump($notificattion = $sv->create($dto, 1, 39, __METHOD__, false));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

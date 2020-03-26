@@ -32,11 +32,12 @@ class TransactionSnapshotAssembler
             "remarks"
         );
 
-/*      $dto->movementType;
-        $dto->movementDate;
-        $dto->warehouse;
-        $dto->remarks;
- */
+        /*
+         * $dto->movementType;
+         * $dto->movementDate;
+         * $dto->warehouse;
+         * $dto->remarks;
+         */
         foreach ($properites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();

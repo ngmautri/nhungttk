@@ -14,18 +14,18 @@ $current_step = "STEP1";
 		<!-- Tab1 -->
 		
 					<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+    if (count($errors) > 0) {
+        echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
 
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
-?>
+        echo '<ul>';
+        foreach ($errors as $error) :
+            echo '<li>' . $error . '</li>';
+        endforeach
+        ;
+        echo '</ul>';
+        echo '</div>';
+    }
+    ?>
 
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/inventory/gi/add" method="post"

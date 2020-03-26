@@ -5,7 +5,8 @@
 		<li><a href="#general">Personal</a></li>
 		<li><a href="#cv">CV</a></li>
 		<li><a href="#application">Application</a></li>
-		<li><a href="/hr/employee-contract/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Contract</a></li>
+		<li><a
+			href="/hr/employee-contract/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Contract</a></li>
 		<!-- <li><a href="#employment">Employment</a></li> -->
 		<!-- <li><a href="#remuneration">Remuneration <small><iclass="glyphicon glyphicon-lock"> </i></small></a></li> -->
 		<li><a
@@ -35,9 +36,11 @@
 		<li><a
 			href="/inventory/item-assignment/to-employee?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
 				class="glyphicon glyphicon-paperclip"></span>&nbsp;Asset</a></li>
-		<li><a	href="/hr/payroll-input/list1?period_id=2&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-			<i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;Caculation</a></li>
-	<li><a
+		<li><a
+			href="/hr/payroll-input/list1?period_id=2&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;Caculation
+		</a></li>
+		<li><a
 			href="/hr/entity-change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
@@ -119,7 +122,8 @@
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 					<a href="#general_info" class="" data-toggle="collapse">GENERAL:</a>
 				</legend>
-				<div id="general_info" class="collapse in" style="padding: 0px; margin: 0" >
+				<div id="general_info" class="collapse in"
+					style="padding: 0px; margin: 0">
 
 
 					<div class="form-group margin-bottom">
@@ -587,7 +591,7 @@
 	</div>
 	<!-- EDU -->
 
-	
+
 
 </div>
 <script>

@@ -11,65 +11,113 @@ use Application\Domain\Shared\SnapshotAssembler;
  */
 abstract class AbstractAttachment extends AggregateRoot
 {
+
     protected $id;
+
     protected $documentSubject;
+
     protected $keywords;
+
     protected $isPicture;
+
     protected $isContract;
+
     protected $signingDate;
+
     protected $validFrom;
+
     protected $validTo;
+
     protected $url;
+
     protected $filetype;
+
     protected $filename;
+
     protected $filenameOriginal;
+
     protected $filePassword;
+
     protected $size;
+
     protected $visibility;
+
     protected $folder;
+
     protected $attachmentFolder;
+
     protected $folderRelative;
+
     protected $checksum;
+
     protected $token;
+
     protected $isActive;
+
     protected $markedForDeletion;
+
     protected $remarks;
+
     protected $createdOn;
+
     protected $lastChangeOn;
+
     protected $changeFor;
+
     protected $prRowId;
+
     protected $targetClass;
+
     protected $targetId;
+
     protected $targetToken;
+
     protected $fileExtension;
+
     protected $fileExits;
+
     protected $uuid;
+
     protected $createdBy;
+
     protected $item;
+
     protected $po;
+
     protected $poRow;
+
     protected $qo;
+
     protected $company;
+
     protected $lastChangeBy;
+
     protected $project;
+
     protected $employee;
+
     protected $vendor;
+
     protected $itemPurchasing;
+
     protected $pr;
+
     protected $vInvoice;
-   
+
     private function __construct()
     {}
 
     /**
-     * 
+     *
      * @return NULL|object
      */
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new AttachmentSnapshot());
     }
+
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -78,6 +126,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocumentSubject()
@@ -86,6 +135,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getKeywords()
@@ -94,6 +144,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPicture()
@@ -102,6 +153,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsContract()
@@ -110,6 +162,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSigningDate()
@@ -118,6 +171,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getValidFrom()
@@ -126,6 +180,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getValidTo()
@@ -134,6 +189,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUrl()
@@ -142,6 +198,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFiletype()
@@ -150,6 +207,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFilename()
@@ -158,6 +216,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFilenameOriginal()
@@ -166,6 +225,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFilePassword()
@@ -174,6 +234,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSize()
@@ -182,6 +243,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVisibility()
@@ -190,6 +252,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFolder()
@@ -198,6 +261,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getAttachmentFolder()
@@ -206,6 +270,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFolderRelative()
@@ -214,6 +279,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChecksum()
@@ -222,6 +288,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -230,6 +297,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -238,6 +306,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMarkedForDeletion()
@@ -246,6 +315,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -254,6 +324,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -262,6 +333,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeOn()
@@ -270,6 +342,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getChangeFor()
@@ -278,6 +351,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRowId()
@@ -286,6 +360,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetClass()
@@ -294,6 +369,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetId()
@@ -302,6 +378,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetToken()
@@ -310,6 +387,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFileExtension()
@@ -318,6 +396,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFileExits()
@@ -326,6 +405,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -334,6 +414,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -342,6 +423,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()
@@ -350,6 +432,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()
@@ -358,6 +441,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoRow()
@@ -366,6 +450,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQo()
@@ -374,6 +459,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
@@ -382,6 +468,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -390,6 +477,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProject()
@@ -398,6 +486,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getEmployee()
@@ -406,6 +495,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -414,6 +504,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemPurchasing()
@@ -422,6 +513,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPr()
@@ -430,6 +522,7 @@ abstract class AbstractAttachment extends AggregateRoot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVInvoice()

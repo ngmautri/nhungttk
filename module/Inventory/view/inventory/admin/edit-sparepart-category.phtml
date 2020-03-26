@@ -1,23 +1,29 @@
 <h1>Edit spare part category</h1>
-<form action="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category" method="post">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<div>
-	<input type="hidden" name="id" value="<?php echo (int) $category->id; ?>" />
-    <label for="name">Sparepart Category</label>
-    <input type="text" name="name" value="<?php echo $this->escapeHtml($category->name) ?>"/>
-</div>
-<div>
-    <label for="description">Description</label>
-    <textarea cols="45" name="description" id="description" style="background:#FFFFFF">
+<form
+	action="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category"
+	method="post">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
+	<div>
+		<input type="hidden" name="id"
+			value="<?php echo (int) $category->id; ?>" /> <label for="name">Sparepart
+			Category</label> <input type="text" name="name"
+			value="<?php echo $this->escapeHtml($category->name) ?>" />
+	</div>
+	<div>
+		<label for="description">Description</label>
+		<textarea cols="45" name="description" id="description"
+			style="background: #FFFFFF">
     <?php echo $this->escapeHtml($category->description) ?>
     </textarea>
-</div>
+	</div>
 
-    <label for="name">Parent category</label>
-    <input type="text" name="parent_id" value="<?php echo $this->escapeHtml($category->parent_id) ?>"/>
-<div id="formbutton">
+	<label for="name">Parent category</label> <input type="text"
+		name="parent_id"
+		value="<?php echo $this->escapeHtml($category->parent_id) ?>" />
+	<div id="formbutton">
 
-<input type="submit" name="summit" value="sumbmit" />
-</div>
+		<input type="submit" name="summit" value="sumbmit" />
+	</div>
 
 </form>

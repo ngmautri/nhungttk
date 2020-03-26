@@ -74,5 +74,4 @@ class GRFromOpeningBalance extends GoodsReceipt implements GoodsReceiptInterface
 
     public function addTransactionRow(TransactionRow $transactionRow)
     {}
-
 }

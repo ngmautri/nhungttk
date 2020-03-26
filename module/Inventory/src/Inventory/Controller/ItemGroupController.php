@@ -237,36 +237,36 @@ class ItemGroupController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-     
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
 
             $errors = array();
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $data['redirectUrl'];
             $entity_id = (int) $data['entity_id'];
             $nTry = $data['n'];
-            
+
             $criteria = array(
                 'id' => $entity_id
             );
-            
+
             /** @var \Application\Entity\NmtInventoryItemGroup $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-            
+
             if ($entity == null) {
                 $errors[] = 'Entity not found or emty!';
-                
+
                 $this->flashMessenger()->addMessage('Something wrong!');
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
@@ -282,8 +282,8 @@ class ItemGroupController extends AbstractActionController
                 return $viewModel;
             }
 
-            $nTry++;
-       
+            $nTry ++;
+
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getGroupName());
             }
@@ -293,7 +293,7 @@ class ItemGroupController extends AbstractActionController
                 $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
-            
+
             $errors = $this->itemGroupService->saveEntity($entity, $data, $u, FALSE);
 
             if (count($errors) > 0) {
@@ -311,7 +311,6 @@ class ItemGroupController extends AbstractActionController
                 return $viewModel;
             }
 
-            
             $m = sprintf('[OK] %s updated.', $entity->getGroupName());
 
             $this->flashMessenger()->addMessage($m);

@@ -13,6 +13,7 @@ use Inventory\Domain\Warehouse\Validation\GeneralLocationValidation;
  */
 class GenericWarehouse extends AbstractWarehouse
 {
+
     protected $locations;
 
     protected $rootLocation;
@@ -20,8 +21,6 @@ class GenericWarehouse extends AbstractWarehouse
     protected $returnLocation;
 
     protected $scrapLocation;
-    
-    
 
     /**
      *
@@ -66,7 +65,7 @@ class GenericWarehouse extends AbstractWarehouse
         if ($notification == null)
             $notification = new Notification();
 
-            $notification = $this->generalLocationValidation($location, $notification);
+        $notification = $this->generalLocationValidation($location, $notification);
         return $notification;
     }
 

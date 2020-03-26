@@ -18,12 +18,15 @@ use Ramsey;
  */
 class WarehouseLoggingListener implements ListenerAggregateInterface
 {
+
     const WH_CREATED_LOG = "warehouse.created.log";
+
     const WH_UPDATED_LOG = "warehouse.updated.log";
 
     const WH_LOCATION_CREATED_LOG = "warehouse.location.created.log";
+
     const WH_LOCATION_UPDATED_LOG = "warehouse.location.updated.log";
-    
+
     protected $listeners = array();
 
     protected $events;
@@ -101,8 +104,7 @@ class WarehouseLoggingListener implements ListenerAggregateInterface
      */
     public function onWarehouseUpdatedLog(EventInterface $e)
     {
-        //var_dump($e->getParams());
-        
+        // var_dump($e->getParams());
         $log_priority = 6;
         $log_message = $e->getParam('message');
         $objectId = $e->getParam('objectId');

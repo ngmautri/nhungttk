@@ -8,6 +8,8 @@ namespace Inventory\Model\Valuation\Strategy;
  */
 interface InterfaceReceivingList
 {
+
     public function add($itemGR);
-    public function remove($itemGR);    
+
+    public function remove($itemGR);
 }

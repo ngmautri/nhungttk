@@ -8,10 +8,10 @@
 		<div class="modal-body">
 			<div id="_status"></div>
 
-			<form class="form-horizontal"
-				action="" method="post" enctype="multipart/form-data" id="">
+			<form class="form-horizontal" action="" method="post"
+				enctype="multipart/form-data" id="">
 				<input type="hidden" name="item_id" id="item_id" value="" />
-				
+
 				<div class="control-group">
 					<label class="control-label" for="inputNameLocal">Priority:</label>
 					<div class="controls">
@@ -27,7 +27,8 @@
 				<div class="control-group">
 					<label class="control-label" for="inputTag">Name:</label>
 					<div class="controls">
-						<input type="text" id="item_name" placeholder="" name="name" value="">
+						<input type="text" id="item_name" placeholder="" name="name"
+							value="">
 					</div>
 				</div>
 
@@ -59,22 +60,22 @@
 				</div>
 
 				<div class="control-group">
-					<label class="control-label" for="inputNameLocal">Expected
-						Delivery Date:</label>
+					<label class="control-label" for="inputNameLocal">Expected Delivery
+						Date:</label>
 					<div class="controls">
 						<input type="text" id="end_date" placeholder="click to select"
 							name="EDT" value="">
 					</div>
 				</div>
-				
+
 				<div class="control-group">
 					<label class="control-label" for="inputTag">Asset Name (if any):</label>
 					<div class="controls">
-						<input type="text" id="item_asset_name" placeholder="" name="asset_name"
-							value="">
+						<input type="text" id="item_asset_name" placeholder=""
+							name="asset_name" value="">
 					</div>
 				</div>
-				
+
 				<div class="control-group">
 					<label class="control-label" for="inputDescription">Remarks:</label>
 					<div class="controls">

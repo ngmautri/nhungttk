@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaArticlesCategoriesMembers
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaArticlesCategoriesMembers
     private $id;
 
     /**
+     *
      * @var \Application\Entity\MlaArticles
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
@@ -32,6 +34,7 @@ class MlaArticlesCategoriesMembers
     private $article;
 
     /**
+     *
      * @var \Application\Entity\MlaArticlesCategories
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticlesCategories")
@@ -42,6 +45,7 @@ class MlaArticlesCategoriesMembers
     private $articleCat;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -50,8 +54,6 @@ class MlaArticlesCategoriesMembers
      * })
      */
     private $updatedBy;
-
-
 
     /**
      * Get id

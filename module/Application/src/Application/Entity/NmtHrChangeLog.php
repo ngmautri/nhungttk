@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtHrChangeLog
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtHrChangeLog
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtHrChangeLog
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="object_id", type="integer", nullable=false)
@@ -36,6 +39,7 @@ class NmtHrChangeLog
     private $objectId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="object_token", type="string", length=45, nullable=false)
@@ -43,6 +47,7 @@ class NmtHrChangeLog
     private $objectToken;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="class_name", type="string", length=255, nullable=true)
@@ -50,6 +55,7 @@ class NmtHrChangeLog
     private $className;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="field_name", type="string", length=100, nullable=true)
@@ -57,6 +63,7 @@ class NmtHrChangeLog
     private $fieldName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="column_name", type="string", length=100, nullable=true)
@@ -64,6 +71,7 @@ class NmtHrChangeLog
     private $columnName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="old_value", type="string", length=255, nullable=true)
@@ -71,6 +79,7 @@ class NmtHrChangeLog
     private $oldValue;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="new_value", type="string", length=255, nullable=true)
@@ -78,6 +87,7 @@ class NmtHrChangeLog
     private $newValue;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -85,6 +95,7 @@ class NmtHrChangeLog
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -92,6 +103,7 @@ class NmtHrChangeLog
     private $remarks;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="field_type", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtHrChangeLog
     private $fieldType;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -109,6 +122,7 @@ class NmtHrChangeLog
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -117,8 +131,6 @@ class NmtHrChangeLog
      * })
      */
     private $company;
-
-
 
     /**
      * Get id

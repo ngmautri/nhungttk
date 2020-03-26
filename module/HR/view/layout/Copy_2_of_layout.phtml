@@ -9,31 +9,37 @@
 
         <!-- Le styles -->
         <?php
-								
-								echo $this->headLink ( array (
-										'rel' => 'shortcut icon',
-										'type' => 'image/vnd.microsoft.icon',
-										'href' => $this->basePath () . '/img/favicon.ico' 
-								) )->prependStylesheet ( $this->basePath () . '/css/bootstrap-responsive.min.css' )->prependStylesheet ( $this->basePath () . '/css/style.css' )->prependStylesheet ( $this->basePath () . '/css/bootstrap.min.css' )?>
+
+        echo $this->headLink(array(
+            'rel' => 'shortcut icon',
+            'type' => 'image/vnd.microsoft.icon',
+            'href' => $this->basePath() . '/img/favicon.ico'
+        ))
+            ->prependStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
+            ->prependStylesheet($this->basePath() . '/css/style.css')
+            ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')?>
 
    <link rel="stylesheet" href="/jquery/jquery-ui.css">
-   <link rel="stylesheet" href="/css/tables.css">
-   <link rel="stylesheet" href="/css/forms.css">
-   <link href="/css/lightgallery.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/tables.css">
+<link rel="stylesheet" href="/css/forms.css">
+<link href="/css/lightgallery.css" rel="stylesheet">
 
 <!-- Scripts -->
         <?php
-								
-								echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
-										'conditional' => 'lt IE 9' 
-								) )->prependFile ( $this->basePath () . '/js/mla.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
+
+        echo $this->headScript()
+            ->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array(
+            'conditional' => 'lt IE 9'
+        ))
+            ->prependFile($this->basePath() . '/js/mla.js')
+            ->prependFile($this->basePath() . '/js/jquery.js')?>
 	<script src="/js/lightgallery-all.min.js"></script>
-    <script src="/js/lg-thumbnail.js"></script>
-    <script src="/js/lg-fullscreen.min.js"></script>
-    <script src="/jquery/jquery-ui.min.js"></script>
-    
- 
-  <script>
+<script src="/js/lg-thumbnail.js"></script>
+<script src="/js/lg-fullscreen.min.js"></script>
+<script src="/jquery/jquery-ui.min.js"></script>
+
+
+<script>
 
   $(function() {
 	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
@@ -83,7 +89,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="container">
             <?php echo $this->content; ?>
             <hr>
@@ -94,6 +100,6 @@
 	<!-- /container -->
         <?php echo $this->inlineScript()?>
     </body>
-    
+
 
 </html>

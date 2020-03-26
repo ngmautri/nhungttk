@@ -872,9 +872,9 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_procure_pr_row.is_active = 0)";
         }
-        
+
         $sql = $sql . sprintf(" AND nmt_procure_pr.id =%s AND nmt_procure_pr.token ='%s'", $pr_id, $pr_token);
-        
+
         switch ($sort_by) {
             case "itemName":
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
@@ -1213,16 +1213,16 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
             $rsm->addScalarResult("pr_qty", "pr_qty");
-            
+
             $rsm->addScalarResult("po_qty", "po_qty");
             $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
 
             $rsm->addScalarResult("gr_qty", "gr_qty");
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
-            
+
             $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
             $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
-        
+
             $rsm->addScalarResult("ap_qty", "ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
 
@@ -1233,7 +1233,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             return null;
         }
     }
-    
+
     /**
      *
      * @return array|NULL
@@ -1242,27 +1242,27 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     {
         $sql = \Application\Repository\SQL\NmtProcurePrRowRepositorySQL::PR_ROW_SQL;
         $sql_tmp = ' AND nmt_procure_pr_row.pr_id=' . $pr_id;
-        
+
         $sql = sprintf($sql, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp);
         // echo $sql;
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
             $rsm->addScalarResult("pr_qty", "pr_qty");
-            
+
             $rsm->addScalarResult("po_qty", "po_qty");
             $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
-            
+
             $rsm->addScalarResult("gr_qty", "gr_qty");
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
-            
+
             $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
             $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
-            
+
             $rsm->addScalarResult("ap_qty", "ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-            
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
@@ -1270,7 +1270,5 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             return null;
         }
     }
-    
-    
 }
 

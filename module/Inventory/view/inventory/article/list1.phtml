@@ -1,23 +1,26 @@
-	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a>
-	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
-		spare part</a>
+
+<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare
+	part category</a>
+|
+<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
+	spare part</a>
 <hr>
 
 <?php
 
 if ($total_spareparts <= 0) {
-	
-	echo 'No spare part found!';
+
+    echo 'No spare part found!';
 } else {
 
-	if (! is_null ( $paginator )) {
-		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_spareparts . ' spare parts found!';
-	}else{	
-		echo $total_spareparts . ' spare parts found!';
-	}
-?>
+    if (! is_null($paginator)) {
+        echo 'Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_spareparts . ' spare parts found!';
+    } else {
+        echo $total_spareparts . ' spare parts found!';
+    }
+    ?>
 <hr>
-<table border="1"  cellpadding="3">
+<table border="1" cellpadding="3">
 	<tr>
 		<td><b>Tag</b></td>
 		<td><b>Spare Part Name</b></td>
@@ -33,24 +36,15 @@ if ($total_spareparts <= 0) {
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
 
-		<td>
-		<a
+		<td><a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit
-		</a>
-		| 
-		<a
+		</a> | <a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
-		</a>
-		|
-		<a
+		</a> | <a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
-		</a>
-		|
-		<a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/add-category?id=<?php echo $this->escapeHtml($a['id']);?>">change category
-		</a>
-		|
-		<a
+		</a> | <a
+			href="<?php echo $this->baseUrl ?>/inventory/spareparts/add-category?id=<?php echo $this->escapeHtml($a['id']);?>">change
+				category </a> | <a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
 				Detail </a></td>
 	</tr>
@@ -60,38 +54,37 @@ if ($total_spareparts <= 0) {
 <br>
 
 <?php
-	
-	if (! is_null ( $paginator )) {
-		
-		$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		
-		$first = $this->baseUrl . '/inventory/spareparts/list' . '?page=1&perPage=' . $paginator->resultsPerPage;
-		
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-			
-			?>
+
+    if (! is_null($paginator)) {
+
+        $last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+
+        $first = $this->baseUrl . '/inventory/spareparts/list' . '?page=1&perPage=' . $paginator->resultsPerPage;
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            $last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+
+            ?>
 
 <?php
-			
-			if ($i == $paginator->page) {
-				echo $i;
-			} else {
-				?>
+
+            if ($i == $paginator->page) {
+                echo $i;
+            } else {
+                ?>
 <a href="<?php echo $url; ?>"><?php echo $i ?></a>
 
 <?php
-			}
-		}
-		?>
-	
+            }
+        }
+        ?>
+
 <a href="<?php echo $last; ?>"> Last</a>
 <?php
-	}
+    }
 }
 ?>
 

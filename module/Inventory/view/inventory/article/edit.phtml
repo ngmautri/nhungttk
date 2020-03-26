@@ -1,143 +1,170 @@
- <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/article/list"	method="get" enctype="multipart/form-data">
-      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
+
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory/article/list"
+	method="get" enctype="multipart/form-data">
+	<button type="submit" class="btn">
+		<i class="icon-arrow-left"> </i> Back
+	</button>
 </form>
 
-<h4><i class="icon-pencil">  </i> Edit Item</h4>
- <hr>
+<h4>
+	<i class="icon-pencil"> </i> Edit Item
+</h4>
+<hr>
 
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
-	
-	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-error">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/article/edit"	method="post" enctype="multipart/form-data" id="NewSP" >
- <input type="hidden" name="id" value="<?php echo $article!==null ? ($article->id) :""?>" />
- <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-	
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/article/edit"
+	method="post" enctype="multipart/form-data" id="NewSP">
+	<input type="hidden" name="id"
+		value="<?php echo $article!==null ? ($article->id) :""?>" /> <input
+		type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
 	<div class="control-group">
-        <label class="control-label" for="inputTag">Item Code (SKU)</label>
-        <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="article_tag" value="<?php echo $article!==null ? ($article->article_tag) :""?>">
-        </div>
-      </div>	
- 
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Name</label>
-        <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="name" value="<?php echo $article!==null ? ($article->name) :""?>">
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputTag">Name (Laos)</label>
-        <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="name_local" value="<?php echo $article!==null ? ($article->name_local) :""?>">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputDescription">Description</label>
-        <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="2" name="description"><?php echo $article!==null ? ($article->description):""?></textarea>
-        </div>
-      </div>
-    
-      
-      <div class="control-group">
-        <label class="control-label" for="inputName">Keywords</label>
-        <div class="controls">
-          <input type="text" id="inputName" placeholder="" name="keywords" value="<?php echo $article!==null ? ($article->keywords) :""?>">
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputTag">Type</label>
-        <div class="controls">
-        	<select name="type" >
-        		<option <?php echo $article->type =='Stocked Product' ? 'selected="selected"':''?> value="Stocked Product">Stocked Product</option>
-        		<option <?php echo $article->type =='Unstocked Product' ? 'selected="selected"' :''?> value="Unstocked Product">Unstocked Product</option>
-   	     		<option <?php echo $article->type == 'Service' ? 'selected="selected"' :''?> value="Service">Service</option>
-    			</select>
-       </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputName">Unit</label>
-        <div class="controls">
-          <input type="text" id="inputName" placeholder="" name="unit" value="<?php echo $article!==null ? ($article->unit) :""?>">
-        </div>
-      </div>
-      
-      	<div class="control-group">
-        <label class="control-label" for="inputNameLocal">Code</label>
-        <div class="controls">
-          <input type="text" id="sparepart_code" placeholder="Code of supplier" name="code" value="<?php echo $article!==null ? ($article->code) :""?>"> 
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Barcode</label>
-        <div class="controls">
-          <input type="text" id="sparepart_code" placeholder="Code of supplier" name="barcode" value="<?php echo $article!==null ? ($article->barcode) :""?>"> 
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Visibility</label>
-        <div class="controls">
-        	<select name="visibility" >
-        		<option  value="Public">Public</option>
-        		<option selected="selected" value="Private">Private</option>
-     			</select>
-       </div>
-      </div>
-      
-    <div class="control-group">
-        <label class="control-label" for="inputTag">Status</label>
-        <div class="controls">
-        	<select name="status" >
-   		<option selected = "selected" value="Activated">Activated</option>
-        		<option value="Deactivated">Deactivated</option>
-         			</select>
-       </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputDescription">Remarks</label>
-        <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="2" name="remarks"><?php echo $article!==null ? ($article->remarks):""?></textarea>
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputLocation">Pictures	</label>
-        <div class="controls">
-          <input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-			<input type="file" name="pictures[]" /><br>
+		<label class="control-label" for="inputTag">Item Code (SKU)</label>
+		<div class="controls">
+			<input type="text" id="inputTag" placeholder="" name="article_tag"
+				value="<?php echo $article!==null ? ($article->article_tag) :""?>">
+		</div>
+	</div>
 
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn">Update</button>
-        </div>
-      </div>
-    </form>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Name</label>
+		<div class="controls">
+			<input type="text" id="inputTag" placeholder="" name="name"
+				value="<?php echo $article!==null ? ($article->name) :""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Name (Laos)</label>
+		<div class="controls">
+			<input type="text" id="inputTag" placeholder="" name="name_local"
+				value="<?php echo $article!==null ? ($article->name_local) :""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputDescription">Description</label>
+		<div class="controls">
+			<textarea id="inputDescription" placeholder="" rows="2"
+				name="description"><?php echo $article!==null ? ($article->description):""?></textarea>
+		</div>
+	</div>
 
 
+	<div class="control-group">
+		<label class="control-label" for="inputName">Keywords</label>
+		<div class="controls">
+			<input type="text" id="inputName" placeholder="" name="keywords"
+				value="<?php echo $article!==null ? ($article->keywords) :""?>">
+		</div>
+	</div>
 
-<div id = "dialog" style="display: none;">Check code...</div>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Type</label>
+		<div class="controls">
+			<select name="type">
+				<option
+					<?php echo $article->type =='Stocked Product' ? 'selected="selected"':''?>
+					value="Stocked Product">Stocked Product</option>
+				<option
+					<?php echo $article->type =='Unstocked Product' ? 'selected="selected"' :''?>
+					value="Unstocked Product">Unstocked Product</option>
+				<option
+					<?php echo $article->type == 'Service' ? 'selected="selected"' :''?>
+					value="Service">Service</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputName">Unit</label>
+		<div class="controls">
+			<input type="text" id="inputName" placeholder="" name="unit"
+				value="<?php echo $article!==null ? ($article->unit) :""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Code</label>
+		<div class="controls">
+			<input type="text" id="sparepart_code" placeholder="Code of supplier"
+				name="code"
+				value="<?php echo $article!==null ? ($article->code) :""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Barcode</label>
+		<div class="controls">
+			<input type="text" id="sparepart_code" placeholder="Code of supplier"
+				name="barcode"
+				value="<?php echo $article!==null ? ($article->barcode) :""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Visibility</label>
+		<div class="controls">
+			<select name="visibility">
+				<option value="Public">Public</option>
+				<option selected="selected" value="Private">Private</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Status</label>
+		<div class="controls">
+			<select name="status">
+				<option selected="selected" value="Activated">Activated</option>
+				<option value="Deactivated">Deactivated</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputDescription">Remarks</label>
+		<div class="controls">
+			<textarea id="inputDescription" placeholder="" rows="2"
+				name="remarks"><?php echo $article!==null ? ($article->remarks):""?></textarea>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputLocation">Pictures </label>
+		<div class="controls">
+			<input type="file" name="pictures[]" /><br> <input type="file"
+				name="pictures[]" /><br> <input type="file" name="pictures[]" /><br>
+
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">Update</button>
+		</div>
+	</div>
+</form>
+
+
+
+<div id="dialog" style="display: none;">Check code...</div>
 
 
 

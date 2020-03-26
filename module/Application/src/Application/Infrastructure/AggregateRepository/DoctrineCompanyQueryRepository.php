@@ -17,8 +17,8 @@ class DoctrineCompanyQueryRepository extends AbstractDoctrineRepository implemen
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Company\CompanyQueryRepositoryInterface::getById()
      */
     public function getById($id)
@@ -33,7 +33,7 @@ class DoctrineCompanyQueryRepository extends AbstractDoctrineRepository implemen
          */
         $entity = $this->doctrineEM->getRepository("\Application\Entity\NmtApplicationCompany")->findOneBy($criteria);
         $snapshot = CompanyMapper::createDetailSnapshot($entity);
-        
+
         $entityRoot = new GenericCompany();
         $entityRoot->makeFromDetailsSnapshot($snapshot);
         return $entityRoot;

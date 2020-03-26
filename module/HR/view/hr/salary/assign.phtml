@@ -1,99 +1,107 @@
 
-<?php /**@var \Application\Entity\NmtHrContract $target ; 
-         @var \Application\Entity\NmtHrSalary $entity ;
-       */ 
+<?php
+
+/**@var \Application\Entity\NmtHrContract $target ; 
+ @var \Application\Entity\NmtHrSalary $entity ;
+ */
 ?>
 
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<h4><?php if (!$target == null):
+<h4><?php
 
-echo sprintf('<a href="/hr/employee-contract/show?token=%s&entity_id=%s" >%s</a>',
-    $target->getToken(),
-    $target->getId(),
-    strtoupper($target->getContractNumber()). ' #' .  $target->getEmployee()->getEmployeeCode()
-    );
+if (! $target == null) :
+
+    echo sprintf('<a href="/hr/employee-contract/show?token=%s&entity_id=%s" >%s</a>', $target->getToken(), $target->getId(), strtoupper($target->getContractNumber()) . ' #' . $target->getEmployee()->getEmployeeCode());
 endif;
 
-    ?>
+?>
     </h4>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general"><?php echo $this->translate('New salary component'); ?></a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('New salary component'); ?></a></li>
+	</ul>
 
-<div id="general" style="font-size: 9pt"> 
+	<div id="general" style="font-size: 9pt"> 
 	<?php echo $target->getBasicSalary() . $target->getCurrency()->getCurrency();?>
 
-<form action="<?php echo $this->baseUrl ?>/hr/salary/assign" method="post" enctype="multipart/form-data" id="assign_salary">
-<input type="hidden" name="target_id" value="<?php if(!$target == null):echo $target->getId(); endif;?>" />
-<input type="hidden" name="token" value="<?php if(!$target == null):echo $target->getToken(); endif;?>" />
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl;?>" />
-	
-	<table style="font-size: 10pt;" class="table table-bordered table-striped table-hover">
-	<thead>
-		<tr>
-			<td><input type="checkbox" id="select_ALL" name="SelectAll" value="YES"/> <?php echo $this->translate('All'); ?></td>
- 	
-			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('default income name'); ?></b></td>
-			<td><b><?php echo $this->translate('default description'); ?></b></td>
-			<td><b><?php echo $this->translate('SSO Payable'); ?></b></td>
-			<td><b><?php echo $this->translate('PIT Payable'); ?></b></td>
-			<td><b><?php echo $this->translate('payment frequency'); ?></b></td>
-			<td><b><?php echo $this->translate('Type'); ?></b></td>		
-			<td><b><?php echo $this->translate('Action'); ?></b></td>
-			</tr>
-	</thead>
+<form action="<?php echo $this->baseUrl ?>/hr/salary/assign"
+			method="post" enctype="multipart/form-data" id="assign_salary">
+			<input type="hidden" name="target_id"
+				value="<?php if(!$target == null):echo $target->getId(); endif;?>" />
+			<input type="hidden" name="token"
+				value="<?php if(!$target == null):echo $target->getToken(); endif;?>" />
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl;?>" />
 
-	<tbody>
+			<table style="font-size: 10pt;"
+				class="table table-bordered table-striped table-hover">
+				<thead>
+					<tr>
+						<td><input type="checkbox" id="select_ALL" name="SelectAll"
+							value="YES" /> <?php echo $this->translate('All'); ?></td>
+
+						<td><b>#</b></td>
+						<td><b><?php echo $this->translate('default income name'); ?></b></td>
+						<td><b><?php echo $this->translate('default description'); ?></b></td>
+						<td><b><?php echo $this->translate('SSO Payable'); ?></b></td>
+						<td><b><?php echo $this->translate('PIT Payable'); ?></b></td>
+						<td><b><?php echo $this->translate('payment frequency'); ?></b></td>
+						<td><b><?php echo $this->translate('Type'); ?></b></td>
+						<td><b><?php echo $this->translate('Action'); ?></b></td>
+					</tr>
+				</thead>
+
+				<tbody>
 
 		
-	<?php 
-	$count = 0;
-	
-	foreach ($incomes as $income):	
-	/**@var \Application\Entity\NmtHrSalaryDefault $income ; */
-	$count ++;
-	
-	?>
+	<?php
+$count = 0;
+
+foreach ($incomes as $income) :
+    /**@var \Application\Entity\NmtHrSalaryDefault $income ; */
+    $count ++;
+
+    ?>
 	
 		 <tr>
-		  	<td><input class="checkbox1" type="checkbox" name="incomes[]" value="<?php echo $income->getId();?>" /></td>
-	
-	  		<td><?php echo $count;?></td>
-	  		<td><?php echo $income->getSalaryName();?></td>
-	  		<td><?php echo $income->getDescription();?></td>
-	 		<td><?php echo ($income->getIsSsoPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
-	 		<td><?php echo ($income->getIsPitPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
-	  		<td><?php echo $income->getPaymentFrequency();?></td>
-	  		<td><?php echo "default";?></td>
-	
-	      <td>
-</td>		
-		</tr>
+						<td><input class="checkbox1" type="checkbox" name="incomes[]"
+							value="<?php echo $income->getId();?>" /></td>
+
+						<td><?php echo $count;?></td>
+						<td><?php echo $income->getSalaryName();?></td>
+						<td><?php echo $income->getDescription();?></td>
+						<td><?php echo ($income->getIsSsoPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+						<td><?php echo ($income->getIsPitPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+						<td><?php echo $income->getPaymentFrequency();?></td>
+						<td><?php echo "default";?></td>
+
+						<td></td>
+					</tr>
 <?php endforeach; ?>
 
 </tbody>
-</table>
-	<input class="btn btn-primary btn-sm" type="submit" name="Assign" value="<?php echo $this->translate('Assign'); ?>" />
-<a class="btn btn-default btn-sm" href="<?php echo sprintf('/hr/employee-contract/show?entity_id=%s&token=%s',$target->getId(),$target->getToken())?>">&nbsp;<?php echo $this->translate('Cancel'); ?></a>
+			</table>
+			<input class="btn btn-primary btn-sm" type="submit" name="Assign"
+				value="<?php echo $this->translate('Assign'); ?>" /> <a
+				class="btn btn-default btn-sm"
+				href="<?php echo sprintf('/hr/employee-contract/show?entity_id=%s&token=%s',$target->getId(),$target->getToken())?>">&nbsp;<?php echo $this->translate('Cancel'); ?></a>
 
-</form>	
-</div>
+		</form>
+	</div>
 </div>
 

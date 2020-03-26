@@ -1,7 +1,6 @@
 <?php
 namespace Application\Domain\Util;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -9,7 +8,8 @@ namespace Application\Domain\Util;
  */
 class ExcelColumnMap
 {
-    CONST COLS = array(        
+
+    const COLS = array(
         "A",
         "B",
         "C",
@@ -113,7 +113,7 @@ class ExcelColumnMap
         "CW",
         "CX",
         "CY",
-        "CZ",
+        "CZ"
     );
 }
 

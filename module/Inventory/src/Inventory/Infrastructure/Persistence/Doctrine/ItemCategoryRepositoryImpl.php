@@ -18,8 +18,8 @@ class ItemCategoryRepositoryImpl extends AbstractDoctrineRepository implements I
 {
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Infrastructure\Persistence\ItemCategoryRepositoryInterface::getNoneCategorizedItems()
      */
     public function getNoneCategorizedItems($limit, $offset)
@@ -207,15 +207,14 @@ nmt_inventory_item_category_member
 left join nmt_inventory_item
 on nmt_inventory_item.id = nmt_inventory_item_category_member.item_id where 1=1 AND nmt_inventory_item_category_member.category_id=" . $catId;
 
-        
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nm_inventory_item');
@@ -257,16 +256,11 @@ on nmt_inventory_item.id = nmt_inventory_item_category_member.item_id where 1=1 
             $rsm->addScalarResult("total_rows", "total_rows");
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
-            
+
             if (count($result) == 1) {
                 return (int) $result[0]['total_rows'];
             }
-        } catch (NoResultException $e) {
-            
-        }
+        } catch (NoResultException $e) {}
         return 0;
     }
-  
-   
-
 }

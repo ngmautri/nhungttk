@@ -19,13 +19,12 @@ abstract class AbstractDoctrineCmdHandler implements CommandHandlerInterface
      * @see \Application\Domain\Shared\Command\CommandHandlerInterface::run()
      */
     abstract public function run(CommandInterface $cmd);
-    
+
     /**
+     *
      * @todo: implementation.
      * @param EventDispatcher $dipatcher
      */
-    public function dispatch (EventDispatcher $dipatcher =null){
-     
-    }
-    
+    public function dispatch(EventDispatcher $dipatcher = null)
+    {}
 }

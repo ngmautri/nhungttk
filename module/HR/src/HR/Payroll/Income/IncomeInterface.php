@@ -23,12 +23,12 @@ Interface IncomeInterface
      * Get currency of income
      */
     public function getCurrency();
-    
+
     /**
      * Default Component is assigned to any contract.
      */
     public function isDefault();
-    
+
     /**
      * PIT Payable
      */
@@ -38,7 +38,7 @@ Interface IncomeInterface
      * SSO Payble
      */
     public function isSSOPayable();
-    
+
     /**
      * Pay or not pay
      */
@@ -53,7 +53,7 @@ Interface IncomeInterface
      * Payment Frequency
      */
     public function getPaymentFrequency();
-    
+
     /**
      * Payment Description
      */

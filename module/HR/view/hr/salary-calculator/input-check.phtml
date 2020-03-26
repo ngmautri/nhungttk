@@ -1,4 +1,4 @@
-<?php    	    
+<?php
 /**@var \Application\Entity\NmtFinPostingPeriod $period*/
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -6,91 +6,104 @@
 	<ul>
 		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
 	</ul>
-<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt">
 
-<div class="row">
-  <div class="col-xs-6 col-md-2">
+		<div class="row">
+			<div class="col-xs-6 col-md-2">
  
-				 <?php 
-    					$current_step="STEP3";
-    					include ('calculator-wizard.php'); 
-  				  ?>
+				 <?php
+    $current_step = "STEP3";
+    include ('calculator-wizard.php');
+    ?>
  
   </div>
-  
-  <div class="col-xs-12 col-sm-6 col-md-10" style="">
-   <!-- col2 -->
-  
-  <h4><?php echo $this->translate('Payroll Input Review'); ?> <?php if($period!=null):echo sprintf('// Period %s',$period->getPeriodName()) ;endif;?></h4>
-  
-   
-  
-  <table id="mytable26" style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Code</b></td>
-			<td><b>Name</b></td>
-		
-			<td title="Revision Number"><b>Rev.<br>Nr.</b></td>
-			<td><b>Current<br>State</b></td>
-			<td><b>Present <br>Days</b></td>
-			<td><b>Out of<br>Office</b></td>
-			<td><b>Sick<br>Leave</b></td>
-			<td><b>Annual <br>Leave</b></td>
-			<td title="Personal Paid Leave"><b>Personal <br> Paid L.</b></td>
-			<td title="Maternity Leave"><b>Matr. <br> Leave</b></td>
-			<td title="Unapproved Leave"><b>Unapr.<br>Leave</b></td>
-			<td title="Approved Leave"><b>Apr. <br> Leave</b></td>
-			<td><b>OT1</b></td>
-			<td><b>OT12</b></td>
-			<td><b>OT3</b></td>
-			<td><b>action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+
+			<div class="col-xs-12 col-sm-6 col-md-10" style="">
+				<!-- col2 -->
+
+				<h4><?php echo $this->translate('Payroll Input Review'); ?> <?php if($period!=null):echo sprintf('// Period %s',$period->getPeriodName()) ;endif;?></h4>
+
+
+
+				<table id="mytable26" style="font-size: 9pt;"
+					class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<td><b>#</b></td>
+							<td><b>Code</b></td>
+							<td><b>Name</b></td>
+
+							<td title="Revision Number"><b>Rev.<br>Nr.
+							</b></td>
+							<td><b>Current<br>State
+							</b></td>
+							<td><b>Present <br>Days
+							</b></td>
+							<td><b>Out of<br>Office
+							</b></td>
+							<td><b>Sick<br>Leave
+							</b></td>
+							<td><b>Annual <br>Leave
+							</b></td>
+							<td title="Personal Paid Leave"><b>Personal <br> Paid L.
+							</b></td>
+							<td title="Maternity Leave"><b>Matr. <br> Leave
+							</b></td>
+							<td title="Unapproved Leave"><b>Unapr.<br>Leave
+							</b></td>
+							<td title="Approved Leave"><b>Apr. <br> Leave
+							</b></td>
+							<td><b>OT1</b></td>
+							<td><b>OT12</b></td>
+							<td><b>OT3</b></td>
+							<td><b>action</b></td>
+						</tr>
+					</thead>
+					<tbody>
     	
     <?php
-        $count = 0;
-        foreach ( $list as $a ) :
+    $count = 0;
+    foreach ($list as $a) :
         $count ++;
-        	/**@var \Application\Entity\NmtHrPayrollInput $a ;*/
-    ?>  
+        /**@var \Application\Entity\NmtHrPayrollInput $a ;*/
+        ?>  
      <tr>
-			<td><?php echo $count;?></td>
-			<td><?php echo $a->getEmployee()->getEmployeeCode();?></td>
-			<td><?php echo $a->getEmployee()->getEmployeeName();?></td>
-	
-			<td><?php echo $a->getRevisionNumber();?></td>
-			<td>
-			
-	-</td>
-			<td>
-			<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Present Days (Finger Scan): <?php echo $a->getEmployee()->getEmployeeName() .'-'.$a->getEmployee()->getEmployeeCode();?> // Period: <?php if($period!==null): echo $period->getPeriodName(); endif;?>','680',$(window).height()-100, '/hr/finger-scan/show1','j_loaded_data', true);"><?php echo $a->getPresentDay();?></a>
-			</td>
-			<td><?php echo $a->getOutOfOfficeDay();?></td>
-			<td><?php echo $a->getSickLeave();?></td>
-			<td><?php echo $a->getAnnualLeave();?></td>
-			<td><?php echo $a->getPersonalPaidLeave();?></td>
-			<td><?php echo $a->getPersonalPaidLeave();?></td>
-			<td><?php echo $a->getUnapprovedLeave();?></td>
-			<td><?php echo $a->getApprovedLeave();?></td>
-			<td><?php echo $a->getOvertime1();?></td>
-			<td><?php echo $a->getOvertime2();?></td>
-			<td><?php echo $a->getOtherLeave3();?></td>
-			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;<?php echo $a->getId();?></a></td>
-		</tr>
+							<td><?php echo $count;?></td>
+							<td><?php echo $a->getEmployee()->getEmployeeCode();?></td>
+							<td><?php echo $a->getEmployee()->getEmployeeName();?></td>
+
+							<td><?php echo $a->getRevisionNumber();?></td>
+							<td>-</td>
+							<td><a style="color: #0080ff;" href="javascript:;"
+								onclick="showJqueryDialog('Present Days (Finger Scan): <?php echo $a->getEmployee()->getEmployeeName() .'-'.$a->getEmployee()->getEmployeeCode();?> // Period: <?php if($period!==null): echo $period->getPeriodName(); endif;?>','680',$(window).height()-100, '/hr/finger-scan/show1','j_loaded_data', true);"><?php echo $a->getPresentDay();?></a>
+							</td>
+							<td><?php echo $a->getOutOfOfficeDay();?></td>
+							<td><?php echo $a->getSickLeave();?></td>
+							<td><?php echo $a->getAnnualLeave();?></td>
+							<td><?php echo $a->getPersonalPaidLeave();?></td>
+							<td><?php echo $a->getPersonalPaidLeave();?></td>
+							<td><?php echo $a->getUnapprovedLeave();?></td>
+							<td><?php echo $a->getApprovedLeave();?></td>
+							<td><?php echo $a->getOvertime1();?></td>
+							<td><?php echo $a->getOvertime2();?></td>
+							<td><?php echo $a->getOtherLeave3();?></td>
+							<td><a style="color: navy" href="#"><small><span
+										class="glyphicon glyphicon-print"></span></small>&nbsp;<?php echo $a->getId();?></a></td>
+						</tr>
 		
 		<?php endforeach; ?>
 	</tbody>
-</table>
+				</table>
 
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
-  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/simulate"><?php echo $this->translate('Next'); ?>&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
- 
-  <!-- col2 -->
-  </div>	
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><i
+					class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
+				<a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/hr/salary-calculator/simulate"><?php echo $this->translate('Next'); ?>&nbsp;<i
+					class="fa fa-chevron-right" aria-hidden="true"></i></a>
 
-</div>
-</div>
+				<!-- col2 -->
+			</div>
+
+		</div>
+	</div>

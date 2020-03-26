@@ -1,7 +1,6 @@
 <?php
 namespace HR\Payroll\Calculator\Visitor;
 
-
 /**
  *
  * @author Nguyen Mau Tri
@@ -9,10 +8,11 @@ namespace HR\Payroll\Calculator\Visitor;
  */
 interface VisitorInterface
 {
-   /**
-    * 
-    *  @param AbstractVisitorElement $element
-    */
+
+    /**
+     *
+     * @param AbstractVisitorElement $element
+     */
     public function visit(AbstractVisitorElement $element);
 }
 

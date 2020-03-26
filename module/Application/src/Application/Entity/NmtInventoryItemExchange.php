@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemExchange
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemExchange
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryItemExchange
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemExchange
     private $checksum;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="trx_date", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemExchange
     private $trxDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="trx_type_id", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemExchange
     private $trxTypeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="flow", type="string", nullable=false)
@@ -57,6 +63,7 @@ class NmtInventoryItemExchange
     private $flow;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer", nullable=false)
@@ -64,6 +71,7 @@ class NmtInventoryItemExchange
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryItemExchange
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryItemExchange
     private $createdOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_locked", type="boolean", nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryItemExchange
     private $isLocked;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryItemExchange
     private $isDraft;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryItemExchange
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryItemExchange
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="last_change_by", type="integer", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryItemExchange
     private $lastChangeBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryItemExchange
     private $conversionFactor;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="conversion_text", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryItemExchange
     private $conversionText;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="target_id", type="integer", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryItemExchange
     private $targetId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="target_class", type="string", length=45, nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryItemExchange
     private $targetClass;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtInventoryItemExchange
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class NmtInventoryItemExchange
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="change_on", type="string", length=45, nullable=true)
@@ -162,6 +183,7 @@ class NmtInventoryItemExchange
     private $changeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_number", type="integer", nullable=true)
@@ -169,6 +191,7 @@ class NmtInventoryItemExchange
     private $revisionNumber;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_posted", type="boolean", nullable=true)
@@ -176,6 +199,7 @@ class NmtInventoryItemExchange
     private $isPosted;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="actual_quantity", type="integer", nullable=true)
@@ -183,6 +207,7 @@ class NmtInventoryItemExchange
     private $actualQuantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
@@ -190,6 +215,7 @@ class NmtInventoryItemExchange
     private $transactionStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
@@ -197,6 +223,7 @@ class NmtInventoryItemExchange
     private $sourceClass;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="source_id", type="integer", nullable=true)
@@ -204,6 +231,7 @@ class NmtInventoryItemExchange
     private $sourceId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
@@ -211,6 +239,7 @@ class NmtInventoryItemExchange
     private $transactionType;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_serial_id", type="integer", nullable=true)
@@ -218,6 +247,7 @@ class NmtInventoryItemExchange
     private $itemSerialId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="item_batch_id", type="integer", nullable=true)
@@ -225,6 +255,7 @@ class NmtInventoryItemExchange
     private $itemBatchId;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="GL_account_id", type="integer", nullable=true)
@@ -232,6 +263,7 @@ class NmtInventoryItemExchange
     private $glAccountId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="item_cost", type="decimal", precision=14, scale=4, nullable=true)
@@ -239,6 +271,7 @@ class NmtInventoryItemExchange
     private $itemCost;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="movement_id", type="integer", nullable=true)
@@ -246,6 +279,7 @@ class NmtInventoryItemExchange
     private $movementId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="movement_type", type="string", length=10, nullable=true)
@@ -253,6 +287,7 @@ class NmtInventoryItemExchange
     private $movementType;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -263,6 +298,7 @@ class NmtInventoryItemExchange
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryTrx
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
@@ -273,6 +309,7 @@ class NmtInventoryItemExchange
     private $trx;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -283,6 +320,7 @@ class NmtInventoryItemExchange
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -293,6 +331,7 @@ class NmtInventoryItemExchange
     private $wh;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -301,8 +340,6 @@ class NmtInventoryItemExchange
      * })
      */
     private $changeBy;
-
-
 
     /**
      * Get id

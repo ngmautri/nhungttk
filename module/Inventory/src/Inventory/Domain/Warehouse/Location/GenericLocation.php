@@ -11,8 +11,6 @@ use Application\Notification;
 class GenericLocation extends AbstractLocation
 {
 
-    
-
     /**
      *
      * @return boolean
@@ -126,14 +124,13 @@ class GenericLocation extends AbstractLocation
 
         return $notification;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getLocations()
     {
         return $this->locations;
     }
-
-    
-
 }

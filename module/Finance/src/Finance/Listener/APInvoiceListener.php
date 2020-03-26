@@ -7,6 +7,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -30,7 +31,8 @@ class APInvoiceListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->listeners[] = $events->attach('procure.gr.post', array(
-            $this,            'onGRPost'
+            $this,
+            'onGRPost'
         ), 200);
     }
 
@@ -48,7 +50,7 @@ class APInvoiceListener implements ListenerAggregateInterface
         }
     }
 
-   //===============================
+    // ===============================
     /**
      *
      * @param EventInterface $e
@@ -57,15 +59,10 @@ class APInvoiceListener implements ListenerAggregateInterface
     {
         /**@var \Application\Entity\NmtProcureGr $entity ;*/
         $entity = $e->getParam('ap');
-        
-       
     }
-    
 
-    
-    //===============================
-    
-  
+    // ===============================
+
     /**
      *
      * @return mixed

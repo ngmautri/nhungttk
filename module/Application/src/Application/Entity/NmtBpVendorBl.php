@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtBpVendorBl
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtBpVendorBl
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtBpVendorBl
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtBpVendorBl
     private $sysNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_number", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtBpVendorBl
     private $docNumber;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="currency_id", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtBpVendorBl
     private $currencyId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="reference", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtBpVendorBl
     private $reference;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="posting_code", type="string", length=5, nullable=true)
@@ -64,6 +71,7 @@ class NmtBpVendorBl
     private $postingCode;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class NmtBpVendorBl
     private $postingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="document_date", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtBpVendorBl
     private $documentDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="local_amount", type="decimal", precision=14, scale=4, nullable=true)
@@ -85,6 +95,7 @@ class NmtBpVendorBl
     private $localAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_amount", type="decimal", precision=14, scale=4, nullable=true)
@@ -92,6 +103,7 @@ class NmtBpVendorBl
     private $docAmount;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="clearing_doc", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtBpVendorBl
     private $clearingDoc;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
@@ -106,6 +119,7 @@ class NmtBpVendorBl
     private $clearingDocId;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtBpVendorBl
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -120,6 +135,7 @@ class NmtBpVendorBl
     private $lastChangeOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="revision_no", type="string", length=45, nullable=true)
@@ -127,6 +143,7 @@ class NmtBpVendorBl
     private $revisionNo;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
@@ -134,6 +151,7 @@ class NmtBpVendorBl
     private $rowNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=10, scale=4, nullable=true)
@@ -141,6 +159,7 @@ class NmtBpVendorBl
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
@@ -148,6 +167,7 @@ class NmtBpVendorBl
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class NmtBpVendorBl
     private $currentState;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -162,6 +183,7 @@ class NmtBpVendorBl
     private $workflowStatus;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -172,6 +194,7 @@ class NmtBpVendorBl
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -182,6 +205,7 @@ class NmtBpVendorBl
     private $company;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -192,6 +216,7 @@ class NmtBpVendorBl
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -202,6 +227,7 @@ class NmtBpVendorBl
     private $glAccount;
 
     /**
+     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -212,6 +238,7 @@ class NmtBpVendorBl
     private $postingPeriod;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -220,8 +247,6 @@ class NmtBpVendorBl
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

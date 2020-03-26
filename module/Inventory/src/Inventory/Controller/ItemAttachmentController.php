@@ -91,7 +91,7 @@ class ItemAttachmentController extends AbstractActionController
     {
         // take long time
         set_time_limit(2000);
-        
+
         $criteria = array();
 
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy($criteria);
@@ -127,9 +127,9 @@ class ItemAttachmentController extends AbstractActionController
 
                     if (! is_dir($thumbnail_public_folder)) {
                         mkdir($thumbnail_public_folder, 0777, true); // important
-                        
-                        if (!file_exists($thumbnail_public_folder."thumbnail_200_" . $pic->getFileName())){
-                            copy($thumbnail_file, $thumbnail_public_folder."thumbnail_200_" . $pic->getFileName());
+
+                        if (! file_exists($thumbnail_public_folder . "thumbnail_200_" . $pic->getFileName())) {
+                            copy($thumbnail_file, $thumbnail_public_folder . "thumbnail_200_" . $pic->getFileName());
                         }
                     }
                 }
@@ -541,7 +541,7 @@ class ItemAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            //'checksum' => $checksum,
+            // 'checksum' => $checksum,
             'token' => $token
         );
 
@@ -606,7 +606,7 @@ class ItemAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            //'checksum' => $checksum,
+            // 'checksum' => $checksum,
             'token' => $token
         );
 
@@ -1091,7 +1091,7 @@ class ItemAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
-            //'checksum' => $checksum,
+            // 'checksum' => $checksum,
             'token' => $token
         );
 

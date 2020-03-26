@@ -1,21 +1,26 @@
 <?php
-
 namespace Inventory\Model\Evaluation;
 
-
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class ItemGr
 {
+
     protected $grDate;
+
     protected $grQuantity;
-    protected $unitPrice;    
+
+    protected $unitPrice;
+
     protected $issueQuantity;
+
     protected $remainingQuantity;
+
     /**
+     *
      * @return mixed
      */
     public function getGrDate()
@@ -24,6 +29,7 @@ class ItemGr
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrQuantity()
@@ -32,6 +38,7 @@ class ItemGr
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIssueQuantity()
@@ -40,6 +47,7 @@ class ItemGr
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemainingQuantity()
@@ -48,6 +56,7 @@ class ItemGr
     }
 
     /**
+     *
      * @param mixed $grDate
      */
     public function setGrDate($grDate)
@@ -56,6 +65,7 @@ class ItemGr
     }
 
     /**
+     *
      * @param mixed $grQuantity
      */
     public function setGrQuantity($grQuantity)
@@ -64,6 +74,7 @@ class ItemGr
     }
 
     /**
+     *
      * @param mixed $issueQuantity
      */
     public function setIssueQuantity($issueQuantity)
@@ -72,13 +83,16 @@ class ItemGr
     }
 
     /**
+     *
      * @param mixed $remainingQuantity
      */
     public function setRemainingQuantity($remainingQuantity)
     {
         $this->remainingQuantity = $remainingQuantity;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -87,14 +101,11 @@ class ItemGr
     }
 
     /**
+     *
      * @param mixed $unitPrice
      */
     public function setUnitPrice($unitPrice)
     {
         $this->unitPrice = $unitPrice;
     }
-
-
-    
-       
 }

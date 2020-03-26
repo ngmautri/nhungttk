@@ -2,16 +2,16 @@
 <hr>
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
@@ -30,31 +30,34 @@ if (count ( $errors ) > 0) {
 				name="country_name" value="">
 		</div>
 	</div>
-	
+
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Country Code Alpha2</label>
+		<label class="control-label col-sm-2" for="inputTag">Country Code
+			Alpha2</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text" id="inputTag" placeholder=""
 				name="country_code_2" value="">
 		</div>
 	</div>
-	
+
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Country Code Alpha3</label>
+		<label class="control-label col-sm-2" for="inputTag">Country Code
+			Alpha3</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text" id="inputTag" placeholder=""
 				name="country_code_3" value="">
 		</div>
 	</div>
-	
+
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Country Numeric Code</label>
+		<label class="control-label col-sm-2" for="inputTag">Country Numeric
+			Code</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text" id="inputTag" placeholder=""
 				name="country_numeric_code" value="">
 		</div>
 	</div>
-	
+
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputDescription">remarks</label>
 		<div class="col-sm-3">

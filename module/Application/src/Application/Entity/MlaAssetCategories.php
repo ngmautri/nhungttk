@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAssetCategories
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAssetCategories
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="category", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaAssetCategories
     private $category;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=45, nullable=true)
@@ -36,13 +39,12 @@ class MlaAssetCategories
     private $description;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="date", nullable=true)
      */
     private $createdOn;
-
-
 
     /**
      * Get id

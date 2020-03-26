@@ -33,13 +33,13 @@ class WarehouseServiceTest extends PHPUnit_Framework_TestCase
     {
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-        
+
         /**
-         * 
+         *
          * @var WarehouseService $sv
          */
         $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Warehouse\WarehouseService');
-        
+
         $data = array();
         $data["whName"] = "Supplies for LOG WH";
         $data["whCode"] = "WH8";
@@ -47,10 +47,10 @@ class WarehouseServiceTest extends PHPUnit_Framework_TestCase
         $data["company"] = 1;
         $data["whCountry"] = 2;
         $data["createdBy"] = 39;
-     
+
         // create new transaction.
         $dto = WarehouseDTOAssembler::createDTOFromArray($data);
-        
-        var_dump($sv->updateHeader(12,"",$dto, 1, ""));  
+
+        var_dump($sv->updateHeader(12, "", $dto, 1, ""));
     }
 }

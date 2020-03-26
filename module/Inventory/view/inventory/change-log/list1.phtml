@@ -1,20 +1,20 @@
 <did id="hr_change_log">
 <?php
-
 if ($total_records <= 0) {
-	
-	echo 'No record found!';
-} else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
 
-<table id = "mytable26" style="font-size: 9.5pt;" class="table table-bordered table-striped table-hover">
+    echo 'No record found!';
+} else {
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
+
+<table id="mytable26" style="font-size: 9.5pt;"
+	class="table table-bordered table-striped table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
@@ -25,35 +25,35 @@ if ($total_records <= 0) {
 			<td><b><?php echo $this->translate('change date');?></b></td>
 			<td><b><?php echo $this->translate('effective from');?></b></td>
 			<td><b><?php echo $this->translate('effective to');?></b></td>
-	
+
 			<td><b><?php echo $this->translate('Valid');?></b></td>
 			<td><b><?php echo $this->translate('Changed By');?></b></td>
-	
+
 		</tr>
 	</thead>
 
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
+
+    $count = 0;
+    foreach ($list as $a) :
         /** @var \Application\Entity\NmtHrContractLog $a ; */
-		$count ++;
-		?>
+        $count ++;
+        ?>
 	 <tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getRevisionNo());?></td>
-	  		<td><?php echo $this->escapeHtml($a->getFieldName());?></td>
-			 <td><?php echo $a->getOldValue();?></td>
-	 		<td><?php echo $a->getNewValue();?></td>
-	 		<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-Y"):"";?> </td>
-	 		<td><?php echo ($a->getEffectiveFrom()!==null )? date_format ( $a->getEffectiveFrom(), "d-m-Y"):"";?> </td>
+			<td><?php echo $this->escapeHtml($a->getRevisionNo());?></td>
+			<td><?php echo $this->escapeHtml($a->getFieldName());?></td>
+			<td><?php echo $a->getOldValue();?></td>
+			<td><?php echo $a->getNewValue();?></td>
+			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-Y"):"";?> </td>
+			<td><?php echo ($a->getEffectiveFrom()!==null )? date_format ( $a->getEffectiveFrom(), "d-m-Y"):"";?> </td>
 			<td><?php echo ($a->getEffectiveTo()!==null )? date_format ( $a->getEffectiveTo(), "d-m-Y"):"";?> </td>
 			<td><?php echo $a->getIsValid();?></td>
-	  		<td><?php if($a->getCreatedBy()!==null): echo $a->getCreatedBy()->getFirstname() . " ". $a->getCreatedBy()->getLastname(); endif;?></td>
-	
-				
+			<td><?php if($a->getCreatedBy()!==null): echo $a->getCreatedBy()->getFirstname() . " ". $a->getCreatedBy()->getLastname(); endif;?></td>
+
+
 		</tr>
 <?php endforeach; ?>
 
@@ -61,64 +61,58 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/inventory/change-log/list1?object_token='. $objectToken.'&object_id='.$objectId .'&class_name='.$this->escapeHtml($className);
-		$_connector_symbol = '&';
-		
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		
-		$first_js = "doPaginator('".$first . "','hr_change_log')";
-		$last_js = "doPaginator('". $last . "','hr_change_log')";
-		
-		
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		$next_js = "doPaginator('". $next . "','hr_change_log')";
-		$prev_js = "doPaginator('". $prev . "','hr_change_log')";
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			//echo '<li><a href="' . $first . '"> |< </a></li>';
-			//echo '<li><a href="' . $prev . '"> < </a></li>';
-			
-		    echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
-		    echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
-		    
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			$url_js = "doPaginator('". $url . "','hr_change_log')";
-		    
-		    
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				//echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			    echo '<li><a href="javascript:;" onclick="' . $url_js . '">'.$i.'</a></li>';
-				
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			//echo '<li><a href="' . $next . '"> > </a></li>';
-		    echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
-		    echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
-		    
-		}
-		echo '</ul>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/inventory/change-log/list1?object_token=' . $objectToken . '&object_id=' . $objectId . '&class_name=' . $this->escapeHtml($className);
+        $_connector_symbol = '&';
+
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+
+        $first_js = "doPaginator('" . $first . "','hr_change_log')";
+        $last_js = "doPaginator('" . $last . "','hr_change_log')";
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        $next_js = "doPaginator('" . $next . "','hr_change_log')";
+        $prev_js = "doPaginator('" . $prev . "','hr_change_log')";
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            // echo '<li><a href="' . $first . '"> |< </a></li>';
+            // echo '<li><a href="' . $prev . '"> < </a></li>';
+
+            echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+            echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            $url_js = "doPaginator('" . $url . "','hr_change_log')";
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                // echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+                echo '<li><a href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            // echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
+            echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

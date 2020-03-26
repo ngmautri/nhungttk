@@ -110,7 +110,7 @@ class TransactionDTOAssembler
             print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
     }
-    
+
     /**
      *
      * @return array;

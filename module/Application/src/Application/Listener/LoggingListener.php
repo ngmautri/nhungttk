@@ -121,15 +121,14 @@ class LoggingListener implements ListenerAggregateInterface
             $this,
             'onBpChangeLogging'
         ), 200);
-        
-        
+
         // PAYMENT ACT LOG
         // ===============
         $this->listeners[] = $events->attach('payment.activity.log', array(
             $this,
             'onPaymentActivityLogging'
         ), 200);
-        
+
         // Payment CHANGE LOG
         // ===============
         $this->listeners[] = $events->attach('payment.change.log', array(
@@ -367,7 +366,7 @@ class LoggingListener implements ListenerAggregateInterface
                     case "newValue":
                         if (is_string($v1)) {
                             if (strlen($v1) > 200) {
-                                $entity->setNewValue(substr($v1,0,200));
+                                $entity->setNewValue(substr($v1, 0, 200));
                             } else {
                                 $entity->setNewValue($v1);
                             }
@@ -412,8 +411,8 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setCreatedOn($createdOn);
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
         $this->doctrineEM->persist($entity);
-        
-        if($e->getParam('isFlush')==true or $e->getParam('isFlush')==null){
+
+        if ($e->getParam('isFlush') == true or $e->getParam('isFlush') == null) {
             $this->doctrineEM->flush();
         }
     }
@@ -498,7 +497,7 @@ class LoggingListener implements ListenerAggregateInterface
 
                         if (is_string($v1)) {
                             if (strlen($v1) > 200) {
-                                $entity->setNewValue(substr($v1,0,200));
+                                $entity->setNewValue(substr($v1, 0, 200));
                             } else {
                                 $entity->setNewValue($v1);
                             }
@@ -626,7 +625,7 @@ class LoggingListener implements ListenerAggregateInterface
                     case "newValue":
                         if (is_string($v1)) {
                             if (strlen($v1) > 200) {
-                                $entity->setNewValue(substr($v1,0,200));
+                                $entity->setNewValue(substr($v1, 0, 200));
                             } else {
                                 $entity->setNewValue($v1);
                             }
@@ -678,12 +677,10 @@ class LoggingListener implements ListenerAggregateInterface
 
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
         $this->doctrineEM->persist($entity);
-        
-        if($e->getParam('isFlush')==true or $e->getParam('isFlush')==null){
+
+        if ($e->getParam('isFlush') == true or $e->getParam('isFlush') == null) {
             $this->doctrineEM->flush();
         }
-        
-       
     }
 
     /**
@@ -764,7 +761,7 @@ class LoggingListener implements ListenerAggregateInterface
                     case "newValue":
                         if (is_string($v1)) {
                             if (strlen($v1) > 200) {
-                                $entity->setNewValue(substr($v1,0,200));
+                                $entity->setNewValue(substr($v1, 0, 200));
                             } else {
                                 $entity->setNewValue($v1);
                             }
@@ -898,7 +895,7 @@ class LoggingListener implements ListenerAggregateInterface
                     case "newValue":
                         if (is_string($v1)) {
                             if (strlen($v1) > 200) {
-                                $entity->setNewValue(substr($v1,0,200));
+                                $entity->setNewValue(substr($v1, 0, 200));
                             } else {
                                 $entity->setNewValue($v1);
                             }
@@ -915,8 +912,7 @@ class LoggingListener implements ListenerAggregateInterface
 
         $this->doctrineEM->flush();
     }
-    
-    
+
     /**
      * Payment Activity Logging
      *
@@ -931,13 +927,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entityId = $e->getParam('entity_id');
         $entityClass = $e->getParam('entity_class');
         $entityToken = $e->getParam('entity_token');
-        
+
         $filename = 'payment_activity_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log($log_priority, $log_message);
-        
+
         // update DB
         $entity = new PmtLog();
         $entity->setPriority($log_priority);
@@ -948,13 +944,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setEntityId($entityId);
         $entity->setEntityClass($entityClass);
         $entity->setEntityToken($entityToken);
-        
+
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-    
+
     /**
      * ON BP Change Log
      *
@@ -971,14 +967,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
         $changeValidFrom = $e->getParam('changeValidFrom');
-        
+
         $filename = 'payment_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -988,9 +984,9 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log(Logger::INFO, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new PmtChangeLog();
             $entity->setObjectToken($objectToken);
@@ -1000,29 +996,29 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
             $entity->setTriggeredby($e->getTarget());
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
                         break;
-                        
+
                     case "fieldType":
                         $entity->setFieldType($v1);
                         break;
-                        
+
                     case "fieldName":
-                        
+
                         // Set all resources as inactive;
                         $sql = "UPDATE Application\Entity\PmtChangeLog log SET log.isValid = 0";
                         $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
-                        
+
                         $sql = $sql . $w;
-                        
+
                         $q = $this->doctrineEM->createQuery($sql);
                         $q->execute();
-                        
+
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -1033,7 +1029,7 @@ class LoggingListener implements ListenerAggregateInterface
                     case "newValue":
                         if (is_string($v1)) {
                             if (strlen($v1) > 200) {
-                                $entity->setNewValue(substr($v1,0,200));
+                                $entity->setNewValue(substr($v1, 0, 200));
                             } else {
                                 $entity->setNewValue($v1);
                             }
@@ -1047,10 +1043,9 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
-    
 
     /**
      *
@@ -1066,7 +1061,6 @@ class LoggingListener implements ListenerAggregateInterface
         $log->log(Logger::INFO, $log_message);
     }
 
-  
     /**
      *
      * @return mixed

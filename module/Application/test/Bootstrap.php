@@ -45,8 +45,8 @@ class Bootstrap
                 'DoctrineModule',
                 'DoctrineORMModule',
                 'Application',
-                'Inventory',    
-                'User',
+                'Inventory',
+                'User'
             ),
 
             'module_listener_options' => array(
@@ -65,10 +65,10 @@ class Bootstrap
         // ServiceManager Config
         $smConfig = array();
         //
-      
+
         $serviceManager = new ServiceManager(new ServiceManagerConfig($smConfig));
         $serviceManager->setService('ApplicationConfig', $config);
-        
+
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
     }

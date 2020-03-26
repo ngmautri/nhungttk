@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinAssetMachineModel
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class FinAssetMachineModel
     private $id;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -29,6 +31,7 @@ class FinAssetMachineModel
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -36,6 +39,7 @@ class FinAssetMachineModel
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="last_change_by", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class FinAssetMachineModel
     private $lastChangeBy;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class FinAssetMachineModel
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -57,6 +63,7 @@ class FinAssetMachineModel
     private $revisionNo;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -65,8 +72,6 @@ class FinAssetMachineModel
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

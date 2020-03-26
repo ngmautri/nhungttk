@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FinAttachment
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class FinAttachment
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="document_subject", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class FinAttachment
     private $documentSubject;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=150, nullable=true)
@@ -36,6 +39,7 @@ class FinAttachment
     private $keywords;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_picture", type="boolean", nullable=true)
@@ -43,6 +47,7 @@ class FinAttachment
     private $isPicture;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_contract", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class FinAttachment
     private $isContract;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="signing_date", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class FinAttachment
     private $signingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class FinAttachment
     private $validFrom;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to", type="datetime", nullable=true)
@@ -71,6 +79,7 @@ class FinAttachment
     private $validTo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=150, nullable=true)
@@ -78,6 +87,7 @@ class FinAttachment
     private $url;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=150, nullable=true)
@@ -85,6 +95,7 @@ class FinAttachment
     private $filetype;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=100, nullable=true)
@@ -92,6 +103,7 @@ class FinAttachment
     private $filename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename_original", type="string", length=150, nullable=true)
@@ -99,6 +111,7 @@ class FinAttachment
     private $filenameOriginal;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="file_password", type="string", length=45, nullable=true)
@@ -106,6 +119,7 @@ class FinAttachment
     private $filePassword;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=45, nullable=true)
@@ -113,6 +127,7 @@ class FinAttachment
     private $size;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -120,6 +135,7 @@ class FinAttachment
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -127,6 +143,7 @@ class FinAttachment
     private $folder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="attachment_folder", type="string", length=200, nullable=true)
@@ -134,6 +151,7 @@ class FinAttachment
     private $attachmentFolder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder_relative", type="string", length=150, nullable=true)
@@ -141,6 +159,7 @@ class FinAttachment
     private $folderRelative;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -148,6 +167,7 @@ class FinAttachment
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -155,6 +175,7 @@ class FinAttachment
     private $token;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -162,6 +183,7 @@ class FinAttachment
     private $isActive;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
@@ -169,6 +191,7 @@ class FinAttachment
     private $markedForDeletion;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -176,6 +199,7 @@ class FinAttachment
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -183,6 +207,7 @@ class FinAttachment
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -190,6 +215,7 @@ class FinAttachment
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="change_for", type="integer", nullable=true)
@@ -197,6 +223,7 @@ class FinAttachment
     private $changeFor;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="pr_row_id", type="integer", nullable=true)
@@ -204,6 +231,7 @@ class FinAttachment
     private $prRowId;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -214,6 +242,7 @@ class FinAttachment
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -224,6 +253,7 @@ class FinAttachment
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtPmProject
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
@@ -234,6 +264,7 @@ class FinAttachment
     private $project;
 
     /**
+     *
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -244,6 +275,7 @@ class FinAttachment
     private $employee;
 
     /**
+     *
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -254,6 +286,7 @@ class FinAttachment
     private $vendor;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItemPurchasing
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemPurchasing")
@@ -264,6 +297,7 @@ class FinAttachment
     private $itemPurchasing;
 
     /**
+     *
      * @var \Application\Entity\NmtProcurePr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePr")
@@ -274,6 +308,7 @@ class FinAttachment
     private $pr;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -282,8 +317,6 @@ class FinAttachment
      * })
      */
     private $item;
-
-
 
     /**
      * Get id

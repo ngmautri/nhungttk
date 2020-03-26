@@ -312,8 +312,8 @@ class RoleController extends AbstractActionController
         $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
             ->getUri();
-     
-         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
 
@@ -343,7 +343,7 @@ class RoleController extends AbstractActionController
                         $resources = $this->doctrineEM->find('Application\Entity\NmtApplicationAclResource', $r);
                         $e->setResource($resources);
 
-                          $e->setUpdatedBy($u);
+                        $e->setUpdatedBy($u);
 
                         $e->setUpdatedOn(new \DateTime());
                         $this->doctrineEM->persist($e);
@@ -433,20 +433,23 @@ class RoleController extends AbstractActionController
                     $this->tree($data, $c['instance']);
                 } else {
                     $this->tree = $this->tree . '<li id="' . $c['instance'] . '" data-jstree=\'{}\'>' . $c['instance'] . ' </li>' . "\n";
-                    $this->tree($data, $c ['instance'] );
-				}
-			}
-			$this->tree = $this->tree . '</ul>' . "\n";
-			
-			$this->tree = $this->tree . '</li>' . "\n";
-		}
-	}
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
-	
+                    $this->tree($data, $c['instance']);
+                }
+            }
+            $this->tree = $this->tree . '</ul>' . "\n";
+
+            $this->tree = $this->tree . '</li>' . "\n";
+        }
+    }
+
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

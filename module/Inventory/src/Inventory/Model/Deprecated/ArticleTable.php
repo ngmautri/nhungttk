@@ -1,5 +1,4 @@
 <?php
-
 namespace Inventory\Model;
 
 use Zend\Db\TableGateway\TableGateway;
@@ -8,14 +7,16 @@ use Zend\Db\Sql\Select;
 use Inventory\Model\Article;
 
 /**
- * 
- * @author nmt
  *
+ * @author nmt
+ *        
  */
-class ArticleTable {
-	
-	protected $tableGateway;
-	private $getArticles_SQL = "
+class ArticleTable
+{
+
+    protected $tableGateway;
+
+    private $getArticles_SQL = "
 select
 *
 from 
@@ -87,9 +88,8 @@ on mla_users.user_id = mla_articles.created_by
 as mla_articles
 WHERE 1	
 			";
-	
-	private $getArticles_SQL_V01 =
-	"
+
+    private $getArticles_SQL_V01 = "
 	select
 	mla_articles.*,
     mla_users.*,
@@ -176,8 +176,8 @@ as mla_articles_pics
 on mla_articles_pics.article_id = mla_articles.id
 WHERE 1	
 			";
-	
-	private $getArticles_SQL_V02="
+
+    private $getArticles_SQL_V02 = "
 select
 	mla_articles.*,
     mla_users.*,
@@ -275,433 +275,430 @@ WHERE 1
 			
 			
 			";
-	
-	public function __construct(TableGateway $tableGateway) {
-		$this->tableGateway = $tableGateway;
-	}
-	public function fetchAll() {
-		$resultSet = $this->tableGateway->select ();
-		return $resultSet;
-	}
-	public function get($id) {
-		$id = ( int ) $id;
-		
-		$rowset = $this->tableGateway->select ( array (
-				'id' => $id 
-		) );
-		$row = $rowset->current ();
-		if (! $row) {
-			throw new \Exception ( "Could not find row $id" );
-		}
-		return $row;
-	}
-	
-	/*
-	 * public $id;
-	 * public $name;
-	 * public $description;
-	 * public $keywords;
-	 *
-	 * public $type;
-	 * public $code;
-	 * public $barcode;
-	 *
-	 * public $created_on;
-	 * public $created_by;
-	 * public $status;
-	 * public $visibility;
-	 * public $remarks;
-	 */
-	public function add(Article $input) {
-		
-		$data = array (
-				'article_tag' => $input->article_tag,
-				'name_local' => $input->name_local,
-				'name' => $input->name,
-				'description' => $input->description,
-				'keywords' => $input->keywords,
-				'type' => $input->type,
-				
-				'unit' => $input->unit,
-				'code' => $input->code,				
-				'barcode' => $input->barcode,
-				'created_on' => date ( 'Y-m-d H:i:s' ),
-				'created_by' => $input->created_by,
-				'status' => $input->status,
-				'visibility' => $input->visibility,
-				'remarks' => $input->remarks,
-			);
-		
-		$this->tableGateway->insert ( $data );
-		return $this->tableGateway->lastInsertValue;
-	}
-	
-	/*
-	 * 
-	 */
-	public function update(Article $input, $id) {
-		$data = array (
-				'article_tag' => $input->article_tag,
-				'name_local' => $input->name_local,
-				'name' => $input->name,
-				'description' => $input->description,
-				'keywords' => $input->keywords,
-				'type' => $input->type,
-				
-				'unit' => $input->unit,
-				'code' => $input->code,				
-				'barcode' => $input->barcode,
-				'status' => $input->status,
-				'visibility' => $input->visibility,
-				'remarks' => $input->remarks,
-		);
-		
-		$where = 'id = ' . $id;
-		$this->tableGateway->update ( $data, $where );
-	}
-	public function delete($id) {
-		$where = 'id = ' . $id;
-		$this->tableGateway->delete ( $where );
-	}
-	
-	
-	public function getArticleByID($id){
-		
-		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getArticles_SQL;
-		$sql = $sql. " AND mla_articles.id = " . $id;
-		
-		$statement = $adapter->query($sql);	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		
-		if($resultSet->count() == 1):
-			return $resultSet->current();
-		else:
-			return null;
-		endif;
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @param unknown $user_id
-	 * @param unknown $limit
-	 * @param unknown $offset
-	 */
-	public function getArticles($user_id,$limit, $offset){
-	
-		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getArticles_SQL;
-	
-		if ($user_id > 0) {
-			$sql = $sql. " AND mla_articles.department_id
+
+    public function __construct(TableGateway $tableGateway)
+    {
+        $this->tableGateway = $tableGateway;
+    }
+
+    public function fetchAll()
+    {
+        $resultSet = $this->tableGateway->select();
+        return $resultSet;
+    }
+
+    public function get($id)
+    {
+        $id = (int) $id;
+
+        $rowset = $this->tableGateway->select(array(
+            'id' => $id
+        ));
+        $row = $rowset->current();
+        if (! $row) {
+            throw new \Exception("Could not find row $id");
+        }
+        return $row;
+    }
+
+    /*
+     * public $id;
+     * public $name;
+     * public $description;
+     * public $keywords;
+     *
+     * public $type;
+     * public $code;
+     * public $barcode;
+     *
+     * public $created_on;
+     * public $created_by;
+     * public $status;
+     * public $visibility;
+     * public $remarks;
+     */
+    public function add(Article $input)
+    {
+        $data = array(
+            'article_tag' => $input->article_tag,
+            'name_local' => $input->name_local,
+            'name' => $input->name,
+            'description' => $input->description,
+            'keywords' => $input->keywords,
+            'type' => $input->type,
+
+            'unit' => $input->unit,
+            'code' => $input->code,
+            'barcode' => $input->barcode,
+            'created_on' => date('Y-m-d H:i:s'),
+            'created_by' => $input->created_by,
+            'status' => $input->status,
+            'visibility' => $input->visibility,
+            'remarks' => $input->remarks
+        );
+
+        $this->tableGateway->insert($data);
+        return $this->tableGateway->lastInsertValue;
+    }
+
+    /*
+     *
+     */
+    public function update(Article $input, $id)
+    {
+        $data = array(
+            'article_tag' => $input->article_tag,
+            'name_local' => $input->name_local,
+            'name' => $input->name,
+            'description' => $input->description,
+            'keywords' => $input->keywords,
+            'type' => $input->type,
+
+            'unit' => $input->unit,
+            'code' => $input->code,
+            'barcode' => $input->barcode,
+            'status' => $input->status,
+            'visibility' => $input->visibility,
+            'remarks' => $input->remarks
+        );
+
+        $where = 'id = ' . $id;
+        $this->tableGateway->update($data, $where);
+    }
+
+    public function delete($id)
+    {
+        $where = 'id = ' . $id;
+        $this->tableGateway->delete($where);
+    }
+
+    public function getArticleByID($id)
+    {
+        $adapter = $this->tableGateway->adapter;
+        $sql = $this->getArticles_SQL;
+        $sql = $sql . " AND mla_articles.id = " . $id;
+
+        $statement = $adapter->query($sql);
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+
+        if ($resultSet->count() == 1) :
+            return $resultSet->current();
+        else :
+            return null;
+        endif;
+    }
+
+    /**
+     *
+     * @param unknown $user_id
+     * @param unknown $limit
+     * @param unknown $offset
+     */
+    public function getArticles($user_id, $limit, $offset)
+    {
+        $adapter = $this->tableGateway->adapter;
+        $sql = $this->getArticles_SQL;
+
+        if ($user_id > 0) {
+            $sql = $sql . " AND mla_articles.department_id
 				IN (SELECT department_id from mla_departments_members
-				where user_id = ".$user_id.")
+				where user_id = " . $user_id . ")
 				ORDER BY mla_articles.name ";
-		}
-	
-		if ($limit > 0) {
-			$sql = $sql. " LIMIT " . $limit;
-		}
-	
-		if ($offset > 0) {
-			$sql = $sql. " OFFSET " . $offset;
-		}
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 * 
-	 * @param unknown $user_id
-	 * @param unknown $item_type
-	 * @param unknown $item_status
-	 * @param unknown $sort_by
-	 * @param unknown $limit
-	 * @param unknown $offset
-	 * @return \Zend\Db\ResultSet\ResultSet
-	 */
-	public function getArticles_V01($user_id,$item_type,$item_status,$sort_by, $limit, $offset){
-	
-		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getArticles_SQL_V01;
-	
-		if ($user_id > 0) {
-			$sql = $sql. " AND mla_users.department_id
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    /**
+     *
+     * @param unknown $user_id
+     * @param unknown $item_type
+     * @param unknown $item_status
+     * @param unknown $sort_by
+     * @param unknown $limit
+     * @param unknown $offset
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getArticles_V01($user_id, $item_type, $item_status, $sort_by, $limit, $offset)
+    {
+        $adapter = $this->tableGateway->adapter;
+        $sql = $this->getArticles_SQL_V01;
+
+        if ($user_id > 0) {
+            $sql = $sql . " AND mla_users.department_id
 				IN (SELECT department_id from mla_departments_members
-				where user_id = ".$user_id.")
+				where user_id = " . $user_id . ")
 				";
-		}
-		
-		
-		if ($item_status == "All") :
-		$item_status = null;
+        }
+
+        if ($item_status == "All") :
+            $item_status = null;
 				endif;
-		// Type
-		if ($item_type != null ) {
-				$sql = $sql. " AND  mla_articles.type ='" . $item_type . "'";
-		}
-		
-		// Status
-		if ($item_status != null) {
-			$sql = $sql. " AND  mla_articles.status ='" . $item_status . "'";
-		}
-		
-		if ($sort_by =="item_name") {
-			$sql = $sql. " ORDER BY mla_articles.name asc";
-		}
-		
-		if ($sort_by =="created_date") {
-			$sql = $sql. " ORDER BY mla_articles.created_on desc";
-		}
-			
-		if ($limit > 0) {
-			$sql = $sql. " LIMIT " . $limit;
-		}
-	
-		if ($offset > 0) {
-			$sql = $sql. " OFFSET " . $offset;
-		}
-		
-		$sql = $sql.";";
-		
-		//echo $sql;
-		
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	
-	public function getArticles_V02($department_id,$item_type,$item_status,$sort_by, $limit, $offset){
-	
-		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getArticles_SQL_V01;
-	
-		if ($department_id > 0) {
-			$sql = $sql. " AND mla_users.department_id = ".$department_id;
-		}
-	
-		// Type
-		if ($item_type != null) {
-			$sql = $sql. " AND  mla_articles.type ='" . $item_type . "'";
-		}
-	
-		// Status
-		if ($item_status != null) {
-			$sql = $sql. " AND  mla_articles.status ='" . $item_status . "'";
-		}
-	
-		if ($sort_by =="item_name") {
-			$sql = $sql. " ORDER BY mla_articles.name asc";
-		}
-	
-		if ($sort_by =="created_date") {
-			$sql = $sql. " ORDER BY mla_articles.created_on desc";
-		}
-			
-		if ($limit > 0) {
-			$sql = $sql. " LIMIT " . $limit;
-		}
-	
-		if ($offset > 0) {
-			$sql = $sql. " OFFSET " . $offset;
-		}
-	
-		$sql = $sql.";";
-	
-		//echo $sql;
-	
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 * 
-	 * @param unknown $cat_id
-	 * @param unknown $limit
-	 * @param unknown $offset
-	 * @return \Zend\Db\ResultSet\ResultSet
-	 */
-	public function getUncategorizedArticlesOfUser($user_id,$limit, $offset){
-	
-		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getArticles_SQL_V02;
-	
-		if ($user_id > 0) {
-			$sql = $sql. " AND mla_users.department_id
+
+            // Type
+        if ($item_type != null) {
+            $sql = $sql . " AND  mla_articles.type ='" . $item_type . "'";
+        }
+
+        // Status
+        if ($item_status != null) {
+            $sql = $sql . " AND  mla_articles.status ='" . $item_status . "'";
+        }
+
+        if ($sort_by == "item_name") {
+            $sql = $sql . " ORDER BY mla_articles.name asc";
+        }
+
+        if ($sort_by == "created_date") {
+            $sql = $sql . " ORDER BY mla_articles.created_on desc";
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+
+        $sql = $sql . ";";
+
+        // echo $sql;
+
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    public function getArticles_V02($department_id, $item_type, $item_status, $sort_by, $limit, $offset)
+    {
+        $adapter = $this->tableGateway->adapter;
+        $sql = $this->getArticles_SQL_V01;
+
+        if ($department_id > 0) {
+            $sql = $sql . " AND mla_users.department_id = " . $department_id;
+        }
+
+        // Type
+        if ($item_type != null) {
+            $sql = $sql . " AND  mla_articles.type ='" . $item_type . "'";
+        }
+
+        // Status
+        if ($item_status != null) {
+            $sql = $sql . " AND  mla_articles.status ='" . $item_status . "'";
+        }
+
+        if ($sort_by == "item_name") {
+            $sql = $sql . " ORDER BY mla_articles.name asc";
+        }
+
+        if ($sort_by == "created_date") {
+            $sql = $sql . " ORDER BY mla_articles.created_on desc";
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+
+        $sql = $sql . ";";
+
+        // echo $sql;
+
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    /**
+     *
+     * @param unknown $cat_id
+     * @param unknown $limit
+     * @param unknown $offset
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getUncategorizedArticlesOfUser($user_id, $limit, $offset)
+    {
+        $adapter = $this->tableGateway->adapter;
+        $sql = $this->getArticles_SQL_V02;
+
+        if ($user_id > 0) {
+            $sql = $sql . " AND mla_users.department_id
 				IN (SELECT department_id from mla_departments_members
-				where user_id = ".$user_id.")
+				where user_id = " . $user_id . ")
 				";
-		}
-		
-		$sql = $sql. "And mla_articles.article_cat_id is null";
-	
-		if ($limit > 0) {
-			$sql = $sql. " LIMIT " . $limit;
-		}
-	
-		if ($offset > 0) {
-			$sql = $sql. " OFFSET " . $offset;
-		}
-	
-		$sql = $sql.";";
-	
-		//echo $sql;
-	
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	public function getArticlesOfCategory($cat_id,$limit, $offset){
-	
-		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getArticles_SQL_V02;
-	
-		if ($cat_id > 0) {
-			$sql = $sql. " AND mla_articles.article_cat_id = ".$cat_id;
-		}
-		
-		if ($limit > 0) {
-			$sql = $sql. " LIMIT " . $limit;
-		}
-		
-		if ($offset > 0) {
-			$sql = $sql. " OFFSET " . $offset;
-		}
-	
-		$sql = $sql.";";
-	
-		//echo $sql;
-	
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 * 
-	 * @param unknown $limit
-	 * @param unknown $offset
-	 * @return \Zend\Db\Adapter\Driver\ResultInterface
-	 */
-	public function getLimitArticles($limit,$offset){
-		$adapter = $this->tableGateway->adapter;
-		
-		$sql = new Sql($adapter);
-		$select = $sql->select();
-		
-				
-		$select->from('mla_articles');
-		$select->limit($limit)->offset($offset);
-		
-		$statement = $sql->prepareStatementForSqlObject($select);
-		$results = $statement->execute();
-		
-		// array
-		return $results;
-	}
-	
-	/**
-	 * 
-	 * @param unknown $id
-	 */		
-	public function getArticlesOf($id)
-	{
-	
-		$sql = "
+        }
+
+        $sql = $sql . "And mla_articles.article_cat_id is null";
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+
+        $sql = $sql . ";";
+
+        // echo $sql;
+
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    public function getArticlesOfCategory($cat_id, $limit, $offset)
+    {
+        $adapter = $this->tableGateway->adapter;
+        $sql = $this->getArticles_SQL_V02;
+
+        if ($cat_id > 0) {
+            $sql = $sql . " AND mla_articles.article_cat_id = " . $cat_id;
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+
+        $sql = $sql . ";";
+
+        // echo $sql;
+
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    /**
+     *
+     * @param unknown $limit
+     * @param unknown $offset
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
+    public function getLimitArticles($limit, $offset)
+    {
+        $adapter = $this->tableGateway->adapter;
+
+        $sql = new Sql($adapter);
+        $select = $sql->select();
+
+        $select->from('mla_articles');
+        $select->limit($limit)->offset($offset);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $results = $statement->execute();
+
+        // array
+        return $results;
+    }
+
+    /**
+     *
+     * @param unknown $id
+     */
+    public function getArticlesOf($id)
+    {
+        $sql = "
 		select T1.*, T2.department_id from mla_articles as T1
 left join mla_departments_members as T2
 on T2.user_id = T1.created_by
 Where T1.created_by = " . $id;
-	
-	
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 *
-	 * @param unknown $id
-	 */
-	public function getLimittedArticlesOf($id,$limit,$offset)
-	{
-	
-		$sql = "
+
+        $adapter = $this->tableGateway->adapter;
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    /**
+     *
+     * @param unknown $id
+     */
+    public function getLimittedArticlesOf($id, $limit, $offset)
+    {
+        $sql = "
 		select T1.*, T2.department_id from mla_articles as T1
 left join mla_departments_members as T2
 on T2.user_id = T1.created_by
-Where T1.created_by = " . $id . 
-" limit " . $limit . ' offset '. $offset;	
-	
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 *
-	 * @param unknown User $id
-	 */
-	public function getArticlesOfMyDepartment($id)
-	{
-	
-		$sql ="
+Where T1.created_by = " . $id . " limit " . $limit . ' offset ' . $offset;
+
+        $adapter = $this->tableGateway->adapter;
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
+
+    /**
+     *
+     * @param
+     *            unknown User $id
+     */
+    public function getArticlesOfMyDepartment($id)
+    {
+        $sql = "
 		SELECT * FROM
 		(select T1.*, T2.department_id from mla_articles as T1
 				left join mla_departments_members as T2
 				on T2.user_id = T1.created_by) AS TT1
 				where TT1.department_id IN (SELECT department_id from mla_departments_members
-						where user_id = " . $id .")";
-		
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-		
-	
+						where user_id = " . $id . ")";
+
+        $adapter = $this->tableGateway->adapter;
+        $statement = $adapter->query($sql);
+
+        $result = $statement->execute();
+
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
+    }
 }

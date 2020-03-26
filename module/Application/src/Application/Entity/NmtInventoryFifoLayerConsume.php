@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryFifoLayerConsume
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryFifoLayerConsume
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryFifoLayerConsume
     private $token;
 
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryFifoLayerConsume
     private $quantity;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryFifoLayerConsume
     private $docUnitPrice;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="total_value", type="decimal", precision=14, scale=4, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryFifoLayerConsume
     private $totalValue;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryFifoLayerConsume
     private $postingDate;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryFifoLayerConsume
     private $createdOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=14, scale=4, nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryFifoLayerConsume
     private $exchangeRate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_total_value", type="decimal", precision=14, scale=4, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryFifoLayerConsume
     private $docTotalValue;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryFifoLayerConsume
     private $isActive;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryFifoLayerConsume
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryFifoLayerConsume
     private $revisionNo;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryFifoLayerConsume
     private $isReversed;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryFifoLayerConsume
     private $reversalDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryFifoLayerConsume
     private $reversalDoc;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryFifoLayerConsume
     private $reversalReason;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryFifoLayerConsume
     private $isReversable;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -144,6 +162,7 @@ class NmtInventoryFifoLayerConsume
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryTrx
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
@@ -154,6 +173,7 @@ class NmtInventoryFifoLayerConsume
     private $inventoryTrx;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryFifoLayer
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryFifoLayer")
@@ -164,6 +184,7 @@ class NmtInventoryFifoLayerConsume
     private $layer;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -174,6 +195,7 @@ class NmtInventoryFifoLayerConsume
     private $localCurrency;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -184,6 +206,7 @@ class NmtInventoryFifoLayerConsume
     private $item;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -194,6 +217,7 @@ class NmtInventoryFifoLayerConsume
     private $docCurrency;
 
     /**
+     *
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -204,6 +228,7 @@ class NmtInventoryFifoLayerConsume
     private $postingPeriod;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -212,8 +237,6 @@ class NmtInventoryFifoLayerConsume
      * })
      */
     private $lastChangeBy;
-
-
 
     /**
      * Get id

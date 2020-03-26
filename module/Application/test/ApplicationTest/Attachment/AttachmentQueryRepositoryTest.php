@@ -29,7 +29,5 @@ class AttachmentQueryRepositoryTest extends PHPUnit_Framework_TestCase
         $rep = new AttachmentQueryRepImpl($em);
         $snapshot = $rep->getById(189);
         var_dump($snapshot);
-        
-        
-      }
+    }
 }

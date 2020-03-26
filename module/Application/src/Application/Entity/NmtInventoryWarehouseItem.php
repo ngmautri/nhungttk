@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryWarehouseItem
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryWarehouseItem
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="on_hand", type="integer", nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryWarehouseItem
     private $onHand;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="on_order", type="integer", nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryWarehouseItem
     private $onOrder;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryWarehouseItem
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -53,6 +58,7 @@ class NmtInventoryWarehouseItem
     private $item;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -63,6 +69,7 @@ class NmtInventoryWarehouseItem
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -71,8 +78,6 @@ class NmtInventoryWarehouseItem
      * })
      */
     private $wh;
-
-
 
     /**
      * Get id

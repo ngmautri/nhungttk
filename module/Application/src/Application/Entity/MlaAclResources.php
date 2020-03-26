@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAclResources
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAclResources
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="module", type="string", length=100, nullable=true)
@@ -29,6 +31,7 @@ class MlaAclResources
     private $module;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="controller", type="string", length=100, nullable=true)
@@ -36,6 +39,7 @@ class MlaAclResources
     private $controller;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="resource", type="string", length=255, nullable=false)
@@ -43,6 +47,7 @@ class MlaAclResources
     private $resource;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class MlaAclResources
     private $type;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
@@ -57,6 +63,7 @@ class MlaAclResources
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -64,13 +71,12 @@ class MlaAclResources
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_on", type="datetime", nullable=true)
      */
     private $updatedOn;
-
-
 
     /**
      * Get id

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationDeliveryTerm
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationDeliveryTerm
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="delivery_term_code", type="string", length=45, nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationDeliveryTerm
     private $deliveryTermCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="delivery_term_name", type="string", length=45, nullable=false)
@@ -36,6 +39,7 @@ class NmtApplicationDeliveryTerm
     private $deliveryTermName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationDeliveryTerm
     private $description;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="icoterm", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationDeliveryTerm
     private $icoterm;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationDeliveryTerm
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationDeliveryTerm
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -72,8 +80,6 @@ class NmtApplicationDeliveryTerm
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

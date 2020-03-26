@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAclPermissions
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAclPermissions
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="permission", type="string", length=100, nullable=false)
@@ -29,6 +31,7 @@ class MlaAclPermissions
     private $permission;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class MlaAclPermissions
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -43,6 +47,7 @@ class MlaAclPermissions
     private $createdOn;
 
     /**
+     *
      * @var \Application\Entity\MlaAclResources
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAclResources")
@@ -51,8 +56,6 @@ class MlaAclPermissions
      * })
      */
     private $resource;
-
-
 
     /**
      * Get id

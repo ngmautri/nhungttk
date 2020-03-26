@@ -1,18 +1,21 @@
 <?php
-
 namespace Application\Utility\Attachment;
-
 
 class AttachmentFile
 {
+
     private $fileName;
+
     private $fileSize;
+
     private $fileTmp;
+
     private $fileType;
+
     private $fileExtension;
-    
-    
+
     /**
+     *
      * @return the $fileName
      */
     public function getFileName()
@@ -21,6 +24,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @return the $fileSize
      */
     public function getFileSize()
@@ -29,6 +33,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @return the $fileTmp
      */
     public function getFileTmp()
@@ -37,6 +42,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @return the $fileType
      */
     public function getFileType()
@@ -45,6 +51,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @return the $fileExtension
      */
     public function getFileExtension()
@@ -53,6 +60,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @param field_type $fileName
      */
     public function setFileName($fileName)
@@ -61,6 +69,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @param field_type $fileSize
      */
     public function setFileSize($fileSize)
@@ -69,6 +78,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @param field_type $fileTmp
      */
     public function setFileTmp($fileTmp)
@@ -77,6 +87,7 @@ class AttachmentFile
     }
 
     /**
+     *
      * @param field_type $fileType
      */
     public function setFileType($fileType)
@@ -85,11 +96,11 @@ class AttachmentFile
     }
 
     /**
+     *
      * @param field_type $fileExtension
      */
     public function setFileExtension($fileExtension)
     {
         $this->fileExtension = $fileExtension;
     }
- 
 }

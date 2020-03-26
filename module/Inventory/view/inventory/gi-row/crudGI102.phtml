@@ -2,8 +2,6 @@
 use Inventory\Domain\Item\ItemType;
 use Inventory\Domain\Item\MonitorMethod;
 
-
-
 /**
  *
  * @var \Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO $headerDTO ;
@@ -130,9 +128,9 @@ echo (! $headerDTO == null) ? $headerDTO->sysNumber : "";
 								<div class="col-sm-3">
 									<input tabindex="2" class="form-control" type="text"
 										id="item_name" placeholder="Enter keyword to search item..."
-										name="item_name" value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>"> 
-										<input type="hidden" id="itemID"
-										placeholder="" name="item"
+										name="item_name"
+										value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>">
+									<input type="hidden" id="itemID" placeholder="" name="item"
 										value="<?php if (!$rowDTO== null): echo $rowDTO->item;endif;?>">
 
 									<div id="item_url" style="display: none;"></div>

@@ -4,6 +4,7 @@ namespace Inventory\Model\GR;
 use Inventory\Model\InventoryTransactionInterface;
 
 /**
+ *
  * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -37,28 +38,27 @@ abstract class AbstractGRStrategy implements InventoryTransactionInterface
      * @param bool $isFlush
      */
     abstract public function reverse($entity, $u, $reversalDate, $isFlush = false);
-    
-    /**
-     * 
-     *  @param array $rows
-     *  @param \Application\Entity\MlaUsers $u
-     *  @param bool $isFlush
-     */
-    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate=null, $wareHouse = null);
-    
 
-   /**
-    * 
-    *  @return \Application\Service\AbstractService
-    */
+    /**
+     *
+     * @param array $rows
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null);
+
+    /**
+     *
+     * @return \Application\Service\AbstractService
+     */
     public function getContextService()
     {
         return $this->contextService;
     }
 
     /**
-     * 
-     *  @param \Application\Service\AbstractService $contextService
+     *
+     * @param \Application\Service\AbstractService $contextService
      */
     public function setContextService(\Application\Service\AbstractService $contextService)
     {

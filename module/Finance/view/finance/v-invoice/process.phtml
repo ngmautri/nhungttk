@@ -10,7 +10,8 @@
 	<div id="general" style="font-size: 9pt">
 
 		<form id="Create_PR_Form" class="form-horizontal"
-			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
+			action="/finance/v-invoice/add" method="post"
+			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
@@ -56,7 +57,7 @@
 								id="prName" name="invoiceNo"
 								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
 						</div>
-						
+
 					</div>
 					<div class="form-group margin-bottom">
 
@@ -66,42 +67,49 @@
 								placeholder="" id="invoiceDate" name="submittedOn"
 								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
-							</div>
+						</div>
 					</div>
-					
+
 					<div class="form-group margin-bottom">
-					
-					<label class="control-label col-sm-2">Currency:</label>
-					<div class="col-sm-3">
-					<select name="currency_id" class="form-control">
+
+						<label class="control-label col-sm-2">Currency:</label>
+						<div class="col-sm-3">
+							<select name="currency_id" class="form-control">
 								<option value="">Select Currency</option>
    	    							<?php
-   	    							if($currency_list!=null):
-       	    							foreach ( $currency_list as $curr ) :
-       	    							 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-    									endforeach;
+            if ($currency_list != null) :
+                foreach ($currency_list as $curr) :
+                    echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                endforeach
+                ;
    	    							endif;
-									?>
+
+            ?>
    					</select>
-   					</div>
-   					
-   					<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
-					<div class="col-sm-3">
-<input class="form-control" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+						</div>
+
+						<label class="control-label col-sm-2" for="inputTag">Target
+							Warehouse:</label>
+						<div class="col-sm-3">
+							<input class="form-control" readonly type="text"
+								id="target_wh_name" placeholder="Please select!"
+								name="target_wh"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+							<input type="hidden" id="target_wh_id" name="target_wh_id"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+						</div>
 					</div>
-				</div>
-				
-				
-				<hr>
-				<div class="form-group margin-bottom">
+
+
+					<hr>
+					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
-							<a class="btn btn-default" 	class="glyphicon glyphicon-pencil"></i></small>&nbsp;Save</a>
+							<a class="btn btn-default" class="glyphicon glyphicon-pencil"></i></small>&nbsp;Save</a>
 
 						</div>
 					</div>
-				<hr>
+					<hr>
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Item: </label>
 						<div class="col-sm-3">
@@ -133,18 +141,17 @@
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text"
 								id="pr_item_name" placeholder="Select PR item"
-								name="pr_item_name" value=""> 
-							<input type="hidden" id="pr_row_id"
-								placeholder="" name="pr_row_id" value="">
+								name="pr_item_name" value=""> <input type="hidden"
+								id="pr_row_id" placeholder="" name="pr_row_id" value="">
 						</div>
 
 						<div class="col-sm-3">
-						<a style="color: #0080ff;" href="javascript:;"
-							onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-							class="glyphicon glyphicon-folder-open"></i>
-						</a>
+							<a style="color: #0080ff;" href="javascript:;"
+								onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+								class="glyphicon glyphicon-folder-open"></i>
+							</a>
 						</div>
-						
+
 						<div class="col-sm-3">
 							<a target="_blank" style="font-size: 9pt;"
 								href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i
@@ -156,7 +163,7 @@
 					<div class="form-group margin-bottom"></div>
 
 
-					
+
 				</div>
 
 

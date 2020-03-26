@@ -1,7 +1,6 @@
 <?php
 namespace Application\Domain\Service;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -9,7 +8,10 @@ namespace Application\Domain\Service;
  */
 Interface SharedServiceInterface
 {
+
     public function getCurrencyList();
+
     public function getCountryList();
+
     public function getMeasurementUnitList();
 }

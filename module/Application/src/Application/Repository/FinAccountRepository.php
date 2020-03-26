@@ -16,7 +16,6 @@ class FinAccountRepository extends EntityRepository
 
     /** @var \Application\Entity\FinAccount $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\FinAccountRepository")
-    
     public function getAccountList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = "Select * from fin_account Where 1";
@@ -29,10 +28,10 @@ class FinAccountRepository extends EntityRepository
 
         switch ($sort_by) {
             case "invoiceDate":
-                //$sql = $sql . " ORDER BY fin_vendor_invoice.invoice_date " . $sort;
+                // $sql = $sql . " ORDER BY fin_vendor_invoice.invoice_date " . $sort;
                 break;
             case "grossAmount":
-                //$sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
+                // $sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
                 break;
             case "createdOn":
                 $sql = $sql . " ORDER BY fin_account.created_on " . $sort;
@@ -41,7 +40,7 @@ class FinAccountRepository extends EntityRepository
                 $sql = $sql . " ORDER BY fin_account.account_number " . $sort;
                 break;
             case "currencyCode":
-                //$sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
+                // $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
                 break;
         }
 

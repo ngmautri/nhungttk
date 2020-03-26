@@ -279,12 +279,14 @@ if (count($errors) > 0) {
 							<div class="form-group margin-bottom">
 								<label class="control-label col-sm-2">PR Item: </label>
 								<div class="col-sm-3">
-						<input tabindex="1" class="form-control input-sm" type="text"
-								id="pr_item_name" placeholder="Select PR item"
-								name="pr_item_name" value="<?php if (!$entity== null): if($entity->getPrRow()!==null): echo $entity->getPrRow()->getId(); endif;endif;?>"> 
-								<input type="hidden"
-								id="pr_row_id" placeholder="" name="pr_row_id" value="<?php if (!$entity== null): if($entity->getPrRow()!==null): echo $entity->getPrRow()->getId(); endif;endif;?>">
-			
+									<input tabindex="1" class="form-control input-sm" type="text"
+										id="pr_item_name" placeholder="Select PR item"
+										name="pr_item_name"
+										value="<?php if (!$entity== null): if($entity->getPrRow()!==null): echo $entity->getPrRow()->getId(); endif;endif;?>">
+									<input type="hidden" id="pr_row_id" placeholder=""
+										name="pr_row_id"
+										value="<?php if (!$entity== null): if($entity->getPrRow()!==null): echo $entity->getPrRow()->getId(); endif;endif;?>">
+
 									<div id="pr_row_url" style="display: none;"></div>
 
 									<div id="pr_row_detail" style="display: none;">

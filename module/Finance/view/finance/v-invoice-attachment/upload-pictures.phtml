@@ -1,24 +1,24 @@
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Picture Upload</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Picture Upload</a></li>
+	</ul>
 
-<div id="general">
+	<div id="general">
 
 <?php /**@var \Application\Entity\FinVendorInvoice $target ;*/ ?>
 
@@ -27,39 +27,41 @@ if (count ( $errors ) > 0) {
 	 <?php echo (!$target== null)? 'Invoice: ' . $target->getInvoiceNo():"";?>
 </h5>
 
-<hr>
- 
+		<hr>
 
-<!-- TO UPDATE ACTION -->
-<form id="sp_upload_pic_form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Picture</label>
-		<div class="col-sm-3">
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-		</div>
+
+		<!-- TO UPDATE ACTION -->
+		<form id="sp_upload_pic_form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
+
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Picture</label>
+				<div class="col-sm-3">
+					<input type="file" name="pictures[]" /> <input type="file"
+						name="pictures[]" /> <input type="file" name="pictures[]" /> <input
+						type="file" name="pictures[]" /> <input type="file"
+						name="pictures[]" />
+				</div>
+			</div>
+
+
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button type="button"
+						onclick="uploadImages('/finance/v-invoice-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','','<?php echo $target!==null ? $target->getToken():""?>')"
+						class="btn btn-primary" id="upload">
+						<i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Upload
+					</button>
+					<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i
+						class="icon-back"> </i> << Back</a>
+				</div>
+			</div>
+
+		</form>
 	</div>
-	
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-			<button type="button"  onclick="uploadImages('/finance/v-invoice-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','','<?php echo $target!==null ? $target->getToken():""?>')" class="btn btn-primary"
-				id="upload">
-				<i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Upload
-			</button>
-			<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> << Back</a>
-		</div>
-	</div>
-	
-</form>
-</div>
 </div>
 
 

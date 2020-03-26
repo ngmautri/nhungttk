@@ -26,7 +26,7 @@ if (count($errors) > 0) {
 			href="<?php echo $this->baseUrl ?>/bp/vendor-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Attachment</a></li>
 		<li><a
 			href="<?php echo $this->baseUrl ?>/procure/po/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO</a></li>
-	
+
 		<li><a
 			href="<?php echo $this->baseUrl ?>/finance/v-invoice/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">AP</a></li>
 		<li><a
@@ -64,23 +64,24 @@ if (count($errors) > 0) {
 						<option value=""><?php echo $this->translate("Select GL Account");?></option>
    	    							<?php
             if ($gl_list !== null) :
-            
+
                 foreach ($gl_list as $gl) :
 
                     /**@var \Application\Entity\FinAccount $gl ; */
-                    
-                    $selected ='';
+
+                    $selected = '';
                     if ($entity !== null) :
                         if ($entity->getGlAccount() !== null) :
                             if ($entity->getGlAccount()->getId() == $gl->getId()) :
-                                         $selected ='selected';
+                                $selected = 'selected';
                                     endif;
                             endif;
                     endif;
-                    
-                    echo sprintf('<option %s value="%s">%s - %s</option>',$selected, $gl->getId(), $gl->getAccountNumber(), $gl->getDescription());
-                    
-          endforeach
+
+
+
+                    echo sprintf('<option %s value="%s">%s - %s</option>', $selected, $gl->getId(), $gl->getAccountNumber(), $gl->getDescription());
+                endforeach
                 ;
             endif;
 

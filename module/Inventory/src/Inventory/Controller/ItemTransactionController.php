@@ -1261,7 +1261,7 @@ class ItemTransactionController extends AbstractActionController
         ;
         $criteria = array();
         $sort_criteria = array(
-            "createdOn" =>'DESC'
+            "createdOn" => 'DESC'
         );
 
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria);
@@ -1302,7 +1302,7 @@ class ItemTransactionController extends AbstractActionController
 
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
-   
+
         $criteria = array(
             'id' => $target_id,
             'token' => $token
@@ -1325,11 +1325,10 @@ class ItemTransactionController extends AbstractActionController
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
-        
+
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $item = $res->getItemStock($target_id, $token);
-        
 
         return new ViewModel(array(
             'list' => $list,

@@ -14,7 +14,6 @@ use Inventory\Model\AbstractTransactionStrategy;
 class GIService extends AbstractService
 {
 
-    
     /**
      *
      * @param \Application\Entity\NmtInventoryMv $entity

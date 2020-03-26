@@ -176,8 +176,8 @@ echo (! $target == null) ? $target->getSysNumber() : "";
 									<select name="cost_center_id" class="form-control input-sm">
 										<option value=""><?php echo $this->translate("Select Cost Center");?></option>
    	    							<?php
-   	    							$cost_center_list = $nmtPlugin->costCenterList();
-   	    							
+            $cost_center_list = $nmtPlugin->costCenterList();
+
             if ($cost_center_list !== null) :
                 foreach ($cost_center_list as $cc) :
 

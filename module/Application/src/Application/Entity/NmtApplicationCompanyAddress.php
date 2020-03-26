@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationCompanyAddress
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationCompanyAddress
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="address_no", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class NmtApplicationCompanyAddress
     private $addressNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="street", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtApplicationCompanyAddress
     private $street;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=45, nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationCompanyAddress
     private $city;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="country_id", type="integer", nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationCompanyAddress
     private $countryId;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationCompanyAddress
     private $isDefault;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -64,6 +71,7 @@ class NmtApplicationCompanyAddress
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -74,6 +82,7 @@ class NmtApplicationCompanyAddress
     private $company;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -82,8 +91,6 @@ class NmtApplicationCompanyAddress
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

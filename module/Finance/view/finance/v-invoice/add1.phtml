@@ -5,7 +5,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -148,17 +148,17 @@ if (count($errors) > 0) {
                 endforeach
                 ;
    	    							endif;
-            
+
             ?>
    					</select>
 						</div>
 						<label class="control-label col-sm-2">Exchange Rate:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
-								id="exchangeRate" name="exchangeRate" 
+								id="exchangeRate" name="exchangeRate"
 								value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
 						</div>
-						
+
 					</div>
 
 

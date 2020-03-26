@@ -52,9 +52,9 @@ class SearchController extends AbstractActionController
 
         $q = $this->params()->fromQuery('q');
         $layout = $this->params()->fromQuery('layout');
-        
-        if($layout==null){
-            $layout ='grid';
+
+        if ($layout == null) {
+            $layout = 'grid';
         }
 
         if ($q !== "") {
@@ -68,17 +68,17 @@ class SearchController extends AbstractActionController
         }
 
         // var_dump($results);
-        $viewModel =  new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'message' => $results["message"],
             'hits' => $results["hits"],
             'nmtPlugin' => $nmtPlugin,
-            'q' => $q,
+            'q' => $q
         ));
-        
+
         if ($layout == "grid") {
             $viewModel->setTemplate("inventory/search/item-grid");
         }
-        
+
         return $viewModel;
     }
 
@@ -356,22 +356,21 @@ class SearchController extends AbstractActionController
 
             $response = $this->getResponse();
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-			$response->setContent(json_encode($data));
-			return $response;
-		}
-	
-		return new ViewModel ( array (
-				'query' => $q,
-				'hits' => $hits,
-		));
-	}
-	
+            $response->setContent(json_encode($data));
+            return $response;
+        }
 
-	public function setItemSearchService(ItemSearchService $itemSearchService) {
-		$this->itemSearchService = $itemSearchService;
-		return $this;
-	}
+        return new ViewModel(array(
+            'query' => $q,
+            'hits' => $hits
+        ));
+    }
 
+    public function setItemSearchService(ItemSearchService $itemSearchService)
+    {
+        $this->itemSearchService = $itemSearchService;
+        return $this;
+    }
 }
 
 

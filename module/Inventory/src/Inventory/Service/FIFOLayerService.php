@@ -259,8 +259,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d
             $m = sprintf($m . ' (%s>%s)', $totalIssueQty, $total_onhand);
             throw new \Exception($m);
         }
-        
+
         return $cogs;
     }
-    
 }

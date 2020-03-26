@@ -26,21 +26,21 @@ class ActivityLogController extends AbstractActionController
     public function listAction()
     {
         $request = $this->getRequest();
-        
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 10;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
         ;
-        
+
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
         ;
-        
+
         return new ViewModel(array());
     }
 
@@ -51,44 +51,43 @@ class ActivityLogController extends AbstractActionController
     public function list1Action()
     {
         $request = $this->getRequest();
-        
+
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $this->layout("layout/user/ajax");
-        
-        
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 10;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
         ;
-        
+
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
         ;
-        
+
         $criteria = array();
-        
+
         $sort_criteria = array(
-            'createdOn' => 'DESC',
+            'createdOn' => 'DESC'
         );
-        
+
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLog')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
-        
+
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
-        
+
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,

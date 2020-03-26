@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Domain\Service;
 
-
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 

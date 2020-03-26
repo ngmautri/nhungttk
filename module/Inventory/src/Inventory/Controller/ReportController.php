@@ -17,22 +17,21 @@ class ReportController extends AbstractActionController
     protected $doctrineEM;
 
     protected $itemReportService;
- 
+
     protected $itemSearchService;
-    
-    
 
     /**
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
     public function indexAction()
     {
-         return parent::indexAction();
+        return parent::indexAction();
     }
 
     /**
-     * 
+     *
      * @return \Inventory\Service\Report\ItemReportService
      */
     public function getItemReportService()
@@ -41,7 +40,7 @@ class ReportController extends AbstractActionController
     }
 
     /**
-     * 
+     *
      * @param \Inventory\Service\Report\ItemReportService $itemReportService
      */
     public function setItemReportService(\Inventory\Service\Report\ItemReportService $itemReportService)
@@ -57,18 +56,18 @@ class ReportController extends AbstractActionController
     {
         return $this->doctrineEM;
     }
-    
+
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-    
+
     public function getItemSearchService()
     {
         return $this->itemSearchService;
     }
-    
+
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {
         $this->itemSearchService = $itemSearchService;

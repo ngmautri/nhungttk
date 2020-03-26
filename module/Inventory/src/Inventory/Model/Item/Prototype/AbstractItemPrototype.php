@@ -17,5 +17,4 @@ abstract class AbstractItemPrototype
      * @param \Application\Entity\MlaUsers $u
      */
     abstract public function check($item, $u);
- 
 }

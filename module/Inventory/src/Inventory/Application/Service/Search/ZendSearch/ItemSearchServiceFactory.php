@@ -20,25 +20,21 @@ class ItemSearchServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        
-           
 
         $service = new ItemSearchService();
-        
+
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
-        
 
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));
 
-      
         $grListener = $container->get('Application\Listener\LoggingListener');
         $eventManager = $container->get('EventManager');
 
         $eventManager->attachAggregate($grListener);
-        $service->setEventManager($eventManager);		
-		
-		return $service;
-	}
+        $service->setEventManager($eventManager);
+
+        return $service;
+    }
 }

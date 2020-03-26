@@ -1,5 +1,6 @@
 <?php
 namespace Inventory\Domain\Item;
+
 use Application\Notification;
 
 /**
@@ -9,28 +10,26 @@ use Application\Notification;
  */
 class FixedAssetItem extends GenericItem
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\GenericItem::specificValidation()
      */
     public function specificValidation(Notification $notification = null)
     {}
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\GenericItem::specifyItem()
      */
     public function specifyItem()
     {
         $this->setItemType("ITEM");
-        $this->setItemTypeId(ItemType::FIXED_ASSET_ITEM_TYPE);        
+        $this->setItemTypeId(ItemType::FIXED_ASSET_ITEM_TYPE);
         $this->setIsFixedAsset(1);
-        $this->setIsStocked(0);        
+        $this->setIsStocked(0);
         $this->setIsSparepart(0);
     }
-
-
-  
 }

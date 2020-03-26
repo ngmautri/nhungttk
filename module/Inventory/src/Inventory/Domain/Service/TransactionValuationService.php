@@ -22,14 +22,13 @@ class TransactionValuationService
 
         $this->fifoService = $fifoService;
     }
-    
-  /**
-   * 
-   * @return \Inventory\Domain\Service\FIFOServiceInterface
-   */
+
+    /**
+     *
+     * @return \Inventory\Domain\Service\FIFOServiceInterface
+     */
     public function getFifoService()
     {
         return $this->fifoService;
     }
-
 }

@@ -44,27 +44,23 @@ class WarehouseValidationAssemblerTest extends PHPUnit_Framework_TestCase
         $data["whCode"] = "";
         $data["company"] = 2;
         $data["createdBy"] = 391;
-     
+
         // create new transaction.
         $dto = WarehouseDTOAssembler::createDTOFromArray($data);
         // var_dump($dto);
 
         $snapshot = WarehouseSnapshotAssembler::createSnapshotFromArray($data);
-        
+
         $wh = new GenericWarehouse();
         $repository = new DoctrineWarehouseCmdRepository($em);
         $wh->setCmdRepository($repository);
-        
+
         $repository = new DoctrineWarehouseQueryRepository($em);
         $wh->setQueryRepository($repository);
         $sharedSpecificationFactory = new ZendSpecificationFactory($em);
         $wh->setSharedSpecificationFactory($sharedSpecificationFactory);
-        
+
         $wh->makeFromSnapshot($snapshot);
         var_dump($wh->validate());
-        
-      
-        
-        
     }
 }

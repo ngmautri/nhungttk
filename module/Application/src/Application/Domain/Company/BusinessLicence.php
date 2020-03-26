@@ -15,14 +15,12 @@ class BusinessLicence
      */
     private $registerNo;
 
-   /**
-    * 
-    * @param string $id
-    */
+    /**
+     *
+     * @param string $id
+     */
     public function __construct($registerNo)
     {
         $this->registerNo = $registerNo;
     }
-
-  
 }

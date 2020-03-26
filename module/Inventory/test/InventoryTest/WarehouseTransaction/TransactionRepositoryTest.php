@@ -39,16 +39,17 @@ class TransactionRepositoryTest extends PHPUnit_Framework_TestCase
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $rep = new DoctrineTransactionQueryRepository($em);
-        $trx = $rep->getById(760);        
+        $trx = $rep->getById(760);
         var_dump($trx->getRows());
-        
-       /*  $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
-        $trx->setDomainSpecificationFactory($domainSpecificationFactory);
-        
-        $sharedSpecificationFactory = new ZendSpecificationFactory($em);
-        $trx->setSharedSpecificationFactory($sharedSpecificationFactory); */
-       
-        //var_dump($trx->validate());
-        
+
+        /*
+         * $domainSpecificationFactory = new DoctrineSpecificationFactory($em);
+         * $trx->setDomainSpecificationFactory($domainSpecificationFactory);
+         *
+         * $sharedSpecificationFactory = new ZendSpecificationFactory($em);
+         * $trx->setSharedSpecificationFactory($sharedSpecificationFactory);
+         */
+
+        // var_dump($trx->validate());
     }
 }

@@ -1,11 +1,16 @@
-	<h1>Spare part  categories</h1>
-	
-	 <P><a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category">Add new category</a></P>
+
+<h1>Spare part categories</h1>
+
+<P>
+	<a
+		href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category">Add
+		new category</a>
+</P>
 <table border="1" cellpadding="3">
-<tr>
+	<tr>
 		<td><b>Spare Part Category</b></td>
 		<td><b>Spare Part Category</b></td>
-		
+
 		<td><b>Action</b></td>
 	</tr>	
 	<?php foreach ($categories as $category) : ?>
@@ -14,7 +19,8 @@
     <tr>
 		<td><?php echo $this->escapeHtml($category->name);?></td>
 		<td><?php echo $this->escapeHtml($category->description);?></td>
-       <td><a href="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a></td>
-     	</tr>
+		<td><a
+			href="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a></td>
+	</tr>
 <?php endforeach; ?>
 </table>

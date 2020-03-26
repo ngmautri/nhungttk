@@ -1,55 +1,62 @@
 
 <h4>Create New Workflow:</h4>
 
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
-	
-	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+<?php
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-error">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
 ?>
-	
-
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/workflow/wf/add"	method="post" enctype="multipart/form-data" id="NewSP" >
-	
-	   <div class="control-group">
-        <label class="control-label" for="inputTag">Workflow Name)</label>
-        <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="workflow_name" value="<?php echo $workflow!==null ? ($workflow->article_tag) :""?>">
-        </div>
-      </div>	
- 
-      
-      <div class="control-group">
-        <label class="control-label" for="inputDescription">Description</label>
-        <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="2" name="workflow_description"><?php echo $article!==null ? ($article->description):""?></textarea>
-        </div>
-      </div>
-        
-       <div class="control-group">
-        <label class="control-label" for="inputTag">Activated</label>
-        <div class="controls">
-        	<select name="is_activated" >
-        		<option selected="selected" value="Activated">Activated</option>
-        		<option value="Deactivated">Deactivated</option>
-    			</select>
-       </div>
-      </div>
-       
-      <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn"><i class="icon-plus">  </i> Create</button>
-        </div>
-      </div>
-    </form>
 
 
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/workflow/wf/add" method="post"
+	enctype="multipart/form-data" id="NewSP">
 
-<div id = "dialog" style="display: none;">Check code...</div>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Workflow Name)</label>
+		<div class="controls">
+			<input type="text" id="inputTag" placeholder="" name="workflow_name"
+				value="<?php echo $workflow!==null ? ($workflow->article_tag) :""?>">
+		</div>
+	</div>
+
+
+	<div class="control-group">
+		<label class="control-label" for="inputDescription">Description</label>
+		<div class="controls">
+			<textarea id="inputDescription" placeholder="" rows="2"
+				name="workflow_description"><?php echo $article!==null ? ($article->description):""?></textarea>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Activated</label>
+		<div class="controls">
+			<select name="is_activated">
+				<option selected="selected" value="Activated">Activated</option>
+				<option value="Deactivated">Deactivated</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">
+				<i class="icon-plus"> </i> Create
+			</button>
+		</div>
+	</div>
+</form>
+
+
+
+<div id="dialog" style="display: none;">Check code...</div>

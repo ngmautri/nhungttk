@@ -7,6 +7,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -30,7 +31,8 @@ class FinanceListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->listeners[] = $events->attach('finance.ap.post', array(
-            $this,            'onAPInvoicePost'
+            $this,
+            'onAPInvoicePost'
         ), 200);
     }
 
@@ -48,7 +50,7 @@ class FinanceListener implements ListenerAggregateInterface
         }
     }
 
-   //===============================
+    // ===============================
     /**
      *
      * @param EventInterface $e
@@ -57,15 +59,10 @@ class FinanceListener implements ListenerAggregateInterface
     {
         /**@var \Application\Entity\FinVendorInvoice $entity ;*/
         $entity = $e->getParam('ap');
-        
-       
     }
-    
 
-    
-    //===============================
-    
-  
+    // ===============================
+
     /**
      *
      * @return mixed

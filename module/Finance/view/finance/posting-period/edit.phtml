@@ -1,12 +1,11 @@
 <?php
 /**@var \Application\Entity\NmtFinPostingPeriod $entity*/
-
-if (count ( $errors ) > 0) {
+if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
-    foreach ( $errors as $error ) :
-    echo '<li>' . $error . '</li>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
     endforeach
     ;
     echo '</ul>';
@@ -14,108 +13,131 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Edit Posting Period</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Edit Posting Period</a></li>
+	</ul>
 
-<div id="general"> 
+	<div id="general">
 
-<form id="Create_Form" class="form-horizontal" action="/finance/posting-period/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
-<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+		<form id="Create_Form" class="form-horizontal"
+			action="/finance/posting-period/edit" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="entity_id"
+				value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
+				type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Period Code:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="periodCode" value="<?php echo (!$entity == null)? $entity->getPeriodCode():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Period Name:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "periodName" name="periodName" value="<?php echo (!$entity == null)? $entity->getPeriodName():"";?>">
-		</div>
-		
-	</div>
-	
-	<div class="form-group">
+			<div class="form-group">
+				<label class="control-label col-sm-2">Period Code:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="periodCode"
+						value="<?php echo (!$entity == null)? $entity->getPeriodCode():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Period Name:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						id="periodName" name="periodName"
+						value="<?php echo (!$entity == null)? $entity->getPeriodName():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">Period Status</label>
 				<div class="col-sm-3">
 					<select name="periodStatus" class="form-control">
-						<option <?php if(!$entity == null): if ($entity->getPeriodStatus()=="N"): echo " selected='selected'"; endif; endif;?> value="N">Open</option>
-						<option <?php if(!$entity == null): if ($entity->getPeriodStatus()=="C"): echo " selected='selected'"; endif; endif;?> value="C">Closed</option>
-						<option <?php if(!$entity == null): if ($entity->getPeriodStatus()=="Y"): echo " selected='selected'"; endif; endif;?> value="Y">Locked</option>
+						<option
+							<?php if(!$entity == null): if ($entity->getPeriodStatus()=="N"): echo " selected='selected'"; endif; endif;?>
+							value="N">Open</option>
+						<option
+							<?php if(!$entity == null): if ($entity->getPeriodStatus()=="C"): echo " selected='selected'"; endif; endif;?>
+							value="C">Closed</option>
+						<option
+							<?php if(!$entity == null): if ($entity->getPeriodStatus()=="Y"): echo " selected='selected'"; endif; endif;?>
+							value="Y">Locked</option>
 					</select>
 				</div>
 			</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Period Start:</label>
-		<div class="col-sm-3">
-<input placeholder="Please select" class="form-control" type="text" id = "postingFromDate" name="postingFromDate" 
-value="<?php if(!$entity == null): if ($entity->getPostingFromDate() !== null): echo date_format($entity->getPostingFromDate(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
-		</div>
-		
-		<label class="control-label col-sm-2" >Period End:</label>
-		<div class="col-sm-3">
-<input placeholder="Please select" class="form-control" type="text" id = "postingToDate" name="postingToDate" 
-value="<?php if(!$entity == null): if ($entity->getPostingToDate() !== null): echo date_format($entity->getPostingToDate(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
-		</div>
-		
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Period Start:</label>
+				<div class="col-sm-3">
+					<input placeholder="Please select" class="form-control" type="text"
+						id="postingFromDate" name="postingFromDate"
+						value="<?php if(!$entity == null): if ($entity->getPostingFromDate() !== null): echo date_format($entity->getPostingFromDate(),"Y-m-d"); endif; endif;?>"
+						placeholder=" please select" />
+				</div>
+
+				<label class="control-label col-sm-2">Period End:</label>
+				<div class="col-sm-3">
+					<input placeholder="Please select" class="form-control" type="text"
+						id="postingToDate" name="postingToDate"
+						value="<?php if(!$entity == null): if ($entity->getPostingToDate() !== null): echo date_format($entity->getPostingToDate(),"Y-m-d"); endif; endif;?>"
+						placeholder=" please select" />
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Plan Working Days:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="planWorkingDays"
+						value="<?php echo (!$entity == null)? $entity->getPlanWorkingDays():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Actual Working Days:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="actualWorkdingDays"
+						value="<?php echo (!$entity == null)? $entity->getActualWorkdingDays():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">National Holidays:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="nationalHolidays"
+						value="<?php echo (!$entity == null)? $entity->getNationalHolidays():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Cooperate Leaves:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="cooperateLeave"
+						value="<?php echo (!$entity == null)? $entity->getCooperateLeave():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Remarks:</label>
+				<div class="col-sm-3">
+					<textarea class="form-control" type="text" rows="4" placeholder=""
+						name="remarks" style="font-size: 9pt;"></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Create_Form');"
+						class="btn btn-default">
+						<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+					</button>
+				</div>
+			</div>
+
+
+		</form>
 	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Plan Working Days:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="planWorkingDays" value="<?php echo (!$entity == null)? $entity->getPlanWorkingDays():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Actual Working Days:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="actualWorkdingDays" value="<?php echo (!$entity == null)? $entity->getActualWorkdingDays():"";?>">
-		</div>
-		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >National Holidays:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="nationalHolidays" value="<?php echo (!$entity == null)? $entity->getNationalHolidays():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Cooperate Leaves:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="cooperateLeave" value="<?php echo (!$entity == null)? $entity->getCooperateLeave():"";?>">
-		</div>
-		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Remarks:</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
-				name="remarks" style="font-size: 9pt;"></textarea>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
-  		</div>
-	</div> 
-		
-	
-</form>
-</div>
 </div>
 
 <script>

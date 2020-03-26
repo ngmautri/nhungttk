@@ -2,16 +2,16 @@
 <hr>
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
@@ -20,7 +20,7 @@ if (count ( $errors ) > 0) {
 	action="<?php echo $this->baseUrl ?>/application/company/add"
 	method="post" enctype="multipart/form-data">
 	<input type="hidden" name="redirectUrl"
-		value="<?php echo $redirectUrl ?>" />	
+		value="<?php echo $redirectUrl ?>" />
 
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Company Code</label>
@@ -29,7 +29,7 @@ if (count ( $errors ) > 0) {
 				name="company_code" value="">
 		</div>
 	</div>
-	
+
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Company Name</label>
 		<div class="col-sm-3">
@@ -37,7 +37,7 @@ if (count ( $errors ) > 0) {
 				name="company_name" value="">
 		</div>
 	</div>
-	
+
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Status</label>
 		<div class="col-sm-3">

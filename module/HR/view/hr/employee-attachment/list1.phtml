@@ -1,23 +1,25 @@
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/hr/employee-attachment/upload?token=<?php echo (!$target== null)? $target->getToken():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Attachment</a>
-  
+<a class="btn btn-default"
+	href="<?php echo $this->baseUrl ?>/hr/employee-attachment/upload?token=<?php echo (!$target== null)? $target->getToken():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>"><small><i
+		class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Attachment</a>
+
 <hr>
 
- 
+
 
 <?php
 
 if ($total_records <= 0) {
-	
-	echo 'No record found!';
+
+    echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
-	
-	?>
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
 
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
@@ -36,15 +38,15 @@ if ($total_records <= 0) {
 	<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		?>
+
+    $count = 0;
+    foreach ($list as $a) :
+        $count ++;
+        ?>
 	 <tr>
-			 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 
-	 		<td><?php echo $this->escapeHtml($a->getDocumentSubject());?></td>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+
+			<td><?php echo $this->escapeHtml($a->getDocumentSubject());?></td>
 			<td><?php echo $this->escapeHtml($a->getFileNameOriginal());?></td>
 			<td><?php echo $this->escapeHtml($a->getSize());?></td>
 			<!-- 
@@ -52,18 +54,20 @@ if ($total_records <= 0) {
 			<td><?php echo ($a->getMarkedForDeletion()=='1')?'<small><i class="glyphicon glyphicon-remove"></i></small>':"";?></td>
 			<td><?php echo ($a->getisPicture()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':"";?></td>
 	        -->
-	        
-	        <td><?php if( $a->getValidFrom()!==null): echo date_format ( $a->getValidFrom(), "d/m/y"); endif;?> </td>
-	        <td><?php if( $a->getValidTo()!==null): echo date_format ( $a->getValidTo(), "d/m/y"); endif;?> </td>
-	       	<td><?php if( $a->getCreatedOn()!==null): echo date_format ( $a->getCreatedOn(), "d/m/y"); endif;?> </td>
-	        
-			<td>
-<small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/download?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/show?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+
+			<td><?php if( $a->getValidFrom()!==null): echo date_format ( $a->getValidFrom(), "d/m/y"); endif;?> </td>
+			<td><?php if( $a->getValidTo()!==null): echo date_format ( $a->getValidTo(), "d/m/y"); endif;?> </td>
+			<td><?php if( $a->getCreatedOn()!==null): echo date_format ( $a->getCreatedOn(), "d/m/y"); endif;?> </td>
+
+			<td><small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a
+				href="<?php echo $this->baseUrl ?>/hr/employee-attachment/download?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
+				<a
+				href="<?php echo $this->baseUrl ?>/hr/employee-attachment/show?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+				<a
+				href="<?php echo $this->baseUrl ?>/hr/employee-attachment/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
 
 			</td>
-			
+
 		</tr>
 <?php endforeach; ?>
 
@@ -71,47 +75,47 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
-		$_connector_symbol = '&';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/inventory/item/list?is_active=' . $is_active . '&item_type=' . $item_type . '&sort_by=' . $sort_by . '&sort=' . $sort . '&is_fixed_asset=' . $is_fixed_asset;
+        $_connector_symbol = '&';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

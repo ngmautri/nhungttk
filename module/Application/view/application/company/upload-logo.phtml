@@ -4,13 +4,13 @@
 
 <?php
 if ($company !== null) {
-	echo '<div class="alert alert-info">';
-	
-	echo '<ul>';
-	echo '<li>Company Name	: <strong>' . $company->getCompanyName() . '</strong></li>';
-	
-	echo '</ul>';
-	echo '</div>';
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Company Name	: <strong>' . $company->getCompanyName() . '</strong></li>';
+
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
@@ -23,29 +23,30 @@ if ($company !== null) {
 
 <form id="sp_upload_pic_form" class="form-horizontal" action=""
 	method="post" enctype="multipart/form-data">
-	
-	
+
+
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Picture</label>
 		<div class="col-sm-3">
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
-			<input type="file" name="pictures[]" />
+			<input type="file" name="pictures[]" /> <input type="file"
+				name="pictures[]" /> <input type="file" name="pictures[]" /> <input
+				type="file" name="pictures[]" /> <input type="file"
+				name="pictures[]" />
 		</div>
 	</div>
-	
-	
-	
+
+
+
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-			<button type="button"  onclick="uploadImages('/application/company/upload-logo','<?php echo $company!==null ? ($company->getId()) :""?>','<?php echo $redirectUrl ?>')" class="btn btn-primary"
-				id="upload">
+			<button type="button"
+				onclick="uploadImages('/application/company/upload-logo','<?php echo $company!==null ? ($company->getId()) :""?>','<?php echo $redirectUrl ?>')"
+				class="btn btn-primary" id="upload">
 				<i class="glyphicon glyphicon-upload"> </i> Upload
 			</button>
-			<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> << Back</a>
+			<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i
+				class="icon-back"> </i> << Back</a>
 		</div>
 	</div>
 </form>
@@ -54,12 +55,12 @@ if ($company !== null) {
 <!-- Modal -->
 <div id="myModal" class="modal" role="dialog">
 	<div class="modal-dialog">
-	<div class="modal-content">
-	
-		<div class="modal-body">
-			<p>Processing........Please Wait!</p>
+		<div class="modal-content">
+
+			<div class="modal-body">
+				<p>Processing........Please Wait!</p>
+			</div>
 		</div>
-	</div>
 	</div>
 </div>
 

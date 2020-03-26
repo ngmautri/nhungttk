@@ -580,7 +580,6 @@ class InventoryTransactionService extends AbstractService
             // Do posting now
             $postingStrategy->setContextService($this);
             $postingStrategy->runTransferPosting($entity, $u, true);
-            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
@@ -1069,9 +1068,9 @@ class InventoryTransactionService extends AbstractService
                 $entity->setWarehouse($warehouse);
             }
         } else {
-                $errors[] = $this->controllerPlugin->translate("ACL checking failed");
-            }
-        
+            $errors[] = $this->controllerPlugin->translate("ACL checking failed");
+        }
+
         return $errors;
     }
 }

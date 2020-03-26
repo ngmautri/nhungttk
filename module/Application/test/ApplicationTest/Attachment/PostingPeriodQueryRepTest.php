@@ -33,10 +33,9 @@ class PostingPeriodQueryRepTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-        
+
         $rep = new DoctrinePostingPeriodQueyrRepository($em);
-        $companySN = $rep->getLatestFX(255,2);
-        var_dump($companySN);        
-        
-      }
+        $companySN = $rep->getLatestFX(255, 2);
+        var_dump($companySN);
+    }
 }

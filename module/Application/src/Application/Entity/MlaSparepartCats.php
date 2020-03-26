@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaSparepartCats
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaSparepartCats
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
@@ -29,6 +31,7 @@ class MlaSparepartCats
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
@@ -36,6 +39,7 @@ class MlaSparepartCats
     private $description;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="parent_id", type="integer", nullable=true)
@@ -43,13 +47,12 @@ class MlaSparepartCats
     private $parentId;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
-
 
     /**
      * Get id

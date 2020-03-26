@@ -316,9 +316,9 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
         }
 
         foreach ($rows as $row) {
-            
+
             /** @var TransactionRow $row ; */
-            
+
             $criteria = array(
                 'item' => $row->getItem()
             );

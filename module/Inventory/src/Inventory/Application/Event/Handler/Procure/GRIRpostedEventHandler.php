@@ -24,10 +24,10 @@ class GRIRpostedEventHandler implements EventSubscriberInterface
         ];
     }
 
-   /**
-    * 
-    * @param GRIRpostedEvent $event
-    */
+    /**
+     *
+     * @param GRIRpostedEvent $event
+     */
     public function onGRIRPosted(GRIRpostedEvent $event)
     {
         echo "I am Goods Exchange handler for GRNI";

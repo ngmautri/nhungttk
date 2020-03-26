@@ -1,98 +1,102 @@
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
 
-<div id="tabs"> 
-  <ul>
-  <li ><a href="#general">CreateNew Category</a></li>
-   </ul>
+<div id="tabs">
+	<ul>
+		<li><a href="#general">CreateNew Category</a></li>
+	</ul>
 
-<div id="general">
-
-
-<form class="form-horizontal"
-	action="<?php echo $this->baseUrl ?>/application/item-category/add"
-	method="post" enctype="multipart/form-data">
-	<input type="hidden" name="redirectUrl"
-		value="<?php echo $redirectUrl ?>" />
+	<div id="general">
 
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Item Category Name</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
-				name="node_name" value="">
-		</div>
-	</div>
+		<form class="form-horizontal"
+			action="<?php echo $this->baseUrl ?>/application/item-category/add"
+			method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag" >Parent Category: </label>
-		<div class="col-sm-3">
-			<select name="parent_id" class="form-control">
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Item Category
+					Name</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" id="inputTag"
+						placeholder="" name="node_name" value="">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Parent
+					Category: </label>
+				<div class="col-sm-3">
+					<select name="parent_id" class="form-control">
 		   		<?php
-										
-				if (count ( $nodes ) > 0) :
-				foreach ( $nodes as $n ) :
-				if($parent_id == $n->getNodeId()):
-					echo '<option selected="selected" value ="' . $n->getNodeId() . '">' . $n->getNodeName() . '</option>';
-				else:
-				echo '<option value ="' . $n->getNodeId() . '">' . $n->getNodeName() . '</option>';
-				endif;
-				endforeach;
+
+    if (count($nodes) > 0) :
+        foreach ($nodes as $n) :
+            if ($parent_id == $n->getNodeId()) :
+                echo '<option selected="selected" value ="' . $n->getNodeId() . '">' . $n->getNodeName() . '</option>';
+            else :
+                echo '<option value ="' . $n->getNodeId() . '">' . $n->getNodeName() . '</option>';
+            endif;
+        endforeach
+        ;
 			 endif;
-				?>
+
+    ?>
 	   	</select>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Has Member</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="has_member">
-				<option selected="selected" value="1">Yes</option>
-				<option value="0">No</option>
-			</select>
-		</div>
-	</div>
+				</div>
+			</div>
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Status</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="status">
-				<option selected="selected" value="active">Active</option>
-				<option value="inactive">Inactive</option>
-			</select>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputDescription">remarks</label>
-		<div class="col-sm-3">
-			<textarea class="form-control" id="inputDescription" placeholder=""
-				rows="2" name="remarks"></textarea>
-		</div>
-	</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Has Member</label>
+				<div class="col-sm-3">
+					<select class="form-control" name="has_member">
+						<option selected="selected" value="1">Yes</option>
+						<option value="0">No</option>
+					</select>
+				</div>
+			</div>
 
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Submit</button>
-		</div>
-	</div>
-</form>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag">Status</label>
+				<div class="col-sm-3">
+					<select class="form-control" name="status">
+						<option selected="selected" value="active">Active</option>
+						<option value="inactive">Inactive</option>
+					</select>
+				</div>
+			</div>
 
-</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputDescription">remarks</label>
+				<div class="col-sm-3">
+					<textarea class="form-control" id="inputDescription" placeholder=""
+						rows="2" name="remarks"></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default">Submit</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
 </div>
 
 <div id="dialog" style="display: none;">Check code...</div>

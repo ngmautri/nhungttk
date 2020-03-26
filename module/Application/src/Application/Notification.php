@@ -24,11 +24,11 @@ class Notification
         $this->success = array();
     }
 
-   /**
-    * 
-    * @param string $err
-    * @return \Application\Notification
-    */
+    /**
+     *
+     * @param string $err
+     * @return \Application\Notification
+     */
     public function addError($err)
     {
         $this->errors[] = $err;
@@ -36,7 +36,7 @@ class Notification
     }
 
     /**
-     * 
+     *
      * @param string $mes
      * @return \Application\Notification
      */
@@ -47,7 +47,7 @@ class Notification
     }
 
     /**
-     * 
+     *
      * @param string $mes
      * @return \Application\Notification
      */
@@ -76,7 +76,7 @@ class Notification
     }
 
     /**
-     * 
+     *
      * @return array|multitype:
      */
     public function getErrors()
@@ -84,7 +84,6 @@ class Notification
         return $this->errors;
     }
 
-  
     public function setErrors($errors)
     {
         $this->errors = $errors;

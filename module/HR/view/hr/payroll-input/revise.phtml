@@ -9,7 +9,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -24,7 +24,8 @@ if (count($errors) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;New Revision</a></li>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;New
+				Revision</a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -70,13 +71,13 @@ if (count($errors) > 0) {
 							<input class="form-control input-sm" type="text" id="presentDay"
 								placeholder="" name="presentDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getPresentDay();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getPresentDay();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -100,13 +101,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getOutOfOfficeDay();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getOutOfOfficeDay();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -129,13 +130,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getAnnualLeave();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getAnnualLeave();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -157,13 +158,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getSickLeave();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getSickLeave();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -185,13 +186,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getPersonalPaidLeave();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getPersonalPaidLeave();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -215,13 +216,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getApprovedLeave();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getApprovedLeave();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -244,13 +245,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getUnapprovedLeave();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getUnapprovedLeave();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -273,13 +274,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getMaternityLeave();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getMaternityLeave();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -291,7 +292,7 @@ if (! $entity == null) :
 					</div>
 				</div>
 			</fieldset>
-			
+
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -310,13 +311,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getOvertime1();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getOvertime1();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -339,13 +340,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getOvertime2();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getOvertime2();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -368,13 +369,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getOvertime3();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getOvertime3();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -396,13 +397,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getOvertime4();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getOvertime4();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -434,13 +435,13 @@ if (! $entity == null) :
 							<input class="form-control input-sm" type="text"
 								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
 								value="<?php
-        
-if (! $entity == null) :
+
+        if (! $entity == null) :
             echo $entity->getOvertime2();
         else :
             if (! $lastRevision == null) :
                 echo $lastRevision->getOvertime2();endif;
-            
+
         endif;
         ?>">
 						</div>
@@ -477,7 +478,7 @@ if (! $entity == null) :
 							class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
 				</div>
-		</div>
+			</div>
 		</form>
 	</div>
 </div>

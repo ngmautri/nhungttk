@@ -154,7 +154,7 @@ if (count($errors) > 0) {
 
 				</div>
 			</div>
-			
+
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
 				<div class="col-sm-3">
@@ -170,7 +170,7 @@ if (count($errors) > 0) {
                     $selected = '';
                     if ($entity !== null) :
                         if ($entity->getStockUom() !== null) :
-                        if ($entity->getStockUom()->getId() == $uom->getId()) :
+                            if ($entity->getStockUom()->getId() == $uom->getId()) :
                                 $selected = 'selected';
    	    							endif;
    	    							endif;
@@ -185,21 +185,20 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-   					</div>
-   					
-   						<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
 				<div class="col-sm-1">
 					<input class="form-control input-sm" type="text" placeholder=""
-						name="stockUomConvertFactor"
-						id="stock_uom_convert_factor_id"
+						name="stockUomConvertFactor" id="stock_uom_convert_factor_id"
 						value="<?php echo (!$entity == null)? $entity->getStockUomConvertFactor():"";?>">
 				</div>
-				
+
 				<div class="col-sm-3">
 					<span style="color: graytext;" id="stock_uom_convert_text"></span>
 				</div>
 
-				</div>
+			</div>
 
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>

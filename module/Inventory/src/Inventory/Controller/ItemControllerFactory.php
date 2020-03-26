@@ -26,7 +26,7 @@ class ItemControllerFactory implements FactoryInterface
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
-     
+
         $sv = $container->get('Application\Service\SmtpOutlookService');
         $controller->setSmptService($sv);
 
@@ -38,7 +38,7 @@ class ItemControllerFactory implements FactoryInterface
 
         $sv = $container->get('Inventory\Service\Report\ItemReportService');
         $controller->setItemReportService($sv);
-    
+
         $sv = $container->get('Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository');
         $controller->setItemReportingRepository($sv);
 
@@ -47,8 +47,7 @@ class ItemControllerFactory implements FactoryInterface
 
         $sv = $container->get('FileSystemCache');
         $controller->setCacheService($sv);
-		
-		return $controller;
-	}	
-	
+
+        return $controller;
+    }
 }

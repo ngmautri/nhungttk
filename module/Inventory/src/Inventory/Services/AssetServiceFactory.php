@@ -1,5 +1,4 @@
 <?php
-
 namespace Inventory\Services;
 
 use Zend\EventManager\EventManager;
@@ -11,18 +10,17 @@ use Inventory\Services\AssetService;
  * @author nmt
  *
  */
-class AssetServiceFactory implements FactoryInterface {
-	
-	
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator) {
-		
-			$sv = new AssetService();
-			return $sv;
-	}
+class AssetServiceFactory implements FactoryInterface
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Zend\ServiceManager\FactoryInterface::createService()
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $sv = new AssetService();
+        return $sv;
+    }
 }

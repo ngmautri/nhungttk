@@ -119,7 +119,6 @@ abstract class AbstractTransaction extends AggregateRoot
     protected $uuid;
 
     // ========================
-  
     abstract public function specify();
 
     /**
@@ -938,14 +937,13 @@ abstract class AbstractTransaction extends AggregateRoot
     {
         $this->company = $company;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getCompany()
     {
         return $this->company;
     }
-
-
-    
 }

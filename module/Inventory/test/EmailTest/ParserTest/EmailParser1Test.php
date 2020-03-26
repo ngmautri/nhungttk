@@ -27,19 +27,17 @@ class EmailParser1Test extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-            $root = realpath(dirname(dirname(dirname(__FILE__))));
-        
-          $faker = Factory::create();
-          
-          $values = array();
-          
-          
-          for ($i = 0; $i < 10; $i++) {
-              // get a random digit, but also null sometimes
-              $values []= $faker->city();
-          }
-          
-          var_dump($values);
-            
+        $root = realpath(dirname(dirname(dirname(__FILE__))));
+
+        $faker = Factory::create();
+
+        $values = array();
+
+        for ($i = 0; $i < 10; $i ++) {
+            // get a random digit, but also null sometimes
+            $values[] = $faker->city();
+        }
+
+        var_dump($values);
     }
 }

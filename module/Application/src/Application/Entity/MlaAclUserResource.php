@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaAclUserResource
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaAclUserResource
     private $id;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -32,6 +34,7 @@ class MlaAclUserResource
     private $user;
 
     /**
+     *
      * @var \Application\Entity\MlaAclResources
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAclResources")
@@ -40,8 +43,6 @@ class MlaAclUserResource
      * })
      */
     private $resource;
-
-
 
     /**
      * Get id

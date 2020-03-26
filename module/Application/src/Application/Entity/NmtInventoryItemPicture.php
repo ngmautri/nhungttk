@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryItemPicture
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryItemPicture
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="document_subject", type="string", length=50, nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryItemPicture
     private $documentSubject;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryItemPicture
     private $url;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filename", type="string", length=255, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryItemPicture
     private $filename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="original_filename", type="string", length=100, nullable=true)
@@ -50,6 +55,7 @@ class NmtInventoryItemPicture
     private $originalFilename;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
@@ -57,6 +63,7 @@ class NmtInventoryItemPicture
     private $filetype;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=50, nullable=true)
@@ -64,6 +71,7 @@ class NmtInventoryItemPicture
     private $size;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="visibility", type="boolean", nullable=true)
@@ -71,6 +79,7 @@ class NmtInventoryItemPicture
     private $visibility;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder", type="string", length=255, nullable=true)
@@ -78,6 +87,7 @@ class NmtInventoryItemPicture
     private $folder;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="folder_relative", type="string", length=100, nullable=true)
@@ -85,6 +95,7 @@ class NmtInventoryItemPicture
     private $folderRelative;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
@@ -92,6 +103,7 @@ class NmtInventoryItemPicture
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -99,6 +111,7 @@ class NmtInventoryItemPicture
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -106,6 +119,7 @@ class NmtInventoryItemPicture
     private $remarks;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
@@ -113,6 +127,7 @@ class NmtInventoryItemPicture
     private $isDefault;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -120,6 +135,7 @@ class NmtInventoryItemPicture
     private $isActive;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
@@ -127,6 +143,7 @@ class NmtInventoryItemPicture
     private $markedForDeletion;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -134,6 +151,7 @@ class NmtInventoryItemPicture
     private $createdOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="file_exits", type="boolean", nullable=true)
@@ -141,6 +159,7 @@ class NmtInventoryItemPicture
     private $fileExits;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -151,6 +170,7 @@ class NmtInventoryItemPicture
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -159,8 +179,6 @@ class NmtInventoryItemPicture
      * })
      */
     private $item;
-
-
 
     /**
      * Get id

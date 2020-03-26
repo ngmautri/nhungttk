@@ -1,77 +1,93 @@
 <?php /**@var \Application\Entity\NmtHrLeaveReason $entity ; */ ?>
 
 <?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Edit Reason Leave</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Edit Reason Leave</a></li>
+	</ul>
 
-<div id="general"> 
+	<div id="general">
 
-<form id="create_employee_form" class="form-horizontal" action="/hr/leave-reason/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="entity_id" value="<?php if(!$entity == null): echo $entity->getId(); endif;?>" />
-<input type="hidden" name="token" value="<?php if(!$entity == null): echo $entity->getToken(); endif;?>" />
+		<form id="create_employee_form" class="form-horizontal"
+			action="/hr/leave-reason/edit" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="entity_id"
+				value="<?php if(!$entity == null): echo $entity->getId(); endif;?>" />
+			<input type="hidden" name="token"
+				value="<?php if(!$entity == null): echo $entity->getToken(); endif;?>" />
 
-	<div class="form-group margin-bottom required">
-		<label class="control-label col-sm-2" >Leave Reason:</label>
-		<div class="col-sm-3">
-		<input class="form-control input-sm" type="text" name="leaveReason" 
-		value="<?php if(!$entity == null): echo $entity->getLeaveReason(); endif;?>" placeholder ="Please enter leave reason!" id="" /></div>
-	
-		<div class="col-sm-4">
-	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-		</div>
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Leave Reason:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" name="leaveReason"
+						value="<?php if(!$entity == null): echo $entity->getLeaveReason(); endif;?>"
+						placeholder="Please enter leave reason!" id="" />
+				</div>
+
+				<div class="col-sm-4">
+					<input
+						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Leave Reason (Lao):</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text"
+						name="leaveReasonLocal"
+						value="<?php if(!$entity == null): echo $entity->getLeaveReasonLocal(); endif;?>"
+						placeholder="" />
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Reference:</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text"
+						name="legalReference"
+						value="<?php if(!$entity == null): echo $entity->getLegalReference(); endif;?>"
+						placeholder="" id="" />
+				</div>
+			</div>
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Description:</label>
+				<div class="col-sm-8">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="description"
+						value="<?php echo (!$entity == null)? $entity->getDescription():"";?>">
+				</div>
+			</div>
+			<hr>
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<a tabindex="10" class="btn btn-default"
+						onclick="submitForm('create_employee_form');" href="javascript:;"><small><i
+							class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
+					<a tabindex="11" class="btn btn-default"
+						href="<?php echo $this->baseUrl ?>/hr/leave-reason/list?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
+							class=""></i></small>&nbsp;Cancel</a>
+
+				</div>
+			</div>
+
+
+		</form>
 	</div>
-	
-	<div class="form-group margin-bottom required">
-		<label class="control-label col-sm-2" >Leave Reason (Lao):</label>
-		<div class="col-sm-3">
-		<input class="form-control input-sm" type="text" name="leaveReasonLocal" 
-		value="<?php if(!$entity == null): echo $entity->getLeaveReasonLocal(); endif;?>" placeholder ="" /></div>
-	</div>
-	
-	<div class="form-group margin-bottom required">
-		<label class="control-label col-sm-2" >Reference:</label>
-		<div class="col-sm-3">
-		<input class="form-control input-sm" type="text" name="legalReference" 
-		value="<?php if(!$entity == null): echo $entity->getLegalReference(); endif;?>" placeholder ="" id="" /></div>
-	</div>
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" >Description:</label>
-		<div class="col-sm-8">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="description" value="<?php echo (!$entity == null)? $entity->getDescription():"";?>">
-		</div>
-	</div>
-	<hr>
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	 			<a tabindex="10" class="btn btn-default" onclick="submitForm('create_employee_form');"
-								href="javascript:;"><small><i
-									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
- 							<a tabindex="11" class="btn btn-default"
-								href="<?php echo $this->baseUrl ?>/hr/leave-reason/list?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
-									class=""></i></small>&nbsp;Cancel</a>
-				
-  		</div>
-	</div> 
-		
-	
-</form>
-</div>
 </div>

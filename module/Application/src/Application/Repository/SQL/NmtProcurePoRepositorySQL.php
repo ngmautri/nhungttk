@@ -8,8 +8,8 @@ namespace Application\Repository\SQL;
  */
 class NmtProcurePoRepositorySQL
 {
-    
-        const PR_ROW_SQL = "
+
+    const PR_ROW_SQL = "
 SELECT
 	nmt_procure_pr_row.*,
 	IFNULL(nmt_procure_pr_row.quantity,0) AS pr_qty,
@@ -98,7 +98,7 @@ WHERE 1 %s
 ORDER By nmt_procure_pr_row.created_on DESC
 ";
 
-        const ITEM_PRICE_SQL = '
+    const ITEM_PRICE_SQL = '
 
 SELECT
 
@@ -299,6 +299,5 @@ ORDER BY item_price_tbl.lc_unit_price ASC
 
 
 ';
-
 }
 

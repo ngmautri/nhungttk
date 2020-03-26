@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MlaPurchaseRequestItemsQuotation
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class MlaPurchaseRequestItemsQuotation
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=45, nullable=true)
@@ -29,6 +31,7 @@ class MlaPurchaseRequestItemsQuotation
     private $name;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class MlaPurchaseRequestItemsQuotation
     private $description;
 
     /**
+     *
      * @var float
      *
      * @ORM\Column(name="unit_price", type="float", precision=10, scale=0, nullable=true)
@@ -43,6 +47,7 @@ class MlaPurchaseRequestItemsQuotation
     private $unitPrice;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="delivery_term", type="string", length=45, nullable=true)
@@ -50,6 +55,7 @@ class MlaPurchaseRequestItemsQuotation
     private $deliveryTerm;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
@@ -57,13 +63,12 @@ class MlaPurchaseRequestItemsQuotation
     private $paymentTerm;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="vendor_id", type="integer", nullable=true)
      */
     private $vendorId;
-
-
 
     /**
      * Get id

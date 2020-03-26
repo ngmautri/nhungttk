@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtInventoryTrxType
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtInventoryTrxType
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="movement_flow", type="string", nullable=true)
@@ -29,6 +31,7 @@ class NmtInventoryTrxType
     private $movementFlow;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="movement_code", type="string", length=45, nullable=true)
@@ -36,6 +39,7 @@ class NmtInventoryTrxType
     private $movementCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="movement_name", type="string", length=100, nullable=true)
@@ -43,6 +47,7 @@ class NmtInventoryTrxType
     private $movementName;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=false)
@@ -50,6 +55,7 @@ class NmtInventoryTrxType
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -58,8 +64,6 @@ class NmtInventoryTrxType
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

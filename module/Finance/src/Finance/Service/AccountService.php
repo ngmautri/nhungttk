@@ -1,5 +1,6 @@
 <?php
 namespace Finance\Service;
+
 use Application\Service\AbstractService;
 
 /**
@@ -36,7 +37,7 @@ class AccountService extends AbstractService
         $incoterm = $data['incoterm'];
         $incoterm1 = $data['incoterm1'];
         $locationRequired = $data['locationRequired'];
-        
+
         $incotermDescription = $data['incotermDescription'];
 
         if ($incoterm == "") {
@@ -44,7 +45,7 @@ class AccountService extends AbstractService
         } else {
             $entity->setIncoterm($incoterm);
         }
-        
+
         if ($incoterm1 == "") {
             $errors[] = $this->controllerPlugin->translate('Incoterm is not correct or empty!');
         } else {
@@ -84,7 +85,7 @@ class AccountService extends AbstractService
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($changeOn);
         } else {
-             $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
         }
@@ -92,6 +93,4 @@ class AccountService extends AbstractService
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-
-  
 }

@@ -13,7 +13,7 @@ abstract class DoctrineSpecification extends AbstractSpecificationForCompany
 {
 
     protected $doctrineEM;
- 
+
     /**
      *
      * @param EntityManager $doctrineEM

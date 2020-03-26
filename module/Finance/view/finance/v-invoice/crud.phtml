@@ -2,16 +2,15 @@
 /** @var \Application\Entity\FinVendorInvoice $entity ;*/
 /** @var \Application\Entity\NmtProcurePo $target ;*/
 /** @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-
 $form_action = '';
 $form_title = '';
 $isReadOnly = ' ';
 $isSelectDisable = '';
 
-if($entity!==null){
-    if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED){
+if ($entity !== null) {
+    if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
         $isReadOnly = ' readonly="readonly" ';
-        //$isSelectDisable = ' disabled ';
+        // $isSelectDisable = ' disabled ';
     }
 }
 
@@ -20,7 +19,7 @@ switch ($action) {
     case \Application\Model\Constants::FORM_ACTION_ADD:
         $form_action = '/finance/v-invoice/add';
         $form_title = $this->translate("Add new AP invoice");
-       break;
+        break;
     case \Application\Model\Constants::FORM_ACTION_EDIT:
         $form_action = '/finance/v-invoice/edit';
         $form_title = $this->translate("Edit AP invoice");
@@ -63,7 +62,10 @@ switch ($action) {
 					<li><a href="#general"><?php echo $form_title;?></a></li>
 					
 						<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-            		<li ><a title="<?php echo $this->translate("Change Logs");?>" href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+            		<li><a
+						title="<?php echo $this->translate("Change Logs");?>"
+						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 				<?php endif;?>
          
 				</ul>
@@ -127,7 +129,8 @@ if (count($errors) > 0) {
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2">Current State:</label>
 									<div class="col-sm-3">
-										<select<?php echo $isReadOnly; ?>name="currentState" class="form-control input-sm">
+										<select <?php echo $isReadOnly; ?> name="currentState"
+											class="form-control input-sm">
 											<option value="">Please Select</option>
 											<option
 												<?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?>
@@ -154,13 +157,13 @@ if (count($errors) > 0) {
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2 ">Vendor:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly;?>class="form-control input-sm" type="text"
-											id="vendor_name_1" placeholder="Enter term to search vendor"
-											name="vendor_name"
+										<input <?php echo $isReadOnly;?> class="form-control input-sm"
+											type="text" id="vendor_name_1"
+											placeholder="Enter term to search vendor" name="vendor_name"
 											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
 
-										<input<?php echo $isReadOnly; ?>type="hidden" id="vendor_id" placeholder=""
-											name="vendor_id"
+										<input <?php echo $isReadOnly; ?> type="hidden" id="vendor_id"
+											placeholder="" name="vendor_id"
 											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
 									</div>
 									<div class="col-sm-3">
@@ -171,17 +174,19 @@ if (count($errors) > 0) {
 									</div>
 								</div>
 
-								
+
 
 								<div class="form-group margin-bottom required">
 
 									<label class="control-label col-sm-2">Currency:</label>
 									<div class="col-sm-3">
-										<select<?php echo $isReadOnly; ?><?php echo $isSelectDisable; ?>name="currency_id" class="form-control input-sm">
+										<select <?php echo $isReadOnly; ?>
+											<?php echo $isSelectDisable; ?> name="currency_id"
+											class="form-control input-sm">
 											<option value="">Select Currency</option>
    	    							<?php
-   	    							$currency_list = $nmtPlugin->currencyList();
-   	    							
+            $currency_list = $nmtPlugin->currencyList();
+
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
                     if ($entity !== null) :
@@ -207,8 +212,9 @@ if (count($errors) > 0) {
 
 									<label class="control-label col-sm-2">Exchange Rate:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											placeholder="" id="exchangeRate" name="exchangeRate"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" placeholder=""
+											id="exchangeRate" name="exchangeRate"
 											value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
 									</div>
 								</div>
@@ -217,14 +223,16 @@ if (count($errors) > 0) {
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2">Invoice number:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											placeholder="" id="invoiceNo" name="invoiceNo"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" placeholder=""
+											id="invoiceNo" name="invoiceNo"
 											value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
 									</div>
 									<label class="control-label col-sm-2">SAP Document No.:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											placeholder="" id="sapDoc" name="sapDoc"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" placeholder=""
+											id="sapDoc" name="sapDoc"
 											value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
 									</div>
 
@@ -235,17 +243,19 @@ if (count($errors) > 0) {
 
 									<label class="control-label col-sm-2 required">Invoice Date:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											id="invoiceDate" name="invoiceDate"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" id="invoiceDate"
+											name="invoiceDate"
 											value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
 											placeholder=" please select" />
 									</div>
-							
-							
+
+
 									<label class="control-label col-sm-2">Posting Date:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											id="postingDate" name="postingDate"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" id="postingDate"
+											name="postingDate"
 											value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
 											placeholder=" please select" />
 									</div>
@@ -255,42 +265,45 @@ if (count($errors) > 0) {
 
 									<label class="control-label col-sm-2">Goods Receipt Date:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text" id="grDate"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" id="grDate"
 											name="grDate"
 											value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
 											placeholder=" please select" />
 									</div>
-									
-								</div>
-								
-										 <div class="form-group margin-bottom required">
 
-							<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
-							<div class="col-sm-3">
-								<select<?php echo $isReadOnly; ?><?php echo $isSelectDisable; ?>tabindex="9" name="target_wh_id" id="target_wh_id"
-									class="form-control input-sm">
-									<option value=""><?php echo $this->translate("...");?></option>
+								</div>
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+									<div class="col-sm-3">
+										<select <?php echo $isReadOnly; ?>
+											<?php echo $isSelectDisable; ?> tabindex="9"
+											name="target_wh_id" id="target_wh_id"
+											class="form-control input-sm">
+											<option value=""><?php echo $this->translate("...");?></option>
    	    							<?php
-   	    							
-   	    							$wh_list = $nmtPlugin->warehouseList();
-   	    							
-   	    	 if ($wh_list !== null) :
-   	    	 foreach ($wh_list as $gl) :
+
+            $wh_list = $nmtPlugin->warehouseList();
+
+            if ($wh_list !== null) :
+                foreach ($wh_list as $gl) :
 
                     /**@var \Application\Entity\NmtInventoryWarehouse $gl ; */
 
                     if ($entity !== null) :
                         if ($entity->getWarehouse() !== null) :
-                        if ($entity->getWarehouse()->getId() == $gl->getId()) :
-                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            if ($entity->getWarehouse()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                             else :
-                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $gl->getId() . '">' . $gl->getWhName()  . '</option>';
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
                     endif;
                 endforeach
                 ;
@@ -298,72 +311,80 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-							</div>	
-							</div>
-								
+									</div>
+								</div>
+
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Contract /PO:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											placeholder="" id="contractNo" name="contractNo"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" placeholder=""
+											id="contractNo" name="contractNo"
 											value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
 									</div>
 									<label class="control-label col-sm-2">Contract /PO Date:</label>
 									<div class="col-sm-3">
-										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-											placeholder="" id="contractDate" name="contractDate"
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" placeholder=""
+											id="contractDate" name="contractDate"
 											value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
 									</div>
 								</div>
-								
-								
-								<div<?php echo $isReadOnly; ?>class="form-group margin-bottom required">
-    
-    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
-    									<div class="col-sm-3">
-    										<select<?php echo $isReadOnly; ?><?php echo $isSelectDisable; ?>name="incoterm_id" class="form-control input-sm">
-    											<option value="">Select...</option>
+
+
+								<div <?php echo $isReadOnly; ?>
+									class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+									<div class="col-sm-3">
+										<select <?php echo $isReadOnly; ?>
+											<?php echo $isSelectDisable; ?> name="incoterm_id"
+											class="form-control input-sm">
+											<option value="">Select...</option>
        	    							<?php
-       	    							
-       	    							$incoterm_list = $nmtPlugin->incotermList();
-       	    							
+
+                $incoterm_list = $nmtPlugin->incotermList();
+
                 if ($incoterm_list !== null) :
-                foreach ($incoterm_list as $l) :
+                    foreach ($incoterm_list as $l) :
                         if ($entity !== null) :
-                        if ($entity->getIncoterm2() !== null) :
-                            if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
-                            echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                            if ($entity->getIncoterm2() !== null) :
+                                if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
+                                    echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                                 else :
-                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                                    echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                                 endif;
                             else :
-                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                         endif;
                     endforeach
                     ;
        	    							endif;
-    
+
                 ?>
        					</select>
-    									</div>
-    									
-    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
-    									<div class="col-sm-3">
-    										<input<?php echo $isReadOnly; ?>class="form-control input-sm" type="text"
-    											placeholder="" id="incotermPlace" name="incotermPlace"
-    											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
-    									</div>
-    									
-    								</div>
+									</div>
 
-						<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+									<div class="col-sm-3">
+										<input <?php echo $isReadOnly; ?>
+											class="form-control input-sm" type="text" placeholder=""
+											id="incotermPlace" name="incotermPlace"
+											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom required">
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
 									<div class="col-sm-3">
-										<select<?php echo $isReadOnly; ?><?php echo $isSelectDisable; ?>name="payment_term_id" class="form-control input-sm">
+										<select <?php echo $isReadOnly; ?>
+											<?php echo $isSelectDisable; ?> name="payment_term_id"
+											class="form-control input-sm">
 											<option value=""><?php echo $this->translate("---");?></option>
        	    							<?php
                 $pmtTerm_list = $nmtPlugin->getPaymentTerms();
@@ -395,15 +416,15 @@ if (count($errors) > 0) {
 								</div>
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
-									<div<?php echo $isReadOnly; ?>class="col-sm-5">
+									<div <?php echo $isReadOnly; ?> class="col-sm-5">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="paymentTerm" name="paymentTerm"
 											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
 									</div>
-									
-										<div class="col-sm-3">
 
-										<a target="blank" style="font-size: 9pt; color:navy;"
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt; color: navy;"
 											href="/application/payment-term/list"><?php echo $this->translate("Payment Term List");?>&nbsp;</a><small><i
 											class="glyphicon glyphicon-new-window"></i></small>
 									</div>
@@ -422,7 +443,7 @@ if (count($errors) > 0) {
 
 							</div>
 
-			<hr style="margin: 5pt 1pt 5pt 1pt">
+							<hr style="margin: 5pt 1pt 5pt 1pt">
 							<div class="form-group margin-bottom">
 								<label class="control-label col-sm-2" for="inputTag"></label>
 								<div class="col-sm-3">

@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Application\DTO\Item;
 
-
 use Inventory\Application\DTO\Item\ItemDTO;
 
 /**

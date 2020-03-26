@@ -24,22 +24,20 @@ class ItemUpdatedEventListener implements ListenerAggregateInterface
     protected $events;
 
     protected $doctrineEM;
-    
-    protected $messagesDoctrineEM;
-    
-  
 
-   /**
-    * 
-    * @return \Doctrine\ORM\EntityManager
-    */
+    protected $messagesDoctrineEM;
+
+    /**
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
     public function getMessagesDoctrineEM()
     {
         return $this->messagesDoctrineEM;
     }
 
     /**
-     * 
+     *
      * @param EntityManager $messagesDoctrineEM
      */
     public function setMessagesDoctrineEM(EntityManager $messagesDoctrineEM)
@@ -67,20 +65,19 @@ class ItemUpdatedEventListener implements ListenerAggregateInterface
     {
         $searcher = new \Inventory\Application\Service\Search\ZendSearch\ItemSearchService();
         $searcher->setDoctrineEM($this->getDoctrineEM());
-        
+
         $itemId = $e->getParam('itemId');
         $searcher->updateItemIndex($itemId, FALSE, FALSE);
-        
+
         $rep = new DoctrineItemRepository($this->getDoctrineEM());
         $item = $rep->getById($itemId);
-        
+
         $itemClass = new \ReflectionClass($item);
-        $className=null;
-        if($itemClass!==null){
+        $className = null;
+        if ($itemClass !== null) {
             $className = $itemClass->getShortName();
         }
-        
-        
+
         $message = new MessageStore();
         $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
         $message->setClassName($className);
@@ -91,29 +88,28 @@ class ItemUpdatedEventListener implements ListenerAggregateInterface
         $message->setEventName($e->getName());
         $this->getDoctrineEM()->persist($message);
         $this->getDoctrineEM()->flush();
-        
-        
-        
-      /*   $message = new AllMessageStore();
-        
-        $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
-        $message->setClassName($className);
-        $message->setTriggeredBy($e->getTarget());
-        
-        
-        $message->setMsgBody(json_encode((array) $item->createDTO()));
-        $message->setQueueName("inventory.item");
-        $message->setCreatedOn(new \DateTime());
-        $message->setEventName($e->getName());
-        $this->getMessagesDoctrineEM()->persist($message);
-        $this->getMessagesDoctrineEM()->flush(); */
-        
-        //$exe_string = "C:\ADDIN\nmt.bat";
-        //exec('c:\WINDOWS\system32\cmd.exe /c START C:\ADDIN\nmt.bat');
-        
-        //exec('c:\WINDOWS\system32\cmd.exe /C start  C:\ADDIN\nmt.bat');
-        //exec($exe_string);
-        
+
+        /*
+         * $message = new AllMessageStore();
+         *
+         * $message->setUuid(Ramsey\Uuid\Uuid::uuid4());
+         * $message->setClassName($className);
+         * $message->setTriggeredBy($e->getTarget());
+         *
+         *
+         * $message->setMsgBody(json_encode((array) $item->createDTO()));
+         * $message->setQueueName("inventory.item");
+         * $message->setCreatedOn(new \DateTime());
+         * $message->setEventName($e->getName());
+         * $this->getMessagesDoctrineEM()->persist($message);
+         * $this->getMessagesDoctrineEM()->flush();
+         */
+
+        // $exe_string = "C:\ADDIN\nmt.bat";
+        // exec('c:\WINDOWS\system32\cmd.exe /c START C:\ADDIN\nmt.bat');
+
+        // exec('c:\WINDOWS\system32\cmd.exe /C start C:\ADDIN\nmt.bat');
+        // exec($exe_string);
     }
 
     public function detach(EventManagerInterface $events)

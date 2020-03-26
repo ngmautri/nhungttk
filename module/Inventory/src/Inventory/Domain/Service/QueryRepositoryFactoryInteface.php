@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Domain\Service;
 
-
 /**
  * Inventory Repository Factory
  *
@@ -10,8 +9,10 @@ namespace Inventory\Domain\Service;
  */
 interface QueryRepositoryFactoryInteface
 {
+
     public function createItemQueryRepository();
+
     public function createWarehouseQueryRepository();
-    public function createTransactionQueryRepository();   
-    
+
+    public function createTransactionQueryRepository();
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NmtApplicationCompany
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +23,7 @@ class NmtApplicationCompany
     private $id;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="company_code", type="integer", nullable=false)
@@ -29,6 +31,7 @@ class NmtApplicationCompany
     private $companyCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="company_name", type="string", length=100, nullable=false)
@@ -36,6 +39,7 @@ class NmtApplicationCompany
     private $companyName;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="default_logo_id", type="integer", nullable=true)
@@ -43,6 +47,7 @@ class NmtApplicationCompany
     private $defaultLogoId;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
@@ -50,6 +55,7 @@ class NmtApplicationCompany
     private $status;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -57,6 +63,7 @@ class NmtApplicationCompany
     private $createdOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
@@ -64,6 +71,7 @@ class NmtApplicationCompany
     private $isDefault;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -71,6 +79,7 @@ class NmtApplicationCompany
     private $token;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -78,6 +87,7 @@ class NmtApplicationCompany
     private $lastChangeOn;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -85,6 +95,7 @@ class NmtApplicationCompany
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -92,6 +103,7 @@ class NmtApplicationCompany
     private $uuid;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -102,6 +114,7 @@ class NmtApplicationCompany
     private $defaultCurrency;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -112,6 +125,7 @@ class NmtApplicationCompany
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCountry
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
@@ -122,6 +136,7 @@ class NmtApplicationCompany
     private $country;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompanyAddress
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompanyAddress")
@@ -132,6 +147,7 @@ class NmtApplicationCompany
     private $defaultAddress;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -142,6 +158,7 @@ class NmtApplicationCompany
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -150,8 +167,6 @@ class NmtApplicationCompany
      * })
      */
     private $defaultWarehouse;
-
-
 
     /**
      * Get id

@@ -5,7 +5,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -15,12 +15,11 @@ if (count($errors) > 0) {
     echo '</div>';
 }
 
-
 ?>
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general" ><small><i class="fa fa-calculator"
+		<li><a href="#general"><small><i class="fa fa-calculator"
 					aria-hidden="true"></i></small>&nbsp;A/P Invoice</a></li>
 		<li><a
 			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
@@ -40,8 +39,8 @@ if (count($errors) > 0) {
 		<div style="position: relative; float: right;">
 			<a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
-				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Review & Post</a>
-			<a class="btn btn-default btn-sm"
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Review
+				& Post</a> <a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
 			</a>
@@ -53,21 +52,20 @@ if (count($errors) > 0) {
 		<div style="position: relative; float: right;">
 			<a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
-				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Journal Entry</a>
-			<a class="btn btn-default btn-sm"
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Journal
+				Entry</a> <a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;WH Journal
-			</a>
-			
-					<a class="btn btn-default btn-sm"
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;WH
+				Journal
+			</a> <a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Goods Return
-			</a>
-					<a class="btn btn-default btn-sm"
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Goods
+				Return
+			</a> <a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
 			</a>
-			
+
 
 		</div>
 		<?php endif;?>
@@ -86,16 +84,16 @@ if (count($errors) > 0) {
 					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: <?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo() . ' ['.$entity->getDocStatus().']':"";?></a>
 				</legend>
 				<div id="invoice_header" class="collapse">
-					
-					<div class="form-group margin-bottom">	
+
+					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2"><?php echo $this->translate('Document Number')?>:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
-								id="contractNo" name="contractNo" 
+								id="contractNo" name="contractNo"
 								value="<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
 						</div>
 					</div>
-					
+
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2">Current State:</label>
 						<div class="col-sm-3">
@@ -183,17 +181,17 @@ if (count($errors) > 0) {
                 endforeach
                 ;
    	    							endif;
-            
+
             ?>
    					</select>
 						</div>
 						<label class="control-label col-sm-2">Exchange Rate:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
-								id="exchangeRate" name="exchangeRate" 
+								id="exchangeRate" name="exchangeRate"
 								value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
 						</div>
-						
+
 					</div>
 
 

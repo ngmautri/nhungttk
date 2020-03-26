@@ -78,5 +78,4 @@ class DoctrineSpecificationFactory extends \Inventory\Domain\AbstractSpecificati
     {
         $this->doctrineEM = $doctrineEM;
     }
-   
 }

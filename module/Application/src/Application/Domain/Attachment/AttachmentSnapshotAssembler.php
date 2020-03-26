@@ -12,6 +12,7 @@ class AttachmentSnapshotAssembler
 {
 
     const EXCLUDED_FIELDS = 1;
+
     const EDITABLE_FIELDS = 2;
 
     /**
@@ -29,11 +30,11 @@ class AttachmentSnapshotAssembler
         }
     }
 
-   /**
-    * 
-    * @param array $data
-    * @return NULL|\Application\Domain\Attachment\AttachmentSnapshot
-    */
+    /**
+     *
+     * @param array $data
+     * @return NULL|\Application\Domain\Attachment\AttachmentSnapshot
+     */
     public static function createSnapshotFromArray($data)
     {
         if ($data == null)
@@ -55,7 +56,7 @@ class AttachmentSnapshotAssembler
     }
 
     /**
-     * 
+     *
      * @param AttachmentDTO $dto
      * @return NULL|\Application\Domain\Attachment\AttachmentSnapshot
      */
@@ -79,7 +80,6 @@ class AttachmentSnapshotAssembler
         return $snapShot;
     }
 
-  
     public static function updateSnapshotFromDTO(AttachmentDTO $dto, AttachmentSnapshot $snapShot, $editMode = self::EDITABLE_FIELDS)
     {
         if (! $dto instanceof AttachmentDTO || ! $snapShot instanceof AttachmentSnapshot)
@@ -110,17 +110,17 @@ class AttachmentSnapshotAssembler
         );
 
         $editableProperties = array(
-            "isActive",            
+            "isActive",
             "vendor",
             "contractNo",
             "contractDate",
             "docCurrency",
             "exchangeRate",
             "incoterm",
-            "incotermPlace",            
+            "incotermPlace",
             "paymentTerm",
-            "remarks",
-         );
+            "remarks"
+        );
 
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
@@ -136,10 +136,10 @@ class AttachmentSnapshotAssembler
                     }
                 }
             }
-            
+
             if ($editMode == self::EDITABLE_FIELDS) {
                 if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
-                    
+
                     if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                         $snapShot->$propertyName = null;
                     } else {
@@ -147,9 +147,7 @@ class AttachmentSnapshotAssembler
                     }
                 }
             }
-            
         }
         return $snapShot;
     }
-
 }

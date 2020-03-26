@@ -12,6 +12,7 @@ use Inventory\Domain\Event\WarehouseCreatedEvent;
  */
 class WarehouseUpdatedEventHandler implements EventSubscriberInterface
 {
+
     /**
      *
      * @return string[]
@@ -23,11 +24,10 @@ class WarehouseUpdatedEventHandler implements EventSubscriberInterface
         ];
     }
 
-   /**
-    * 
-    * @param WarehouseUpdatedEventHandler $event
-    */
+    /**
+     *
+     * @param WarehouseUpdatedEventHandler $event
+     */
     public function onUpdated(WarehouseUpdatedEventHandler $event)
-    {
-    }
+    {}
 }

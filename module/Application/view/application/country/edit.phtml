@@ -4,7 +4,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -45,7 +45,7 @@ if (count($errors) > 0) {
 					<input
 						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-			</div>
+				</div>
 
 			</div>
 

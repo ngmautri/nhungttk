@@ -2,6 +2,7 @@
 namespace Procure\Domain\APInvoice;
 
 use Procure\Application\DTO\Ap\APDocRowDTO;
+use Procure\Domain\GenericRow;
 
 
 /**
@@ -11,6 +12,56 @@ use Procure\Application\DTO\Ap\APDocRowDTO;
  */
 class APDocRowSnapshotAssembler
 {
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericRow();
+        $dto = new APDocRowSnapshot();
+
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfEntity()
+    {
+        $missingProperties = array();
+        
+        $entity = new APDocRowSnapshot();
+        
+        $dto = new GenericRow();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\nprotected $%s;", $propertyName));
+                
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
     
     
     /**

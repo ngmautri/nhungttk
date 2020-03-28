@@ -86,6 +86,8 @@ class PORow extends AbstractRow
     protected $itemStandardUnitName;
 
     protected $itemVersion;
+    
+    protected $po;
 
     private function __construct()
     {}

@@ -26,7 +26,7 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
         try {
 
             $test = PORowDTOAssembler::findMissingProperties();
-            var_dump($test);
+            //var_dump($test);
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

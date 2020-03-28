@@ -66,17 +66,24 @@ class APDocRowSnapshot extends AbstractValueObject
     public $descriptionText;
     public $vendorItemName;
     public $reversalBlocked;
+    public $targetObject;
+    public $targetObjectId;
+    public $sourceObject;
+    public $sourceObjectId;
+    public $uuid;
+    public $docVersion;
     public $invoice;
     public $glAccount;
     public $costCenter;
     public $docUom;
+    public $grRow;
+    public $item;
     public $prRow;
     public $createdBy;
     public $warehouse;
     public $lastchangeBy;
     public $poRow;
-    public $item;
-    public $grRow;
+    
     /**
      * @return mixed
      */
@@ -604,6 +611,54 @@ class APDocRowSnapshot extends AbstractValueObject
     {
         return $this->grRow;
     }
+    /**
+     * @return mixed
+     */
+    public function getTargetObject()
+    {
+        return $this->targetObject;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTargetObjectId()
+    {
+        return $this->targetObjectId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSourceObject()
+    {
+        return $this->sourceObject;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSourceObjectId()
+    {
+        return $this->sourceObjectId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
 
     
     

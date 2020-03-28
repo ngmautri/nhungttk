@@ -122,8 +122,7 @@ class PoRowInArray extends PoRowOutputStrategy
             
             $dto->vendorItemName = '<span style="font-size:8pt; color: graytext">' . $dto->vendorItemName . '</span>';
             $dto->vendorItemCode = '<span style="font-size:8pt; color: graytext">' . $dto->vendorItemCode . '</span>';
-            
-
+           
             $output[] = $dto;
         }
 

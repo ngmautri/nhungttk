@@ -13,120 +13,73 @@ class AbstractRow extends AbstractEntity
 {
 
     protected $id;
-
     protected $rowNumber;
-
     protected $token;
-
     protected $quantity;
-
     protected $unitPrice;
-
     protected $netAmount;
-
     protected $unit;
-
     protected $itemUnit;
-
     protected $conversionFactor;
-
     protected $converstionText;
-
     protected $taxRate;
-
     protected $remarks;
-
     protected $isActive;
-
     protected $createdOn;
-
     protected $lastchangeOn;
-
     protected $currentState;
-
     protected $vendorItemCode;
-
     protected $traceStock;
-
     protected $grossAmount;
-
     protected $taxAmount;
-
     protected $faRemarks;
-
     protected $rowIdentifer;
-
     protected $discountRate;
-
     protected $revisionNo;
-
     protected $targetObject;
-
     protected $sourceObject;
-
     protected $targetObjectId;
-
     protected $sourceObjectId;
-
     protected $docStatus;
-
     protected $workflowStatus;
-
     protected $transactionStatus;
-
     protected $isPosted;
-
     protected $isDraft;
-
     protected $exwUnitPrice;
-
     protected $totalExwPrice;
-
     protected $convertFactorPurchase;
-
     protected $convertedPurchaseQuantity;
-
     protected $convertedStandardQuantity;
-
     protected $convertedStockQuantity;
-
     protected $convertedStandardUnitPrice;
-
     protected $convertedStockUnitPrice;
-
     protected $docQuantity;
-
     protected $docUnit;
-
     protected $docUnitPrice;
-
     protected $convertedPurchaseUnitPrice;
-
     protected $docType;
-
     protected $descriptionText;
-
     protected $vendorItemName;
-
     protected $reversalBlocked;
-
     protected $invoice;
-
     protected $lastchangeBy;
-
     protected $prRow;
-
     protected $createdBy;
-
     protected $warehouse;
-
+    protected $po;
     protected $item;
-
     protected $docUom;
-
     protected $docVersion;
-
     protected $uuid;
+    protected $localUnitPrice;
+    protected $exwCurrency;
+    protected $localNetAmount;
+    protected $localGrossAmount;
+    protected $transactionType;
+    protected $isReversed;
+    protected $reversalDate;
+    protected $glAccount;
+    protected $costCenter;
     /**
      * @return mixed
      */
@@ -562,6 +515,14 @@ class AbstractRow extends AbstractEntity
     /**
      * @return mixed
      */
+    public function getPo()
+    {
+        return $this->po;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getItem()
     {
         return $this->item;
@@ -591,4 +552,77 @@ class AbstractRow extends AbstractEntity
         return $this->uuid;
     }
 
-}
+    /**
+     * @return mixed
+     */
+    public function getLocalUnitPrice()
+    {
+        return $this->localUnitPrice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExwCurrency()
+    {
+        return $this->exwCurrency;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalNetAmount()
+    {
+        return $this->localNetAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalGrossAmount()
+    {
+        return $this->localGrossAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
+    }
+
+    
+    }

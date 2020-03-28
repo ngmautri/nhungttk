@@ -22,6 +22,11 @@ if ($rootDto !== null) {
     $rowNumber = $rootDto->getTotalRows() + 1;
 }
 
+
+if($dto!==null){
+    $rowNumber = $dto->getRowNumber();    
+}
+
 $error_msg = "";
 if (count($errors) > 0) {
     $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';

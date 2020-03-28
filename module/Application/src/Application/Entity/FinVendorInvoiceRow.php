@@ -400,6 +400,48 @@ class FinVendorInvoiceRow
     private $reversalBlocked;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="target_object", type="string", length=255, nullable=true)
+     */
+    private $targetObject;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="target_object_id", type="integer", nullable=true)
+     */
+    private $targetObjectId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="source_object", type="string", length=255, nullable=true)
+     */
+    private $sourceObject;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="source_object_id", type="integer", nullable=true)
+     */
+    private $sourceObjectId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
+     */
+    private $uuid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1815,6 +1857,150 @@ class FinVendorInvoiceRow
     public function getReversalBlocked()
     {
         return $this->reversalBlocked;
+    }
+
+    /**
+     * Set targetObject
+     *
+     * @param string $targetObject
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setTargetObject($targetObject)
+    {
+        $this->targetObject = $targetObject;
+
+        return $this;
+    }
+
+    /**
+     * Get targetObject
+     *
+     * @return string
+     */
+    public function getTargetObject()
+    {
+        return $this->targetObject;
+    }
+
+    /**
+     * Set targetObjectId
+     *
+     * @param integer $targetObjectId
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setTargetObjectId($targetObjectId)
+    {
+        $this->targetObjectId = $targetObjectId;
+
+        return $this;
+    }
+
+    /**
+     * Get targetObjectId
+     *
+     * @return integer
+     */
+    public function getTargetObjectId()
+    {
+        return $this->targetObjectId;
+    }
+
+    /**
+     * Set sourceObject
+     *
+     * @param string $sourceObject
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setSourceObject($sourceObject)
+    {
+        $this->sourceObject = $sourceObject;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceObject
+     *
+     * @return string
+     */
+    public function getSourceObject()
+    {
+        return $this->sourceObject;
+    }
+
+    /**
+     * Set sourceObjectId
+     *
+     * @param integer $sourceObjectId
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setSourceObjectId($sourceObjectId)
+    {
+        $this->sourceObjectId = $sourceObjectId;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceObjectId
+     *
+     * @return integer
+     */
+    public function getSourceObjectId()
+    {
+        return $this->sourceObjectId;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
     }
 
     /**

@@ -70,7 +70,10 @@ class PORowDTOAssembler
             $property->setAccessible(true);
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
-                $missingProperties[] = $propertyName;
+                $m = sprintf("\n public $%s;",$propertyName);
+                echo $m;
+                $missingProperties[] = $m;
+                
             }
         }
         return $missingProperties;

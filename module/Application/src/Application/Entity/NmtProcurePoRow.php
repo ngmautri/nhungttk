@@ -372,6 +372,69 @@ class NmtProcurePoRow
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="local_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localUnitPrice;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="exw_currency", type="integer", nullable=true)
+     */
+    private $exwCurrency;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local_net_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localNetAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local_gross_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localGrossAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
+     */
+    private $transactionType;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
+     */
+    private $isReversed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
+     */
+    private $reversalDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="gl_account", type="integer", nullable=true)
+     */
+    private $glAccount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="cost_center", type="integer", nullable=true)
+     */
+    private $costCenter;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1661,6 +1724,222 @@ class NmtProcurePoRow
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set localUnitPrice
+     *
+     * @param string $localUnitPrice
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setLocalUnitPrice($localUnitPrice)
+    {
+        $this->localUnitPrice = $localUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get localUnitPrice
+     *
+     * @return string
+     */
+    public function getLocalUnitPrice()
+    {
+        return $this->localUnitPrice;
+    }
+
+    /**
+     * Set exwCurrency
+     *
+     * @param integer $exwCurrency
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setExwCurrency($exwCurrency)
+    {
+        $this->exwCurrency = $exwCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get exwCurrency
+     *
+     * @return integer
+     */
+    public function getExwCurrency()
+    {
+        return $this->exwCurrency;
+    }
+
+    /**
+     * Set localNetAmount
+     *
+     * @param string $localNetAmount
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setLocalNetAmount($localNetAmount)
+    {
+        $this->localNetAmount = $localNetAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get localNetAmount
+     *
+     * @return string
+     */
+    public function getLocalNetAmount()
+    {
+        return $this->localNetAmount;
+    }
+
+    /**
+     * Set localGrossAmount
+     *
+     * @param string $localGrossAmount
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setLocalGrossAmount($localGrossAmount)
+    {
+        $this->localGrossAmount = $localGrossAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get localGrossAmount
+     *
+     * @return string
+     */
+    public function getLocalGrossAmount()
+    {
+        return $this->localGrossAmount;
+    }
+
+    /**
+     * Set transactionType
+     *
+     * @param string $transactionType
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionType
+     *
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
+     * Set isReversed
+     *
+     * @param boolean $isReversed
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversed
+     *
+     * @return boolean
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * Set reversalDate
+     *
+     * @param \DateTime $reversalDate
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDate
+     *
+     * @return \DateTime
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * Set glAccount
+     *
+     * @param integer $glAccount
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setGlAccount($glAccount)
+    {
+        $this->glAccount = $glAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount
+     *
+     * @return integer
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
+    }
+
+    /**
+     * Set costCenter
+     *
+     * @param integer $costCenter
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setCostCenter($costCenter)
+    {
+        $this->costCenter = $costCenter;
+
+        return $this;
+    }
+
+    /**
+     * Get costCenter
+     *
+     * @return integer
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
     }
 
     /**

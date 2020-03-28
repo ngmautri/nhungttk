@@ -505,7 +505,7 @@ class PoController extends AbstractActionController
             if (isset($result["localDTO"])) {
                 $localDTO = $result["localDTO"];
             }
-
+           
             if (! $rootDTO instanceof PoDetailsDTO || ! $localDTO instanceof PORowDetailsDTO) {
                 return $this->redirect()->toRoute('not_found');
             }

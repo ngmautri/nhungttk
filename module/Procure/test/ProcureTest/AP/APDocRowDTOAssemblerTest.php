@@ -24,7 +24,7 @@ class APDocRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            APDocRowDTOAssembler::createGetMapping();
+            APDocRowDTOAssembler::createDTOProperities();
 
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

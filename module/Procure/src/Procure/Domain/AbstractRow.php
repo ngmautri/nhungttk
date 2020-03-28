@@ -2,6 +2,7 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\AbstractEntity;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  * Abstract Row
@@ -12,75 +13,231 @@ use Application\Domain\Shared\AbstractEntity;
 class AbstractRow extends AbstractEntity
 {
 
+    // Item Details
+    // ====================
+    protected $itemToken;
+
+    protected $itemChecksum;
+
+    protected $itemName;
+
+    protected $itemName1;
+
+    protected $itemSKU;
+
+    protected $itemSKU1;
+
+    protected $itemSKU2;
+
+    protected $itemUUID;
+
+    protected $itemSysNumber;
+
+    protected $itemStandardUnit;
+
+    protected $itemStandardUnitName;
+
+    protected $itemVersion;
+
+    // PR Details
+    // ====================
+    protected $pr;
+
+    protected $prToken;
+
+    protected $prChecksum;
+
+    protected $prNumber;
+
+    protected $prSysNumber;
+
+    protected $prRowIndentifer;
+
+    protected $prRowCode;
+
+    protected $prRowName;
+
+    protected $prRowConvertFactor;
+
+    protected $prRowUnit;
+
+    protected $prRowVersion;
+
+    // PO
+    // ====================
     protected $id;
+
     protected $rowNumber;
+
     protected $token;
+
     protected $quantity;
+
     protected $unitPrice;
+
     protected $netAmount;
+
     protected $unit;
+
     protected $itemUnit;
+
     protected $conversionFactor;
+
     protected $converstionText;
+
     protected $taxRate;
+
     protected $remarks;
+
     protected $isActive;
+
     protected $createdOn;
+
     protected $lastchangeOn;
+
     protected $currentState;
+
     protected $vendorItemCode;
+
     protected $traceStock;
+
     protected $grossAmount;
+
     protected $taxAmount;
+
     protected $faRemarks;
+
     protected $rowIdentifer;
+
     protected $discountRate;
+
     protected $revisionNo;
+
     protected $targetObject;
+
     protected $sourceObject;
+
     protected $targetObjectId;
+
     protected $sourceObjectId;
+
     protected $docStatus;
+
     protected $workflowStatus;
+
     protected $transactionStatus;
+
     protected $isPosted;
+
     protected $isDraft;
+
     protected $exwUnitPrice;
+
     protected $totalExwPrice;
+
     protected $convertFactorPurchase;
+
     protected $convertedPurchaseQuantity;
+
     protected $convertedStandardQuantity;
+
     protected $convertedStockQuantity;
+
     protected $convertedStandardUnitPrice;
+
     protected $convertedStockUnitPrice;
+
     protected $docQuantity;
+
     protected $docUnit;
+
     protected $docUnitPrice;
+
     protected $convertedPurchaseUnitPrice;
+
     protected $docType;
+
     protected $descriptionText;
+
     protected $vendorItemName;
+
     protected $reversalBlocked;
+
     protected $invoice;
+
     protected $lastchangeBy;
+
     protected $prRow;
+
     protected $createdBy;
+
     protected $warehouse;
+
     protected $po;
+
     protected $item;
+
     protected $docUom;
+
     protected $docVersion;
+
     protected $uuid;
+
     protected $localUnitPrice;
+
     protected $exwCurrency;
+
     protected $localNetAmount;
+
     protected $localGrossAmount;
+
     protected $transactionType;
+
     protected $isReversed;
+
     protected $reversalDate;
+
     protected $glAccount;
+
     protected $costCenter;
+
     /**
+     *
+     * @param AbstractRow $targetObj
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\AbstractRow
+     */
+    public function convertTo(AbstractRow $targetObj)
+    {
+        if (! $targetObj instanceof AbstractRow) {
+            throw new InvalidArgumentException("Convertion input not invalid!");
+        }
+
+        // Converting
+        //==========================
+        $exculdeProps = [
+            "id",
+            "uuid",
+            "token"
+        ];
+
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+            $prop->setAccessible(true);
+
+            $propName = $prop->getName();
+            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdeProps)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getId()
@@ -89,6 +246,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowNumber()
@@ -97,6 +255,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -105,6 +264,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuantity()
@@ -113,6 +273,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -121,6 +282,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getNetAmount()
@@ -129,6 +291,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUnit()
@@ -137,6 +300,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemUnit()
@@ -145,6 +309,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -153,6 +318,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConverstionText()
@@ -161,6 +327,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxRate()
@@ -169,6 +336,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -177,6 +345,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -185,6 +354,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -193,6 +363,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -201,6 +372,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -209,6 +381,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -217,6 +390,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTraceStock()
@@ -225,6 +399,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -233,6 +408,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -241,6 +417,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getFaRemarks()
@@ -249,6 +426,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowIdentifer()
@@ -257,6 +435,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountRate()
@@ -265,6 +444,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -273,6 +453,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObject()
@@ -281,6 +462,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObject()
@@ -289,6 +471,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTargetObjectId()
@@ -297,6 +480,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSourceObjectId()
@@ -305,6 +489,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -313,6 +498,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -321,6 +507,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -329,6 +516,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -337,6 +525,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -345,6 +534,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExwUnitPrice()
@@ -353,6 +543,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalExwPrice()
@@ -361,6 +552,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertFactorPurchase()
@@ -369,6 +561,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -377,6 +570,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -385,6 +579,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -393,6 +588,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -401,6 +597,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -409,6 +606,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -417,6 +615,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnit()
@@ -425,6 +624,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -433,6 +633,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedPurchaseUnitPrice()
@@ -441,6 +642,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -449,6 +651,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDescriptionText()
@@ -457,6 +660,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorItemName()
@@ -465,6 +669,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -473,6 +678,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoice()
@@ -481,6 +687,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -489,6 +696,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPrRow()
@@ -497,6 +705,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -505,6 +714,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -513,6 +723,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPo()
@@ -521,6 +732,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItem()
@@ -529,6 +741,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUom()
@@ -537,6 +750,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocVersion()
@@ -545,6 +759,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -553,6 +768,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalUnitPrice()
@@ -561,6 +777,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExwCurrency()
@@ -569,6 +786,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalNetAmount()
@@ -577,6 +795,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalGrossAmount()
@@ -585,6 +804,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionType()
@@ -593,6 +813,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversed()
@@ -601,6 +822,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDate()
@@ -609,6 +831,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGlAccount()
@@ -617,6 +840,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCostCenter()
@@ -624,5 +848,210 @@ class AbstractRow extends AbstractEntity
         return $this->costCenter;
     }
 
-    
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemToken()
+    {
+        return $this->itemToken;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemChecksum()
+    {
+        return $this->itemChecksum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName1()
+    {
+        return $this->itemName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSKU()
+    {
+        return $this->itemSKU;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSKU1()
+    {
+        return $this->itemSKU1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSKU2()
+    {
+        return $this->itemSKU2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemUUID()
+    {
+        return $this->itemUUID;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSysNumber()
+    {
+        return $this->itemSysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardUnit()
+    {
+        return $this->itemStandardUnit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardUnitName()
+    {
+        return $this->itemStandardUnitName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemVersion()
+    {
+        return $this->itemVersion;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPr()
+    {
+        return $this->pr;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrToken()
+    {
+        return $this->prToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrChecksum()
+    {
+        return $this->prChecksum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrNumber()
+    {
+        return $this->prNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrSysNumber()
+    {
+        return $this->prSysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowIndentifer()
+    {
+        return $this->prRowIndentifer;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowCode()
+    {
+        return $this->prRowCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowName()
+    {
+        return $this->prRowName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowConvertFactor()
+    {
+        return $this->prRowConvertFactor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowUnit()
+    {
+        return $this->prRowUnit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrRowVersion()
+    {
+        return $this->prRowVersion;
+    }
+}

@@ -3,6 +3,7 @@ namespace ProcureTest\AP;
 
 use Procure\Domain\APInvoice\APDocRowSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
+use Procure\Domain\APInvoice\APDocRow;
 
 /**
  * 
@@ -21,6 +22,11 @@ class APDocRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        APDocRowSnapshotAssembler::findMissingPropertiesOfEntity();
+        //APDocRowSnapshotAssembler::findMissingPropertiesOfEntity();
+        
+        //APDocRow::createSnapshot();
+        
+        APDocRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
+        
     }
 }

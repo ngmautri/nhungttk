@@ -12,7 +12,26 @@ use Procure\Domain\AbstractRow;
  */
 class APDocRow extends AbstractRow
 {
-
+    // Addtional Attributes
+    protected $reversalReason;
+    protected $reversalDoc;
+    protected $isReversable;
+    protected $grRow;
+    protected $poRow;
+    
+    
+    public static function createSnapshot()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "public $" . $propertyName . ";";
+        }
+    }
+    
     /**
      *
      * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot

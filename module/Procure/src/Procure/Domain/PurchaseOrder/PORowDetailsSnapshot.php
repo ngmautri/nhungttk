@@ -57,6 +57,8 @@ class PORowDetailsSnapshot extends PORowSnapshot
     public $prRowUnit;
 
     public $prRowVersion;
+    
+    ///=====
 
     public $itemToken;
 

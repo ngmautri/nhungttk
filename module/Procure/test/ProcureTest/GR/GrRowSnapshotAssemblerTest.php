@@ -7,6 +7,7 @@ use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 use Procure\Domain\GoodsReceipt\GRSnapshotAssembler;
 use Procure\Domain\GoodsReceipt\GRRowSnapshotAssembler;
+use Procure\Domain\GoodsReceipt\GRRow;
 
 class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -31,7 +32,10 @@ class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
         try {
 
             //$result = GRRowSnapshotAssembler::findMissingProperties();
+            //$result = GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
             $result = GRRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
+            //$result = GRRow::createSnapshot();
+            //var_dump($result);
             //var_dump($result);
             
            } catch (InvalidArgumentException $e) {

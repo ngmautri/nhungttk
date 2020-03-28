@@ -26,24 +26,22 @@ class GRRowSnapshotAssembler
     {
         $missingProperties = array();
         $entity = new GenericRow();
-        // $entity = new GRRowSnapshot();
+        $dto = new GRRowSnapshot();
 
-        // $dto = new GenericRow();
-        $dto = new GRRow();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("protected $%s;\n", $propertyName));
+                echo (sprintf("\n protected $%s;", $propertyName));
 
                 $missingProperties[] = $propertyName;
             }
         }
         return $missingProperties;
     }
-    
+
     /**
      *
      * @return array;
@@ -51,19 +49,18 @@ class GRRowSnapshotAssembler
     public static function findMissingPropertiesOfEntity()
     {
         $missingProperties = array();
-        
+
         $entity = new GRRowSnapshot();
-        
+
         $dto = new GenericRow();
-        
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("protected $%s;\n", $propertyName));
-                
+                echo (sprintf("\n protected $%s;", $propertyName));
                 $missingProperties[] = $propertyName;
             }
         }

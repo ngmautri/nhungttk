@@ -4,6 +4,7 @@ namespace ProcureTest\PR;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
+use Procure\Domain\PurchaseOrder\PORow;
 
 class PoRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -23,7 +24,9 @@ class PoRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PORowSnapshotAssembler::createProperities();
+            //PORowSnapshotAssembler::findMissingPropertiesOfEntity();
+            PORow::createSnapshotProps();
+            
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

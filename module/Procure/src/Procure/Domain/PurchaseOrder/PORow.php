@@ -15,82 +15,35 @@ use Procure\Domain\AbstractRow;
  */
 class PORow extends AbstractRow
 {
-    protected $vendorName;
 
-    protected $poNumber;
-
-    protected $docCurrencyISO;
-
-    protected $poToken;
-
-    protected $draftGrQuantity;
-
-    protected $postedGrQuantity;
-
-    protected $confirmedGrBalance;
-
-    protected $openGrBalance;
-
-    protected $draftAPQuantity;
-
-    protected $postedAPQuantity;
-
-    protected $openAPQuantity;
-
-    protected $billedAmount;
-
-    protected $openAPAmount;
-
-    protected $pr;
-
-    protected $prToken;
-
-    protected $prChecksum;
-
-    protected $prNumber;
-
-    protected $prSysNumber;
-
-    protected $prRowIndentifer;
-
-    protected $prRowCode;
-
-    protected $prRowName;
-
-    protected $prRowConvertFactor;
-
-    protected $prRowUnit;
-
-    protected $prRowVersion;
-
-    protected $itemToken;
-
-    protected $itemChecksum;
-
-    protected $itemName;
-
-    protected $itemName1;
-
-    protected $itemSKU;
-
-    protected $itemSKU1;
-
-    protected $itemSKU2;
-
-    protected $itemUUID;
-
-    protected $itemSysNumber;
-
-    protected $itemStandardUnit;
-
-    protected $itemStandardUnitName;
-
-    protected $itemVersion;
-    
-    protected $po;
+    private static $instance = null;
 
     private function __construct()
     {}
+
+    /**
+     * 
+     * @return \Procure\Domain\PurchaseOrder\PORow
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new PORow();
+        }
+        return self::$instance;
+    }
+
+    public static function createSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "public $" . $propertyName . ";";
+        }
+    }
 
     /**
      * this should be called when posted.

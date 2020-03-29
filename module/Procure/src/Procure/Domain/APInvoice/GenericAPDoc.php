@@ -14,6 +14,16 @@ use Procure\Domain\Exception\InvalidArgumentException;
 abstract class GenericAPDoc extends AbstractAPDoc
 {
 
+    protected $reversalDoc;
+
+    protected $isReversable;
+
+    protected $procureGr;
+
+    protected $po;
+
+    protected $inventoryGr;
+
     /**
      *
      * @var array
@@ -256,12 +266,12 @@ abstract class GenericAPDoc extends AbstractAPDoc
         return $this;
     }
 
-   /**
-    * 
-    * @param APDocRowSnapshot $snapshot
-    * @param APSpecificationService $specService
-    * @return NULL|\Procure\Domain\APInvoice\GenericAPDoc
-    */
+    /**
+     *
+     * @param APDocRowSnapshot $snapshot
+     * @param APSpecificationService $specService
+     * @return NULL|\Procure\Domain\APInvoice\GenericAPDoc
+     */
     public function addRowFromSnapshot(APDocRowSnapshot $snapshot, APSpecificationService $specService)
     {
         if (! $snapshot instanceof APDocRowSnapshot)
@@ -325,4 +335,113 @@ abstract class GenericAPDoc extends AbstractAPDoc
     {
         $this->rowsOutput = $rowsOutput;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getReversalDoc()
+    {
+        return $this->reversalDoc;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsReversable()
+    {
+        return $this->isReversable;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getProcureGr()
+    {
+        return $this->procureGr;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPo()
+    {
+        return $this->po;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getInventoryGr()
+    {
+        return $this->inventoryGr;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getApDocRows()
+    {
+        return $this->apDocRows;
+    }
+
+    /**
+     *
+     * @param mixed $reversalDoc
+     */
+    protected function setReversalDoc($reversalDoc)
+    {
+        $this->reversalDoc = $reversalDoc;
+    }
+
+    /**
+     *
+     * @param mixed $isReversable
+     */
+    protected function setIsReversable($isReversable)
+    {
+        $this->isReversable = $isReversable;
+    }
+
+    /**
+     *
+     * @param mixed $procureGr
+     */
+    protected function setProcureGr($procureGr)
+    {
+        $this->procureGr = $procureGr;
+    }
+
+    /**
+     *
+     * @param mixed $po
+     */
+    protected function setPo($po)
+    {
+        $this->po = $po;
+    }
+
+    /**
+     *
+     * @param mixed $inventoryGr
+     */
+    protected function setInventoryGr($inventoryGr)
+    {
+        $this->inventoryGr = $inventoryGr;
+    }
+
+    /**
+     * @param array $apDocRows
+     */
+    protected function setApDocRows($apDocRows)
+    {
+        $this->apDocRows = $apDocRows;
+    }
+
+
 }

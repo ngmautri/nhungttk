@@ -12,15 +12,46 @@ use Procure\Domain\AbstractRow;
  */
 class APDocRow extends AbstractRow
 {
+
+    private static $instance = null;
+
     // Addtional Attributes
     protected $reversalReason;
+
     protected $reversalDoc;
+
     protected $isReversable;
+
     protected $grRow;
+
     protected $poRow;
+
+    private function __construct()
+    {}
+
+    /**
+     *
+     * @return \Procure\Domain\APInvoice\APDocRow
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new APDocRow();
+        }
+        return self::$instance;
+    }
     
     
-    public static function createSnapshot()
+   /**
+    * 
+    * @return \Procure\Domain\APInvoice\APDocRow
+    */
+    public static function createInstance()
+    {
+        return new APDocRow();
+    }
+
+    public static function createSnapshotProps()
     {
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);
@@ -31,7 +62,7 @@ class APDocRow extends AbstractRow
             print "\n" . "public $" . $propertyName . ";";
         }
     }
-    
+
     /**
      *
      * @return NULL|\Procure\Domain\APInvoice\APDocRowSnapshot

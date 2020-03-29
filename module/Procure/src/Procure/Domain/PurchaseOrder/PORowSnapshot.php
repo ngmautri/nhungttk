@@ -11,6 +11,52 @@ use Application\Domain\Shared\AbstractDTO;
 class PORowSnapshot extends AbstractDTO
 {
 
+    public $itemToken;
+
+    public $itemChecksum;
+
+    public $itemName;
+
+    public $itemName1;
+
+    public $itemSKU;
+
+    public $itemSKU1;
+
+    public $itemSKU2;
+
+    public $itemUUID;
+
+    public $itemSysNumber;
+
+    public $itemStandardUnit;
+
+    public $itemStandardUnitName;
+
+    public $itemVersion;
+
+    public $pr;
+
+    public $prToken;
+
+    public $prChecksum;
+
+    public $prNumber;
+
+    public $prSysNumber;
+
+    public $prRowIndentifer;
+
+    public $prRowCode;
+
+    public $prRowName;
+
+    public $prRowConvertFactor;
+
+    public $prRowUnit;
+
+    public $prRowVersion;
+
     public $id;
 
     public $rowNumber;
@@ -146,9 +192,191 @@ class PORowSnapshot extends AbstractDTO
     public $glAccount;
 
     public $costCenter;
+    /**
+     * @return mixed
+     */
+    public function getItemToken()
+    {
+        return $this->itemToken;
+    }
 
     /**
-     *
+     * @return mixed
+     */
+    public function getItemChecksum()
+    {
+        return $this->itemChecksum;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemName1()
+    {
+        return $this->itemName1;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemSKU()
+    {
+        return $this->itemSKU;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemSKU1()
+    {
+        return $this->itemSKU1;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemSKU2()
+    {
+        return $this->itemSKU2;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemUUID()
+    {
+        return $this->itemUUID;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemSysNumber()
+    {
+        return $this->itemSysNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemStandardUnit()
+    {
+        return $this->itemStandardUnit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemStandardUnitName()
+    {
+        return $this->itemStandardUnitName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemVersion()
+    {
+        return $this->itemVersion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPr()
+    {
+        return $this->pr;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrToken()
+    {
+        return $this->prToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrChecksum()
+    {
+        return $this->prChecksum;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrNumber()
+    {
+        return $this->prNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrSysNumber()
+    {
+        return $this->prSysNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrRowIndentifer()
+    {
+        return $this->prRowIndentifer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrRowCode()
+    {
+        return $this->prRowCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrRowName()
+    {
+        return $this->prRowName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrRowConvertFactor()
+    {
+        return $this->prRowConvertFactor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrRowUnit()
+    {
+        return $this->prRowUnit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrRowVersion()
+    {
+        return $this->prRowVersion;
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -157,7 +385,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowNumber()
@@ -166,7 +393,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getToken()
@@ -175,7 +401,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getQuantity()
@@ -184,7 +409,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -193,7 +417,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getNetAmount()
@@ -202,7 +425,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getUnit()
@@ -211,7 +433,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemUnit()
@@ -220,7 +441,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -229,7 +449,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConverstionText()
@@ -238,7 +457,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTaxRate()
@@ -247,7 +465,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRemarks()
@@ -256,7 +473,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsActive()
@@ -265,7 +481,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -274,7 +489,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -283,7 +497,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCurrentState()
@@ -292,7 +505,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -301,7 +513,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTraceStock()
@@ -310,7 +521,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -319,7 +529,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -328,7 +537,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getFaRemarks()
@@ -337,7 +545,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowIdentifer()
@@ -346,7 +553,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDiscountRate()
@@ -355,7 +561,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -364,7 +569,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTargetObject()
@@ -373,7 +577,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getSourceObject()
@@ -382,7 +585,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTargetObjectId()
@@ -391,7 +593,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getSourceObjectId()
@@ -400,7 +601,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocStatus()
@@ -409,7 +609,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -418,7 +617,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -427,7 +625,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsPosted()
@@ -436,7 +633,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsDraft()
@@ -445,7 +641,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getExwUnitPrice()
@@ -454,7 +649,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTotalExwPrice()
@@ -463,7 +657,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertFactorPurchase()
@@ -472,7 +665,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -481,7 +673,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -490,7 +681,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -499,7 +689,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -508,7 +697,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -517,7 +705,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -526,7 +713,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocUnit()
@@ -535,7 +721,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -544,7 +729,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedPurchaseUnitPrice()
@@ -553,7 +737,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocType()
@@ -562,7 +745,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDescriptionText()
@@ -571,7 +753,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getVendorItemName()
@@ -580,7 +761,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -589,7 +769,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getInvoice()
@@ -598,7 +777,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -607,7 +785,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRow()
@@ -616,7 +793,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -625,7 +801,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getWarehouse()
@@ -634,7 +809,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPo()
@@ -643,7 +817,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItem()
@@ -652,7 +825,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocUom()
@@ -661,7 +833,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocVersion()
@@ -670,7 +841,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getUuid()
@@ -679,7 +849,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLocalUnitPrice()
@@ -688,7 +857,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getExwCurrency()
@@ -697,7 +865,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLocalNetAmount()
@@ -706,7 +873,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLocalGrossAmount()
@@ -715,7 +881,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTransactionType()
@@ -724,7 +889,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsReversed()
@@ -733,7 +897,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getReversalDate()
@@ -742,7 +905,6 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getGlAccount()
@@ -751,11 +913,11 @@ class PORowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCostCenter()
     {
         return $this->costCenter;
     }
+
 }

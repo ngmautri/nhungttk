@@ -3,9 +3,15 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Application\Command\PO\Options\PoCreateOptions;
+use Procure\Application\Command\PO\Options\PoPostOptions;
+use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Domain\Event\Po\PoHeaderCreated;
+use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\Exception\PoPostingException;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
@@ -13,13 +19,6 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
 use Ramsey;
-use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Domain\Event\Po\PoHeaderUpdated;
-use Procure\Application\Command\PO\Options\PoUpdateOptions;
-use Procure\Application\Command\PO\Options\PoPostOptions;
-use Procure\Domain\Exception\PoPostingException;
-use Procure\Domain\Exception\PoInvalidOperationException;
 
 /**
  *
@@ -29,8 +28,34 @@ use Procure\Domain\Exception\PoInvalidOperationException;
 class PODoc extends GenericPO
 {
 
+    private static $instance = null;
+
+    public static function createSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "public $" . $propertyName . ";";
+        }
+    }
+
     private function __construct()
     {}
+
+    /**
+     * 
+     * @return \Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new PODoc();
+        }
+        return self::$instance;
+    }
 
     /**
      *
@@ -68,7 +93,6 @@ class PODoc extends GenericPO
         }
 
         $postingService->getCmdRepository()->post($this, true);
-        
     }
 
     /**
@@ -85,9 +109,6 @@ class PODoc extends GenericPO
      */
     public static function createFrom(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
-       
-        
-        
         if (! $snapshot instanceof POSnapshot) {
             throw new PoInvalidArgumentException("PO snapshot not found!");
         }
@@ -106,8 +127,7 @@ class PODoc extends GenericPO
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        
-      
+
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
 
@@ -168,9 +188,6 @@ class PODoc extends GenericPO
      */
     public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
-        
-        
-        
         if (! $snapshot instanceof POSnapshot) {
             throw new PoInvalidArgumentException("PO snapshot not found!");
         }

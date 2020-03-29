@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityManager;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
+use Procure\Domain\PurchaseOrder\PODoc;
 
 class PoSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -28,7 +29,13 @@ class PoSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            POSnapshotAssembler::createProperities();
+            //update snapshot // step 0
+            
+           //  POSnapshotAssembler::findMissingPropertiesOfEntity(); //step 1
+             
+            //POSnapshotAssembler::findMissingPropertiesOfSnapshot(); //step 2
+            PODoc::createSnapshotProps();  // step 3
+            
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

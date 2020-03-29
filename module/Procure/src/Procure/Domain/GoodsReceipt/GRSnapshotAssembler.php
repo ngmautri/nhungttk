@@ -3,6 +3,7 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Gr\GrDTO;
+use Procure\Domain\GenericDoc;
 
 /**
  *
@@ -15,6 +16,55 @@ class GRSnapshotAssembler
     const EXCLUDED_FIELDS = 1;
 
     const EDITABLE_FIELDS = 2;
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericDoc();
+        $dto = new GRSnapshot();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfEntity()
+    {
+        $missingProperties = array();
+        
+        $entity = new GRSnapshot();
+        
+        $dto = new GenericDoc();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
 
     /**
      *

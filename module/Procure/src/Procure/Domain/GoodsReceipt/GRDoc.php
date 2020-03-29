@@ -5,7 +5,6 @@ use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
@@ -22,6 +21,10 @@ use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Ramsey;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\PODocStatus;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -31,49 +34,85 @@ use Ramsey;
 class GRDoc extends GenericGR
 {
 
+    protected $reversalDoc;
+
+    private static $instance = null;
+
     private function __construct()
     {}
-
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
-    */
-    protected function doPost(CommandOptions $options, $headerValidators, $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    
+   
+    /**
+     * 
+     * @param PODoc $sourceObj
+     * @throws GrInvalidArgumentException
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     */
+    public static function createFromPo(PODoc $sourceObj)
     {
+        if (! $sourceObj instanceof PODoc) {
+            throw new GrInvalidArgumentException("PO document is required!");
+        }
+        
+        if (!$sourceObj instanceof PODoc) {
+            throw new GrInvalidArgumentException("PO Entity is required");
+        }
+        
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new GrInvalidArgumentException("PO document is not posted!");
+        }
+        
+        $rows = $sourceObj->getDocRows();
+        
+        if ($rows == null) {
+            throw new GrInvalidArgumentException("PO Entity  is empty!");
+        }
 
         /**
          *
-         * @var \Procure\Domain\PurchaseOrder\PORow $row ;
-         *     
-         * @todo: decoup dependency
-         * @var PoPostOptions $options ;
+         * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
          */
-        $postedDate = new \Datetime();
-        $this->setDocStatus(GRDocStatus::DOC_STATUS_POSTED);
-        $this->setLastchangeOn(date_format($postedDate, 'Y-m-d H:i:s'));
-        $this->setLastchangeBy($options->getUserId());
-
-        foreach ($this->getDocRows() as $row) {
-
-            if ($row->getDocQuantity() == 0) {
-                continue;
-            }
-
-            $row->setAsPosted($options->getUserId(), $postedDate);
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+        $instance->setIsDraft(1);
+        $instance->setIsPosted(0);
+        $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $instance->setUuid(Uuid::uuid4()->toString());
+        $instance->setToken($instance->getUuid());
+        foreach ($rows as $r) {
+            $grRow = GrRow::createFromPoRow($r);
+            //echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
+            $instance->addRow($grRow);
         }
-
-        $this->validate($headerValidators, $rowValidators, true);
-
-        if ($this->hasErrors()) {
-            throw new GrPostingException($this->getNotification()->errorMessage());
-        }
-
-        $postingService->getCmdRepository()->post($this, true);
+        return $instance;
     }
 
     /**
-     * 
+     *
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new GRDoc();
+        }
+        return self::$instance;
+    }
+
+    public static function createSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "public $" . $propertyName . ";";
+        }
+    }
+
+    /**
+     *
      * @param GRSnapshot $snapshot
      * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators
@@ -150,7 +189,6 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
-  
     public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if (! $snapshot instanceof GrSnapshot) {
@@ -207,9 +245,8 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
-  
     /**
-     * 
+     *
      * @param GRDetailsSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
@@ -246,6 +283,7 @@ class GRDoc extends GenericGR
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
     }
+
     protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
 
@@ -263,6 +301,9 @@ class GRDoc extends GenericGR
 
     protected function raiseEvent()
     {}
+    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {}
+
 
 
  

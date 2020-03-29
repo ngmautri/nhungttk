@@ -33,12 +33,9 @@ use Procure\Application\DTO\Gr\GrDetailsDTO;
 abstract class GenericGR extends AbstractGR
 {
 
-    protected $docRows;
 
-    protected $rowIdArray;
-
-    protected $rowsOutput;
-
+    
+  
     abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
     abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);

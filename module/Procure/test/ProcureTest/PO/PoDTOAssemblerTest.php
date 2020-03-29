@@ -33,7 +33,7 @@ class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
             
             //var_dump(Inflector::singularize('cakes'));
 
-            PoDTOAssembler::findMissingProperties();
+            PoDTOAssembler::createDTOProperities();
             
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

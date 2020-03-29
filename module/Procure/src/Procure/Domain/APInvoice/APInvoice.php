@@ -13,6 +13,18 @@ use Procure\Domain\APInvoice\Factory\APFactory;
 class APInvoice extends GenericAPDoc
 {
 
+    public static function createSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "public $" . $propertyName . ";";
+        }
+    }
+
     /**
      *
      * {@inheritdoc}

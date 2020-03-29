@@ -2,6 +2,7 @@
 namespace Procure\Domain\APInvoice;
 
 use Procure\Application\DTO\Ap\APDocDTO;
+use Procure\Domain\GenericDoc;
 
 
 /**
@@ -11,6 +12,55 @@ use Procure\Application\DTO\Ap\APDocDTO;
  */
 class APDocSnapshotAssembler
 {
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericDoc();
+        $dto = new APDocSnapshot();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfEntity()
+    {
+        $missingProperties = array();
+        
+        $entity = new APDocSnapshot();
+        
+        $dto = new GenericDoc();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
     
     /**
      * generete fields.

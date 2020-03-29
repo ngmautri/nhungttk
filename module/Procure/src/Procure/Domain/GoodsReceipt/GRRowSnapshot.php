@@ -12,203 +12,104 @@ class GRRowSnapshot extends AbstractDTO
 {
 
     public $grDate;
-
     public $reversalReason;
-
     public $reversalDoc;
-
     public $flow;
-
     public $gr;
-
     public $apInvoiceRow;
-
     public $poRow;
-
     public $itemToken;
-
     public $itemChecksum;
-
     public $itemName;
-
     public $itemName1;
-
     public $itemSKU;
-
     public $itemSKU1;
-
     public $itemSKU2;
-
     public $itemUUID;
-
     public $itemSysNumber;
-
     public $itemStandardUnit;
-
     public $itemStandardUnitName;
-
     public $itemVersion;
-
     public $pr;
-
     public $prToken;
-
     public $prChecksum;
-
     public $prNumber;
-
     public $prSysNumber;
-
     public $prRowIndentifer;
-
     public $prRowCode;
-
     public $prRowName;
-
     public $prRowConvertFactor;
-
     public $prRowUnit;
-
     public $prRowVersion;
-
     public $id;
-
     public $rowNumber;
-
     public $token;
-
     public $quantity;
-
     public $unitPrice;
-
     public $netAmount;
-
     public $unit;
-
     public $itemUnit;
-
     public $conversionFactor;
-
     public $converstionText;
-
     public $taxRate;
-
     public $remarks;
-
     public $isActive;
-
     public $createdOn;
-
     public $lastchangeOn;
-
     public $currentState;
-
     public $vendorItemCode;
-
     public $traceStock;
-
     public $grossAmount;
-
     public $taxAmount;
-
     public $faRemarks;
-
     public $rowIdentifer;
-
     public $discountRate;
-
     public $revisionNo;
-
     public $targetObject;
-
     public $sourceObject;
-
     public $targetObjectId;
-
     public $sourceObjectId;
-
     public $docStatus;
-
     public $workflowStatus;
-
     public $transactionStatus;
-
     public $isPosted;
-
     public $isDraft;
-
     public $exwUnitPrice;
-
     public $totalExwPrice;
-
     public $convertFactorPurchase;
-
     public $convertedPurchaseQuantity;
-
     public $convertedStandardQuantity;
-
     public $convertedStockQuantity;
-
     public $convertedStandardUnitPrice;
-
     public $convertedStockUnitPrice;
-
     public $docQuantity;
-
     public $docUnit;
-
     public $docUnitPrice;
-
     public $convertedPurchaseUnitPrice;
-
     public $docType;
-
     public $descriptionText;
-
     public $vendorItemName;
-
     public $reversalBlocked;
-
     public $invoice;
-
     public $lastchangeBy;
-
     public $prRow;
-
     public $createdBy;
-
     public $warehouse;
-
     public $po;
-
     public $item;
-
     public $docUom;
-
     public $docVersion;
-
     public $uuid;
-
     public $localUnitPrice;
-
     public $exwCurrency;
-
     public $localNetAmount;
-
     public $localGrossAmount;
-
     public $transactionType;
-
     public $isReversed;
-
     public $reversalDate;
-
     public $glAccount;
-
     public $costCenter;
-
     /**
-     *
      * @return mixed
      */
     public function getGrDate()
@@ -217,7 +118,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getReversalReason()
@@ -226,7 +126,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getReversalDoc()
@@ -235,7 +134,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getFlow()
@@ -244,7 +142,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getGr()
@@ -253,7 +150,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getApInvoiceRow()
@@ -262,7 +158,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPoRow()
@@ -271,7 +166,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemToken()
@@ -280,7 +174,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemChecksum()
@@ -289,7 +182,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemName()
@@ -298,7 +190,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemName1()
@@ -307,7 +198,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemSKU()
@@ -316,7 +206,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemSKU1()
@@ -325,7 +214,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemSKU2()
@@ -334,7 +222,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemUUID()
@@ -343,7 +230,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemSysNumber()
@@ -352,7 +238,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemStandardUnit()
@@ -361,7 +246,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemStandardUnitName()
@@ -370,7 +254,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemVersion()
@@ -379,7 +262,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPr()
@@ -388,7 +270,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrToken()
@@ -397,7 +278,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrChecksum()
@@ -406,7 +286,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrNumber()
@@ -415,7 +294,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrSysNumber()
@@ -424,7 +302,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRowIndentifer()
@@ -433,7 +310,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRowCode()
@@ -442,7 +318,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRowName()
@@ -451,7 +326,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRowConvertFactor()
@@ -460,7 +334,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRowUnit()
@@ -469,7 +342,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRowVersion()
@@ -478,7 +350,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getId()
@@ -487,7 +358,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowNumber()
@@ -496,7 +366,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getToken()
@@ -505,7 +374,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getQuantity()
@@ -514,7 +382,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getUnitPrice()
@@ -523,7 +390,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getNetAmount()
@@ -532,7 +398,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getUnit()
@@ -541,7 +406,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItemUnit()
@@ -550,7 +414,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConversionFactor()
@@ -559,7 +422,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConverstionText()
@@ -568,7 +430,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTaxRate()
@@ -577,7 +438,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRemarks()
@@ -586,7 +446,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsActive()
@@ -595,7 +454,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -604,7 +462,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -613,7 +470,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCurrentState()
@@ -622,7 +478,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getVendorItemCode()
@@ -631,7 +486,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTraceStock()
@@ -640,7 +494,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -649,7 +502,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -658,7 +510,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getFaRemarks()
@@ -667,7 +518,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowIdentifer()
@@ -676,7 +526,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDiscountRate()
@@ -685,7 +534,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -694,7 +542,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTargetObject()
@@ -703,7 +550,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getSourceObject()
@@ -712,7 +558,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTargetObjectId()
@@ -721,7 +566,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getSourceObjectId()
@@ -730,7 +574,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocStatus()
@@ -739,7 +582,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -748,7 +590,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -757,7 +598,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsPosted()
@@ -766,7 +606,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsDraft()
@@ -775,7 +614,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getExwUnitPrice()
@@ -784,7 +622,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTotalExwPrice()
@@ -793,7 +630,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertFactorPurchase()
@@ -802,7 +638,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedPurchaseQuantity()
@@ -811,7 +646,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStandardQuantity()
@@ -820,7 +654,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStockQuantity()
@@ -829,7 +662,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStandardUnitPrice()
@@ -838,7 +670,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStockUnitPrice()
@@ -847,7 +678,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocQuantity()
@@ -856,7 +686,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocUnit()
@@ -865,7 +694,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocUnitPrice()
@@ -874,7 +702,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedPurchaseUnitPrice()
@@ -883,7 +710,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocType()
@@ -892,7 +718,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDescriptionText()
@@ -901,7 +726,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getVendorItemName()
@@ -910,7 +734,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -919,7 +742,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getInvoice()
@@ -928,7 +750,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -937,7 +758,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPrRow()
@@ -946,7 +766,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -955,7 +774,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getWarehouse()
@@ -964,7 +782,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPo()
@@ -973,7 +790,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getItem()
@@ -982,7 +798,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocUom()
@@ -991,7 +806,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getDocVersion()
@@ -1000,7 +814,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getUuid()
@@ -1009,7 +822,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLocalUnitPrice()
@@ -1018,7 +830,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getExwCurrency()
@@ -1027,7 +838,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLocalNetAmount()
@@ -1036,7 +846,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getLocalGrossAmount()
@@ -1045,7 +854,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getTransactionType()
@@ -1054,7 +862,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getIsReversed()
@@ -1063,7 +870,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getReversalDate()
@@ -1072,7 +878,6 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getGlAccount()
@@ -1081,11 +886,11 @@ class GRRowSnapshot extends AbstractDTO
     }
 
     /**
-     *
      * @return mixed
      */
     public function getCostCenter()
     {
         return $this->costCenter;
     }
+
 }

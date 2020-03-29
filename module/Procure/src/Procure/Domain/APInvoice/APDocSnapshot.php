@@ -10,69 +10,486 @@ use Application\Domain\Shared\AbstractValueObject;
  */
 class APDocSnapshot extends AbstractValueObject
 {
-    
-    public $id;
-    public $token;
-    public $vendorName;
-    public $invoiceNo;
-    public $invoiceDate;
-    public $currencyIso3;
-    public $exchangeRate;
-    public $remarks;
-    public $createdOn;
-    public $currentState;
-    public $isActive;
-    public $trxType;
-    public $lastchangeOn;
-    public $postingDate;
-    public $grDate;
-    public $sapDoc;
-    public $contractNo;
-    public $contractDate;
-    public $quotationNo;
-    public $quotationDate;
-    public $sysNumber;
-    public $revisionNo;
-    public $currentStatus;
-    public $docStatus;
-    public $workflowStatus;
-    public $paymentTerm;
-    public $transactionType;
-    public $isDraft;
-    public $isPosted;
-    public $transactionStatus;
-    public $incoterm;
-    public $incotermPlace;
-    public $isReversed;
-    public $reversalDate;
+
     public $reversalDoc;
-    public $reversalReason;
-    public $paymentStatus;
+
     public $isReversable;
-    public $docType;
-    public $totalDocValue;
-    public $totalDocTax;
-    public $totalDocDiscount;
-    public $totalLocalValue;
-    public $totalLocalTax;
-    public $totalLocalDiscount;
-    public $reversalBlocked;
-    public $uuid;
-    public $vendor;
+
     public $procureGr;
-    public $localCurrency;
-    public $docCurrency;
-    public $postingPeriod;
-    public $incoterm2;
-    public $pmtTerm;
-    public $warehouse;
-    public $createdBy;
-    public $lastchangeBy;
-    public $currency;
+
     public $po;
-    public $company;
-    public $paymentMethod;
+
     public $inventoryGr;
+
+    public $apDocRows;
+
+    public $rowsOutput;
+
+    public $postingYear;
+
+    public $postingMonth;
+
+    public $docYear;
+
+    public $docMonth;
+
+    public $docRows;
+
+    public $rowIdArray;
+
+    public $companyName;
+
+    public $companyToken;
+
+    public $companyCode;
+
+    public $paymentTermName;
+
+    public $paymentTermCode;
+
+    public $warehouseName;
+
+    public $warehouseCode;
+
+    public $paymentMethodName;
+
+    public $paymentMethodCode;
+
+    public $incotermCode;
+
+    public $incotermName;
+
+    public $createdByName;
+
+    public $lastChangedByName;
+
+    public $totalRows;
+
+    public $totalActiveRows;
+
+    public $maxRowNumber;
+
+    public $netAmount;
+
+    public $taxAmount;
+
+    public $grossAmount;
+
+    public $discountAmount;
+
+    public $billedAmount;
+
+    public $completedRows;
+
+    public $openAPAmount;
+
+    public $id;
+
+    public $token;
+
+    public $vendorName;
+
+    public $invoiceNo;
+
+    public $invoiceDate;
+
+    public $currencyIso3;
+
+    public $exchangeRate;
+
+    public $remarks;
+
+    public $createdOn;
+
+    public $currentState;
+
+    public $isActive;
+
+    public $trxType;
+
+    public $lastchangeOn;
+
+    public $postingDate;
+
+    public $grDate;
+
+    public $sapDoc;
+
+    public $contractNo;
+
+    public $contractDate;
+
+    public $quotationNo;
+
+    public $quotationDate;
+
+    public $sysNumber;
+
+    public $revisionNo;
+
+    public $deliveryMode;
+
+    public $incoterm;
+
+    public $incotermPlace;
+
+    public $paymentTerm;
+
+    public $docStatus;
+
+    public $workflowStatus;
+
+    public $transactionStatus;
+
+    public $docType;
+
+    public $paymentStatus;
+
+    public $totalDocValue;
+
+    public $totalDocTax;
+
+    public $totalDocDiscount;
+
+    public $totalLocalValue;
+
+    public $totalLocalTax;
+
+    public $totalLocalDiscount;
+
+    public $reversalBlocked;
+
+    public $uuid;
+
+    public $docVersion;
+
+    public $vendor;
+
+    public $pmtTerm;
+
+    public $company;
+
+    public $warehouse;
+
+    public $createdBy;
+
+    public $lastchangeBy;
+
+    public $currency;
+
+    public $paymentMethod;
+
+    public $localCurrency;
+
+    public $docCurrency;
+
+    public $incoterm2;
+
+    public $isDraft;
+
+    public $isPosted;
+
+    public $isReversed;
+
+    public $reversalDate;
+
+    public $reversalReason;
+
+    public $postingPeriod;
+
+    public $currentStatus;
+
+    public $transactionType;
+
+    public $discountRate;
+    /**
+     * @return mixed
+     */
+    public function getReversalDoc()
+    {
+        return $this->reversalDoc;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsReversable()
+    {
+        return $this->isReversable;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProcureGr()
+    {
+        return $this->procureGr;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPo()
+    {
+        return $this->po;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInventoryGr()
+    {
+        return $this->inventoryGr;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApDocRows()
+    {
+        return $this->apDocRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowsOutput()
+    {
+        return $this->rowsOutput;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostingYear()
+    {
+        return $this->postingYear;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostingMonth()
+    {
+        return $this->postingMonth;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocYear()
+    {
+        return $this->docYear;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocMonth()
+    {
+        return $this->docMonth;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocRows()
+    {
+        return $this->docRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowIdArray()
+    {
+        return $this->rowIdArray;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyToken()
+    {
+        return $this->companyToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyCode()
+    {
+        return $this->companyCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentTermName()
+    {
+        return $this->paymentTermName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentTermCode()
+    {
+        return $this->paymentTermCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseName()
+    {
+        return $this->warehouseName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseCode()
+    {
+        return $this->warehouseCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentMethodName()
+    {
+        return $this->paymentMethodName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentMethodCode()
+    {
+        return $this->paymentMethodCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncotermCode()
+    {
+        return $this->incotermCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncotermName()
+    {
+        return $this->incotermName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByName()
+    {
+        return $this->createdByName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastChangedByName()
+    {
+        return $this->lastChangedByName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalRows()
+    {
+        return $this->totalRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalActiveRows()
+    {
+        return $this->totalActiveRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxRowNumber()
+    {
+        return $this->maxRowNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNetAmount()
+    {
+        return $this->netAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxAmount()
+    {
+        return $this->taxAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGrossAmount()
+    {
+        return $this->grossAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBilledAmount()
+    {
+        return $this->billedAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompletedRows()
+    {
+        return $this->completedRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpenAPAmount()
+    {
+        return $this->openAPAmount;
+    }
+
     /**
      * @return mixed
      */
@@ -252,65 +669,9 @@ class APDocSnapshot extends AbstractValueObject
     /**
      * @return mixed
      */
-    public function getCurrentStatus()
+    public function getDeliveryMode()
     {
-        return $this->currentStatus;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDocStatus()
-    {
-        return $this->docStatus;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWorkflowStatus()
-    {
-        return $this->workflowStatus;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPaymentTerm()
-    {
-        return $this->paymentTerm;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTransactionType()
-    {
-        return $this->transactionType;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsDraft()
-    {
-        return $this->isDraft;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsPosted()
-    {
-        return $this->isPosted;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTransactionStatus()
-    {
-        return $this->transactionStatus;
+        return $this->deliveryMode;
     }
 
     /**
@@ -332,49 +693,33 @@ class APDocSnapshot extends AbstractValueObject
     /**
      * @return mixed
      */
-    public function getIsReversed()
+    public function getPaymentTerm()
     {
-        return $this->isReversed;
+        return $this->paymentTerm;
     }
 
     /**
      * @return mixed
      */
-    public function getReversalDate()
+    public function getDocStatus()
     {
-        return $this->reversalDate;
+        return $this->docStatus;
     }
 
     /**
      * @return mixed
      */
-    public function getReversalDoc()
+    public function getWorkflowStatus()
     {
-        return $this->reversalDoc;
+        return $this->workflowStatus;
     }
 
     /**
      * @return mixed
      */
-    public function getReversalReason()
+    public function getTransactionStatus()
     {
-        return $this->reversalReason;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPaymentStatus()
-    {
-        return $this->paymentStatus;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsReversable()
-    {
-        return $this->isReversable;
+        return $this->transactionStatus;
     }
 
     /**
@@ -383,6 +728,14 @@ class APDocSnapshot extends AbstractValueObject
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentStatus()
+    {
+        return $this->paymentStatus;
     }
 
     /**
@@ -452,6 +805,14 @@ class APDocSnapshot extends AbstractValueObject
     /**
      * @return mixed
      */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getVendor()
     {
         return $this->vendor;
@@ -460,49 +821,17 @@ class APDocSnapshot extends AbstractValueObject
     /**
      * @return mixed
      */
-    public function getProcureGr()
-    {
-        return $this->procureGr;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLocalCurrency()
-    {
-        return $this->localCurrency;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDocCurrency()
-    {
-        return $this->docCurrency;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPostingPeriod()
-    {
-        return $this->postingPeriod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIncoterm2()
-    {
-        return $this->incoterm2;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getPmtTerm()
     {
         return $this->pmtTerm;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 
     /**
@@ -540,22 +869,6 @@ class APDocSnapshot extends AbstractValueObject
     /**
      * @return mixed
      */
-    public function getPo()
-    {
-        return $this->po;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getPaymentMethod()
     {
         return $this->paymentMethod;
@@ -564,9 +877,97 @@ class APDocSnapshot extends AbstractValueObject
     /**
      * @return mixed
      */
-    public function getInventoryGr()
+    public function getLocalCurrency()
     {
-        return $this->inventoryGr;
+        return $this->localCurrency;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrency()
+    {
+        return $this->docCurrency;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncoterm2()
+    {
+        return $this->incoterm2;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReversalReason()
+    {
+        return $this->reversalReason;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostingPeriod()
+    {
+        return $this->postingPeriod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentStatus()
+    {
+        return $this->currentStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDiscountRate()
+    {
+        return $this->discountRate;
     }
 
 }

@@ -6,6 +6,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 use Procure\Domain\GoodsReceipt\GRSnapshotAssembler;
+use Procure\Domain\GoodsReceipt\GRDoc;
 
 class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -29,7 +30,10 @@ class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            GRSnapshotAssembler::createProperities();
+            //GRSnapshotAssembler::findMissingPropertiesOfEntity();
+            //GRSnapshotAssembler::findMissingPropertiesOfSnapshot();
+            GRDoc::createSnapshotProps();
+            
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

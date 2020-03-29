@@ -4,6 +4,7 @@ namespace ProcureTest\AP;
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\APInvoice\APDocSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
+use Procure\Domain\APInvoice\APInvoice;
 
 /**
  * 
@@ -30,6 +31,8 @@ class ApInvoiceSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        APDocSnapshotAssembler::createProperities();
+        //APDocSnapshotAssembler::findMissingPropertiesOfEntity();
+        APInvoice::createSnapshotProps();
+        
     }
 }

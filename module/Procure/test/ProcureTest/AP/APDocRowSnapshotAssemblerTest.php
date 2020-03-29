@@ -24,9 +24,9 @@ class APDocRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         //APDocRowSnapshotAssembler::findMissingPropertiesOfEntity();
         
-        //APDocRow::createSnapshot();
+        APDocRow::createSnapshotProps();
         
-        APDocRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
+        //APDocRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
         
     }
 }

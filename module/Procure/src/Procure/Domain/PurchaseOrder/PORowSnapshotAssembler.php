@@ -4,6 +4,7 @@ namespace Procure\Domain\PurchaseOrder;
 use Procure\Application\DTO\Po\PORowDTO;
 use Zend\Form\Annotation\Object;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Domain\GenericRow;
 
 /**
  *
@@ -16,6 +17,57 @@ class PORowSnapshotAssembler
     const EXCLUDED_FIELDS = 1;
 
     const EDITABLE_FIELDS = 2;
+    
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericRow();
+        $dto = new PORowSnapshot();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfEntity()
+    {
+        $missingProperties = array();
+        
+        $entity = new PORowSnapshot();
+        
+        $dto = new GenericRow();
+        
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+    
 
     /**
      * generete fields.

@@ -54,6 +54,9 @@ abstract class GenericPO extends AbstractPO
 
     abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
+    
+   
+        
     /**
      *
      * @param PORow $row

@@ -25,6 +25,7 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\Exception\Gr\GrInvalidOperationException;
 
 /**
  *
@@ -40,10 +41,9 @@ class GRDoc extends GenericGR
 
     private function __construct()
     {}
-    
-   
+
     /**
-     * 
+     *
      * @param PODoc $sourceObj
      * @throws GrInvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRDoc
@@ -51,21 +51,21 @@ class GRDoc extends GenericGR
     public static function createFromPo(PODoc $sourceObj)
     {
         if (! $sourceObj instanceof PODoc) {
-            throw new GrInvalidArgumentException("PO document is required!");
-        }
-        
-        if (!$sourceObj instanceof PODoc) {
             throw new GrInvalidArgumentException("PO Entity is required");
         }
-        
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new GrInvalidArgumentException("PO document is not posted!");
-        }
-        
+
         $rows = $sourceObj->getDocRows();
-        
+
         if ($rows == null) {
-            throw new GrInvalidArgumentException("PO Entity  is empty!");
+            throw new GrInvalidOperationException("PO Entity  is empty!");
+        }
+
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new GrInvalidOperationException("PO document is not posted!");
+        }
+
+        if ($sourceObj->getTransactionStatus() == \Procure\Domain\Shared\Constants::TRANSACTION_STATUS_COMPLETED) {
+            throw new GrInvalidOperationException("PO is completed!");
         }
 
         /**
@@ -81,7 +81,7 @@ class GRDoc extends GenericGR
         $instance->setToken($instance->getUuid());
         foreach ($rows as $r) {
             $grRow = GrRow::createFromPoRow($r);
-            //echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
+            // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
         }
         return $instance;

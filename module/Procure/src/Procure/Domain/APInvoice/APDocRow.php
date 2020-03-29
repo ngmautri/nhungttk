@@ -3,6 +3,10 @@ namespace Procure\Domain\APInvoice;
 
 use Procure\Application\DTO\Ap\APDocRowDTOAssembler;
 use Procure\Domain\AbstractRow;
+use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\Exception\Ap\ApInvalidArgumentException;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Ramsey\Uuid\Uuid;
 
 /**
  * AP Row
@@ -30,6 +34,34 @@ class APDocRow extends AbstractRow
     {}
 
     /**
+     * 
+     * @param PORow $sourceObj
+     * @throws ApInvalidArgumentException
+     * @return \Procure\Domain\APInvoice\APDocRow
+     */
+    public static function createFromPoRow(PORow $sourceObj)
+    {
+        if (! $sourceObj instanceof PORow) {
+            throw new ApInvalidArgumentException("PO document is required!");
+        }
+
+        /**
+         *
+         * @var \Procure\Domain\APInvoice\APDocRow $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+        $instance->setPoRow($sourceObj->getId());
+        $instance->setIsDraft(1);
+        $instance->setIsPosted(0);
+        $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $instance->setUuid(Uuid::uuid4()->toString());
+        $instance->setToken($instance->getUuid());
+
+        return $instance;
+    }
+
+    /**
      *
      * @return \Procure\Domain\APInvoice\APDocRow
      */
@@ -40,12 +72,11 @@ class APDocRow extends AbstractRow
         }
         return self::$instance;
     }
-    
-    
-   /**
-    * 
-    * @return \Procure\Domain\APInvoice\APDocRow
-    */
+
+    /**
+     *
+     * @return \Procure\Domain\APInvoice\APDocRow
+     */
     public static function createInstance()
     {
         return new APDocRow();

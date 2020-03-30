@@ -5,6 +5,7 @@ use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GenericGR;
+use Application\Application\Specification\Zend\CanPostOnDateSpecification;
 
 /**
  *
@@ -50,16 +51,39 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
             }
 
-            // ==== CK Contract DATE =======
-
+            // ==== POSTING DATE =======
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
-            if (! $spec->isSatisfiedBy($rootEntity->getContractDate())) {
-                $rootEntity->addError("Contract date is not correct or empty");
+            if (! $spec->isSatisfiedBy($rootEntity->getPostingDate())) {
+                $rootEntity->addError("Posting date is not correct or empty");
+            } else {
+                /**
+                 *
+                 * @var CanPostOnDateSpecification $spec ;
+                 */
+                $spec1 = $this->getSharedSpecificationFactory()->getCanPostOnDateSpecification();
+                $subject = array(
+                    "companyId" => $rootEntity->getCompany(),
+                    "movementDate" => $rootEntity->getPostingDate()
+                );
+
+                if (! $spec1->isSatisfiedBy($subject)) {
+                    $rootEntity->addError("Can not post on this date. Period is not created or closed." . $rootEntity->getPostingDate());
+                }
             }
 
-            // ==== CK CONTRACT NO =======
-            if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($rootEntity->getContractNo())) {
-                $rootEntity->addError("Contract number is not correct or empty");
+            // ===== WAREHOUSE =======
+            if ($rootEntity->getWarehouse() == null) {
+                $rootEntity->addError("Source warehouse is not set");
+            } else {
+
+                $spec1 = $this->getSharedSpecificationFactory()->getWarehouseACLSpecification();
+                $subject = array(
+                    "companyId" => $rootEntity->getCompany(),
+                    "warehouseId" => $rootEntity->getWarehouse(),
+                    "userId" => $rootEntity->getCreatedBy()
+                );
+                if (! $spec1->isSatisfiedBy($subject))
+                    $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));
             }
 
             // ===== DOC CURRENCY =======
@@ -74,43 +98,6 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
                 if (! $spec->isSatisfiedBy($rootEntity->getLocalCurrency()))
                     $rootEntity->addError("Local currency not exits..." . $rootEntity->getLocalCurrency());
-            }
-
-            // ===== WAREHOUSE =======
-            if ($rootEntity->getWarehouse() !== null) {
-
-                $spec1 = $this->sharedSpecificationFactory->getWarehouseExitsSpecification();
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "warehouseId" => $rootEntity->getWarehouse()
-                );
-                if (! $spec1->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Warehouse not found!C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $$rootEntity->getCreatedBy()));
-            }
-
-            // ===== INCOTERM =======
-            if ($rootEntity->getIncoterm() !== null) {
-
-                $spec = $this->sharedSpecificationFactory->getIncotermSpecification();
-                $subject = array(
-                    "incotermId" => $rootEntity->getIncoterm()
-                );
-                if (! $spec->isSatisfiedBy($subject)) {
-                    $rootEntity->addError(sprintf("Incoterm not found!C#%s", $rootEntity->getIncoterm()));
-                }
-
-                if ($rootEntity->getIncotermPlace() == null or $rootEntity->getIncotermPlace() == "") {
-                    $rootEntity->addError(sprintf("Incoterm place not set"));
-                }
-            }
-
-            // ===== PAYMENT TERM =======
-            $spec = $this->sharedSpecificationFactory->getPaymentTermSpecification();
-            $subject = array(
-                "paymentTermId" => $rootEntity->getPaymentTerm()
-            );
-            if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError(sprintf("Payment term not found! #%s", $rootEntity->getPaymentTerm()));
             }
 
             // ===== USER ID =======

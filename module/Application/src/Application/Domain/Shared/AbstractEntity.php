@@ -157,12 +157,18 @@ abstract class AbstractEntity
     }
 
     /**
+     * Clear Notification
      */
     public function clearNotification()
     {
         $this->notification = null;
     }
 
+    /**
+     *
+     * @param boolean $html
+     * @return string
+     */
     public function getErrorMessage($html = true)
     {
         return $this->getNotification()->errorMessage($html);

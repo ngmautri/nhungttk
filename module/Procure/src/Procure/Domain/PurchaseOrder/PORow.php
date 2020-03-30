@@ -59,22 +59,7 @@ class PORow extends AbstractRow
         $this->lastchangeBy = $postedBy;
     }
 
-    /**
-     * this should be called when validated.
-     *
-     * @return \Procure\Domain\PurchaseOrder\PORow
-     */
-    public function refresh()
-    {
-        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
-        $taxAmount = $netAmount * $this->getTaxRate();
-        $grosAmount = $netAmount + $taxAmount;
-
-        $this->netAmount = $netAmount;
-        $this->taxAmount = $taxAmount;
-        $this->grossAmount = $grosAmount;
-        return $this;
-    }
+ 
 
     /**
      *

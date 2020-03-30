@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,10 +8,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_employee_FK4_idx", columns={"birth_country"}), @ORM\Index(name="nmt_hr_employee_INX1", columns={"employee_code"}), @ORM\Index(name="nmt_hr_employee_FK3_idx", columns={"company_id"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtHrEmployeeRepository")
  */
 class NmtHrEmployee
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +24,7 @@ class NmtHrEmployee
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +32,7 @@ class NmtHrEmployee
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -36,6 +40,7 @@ class NmtHrEmployee
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
@@ -43,6 +48,7 @@ class NmtHrEmployee
     private $employeeCode;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="employee_name", type="string", length=80, nullable=false)
@@ -50,6 +56,7 @@ class NmtHrEmployee
     private $employeeName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="employee_name_local", type="string", length=80, nullable=true)
@@ -57,6 +64,7 @@ class NmtHrEmployee
     private $employeeNameLocal;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="gender", type="string", nullable=true)
@@ -64,6 +72,7 @@ class NmtHrEmployee
     private $gender;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="birthday", type="datetime", nullable=true)
@@ -71,6 +80,7 @@ class NmtHrEmployee
     private $birthday;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -78,6 +88,7 @@ class NmtHrEmployee
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -85,6 +96,7 @@ class NmtHrEmployee
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -92,6 +104,7 @@ class NmtHrEmployee
     private $lastChangeOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="sso_number", type="string", length=45, nullable=true)
@@ -99,6 +112,7 @@ class NmtHrEmployee
     private $ssoNumber;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="sso_date", type="datetime", nullable=true)
@@ -106,6 +120,7 @@ class NmtHrEmployee
     private $ssoDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="family_book_no", type="string", length=45, nullable=true)
@@ -113,6 +128,7 @@ class NmtHrEmployee
     private $familyBookNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="personal_id_no", type="string", length=45, nullable=true)
@@ -120,6 +136,7 @@ class NmtHrEmployee
     private $personalIdNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="personal_id_issue_date", type="datetime", nullable=true)
@@ -127,6 +144,7 @@ class NmtHrEmployee
     private $personalIdIssueDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="personal_id_issue_place", type="string", length=45, nullable=true)
@@ -134,6 +152,7 @@ class NmtHrEmployee
     private $personalIdIssuePlace;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="personal_id_expire_date", type="datetime", nullable=true)
@@ -141,6 +160,7 @@ class NmtHrEmployee
     private $personalIdExpireDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="passport_no", type="string", length=45, nullable=true)
@@ -148,6 +168,7 @@ class NmtHrEmployee
     private $passportNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="passport_issue_date", type="datetime", nullable=true)
@@ -155,6 +176,7 @@ class NmtHrEmployee
     private $passportIssueDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="passport_issue_place", type="string", length=45, nullable=true)
@@ -162,6 +184,7 @@ class NmtHrEmployee
     private $passportIssuePlace;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="passport_expire_date", type="datetime", nullable=true)
@@ -169,6 +192,7 @@ class NmtHrEmployee
     private $passportExpireDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="stay_permit_no", type="string", length=45, nullable=true)
@@ -176,6 +200,7 @@ class NmtHrEmployee
     private $stayPermitNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="stay_permit_issue_date", type="datetime", nullable=true)
@@ -183,6 +208,7 @@ class NmtHrEmployee
     private $stayPermitIssueDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="stay_permit_issue_place", type="string", length=45, nullable=true)
@@ -190,6 +216,7 @@ class NmtHrEmployee
     private $stayPermitIssuePlace;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="stay_permit_expire_date", type="datetime", nullable=true)
@@ -197,6 +224,7 @@ class NmtHrEmployee
     private $stayPermitExpireDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="work_permit_no", type="string", length=45, nullable=true)
@@ -204,6 +232,7 @@ class NmtHrEmployee
     private $workPermitNo;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="work_permit_issue_date", type="datetime", nullable=true)
@@ -211,6 +240,7 @@ class NmtHrEmployee
     private $workPermitIssueDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="work_permint_issue_place", type="string", length=45, nullable=true)
@@ -218,6 +248,7 @@ class NmtHrEmployee
     private $workPermintIssuePlace;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="work_permit_expire_date", type="datetime", nullable=true)
@@ -225,6 +256,7 @@ class NmtHrEmployee
     private $workPermitExpireDate;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="salary_pmt_method", type="string", length=45, nullable=true)
@@ -232,6 +264,7 @@ class NmtHrEmployee
     private $salaryPmtMethod;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="nationality", type="integer", nullable=false)
@@ -239,6 +272,7 @@ class NmtHrEmployee
     private $nationality;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -246,6 +280,7 @@ class NmtHrEmployee
     private $currentState;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -256,6 +291,7 @@ class NmtHrEmployee
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -266,6 +302,7 @@ class NmtHrEmployee
     private $lastChangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -276,6 +313,7 @@ class NmtHrEmployee
     private $company;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCountry
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
@@ -284,8 +322,6 @@ class NmtHrEmployee
      * })
      */
     private $birthCountry;
-
-
 
     /**
      * Get id

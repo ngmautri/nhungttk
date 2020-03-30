@@ -33,9 +33,6 @@ use Procure\Application\DTO\Gr\GrDetailsDTO;
 abstract class GenericGR extends AbstractGR
 {
 
-
-    
-  
     abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
     abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
@@ -49,6 +46,45 @@ abstract class GenericGR extends AbstractGR
     abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
     abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
+
+    /**
+     *
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param boolean $isPosting
+     * @throws GrInvalidArgumentException
+     * @return \Procure\Domain\GoodsReceipt\GenericGR
+     */
+    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
+    {
+        if (! $headerValidators instanceof HeaderValidatorCollection) {
+            throw new GrInvalidArgumentException("GR Validators not given!");
+        }
+
+        if (! $rowValidators instanceof RowValidatorCollection) {
+            throw new GrInvalidArgumentException("GR Validators not given!");
+        }
+
+        // Clear Notification.
+        $this->clearNotification();
+
+        $this->validateHeader($headerValidators, $isPosting);
+
+        if ($this->hasErrors()) {
+            return $this;
+        }
+
+        if (count($this->getDocRows()) == 0) {
+            $this->addError("Documment is empty. Please add line!");
+            return $this;
+        }
+
+        foreach ($this->getDocRows() as $row) {
+            $this->validateRow($row, $rowValidators, $isPosting);
+        }
+
+        return $this;
+    }
 
     public function deactivateRow(GRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
@@ -405,45 +441,6 @@ abstract class GenericGR extends AbstractGR
     /**
      *
      * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws GrInvalidArgumentException
-     * @return \Procure\Domain\GoodsReceipt\GenericGR
-     */
-    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
-    {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new GrInvalidArgumentException("PO Validators not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new GrInvalidArgumentException("PO Validators not given!");
-        }
-
-        // Clear Notification.
-        $this->clearNotification();
-
-        $this->validateHeader($headerValidators, $isPosting);
-
-        if ($this->hasErrors()) {
-            return $this;
-        }
-
-        if (count($this->getDocRows()) == 0) {
-            $this->addError($this->translate("Documment is empty. Please add line!"));
-            return $this;
-        }
-
-        foreach ($this->docRows as $row) {
-            $this->validateRow($row, $rowValidators, $isPosting);
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
      * @param boolean $isPosting
      */
     public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
@@ -465,7 +462,7 @@ abstract class GenericGR extends AbstractGR
     public function validateRow(GrRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         if (! $row instanceof GrRow) {
-            throw new GrInvalidArgumentException("Po Row not given!");
+            throw new GrInvalidArgumentException("GR Row not given!");
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {

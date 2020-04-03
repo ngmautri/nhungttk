@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Validator;
+namespace Procure\Domain\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Procure\Domain\Exception\PoInvalidArgumentException;

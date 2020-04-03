@@ -5,6 +5,8 @@ use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\Validator\AbstractValidator;
+use Procure\Domain\Validator\RowValidatorInterface;
 
 /**
  *
@@ -17,7 +19,7 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\Validator\RowValidatorInterface::validate()
+     * @see \Procure\Domain\Validator\RowValidatorInterface::validate()
      */
     public function validate($rootEntity, $localEntity)
     {

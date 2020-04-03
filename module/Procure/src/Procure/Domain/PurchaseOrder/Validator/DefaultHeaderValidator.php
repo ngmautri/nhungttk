@@ -5,6 +5,8 @@ use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\PurchaseOrder\GenericPO;
+use Procure\Domain\Validator\AbstractValidator;
+use Procure\Domain\Validator\HeaderValidatorInterface;
 
 /**
  *
@@ -17,7 +19,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
+     * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
      */
     public function validate($rootEntity)
     {

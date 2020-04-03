@@ -1,7 +1,8 @@
 <?php
-namespace Procure\Domain\GoodsReceipt\Validator;
+namespace Procure\Domain\Validator;
 
-use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\AbstractDoc;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -20,12 +21,12 @@ class HeaderValidatorCollection implements HeaderValidatorInterface
     /**
      *
      * @param HeaderValidatorInterface $validator
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function add(HeaderValidatorInterface $validator)
     {
         if (! $validator instanceof HeaderValidatorInterface) {
-            throw new PoInvalidArgumentException("Po Header Validator is required!");
+            throw new InvalidArgumentException("Po Header Validator is required!");
         }
 
         $this->validators[] = $validator;
@@ -34,12 +35,12 @@ class HeaderValidatorCollection implements HeaderValidatorInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
+     * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
      */
-    public function validate($rootEntity)
+    public function validate(AbstractDoc $rootEntity)
     {
         if (count($this->validators) == 0) {
-            throw new PoInvalidArgumentException("Po Header Validator is required! but no is given.");
+            throw new InvalidArgumentException("Header Validator is required! but no is given.");
         }
 
         foreach ($this->validators as $validator) {

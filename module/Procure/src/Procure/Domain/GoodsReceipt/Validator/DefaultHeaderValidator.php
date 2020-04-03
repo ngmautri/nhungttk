@@ -1,11 +1,15 @@
+
 <?php
 namespace Procure\Domain\GoodsReceipt\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Procure\Domain\AbstractDoc;
 use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Application\Application\Specification\Zend\CanPostOnDateSpecification;
+use Procure\Domain\Validator\AbstractValidator;
+use Procure\Domain\Validator\HeaderValidatorInterface;
 
 /**
  *
@@ -18,9 +22,9 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\Validator\HeaderValidatorInterface::validate()
+     * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
      */
-    public function validate($rootEntity)
+    public function validate(AbstractDoc $rootEntity)
     {
         if (! $rootEntity instanceof GenericGR) {
             throw new GrInvalidArgumentException('Root entity not given!');
@@ -127,5 +131,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             $rootEntity->addError($e->getMessage());
         }
     }
+    
+    
 }
 

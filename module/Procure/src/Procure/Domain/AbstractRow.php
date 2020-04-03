@@ -226,7 +226,7 @@ class AbstractRow extends AbstractEntity
     public function convertTo(AbstractRow $targetObj)
     {
         if (! $targetObj instanceof AbstractRow) {
-            throw new InvalidArgumentException("Convertion input not invalid!");
+            throw new InvalidArgumentException("Convertion input invalid!");
         }
 
         // Converting

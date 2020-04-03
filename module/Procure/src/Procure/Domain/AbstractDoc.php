@@ -221,7 +221,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     public function convertTo(AbstractDoc $targetObj)
     {
         if (! $targetObj instanceof AbstractDoc) {
-            throw new InvalidArgumentException("Convertion input not invalid!");
+            throw new InvalidArgumentException("Convertion input invalid!");
         }
 
         // Converting

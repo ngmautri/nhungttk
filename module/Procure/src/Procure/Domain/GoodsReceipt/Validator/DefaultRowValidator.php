@@ -6,6 +6,8 @@ use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GenericGR;
+use Procure\Domain\Validator\AbstractValidator;
+use Procure\Domain\Validator\RowValidatorInterface;
 
 /**
  *
@@ -18,7 +20,7 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseOrder\Validator\RowValidatorInterface::validate()
+     * @see \Procure\Domain\Validator\RowValidatorInterface::validate()
      */
     public function validate($rootEntity, $localEntity)
     {
@@ -73,12 +75,10 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             }
 
             if (! $localEntity->getTaxRate() == null) {
-            if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
-                $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
+                if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
+                    $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
+                }
             }
-        }
-        
-        
         } catch (GrCreateException $e) {
             $localEntity->addError($e->getMessage());
         }

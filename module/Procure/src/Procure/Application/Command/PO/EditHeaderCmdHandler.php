@@ -151,6 +151,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $notification->addSuccess($m);
 
+            // No Check Version when Posting when posting.
             $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
 
             // time to check version - concurency

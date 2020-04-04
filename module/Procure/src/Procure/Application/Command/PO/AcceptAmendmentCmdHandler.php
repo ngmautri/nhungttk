@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Command\PO;
 
-use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
@@ -16,10 +15,10 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;

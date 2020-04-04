@@ -43,6 +43,8 @@ use Procure\Application\Command\PO\AcceptAmendmentCmd;
 use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
 use Procure\Application\Command\PO\CreateHeaderCmdHandlerDecorator;
 use Procure\Application\Command\PO\EditHeaderCmdHandlerDecorator;
+use Procure\Application\Command\PO\UpdateHeaderAndPostCmd;
+use Procure\Application\Command\PO\PostCmdHandlerDecorator;
 
 /**
  *
@@ -723,7 +725,7 @@ class PoController extends AbstractActionController
             // probably this is the first time the form was loaded
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $token = $this->params()->fromQuery('token');
+            $token = $this->params()->fromQuery('entity_token');
             $dto = $this->purchaseOrderService->getPOHeaderById($entity_id, $token);
 
             if ($dto == null) {
@@ -804,6 +806,8 @@ class PoController extends AbstractActionController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+        //$this->flashMessenger()->addMessage($redirectUrl);
+        
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -1190,10 +1194,13 @@ class PoController extends AbstractActionController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, new PostCmdHandler());
-
+            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);            
+            $cmdHandler = new PostCmdHandler();
+            $cmdHandlerDecorator = new PostCmdHandlerDecorator($cmdHandler);
+            
+            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);      
             $cmd->execute();
+            
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
 

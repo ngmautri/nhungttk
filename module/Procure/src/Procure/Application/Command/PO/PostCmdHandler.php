@@ -66,7 +66,7 @@ class PostCmdHandler extends AbstractCommandHandler
             throw new PoUpdateException("PoDTO object not found!");
         }
 
-       $options = $cmd->getOptions();
+        $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
         $rootEntityId = $options->getRootEntityId();
@@ -75,10 +75,6 @@ class PostCmdHandler extends AbstractCommandHandler
         $trigger = $options->getTriggeredBy();
 
         try {
-
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
 
             $notification = new Notification();
 
@@ -137,13 +133,9 @@ class PostCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-            $cmd->getDoctrineEM()->commit(); // now commit
-        } catch (\Exception $e) {
+         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->rollBack();
         }
 
         $dto->setNotification($notification);

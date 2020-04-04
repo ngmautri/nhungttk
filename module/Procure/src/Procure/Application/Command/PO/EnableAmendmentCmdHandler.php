@@ -1,30 +1,27 @@
 <?php
 namespace Procure\Application\Command\PO;
 
-use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
-use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\PoAmendmentException;
 use Procure\Domain\Exception\PoInvalidOperationException;
-use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
-use Procure\Domain\Exception\PoAmendmentException;
 
 /**
  *

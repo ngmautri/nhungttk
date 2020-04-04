@@ -1,28 +1,33 @@
 <?php
 namespace Procure\Application\Command\PO;
 
-use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
+use Application\Application\Command\AbstractDoctrineCompositeCmd;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateHeaderAndPostCmd extends AbstractDoctrineCmd
+class UpdateHeaderAndPostCmd extends AbstractDoctrineCompositeCmd
 {
 
     /**
      *
-     * {@inheritDoc}
-     * @see \Application\Domain\Shared\Command\CommandInterface::execute()
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Command\CompositeCommand::execute()
      */
     public function execute()
     {
-        if (!$this->handler instanceof AbstractDoctrineCmdHandler) {
-            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())) );
+        $this->getDoctrineEM()
+            ->getConnection()
+            ->beginTransaction(); // suspend auto-commit
+
+        try {
+            parent::execute();
+        } catch (\Exception $e) {
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->rollBack();
         }
-        
-        $this->handler->run($this);
     }
 }

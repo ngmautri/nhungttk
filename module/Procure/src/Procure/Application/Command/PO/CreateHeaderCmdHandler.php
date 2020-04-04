@@ -3,9 +3,9 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
@@ -16,19 +16,19 @@ use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\Service\POPostingService;
+use Procure\Domain\Service\SharedService;
+use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\Service\SharedService;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
+class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -75,10 +75,6 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
             }
 
             // ====================
-
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
 
             $dto->company = $companyId;
             $dto->createdBy = $userId;
@@ -130,16 +126,8 @@ class CreateHeaderCmdHandler extends AbstractDoctrineCmdHandler
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
-
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->commit();
         } catch (\Exception $e) {
 
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->rollBack();
-            $cmd->getDoctrineEM()->close();
             $notification->addError($e->getMessage());
         }
 

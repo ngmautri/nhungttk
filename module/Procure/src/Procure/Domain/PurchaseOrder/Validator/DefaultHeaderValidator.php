@@ -2,6 +2,7 @@
 namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Procure\Domain\AbstractDoc;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\PurchaseOrder\GenericPO;
@@ -17,11 +18,11 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 {
 
     /**
-     *
-     * {@inheritdoc}
+     * 
+     * {@inheritDoc}
      * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
      */
-    public function validate($rootEntity)
+    public function validate(AbstractDoc $rootEntity)
     {
         if (! $rootEntity instanceof GenericPO) {
             throw new PoInvalidArgumentException('Root entity not given!');
@@ -142,5 +143,8 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             $rootEntity->addError($e->getMessage());
         }
     }
+    
+
+  
 }
 

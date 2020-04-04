@@ -9,7 +9,7 @@ use Procure\Domain\Exception\PoUpdateException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoUpdateOptions implements CommandOptions
+class PoUpdateHeaderAndPostOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -23,12 +23,11 @@ class PoUpdateOptions implements CommandOptions
     private $version;
 
     private $triggeredBy;
-
+    
     private $triggeredOn;
+    
 
-    private $isPosting;
-
-    public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy, $isPosting = false)
+    public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
             throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
@@ -48,7 +47,6 @@ class PoUpdateOptions implements CommandOptions
         $this->version = $version;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
-        $this->isPosting = $isPosting;
     }
 
     /**
@@ -104,23 +102,12 @@ class PoUpdateOptions implements CommandOptions
     {
         return $this->triggeredBy;
     }
-
     /**
-     *
      * @return mixed
      */
     public function getTriggeredOn()
     {
         return $this->triggeredOn;
     }
-    /**
-     * @return string
-     */
-    public function getIsPosting()
-    {
-        return $this->isPosting;
-    }
-
-
 
 }

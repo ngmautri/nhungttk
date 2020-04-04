@@ -41,6 +41,8 @@ use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
 use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
 use Procure\Application\Command\PO\AcceptAmendmentCmd;
 use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
+use Procure\Application\Command\PO\CreateHeaderCmdHandlerDecorator;
+use Procure\Application\Command\PO\EditHeaderCmdHandlerDecorator;
 
 /**
  *
@@ -311,7 +313,11 @@ class PoController extends AbstractActionController
             $companyId = $u->getCompany()->getId();
 
             $options = new PoCreateOptions($companyId, $userId, __METHOD__);
-            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, new CreateHeaderCmdHandler());
+
+            $cmdHandler = new CreateHeaderCmdHandler();
+            $cmdHandlerDecorator = new CreateHeaderCmdHandlerDecorator($cmdHandler);
+
+            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -425,8 +431,9 @@ class PoController extends AbstractActionController
         }
 
         $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
+        $cmdHander = new AddRowCmdHandler();
 
-        $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, new AddRowCmdHandler());
+        $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHander);
 
         try {
             $cmd->execute();
@@ -505,7 +512,7 @@ class PoController extends AbstractActionController
             if (isset($result["localDTO"])) {
                 $localDTO = $result["localDTO"];
             }
-           
+
             if (! $rootDTO instanceof PoDetailsDTO || ! $localDTO instanceof PORowDetailsDTO) {
                 return $this->redirect()->toRoute('not_found');
             }
@@ -762,8 +769,12 @@ class PoController extends AbstractActionController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, new EditHeaderCmdHandler());
+            $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__, False);
+
+            $cmdHandler = new EditHeaderCmdHandler();
+            $cmdHandlerDecorator = new EditHeaderCmdHandlerDecorator($cmdHandler);
+
+            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
 
             $cmd->execute();
             $notification = $dto->getNotification();

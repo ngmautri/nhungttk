@@ -18,20 +18,21 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class AddRowCmdHandler extends AbstractDoctrineCmdHandler
+class AddRowCmdHandler extends AbstractCommandHandler
 {
 
     /**

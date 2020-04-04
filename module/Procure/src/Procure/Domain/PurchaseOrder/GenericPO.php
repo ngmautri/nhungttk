@@ -6,25 +6,24 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\APInvoice\Factory\APFactory;
+use Procure\Domain\Event\Po\PoAmendmentAccepted;
+use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\PoAmendmentException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoInvalidOperationException;
+use Procure\Domain\Exception\PoPostingException;
 use Procure\Domain\Exception\PoRowCreateException;
 use Procure\Domain\Exception\PoRowException;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
-use Ramsey\Uuid\Uuid;
-use Procure\Domain\Exception\PoAmendmentException;
-use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
-use Procure\Domain\Event\Po\PoAmendmentEnabled;
-use Procure\Domain\Exception\PoPostingException;
-use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Shared\Constants;
+use Ramsey\Uuid\Uuid;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 
 /**
  *
@@ -33,12 +32,6 @@ use Procure\Domain\Shared\Constants;
  */
 abstract class GenericPO extends AbstractPO
 {
-
-    protected $docRows;
-
-    protected $rowIdArray;
-
-    protected $rowsOutput;
 
     abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
@@ -54,9 +47,6 @@ abstract class GenericPO extends AbstractPO
 
     abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);
 
-    
-   
-        
     /**
      *
      * @param PORow $row
@@ -556,34 +546,7 @@ abstract class GenericPO extends AbstractPO
         return APFactory::createAPInvoiceFromPO($this);
     }
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocRows()
-    {
-        return $this->docRows;
-    }
-
-    /**
-     *
-     * @param mixed $docRows
-     */
-    public function setDocRows($docRows)
-    {
-        $this->docRows = $docRows;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRowsOutput()
-    {
-        return $this->rowsOutput;
-    }
-
-    /**
+          /**
      *
      * @param mixed $rowsOutput
      */
@@ -592,110 +555,4 @@ abstract class GenericPO extends AbstractPO
         $this->rowsOutput = $rowsOutput;
     }
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getRowIdArray()
-    {
-        if ($this->rowIdArray == null) {
-            return [];
-        }
-        return $this->rowIdArray;
-    }
-
-    /**
-     *
-     * @param mixed $rowIdArray
-     */
-    public function setRowIdArray($rowIdArray)
-    {
-        $this->rowIdArray = $rowIdArray;
-    }
-
-    /**
-     *
-     * @param int $id
-     * @return boolean
-     */
-    public function hasRowId($id)
-    {
-        if ($this->getRowIdArray() == null)
-            return false;
-
-        return in_array($id, $this->getRowIdArray());
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @return NULL|\Procure\Domain\PurchaseOrder\PoRow
-     */
-    public function getRowbyTokenId($id, $token)
-    {
-        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
-            return null;
-        }
-
-        $rows = $this->getDocRows();
-
-        foreach ($rows as $r) {
-            if ($r->getId() == $id && $r->getToken() == $token) {
-                return $r;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @return NULL|NULL|object
-     */
-    public function getRowDTObyTokenId($id, $token)
-    {
-        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
-            return null;
-        }
-
-        $rows = $this->getDocRows();
-
-        foreach ($rows as $r) {
-
-            /**
-             *
-             * @var \Procure\Domain\PurchaseOrder\PoRow $r ;
-             */
-            if ($r->getId() == $id && $r->getToken() == $token) {
-                return $r->makeDTOForGrid();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @return NULL|\Procure\Domain\PurchaseOrder\PoRow
-     */
-    public function getRowbyId($id)
-    {
-        if ($id == null || $id == null || $this->getDocRows() == null) {
-            return null;
-        }
-        $rows = $this->getDocRows();
-
-        foreach ($rows as $r) {
-            if ($r->getId() == $id) {
-                return $r;
-            }
-        }
-
-        return null;
-    }
 }

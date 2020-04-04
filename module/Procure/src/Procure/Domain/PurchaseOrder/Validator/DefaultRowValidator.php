@@ -2,6 +2,8 @@
 namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Procure\Domain\AbstractDoc;
+use Procure\Domain\AbstractRow;
 use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Exception\PoInvalidArgumentException;
@@ -21,7 +23,7 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
      * {@inheritdoc}
      * @see \Procure\Domain\Validator\RowValidatorInterface::validate()
      */
-    public function validate($rootEntity, $localEntity)
+    public function validate(AbstractDoc $rootEntity, AbstractRow $localEntity)
     {
         if (! $rootEntity instanceof GenericPO) {
             throw new PoInvalidArgumentException('Root entity not given!');
@@ -77,5 +79,6 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             }
         }
     }
+  
 }
 

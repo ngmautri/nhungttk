@@ -44,11 +44,11 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             //$id = 302;
             //$token = "b69a9fbe-e7e5-48da-a7a7-cf7e27040d1b";
             
-            //$id = 338;            
-            //$token = "040b6a84-e217-4cfa-80e3-a9a9eb2c76ef";
+            $id = 338;            
+            $token = "040b6a84-e217-4cfa-80e3-a9a9eb2c76ef";
             
-            $id = 283;
-            $token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
+            //$id = 283;
+            //$token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
             
             $po = $rep->getPODetailsById($id, $token);
             $gr = GRDoc::createFromPo($po);

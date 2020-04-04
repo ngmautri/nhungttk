@@ -200,6 +200,74 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     /**
      *
+     * @param int $id
+     * @return NULL|\Procure\Domain\AbstractRow
+     */
+    public function getRowbyId($id)
+    {
+        if ($id == null || $this->getDocRows() == null) {
+            return null;
+        }
+        $rows = $this->getDocRows();
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var AbstractRow $r ;
+             */
+            if ($r->getId() == $id) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return NULL|\Procure\Domain\AbstractRow
+     */
+    public function getRowbyTokenId($id, $token)
+    {
+        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
+            return null;
+        }
+
+        $rows = $this->getDocRows();
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var AbstractRow $r ;
+             */
+
+            if ($r->getId() == $id && $r->getToken() == $token) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return boolean
+     */
+    public function hasRowId($id)
+    {
+        if ($this->getRowIdArray() == null)
+            return false;
+
+        return in_array($id, $this->getRowIdArray());
+    }
+
+    /**
+     *
      * @param AbstractRow $row
      */
     public function addRow(AbstractRow $row)
@@ -1696,6 +1764,9 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
      */
     public function getDocRows()
     {
+        if ($this->docRows == null) {
+            return [];
+        }
         return $this->docRows;
     }
 
@@ -1705,6 +1776,9 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
      */
     public function getRowIdArray()
     {
+        if ($this->rowIdArray == null) {
+            return [];
+        }
         return $this->rowIdArray;
     }
 
@@ -1721,7 +1795,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
      *
      * @param mixed $docRows
      */
-    protected function setDocRows($docRows)
+    public function setDocRows($docRows)
     {
         $this->docRows = $docRows;
     }
@@ -1730,7 +1804,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
      *
      * @param mixed $rowIdArray
      */
-    protected function setRowIdArray($rowIdArray)
+    public function setRowIdArray($rowIdArray)
     {
         $this->rowIdArray = $rowIdArray;
     }

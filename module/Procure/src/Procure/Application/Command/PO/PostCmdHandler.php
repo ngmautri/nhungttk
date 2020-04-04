@@ -3,8 +3,8 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\DTO\Po\PoDTO;
@@ -14,23 +14,22 @@ use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
+use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PostCmdHandler extends AbstractDoctrineCmdHandler
+class PostCmdHandler extends AbstractCommandHandler
 {
 
     /**

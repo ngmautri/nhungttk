@@ -12,6 +12,4 @@
  */
 
 // SQL: 2nyAf8CT3hujzGLM
-return array(
-   
-);
+return array();

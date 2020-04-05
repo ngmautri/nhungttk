@@ -1,13 +1,11 @@
-
 <?php
-namespace Procure\Domain\GoodsReceipt\Validator;
+namespace Procure\Domain\GoodsReceipt\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GenericGR;
-use Application\Application\Specification\Zend\CanPostOnDateSpecification;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
 
@@ -57,13 +55,11 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 
             // ==== GR DATE =======
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
+            
             if (! $spec->isSatisfiedBy($rootEntity->getGrDate())) {
                 $rootEntity->addError("Good Receipt date is not correct or empty");
             } else {
-                /**
-                 *
-                 * @var CanPostOnDateSpecification $spec ;
-                 */
+           
                 $spec1 = $this->getSharedSpecificationFactory()->getCanPostOnDateSpecification();
                 $subject = array(
                     "companyId" => $rootEntity->getCompany(),
@@ -71,7 +67,9 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 );
 
                 if (! $spec1->isSatisfiedBy($subject)) {
-                    $rootEntity->addError("Can not post on this date. Period is not created or closed." . $rootEntity->getPostingDate());
+                    $rootEntity->addError(sprintf("Can not post on this date (Date %s CompanyID %s). Period is not created or closed. ", 
+                        $rootEntity->getGrDate(),
+                        $rootEntity->getCompany()));
                 }
             }
 
@@ -80,11 +78,10 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 $rootEntity->addError("Source warehouse is not set");
             } else {
 
-                $spec1 = $this->getSharedSpecificationFactory()->getWarehouseACLSpecification();
+                $spec1 = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
                 $subject = array(
                     "companyId" => $rootEntity->getCompany(),
                     "warehouseId" => $rootEntity->getWarehouse(),
-                    "userId" => $rootEntity->getCreatedBy()
                 );
                 if (! $spec1->isSatisfiedBy($subject))
                     $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));

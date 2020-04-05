@@ -3,7 +3,6 @@ namespace Procure\Domain\Validator;
 
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AbstractRow;
-use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\InvalidArgumentException;
 
 /**

@@ -1,7 +1,8 @@
 <?php
 namespace Procure\Domain\Validator;
 
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
+use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
+use Procure\Domain\Shared\Specification\AbstractSpecificationFactory as ProcureSpecsFactory;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Service\FXServiceInterface;
 
@@ -15,17 +16,20 @@ abstract class AbstractValidator
 
     protected $sharedSpecificationFactory;
 
+    protected $procureSpecificationFactory;
+
     protected $fxService;
 
     /**
      *
-     * @param AbstractSpecificationFactory $sharedSpecificationFactory
+     * @param SharedSpecsFactory $sharedSpecificationFactory
+     * @param ProcureSpecsFactory $procureSpecificationFactory
      * @param FXServiceInterface $fxService
      * @throws PoInvalidArgumentException
      */
-    public function __construct(AbstractSpecificationFactory $sharedSpecificationFactory, FXServiceInterface $fxService)
+    public function __construct(SharedSpecsFactory $sharedSpecificationFactory,FXServiceInterface $fxService, ProcureSpecsFactory $procureSpecificationFactory = null)
     {
-        if (! $sharedSpecificationFactory instanceof AbstractSpecificationFactory) {
+        if (! $sharedSpecificationFactory instanceof SharedSpecsFactory) {
             throw new PoInvalidArgumentException("Shared Specification is required");
         }
 
@@ -34,7 +38,17 @@ abstract class AbstractValidator
         }
 
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;
+        $this->procureSpecificationFactory = $procureSpecificationFactory;
         $this->fxService = $fxService;
+    }
+
+    /**
+     *
+     * @return \Procure\Domain\Shared\Specification\AbstractSpecificationFactory
+     */
+    public function getProcureSpecificationFactory()
+    {
+        return $this->procureSpecificationFactory;
     }
 
     /**
@@ -47,12 +61,12 @@ abstract class AbstractValidator
     }
 
     /**
+     *
      * @return \Procure\Domain\Service\FXServiceInterface
      */
     public function getFxService()
     {
         return $this->fxService;
     }
-
 }
 

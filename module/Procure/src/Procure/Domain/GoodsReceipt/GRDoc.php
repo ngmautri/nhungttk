@@ -82,6 +82,11 @@ class GRDoc extends GenericGR
         $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR);
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
+        
+        $instance->setCreatedBy(39);
+        $instance->setGrDate("2020-03-14");
+        $instance->setWarehouse(5);
+        
         foreach ($rows as $r) {
 
             /**

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\GoodsReceipt\Validator;
+namespace Procure\Domain\GoodsReceipt\Validator\Row;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\Exception\Gr\GrCreateException;
@@ -8,6 +8,8 @@ use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\RowValidatorInterface;
+use Procure\Domain\AbstractDoc;
+use Procure\Domain\AbstractRow;
 
 /**
  *
@@ -22,7 +24,7 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
      * {@inheritdoc}
      * @see \Procure\Domain\Validator\RowValidatorInterface::validate()
      */
-    public function validate($rootEntity, $localEntity)
+    public function validate(AbstractDoc $rootEntity, AbstractRow $localEntity)
     {
         if (! $rootEntity instanceof GenericGR) {
             throw new GrInvalidArgumentException('Root entity not given!');

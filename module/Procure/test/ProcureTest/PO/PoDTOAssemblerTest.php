@@ -2,12 +2,9 @@
 namespace ProcureTest\PR;
 
 use Doctrine\ORM\EntityManager;
-use Procure\Application\DTO\Pr\PrDTOAssembler;
-
+use Procure\Application\DTO\Po\PoDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\DTO\Po\PoDTOAssembler;
-use Symfony\Component\Inflector\Inflector;
 
 class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {

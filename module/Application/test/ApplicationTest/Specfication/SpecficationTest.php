@@ -29,11 +29,10 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
-        $spec = $factory->getWarehouseACLSpecification();
+        $spec = $factory->getCanPostOnDateSpecification();
         $subject = array(
             "companyId" => 1,
-            "warehouseId" => 6,
-            "userId" => 46
+            "movementDate" => "2020-04-04"
         );
         var_dump($spec->isSatisfiedBy($subject));
     }

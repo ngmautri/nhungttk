@@ -393,7 +393,7 @@ class PoMapper
         if ($entity->getVendor() !== null) {
             $snapshot->vendor = $entity->getVendor()->getId();
             $snapshot->vendorName = $entity->getVendor()->getVendorName();
-            $snapshot->vendorId = $entity->getVendor()->getId();
+            $snapshot->vendorId = $snapshot->vendor;
             $snapshot->vendorToken = $entity->getVendor()->getToken();
             $snapshot->vendorAddress = sprintf("%s %s",$entity->getVendor()->getStreet() , $entity->getVendor()->getCity());
 
@@ -507,9 +507,7 @@ class PoMapper
         $snapshot->id = $entity->getId();
         $snapshot->token = $entity->getToken();
         $snapshot->vendorName = $entity->getVendorName();
-
         $snapshot->invoiceNo = $entity->getInvoiceNo();
-
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->remarks = $entity->getRemarks();
         $snapshot->currentState = $entity->getCurrentState();

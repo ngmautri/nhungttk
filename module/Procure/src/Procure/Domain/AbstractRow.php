@@ -291,11 +291,18 @@ class AbstractRow extends AbstractEntity
 
         // Converting
         // ==========================
-        $exculdeProps = [
+        $exculdedProps = [
             "id",
             "uuid",
             "token",
-            "instance"
+            "instance",
+            "createdByName",
+            "createdBy",
+            "lastChangeByName",
+            "lastChangeBy",
+            "lastChangeOn",
+            "rowIdentifer",
+            "docType",
         ];
 
         $sourceObj = $this;
@@ -306,7 +313,7 @@ class AbstractRow extends AbstractEntity
             $prop->setAccessible(true);
 
             $propName = $prop->getName();
-            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdeProps)) {
+            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
                 $targetObj->$propName = $prop->getValue($sourceObj);
             }
         }

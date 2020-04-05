@@ -319,13 +319,17 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
         // Converting
         // ==========================
-        $exculdeProps = [
+        $exculdedProps = [
             "id",
             "uuid",
             "token",
             "docRows",
             "rowIdArray",
-            "instance"
+            "instance",            
+            "sysNumber",
+            "createdBy",
+            "lastchangeBy",
+            
         ];
 
         $sourceObj = $this;
@@ -336,7 +340,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
             $prop->setAccessible(true);
 
             $propName = $prop->getName();
-            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdeProps)) {
+            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
                 $targetObj->$propName = $prop->getValue($sourceObj);
             }
         }

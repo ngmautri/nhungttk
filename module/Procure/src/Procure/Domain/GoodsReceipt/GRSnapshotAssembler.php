@@ -4,6 +4,7 @@ namespace Procure\Domain\GoodsReceipt;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Domain\GenericDoc;
+use Procure\Application\DTO\Gr\GrDTOAssembler;
 
 /**
  *
@@ -49,14 +50,10 @@ class GRSnapshotAssembler
     {
         $missingProperties = array();
         
-        $entity = new GRSnapshot();
-        
+        $entityProps = GrDTOAssembler::createDTOProperities();
         $dto = new GenericDoc();
         
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
                 echo (sprintf("\n protected $%s;", $propertyName));

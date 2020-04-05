@@ -1,13 +1,12 @@
 <?php
 namespace Procure\Domain\GoodsReceipt\Factory;
 
-use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Exception\PoInvalidOperationException;
+use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRRow;
-use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\PODocStatus;
 
 /**
  *

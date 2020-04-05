@@ -34,9 +34,10 @@ use Ramsey;
 class GRDoc extends GenericGR
 {
 
-    protected $reversalDoc;
-
     private static $instance = null;
+
+    // Specific Attribute
+    protected $reversalDoc;
 
     private function __construct()
     {}
@@ -75,7 +76,10 @@ class GRDoc extends GenericGR
         $instance = $sourceObj->convertTo($instance);
         $instance->setIsDraft(1);
         $instance->setIsPosted(0);
+        $instance->setDocVersion(0);
+        $instance->setRevisionNo(0);        
         $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR);
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
         foreach ($rows as $r) {
@@ -269,6 +273,7 @@ class GRDoc extends GenericGR
     }
 
     /**
+     * Call this method to get from storage
      *
      * @param GRDetailsSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc

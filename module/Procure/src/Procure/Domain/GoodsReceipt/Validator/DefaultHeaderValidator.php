@@ -55,10 +55,10 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
             }
 
-            // ==== POSTING DATE =======
+            // ==== GR DATE =======
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
-            if (! $spec->isSatisfiedBy($rootEntity->getPostingDate())) {
-                $rootEntity->addError("Posting date is not correct or empty");
+            if (! $spec->isSatisfiedBy($rootEntity->getGrDate())) {
+                $rootEntity->addError("Good Receipt date is not correct or empty");
             } else {
                 /**
                  *
@@ -67,7 +67,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 $spec1 = $this->getSharedSpecificationFactory()->getCanPostOnDateSpecification();
                 $subject = array(
                     "companyId" => $rootEntity->getCompany(),
-                    "movementDate" => $rootEntity->getPostingDate()
+                    "movementDate" => $rootEntity->getGrDate()
                 );
 
                 if (! $spec1->isSatisfiedBy($subject)) {

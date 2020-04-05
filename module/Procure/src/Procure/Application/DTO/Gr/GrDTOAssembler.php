@@ -17,12 +17,13 @@ class GrDTOAssembler
     {
         $entity = new \Application\Entity\NmtProcureGr();
         $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
+        $props = $reflectionClass->getProperties();
+       /*  foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
+            //print "\n" . "public $" . $propertyName . ";";
+        } */
+        return $props;
     }
 
     /**

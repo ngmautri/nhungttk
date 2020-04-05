@@ -10,18 +10,23 @@ use Application\Domain\Shared\AbstractDTO;
  */
 class GRSnapshot extends AbstractDTO
 {
-
     public $reversalDoc;
+    public $instance;
+    public $docRows;
+    public $rowIdArray;
+    public $rowsOutput;
     public $postingYear;
     public $postingMonth;
     public $docYear;
     public $docMonth;
-    public $docRows;
-    public $rowIdArray;
-    public $rowsOutput;
     public $companyName;
+    public $companyId;
     public $companyToken;
     public $companyCode;
+    public $vendorId;
+    public $vendorToken;
+    public $vendorAddress;
+    public $vendorCountry;
     public $paymentTermName;
     public $paymentTermCode;
     public $warehouseName;
@@ -42,6 +47,10 @@ class GRSnapshot extends AbstractDTO
     public $billedAmount;
     public $completedRows;
     public $openAPAmount;
+    public $docCurrencyISO;
+    public $localCurrencyISO;
+    public $docCurrencyId;
+    public $localCurrencyId;
     public $id;
     public $token;
     public $vendorName;
@@ -113,6 +122,38 @@ class GRSnapshot extends AbstractDTO
     /**
      * @return mixed
      */
+    public function getInstance()
+    {
+        return $this->instance;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocRows()
+    {
+        return $this->docRows;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowIdArray()
+    {
+        return $this->rowIdArray;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowsOutput()
+    {
+        return $this->rowsOutput;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getPostingYear()
     {
         return $this->postingYear;
@@ -145,33 +186,17 @@ class GRSnapshot extends AbstractDTO
     /**
      * @return mixed
      */
-    public function getDocRows()
-    {
-        return $this->docRows;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRowIdArray()
-    {
-        return $this->rowIdArray;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRowsOutput()
-    {
-        return $this->rowsOutput;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getCompanyName()
     {
         return $this->companyName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
     }
 
     /**
@@ -188,6 +213,38 @@ class GRSnapshot extends AbstractDTO
     public function getCompanyCode()
     {
         return $this->companyCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorToken()
+    {
+        return $this->vendorToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorAddress()
+    {
+        return $this->vendorAddress;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorCountry()
+    {
+        return $this->vendorCountry;
     }
 
     /**
@@ -348,6 +405,38 @@ class GRSnapshot extends AbstractDTO
     public function getOpenAPAmount()
     {
         return $this->openAPAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyISO()
+    {
+        return $this->docCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyISO()
+    {
+        return $this->localCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyId()
+    {
+        return $this->docCurrencyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyId()
+    {
+        return $this->localCurrencyId;
     }
 
     /**

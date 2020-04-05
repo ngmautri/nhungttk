@@ -4,7 +4,7 @@ namespace Procure\Domain\GoodsReceipt;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
-use Procure\Domain\APInvoice\Factory\APFactory;
+use Procure\Application\DTO\Gr\GrDetailsDTO;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Gr\GrRowAdded;
 use Procure\Domain\Event\Gr\GrRowUpdated;
@@ -16,14 +16,13 @@ use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\Exception\Gr\GrInvalidOperationException;
 use Procure\Domain\Exception\Gr\GrPostingException;
 use Procure\Domain\Exception\Gr\GrRowUpdateException;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
-use Procure\Application\DTO\Gr\GrDetailsDTO;
 
 /**
  *
@@ -530,152 +529,5 @@ abstract class GenericGR extends AbstractGR
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
     }
-
-    public function makeAPInvoice()
-    {
-        return APFactory::createAPInvoiceFromPO($this);
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocRows()
-    {
-        return $this->docRows;
-    }
-
-    /**
-     *
-     * @param mixed $docRows
-     */
-    public function setDocRows($docRows)
-    {
-        $this->docRows = $docRows;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRowsOutput()
-    {
-        return $this->rowsOutput;
-    }
-
-    /**
-     *
-     * @param mixed $rowsOutput
-     */
-    public function setRowsOutput($rowsOutput)
-    {
-        $this->rowsOutput = $rowsOutput;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRowIdArray()
-    {
-        if ($this->rowIdArray == null) {
-            return [];
-        }
-        return $this->rowIdArray;
-    }
-
-    /**
-     *
-     * @param mixed $rowIdArray
-     */
-    public function setRowIdArray($rowIdArray)
-    {
-        $this->rowIdArray = $rowIdArray;
-    }
-
-    /**
-     *
-     * @param int $id
-     * @return boolean
-     */
-    public function hasRowId($id)
-    {
-        if ($this->getRowIdArray() == null)
-            return false;
-
-        return in_array($id, $this->getRowIdArray());
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @return NULL|\Procure\Domain\PurchaseOrder\PoRow
-     */
-    public function getRowbyTokenId($id, $token)
-    {
-        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
-            return null;
-        }
-
-        $rows = $this->getDocRows();
-
-        foreach ($rows as $r) {
-            if ($r->getId() == $id && $r->getToken() == $token) {
-                return $r;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @return NULL|NULL|object
-     */
-    public function getRowDTObyTokenId($id, $token)
-    {
-        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
-            return null;
-        }
-
-        $rows = $this->getDocRows();
-
-        foreach ($rows as $r) {
-
-            /**
-             *
-             * @var \Procure\Domain\PurchaseOrder\PoRow $r ;
-             */
-            if ($r->getId() == $id && $r->getToken() == $token) {
-                return $r->makeDTOForGrid();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @return NULL|\Procure\Domain\PurchaseOrder\PoRow
-     */
-    public function getRowbyId($id)
-    {
-        if ($id == null || $id == null || $this->getDocRows() == null) {
-            return null;
-        }
-        $rows = $this->getDocRows();
-
-        foreach ($rows as $r) {
-            if ($r->getId() == $id) {
-                return $r;
-            }
-        }
-
-        return null;
-    }
+  
 }

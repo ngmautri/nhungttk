@@ -44,7 +44,8 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             //$token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
             
             $po = $rep->getPODetailsById($id, $token);
-            var_dump($po);
+            $gr = GRDoc::createFromPo($po);
+            var_dump($gr);
             
            
         } catch (InvalidArgumentException $e) {

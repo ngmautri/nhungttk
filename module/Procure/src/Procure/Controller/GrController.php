@@ -9,6 +9,10 @@ use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
+use Procure\Domain\Shared\Constants;
+use Application\Domain\Shared\DTOFactory;
+use Application\Notification;
+use Procure\Application\DTO\Gr\GrDTO;
 
 /**
  * Good Receipt Controller
@@ -22,6 +26,118 @@ class GrController extends AbstractActionController
     protected $doctrineEM;
 
     protected $grService;
+    
+    /*
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function createFromPoAction()
+    
+    {
+        $this->layout("Procure/layout-fullscreen");
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/po/review1";
+        $form_title = "Review PO";
+        $action = Constants::FORM_ACTION_REVIEW;
+        $viewTemplete = "procure/po/review-v1";
+        
+        $prg = $this->prg($form_action, true);
+        
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('token');
+            
+            $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
+            
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            // echo memory_get_usage();
+            // var_dump($po->makeDTOForGrid());
+            // echo memory_get_usage();
+            
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+            
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        
+        try {
+            
+            // POSTING
+            $data = $prg;
+            
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+            
+            $dto = DTOFactory::createDTOFromArray($data, new GrDTO());
+            
+            $userId = $u->getId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            
+                   
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+        
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $version,
+                'action' => $action
+            ));
+            
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+        
+        return $this->redirect()->toUrl($redirectUrl);
+    }
 
     /**
      *

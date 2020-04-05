@@ -31,9 +31,9 @@ class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-             $result = GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
+             //$result = GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
             //$result = GRRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
-            $result = GRRow::createSnapshot();
+            $result = GRRow::createSnapshotProps();
             //var_dump($result);
             //var_dump($result);
             

@@ -1,42 +1,42 @@
 {
-	"name" : "nmt/mla-app",
-	"license" : "BSD-3-Clause",
-	"keywords" : [
+	"name": "nmt/mla-app",
+	"license": "BSD-3-Clause",
+	"keywords": [
 		"nmt",
 		"mla",
 		"zend",
 		"ngmautri"
 	],
-	"require" : {
-		"php" : ">=5.6",
-		"phpoffice/phpspreadsheet" : "1.3.*",
-		"zendframework/zendframework" : "~2.5.3",
-		"doctrine/doctrine-orm-module" : "0.8.*",
-		"tecnickcom/tcpdf" : "~6.3",
-		"symfony/workflow" : "~3.3",
-		"symfony/event-dispatcher" : "~3.4.32",
-		"ramsey/uuid" : "~3.8",
-		"moneyphp/money" : "~3.2",
-		"endroid/qr-code" : "~2.5.1",
-		"php-amqplib/php-amqplib" : "2.11.0",
-		"zfcampus/zf-apigility" : "1.4.0",
-		"zfcampus/zf-apigility-doctrine" : "1.1.1",
-		"zendframework/zendsearch" : "~2.0"
+	"require": {
+		"php": ">=5.6",
+		"phpoffice/phpspreadsheet": "1.3.*",
+		"zendframework/zendframework": "~2.5.3",
+		"doctrine/doctrine-orm-module": "0.8.*",
+		"tecnickcom/tcpdf": "~6.3",
+		"symfony/workflow": "~3.3",
+		"symfony/event-dispatcher": "~3.4.32",
+		"ramsey/uuid": "~3.8",
+		"moneyphp/money": "~3.2",
+		"endroid/qr-code": "~2.5.1",
+		"php-amqplib/php-amqplib": "2.11.0",
+		"zfcampus/zf-apigility": "1.4.0",
+		"zfcampus/zf-apigility-doctrine": "1.1.1",
+		"zendframework/zendsearch": "~2.0"
 	},
-	"config" : {
-		"platform" : {
-			"php" : "5.6.36"
+	"config": {
+		"platform": {
+			"php": "5.6.36"
 		}
 	},
-	"minimum-stability" : "beta",
-	"autoload" : {
-		"psr-0" : {
-			"Inventory" : "module/Inventory/src",
-			"Application" : "module/Application/src",
-			"ApplicationTest" : "module/Application/test",
-			"InventoryTest" : "module/Inventory/test",
-			"Procure" : "module/Procure/src",
-			"ProcureTest" : "module/Procure/test"
+	"minimum-stability": "beta",
+	"autoload": {
+		"psr-0": {
+			"Inventory": "module/Inventory/src",
+			"Application": "module/Application/src",
+			"ApplicationTest": "module/Application/test",
+			"InventoryTest": "module/Inventory/test",
+			"Procure": "module/Procure/src",
+			"ProcureTest": "module/Procure/test"
 		}
 	}
 }

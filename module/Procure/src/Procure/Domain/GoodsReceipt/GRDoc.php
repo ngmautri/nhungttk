@@ -79,6 +79,17 @@ class GRDoc extends GenericGR
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
         foreach ($rows as $r) {
+
+            /**
+             *
+             * @var \Procure\Domain\PurchaseOrder\PORow $r ;
+             */
+
+            // ignore completed row;
+            if ($r->getOpenGrBalance() == 0) {
+                continue;
+            }
+
             $grRow = GrRow::createFromPoRow($r);
             // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
@@ -188,6 +199,19 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
+    /**
+     *
+     * @param GrSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     * @throws PoInvalidArgumentException
+     * @throws GrCreateException
+     * @throws GrUpdateException
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     */
     public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if (! $snapshot instanceof GrSnapshot) {
@@ -249,7 +273,7 @@ class GRDoc extends GenericGR
      * @param GRDetailsSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function makeFromDetailsSnapshot(GRDetailsSnapshot $snapshot)
+    public static function constructFromDetailsSnapshot(GRDetailsSnapshot $snapshot)
     {
         if (! $snapshot instanceof GRDetailsSnapshot)
             return;
@@ -268,7 +292,7 @@ class GRDoc extends GenericGR
      * @param GrSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function makeFromSnapshot(GrSnapshot $snapshot)
+    public static function constructFromSnapshot(GrSnapshot $snapshot)
     {
         if (! $snapshot instanceof GrSnapshot)
             return;

@@ -137,6 +137,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
 
         $rows = $this->getPoRowsDetails($id);
 
+        //$rows = null;
+        
         if (count($rows) == 0) {
             $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
             return $rootEntity;
@@ -197,6 +199,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRow = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
             $rowIdArray[] = $poRow->getId();
+            
+            //break;
         }
 
         if ($completed == true) {
@@ -213,18 +217,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         $poDetailsSnapshot->discountAmount = $discountAmount;
         $poDetailsSnapshot->billedAmount = $billedAmount;
         $poDetailsSnapshot->completedRows = $completedRows;
-
-        // $currencies = new ISOCurrencies();
-        // $numberFormatter = new \NumberFormatter('en', \NumberFormatter::CURRENCY_SYMBOL);
-        // $moneyFormatter = new DecimalMoneyFormatter($currencies);
-        // $moneyParser = new DecimalMoneyParser($currencies);
-        // var_dump($poDetailsSnapshot->currencyIso3);
-
-        // $netMoney = $moneyParser->parse("$netAmount", $poDetailsSnapshot->currencyIso3);
-        // $billedMoney = $moneyParser->parse("$billedAmount", $poDetailsSnapshot->currencyIso3);
-
-        // $poDetailsSnapshot->openAPAmount = $netMoney->subtract($billedMoney);
-
+    
         $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);

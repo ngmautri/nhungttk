@@ -19,6 +19,7 @@ class GRRow extends AbstractRow
     private static $instance = null;
 
     // Addtional Properties
+    
     protected $grDate;
 
     protected $reversalReason;

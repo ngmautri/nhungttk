@@ -382,9 +382,26 @@ class PoMapper
         // Mapping Reference
         // =====================
 
+        if ($entity->getCompany() !== null) {
+            $snapshot->company = $entity->getCompany()->getId();
+            $snapshot->companyName = $entity->getCompany()->getCompanyName();
+            $snapshot->companyCode = $entity->getCompany()->getCompanyCode();
+            $snapshot->companyToken = $entity->getCompany()->getToken();
+        }
+
         // $snapshot->vendor= $entity->getVendor();
         if ($entity->getVendor() !== null) {
             $snapshot->vendor = $entity->getVendor()->getId();
+            $snapshot->vendorName = $entity->getVendor()->getVendorName();
+            $snapshot->vendorId = $entity->getVendor()->getId();
+            $snapshot->vendorToken = $entity->getVendor()->getToken();
+            $snapshot->vendorAddress = sprintf("%s %s",$entity->getVendor()->getStreet() , $entity->getVendor()->getCity());
+
+            if ($entity->getVendor()->getCountry() !== null) {
+                $snapshot->vendorCountry = $entity->getVendor()
+                    ->getCountry()
+                    ->getCountryName();
+            }
         }
 
         // $snapshot->pmtTerm = $entity->getPmtTerm();
@@ -428,12 +445,16 @@ class PoMapper
         // $snapshot->localCurrency = $entity->getLocalCurrency();
         if ($entity->getLocalCurrency() !== null) {
             $snapshot->localCurrency = $entity->getLocalCurrency()->getId();
+            $snapshot->localCurrencyId = $snapshot->localCurrency;
+            $snapshot->localCurrencyISO = $entity->getLocalCurrency()->getCurrency();
         }
 
         // $snapshot->docCurrency = $entity->getDocCurrency();
         if ($entity->getDocCurrency() !== null) {
             $snapshot->docCurrency = $entity->getDocCurrency()->getId();
             $snapshot->currencyIso3 = $entity->getDocCurrency()->getCurrency();
+            $snapshot->docCurrencyId = $snapshot->docCurrency;
+            $snapshot->docCurrencyISO = $snapshot->currencyIso3;
         }
 
         // $snapshot->incoterm2 = $entity->getIncoterm2();
@@ -441,13 +462,6 @@ class PoMapper
             $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
             $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
             $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
-        }
-
-        if ($entity->getCompany() !== null) {
-            $snapshot->company = $entity->getCompany()->getId();
-            $snapshot->companyName = $entity->getCompany()->getCompanyName();
-            $snapshot->companyCode = $entity->getCompany()->getCompanyCode();
-            $snapshot->companyToken = $entity->getCompany()->getToken();
         }
 
         // MAPPING DATE
@@ -551,12 +565,12 @@ class PoMapper
         // $snapshot->lastchangeBy= $entity->getLastchangeBy();
         if ($entity->getLastchangeBy() !== null) {
             $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
+            $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
         }
 
         // $snapshot->prRow= $entity->getPrRow();
         if ($entity->getPrRow() !== null) {
             $snapshot->prRow = $entity->getPrRow()->getId();
-
             $snapshot->prRowIndentifer = $entity->getPrRow()->getRowIdentifer();
             $snapshot->prRowCode = $entity->getPrRow()->getRowCode();
             $snapshot->prRowName = $entity->getPrRow()->getRowName();
@@ -589,20 +603,65 @@ class PoMapper
         // $snapshot->createdBy= $entity->getCreatedBy();
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
+            $snapshot->createdByName = sprintf("%s %s", $entity->getCreatedBy()->getFirstname(), $entity->getCreatedBy()->getFirstname());
         }
 
         // $snapshot->warehouse= $entity->getWarehouse();
         if ($entity->getWarehouse() !== null) {
             $snapshot->warehouse = $entity->getWarehouse()->getId();
+            $snapshot->warehouseCode = $entity->getWarehouse()->getWhCode();
+            $snapshot->warehouseName = $entity->getWarehouse()->getWhName();
+            $snapshot->docWarehouseCode = $snapshot->warehouseCode;
+            $snapshot->docWarehouseName = $snapshot->warehouseName;
         }
 
         // $snapshot->po= $entity->getPo();
         if ($entity->getPo() !== null) {
             $snapshot->po = $entity->getPo()->getId();
             $snapshot->vendorName = $entity->getPo()->getVendorName();
-            $snapshot->poNumber = $entity->getPo()->getContractNo();
             $snapshot->docCurrencyISO = $entity->getPo()->getCurrencyIso3();
-            $snapshot->poToken = $entity->getPo()->getToken();
+
+            $snapshot->docId = $snapshot->po;
+            $snapshot->docToken = $entity->getPo()->getToken();
+
+            $snapshot->exchangeRate = $entity->getPo()->getExchangeRate();
+            $snapshot->docNumber = $entity->getPo()->getContractNo();
+
+            if ($entity->getPo()->getDocCurrency() !== null) {
+                $snapshot->docCurrencyId = $entity->getPo()
+                    ->getDocCurrency()
+                    ->getId();
+                $snapshot->docCurrencyISO = $entity->getPo()
+                    ->getDocCurrency()
+                    ->getCurrency();
+            }
+
+            if ($entity->getPo()->getLocalCurrency() !== null) {
+                $snapshot->localCurrencyId = $entity->getPo()
+                    ->getLocalCurrency()
+                    ->getId();
+                $snapshot->localCurrencyISO = $entity->getPo()
+                    ->getLocalCurrency()
+                    ->getCurrency();
+            }
+
+            if ($entity->getPo()->getVendor() !== null) {
+                $snapshot->vendorId = $entity->getPo()
+                    ->getVendor()
+                    ->getId();
+                $snapshot->vendorToken = $entity->getPo()
+                    ->getVendor()
+                    ->getToken();
+
+                if ($entity->getPo()
+                    ->getVendor()
+                    ->getCountry() !== null) {
+                    $snapshot->vendorCountry = $entity->getPo()
+                        ->getVendor()
+                        ->getCountry()
+                        ->getCountryName();
+                }
+            }
         }
 
         // $snapshot->item= $entity->getItem();
@@ -627,13 +686,19 @@ class PoMapper
                     ->getId();
                 $snapshot->itemStandardUnitName = $entity->getItem()
                     ->getStandardUom()
+                    ->getUomName();
+
+                $snapshot->itemStandardUnitCode = $entity->getItem()
+                    ->getStandardUom()
                     ->getUomCode();
             }
         }
 
-        $snapshot->docUom = $entity->getDocUom();
+        // $snapshot->docUom = $entity->getDocUom();
         if ($entity->getDocUom() !== null) {
             $snapshot->docUom = $entity->getDocUom()->getId();
+            $snapshot->docUomCode = $entity->getDocUom()->getUomCode();
+            $snapshot->docUomName = $entity->getDocUom()->getUomName();
         }
 
         // Mapping Date

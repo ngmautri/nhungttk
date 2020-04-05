@@ -10,188 +10,388 @@ use Application\Domain\Shared\AbstractDTO;
  */
 class PORowSnapshot extends AbstractDTO
 {
-
+    public $draftGrQuantity;
+    public $postedGrQuantity;
+    public $confirmedGrBalance;
+    public $openGrBalance;
+    public $draftAPQuantity;
+    public $postedAPQuantity;
+    public $openAPQuantity;
+    public $billedAmount;
+    public $openAPAmount;
+    public $companyId;
+    public $companyToken;
+    public $companyName;
+    public $vendorId;
+    public $vendorToken;
+    public $vendorName;
+    public $vendorCountry;
+    public $docNumber;
+    public $docSysNumber;
+    public $docCurrencyISO;
+    public $localCurrencyISO;
+    public $docCurrencyId;
+    public $localCurrencyId;
+    public $docToken;
+    public $docId;
+    public $exchangeRate;
+    public $docWarehouseName;
+    public $docWarehouseCode;
+    public $warehouseName;
+    public $warehouseCode;
+    public $docUomName;
+    public $docUomCode;
+    public $docUomDescription;
     public $itemToken;
-
     public $itemChecksum;
-
     public $itemName;
-
     public $itemName1;
-
     public $itemSKU;
-
     public $itemSKU1;
-
     public $itemSKU2;
-
     public $itemUUID;
-
     public $itemSysNumber;
-
     public $itemStandardUnit;
-
     public $itemStandardUnitName;
-
+    public $itemStandardUnitCode;
     public $itemVersion;
-
     public $pr;
-
     public $prToken;
-
     public $prChecksum;
-
     public $prNumber;
-
     public $prSysNumber;
-
     public $prRowIndentifer;
-
     public $prRowCode;
-
     public $prRowName;
-
     public $prRowConvertFactor;
-
     public $prRowUnit;
-
     public $prRowVersion;
-
+    public $createdByName;
+    public $lastChangeByName;
     public $id;
-
     public $rowNumber;
-
     public $token;
-
     public $quantity;
-
     public $unitPrice;
-
     public $netAmount;
-
     public $unit;
-
     public $itemUnit;
-
     public $conversionFactor;
-
     public $converstionText;
-
     public $taxRate;
-
     public $remarks;
-
     public $isActive;
-
     public $createdOn;
-
     public $lastchangeOn;
-
     public $currentState;
-
     public $vendorItemCode;
-
     public $traceStock;
-
     public $grossAmount;
-
     public $taxAmount;
-
     public $faRemarks;
-
     public $rowIdentifer;
-
     public $discountRate;
-
     public $revisionNo;
-
     public $targetObject;
-
     public $sourceObject;
-
     public $targetObjectId;
-
     public $sourceObjectId;
-
     public $docStatus;
-
     public $workflowStatus;
-
     public $transactionStatus;
-
     public $isPosted;
-
     public $isDraft;
-
     public $exwUnitPrice;
-
     public $totalExwPrice;
-
     public $convertFactorPurchase;
-
     public $convertedPurchaseQuantity;
-
     public $convertedStandardQuantity;
-
     public $convertedStockQuantity;
-
     public $convertedStandardUnitPrice;
-
     public $convertedStockUnitPrice;
-
     public $docQuantity;
-
     public $docUnit;
-
     public $docUnitPrice;
-
     public $convertedPurchaseUnitPrice;
-
     public $docType;
-
     public $descriptionText;
-
     public $vendorItemName;
-
     public $reversalBlocked;
-
     public $invoice;
-
     public $lastchangeBy;
-
     public $prRow;
-
     public $createdBy;
-
     public $warehouse;
-
     public $po;
-
     public $item;
-
     public $docUom;
-
     public $docVersion;
-
     public $uuid;
-
     public $localUnitPrice;
-
     public $exwCurrency;
-
     public $localNetAmount;
-
     public $localGrossAmount;
-
     public $transactionType;
-
     public $isReversed;
-
     public $reversalDate;
-
     public $glAccount;
-
     public $costCenter;
+    /**
+     * @return mixed
+     */
+    public function getDraftGrQuantity()
+    {
+        return $this->draftGrQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostedGrQuantity()
+    {
+        return $this->postedGrQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfirmedGrBalance()
+    {
+        return $this->confirmedGrBalance;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpenGrBalance()
+    {
+        return $this->openGrBalance;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDraftAPQuantity()
+    {
+        return $this->draftAPQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostedAPQuantity()
+    {
+        return $this->postedAPQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpenAPQuantity()
+    {
+        return $this->openAPQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBilledAmount()
+    {
+        return $this->billedAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOpenAPAmount()
+    {
+        return $this->openAPAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyToken()
+    {
+        return $this->companyToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorToken()
+    {
+        return $this->vendorToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorName()
+    {
+        return $this->vendorName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorCountry()
+    {
+        return $this->vendorCountry;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocSysNumber()
+    {
+        return $this->docSysNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyISO()
+    {
+        return $this->docCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyISO()
+    {
+        return $this->localCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyId()
+    {
+        return $this->docCurrencyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyId()
+    {
+        return $this->localCurrencyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocToken()
+    {
+        return $this->docToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocId()
+    {
+        return $this->docId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExchangeRate()
+    {
+        return $this->exchangeRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocWarehouseName()
+    {
+        return $this->docWarehouseName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocWarehouseCode()
+    {
+        return $this->docWarehouseCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseName()
+    {
+        return $this->warehouseName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseCode()
+    {
+        return $this->warehouseCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUomName()
+    {
+        return $this->docUomName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUomCode()
+    {
+        return $this->docUomCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUomDescription()
+    {
+        return $this->docUomDescription;
+    }
+
     /**
      * @return mixed
      */
@@ -278,6 +478,14 @@ class PORowSnapshot extends AbstractDTO
     public function getItemStandardUnitName()
     {
         return $this->itemStandardUnitName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemStandardUnitCode()
+    {
+        return $this->itemStandardUnitCode;
     }
 
     /**
@@ -374,6 +582,22 @@ class PORowSnapshot extends AbstractDTO
     public function getPrRowVersion()
     {
         return $this->prRowVersion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByName()
+    {
+        return $this->createdByName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastChangeByName()
+    {
+        return $this->lastChangeByName;
     }
 
     /**

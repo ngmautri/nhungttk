@@ -3,17 +3,10 @@ namespace ProcureTest\PO;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Reporting\PR\PrRowStatusReporter;
-use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
-use PHPUnit_Framework_TestCase;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\GoodsReceipt\GRRow;
-use Procure\Domain\APInvoice\APDocRow;
 use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\GoodsReceipt\Factory\GRFactory;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use PHPUnit_Framework_TestCase;
 
 class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -51,9 +44,7 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             //$token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
             
             $po = $rep->getPODetailsById($id, $token);
-            $gr = GRDoc::createFromPo($po);
-            
-            var_dump($gr->getDocRows());
+            var_dump($po);
             
            
         } catch (InvalidArgumentException $e) {

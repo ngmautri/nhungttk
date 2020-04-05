@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-25 22:08+0700\n"
-"PO-Revision-Date: 2020-03-25 22:08+0700\n"
+"POT-Creation-Date: 2020-04-04 22:00+0700\n"
+"PO-Revision-Date: 2020-04-04 22:01+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:107
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:106
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:174
 #: Application/src/Application/Service/UploadService.php:52
 #, fuzzy
@@ -28,37 +28,37 @@ msgstr ""
 msgid "Attachment is not found!"
 msgstr "Ngày nhận hàng không hợp lệ!"
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:121
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:120
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:188
 msgid "Attachment can't be empty!"
 msgstr ""
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:170
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:169
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:237
 msgid ""
 " not supported, please choose a \"jpeg\",\"jpg\",\"png\",\"pdf\",\"xlsx\","
 "\"xlx\", \"docx\"!"
 msgstr ""
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:175
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:174
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:242
 msgid "File size must be 10 MB"
 msgstr ""
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:193
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:192
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:260
 msgid " exits already"
 msgstr ""
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:218
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:296
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:217
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:295
 #: Application/src/Application/Service/IncotermService.php:71
-#: Application/src/Application/Service/PaymentTermService.php:85
-#: Application/src/Application/Service/PmtMethodService.php:66
+#: Application/src/Application/Service/PaymentTermService.php:83
+#: Application/src/Application/Service/PmtMethodService.php:65
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:285
-#: Application/src/Application/Service/Upload/AbstractUploadService.php:365
-#: Application/src/Application/Service/UploadService.php:149
-#: Finance/src/Finance/Service/AccountService.php:69
+#: Application/src/Application/Service/Upload/AbstractUploadService.php:363
+#: Application/src/Application/Service/UploadService.php:147
+#: Finance/src/Finance/Service/AccountService.php:70
 #: Payment/src/Payment/Service/APPaymentService.php:253
 #: Payment/src/Payment/Service/APPaymentService.php:367
 #: Payment/src/Payment/Service/POPaymentService.php:246
@@ -66,15 +66,15 @@ msgstr ""
 msgid "Invalid Argument! User can't be indentided for this transaction."
 msgstr ""
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:222
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:221
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:289
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! Entity not found."
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:301
-#: Application/src/Application/Service/Upload/AbstractUploadService.php:370
+#: Application/src/Application/Application/Service/Attachment/AbstractAttachmentService.php:300
+#: Application/src/Application/Service/Upload/AbstractUploadService.php:368
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! Attachment Entity not found for editing"
@@ -86,10 +86,10 @@ msgstr "Incoterm Object không tìm thấy!"
 
 #: Application/src/Application/Service/IncotermService.php:31
 #: Application/src/Application/Service/PaymentTermService.php:28
-#: Application/src/Application/Service/PmtMethodService.php:29
+#: Application/src/Application/Service/PmtMethodService.php:28
 #: Application/src/Application/Service/Upload/AbstractUploadService.php:83
 #: Application/src/Application/Service/UploadService.php:31
-#: Finance/src/Finance/Service/AccountService.php:29
+#: Finance/src/Finance/Service/AccountService.php:30
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:36
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:270
 #: Inventory/src/Inventory/Service/Item/ItemService.php:33
@@ -114,8 +114,8 @@ msgstr ""
 
 #: Application/src/Application/Service/IncotermService.php:45
 #: Application/src/Application/Service/IncotermService.php:51
-#: Finance/src/Finance/Service/AccountService.php:43
-#: Finance/src/Finance/Service/AccountService.php:49
+#: Finance/src/Finance/Service/AccountService.php:44
+#: Finance/src/Finance/Service/AccountService.php:50
 msgid "Incoterm is not correct or empty!"
 msgstr "Incoterm không hợp lệ!"
 
@@ -129,41 +129,41 @@ msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 msgid "Payment term is not found!"
 msgstr "Incoterm Object không tìm thấy!"
 
-#: Application/src/Application/Service/PaymentTermService.php:49
+#: Application/src/Application/Service/PaymentTermService.php:47
 #, fuzzy
 #| msgid "Incoterm is not correct or empty!"
 msgid "Payment term code is not correct or empty!"
 msgstr "Incoterm không hợp lệ!"
 
-#: Application/src/Application/Service/PaymentTermService.php:61
+#: Application/src/Application/Service/PaymentTermService.php:59
 #, fuzzy
 #| msgid "Incoterm is not correct or empty!"
 msgid "Payment term name is not correct or empty!"
 msgstr "Incoterm không hợp lệ!"
 
-#: Application/src/Application/Service/PaymentTermService.php:90
+#: Application/src/Application/Service/PaymentTermService.php:88
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! Payment term Object not found!"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Application/src/Application/Service/PmtMethodService.php:25
+#: Application/src/Application/Service/PmtMethodService.php:24
 msgid "Payment Mehod is not found!"
 msgstr "Thanh toán Object không tìm thấy!"
 
-#: Application/src/Application/Service/PmtMethodService.php:41
+#: Application/src/Application/Service/PmtMethodService.php:40
 #, fuzzy
 #| msgid "Incoterm is not correct or empty!"
 msgid "Method Code is not correct or empty!"
 msgstr "Incoterm không hợp lệ!"
 
-#: Application/src/Application/Service/PmtMethodService.php:47
+#: Application/src/Application/Service/PmtMethodService.php:46
 #, fuzzy
 #| msgid "Invoice Date is not correct or empty!"
 msgid "Method Name is not correct or empty!"
 msgstr "Ngày Hóa Đơn không hợp lệ!"
 
-#: Application/src/Application/Service/PmtMethodService.php:71
+#: Application/src/Application/Service/PmtMethodService.php:70
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! Payment Method Object not found!"
@@ -198,26 +198,26 @@ msgstr "Ngày Hóa Đơn không hợp lệ!"
 msgid "End date must be in future!"
 msgstr ""
 
-#: Application/src/Application/Service/UploadService.php:154
+#: Application/src/Application/Service/UploadService.php:152
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! Attachment Object not found!"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Application/view/finance_menu.php:10
+#: Application/view/finance_menu.php:13
 msgid "Journal Entry"
 msgstr ""
 
-#: Application/view/finance_menu.php:15
+#: Application/view/finance_menu.php:18
 msgid "Chart of Accounts"
 msgstr ""
 
-#: Application/view/finance_menu.php:18
+#: Application/view/finance_menu.php:21
 #: Finance/view/finance/posting-period/list.phtml:5
 msgid "Posting Period"
 msgstr "Kỳ hạch toán"
 
-#: Application/view/finance_menu.php:20 Finance/view/finance/fx/list.phtml:5
+#: Application/view/finance_menu.php:23 Finance/view/finance/fx/list.phtml:5
 #: Finance/view/finance/je-row/list.phtml:5
 #: Finance/view/finance/je/list.phtml:5
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:322
@@ -228,8 +228,8 @@ msgstr "Kỳ hạch toán"
 msgid "Exchange Rate"
 msgstr "Tỷ giá"
 
-#: Application/view/finance_menu.php:23 Application/view/inventory_menu.php:33
-#: Application/view/procure_menu.php:25
+#: Application/view/finance_menu.php:27 Application/view/inventory_menu.php:37
+#: Application/view/procure_menu.php:40
 msgid "Log"
 msgstr ""
 
@@ -247,8 +247,8 @@ msgid "Finger Scan"
 msgstr "Dữ liệu vân tay"
 
 #: Application/view/hr_menu.php:10 HR/view/hr/employee-contract/index.phtml:9
-#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
-#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
+#: HR/view/hr/leave-reason/add.phtml:30 HR/view/hr/leave-reason/add.phtml:45
+#: HR/view/hr/leave-reason/list.phtml:7 HR/view/hr/leave-reason/list.phtml:35
 #: HR/view/hr/salary/index.phtml:9 HR/view/hr/setting/index.phtml:14
 msgid "Leave Reason"
 msgstr "Lý do nghỉ"
@@ -257,7 +257,7 @@ msgstr "Lý do nghỉ"
 msgid "Salary Calculation"
 msgstr ""
 
-#: Application/view/hr_menu.php:17 Application/view/inventory_menu.php:26
+#: Application/view/hr_menu.php:17 Application/view/inventory_menu.php:28
 #: HR/view/hr/reporting/index.phtml:5
 #: Inventory/view/inventory/report/index.phtml:5
 msgid "Reporting"
@@ -271,8 +271,8 @@ msgstr ""
 msgid "Evaluation for Productivity Bonus"
 msgstr ""
 
-#: Application/view/hr_menu.php:25 Application/view/inventory_menu.php:30
-#: Application/view/navbar.php:111
+#: Application/view/hr_menu.php:25 Application/view/inventory_menu.php:33
+#: Application/view/navbar.php:113
 msgid "Setup"
 msgstr "Cài Đặt"
 
@@ -284,16 +284,16 @@ msgstr "Bảng Tổng hợp"
 msgid "Create new item"
 msgstr "Thêm mới hàng hóa"
 
-#: Application/view/inventory_menu.php:17
-#: Application/view/inventory_menu.php:19
+#: Application/view/inventory_menu.php:18
+#: Application/view/inventory_menu.php:20
 msgid "New Goods Issue"
 msgstr "Xuất hàng"
 
-#: Application/view/inventory_menu.php:22
+#: Application/view/inventory_menu.php:23
 msgid "New Goods Receipt"
 msgstr "Nhập hàng"
 
-#: Application/view/inventory_menu.php:24
+#: Application/view/inventory_menu.php:25
 msgid "New Goods Transfer"
 msgstr "Chuyển Kho"
 
@@ -302,12 +302,12 @@ msgid "Cash"
 msgstr ""
 
 #: Application/view/navbar.php:28 Application/view/layout/Copy of
-#: layout-fluid.phtml:169
+#: layout-fluid.phtml:182
 msgid "Finance"
 msgstr "Kế toán"
 
 #: Application/view/navbar.php:37 Application/view/layout/Copy of
-#: layout-fluid.phtml:175
+#: layout-fluid.phtml:190
 msgid "Inventory"
 msgstr "Hàng Hóa"
 
@@ -315,17 +315,17 @@ msgstr "Hàng Hóa"
 msgid "Production"
 msgstr "Sản xuất"
 
-#: Application/view/navbar.php:55 Application/view/layout/Copy of
-#: layout-fluid.phtml:181
+#: Application/view/navbar.php:56 Application/view/layout/Copy of
+#: layout-fluid.phtml:198
 msgid "Partner"
 msgstr "Đối Tác"
 
-#: Application/view/navbar.php:78 Application/view/layout/Copy of
-#: layout-fluid.phtml:197
+#: Application/view/navbar.php:79 Application/view/layout/Copy of
+#: layout-fluid.phtml:220
 msgid "Procure"
 msgstr "Thu mua"
 
-#: Application/view/navbar.php:101
+#: Application/view/navbar.php:102
 msgid "Other"
 msgstr "Khác"
 
@@ -337,7 +337,7 @@ msgstr "Thêm dự án"
 msgid "Project List"
 msgstr "Danh sách Dự án /Công việc"
 
-#: Application/view/other_menu.php:6
+#: Application/view/other_menu.php:7
 msgid "Calendar"
 msgstr "Lịch"
 
@@ -345,20 +345,21 @@ msgstr "Lịch"
 msgid "New Purchase Request (PR)"
 msgstr "Tạo yêu cầu mua (PR)"
 
-#: Application/view/procure_menu.php:6 Procure/view/procure/quote/list.phtml:10
+#: Application/view/procure_menu.php:11
+#: Procure/view/procure/quote/list.phtml:10
 msgid "New Quotation"
 msgstr ""
 
-#: Application/view/procure_menu.php:7
+#: Application/view/procure_menu.php:13
 #: Procure/view/procure/quote-create-wizard.php:3
 msgid "Quotation List"
 msgstr ""
 
-#: Application/view/procure_menu.php:22
+#: Application/view/procure_menu.php:35
 msgid "Goods Return"
 msgstr ""
 
-#: Application/view/procure_menu.php:23
+#: Application/view/procure_menu.php:37
 msgid "Return list"
 msgstr ""
 
@@ -368,7 +369,7 @@ msgstr "Quản lý người dùng"
 
 #: Application/view/setting_menu.php:6
 #: Application/view/application/department/list.phtml:4
-#: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:51
+#: HR/view/hr/employee/list.phtml:50 HR/view/hr/employee/list.phtml:53
 msgid "Department"
 msgstr "Phòng ban"
 
@@ -380,49 +381,49 @@ msgstr "Phân quyền (ACL)"
 msgid "Workflow Management"
 msgstr "Quản lý quy trình"
 
-#: Application/view/setting_menu.php:32
+#: Application/view/setting_menu.php:31
 msgid "Backup Database"
 msgstr "Sao Lưu dữ liệu"
 
-#: Application/view/setting_menu.php:35
+#: Application/view/setting_menu.php:34
 msgid "Caching Manager"
 msgstr "Quản lý caching"
 
-#: Application/view/setting_menu.php:40
+#: Application/view/setting_menu.php:39
 msgid "Update Search Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:45
+#: Application/view/setting_menu.php:44
 #, fuzzy
 #| msgid "Update Search Index"
 msgid "Update Item Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:49
+#: Application/view/setting_menu.php:48
 #, fuzzy
 #| msgid "Update Search Index"
 msgid "Update PO Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:52
+#: Application/view/setting_menu.php:51
 #, fuzzy
 #| msgid "Update Search Index"
 msgid "Update A/P Index"
 msgstr "Cập nhật danh mục tìm kiếm"
 
-#: Application/view/setting_menu.php:57
+#: Application/view/setting_menu.php:56
 msgid "Console"
 msgstr ""
 
-#: Application/view/setting_menu.php:60
+#: Application/view/setting_menu.php:59
 msgid "API"
 msgstr ""
 
-#: Application/view/setting_menu.php:65
+#: Application/view/setting_menu.php:64
 msgid "Check Attachment"
 msgstr ""
 
-#: Application/view/setting_menu.php:69
+#: Application/view/setting_menu.php:68
 msgid "System Information"
 msgstr "Thông tin hệ thống"
 
@@ -442,8 +443,8 @@ msgstr "Nhà cung cấp không hợp lệ. Vui lòng nhập nhà cung cấp!"
 msgid "Company currency can't be defined!"
 msgstr ""
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:140
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:733
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:138
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:732
 #: Payment/src/Payment/Service/APPaymentService.php:524
 #: Payment/src/Payment/Service/POPaymentService.php:520
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1387
@@ -456,8 +457,8 @@ msgstr ""
 msgid "Foreign exchange rate is not valid. It must be a number."
 msgstr "Tỷ giá không hợp lệ."
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:143
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:736
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:141
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:735
 #: Payment/src/Payment/Service/APPaymentService.php:527
 #: Payment/src/Payment/Service/POPaymentService.php:523
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1390
@@ -472,11 +473,11 @@ msgstr "Tỷ giá không hợp lệ."
 msgid "Foreign exchange rate must be greater than 0!"
 msgstr "Tỷ giá không hợp lệ."
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:161
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:497
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:159
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:495
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:662
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:865
-#: Inventory/src/Inventory/Controller/StockController.php:120
+#: Inventory/src/Inventory/Controller/StockController.php:121
 #: Payment/src/Payment/Service/APPaymentService.php:546
 #: Payment/src/Payment/Service/POPaymentService.php:542
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1409
@@ -488,22 +489,22 @@ msgstr "Tỷ giá không hợp lệ."
 msgid "Currency can't be empty. Please select a Currency!"
 msgstr "Đơn vị tiền không hợp lệ. Vui lòng nhập Đơn vị tiền tệ!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:169
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:167
 #, fuzzy
 #| msgid "Good receipt Date is not valid!"
 msgid "Invoice Date is not valid"
 msgstr "Ngày nhận hàng không hợp lệ!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:178
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:176
 msgid "Posting Date is not valid!"
 msgstr "Ngày ghi sổ không hợp lệ!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:188
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:186
 msgid "Good receipt Date is not valid!"
 msgstr "Ngày nhận hàng không hợp lệ!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:405
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:669
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:403
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:667
 #: Finance/src/Finance/Controller/VInvoiceController.php:466
 #: Procure/src/Procure/Controller/GrController.php:678
 #: Procure/src/Procure/Controller/QuoteController.php:244
@@ -511,11 +512,11 @@ msgstr "Ngày nhận hàng không hợp lệ!"
 msgid "Document is incomplete!"
 msgstr "Chứng từ chưa hoàn thiện!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:478
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:476
 msgid "FX rate is not valid. It must be a number."
 msgstr "Tỷ giá không hợp lệ."
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:503
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:501
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1434
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/PurchaseOrder.php:1434
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/QuotationOrder.php:1434
@@ -525,7 +526,7 @@ msgstr "Tỷ giá không hợp lệ."
 msgid "Please enter Invoice Number!"
 msgstr "Liên lạc"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:509
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:507
 #: Payment/src/Payment/Service/APPaymentService.php:583
 #: Payment/src/Payment/Service/APPaymentService.php:606
 #: Payment/src/Payment/Service/POPaymentService.php:579
@@ -541,10 +542,10 @@ msgstr "Liên lạc"
 msgid "Invoice Date is not correct or empty!"
 msgstr "Ngày Hóa Đơn không hợp lệ!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:515
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:513
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:626
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:829
-#: Inventory/src/Inventory/Controller/StockController.php:84
+#: Inventory/src/Inventory/Controller/StockController.php:85
 #: Payment/src/Payment/Service/APPaymentService.php:590
 #: Payment/src/Payment/Service/APPaymentService.php:610
 #: Payment/src/Payment/Service/APPaymentService.php:691
@@ -564,7 +565,7 @@ msgstr "Ngày Hóa Đơn không hợp lệ!"
 msgid "Posting Date is not correct or empty!"
 msgstr ""
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:535
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:533
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1544
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1557
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/PurchaseOrder.php:1544
@@ -580,7 +581,7 @@ msgstr ""
 msgid "Good receipt Date is not correct or empty!"
 msgstr "Ngày nhận hàng không hợp lệ!"
 
-#: Finance/src/Finance/Controller/BK/VInvoiceController.php:561
+#: Finance/src/Finance/Controller/BK/VInvoiceController.php:559
 #: Payment/src/Payment/Service/APPaymentService.php:750
 #: Payment/src/Payment/Service/POPaymentService.php:746
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:1603
@@ -600,25 +601,25 @@ msgstr "Kho không hợp lệ. Vui lòng nhập tên Kho!"
 msgid "Reversal failed!"
 msgstr ""
 
-#: Finance/src/Finance/Service/AccountService.php:25
+#: Finance/src/Finance/Service/AccountService.php:26
 #, fuzzy
 #| msgid "Incoterm is not found!"
 msgid "Account is not found!"
 msgstr "Incoterm Object không tìm thấy!"
 
-#: Finance/src/Finance/Service/AccountService.php:74
+#: Finance/src/Finance/Service/AccountService.php:75
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! Account Object not found!"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Finance/view/finance/ap-create-wizard.php:3
+#: Finance/view/finance/ap-create-wizard.php:4
 #, fuzzy
 #| msgid "PR List"
 msgid "AP List"
 msgstr "Danh sách yêu cầu mua "
 
-#: Finance/view/finance/ap-create-wizard.php:8
+#: Finance/view/finance/ap-create-wizard.php:9
 #: Finance/view/finance/ap-create-wizard.php:12
 msgid "A/P Invoice Header"
 msgstr ""
@@ -636,8 +637,8 @@ msgstr "Chứng từ chưa hoàn thiện."
 #: Finance/view/finance/ap-create-wizard.php:28
 #: Inventory/view/inventory/gi-create-wizard.php:23
 #: Inventory/view/inventory/gi-create-wizard.php:27
-#: Inventory/view/inventory/gi-create-wizard1.php:34
-#: Inventory/view/inventory/gi-create-wizard1.php:38
+#: Inventory/view/inventory/gi-create-wizard1.php:33
+#: Inventory/view/inventory/gi-create-wizard1.php:37
 #: Inventory/view/inventory/ob-create-wizard.php:29
 #: Inventory/view/inventory/ob-create-wizard.php:33
 #: Inventory/view/inventory/transfer-create-wizard.php:23
@@ -647,7 +648,7 @@ msgstr "Chứng từ chưa hoàn thiện."
 #: Procure/view/procure/create-wizard.php:21
 #: Procure/view/procure/create-wizard.php:25
 #: Procure/view/procure/gr-create-wizard.php:23
-#: Finance/view/finance/v-invoice-row/add.phtml:481
+#: Finance/view/finance/v-invoice-row/add.phtml:485
 #: Finance/view/finance/v-invoice-row/crud.phtml:516
 #: Inventory/view/inventory/opening-balance-row/add.phtml:170
 #: Inventory/view/inventory/opening-balance-row/edit.phtml:178
@@ -660,24 +661,24 @@ msgstr "Chứng từ chưa hoàn thiện."
 msgid "Review & Post"
 msgstr "Kiểm tra & Ghi sổ"
 
-#: Finance/view/finance/ap-create-wizard.php:36
+#: Finance/view/finance/ap-create-wizard.php:37
 msgid "Goods receipt with invoice"
 msgstr "Nhận hàng kèm Hóa đơn"
 
-#: Finance/view/finance/ap-create-wizard.php:36
+#: Finance/view/finance/ap-create-wizard.php:37
 #, fuzzy
 #| msgid "if it is without invoice, please click "
 msgid "Without invoice, please click "
 msgstr "Nếu không có Hóa đơn, nhấn vào"
 
-#: Finance/view/finance/ap-create-wizard.php:37
+#: Finance/view/finance/ap-create-wizard.php:39
 #: Procure/view/procure/gr-create-wizard.php:35
 msgid "here"
 msgstr "đây"
 
 #: HR/view/hr/salary-calculator/calculator-wizard.php:7
 #: HR/view/hr/salary-calculator/calculator-wizard.php:11
-#: HR/view/hr/salary-calculator/payroll-period.phtml:26
+#: HR/view/hr/salary-calculator/payroll-period.phtml:27
 msgid "Payroll Period"
 msgstr "Kỳ Lương"
 
@@ -728,7 +729,7 @@ msgstr "Không thể xuất hàng. Hãy kiểm tra tồn kho hoặc ngày xuất
 #: Inventory/src/Inventory/Application/Service/Item/FIFOService.php:127
 #: Inventory/src/Inventory/Service/FIFOLayerService.php:136
 #: Inventory/src/Inventory/Service/FIFOLayerService.php:258
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1015
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1014
 msgid "Goods Issue imposible. Issue Quantity > On-hand Quantity"
 msgstr ""
 
@@ -741,7 +742,7 @@ msgstr ""
 #: Inventory/src/Inventory/Controller/GIController.php:355
 #: Inventory/src/Inventory/Controller/GIController.php:391
 #: Inventory/src/Inventory/Controller/GIController.php:454
-#: Inventory/src/Inventory/Controller/GIController.php:736
+#: Inventory/src/Inventory/Controller/GIController.php:735
 msgid "Edit Good Issue"
 msgstr ""
 
@@ -759,7 +760,7 @@ msgstr ""
 #: Inventory/src/Inventory/Controller/TransferController.php:471
 #: Inventory/src/Inventory/Controller/TransferController.php:566
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:160
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1072
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1071
 msgid "ACL checking failed"
 msgstr ""
 
@@ -774,56 +775,56 @@ msgstr ""
 msgid "Create Good Issue"
 msgstr "Xuất hàng"
 
-#: Inventory/src/Inventory/Controller/GRController.php:162
+#: Inventory/src/Inventory/Controller/GRController.php:159
 msgid "Local currency is not defined. Please check!"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/GRController.php:170
+#: Inventory/src/Inventory/Controller/GRController.php:165
 #, fuzzy
 #| msgid " will be posted!"
 msgid "Goods Issue Type is not valid!"
 msgstr " sẽ được ghi sổ!"
 
-#: Inventory/src/Inventory/Controller/GRController.php:178
+#: Inventory/src/Inventory/Controller/GRController.php:173
 #: User/src/User/Service/UserService.php:107
 msgid "Goods Issue Date is not correct or empty!"
 msgstr "Ngày xuất hàng không hợp lệ!"
 
-#: Inventory/src/Inventory/Controller/GRController.php:192
+#: Inventory/src/Inventory/Controller/GRController.php:187
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:640
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:651
 #: Inventory/src/Inventory/Controller/OpeningBalanceController.php:843
-#: Inventory/src/Inventory/Controller/StockController.php:98
-#: Inventory/src/Inventory/Controller/StockController.php:109
+#: Inventory/src/Inventory/Controller/StockController.php:99
+#: Inventory/src/Inventory/Controller/StockController.php:110
 #: Procure/src/Procure/Controller/GrController.php:347
 #, fuzzy
 #| msgid "Warehouse can't be empty. Please select a warehouse!"
 msgid "Warehouse can't be empty. Please select a Wahrhouse!"
 msgstr "Kho không hợp lệ. Vui lòng nhập tên Kho!"
 
-#: Inventory/src/Inventory/Controller/GRController.php:344
+#: Inventory/src/Inventory/Controller/GRController.php:338
 #, fuzzy
 #| msgid "Invoice Date is not correct or empty!"
 msgid "Transaction Date is not correct or empty!"
 msgstr "Ngày Hóa Đơn không hợp lệ!"
 
-#: Inventory/src/Inventory/Controller/ItemController.php:617
-#: Inventory/src/Inventory/Controller/ItemController.php:642
-#: Inventory/src/Inventory/Controller/ItemController.php:667
-#: Inventory/src/Inventory/Controller/ItemController.php:691
-#: Inventory/src/Inventory/Controller/ItemController.php:1054
-#: Inventory/src/Inventory/Controller/ItemController.php:1079
-#: Inventory/src/Inventory/Controller/ItemController.php:1103
+#: Inventory/src/Inventory/Controller/ItemController.php:616
+#: Inventory/src/Inventory/Controller/ItemController.php:641
+#: Inventory/src/Inventory/Controller/ItemController.php:666
+#: Inventory/src/Inventory/Controller/ItemController.php:690
+#: Inventory/src/Inventory/Controller/ItemController.php:1053
+#: Inventory/src/Inventory/Controller/ItemController.php:1078
+#: Inventory/src/Inventory/Controller/ItemController.php:1102
 msgid "Please give conversion factor"
 msgstr "Vui long nhập hệ số qui đổi!"
 
-#: Inventory/src/Inventory/Controller/ItemController.php:621
-#: Inventory/src/Inventory/Controller/ItemController.php:646
-#: Inventory/src/Inventory/Controller/ItemController.php:671
-#: Inventory/src/Inventory/Controller/ItemController.php:695
-#: Inventory/src/Inventory/Controller/ItemController.php:1058
-#: Inventory/src/Inventory/Controller/ItemController.php:1083
-#: Inventory/src/Inventory/Controller/ItemController.php:1107
+#: Inventory/src/Inventory/Controller/ItemController.php:620
+#: Inventory/src/Inventory/Controller/ItemController.php:645
+#: Inventory/src/Inventory/Controller/ItemController.php:670
+#: Inventory/src/Inventory/Controller/ItemController.php:694
+#: Inventory/src/Inventory/Controller/ItemController.php:1057
+#: Inventory/src/Inventory/Controller/ItemController.php:1082
+#: Inventory/src/Inventory/Controller/ItemController.php:1106
 msgid "Conversion Factor must be greater than 0!"
 msgstr "Hế số qui đổi phải lớn hơn 0!"
 
@@ -835,29 +836,29 @@ msgstr "Đơn vị tiền không hợp lệ. Vui lòng nhập Đơn vị tiền 
 
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:199
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:433
-#: Inventory/src/Inventory/Service/GIService.php:136
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:973
+#: Inventory/src/Inventory/Service/GIService.php:135
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:972
 msgid "No Item is selected"
 msgstr ""
 
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:202
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:436
-#: Inventory/src/Inventory/Service/GIService.php:139
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:976
+#: Inventory/src/Inventory/Service/GIService.php:138
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:975
 msgid "Item is not kept in stock"
 msgstr ""
 
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:214
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:448
-#: Inventory/src/Inventory/Service/GIService.php:150
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:987
+#: Inventory/src/Inventory/Service/GIService.php:149
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:986
 msgid "Quantity must be a number!"
 msgstr "Khối lượng phải la số."
 
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:217
 #: Inventory/src/Inventory/Controller/OpeningBalanceRowController.php:451
-#: Inventory/src/Inventory/Service/GIService.php:153
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:990
+#: Inventory/src/Inventory/Service/GIService.php:152
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:989
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:323
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/PurchaseOrder.php:323
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/QuotationOrder.php:323
@@ -907,32 +908,32 @@ msgid "New Goods Transfer Row"
 msgstr "Chuyển Kho"
 
 #: Inventory/src/Inventory/Controller/TransferRowController.php:138
-#: Inventory/src/Inventory/Controller/TransferRowController.php:206
+#: Inventory/src/Inventory/Controller/TransferRowController.php:205
 #, fuzzy
 #| msgid "New Goods Transfer"
 msgid "New Goods Transfer Line"
 msgstr "Chuyển Kho"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:89
-#: Inventory/src/Inventory/Model/Constants.php:74
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:88
+#: Inventory/src/Inventory/Model/Constants.php:70
 msgid "Issue for reparing machine (no exchange of part)"
 msgstr "Xuất để sửa chữa Máy móc (không có thay thế)"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:90
-#: Inventory/src/Inventory/Model/Constants.php:75
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:89
+#: Inventory/src/Inventory/Model/Constants.php:71
 msgid ""
 "Issue part for repairing of machine. The requester must not give any part"
 msgstr ""
 "Xuất mới để sửa chữa Máy móc. Người yêu cầu không cần phải nộp các chi tiết "
 "để đổi."
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:94
-#: Inventory/src/Inventory/Model/Constants.php:79
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:93
+#: Inventory/src/Inventory/Model/Constants.php:75
 msgid "Issue for reparing machine (exchange of part)"
 msgstr "Xuất để sửa chữa Máy móc (Có xuất đổi)"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:95
-#: Inventory/src/Inventory/Model/Constants.php:80
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:94
+#: Inventory/src/Inventory/Model/Constants.php:76
 msgid ""
 "Exchange parts for repairing of machine.<ul><li>Spare part controller will "
 "issue new parts and receive old /defect one back to store for disposal "
@@ -944,141 +945,141 @@ msgstr ""
 "hủy .</li>                    \n"
 "<li>Mã máy móc phải được cung cấp</li></ul>"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:99
-#: Inventory/src/Inventory/Model/Constants.php:84
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:98
+#: Inventory/src/Inventory/Model/Constants.php:80
 msgid "Issue for Project (e.g IE Project)"
 msgstr "Xuất cho Dự án (v.d. Dự án IE)"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:100
-#: Inventory/src/Inventory/Model/Constants.php:85
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:99
+#: Inventory/src/Inventory/Model/Constants.php:81
 msgid ""
 "Spare part, materials will be consumpted by the project.<br>Project must be "
 "given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:104
-#: Inventory/src/Inventory/Model/Constants.php:89
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:103
+#: Inventory/src/Inventory/Model/Constants.php:85
 msgid "Issue for Cost Center"
 msgstr "Xuất dùng cho bô phận"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:105
-#: Inventory/src/Inventory/Model/Constants.php:90
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:104
+#: Inventory/src/Inventory/Model/Constants.php:86
 msgid ""
 "Spare part, materials will be consumpted by an cost center.<br>Cost Center "
 "must be given! "
 msgstr "Xuất dùng cho bô phận. Mã bộ phận phải được cung cấp."
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:109
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:114
-#: Inventory/src/Inventory/Model/Constants.php:94
-#: Inventory/src/Inventory/Model/Constants.php:99
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:108
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:113
+#: Inventory/src/Inventory/Model/Constants.php:90
+#: Inventory/src/Inventory/Model/Constants.php:95
 msgid "Issue for Production Order"
 msgstr "Xuất theo Lệnh sản xuất"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:110
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:115
-#: Inventory/src/Inventory/Model/Constants.php:95
-#: Inventory/src/Inventory/Model/Constants.php:100
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:109
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:114
+#: Inventory/src/Inventory/Model/Constants.php:91
+#: Inventory/src/Inventory/Model/Constants.php:96
 msgid ""
 "Spare part, materials will be issued for Production Order.<br>Production "
 "Order must be given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:119
-#: Inventory/src/Inventory/Model/Constants.php:104
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:118
+#: Inventory/src/Inventory/Model/Constants.php:100
 msgid "Issue for Repairing"
 msgstr "Xuất để sủa chữa"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:120
-#: Inventory/src/Inventory/Model/Constants.php:105
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:119
+#: Inventory/src/Inventory/Model/Constants.php:101
 msgid ""
 "Spare part, materials will be repaired by external party. After repaired, "
 "part will be received again"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:124
-#: Inventory/src/Inventory/Model/Constants.php:109
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:123
+#: Inventory/src/Inventory/Model/Constants.php:105
 msgid "Issue for Maintenance Work"
 msgstr "Xuất cho Bảo trì"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:125
-#: Inventory/src/Inventory/Model/Constants.php:110
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:124
+#: Inventory/src/Inventory/Model/Constants.php:106
 msgid "Spare part, materials will be issued for maintenance  worked."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:129
-#: Inventory/src/Inventory/Model/Constants.php:114
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:128
+#: Inventory/src/Inventory/Model/Constants.php:110
 msgid "Issue for Asset"
 msgstr "Xuất cho tài sản khác"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:130
-#: Inventory/src/Inventory/Model/Constants.php:115
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:129
+#: Inventory/src/Inventory/Model/Constants.php:111
 msgid ""
 "Spare part, materials will be issued for an asset. Asset ID is required."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:134
-#: Inventory/src/Inventory/Model/Constants.php:119
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:133
+#: Inventory/src/Inventory/Model/Constants.php:115
 msgid "Issue for return PO"
 msgstr "Xuất để trả lại cho đơn hàng (nhà cung cấp)"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:135
-#: Inventory/src/Inventory/Model/Constants.php:120
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:134
+#: Inventory/src/Inventory/Model/Constants.php:116
 msgid "goods will be issued for returning to supplier. PO is required!"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:139
-#: Inventory/src/Inventory/Model/Constants.php:124
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:138
+#: Inventory/src/Inventory/Model/Constants.php:120
 #, fuzzy
 #| msgid "Source Warehouse"
 msgid "Transfer to other warehouse"
 msgstr "Kho"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:140
-#: Inventory/src/Inventory/Model/Constants.php:125
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:139
+#: Inventory/src/Inventory/Model/Constants.php:121
 msgid "goods will be issued for other warehouse."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:144
-#: Inventory/src/Inventory/Model/Constants.php:129
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:143
+#: Inventory/src/Inventory/Model/Constants.php:125
 msgid "Transfer to other location"
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:145
-#: Inventory/src/Inventory/Model/Constants.php:130
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:144
+#: Inventory/src/Inventory/Model/Constants.php:126
 msgid "goods will be issued for other location in warehouse."
 msgstr ""
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:149
-#: Inventory/src/Inventory/Model/Constants.php:134
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:148
+#: Inventory/src/Inventory/Model/Constants.php:130
 msgid "Issue for diposal"
 msgstr "Xuất để tiêu hủy"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:150
-#: Inventory/src/Inventory/Model/Constants.php:135
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:149
+#: Inventory/src/Inventory/Model/Constants.php:131
 msgid "goods will be disposed.PO is required!"
 msgstr ""
 
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:225
 #: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:226
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:227
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:238
 #: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:239
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:240
-#: Inventory/src/Inventory/Model/Constants.php:228
-#: Inventory/src/Inventory/Model/Constants.php:229
-#: Inventory/src/Inventory/Model/Constants.php:236
-#: Inventory/src/Inventory/Model/Constants.php:237
+#: Inventory/src/Inventory/Model/Constants.php:224
+#: Inventory/src/Inventory/Model/Constants.php:225
+#: Inventory/src/Inventory/Model/Constants.php:232
+#: Inventory/src/Inventory/Model/Constants.php:233
 #, fuzzy
 #| msgid "Project List"
 msgid "Goods receipt from purchase"
 msgstr "Danh sách Dự án /Công việc"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:231
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:244
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:230
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:243
 msgid "Goods receipt from exchange part"
 msgstr "Nhận lại khi xuất đổi"
 
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:232
-#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:245
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:231
+#: Inventory/src/Inventory/Domain/Warehouse/Transaction/Factory/TransactionFactory.php:244
 msgid "Goods receipt from exchange part. This is normally posted automaticaly"
 msgstr "Nhận lại khi xuất đổi. Thường là ghi sổ tự động."
 
@@ -1090,26 +1091,26 @@ msgstr ""
 msgid "Cost Center is required"
 msgstr ""
 
-#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:27
+#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:28
 msgid "No input given \"$issue_for_id\""
 msgstr ""
 
-#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:45
+#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:46
 msgid "Machine ID is required"
 msgstr ""
 
-#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:50
+#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:51
 msgid "Item is the same"
 msgstr "Tên vật tư bị trùng."
 
-#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:57
+#: Inventory/src/Inventory/Model/GI/GIforRepairMachine.php:58
 #, fuzzy
 #| msgid "Date is not valid!"
 msgid "Item is not a machine"
 msgstr "Ngày không hợp lệ!"
 
 #: Inventory/src/Inventory/Model/GI/GIforTransferToLocation.php:28
-#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:32
+#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:36
 #, fuzzy
 #| msgid "Please give conversion factor"
 msgid "No input given \"source_wh_id\""
@@ -1128,7 +1129,7 @@ msgid "No input given \"target_location_id\""
 msgstr "Vui long nhập hệ số qui đổi!"
 
 #: Inventory/src/Inventory/Model/GI/GIforTransferToLocation.php:68
-#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:68
+#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:72
 #, fuzzy
 #| msgid "Source Warehouse"
 msgid "Source Warehouse is required"
@@ -1142,43 +1143,43 @@ msgstr ""
 msgid "Target Location is required"
 msgstr ""
 
-#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:26
+#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:28
 #, fuzzy
 #| msgid "Please give conversion factor"
 msgid "No input given \"target_warehouse_id\""
 msgstr "Vui long nhập hệ số qui đổi!"
 
-#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:59
+#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:63
 #, fuzzy
 #| msgid "Source Warehouse"
 msgid "Target Warehouse is required"
 msgstr "Kho"
 
-#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:76
+#: Inventory/src/Inventory/Model/GI/GIforTransferToWH.php:80
 msgid ""
 "Warehouses are the same. Do you want to transfer location in this warehouse?"
 msgstr ""
 
-#: Inventory/src/Inventory/Service/GIService.php:146
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:983
+#: Inventory/src/Inventory/Service/GIService.php:145
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:982
 #, fuzzy
 #| msgid "Contract number"
 msgid "Please enter quantity!"
 msgstr "Liên lạc"
 
-#: Inventory/src/Inventory/Service/GIService.php:161
+#: Inventory/src/Inventory/Service/GIService.php:160
 #, fuzzy
 #| msgid "Conversion factor must be a number."
 msgid "Convert factor must be a number!"
 msgstr "Hệ số qui đổi phải là số!"
 
-#: Inventory/src/Inventory/Service/GIService.php:164
+#: Inventory/src/Inventory/Service/GIService.php:163
 #, fuzzy
 #| msgid "Conversion Factor must be greater than 0!"
 msgid "Convert factor must be greater than 0!"
 msgstr "Hế số qui đổi phải lớn hơn 0"
 
-#: Inventory/src/Inventory/Service/GIService.php:194
+#: Inventory/src/Inventory/Service/GIService.php:193
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:114
 #: Inventory/src/Inventory/Service/InventoryTransactionService.php:333
 msgid "Invalid Argument! No strategy found."
@@ -1294,25 +1295,25 @@ msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 msgid "Invalid Argument. WH transaction not found!"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:604
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:603
 #, fuzzy
 #| msgid "Invalid Argument! Incoterm Object not found!"
 msgid "Invalid Argument! WH transaction not found)"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:609
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:608
 msgid "WH transaction not posted yet. Reserval imposible."
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:614
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:613
 msgid "WH transaction reversed already."
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:621
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:620
 msgid "WH transaction is not reservable, becasue sequence document is created."
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:626
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:625
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:698
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/PurchaseOrder.php:698
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/QuotationOrder.php:698
@@ -1323,82 +1324,82 @@ msgstr ""
 msgid "Invalid Argument! User not found)"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:636
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:635
 msgid "WH transaction is empty. Reserval imposible."
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:714
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:713
 #, fuzzy
 #| msgid "Currency"
 msgid "Currency not defined!"
 msgstr "Đơn vị tiền tệ"
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:771
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:844
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:770
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:843
 msgid "No input given \"movementDate\""
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:784
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:857
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:783
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:856
 #, fuzzy
 #| msgid "Invoice Date is not correct or empty!"
 msgid "WH transaction date is not correct or empty!"
 msgstr "Ngày Hóa Đơn không hợp lệ!"
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:797
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:870
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:796
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:869
 #, fuzzy
 #| msgid "Invoice Date is not correct or empty!"
 msgid "WH transaction date  is not correct or empty!"
 msgstr "Ngày Hóa Đơn không hợp lệ!"
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:910
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:909
 #: User/src/User/Service/UserService.php:46
 msgid "No input given movementType"
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:917
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:916
 msgid "Inventory movement type is not selected!"
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:924
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:923
 #: User/src/User/Service/UserService.php:93
 msgid "Inventory movement strategy is not implemented yet!"
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:928
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:927
 #: User/src/User/Service/UserService.php:97
 msgid "Inventory movement strategy is not implemented correctly!"
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:954
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:953
 msgid "No input given \"item_id\""
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:960
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:959
 msgid "No input given \"quantity\""
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1017
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1016
 #, fuzzy
 #| msgid ""
 #| "Goods Issue imposible. Please check the stock quantity and the issue date"
 msgid ". Please check stock or change issue date."
 msgstr "Không thể xuất hàng. Hãy kiểm tra tồn kho hoặc ngày xuất hàng."
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1041
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1040
 #: User/src/User/Service/UserService.php:58
 msgid "No input given source_wh_id"
 msgstr ""
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1053
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1052
 #: User/src/User/Service/UserService.php:120
 #, fuzzy
 #| msgid "Source Warehouse"
 msgid "Warehouse is not selected"
 msgstr "Kho"
 
-#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1067
+#: Inventory/src/Inventory/Service/InventoryTransactionService.php:1066
 msgid "No authority to perform this operation on this Warehouse: "
 msgstr ""
 
@@ -1665,7 +1666,7 @@ msgid "Invalid Argument. Warehouse object is not found!"
 msgstr "Dữ liệu không hợp lê! Không tìm thấy Incoterm Object "
 
 #: Inventory/view/inventory/gi-create-wizard.php:4
-#: Inventory/view/inventory/gi-create-wizard1.php:15
+#: Inventory/view/inventory/gi-create-wizard1.php:14
 #: Inventory/view/inventory/ob-create-wizard.php:4
 #: Inventory/view/inventory/transfer-create-wizard.php:4
 #, fuzzy
@@ -1675,20 +1676,20 @@ msgstr "Ngày kết thúc"
 
 #: Inventory/view/inventory/gi-create-wizard.php:8
 #: Inventory/view/inventory/gi-create-wizard.php:11
-#: Inventory/view/inventory/gi-create-wizard1.php:19
-#: Inventory/view/inventory/gi-create-wizard1.php:22
+#: Inventory/view/inventory/gi-create-wizard1.php:18
+#: Inventory/view/inventory/gi-create-wizard1.php:21
 msgid "Goods Issue Header"
 msgstr ""
 
 #: Inventory/view/inventory/gi-create-wizard.php:15
-#: Inventory/view/inventory/gi-create-wizard1.php:26
+#: Inventory/view/inventory/gi-create-wizard1.php:25
 #: Procure/view/procure/gr-create-wizard.php:15
 #: Procure/view/procure/gr-create-wizard.php:19
 msgid "Goods Receipt Line"
 msgstr ""
 
 #: Inventory/view/inventory/gi-create-wizard.php:19
-#: Inventory/view/inventory/gi-create-wizard1.php:30
+#: Inventory/view/inventory/gi-create-wizard1.php:29
 msgid "Goods Issue Line"
 msgstr ""
 
@@ -1897,7 +1898,7 @@ msgid "Payment Header"
 msgstr ""
 
 #: Procure/src/Procure/Controller/Copy/PoController.php:1225
-#: Procure/src/Procure/Controller/PoController.php:1416
+#: Procure/src/Procure/Controller/PoController.php:1434
 #: Procure/view/procure/po/review.phtml:20
 #, fuzzy
 #| msgid "Show"
@@ -1920,15 +1921,57 @@ msgstr "Ngày nhận hàng không hợp lệ!"
 msgid "GR object is not found!"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:72
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:106
 #, php-format
 msgid "GR document can not be amended! %s"
 msgstr ""
 
-#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:76
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:110
 #, fuzzy
 #| msgid "Incoterm is not found!"
 msgid "Validators not found"
+msgstr "Incoterm Object không tìm thấy!"
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:113
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:175
+msgid "SharedService service not found"
+msgstr ""
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:117
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:179
+#, fuzzy
+#| msgid "Good receipt Date is not valid!"
+msgid "postingService service not found"
+msgstr "Ngày nhận hàng không hợp lệ!"
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:121
+#, fuzzy
+#| msgid "Incoterm is not found!"
+msgid "command options not found"
+msgstr "Incoterm Object không tìm thấy!"
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:125
+#, fuzzy
+#| msgid "Document is incomplete!"
+msgid "GR is completed"
+msgstr "Chứng từ chưa hoàn thiện!"
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:149
+#, php-format
+msgid "Error orcured when enabling GR for amendment #%s"
+msgstr ""
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:167
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:171
+#, fuzzy
+#| msgid "Incoterm is not found!"
+msgid "HeaderValidatorCollection not found"
+msgstr "Incoterm Object không tìm thấy!"
+
+#: Procure/src/Procure/Domain/GoodsReceipt/GenericGR.php:183
+#, fuzzy
+#| msgid "Incoterm is not found!"
+msgid "Comnand Options not found!"
 msgstr "Incoterm Object không tìm thấy!"
 
 #: Procure/src/Procure/Model/DomainDriven/Aggregate/APInvoice.php:33
@@ -2496,46 +2539,46 @@ msgstr ""
 msgid "Inventory movement is not selected!"
 msgstr "Ngày nhận hàng không hợp lệ!"
 
-#: Application/view/application/company/edit.phtml:28
-#: Application/view/application/company/show.phtml:28
+#: Application/view/application/company/edit.phtml:32
+#: Application/view/application/company/show.phtml:32
 msgid "Edit Company"
 msgstr ""
 
-#: Application/view/application/company/edit.phtml:46
-#: Application/view/application/company/show.phtml:46
+#: Application/view/application/company/edit.phtml:50
+#: Application/view/application/company/show.phtml:50
 #, fuzzy
 #| msgid "Employee Code"
 msgid "Company Code"
 msgstr "Mã nhân viên"
 
-#: Application/view/application/company/edit.phtml:55
-#: Application/view/application/company/show.phtml:55
+#: Application/view/application/company/edit.phtml:59
+#: Application/view/application/company/show.phtml:59
 msgid "Company Name"
 msgstr ""
 
-#: Application/view/application/company/edit.phtml:70
-#: Application/view/application/company/show.phtml:70
+#: Application/view/application/company/edit.phtml:74
+#: Application/view/application/company/show.phtml:74
 #, fuzzy
 #| msgid "Currency"
 msgid "Default Currency"
 msgstr "Đơn vị tiền tệ"
 
-#: Application/view/application/company/list.phtml:55
+#: Application/view/application/company/list.phtml:53
 #: Application/view/application/country/list.phtml:70
-#: Application/view/application/incoterm/list.phtml:68
-#: Application/view/application/payment-term/list.phtml:70
-#: Application/view/application/pmt-method/list.phtml:67
-#: Finance/view/finance/fx/list.phtml:76 Finance/view/finance/je/list.phtml:76
-#: Finance/view/finance/posting-period/list.phtml:38
-#: Finance/view/finance/posting-period/list.phtml:72
-#: HR/view/hr/employee-contract/list1.phtml:58
-#: HR/view/hr/employee-contract/show.phtml:49
-#: HR/view/hr/employee/applicant-list.phtml:153
-#: HR/view/hr/employee/list.phtml:170 HR/view/hr/income-setup/index.phtml:60
-#: HR/view/hr/leave-reason/list.phtml:60 HR/view/hr/position/list.phtml:58
-#: HR/view/hr/salary/list1.phtml:82 HR/view/hr/salary/show.phtml:205
+#: Application/view/application/incoterm/list.phtml:70
+#: Application/view/application/payment-term/list.phtml:72
+#: Application/view/application/pmt-method/list.phtml:69
+#: Finance/view/finance/fx/list.phtml:79 Finance/view/finance/je/list.phtml:79
+#: Finance/view/finance/posting-period/list.phtml:41
+#: Finance/view/finance/posting-period/list.phtml:79
+#: HR/view/hr/employee-contract/list1.phtml:62
+#: HR/view/hr/employee-contract/show.phtml:48
+#: HR/view/hr/employee/applicant-list.phtml:156
+#: HR/view/hr/employee/list.phtml:173 HR/view/hr/income-setup/index.phtml:64
+#: HR/view/hr/leave-reason/list.phtml:65 HR/view/hr/position/list.phtml:63
+#: HR/view/hr/salary/list1.phtml:83 HR/view/hr/salary/show.phtml:238
 #: HR/view/hr/salary/simulate.phtml:79
-#: Inventory/view/inventory/gi/review.phtml:33
+#: Inventory/view/inventory/gi/review.phtml:34
 #: Inventory/view/inventory/item-accounting/list.phtml:103
 #: Inventory/view/inventory/item-accounting/list1.phtml:90
 #: Inventory/view/inventory/item-group/list.phtml:73
@@ -2553,6 +2596,7 @@ msgstr "Đơn vị tiền tệ"
 #: Inventory/view/inventory/transfer/review.phtml:60
 #: Inventory/view/inventory/warehouse/list.phtml:81
 #: Payment/view/payment/outgoing/show.phtml:333
+#: Procure/view/procure/po/review-v1.phtml:461
 msgid "Edit"
 msgstr "Sửa"
 
@@ -2565,21 +2609,21 @@ msgid "Country Name"
 msgstr ""
 
 #: Application/view/application/country/list.phtml:48
-#: Application/view/application/pmt-method/list.phtml:42
-#: Finance/view/finance/posting-period/list.phtml:37
-#: HR/view/hr/contract/index.phtml:20
-#: HR/view/hr/employee-contract/list1.phtml:32
+#: Application/view/application/pmt-method/list.phtml:44
+#: Finance/view/finance/posting-period/list.phtml:40
+#: HR/view/hr/contract/index.phtml:21
+#: HR/view/hr/employee-contract/list1.phtml:34
 #: HR/view/hr/employee-evaluation/productivity-bonus.phtml:19
 #: HR/view/hr/employee-evaluation/tc-list.phtml:19
-#: HR/view/hr/employee/applicant-list.phtml:127
-#: HR/view/hr/employee/list.phtml:144
-#: HR/view/hr/income-decorator/index.phtml:16
-#: HR/view/hr/income-setup/index.phtml:28 HR/view/hr/leave-reason/list.phtml:37
-#: HR/view/hr/minimum-wage/index.phtml:19 HR/view/hr/position/index.phtml:20
-#: HR/view/hr/position/list.phtml:36 HR/view/hr/salary/assign.phtml:59
-#: HR/view/hr/salary/list1.phtml:39 HR/view/hr/salary/simulate.phtml:36
-#: HR/view/hr/sso/index.phtml:20
-#: Inventory/view/inventory/item-accounting/assign.phtml:54
+#: HR/view/hr/employee/applicant-list.phtml:129
+#: HR/view/hr/employee/list.phtml:146
+#: HR/view/hr/income-decorator/index.phtml:17
+#: HR/view/hr/income-setup/index.phtml:33 HR/view/hr/leave-reason/list.phtml:41
+#: HR/view/hr/minimum-wage/index.phtml:22 HR/view/hr/position/index.phtml:23
+#: HR/view/hr/position/list.phtml:40 HR/view/hr/salary/assign.phtml:65
+#: HR/view/hr/salary/list1.phtml:42 HR/view/hr/salary/simulate.phtml:38
+#: HR/view/hr/sso/index.phtml:23
+#: Inventory/view/inventory/item-accounting/assign.phtml:61
 #: Inventory/view/inventory/item-batch/assign.phtml:54
 #: Inventory/view/inventory/item-group/assign.phtml:54
 #: Inventory/view/inventory/item-group/list.phtml:49
@@ -2594,8 +2638,8 @@ msgstr ""
 msgid "Action"
 msgstr "Hành động"
 
-#: Application/view/application/department/list.phtml:8
-#: Application/view/application/department/list.phtml:12
+#: Application/view/application/department/list.phtml:10
+#: Application/view/application/department/list.phtml:14
 msgid "Add Department"
 msgstr "Thêm phòng ban"
 
@@ -2611,45 +2655,45 @@ msgstr ""
 msgid "Location required"
 msgstr ""
 
-#: Application/view/application/incoterm/crud.phtml:112
+#: Application/view/application/incoterm/crud.phtml:110
 #: Application/view/application/payment-term/crud.phtml:117
 #: Application/view/application/pmt-method/crud.phtml:139
-#: Finance/view/finance/posting-period/add.phtml:112
-#: HR/view/hr/employee-contract/add.phtml:192
-#: HR/view/hr/employee-contract/amend.phtml:209
-#: HR/view/hr/employee-contract/terminate.phtml:209
-#: HR/view/hr/leave-reason/add.phtml:79 HR/view/hr/position/add.phtml:82
-#: HR/view/hr/position/edit.phtml:86 HR/view/hr/salary/edit.phtml:100
+#: Finance/view/finance/posting-period/add.phtml:129
+#: HR/view/hr/employee-contract/add.phtml:224
+#: HR/view/hr/employee-contract/amend.phtml:242
+#: HR/view/hr/employee-contract/terminate.phtml:242
+#: HR/view/hr/leave-reason/add.phtml:95 HR/view/hr/position/add.phtml:101
+#: HR/view/hr/position/edit.phtml:108 HR/view/hr/salary/edit.phtml:121
 #: Inventory/view/inventory/similar-item/crud.phtml:245
 #: Inventory/view/inventory/warehouse/crud.phtml:245
 #: Inventory/view/inventory/warehouse/crud2.phtml:218
 #: Procure/view/procure/po-row/add-row.phtml:366
-#: Procure/view/procure/po/crudPORow.phtml:380
+#: Procure/view/procure/po/crudPORow.phtml:385
 #: Procure/view/procure/pr-row-attachment/upload.phtml:161
 #: Procure/view/procure/pr-row/copy/edit.phtml:267
 #: Procure/view/procure/pr-row/edit.phtml:266
 msgid "Save"
 msgstr "Ghi"
 
-#: Application/view/application/incoterm/crud.phtml:115
+#: Application/view/application/incoterm/crud.phtml:113
 #: Application/view/application/payment-term/crud.phtml:120
 #: Application/view/application/pmt-method/crud.phtml:142
-#: HR/view/hr/employee-contract/add.phtml:195
-#: HR/view/hr/employee-contract/amend.phtml:212
-#: HR/view/hr/employee-contract/show.phtml:52
-#: HR/view/hr/employee-contract/terminate.phtml:212
-#: HR/view/hr/leave-reason/add.phtml:82 HR/view/hr/position/add.phtml:85
-#: HR/view/hr/position/edit.phtml:89 HR/view/hr/salary/assign.phtml:94
-#: HR/view/hr/salary/edit.phtml:103 HR/view/hr/salary/show.phtml:209
+#: HR/view/hr/employee-contract/add.phtml:227
+#: HR/view/hr/employee-contract/amend.phtml:245
+#: HR/view/hr/employee-contract/show.phtml:51
+#: HR/view/hr/employee-contract/terminate.phtml:245
+#: HR/view/hr/leave-reason/add.phtml:98 HR/view/hr/position/add.phtml:104
+#: HR/view/hr/position/edit.phtml:111 HR/view/hr/salary/assign.phtml:102
+#: HR/view/hr/salary/edit.phtml:123 HR/view/hr/salary/show.phtml:241
 #: Inventory/view/inventory/similar-item/crud.phtml:248
 #: Inventory/view/inventory/warehouse/crud.phtml:248
 #: Inventory/view/inventory/warehouse/crud2.phtml:221
 #: Procure/view/procure/po-row/add-row.phtml:369
-#: Procure/view/procure/po/crudPORow.phtml:383
+#: Procure/view/procure/po/crudPORow.phtml:388
 msgid "Cancel"
 msgstr "Thoát"
 
-#: Application/view/application/incoterm/list.phtml:9
+#: Application/view/application/incoterm/list.phtml:10
 #, fuzzy
 #| msgid "Add New PR"
 msgid "Add New Incoterm"
@@ -2713,17 +2757,17 @@ msgid "Payment Term Code"
 msgstr "Mã kỳ hạch toán"
 
 #: Application/view/application/payment-term/crud.phtml:77
-#: HR/view/hr/contract/index.phtml:43 HR/view/hr/employee-contract/add.phtml:49
-#: HR/view/hr/employee-contract/amend.phtml:66
-#: HR/view/hr/employee-contract/list2.phtml:12
-#: HR/view/hr/employee-contract/list2.phtml:51
-#: HR/view/hr/employee-contract/show.phtml:78
-#: HR/view/hr/employee-contract/terminate.phtml:66
-#: HR/view/hr/leave-reason/add.phtml:33 HR/view/hr/minimum-wage/index.phtml:40
-#: HR/view/hr/position/add.phtml:35 HR/view/hr/position/edit.phtml:39
-#: HR/view/hr/position/index.phtml:43 HR/view/hr/position/show.phtml:39
-#: HR/view/hr/salary/list2.phtml:12 HR/view/hr/salary/list2.phtml:51
-#: HR/view/hr/salary/show.phtml:54 HR/view/hr/sso/index.phtml:43
+#: HR/view/hr/contract/index.phtml:44 HR/view/hr/employee-contract/add.phtml:63
+#: HR/view/hr/employee-contract/amend.phtml:82
+#: HR/view/hr/employee-contract/list2.phtml:20
+#: HR/view/hr/employee-contract/list2.phtml:62
+#: HR/view/hr/employee-contract/show.phtml:89
+#: HR/view/hr/employee-contract/terminate.phtml:82
+#: HR/view/hr/leave-reason/add.phtml:40 HR/view/hr/minimum-wage/index.phtml:43
+#: HR/view/hr/position/add.phtml:45 HR/view/hr/position/edit.phtml:52
+#: HR/view/hr/position/index.phtml:46 HR/view/hr/position/show.phtml:49
+#: HR/view/hr/salary/list2.phtml:20 HR/view/hr/salary/list2.phtml:62
+#: HR/view/hr/salary/show.phtml:68 HR/view/hr/sso/index.phtml:46
 msgid "Active"
 msgstr "hoạt động"
 
@@ -2740,7 +2784,7 @@ msgid "Prepayment"
 msgstr "Phòng ban"
 
 #: Application/view/application/payment-term/crud.phtml:102
-#: Finance/view/finance/posting-period/add.phtml:102
+#: Finance/view/finance/posting-period/add.phtml:117
 #: Inventory/view/inventory/similar-item/crud.phtml:226
 #: Inventory/view/inventory/warehouse/crud.phtml:226
 #: Inventory/view/inventory/warehouse/crud2.phtml:199
@@ -2753,7 +2797,7 @@ msgstr "Ghi chú"
 msgid "Payment Terms"
 msgstr "Phương thức thanh toán"
 
-#: Application/view/application/payment-term/list.phtml:9
+#: Application/view/application/payment-term/list.phtml:10
 #, fuzzy
 #| msgid "Add New PR"
 msgid "Add New Payment Term"
@@ -2768,14 +2812,14 @@ msgid "Edit Payment Method:"
 msgstr ""
 
 #: Application/view/application/pmt-method/crud.phtml:67
-#: Application/view/application/pmt-method/list.phtml:38
+#: Application/view/application/pmt-method/list.phtml:40
 #, fuzzy
 #| msgid "Period Code"
 msgid "Payment Method Code"
 msgstr "Mã kỳ hạch toán"
 
 #: Application/view/application/pmt-method/crud.phtml:76
-#: Application/view/application/pmt-method/list.phtml:39
+#: Application/view/application/pmt-method/list.phtml:41
 #, fuzzy
 #| msgid "Period Name"
 msgid "Payment Method Name"
@@ -2783,9 +2827,9 @@ msgstr "Tên kỳ hạch toán"
 
 #: Application/view/application/pmt-method/crud.phtml:86
 #: Finance/view/finance/account/list.phtml:5
-#: Finance/view/finance/v-invoice-row/Copy of edit.phtml:286
-#: Finance/view/finance/v-invoice-row/add.phtml:352
-#: Finance/view/finance/v-invoice-row/copy/add.phtml:356
+#: Finance/view/finance/v-invoice-row/Copy of edit.phtml:288
+#: Finance/view/finance/v-invoice-row/add.phtml:356
+#: Finance/view/finance/v-invoice-row/copy/add.phtml:358
 #: Finance/view/finance/v-invoice-row/crud.phtml:407
 #: Finance/view/finance/v-invoice-row/edit.phtml:334
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:207
@@ -2801,10 +2845,10 @@ msgid "GL Account"
 msgstr ""
 
 #: Application/view/application/pmt-method/crud.phtml:90
-#: BP/view/bp/vendor/add.phtml:35 BP/view/bp/vendor/edit.phtml:46
+#: BP/view/bp/vendor/add.phtml:35 BP/view/bp/vendor/edit.phtml:52
 #: BP/view/bp/vendor/show.phtml:64 Finance/view/finance/v-invoice-row/Copy of
-#: edit.phtml:289 Finance/view/finance/v-invoice-row/add.phtml:356
-#: Finance/view/finance/v-invoice-row/copy/add.phtml:359
+#: edit.phtml:291 Finance/view/finance/v-invoice-row/add.phtml:360
+#: Finance/view/finance/v-invoice-row/copy/add.phtml:361
 #: Finance/view/finance/v-invoice-row/crud.phtml:411
 #: Finance/view/finance/v-invoice-row/edit.phtml:337
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:211
@@ -2840,29 +2884,29 @@ msgid "Select GL Account"
 msgstr ""
 
 #: Application/view/application/pmt-method/crud.phtml:124
-#: Finance/view/finance/account/list.phtml:138
-#: HR/view/hr/leave-reason/add.phtml:65 HR/view/hr/position/add.phtml:68
-#: HR/view/hr/position/edit.phtml:72 HR/view/hr/position/show.phtml:72
-#: HR/view/hr/salary/edit.phtml:82
+#: Finance/view/finance/account/list.phtml:146
+#: HR/view/hr/leave-reason/add.phtml:80 HR/view/hr/position/add.phtml:86
+#: HR/view/hr/position/edit.phtml:93 HR/view/hr/position/show.phtml:90
+#: HR/view/hr/salary/edit.phtml:104
 #: Inventory/view/inventory/item-group/list.phtml:48
 #: Inventory/view/inventory/stock/list.phtml:48
 msgid "Description"
 msgstr "Chi tiết"
 
-#: Application/view/application/pmt-method/list.phtml:12
+#: Application/view/application/pmt-method/list.phtml:13
 msgid "Add Payment Method"
 msgstr ""
 
-#: Application/view/application/pmt-method/list.phtml:40
+#: Application/view/application/pmt-method/list.phtml:42
 #, fuzzy
 #| msgid "Description"
 msgid "Desciption"
 msgstr "Chi tiết"
 
-#: Application/view/application/pmt-method/list.phtml:41
-#: HR/view/hr/employee/applicant-list.phtml:51
-#: HR/view/hr/employee/list.phtml:68 HR/view/hr/leave-reason/list.phtml:36
-#: HR/view/hr/position/list.phtml:35
+#: Application/view/application/pmt-method/list.phtml:43
+#: HR/view/hr/employee/applicant-list.phtml:53
+#: HR/view/hr/employee/list.phtml:70 HR/view/hr/leave-reason/list.phtml:40
+#: HR/view/hr/position/list.phtml:39
 #: Inventory/view/inventory/warehouse/list.phtml:40
 msgid "Created Date"
 msgstr "Ngày tạo"
@@ -3104,16 +3148,16 @@ msgstr "Không có ngoại lệ sẵn có"
 msgid "An error occurred"
 msgstr "An error occurred"
 
-#: Application/view/layout/layout-fluid.phtml:187
+#: Application/view/layout/layout-fluid.phtml:202
 msgid "SETTING"
 msgstr "Thiết Lập"
 
-#: Application/view/layout/layout-fluid.phtml:190
-#: BP/view/layout/layout-fluid.phtml:190
-#: Calendar/view/layout/layout-fluid.phtml:189
-#: Finance/view/finance/v-invoice/list.phtml:12
-#: Finance/view/layout/layout-fluid.phtml:192
-#: HR/view/layout/layout-fluid.phtml:190
+#: Application/view/layout/layout-fluid.phtml:209
+#: BP/view/layout/layout-fluid.phtml:209
+#: Calendar/view/layout/layout-fluid.phtml:206
+#: Finance/view/finance/v-invoice/list.phtml:15
+#: Finance/view/layout/layout-fluid.phtml:209
+#: HR/view/layout/layout-fluid.phtml:209
 #: Inventory/view/inventory/item-category/list2.phtml:8
 #: Inventory/view/layout/layout-fluid.phtml:196
 #: PM/view/layout/layout-fluid.phtml:189
@@ -3130,14 +3174,14 @@ msgid "enter search term ..."
 msgstr "nhập từ khóa để tìm ....."
 
 #: Application/view/layout/layout.phtml:6
-#: Application/view/layout/layout.phtml:34
+#: Application/view/layout/layout.phtml:40
 msgid "Skeleton Application"
 msgstr "Ứng dụng"
 
-#: Application/view/layout/layout.phtml:37 BP/view/layout/layout.phtml:97
-#: Calendar/view/layout/layout.phtml:97 Finance/view/layout/layout.phtml:97
-#: HR/view/layout/CopyOflayout.phtml:72
-#: HR/view/layout/Copy_2_of_layout.phtml:78 HR/view/layout/layout.phtml:91
+#: Application/view/layout/layout.phtml:43 BP/view/layout/layout.phtml:103
+#: Calendar/view/layout/layout.phtml:103 Finance/view/layout/layout.phtml:103
+#: HR/view/layout/CopyOflayout.phtml:80
+#: HR/view/layout/Copy_2_of_layout.phtml:84 HR/view/layout/layout.phtml:97
 #: Inventory/view/layout/CopyOflayout.phtml:72
 #: Inventory/view/layout/Copy_2_of_layout.phtml:78
 #: Inventory/view/layout/layout.phtml:91 PM/view/layout/layout.phtml:97
@@ -3149,7 +3193,7 @@ msgstr "Ứng dụng"
 msgid "Home"
 msgstr "Trang chủ"
 
-#: Application/view/layout/layout.phtml:48
+#: Application/view/layout/layout.phtml:54
 msgid "All rights reserved."
 msgstr "Bảo lưu mọi quyền."
 
@@ -3171,9 +3215,9 @@ msgstr ""
 msgid "Trigger"
 msgstr ""
 
-#: BP/view/bp/activity-log/list1.phtml:25 BP/view/bp/change-log/list1.phtml:30
+#: BP/view/bp/activity-log/list1.phtml:25 BP/view/bp/change-log/list1.phtml:29
 #: Finance/view/finance/activity-log/list1.phtml:25
-#: Finance/view/finance/change-log/list1.phtml:30
+#: Finance/view/finance/change-log/list1.phtml:29
 #: HR/view/hr/activity-log/list1.phtml:25
 #: HR/view/hr/contract-log/list1.phtml:30
 #: Inventory/view/inventory/activity-log/list1.phtml:25
@@ -3185,8 +3229,8 @@ msgstr ""
 msgid "Changed By"
 msgstr ""
 
-#: BP/view/bp/change-log/list1.phtml:21
-#: Finance/view/finance/change-log/list1.phtml:21
+#: BP/view/bp/change-log/list1.phtml:20
+#: Finance/view/finance/change-log/list1.phtml:20
 #: HR/view/hr/contract-log/list1.phtml:21
 #: Inventory/view/inventory/change-log/list1.phtml:21
 #: Payment/view/payment/change-log/list1.phtml:21
@@ -3194,48 +3238,48 @@ msgstr ""
 msgid "Revision"
 msgstr "Sửa"
 
-#: BP/view/bp/change-log/list1.phtml:22
-#: Finance/view/finance/change-log/list1.phtml:22
+#: BP/view/bp/change-log/list1.phtml:21
+#: Finance/view/finance/change-log/list1.phtml:21
 #: HR/view/hr/contract-log/list1.phtml:22
-#: HR/view/hr/entity-change-log/list1.phtml:22
+#: HR/view/hr/entity-change-log/list1.phtml:21
 #: Inventory/view/inventory/change-log/list1.phtml:22
 #: Payment/view/payment/change-log/list1.phtml:22
 #: Procure/view/procure/change-log/list1.phtml:22
 msgid "field name"
 msgstr ""
 
-#: BP/view/bp/change-log/list1.phtml:23
-#: Finance/view/finance/change-log/list1.phtml:23
+#: BP/view/bp/change-log/list1.phtml:22
+#: Finance/view/finance/change-log/list1.phtml:22
 #: HR/view/hr/contract-log/list1.phtml:23
-#: HR/view/hr/entity-change-log/list1.phtml:23
+#: HR/view/hr/entity-change-log/list1.phtml:22
 #: Inventory/view/inventory/change-log/list1.phtml:23
 #: Payment/view/payment/change-log/list1.phtml:23
 #: Procure/view/procure/change-log/list1.phtml:23
 msgid "old value"
 msgstr ""
 
-#: BP/view/bp/change-log/list1.phtml:24
-#: Finance/view/finance/change-log/list1.phtml:24
+#: BP/view/bp/change-log/list1.phtml:23
+#: Finance/view/finance/change-log/list1.phtml:23
 #: HR/view/hr/contract-log/list1.phtml:24
-#: HR/view/hr/entity-change-log/list1.phtml:24
+#: HR/view/hr/entity-change-log/list1.phtml:23
 #: Inventory/view/inventory/change-log/list1.phtml:24
 #: Payment/view/payment/change-log/list1.phtml:24
 #: Procure/view/procure/change-log/list1.phtml:24
 msgid "new value"
 msgstr ""
 
-#: BP/view/bp/change-log/list1.phtml:25
-#: Finance/view/finance/change-log/list1.phtml:25
+#: BP/view/bp/change-log/list1.phtml:24
+#: Finance/view/finance/change-log/list1.phtml:24
 #: HR/view/hr/contract-log/list1.phtml:25
-#: HR/view/hr/entity-change-log/list1.phtml:25
+#: HR/view/hr/entity-change-log/list1.phtml:24
 #: Inventory/view/inventory/change-log/list1.phtml:25
 #: Payment/view/payment/change-log/list1.phtml:25
 #: Procure/view/procure/change-log/list1.phtml:25
 msgid "change date"
 msgstr ""
 
-#: BP/view/bp/change-log/list1.phtml:26
-#: Finance/view/finance/change-log/list1.phtml:26
+#: BP/view/bp/change-log/list1.phtml:25
+#: Finance/view/finance/change-log/list1.phtml:25
 #: HR/view/hr/contract-log/list1.phtml:26
 #: Inventory/view/inventory/change-log/list1.phtml:26
 #: Payment/view/payment/change-log/list1.phtml:26
@@ -3245,8 +3289,8 @@ msgstr ""
 msgid "effective from"
 msgstr "Có giá trị từ"
 
-#: BP/view/bp/change-log/list1.phtml:27
-#: Finance/view/finance/change-log/list1.phtml:27
+#: BP/view/bp/change-log/list1.phtml:26
+#: Finance/view/finance/change-log/list1.phtml:26
 #: HR/view/hr/contract-log/list1.phtml:27
 #: Inventory/view/inventory/change-log/list1.phtml:27
 #: Payment/view/payment/change-log/list1.phtml:27
@@ -3256,8 +3300,8 @@ msgstr "Có giá trị từ"
 msgid "effective to"
 msgstr "Có giá trị đến"
 
-#: BP/view/bp/change-log/list1.phtml:29
-#: Finance/view/finance/change-log/list1.phtml:29
+#: BP/view/bp/change-log/list1.phtml:28
+#: Finance/view/finance/change-log/list1.phtml:28
 #: HR/view/hr/contract-log/list1.phtml:29
 #: Inventory/view/inventory/change-log/list1.phtml:29
 #: Payment/view/payment/change-log/list1.phtml:29
@@ -3265,16 +3309,16 @@ msgstr "Có giá trị đến"
 msgid "Valid"
 msgstr ""
 
-#: BP/view/bp/vendor/add.phtml:32 BP/view/bp/vendor/edit.phtml:43
+#: BP/view/bp/vendor/add.phtml:32 BP/view/bp/vendor/edit.phtml:49
 #: BP/view/bp/vendor/show.phtml:61
 msgid "Control G/L Account"
 msgstr ""
 
-#: BP/view/layout/layout-fluid.phtml:187
+#: BP/view/layout/layout-fluid.phtml:202
 msgid "BUSINESS PARTNER"
 msgstr "Đối Tác"
 
-#: Calendar/view/layout/layout-fluid.phtml:186
+#: Calendar/view/layout/layout-fluid.phtml:199
 msgid "CALENDAR"
 msgstr ""
 
@@ -3283,28 +3327,28 @@ msgid "New G/L Account"
 msgstr ""
 
 #: Finance/view/finance/account/add.phtml:54
-#: Finance/view/finance/account/list.phtml:136
+#: Finance/view/finance/account/list.phtml:144
 msgid "Account Number"
 msgstr "Số Tài khoản"
 
-#: Finance/view/finance/account/edit.phtml:3
+#: Finance/view/finance/account/edit.phtml:5
 #: Finance/view/finance/v-invoice-row/Copy of edit.phtml:25
-#: Finance/view/finance/v-invoice/edit.phtml:3
+#: Finance/view/finance/v-invoice/edit.phtml:5
 msgid "AP Invoice: "
 msgstr ""
 
-#: Finance/view/finance/account/edit.phtml:49
-#: Finance/view/finance/account/show.phtml:91
+#: Finance/view/finance/account/edit.phtml:55
+#: Finance/view/finance/account/show.phtml:89
 #: Finance/view/finance/v-invoice/add.phtml:58
-#: Finance/view/finance/v-invoice/add_ap.phtml:104
-#: Finance/view/finance/v-invoice/copy-from-gr.phtml:77
-#: Finance/view/finance/v-invoice/copy/copy-from-gr.phtml:63
-#: Finance/view/finance/v-invoice/copy/copy-from-po.phtml:65
+#: Finance/view/finance/v-invoice/add_ap.phtml:103
+#: Finance/view/finance/v-invoice/copy-from-gr.phtml:81
+#: Finance/view/finance/v-invoice/copy/copy-from-gr.phtml:67
+#: Finance/view/finance/v-invoice/copy/copy-from-po.phtml:71
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:127
-#: Finance/view/finance/v-invoice/crud.phtml:119
-#: Finance/view/finance/v-invoice/edit.phtml:49
-#: Finance/view/finance/v-invoice/reverse.phtml:135
-#: Finance/view/finance/v-invoice/show.phtml:107
+#: Finance/view/finance/v-invoice/crud.phtml:121
+#: Finance/view/finance/v-invoice/edit.phtml:55
+#: Finance/view/finance/v-invoice/reverse.phtml:134
+#: Finance/view/finance/v-invoice/show.phtml:98
 #: Payment/view/payment/outgoing/crud.phtml:107
 #: Payment/view/payment/outgoing/pay-ap.phtml:112
 #: Payment/view/payment/outgoing/pay-po.phtml:112
@@ -3314,21 +3358,21 @@ msgstr ""
 msgid "Document Number"
 msgstr "Số Chứng từ"
 
-#: Finance/view/finance/account/list.phtml:9
+#: Finance/view/finance/account/list.phtml:11
 msgid "New GL Account"
 msgstr ""
 
-#: Finance/view/finance/account/list.phtml:137
+#: Finance/view/finance/account/list.phtml:145
 msgid "Account Type"
 msgstr ""
 
-#: Finance/view/finance/fx/list.phtml:9
+#: Finance/view/finance/fx/list.phtml:11
 #: Finance/view/finance/je-row/list.phtml:11
-#: Finance/view/finance/je/list.phtml:9
+#: Finance/view/finance/je/list.phtml:11
 msgid "Add new Fx"
 msgstr "Tạo Tỷ giá"
 
-#: Finance/view/finance/fx/list.phtml:74 Finance/view/finance/je/list.phtml:74
+#: Finance/view/finance/fx/list.phtml:76 Finance/view/finance/je/list.phtml:76
 #: Payment/view/payment/outgoing/list.phtml:66
 msgid "show"
 msgstr ""
@@ -3350,13 +3394,13 @@ msgid "Posting Date"
 msgstr "Ngày hạch toán"
 
 #: Finance/view/finance/je-row/list.phtml:51
-#: HR/view/hr/employee-contract/add.phtml:157
-#: HR/view/hr/employee-contract/amend.phtml:174
-#: HR/view/hr/employee-contract/list1.phtml:31
-#: HR/view/hr/employee-contract/show.phtml:191
-#: HR/view/hr/employee-contract/terminate.phtml:174
-#: HR/view/hr/minimum-wage/index.phtml:15 HR/view/hr/salary/list1.phtml:32
-#: HR/view/hr/salary/show.phtml:167 HR/view/hr/salary/simulate.phtml:29
+#: HR/view/hr/employee-contract/add.phtml:187
+#: HR/view/hr/employee-contract/amend.phtml:205
+#: HR/view/hr/employee-contract/list1.phtml:33
+#: HR/view/hr/employee-contract/show.phtml:217
+#: HR/view/hr/employee-contract/terminate.phtml:205
+#: HR/view/hr/minimum-wage/index.phtml:18 HR/view/hr/salary/list1.phtml:35
+#: HR/view/hr/salary/show.phtml:196 HR/view/hr/salary/simulate.phtml:31
 #: Procure/view/procure/price-comparison/price-of-item.phtml:21
 msgid "Currency"
 msgstr "Đơn vị tiền tệ"
@@ -3370,19 +3414,19 @@ msgid "G/L"
 msgstr ""
 
 #: Finance/view/finance/je-row/list.phtml:54
-#: Finance/view/finance/v-invoice-row/Copy of edit.phtml:318
-#: Finance/view/finance/v-invoice-row/add.phtml:389
-#: Finance/view/finance/v-invoice-row/copy/add.phtml:387
+#: Finance/view/finance/v-invoice-row/Copy of edit.phtml:320
+#: Finance/view/finance/v-invoice-row/add.phtml:393
+#: Finance/view/finance/v-invoice-row/copy/add.phtml:389
 #: Finance/view/finance/v-invoice-row/crud.phtml:445
 #: Finance/view/finance/v-invoice-row/edit.phtml:365
-#: HR/view/hr/position/add.phtml:47 HR/view/hr/position/edit.phtml:51
-#: HR/view/hr/position/list.phtml:32 HR/view/hr/position/show.phtml:51
-#: Inventory/view/inventory/gi-row/addGI099.phtml:193
-#: Inventory/view/inventory/gi-row/addGI100.phtml:193
+#: HR/view/hr/position/add.phtml:61 HR/view/hr/position/edit.phtml:68
+#: HR/view/hr/position/list.phtml:36 HR/view/hr/position/show.phtml:65
+#: Inventory/view/inventory/gi-row/addGI099.phtml:191
+#: Inventory/view/inventory/gi-row/addGI100.phtml:191
 #: Inventory/view/inventory/gi-row/addGI102.phtml:172
 #: Inventory/view/inventory/gi-row/crud.phtml:172
-#: Inventory/view/inventory/gi-row/crudGI100.phtml:216
-#: Inventory/view/inventory/gi-row/crudGI102.phtml:176
+#: Inventory/view/inventory/gi-row/crudGI100.phtml:218
+#: Inventory/view/inventory/gi-row/crudGI102.phtml:174
 #: Inventory/view/inventory/item-group/add.phtml:189
 #: Inventory/view/inventory/item-group/crud.phtml:225
 #: Inventory/view/inventory/item-group/edit.phtml:194
@@ -3413,26 +3457,26 @@ msgstr ""
 msgid "AP"
 msgstr ""
 
-#: Finance/view/finance/posting-period/add.phtml:23
-#: Finance/view/finance/posting-period/list.phtml:9
+#: Finance/view/finance/posting-period/add.phtml:21
+#: Finance/view/finance/posting-period/list.phtml:11
 msgid "New Posting Period"
 msgstr "Thêm kỳ hạch toán"
 
-#: Finance/view/finance/posting-period/add.phtml:32
+#: Finance/view/finance/posting-period/add.phtml:33
 msgid "Period Code"
 msgstr "Mã kỳ hạch toán"
 
-#: Finance/view/finance/posting-period/add.phtml:38
-#: Finance/view/finance/posting-period/list.phtml:29
+#: Finance/view/finance/posting-period/add.phtml:40
+#: Finance/view/finance/posting-period/list.phtml:32
 msgid "Period Name"
 msgstr "Tên kỳ hạch toán"
 
-#: Finance/view/finance/posting-period/add.phtml:47
-#: Finance/view/finance/posting-period/list.phtml:36
-#: HR/view/hr/contract/index.phtml:19
-#: HR/view/hr/employee-contract/add.phtml:113
-#: HR/view/hr/leave-reason/list.phtml:35 HR/view/hr/minimum-wage/index.phtml:18
-#: HR/view/hr/position/index.phtml:19 HR/view/hr/sso/index.phtml:19
+#: Finance/view/finance/posting-period/add.phtml:50
+#: Finance/view/finance/posting-period/list.phtml:39
+#: HR/view/hr/contract/index.phtml:20
+#: HR/view/hr/employee-contract/add.phtml:136
+#: HR/view/hr/leave-reason/list.phtml:39 HR/view/hr/minimum-wage/index.phtml:21
+#: HR/view/hr/position/index.phtml:22 HR/view/hr/sso/index.phtml:22
 #: Inventory/view/inventory/similar-item/crud.phtml:98
 #: Inventory/view/inventory/warehouse/crud.phtml:98
 #: Inventory/view/inventory/warehouse/crud2.phtml:77
@@ -3443,72 +3487,72 @@ msgstr "Tên kỳ hạch toán"
 msgid "Status"
 msgstr "Trạng thái"
 
-#: Finance/view/finance/posting-period/add.phtml:50
-#: Finance/view/finance/posting-period/list.phtml:65
+#: Finance/view/finance/posting-period/add.phtml:55
+#: Finance/view/finance/posting-period/list.phtml:70
 msgid "Open"
 msgstr "Mở"
 
-#: Finance/view/finance/posting-period/add.phtml:51
+#: Finance/view/finance/posting-period/add.phtml:58
 msgid "Closed"
 msgstr "Đã đóng"
 
-#: Finance/view/finance/posting-period/add.phtml:57
-#: Finance/view/finance/posting-period/list.phtml:30
+#: Finance/view/finance/posting-period/add.phtml:64
+#: Finance/view/finance/posting-period/list.phtml:33
 msgid "Period Start"
 msgstr "Ngày bắt đầu kỳ"
 
-#: Finance/view/finance/posting-period/add.phtml:63
-#: Finance/view/finance/posting-period/list.phtml:31
+#: Finance/view/finance/posting-period/add.phtml:72
+#: Finance/view/finance/posting-period/list.phtml:34
 msgid "Period End"
 msgstr "Ngày kết thúc kỳ"
 
-#: Finance/view/finance/posting-period/add.phtml:72
-#: Finance/view/finance/posting-period/list.phtml:32
+#: Finance/view/finance/posting-period/add.phtml:83
+#: Finance/view/finance/posting-period/list.phtml:35
 msgid "Plan Working Days"
 msgstr "Ngày làm việc kế hoạch"
 
-#: Finance/view/finance/posting-period/add.phtml:78
-#: Finance/view/finance/posting-period/list.phtml:33
+#: Finance/view/finance/posting-period/add.phtml:90
+#: Finance/view/finance/posting-period/list.phtml:36
 msgid "Actual Working Days"
 msgstr "Ngày làm việc thực tế"
 
-#: Finance/view/finance/posting-period/add.phtml:87
-#: Finance/view/finance/posting-period/list.phtml:34
+#: Finance/view/finance/posting-period/add.phtml:100
+#: Finance/view/finance/posting-period/list.phtml:37
 msgid "National Holidays"
 msgstr "Ngày nghỉ theo luật"
 
-#: Finance/view/finance/posting-period/add.phtml:93
-#: Finance/view/finance/posting-period/list.phtml:35
+#: Finance/view/finance/posting-period/add.phtml:107
+#: Finance/view/finance/posting-period/list.phtml:38
 msgid "Cooperate Leaves"
 msgstr "Ngày nghỉ của công ty"
 
-#: Finance/view/finance/posting-period/list.phtml:20
-#: HR/view/hr/employee/applicant-list.phtml:110
+#: Finance/view/finance/posting-period/list.phtml:22
 #: HR/view/hr/employee/applicant-list.phtml:112
-#: HR/view/hr/employee/list.phtml:127 HR/view/hr/employee/list.phtml:129
-#: HR/view/hr/leave-reason/list.phtml:22 HR/view/hr/position/list.phtml:22
+#: HR/view/hr/employee/applicant-list.phtml:114
+#: HR/view/hr/employee/list.phtml:129 HR/view/hr/employee/list.phtml:131
+#: HR/view/hr/leave-reason/list.phtml:26 HR/view/hr/position/list.phtml:26
 msgid "records"
 msgstr "bản ghi"
 
-#: Finance/view/finance/posting-period/list.phtml:67
+#: Finance/view/finance/posting-period/list.phtml:72
 msgid "Opened"
 msgstr "Đã mở"
 
-#: Finance/view/finance/posting-period/list.phtml:68
+#: Finance/view/finance/posting-period/list.phtml:74
 msgid "Close"
 msgstr "Đóng"
 
-#: Finance/view/finance/v-invoice-row/Copy of edit.phtml:321
-#: Finance/view/finance/v-invoice-row/add.phtml:393
-#: Finance/view/finance/v-invoice-row/copy/add.phtml:390
+#: Finance/view/finance/v-invoice-row/Copy of edit.phtml:323
+#: Finance/view/finance/v-invoice-row/add.phtml:397
+#: Finance/view/finance/v-invoice-row/copy/add.phtml:392
 #: Finance/view/finance/v-invoice-row/crud.phtml:449
 #: Finance/view/finance/v-invoice-row/edit.phtml:368
-#: Inventory/view/inventory/gi-row/addGI099.phtml:198
-#: Inventory/view/inventory/gi-row/addGI100.phtml:198
+#: Inventory/view/inventory/gi-row/addGI099.phtml:196
+#: Inventory/view/inventory/gi-row/addGI100.phtml:196
 #: Inventory/view/inventory/gi-row/addGI102.phtml:177
 #: Inventory/view/inventory/gi-row/crud.phtml:177
-#: Inventory/view/inventory/gi-row/crudGI100.phtml:221
-#: Inventory/view/inventory/gi-row/crudGI102.phtml:181
+#: Inventory/view/inventory/gi-row/crudGI100.phtml:223
+#: Inventory/view/inventory/gi-row/crudGI102.phtml:179
 #: Inventory/view/inventory/item-group/add.phtml:192
 #: Inventory/view/inventory/item-group/crud.phtml:228
 #: Inventory/view/inventory/item-group/edit.phtml:197
@@ -3533,20 +3577,20 @@ msgstr ""
 msgid "Edit AP Row:"
 msgstr "Sửa"
 
-#: Finance/view/finance/v-invoice-row/add.phtml:72
+#: Finance/view/finance/v-invoice-row/add.phtml:73
 #: Finance/view/finance/v-invoice-row/crud.phtml:78
 #: Finance/view/finance/v-invoice/crud.phtml:66
-#: Inventory/view/inventory/gi-row/addGI099.phtml:60
-#: Inventory/view/inventory/gi-row/addGI100.phtml:60
+#: Inventory/view/inventory/gi-row/addGI099.phtml:59
+#: Inventory/view/inventory/gi-row/addGI100.phtml:59
 #: Inventory/view/inventory/gi-row/addGI102.phtml:65
 #: Inventory/view/inventory/gi-row/crud.phtml:65
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:69
-#: Inventory/view/inventory/gi-row/crudGI102.phtml:71
+#: Inventory/view/inventory/gi-row/crudGI102.phtml:69
 #: Inventory/view/inventory/item-transaction/crud.phtml:45
 #: Inventory/view/inventory/item/copy/show.phtml:80
-#: Inventory/view/inventory/item/copy/show1.phtml:79
+#: Inventory/view/inventory/item/copy/show1.phtml:80
 #: Inventory/view/inventory/item/show.phtml:126
-#: Inventory/view/inventory/item/show1.phtml:123
+#: Inventory/view/inventory/item/show1.phtml:136
 #: Inventory/view/inventory/similar-item/crud.phtml:32
 #: Inventory/view/inventory/transfer-row/crud.phtml:60
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:55
@@ -3570,34 +3614,34 @@ msgstr "Sửa"
 msgid "Change Logs"
 msgstr "Lịch sử thay đổi"
 
-#: Finance/view/finance/v-invoice-row/add.phtml:150
-#: Finance/view/finance/v-invoice-row/add.phtml:190
+#: Finance/view/finance/v-invoice-row/add.phtml:154
+#: Finance/view/finance/v-invoice-row/add.phtml:194
 #: Finance/view/finance/v-invoice-row/crud.phtml:159
 #: Finance/view/finance/v-invoice-row/crud.phtml:200
 #: Finance/view/finance/v-invoice-row/edit.phtml:258
 #: Procure/view/procure/gr-row/add.phtml:257
 #: Procure/view/procure/gr-row/add.phtml:297
 #: Procure/view/procure/po-row/add-row.phtml:147
-#: Procure/view/procure/po/crudPORow.phtml:161
+#: Procure/view/procure/po/crudPORow.phtml:166
 #: Procure/view/procure/quote-row/add.phtml:144
 msgid "Line Detail"
 msgstr ""
 
-#: Finance/view/finance/v-invoice-row/add.phtml:231
+#: Finance/view/finance/v-invoice-row/add.phtml:235
 #: Finance/view/finance/v-invoice-row/crud.phtml:241
 #: Finance/view/finance/v-invoice-row/edit.phtml:299
-#: Inventory/view/inventory/gi-row/addGI099.phtml:141
-#: Inventory/view/inventory/gi-row/addGI100.phtml:141
+#: Inventory/view/inventory/gi-row/addGI099.phtml:139
+#: Inventory/view/inventory/gi-row/addGI100.phtml:139
 #: Inventory/view/inventory/gi-row/addGI102.phtml:141
 #: Inventory/view/inventory/gi-row/crud.phtml:141
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:143
-#: Inventory/view/inventory/gi-row/crudGI100.phtml:192
-#: Inventory/view/inventory/gi-row/crudGI102.phtml:145
+#: Inventory/view/inventory/gi-row/crudGI100.phtml:194
+#: Inventory/view/inventory/gi-row/crudGI102.phtml:143
 #: Inventory/view/inventory/transfer-row/crud.phtml:141
 #: Inventory/view/inventory/transfer-row/crudGI108.phtml:136
 #: Procure/view/procure/gr-row/add.phtml:339
 #: Procure/view/procure/po-row/add-row.phtml:191
-#: Procure/view/procure/po/crudPORow.phtml:205
+#: Procure/view/procure/po/crudPORow.phtml:210
 #: Procure/view/procure/pr-row/add.phtml:264
 #: Procure/view/procure/pr-row/copy/edit.phtml:123
 #: Procure/view/procure/pr-row/crud.phtml:278
@@ -3608,7 +3652,7 @@ msgstr ""
 msgid "Item Detail"
 msgstr "Tên Hàng Hóa"
 
-#: Finance/view/finance/v-invoice-row/add.phtml:284
+#: Finance/view/finance/v-invoice-row/add.phtml:288
 #: Finance/view/finance/v-invoice-row/crud.phtml:339
 #: Finance/view/finance/v-invoice-row/edit.phtml:410
 #: Procure/view/procure/pr-row/add.phtml:317
@@ -3618,10 +3662,10 @@ msgstr "Tên Hàng Hóa"
 msgid "Convert Factor"
 msgstr "Hệ số qui đổi"
 
-#: Finance/view/finance/v-invoice-row/add.phtml:424
+#: Finance/view/finance/v-invoice-row/add.phtml:428
 #: Finance/view/finance/v-invoice-row/crud.phtml:282
-#: Finance/view/finance/v-invoice/add_ap.phtml:251
-#: Finance/view/finance/v-invoice/crud.phtml:268
+#: Finance/view/finance/v-invoice/add_ap.phtml:250
+#: Finance/view/finance/v-invoice/crud.phtml:279
 #: Inventory/view/inventory/transfer/crud.phtml:182
 #: Inventory/view/inventory/transfer/crudGI108.phtml:184
 #: Inventory/view/inventory/transfer/review.phtml:188
@@ -3636,10 +3680,10 @@ msgstr "Hệ số qui đổi"
 msgid "Target Warehouse"
 msgstr "Kho"
 
-#: Finance/view/finance/v-invoice-row/add.phtml:428
+#: Finance/view/finance/v-invoice-row/add.phtml:432
 #: Finance/view/finance/v-invoice-row/crud.phtml:286
-#: Finance/view/finance/v-invoice/add_ap.phtml:255
-#: Finance/view/finance/v-invoice/crud.phtml:272
+#: Finance/view/finance/v-invoice/add_ap.phtml:254
+#: Finance/view/finance/v-invoice/crud.phtml:285
 #: Inventory/view/inventory/item-transaction/crud.phtml:145
 #: Inventory/view/inventory/transfer/crud-location.phtml:145
 #: Inventory/view/inventory/transfer/crud-wh.phtml:145
@@ -3658,17 +3702,17 @@ msgstr "Kho"
 msgid "..."
 msgstr ""
 
-#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:10
+#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:14
 #: Inventory/view/inventory/item/copy/show.phtml:78
-#: Inventory/view/inventory/item/copy/show1.phtml:77
+#: Inventory/view/inventory/item/copy/show1.phtml:78
 #: Inventory/view/inventory/item/show.phtml:124
-#: Inventory/view/inventory/item/show1.phtml:121
+#: Inventory/view/inventory/item/show1.phtml:134
 #, fuzzy
 #| msgid "AP Invoice has no line"
 msgid "AP Invoice"
 msgstr "Chứng từ chưa hoàn thiện."
 
-#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:20
+#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:24
 #: Procure/view/procure/pr-row/add.phtml:289
 #: Procure/view/procure/pr-row/copy/edit.phtml:148
 #: Procure/view/procure/pr-row/crud.phtml:303
@@ -3677,7 +3721,7 @@ msgstr "Chứng từ chưa hoàn thiện."
 msgid "Item Name"
 msgstr "Tên Hàng Hóa"
 
-#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:21
+#: Finance/view/finance/v-invoice-row/ap-of-item.phtml:25
 #, fuzzy
 #| msgid "Incoterm is not found!"
 msgid "Vendor Item code"
@@ -3688,14 +3732,14 @@ msgid "New Row"
 msgstr "Thêm dòng"
 
 #: Finance/view/finance/v-invoice-row/copy/add.phtml:51
-#: Inventory/view/inventory/gi-row/add.phtml:42
-#: Inventory/view/inventory/gr-row/add.phtml:39
+#: Inventory/view/inventory/gi-row/add.phtml:47
+#: Inventory/view/inventory/gr-row/add.phtml:45
 #: Procure/view/procure/gr-row/add.phtml:34
 #: Procure/view/procure/gr-row/copy/add-row.phtml:19
 #: Procure/view/procure/po-row/add-row.phtml:35
 #: Procure/view/procure/po-row/copy/add.phtml:39
-#: Procure/view/procure/po/crudPORow.phtml:52
-#: Procure/view/procure/po/review-v1.phtml:169
+#: Procure/view/procure/po/crudPORow.phtml:57
+#: Procure/view/procure/po/review-v1.phtml:172
 #: Procure/view/procure/po/review.phtml:44
 #: Procure/view/procure/po/view.phtml:24
 #: Procure/view/procure/pr-row/copy/add.phtml:46
@@ -3716,34 +3760,34 @@ msgstr "Sửa"
 msgid "New AP Invoice"
 msgstr "Chứng từ chưa hoàn thiện."
 
-#: Finance/view/finance/v-invoice/add_ap.phtml:12
-#: Finance/view/finance/v-invoice/crud.phtml:22
+#: Finance/view/finance/v-invoice/add_ap.phtml:11
+#: Finance/view/finance/v-invoice/crud.phtml:21
 #, fuzzy
 #| msgid "AP Invoice has no line"
 msgid "Add new AP invoice"
 msgstr "Chứng từ chưa hoàn thiện."
 
-#: Finance/view/finance/v-invoice/add_ap.phtml:16
-#: Finance/view/finance/v-invoice/crud.phtml:26
+#: Finance/view/finance/v-invoice/add_ap.phtml:15
+#: Finance/view/finance/v-invoice/crud.phtml:25
 #, fuzzy
 #| msgid "AP Invoice has no line"
 msgid "Edit AP invoice"
 msgstr "Chứng từ chưa hoàn thiện."
 
-#: Finance/view/finance/v-invoice/add_ap.phtml:20
-#: Finance/view/finance/v-invoice/crud.phtml:30
+#: Finance/view/finance/v-invoice/add_ap.phtml:19
+#: Finance/view/finance/v-invoice/crud.phtml:29
 msgid "Create AP from PO"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/add_ap.phtml:302
-#: Finance/view/finance/v-invoice/crud.phtml:322
+#: Finance/view/finance/v-invoice/add_ap.phtml:301
+#: Finance/view/finance/v-invoice/crud.phtml:338
 #: Finance/view/finance/v-invoice/review.phtml:289
 #: Procure/view/procure/po/add.phtml:196
 #: Procure/view/procure/po/copy-from-qo.phtml:165
 #: Procure/view/procure/po/crud.phtml:215
 #: Procure/view/procure/po/crudPO-v1.phtml:191
-#: Procure/view/procure/po/crudPO.phtml:232
-#: Procure/view/procure/po/review-v1.phtml:416
+#: Procure/view/procure/po/crudPO.phtml:235
+#: Procure/view/procure/po/review-v1.phtml:419
 #: Procure/view/procure/po/review.phtml:290
 #: Procure/view/procure/po/view.phtml:275
 #: Procure/view/procure/price-comparison/price-of-item.phtml:25
@@ -3755,15 +3799,15 @@ msgstr ""
 msgid "Incoterm"
 msgstr "Tạo yêu cầu mua"
 
-#: Finance/view/finance/v-invoice/add_ap.phtml:330
-#: Finance/view/finance/v-invoice/crud.phtml:353
+#: Finance/view/finance/v-invoice/add_ap.phtml:329
+#: Finance/view/finance/v-invoice/crud.phtml:371
 #: Finance/view/finance/v-invoice/review.phtml:317
 #: Procure/view/procure/po/add.phtml:224
 #: Procure/view/procure/po/copy-from-qo.phtml:193
 #: Procure/view/procure/po/crud.phtml:243
 #: Procure/view/procure/po/crudPO-v1.phtml:223
-#: Procure/view/procure/po/crudPO.phtml:244
-#: Procure/view/procure/po/review-v1.phtml:424
+#: Procure/view/procure/po/crudPO.phtml:247
+#: Procure/view/procure/po/review-v1.phtml:427
 #: Procure/view/procure/po/review.phtml:318
 #: Procure/view/procure/po/view.phtml:301
 #: Procure/view/procure/price-comparison/price-of-item.phtml:26
@@ -3775,22 +3819,22 @@ msgstr "Tạo yêu cầu mua"
 msgid "Incoterm Place"
 msgstr "Thiết lập các khoản thu nhập"
 
-#: Finance/view/finance/v-invoice/add_ap.phtml:340
-#: Finance/view/finance/v-invoice/crud.phtml:364
+#: Finance/view/finance/v-invoice/add_ap.phtml:339
+#: Finance/view/finance/v-invoice/crud.phtml:383
 #: Finance/view/finance/v-invoice/review.phtml:329
 #: Procure/view/procure/po/add.phtml:234
 #: Procure/view/procure/po/copy-from-qo.phtml:203
 #: Procure/view/procure/po/crud.phtml:255
 #: Procure/view/procure/po/crudPO-v1.phtml:235
-#: Procure/view/procure/po/crudPO.phtml:256
-#: Procure/view/procure/po/review-v1.phtml:434
+#: Procure/view/procure/po/crudPO.phtml:259
+#: Procure/view/procure/po/review-v1.phtml:437
 #: Procure/view/procure/po/review.phtml:328
 #: Procure/view/procure/po/view.phtml:311
 #: Procure/view/procure/return/crud.phtml:255
 msgid "Payment Term"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:65 review.phtml:326
+#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:66 review.phtml:331
 #: Finance/view/finance/v-invoice/review.phtml:487
 #: Inventory/view/inventory/item-transaction/gi.phtml:167
 #: Procure/view/procure/gr/Copy review.phtml:59 review.phtml:277
@@ -3798,12 +3842,12 @@ msgstr ""
 msgid "Document can't be changed anymore when submitted!"
 msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:77
+#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:79
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:81
-#: Finance/view/finance/v-invoice/reverse.phtml:93
+#: Finance/view/finance/v-invoice/reverse.phtml:92
 #: Finance/view/finance/v-invoice/review.phtml:74
-#: Inventory/view/inventory/gi/reverse.phtml:87
-#: Inventory/view/inventory/gi/review.phtml:37
+#: Inventory/view/inventory/gi/reverse.phtml:89
+#: Inventory/view/inventory/gi/review.phtml:38
 #: Inventory/view/inventory/item-transaction/gi.phtml:146
 #: Inventory/view/inventory/opening-balance/review.phtml:54
 #: Inventory/view/inventory/transfer/review.phtml:64
@@ -3812,14 +3856,14 @@ msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 #: Payment/view/payment/outgoing/reverse.phtml:81 Procure/view/procure/gr/Copy
 #: review.phtml:71 Procure/view/procure/gr/reverse.phtml:95
 #: Procure/view/procure/gr/review.phtml:97
-#: Procure/view/procure/po/review-v1.phtml:268
+#: Procure/view/procure/po/review-v1.phtml:271
 #: Procure/view/procure/po/review.phtml:143
 #: Procure/view/procure/po/view.phtml:130
 #: Procure/view/procure/quote/show.phtml:90
 msgid "Post"
 msgstr "Ghi sổ"
 
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:323
+#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:328
 #: Finance/view/finance/v-invoice/review.phtml:484
 #: Inventory/view/inventory/item-transaction/gi.phtml:164
 #: Procure/view/procure/gr/Copy review.phtml:274
@@ -3827,12 +3871,12 @@ msgstr "Ghi sổ"
 msgid " will be posted!"
 msgstr " sẽ được ghi sổ!"
 
-#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:331
+#: Finance/view/finance/v-invoice/copy/Copy of review.phtml:336
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:381
-#: Finance/view/finance/v-invoice/reverse.phtml:356
+#: Finance/view/finance/v-invoice/reverse.phtml:355
 #: Finance/view/finance/v-invoice/review.phtml:492
-#: Inventory/view/inventory/gi/reverse.phtml:230
-#: Inventory/view/inventory/gi/review.phtml:176
+#: Inventory/view/inventory/gi/reverse.phtml:232
+#: Inventory/view/inventory/gi/review.phtml:177
 #: Inventory/view/inventory/item-transaction/gi.phtml:172
 #: Inventory/view/inventory/opening-balance/review.phtml:270
 #: Inventory/view/inventory/transfer/review.phtml:277
@@ -3842,9 +3886,10 @@ msgstr " sẽ được ghi sổ!"
 #: Payment/view/payment/outgoing/show.phtml:372 Procure/view/procure/gr/Copy
 #: review.phtml:282 Procure/view/procure/gr/reverse.phtml:272
 #: Procure/view/procure/gr/review.phtml:340
-#: Procure/view/procure/po/review-v1.phtml:550
-#: Procure/view/procure/po/review-v1.phtml:578
-#: Procure/view/procure/po/review-v1.phtml:603
+#: Procure/view/procure/po/review-v1.phtml:573
+#: Procure/view/procure/po/review-v1.phtml:601
+#: Procure/view/procure/po/review-v1.phtml:626
+#: Procure/view/procure/po/review-v1.phtml:651
 #: Procure/view/procure/po/review.phtml:467
 #: Procure/view/procure/po/view.phtml:436
 #: Procure/view/procure/quote/show.phtml:375
@@ -3857,8 +3902,8 @@ msgid "Reserval Document"
 msgstr ""
 
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:57
-#: Finance/view/finance/v-invoice/reverse.phtml:69
-#: Inventory/view/inventory/gi/reverse.phtml:63
+#: Finance/view/finance/v-invoice/reverse.phtml:68
+#: Inventory/view/inventory/gi/reverse.phtml:64
 #: Payment/view/payment/outgoing/reverse.phtml:57
 #: Procure/view/procure/gr/reverse.phtml:71
 msgid "Reversal Date"
@@ -3924,7 +3969,7 @@ msgid "SAP Document No"
 msgstr "Số Chứng từ"
 
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:373
-#: Finance/view/finance/v-invoice/reverse.phtml:348
+#: Finance/view/finance/v-invoice/reverse.phtml:347
 #: Payment/view/payment/outgoing/reverse.phtml:373
 #, fuzzy
 #| msgid "Outgoing payment will be posted!"
@@ -3932,17 +3977,18 @@ msgid "Outgoing payment will be reversed!"
 msgstr "Thanh toán sẽ được ghi sổ!"
 
 #: Finance/view/finance/v-invoice/copy/reverse.phtml:376
-#: Finance/view/finance/v-invoice/reverse.phtml:351
-#: Inventory/view/inventory/gi/reverse.phtml:225
+#: Finance/view/finance/v-invoice/reverse.phtml:350
+#: Inventory/view/inventory/gi/reverse.phtml:227
 #: Payment/view/payment/outgoing/pay-ap.phtml:400
 #: Payment/view/payment/outgoing/pay-po.phtml:400
 #: Payment/view/payment/outgoing/reverse.phtml:376
 #: Payment/view/payment/outgoing/show.phtml:367
 #: Procure/view/procure/gr/reverse.phtml:267
 #: Procure/view/procure/gr/review.phtml:335
-#: Procure/view/procure/po/review-v1.phtml:545
-#: Procure/view/procure/po/review-v1.phtml:573
-#: Procure/view/procure/po/review-v1.phtml:601
+#: Procure/view/procure/po/review-v1.phtml:568
+#: Procure/view/procure/po/review-v1.phtml:596
+#: Procure/view/procure/po/review-v1.phtml:624
+#: Procure/view/procure/po/review-v1.phtml:649
 #: Procure/view/procure/po/review.phtml:462
 #: Procure/view/procure/po/view.phtml:431
 #: Procure/view/procure/quote/show.phtml:370
@@ -3951,7 +3997,7 @@ msgstr "Thanh toán sẽ được ghi sổ!"
 msgid "Document can't be changed anymore when posted!"
 msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 
-#: Finance/view/finance/v-invoice/crud.phtml:367
+#: Finance/view/finance/v-invoice/crud.phtml:388
 #: Finance/view/finance/v-invoice/review.phtml:332
 #: Inventory/view/inventory/item-group/add.phtml:226
 #: Inventory/view/inventory/item-group/crud.phtml:264
@@ -3960,35 +4006,35 @@ msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 #: Procure/view/procure/gr/show.phtml:208
 #: Procure/view/procure/po/crud.phtml:258
 #: Procure/view/procure/po/crudPO-v1.phtml:238
-#: Procure/view/procure/po/crudPO.phtml:259
+#: Procure/view/procure/po/crudPO.phtml:262
 #: Procure/view/procure/return/crud.phtml:258
 msgid "---"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/crud.phtml:397
+#: Finance/view/finance/v-invoice/crud.phtml:418
 #: Finance/view/finance/v-invoice/review.phtml:367
 #: Procure/view/procure/po/crud.phtml:288
 #: Procure/view/procure/po/crudPO-v1.phtml:264
-#: Procure/view/procure/po/crudPO.phtml:271
+#: Procure/view/procure/po/crudPO.phtml:274
 #: Procure/view/procure/return/crud.phtml:288
 #, fuzzy
 #| msgid "Item Name"
 msgid "Payment Term Detail"
 msgstr "Tên Hàng Hóa"
 
-#: Finance/view/finance/v-invoice/crud.phtml:407
+#: Finance/view/finance/v-invoice/crud.phtml:428
 #: Finance/view/finance/v-invoice/review.phtml:361
 #, fuzzy
 #| msgid "Payment Method"
 msgid "Payment Term List"
 msgstr "Phương thức thanh toán"
 
-#: Finance/view/finance/v-invoice/reverse.phtml:34
+#: Finance/view/finance/v-invoice/reverse.phtml:33
 msgid "AP Reserval "
 msgstr ""
 
-#: Finance/view/finance/v-invoice/reverse.phtml:63
-#: Inventory/view/inventory/gi/reverse.phtml:57
+#: Finance/view/finance/v-invoice/reverse.phtml:62
+#: Inventory/view/inventory/gi/reverse.phtml:58
 #: Procure/view/procure/gr/reverse.phtml:65
 msgid "Reserval Header"
 msgstr ""
@@ -4009,7 +4055,7 @@ msgstr "Kho"
 #: Procure/view/procure/ap-report/row-status.phtml:238
 #: Procure/view/procure/po-row/status-report.phtml:189
 #: Procure/view/procure/po/copy/show.phtml:222
-#: Procure/view/procure/po/review-v1.phtml:475
+#: Procure/view/procure/po/review-v1.phtml:498
 #: Procure/view/procure/po/review.phtml:369
 #: Procure/view/procure/po/view.phtml:352
 #: Procure/view/procure/pr-row/pr-gird.phtml:189
@@ -4024,7 +4070,7 @@ msgstr ""
 
 #: Finance/view/finance/v-invoice/review.phtml:417
 #: Procure/view/procure/po/copy/show.phtml:226
-#: Procure/view/procure/po/review-v1.phtml:479
+#: Procure/view/procure/po/review-v1.phtml:502
 #: Procure/view/procure/po/review.phtml:373
 #: Procure/view/procure/po/view.phtml:356
 #: Procure/view/procure/pr/review.phtml:248
@@ -4039,13 +4085,13 @@ msgstr ""
 msgid "Journal entry preview"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/show.phtml:56
+#: Finance/view/finance/v-invoice/show.phtml:54
 #, fuzzy
 #| msgid "AP Invoice has no line"
 msgid "Reverse AP Invoice"
 msgstr "Chứng từ chưa hoàn thiện."
 
-#: Finance/view/finance/v-invoice/show.phtml:59
+#: Finance/view/finance/v-invoice/show.phtml:57
 #: Inventory/view/inventory/gi/show.phtml:41
 #: Inventory/view/inventory/transfer/show.phtml:41
 #: Payment/view/payment/outgoing/show.phtml:337
@@ -4053,22 +4099,22 @@ msgstr "Chứng từ chưa hoàn thiện."
 msgid "Reverse"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/show.phtml:64
+#: Finance/view/finance/v-invoice/show.phtml:58
 msgid "Pay AP"
 msgstr ""
 
-#: Finance/view/finance/v-invoice/vendor.phtml:174
-#: HR/view/hr/contract/index.phtml:34 HR/view/hr/contract/index.phtml:44
-#: HR/view/hr/employee-contract/list1.phtml:57
-#: HR/view/hr/employee-contract/list2.phtml:42
-#: HR/view/hr/employee-contract/list2.phtml:52
-#: HR/view/hr/employee/applicant-list.phtml:152
-#: HR/view/hr/employee/list.phtml:169 HR/view/hr/income-setup/index.phtml:59
-#: HR/view/hr/leave-reason/list.phtml:59 HR/view/hr/minimum-wage/index.phtml:32
-#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/position/index.phtml:34
-#: HR/view/hr/position/index.phtml:44 HR/view/hr/position/list.phtml:57
-#: HR/view/hr/salary/list2.phtml:42 HR/view/hr/salary/list2.phtml:52
-#: HR/view/hr/sso/index.phtml:34 HR/view/hr/sso/index.phtml:44
+#: Finance/view/finance/v-invoice/vendor.phtml:180
+#: HR/view/hr/contract/index.phtml:35 HR/view/hr/contract/index.phtml:45
+#: HR/view/hr/employee-contract/list1.phtml:59
+#: HR/view/hr/employee-contract/list2.phtml:53
+#: HR/view/hr/employee-contract/list2.phtml:63
+#: HR/view/hr/employee/applicant-list.phtml:154
+#: HR/view/hr/employee/list.phtml:171 HR/view/hr/income-setup/index.phtml:63
+#: HR/view/hr/leave-reason/list.phtml:63 HR/view/hr/minimum-wage/index.phtml:35
+#: HR/view/hr/minimum-wage/index.phtml:44 HR/view/hr/position/index.phtml:37
+#: HR/view/hr/position/index.phtml:47 HR/view/hr/position/list.phtml:61
+#: HR/view/hr/salary/list2.phtml:53 HR/view/hr/salary/list2.phtml:63
+#: HR/view/hr/sso/index.phtml:37 HR/view/hr/sso/index.phtml:47
 #: Inventory/view/inventory/item-accounting/list.phtml:101
 #: Inventory/view/inventory/item-serial/list.phtml:105
 #: Inventory/view/inventory/item-transaction/list.phtml:195
@@ -4081,235 +4127,235 @@ msgstr ""
 msgid "Show"
 msgstr "Xem"
 
-#: Finance/view/layout/layout-fluid.phtml:189
+#: Finance/view/layout/layout-fluid.phtml:202
 msgid "FINANCE"
 msgstr ""
 
-#: HR/view/hr/contract/index.phtml:5 HR/view/hr/sso/index.phtml:5
+#: HR/view/hr/contract/index.phtml:5 HR/view/hr/sso/index.phtml:7
 msgid "Social Security Management"
 msgstr "Quản lý Bảo Hiểm Xã hội"
 
-#: HR/view/hr/contract/index.phtml:14 HR/view/hr/position/index.phtml:14
-#: HR/view/hr/sso/index.phtml:14
+#: HR/view/hr/contract/index.phtml:15 HR/view/hr/position/index.phtml:17
+#: HR/view/hr/sso/index.phtml:17
 #, fuzzy
 #| msgid "Employee Status"
 msgid "SSO Employee Rate"
 msgstr "Trạng thái Nhân viên"
 
-#: HR/view/hr/contract/index.phtml:15 HR/view/hr/position/index.phtml:15
-#: HR/view/hr/sso/index.phtml:15
+#: HR/view/hr/contract/index.phtml:16 HR/view/hr/position/index.phtml:18
+#: HR/view/hr/sso/index.phtml:18
 #, fuzzy
 #| msgid "Employee Status"
 msgid "SSO Employeer Rate"
 msgstr "Trạng thái Nhân viên"
 
-#: HR/view/hr/contract/index.phtml:16 HR/view/hr/position/index.phtml:16
-#: HR/view/hr/sso/index.phtml:16
+#: HR/view/hr/contract/index.phtml:17 HR/view/hr/position/index.phtml:19
+#: HR/view/hr/sso/index.phtml:19
 msgid "Maximum Contribution"
 msgstr ""
 
-#: HR/view/hr/contract/index.phtml:17 HR/view/hr/minimum-wage/index.phtml:16
-#: HR/view/hr/position/index.phtml:17 HR/view/hr/sso/index.phtml:17
+#: HR/view/hr/contract/index.phtml:18 HR/view/hr/minimum-wage/index.phtml:19
+#: HR/view/hr/position/index.phtml:20 HR/view/hr/sso/index.phtml:20
 msgid "Effective from"
 msgstr "Có giá trị từ"
 
-#: HR/view/hr/contract/index.phtml:18 HR/view/hr/minimum-wage/index.phtml:17
-#: HR/view/hr/position/index.phtml:18 HR/view/hr/sso/index.phtml:18
+#: HR/view/hr/contract/index.phtml:19 HR/view/hr/minimum-wage/index.phtml:20
+#: HR/view/hr/position/index.phtml:21 HR/view/hr/sso/index.phtml:21
 msgid "Effective to"
 msgstr "Có giá trị đến"
 
-#: HR/view/hr/contract/index.phtml:33 HR/view/hr/minimum-wage/index.phtml:31
-#: HR/view/hr/position/index.phtml:33 HR/view/hr/sso/index.phtml:33
+#: HR/view/hr/contract/index.phtml:34 HR/view/hr/minimum-wage/index.phtml:34
+#: HR/view/hr/position/index.phtml:36 HR/view/hr/sso/index.phtml:36
 msgid "Inactive"
 msgstr "không hoạt động"
 
-#: HR/view/hr/contract/index.phtml:44 HR/view/hr/minimum-wage/index.phtml:41
-#: HR/view/hr/position/index.phtml:44 HR/view/hr/sso/index.phtml:44
+#: HR/view/hr/contract/index.phtml:46 HR/view/hr/minimum-wage/index.phtml:45
+#: HR/view/hr/position/index.phtml:48 HR/view/hr/sso/index.phtml:48
 msgid "Update"
 msgstr "Cập nhất"
 
-#: HR/view/hr/employee-contract/add.phtml:25
-#: HR/view/hr/employee-contract/amend.phtml:25
+#: HR/view/hr/employee-contract/add.phtml:27
+#: HR/view/hr/employee-contract/amend.phtml:27
 #, fuzzy
 #| msgid "Current Contract:"
 msgid "New Contract"
 msgstr "Hợp đồng hiện tại"
 
-#: HR/view/hr/employee-contract/add.phtml:44
-#: HR/view/hr/employee-contract/amend.phtml:61
-#: HR/view/hr/employee-contract/list1.phtml:24
-#: HR/view/hr/employee-contract/show.phtml:73
-#: HR/view/hr/employee-contract/terminate.phtml:61
-#: HR/view/hr/salary/show.phtml:49
+#: HR/view/hr/employee-contract/add.phtml:52
+#: HR/view/hr/employee-contract/amend.phtml:71
+#: HR/view/hr/employee-contract/list1.phtml:26
+#: HR/view/hr/employee-contract/show.phtml:78
+#: HR/view/hr/employee-contract/terminate.phtml:71
+#: HR/view/hr/salary/show.phtml:57
 msgid "Contract Number"
 msgstr "Số Hợp Đồng"
 
-#: HR/view/hr/employee-contract/add.phtml:47
-#: HR/view/hr/employee-contract/amend.phtml:64
-#: HR/view/hr/employee-contract/show.phtml:76
-#: HR/view/hr/employee-contract/terminate.phtml:64
-#: HR/view/hr/salary/show.phtml:52
+#: HR/view/hr/employee-contract/add.phtml:57
+#: HR/view/hr/employee-contract/amend.phtml:76
+#: HR/view/hr/employee-contract/show.phtml:83
+#: HR/view/hr/employee-contract/terminate.phtml:76
+#: HR/view/hr/salary/show.phtml:62
 #, fuzzy
 #| msgid "Contract number"
 msgid "please enter contract number"
 msgstr "Liên lạc"
 
-#: HR/view/hr/employee-contract/add.phtml:56
-#: HR/view/hr/employee-contract/amend.phtml:73
-#: HR/view/hr/employee-contract/list1.phtml:25
-#: HR/view/hr/employee-contract/show.phtml:87
-#: HR/view/hr/employee-contract/terminate.phtml:73
-#: HR/view/hr/salary/show.phtml:63
+#: HR/view/hr/employee-contract/add.phtml:70
+#: HR/view/hr/employee-contract/amend.phtml:89
+#: HR/view/hr/employee-contract/list1.phtml:27
+#: HR/view/hr/employee-contract/show.phtml:98
+#: HR/view/hr/employee-contract/terminate.phtml:89
+#: HR/view/hr/salary/show.phtml:77
 msgid "Contract Date"
 msgstr "Ngày Hợp đồng"
 
-#: HR/view/hr/employee-contract/add.phtml:59
-#: HR/view/hr/employee-contract/amend.phtml:76
-#: HR/view/hr/employee-contract/show.phtml:90
-#: HR/view/hr/employee-contract/terminate.phtml:76
-#: HR/view/hr/salary/show.phtml:66
+#: HR/view/hr/employee-contract/add.phtml:75
+#: HR/view/hr/employee-contract/amend.phtml:94
+#: HR/view/hr/employee-contract/show.phtml:103
+#: HR/view/hr/employee-contract/terminate.phtml:94
+#: HR/view/hr/salary/show.phtml:82
 msgid "Select contract date!"
 msgstr ""
 
-#: HR/view/hr/employee-contract/add.phtml:63
-#: HR/view/hr/employee-contract/amend.phtml:80
-#: HR/view/hr/employee-contract/show.phtml:97
-#: HR/view/hr/employee-contract/terminate.phtml:80
-#: HR/view/hr/leave-reason/add.phtml:51 HR/view/hr/leave-reason/list.phtml:33
-#: HR/view/hr/position/add.phtml:54 HR/view/hr/position/edit.phtml:58
-#: HR/view/hr/position/list.phtml:33 HR/view/hr/position/show.phtml:58
-#: HR/view/hr/salary/show.phtml:73
+#: HR/view/hr/employee-contract/add.phtml:81
+#: HR/view/hr/employee-contract/amend.phtml:99
+#: HR/view/hr/employee-contract/show.phtml:111
+#: HR/view/hr/employee-contract/terminate.phtml:99
+#: HR/view/hr/leave-reason/add.phtml:64 HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/position/add.phtml:70 HR/view/hr/position/edit.phtml:77
+#: HR/view/hr/position/list.phtml:37 HR/view/hr/position/show.phtml:74
+#: HR/view/hr/salary/show.phtml:90
 msgid "Vadid From"
 msgstr "Áp dụng từ"
 
-#: HR/view/hr/employee-contract/add.phtml:68
-#: HR/view/hr/employee-contract/amend.phtml:85
-#: HR/view/hr/employee-contract/show.phtml:102
-#: HR/view/hr/employee-contract/terminate.phtml:85
-#: HR/view/hr/leave-reason/add.phtml:58 HR/view/hr/leave-reason/list.phtml:34
-#: HR/view/hr/position/add.phtml:61 HR/view/hr/position/edit.phtml:65
-#: HR/view/hr/position/list.phtml:34 HR/view/hr/position/show.phtml:65
-#: HR/view/hr/salary/show.phtml:78
+#: HR/view/hr/employee-contract/add.phtml:87
+#: HR/view/hr/employee-contract/amend.phtml:105
+#: HR/view/hr/employee-contract/show.phtml:117
+#: HR/view/hr/employee-contract/terminate.phtml:105
+#: HR/view/hr/leave-reason/add.phtml:72 HR/view/hr/leave-reason/list.phtml:38
+#: HR/view/hr/position/add.phtml:78 HR/view/hr/position/edit.phtml:85
+#: HR/view/hr/position/list.phtml:38 HR/view/hr/position/show.phtml:82
+#: HR/view/hr/salary/show.phtml:96
 msgid "Vadid To"
 msgstr "Áp dụng đến"
 
-#: HR/view/hr/employee-contract/add.phtml:88
-#: HR/view/hr/employee-contract/amend.phtml:105
-#: HR/view/hr/employee-contract/show.phtml:122
-#: HR/view/hr/employee-contract/terminate.phtml:105
-#: HR/view/hr/position/index.phtml:5 HR/view/hr/position/list.phtml:5
-#: HR/view/hr/position/show.phtml:21 HR/view/hr/salary/show.phtml:98
+#: HR/view/hr/employee-contract/add.phtml:109
+#: HR/view/hr/employee-contract/amend.phtml:127
+#: HR/view/hr/employee-contract/show.phtml:139
+#: HR/view/hr/employee-contract/terminate.phtml:127
+#: HR/view/hr/position/index.phtml:7 HR/view/hr/position/list.phtml:7
+#: HR/view/hr/position/show.phtml:23 HR/view/hr/salary/show.phtml:118
 #, fuzzy
 #| msgid "Action"
 msgid "Postion"
 msgstr "Hành động"
 
-#: HR/view/hr/employee-contract/add.phtml:91
-#: HR/view/hr/employee-contract/amend.phtml:108
-#: HR/view/hr/employee-contract/show.phtml:125
-#: HR/view/hr/employee-contract/terminate.phtml:108
-#: HR/view/hr/salary/show.phtml:101
+#: HR/view/hr/employee-contract/add.phtml:112
+#: HR/view/hr/employee-contract/amend.phtml:130
+#: HR/view/hr/employee-contract/show.phtml:142
+#: HR/view/hr/employee-contract/terminate.phtml:130
+#: HR/view/hr/salary/show.phtml:121
 msgid "Select Position"
 msgstr "Chọn Vị trí"
 
-#: HR/view/hr/employee-contract/add.phtml:122
-#: HR/view/hr/employee-contract/amend.phtml:139
-#: HR/view/hr/employee-contract/show.phtml:156
-#: HR/view/hr/employee-contract/terminate.phtml:139
-#: HR/view/hr/salary/show.phtml:132
+#: HR/view/hr/employee-contract/add.phtml:146
+#: HR/view/hr/employee-contract/amend.phtml:164
+#: HR/view/hr/employee-contract/show.phtml:176
+#: HR/view/hr/employee-contract/terminate.phtml:164
+#: HR/view/hr/salary/show.phtml:155
 msgid "Working Time From"
 msgstr ""
 
-#: HR/view/hr/employee-contract/add.phtml:127
-#: HR/view/hr/employee-contract/amend.phtml:144
-#: HR/view/hr/employee-contract/show.phtml:161
-#: HR/view/hr/employee-contract/terminate.phtml:144
-#: HR/view/hr/salary/show.phtml:137
+#: HR/view/hr/employee-contract/add.phtml:152
+#: HR/view/hr/employee-contract/amend.phtml:170
+#: HR/view/hr/employee-contract/show.phtml:182
+#: HR/view/hr/employee-contract/terminate.phtml:170
+#: HR/view/hr/salary/show.phtml:161
 msgid "Working Time To"
 msgstr ""
 
-#: HR/view/hr/employee-contract/add.phtml:144
-#: HR/view/hr/employee-contract/amend.phtml:161
-#: HR/view/hr/employee-contract/list1.phtml:30
-#: HR/view/hr/employee-contract/show.phtml:178
-#: HR/view/hr/employee-contract/terminate.phtml:161
-#: HR/view/hr/salary/show.phtml:154
+#: HR/view/hr/employee-contract/add.phtml:171
+#: HR/view/hr/employee-contract/amend.phtml:189
+#: HR/view/hr/employee-contract/list1.phtml:32
+#: HR/view/hr/employee-contract/show.phtml:201
+#: HR/view/hr/employee-contract/terminate.phtml:189
+#: HR/view/hr/salary/show.phtml:180
 msgid "Basic Salary"
 msgstr ""
 
-#: HR/view/hr/employee-contract/add.phtml:150
-#: HR/view/hr/employee-contract/amend.phtml:167
-#: HR/view/hr/employee-contract/show.phtml:184
-#: HR/view/hr/employee-contract/terminate.phtml:167
-#: HR/view/hr/salary/show.phtml:160
+#: HR/view/hr/employee-contract/add.phtml:180
+#: HR/view/hr/employee-contract/amend.phtml:198
+#: HR/view/hr/employee-contract/show.phtml:210
+#: HR/view/hr/employee-contract/terminate.phtml:198
+#: HR/view/hr/salary/show.phtml:189
 msgid "Is Gross"
 msgstr ""
 
-#: HR/view/hr/employee-contract/amend.phtml:36
-#: HR/view/hr/employee-contract/terminate.phtml:36
+#: HR/view/hr/employee-contract/amend.phtml:43
+#: HR/view/hr/employee-contract/terminate.phtml:43
 msgid "Change Date"
 msgstr "Ngày sửa"
 
-#: HR/view/hr/employee-contract/amend.phtml:42
-#: HR/view/hr/employee-contract/terminate.phtml:42
+#: HR/view/hr/employee-contract/amend.phtml:51
+#: HR/view/hr/employee-contract/terminate.phtml:51
 #, fuzzy
 #| msgid "Effective from"
 msgid "Change Effective From:"
 msgstr "Có giá trị từ"
 
-#: HR/view/hr/employee-contract/amend.phtml:130
-#: HR/view/hr/employee-contract/list1.phtml:26
-#: HR/view/hr/employee-contract/list2.phtml:27
-#: HR/view/hr/employee-contract/show.phtml:147
-#: HR/view/hr/employee-contract/terminate.phtml:130
+#: HR/view/hr/employee-contract/amend.phtml:154
+#: HR/view/hr/employee-contract/list1.phtml:28
+#: HR/view/hr/employee-contract/list2.phtml:38
+#: HR/view/hr/employee-contract/show.phtml:166
+#: HR/view/hr/employee-contract/terminate.phtml:154
 #: HR/view/hr/employee-evaluation/productivity-bonus.phtml:17
 #: HR/view/hr/employee-evaluation/tc-list.phtml:17
-#: HR/view/hr/salary/list2.phtml:27 HR/view/hr/salary/show.phtml:123
+#: HR/view/hr/salary/list2.phtml:38 HR/view/hr/salary/show.phtml:145
 msgid "Contract Status"
 msgstr "Tình trang Hợp đồng"
 
 #: HR/view/hr/employee-contract/index.phtml:5
-#: HR/view/hr/income-setup/index.phtml:1 HR/view/hr/income-setup/update.phtml:1
-#: HR/view/hr/leave-reason/list.phtml:1 HR/view/hr/minimum-wage/index.phtml:1
-#: HR/view/hr/position/add.phtml:3 HR/view/hr/position/edit.phtml:3
-#: HR/view/hr/position/index.phtml:1 HR/view/hr/position/list.phtml:1
-#: HR/view/hr/position/show.phtml:3 HR/view/hr/salary/index.phtml:5
-#: HR/view/hr/setting/index.phtml:5 HR/view/hr/setting/index.phtml:24
-#: HR/view/hr/sso/index.phtml:1
+#: HR/view/hr/income-setup/index.phtml:2 HR/view/hr/income-setup/update.phtml:2
+#: HR/view/hr/leave-reason/list.phtml:2 HR/view/hr/minimum-wage/index.phtml:2
+#: HR/view/hr/position/add.phtml:4 HR/view/hr/position/edit.phtml:4
+#: HR/view/hr/position/index.phtml:2 HR/view/hr/position/list.phtml:2
+#: HR/view/hr/position/show.phtml:4 HR/view/hr/salary/index.phtml:5
+#: HR/view/hr/setting/index.phtml:5 HR/view/hr/setting/index.phtml:25
+#: HR/view/hr/sso/index.phtml:2
 msgid "HR SETTING"
 msgstr "Thiết Lập HR"
 
-#: HR/view/hr/employee-contract/list1.phtml:28 HR/view/hr/salary/list1.phtml:37
-#: HR/view/hr/salary/simulate.phtml:34
+#: HR/view/hr/employee-contract/list1.phtml:30 HR/view/hr/salary/list1.phtml:40
+#: HR/view/hr/salary/simulate.phtml:36
 #, fuzzy
 #| msgid "Vadid From"
 msgid "Valid From"
 msgstr "Áp dụng từ"
 
-#: HR/view/hr/employee-contract/list1.phtml:29 HR/view/hr/salary/list1.phtml:38
-#: HR/view/hr/salary/simulate.phtml:35
+#: HR/view/hr/employee-contract/list1.phtml:31 HR/view/hr/salary/list1.phtml:41
+#: HR/view/hr/salary/simulate.phtml:37
 #, fuzzy
 #| msgid "Vadid To"
 msgid "Valid To"
 msgstr "Áp dụng đến"
 
-#: HR/view/hr/employee-contract/list1.phtml:59
-#: HR/view/hr/employee-contract/list2.phtml:52
-#: HR/view/hr/employee-contract/show.phtml:55 HR/view/hr/salary/list2.phtml:52
+#: HR/view/hr/employee-contract/list1.phtml:65
+#: HR/view/hr/employee-contract/list2.phtml:65
+#: HR/view/hr/employee-contract/show.phtml:54 HR/view/hr/salary/list2.phtml:65
 msgid "Terminate"
 msgstr "Kết thúc"
 
-#: HR/view/hr/employee-contract/list2.phtml:7 HR/view/hr/salary/list2.phtml:7
+#: HR/view/hr/employee-contract/list2.phtml:10 HR/view/hr/salary/list2.phtml:10
 msgid "Employment Contract Summary:"
 msgstr ""
 
-#: HR/view/hr/employee-contract/list2.phtml:9 HR/view/hr/salary/list2.phtml:9
+#: HR/view/hr/employee-contract/list2.phtml:13 HR/view/hr/salary/list2.phtml:13
 msgid "Contract status"
 msgstr "Tình trang Hợp đồng"
 
-#: HR/view/hr/employee-contract/list2.phtml:10
-#: HR/view/hr/salary/assign.phtml:50 HR/view/hr/salary/list2.phtml:10
-#: Inventory/view/inventory/item-accounting/assign.phtml:50
+#: HR/view/hr/employee-contract/list2.phtml:16
+#: HR/view/hr/salary/assign.phtml:56 HR/view/hr/salary/list2.phtml:16
+#: Inventory/view/inventory/item-accounting/assign.phtml:57
 #: Inventory/view/inventory/item-batch/assign.phtml:50
 #: Inventory/view/inventory/item-group/assign.phtml:50
 #: Inventory/view/inventory/item-serial/assign.phtml:50
@@ -4321,47 +4367,47 @@ msgstr "Tình trang Hợp đồng"
 msgid "All"
 msgstr "Tất cả"
 
-#: HR/view/hr/employee-contract/list2.phtml:13
-#: HR/view/hr/employee-contract/list2.phtml:41 HR/view/hr/salary/list2.phtml:13
-#: HR/view/hr/salary/list2.phtml:41
+#: HR/view/hr/employee-contract/list2.phtml:23
+#: HR/view/hr/employee-contract/list2.phtml:52 HR/view/hr/salary/list2.phtml:23
+#: HR/view/hr/salary/list2.phtml:52
 msgid "Terminated"
 msgstr "Đã kết thúc"
 
-#: HR/view/hr/employee-contract/list2.phtml:21 HR/view/hr/salary/list2.phtml:21
+#: HR/view/hr/employee-contract/list2.phtml:32 HR/view/hr/salary/list2.phtml:32
 msgid "Contract number"
 msgstr "Liên lạc"
 
-#: HR/view/hr/employee-contract/list2.phtml:22
-#: HR/view/hr/employee-contract/list2.phtml:24 HR/view/hr/salary/list2.phtml:22
-#: HR/view/hr/salary/list2.phtml:24
+#: HR/view/hr/employee-contract/list2.phtml:33
+#: HR/view/hr/employee-contract/list2.phtml:35 HR/view/hr/salary/list2.phtml:33
+#: HR/view/hr/salary/list2.phtml:35
 msgid "Number of Revision"
 msgstr "Số lần sửa"
 
-#: HR/view/hr/employee-contract/list2.phtml:25 HR/view/hr/salary/list2.phtml:25
+#: HR/view/hr/employee-contract/list2.phtml:36 HR/view/hr/salary/list2.phtml:36
 msgid "Start Working Date"
 msgstr "Ngày bắt đầu làm việc"
 
-#: HR/view/hr/employee-contract/list2.phtml:26 HR/view/hr/salary/list2.phtml:26
+#: HR/view/hr/employee-contract/list2.phtml:37 HR/view/hr/salary/list2.phtml:37
 msgid "Termination Date"
 msgstr "Ngày kết thúc"
 
-#: HR/view/hr/employee-contract/list2.phtml:52 HR/view/hr/salary/list2.phtml:52
+#: HR/view/hr/employee-contract/list2.phtml:64 HR/view/hr/salary/list2.phtml:64
 msgid "Amend"
 msgstr "Sửa"
 
-#: HR/view/hr/employee-contract/list2.phtml:62 HR/view/hr/salary/list2.phtml:62
+#: HR/view/hr/employee-contract/list2.phtml:77 HR/view/hr/salary/list2.phtml:77
 msgid "Current Contract:"
 msgstr "Hợp đồng hiện tại"
 
-#: HR/view/hr/employee-contract/show.phtml:35 HR/view/hr/salary/show.phtml:25
+#: HR/view/hr/employee-contract/show.phtml:34 HR/view/hr/salary/show.phtml:27
 msgid "Contract"
 msgstr "Hợp đồng"
 
-#: HR/view/hr/employee-contract/show.phtml:40 HR/view/hr/salary/show.phtml:29
+#: HR/view/hr/employee-contract/show.phtml:39 HR/view/hr/salary/show.phtml:31
 msgid "Posting"
 msgstr "Hạch toán"
 
-#: HR/view/hr/employee-contract/terminate.phtml:25
+#: HR/view/hr/employee-contract/terminate.phtml:27
 msgid "Terminate Contract"
 msgstr "Ngày kết thúc Hợp đồng"
 
@@ -4378,18 +4424,18 @@ msgid "Score 7-10 (LC)"
 msgstr ""
 
 #: HR/view/hr/employee-evaluation/evaluate.phtml:68
-#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:31
-#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:44
-#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:56
-#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:69
-#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:82
-#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:95
-#: HR/view/hr/employee-evaluation/tc-list.phtml:31
-#: HR/view/hr/employee-evaluation/tc-list.phtml:44
-#: HR/view/hr/employee-evaluation/tc-list.phtml:56
-#: HR/view/hr/employee-evaluation/tc-list.phtml:69
-#: HR/view/hr/employee-evaluation/tc-list.phtml:82
-#: HR/view/hr/employee-evaluation/tc-list.phtml:95
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:30
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:42
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:53
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:65
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:77
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:89
+#: HR/view/hr/employee-evaluation/tc-list.phtml:30
+#: HR/view/hr/employee-evaluation/tc-list.phtml:42
+#: HR/view/hr/employee-evaluation/tc-list.phtml:53
+#: HR/view/hr/employee-evaluation/tc-list.phtml:65
+#: HR/view/hr/employee-evaluation/tc-list.phtml:77
+#: HR/view/hr/employee-evaluation/tc-list.phtml:89
 msgid "Evaluate"
 msgstr ""
 
@@ -4400,9 +4446,9 @@ msgstr ""
 
 #: HR/view/hr/employee-evaluation/productivity-bonus.phtml:13
 #: HR/view/hr/employee-evaluation/tc-list.phtml:13
-#: HR/view/hr/employee/applicant-list.phtml:48
-#: HR/view/hr/employee/applicant-list.phtml:121
-#: HR/view/hr/employee/list.phtml:65 HR/view/hr/employee/list.phtml:138
+#: HR/view/hr/employee/applicant-list.phtml:50
+#: HR/view/hr/employee/applicant-list.phtml:123
+#: HR/view/hr/employee/list.phtml:67 HR/view/hr/employee/list.phtml:140
 msgid "Employee Code"
 msgstr "Mã nhân viên"
 
@@ -4426,202 +4472,202 @@ msgstr "Vị Trí"
 msgid "Applicant List"
 msgstr "Danh sách ứng viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:10
+#: HR/view/hr/employee/applicant-list.phtml:11
 msgid "New Applicant"
 msgstr "Thêm ứng viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:11
-#: HR/view/hr/employee/applicant-list.phtml:12
+#: HR/view/hr/employee/applicant-list.phtml:13
+#: HR/view/hr/employee/applicant-list.phtml:14
 msgid "Search Applicant"
 msgstr "Tìm ứng viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:17
-#: HR/view/hr/employee/applicant-list.phtml:88
-#: HR/view/hr/employee/list.phtml:17 HR/view/hr/employee/list.phtml:105
+#: HR/view/hr/employee/applicant-list.phtml:19
+#: HR/view/hr/employee/applicant-list.phtml:90
+#: HR/view/hr/employee/list.phtml:19 HR/view/hr/employee/list.phtml:107
 msgid "Filter"
 msgstr "Lọc"
 
-#: HR/view/hr/employee/applicant-list.phtml:28
+#: HR/view/hr/employee/applicant-list.phtml:30
 msgid "Applicant Status"
 msgstr "Trạng thái ưng viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:42
-#: HR/view/hr/employee/applicant-list.phtml:99
-#: HR/view/hr/employee/list.phtml:59 HR/view/hr/employee/list.phtml:116
+#: HR/view/hr/employee/applicant-list.phtml:44
+#: HR/view/hr/employee/applicant-list.phtml:101
+#: HR/view/hr/employee/list.phtml:61 HR/view/hr/employee/list.phtml:118
 msgid "Sort by"
 msgstr "Sếp xếp  theo"
 
-#: HR/view/hr/employee/applicant-list.phtml:54
-#: HR/view/hr/employee/list.phtml:71
+#: HR/view/hr/employee/applicant-list.phtml:56
+#: HR/view/hr/employee/list.phtml:73
 msgid "ASC"
 msgstr "Tăng dần"
 
-#: HR/view/hr/employee/applicant-list.phtml:56
-#: HR/view/hr/employee/list.phtml:73
+#: HR/view/hr/employee/applicant-list.phtml:58
+#: HR/view/hr/employee/list.phtml:75
 msgid "DESC"
 msgstr "Giảm dần"
 
-#: HR/view/hr/employee/applicant-list.phtml:63
-#: HR/view/hr/employee/list.phtml:80
+#: HR/view/hr/employee/applicant-list.phtml:65
+#: HR/view/hr/employee/list.phtml:82
 msgid "Result per page"
 msgstr "Kết quả mỗi trang"
 
-#: HR/view/hr/employee/applicant-list.phtml:99
-#: HR/view/hr/employee/applicant-list.phtml:126
-#: HR/view/hr/employee/list.phtml:28 HR/view/hr/employee/list.phtml:116
-#: HR/view/hr/employee/list.phtml:143
+#: HR/view/hr/employee/applicant-list.phtml:101
+#: HR/view/hr/employee/applicant-list.phtml:128
+#: HR/view/hr/employee/list.phtml:30 HR/view/hr/employee/list.phtml:118
+#: HR/view/hr/employee/list.phtml:145
 msgid "Employee Status"
 msgstr "Trạng thái Nhân viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:99
-#: HR/view/hr/employee/list.phtml:116
+#: HR/view/hr/employee/applicant-list.phtml:101
+#: HR/view/hr/employee/list.phtml:118
 msgid "Sort"
 msgstr "Sếp xếp"
 
-#: HR/view/hr/employee/applicant-list.phtml:122
-#: HR/view/hr/employee/applicant-list.phtml:123
-#: HR/view/hr/employee/list.phtml:139 HR/view/hr/employee/list.phtml:140
+#: HR/view/hr/employee/applicant-list.phtml:124
+#: HR/view/hr/employee/applicant-list.phtml:125
+#: HR/view/hr/employee/list.phtml:141 HR/view/hr/employee/list.phtml:142
 msgid "Name"
 msgstr "Tên"
 
-#: HR/view/hr/employee/applicant-list.phtml:124
-#: HR/view/hr/employee/list.phtml:141
+#: HR/view/hr/employee/applicant-list.phtml:126
+#: HR/view/hr/employee/list.phtml:143
 msgid "Birthday"
 msgstr "Ngày sinh"
 
-#: HR/view/hr/employee/applicant-list.phtml:125
-#: HR/view/hr/employee/list.phtml:142
+#: HR/view/hr/employee/applicant-list.phtml:127
+#: HR/view/hr/employee/list.phtml:144
 msgid "Gender"
 msgstr "Giới tính"
 
-#: HR/view/hr/employee/list.phtml:10
+#: HR/view/hr/employee/list.phtml:11
 msgid "New Employee"
 msgstr "Thêm nhân viên"
 
-#: HR/view/hr/employee/list.phtml:11 HR/view/hr/employee/list.phtml:12
+#: HR/view/hr/employee/list.phtml:13 HR/view/hr/employee/list.phtml:14
 msgid "Search Employee"
 msgstr "Tìm nhân viên"
 
-#: HR/view/hr/employee/list.phtml:42
+#: HR/view/hr/employee/list.phtml:44
 msgid "Filter by"
 msgstr "Lọc theo"
 
-#: HR/view/hr/employee/show.phtml:25
+#: HR/view/hr/employee/show.phtml:26
 msgid "Disciplinary"
 msgstr "Kỷ luật"
 
-#: HR/view/hr/entity-change-log/list1.phtml:21
+#: HR/view/hr/entity-change-log/list1.phtml:20
 msgid "class name"
 msgstr ""
 
-#: HR/view/hr/fingerscan/list.phtml:10
+#: HR/view/hr/fingerscan/list.phtml:11
 #: Inventory/view/inventory/opening-balance/review.phtml:212
 #: Inventory/view/inventory/opening-balance/review.phtml:213
 msgid "Import"
 msgstr ""
 
 #: HR/view/hr/income-decorator/index.phtml:5
-#: HR/view/hr/income-decorator/index.phtml:15 HR/view/hr/setting/index.phtml:18
+#: HR/view/hr/income-decorator/index.phtml:16 HR/view/hr/setting/index.phtml:18
 msgid "Income Calculation Method"
 msgstr "Phương pháp tính thu nhập"
 
-#: HR/view/hr/income-setup/index.phtml:5 HR/view/hr/income-setup/update.phtml:5
+#: HR/view/hr/income-setup/index.phtml:7 HR/view/hr/income-setup/update.phtml:7
 #: HR/view/hr/setting/index.phtml:17
 msgid "Income Setup"
 msgstr "Thiết lập các khoản thu nhập"
 
-#: HR/view/hr/income-setup/index.phtml:11
+#: HR/view/hr/income-setup/index.phtml:14
 msgid "New Income"
 msgstr ""
 
-#: HR/view/hr/income-setup/index.phtml:12
+#: HR/view/hr/income-setup/index.phtml:16
 #, fuzzy
 #| msgid "Update"
 msgid "Update..."
 msgstr "Cập nhất"
 
-#: HR/view/hr/income-setup/index.phtml:19
-#: HR/view/hr/income-setup/index.phtml:20 HR/view/hr/salary/assign.phtml:53
+#: HR/view/hr/income-setup/index.phtml:24
+#: HR/view/hr/income-setup/index.phtml:25 HR/view/hr/salary/assign.phtml:59
 msgid "default income name"
 msgstr ""
 
-#: HR/view/hr/income-setup/index.phtml:22 HR/view/hr/salary/assign.phtml:54
+#: HR/view/hr/income-setup/index.phtml:27 HR/view/hr/salary/assign.phtml:60
 #, fuzzy
 #| msgid "Description"
 msgid "default description"
 msgstr "Chi tiết"
 
-#: HR/view/hr/income-setup/index.phtml:23
+#: HR/view/hr/income-setup/index.phtml:28
 #: Inventory/view/inventory/warehouse/list.phtml:39
 msgid "Default"
 msgstr ""
 
-#: HR/view/hr/income-setup/index.phtml:24 HR/view/hr/salary/assign.phtml:55
+#: HR/view/hr/income-setup/index.phtml:29 HR/view/hr/salary/assign.phtml:61
 #, fuzzy
 #| msgid "SSO Rate"
 msgid "SSO Payable"
 msgstr "Tỷ lệ SSO"
 
-#: HR/view/hr/income-setup/index.phtml:25 HR/view/hr/salary/assign.phtml:56
+#: HR/view/hr/income-setup/index.phtml:30 HR/view/hr/salary/assign.phtml:62
 msgid "PIT Payable"
 msgstr ""
 
-#: HR/view/hr/income-setup/index.phtml:26 HR/view/hr/salary/assign.phtml:57
+#: HR/view/hr/income-setup/index.phtml:31 HR/view/hr/salary/assign.phtml:63
 msgid "payment frequency"
 msgstr ""
 
-#: HR/view/hr/income-setup/index.phtml:27 HR/view/hr/salary/assign.phtml:58
+#: HR/view/hr/income-setup/index.phtml:32 HR/view/hr/salary/assign.phtml:64
 msgid "Type"
 msgstr ""
 
-#: HR/view/hr/income-setup/update.phtml:8
+#: HR/view/hr/income-setup/update.phtml:10
 msgid " components updated."
 msgstr ""
 
-#: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
+#: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:12
 msgid "New Leave Reason"
 msgstr "Thêm lý do nghỉ"
 
-#: HR/view/hr/leave-reason/add.phtml:45 HR/view/hr/leave-reason/list.phtml:32
+#: HR/view/hr/leave-reason/add.phtml:55 HR/view/hr/leave-reason/list.phtml:36
 msgid "Reference"
 msgstr "Tham khảo"
 
-#: HR/view/hr/minimum-wage/index.phtml:5
+#: HR/view/hr/minimum-wage/index.phtml:7
 msgid "Minimum Wage Management"
 msgstr "Quản lý Lương tối thiểu"
 
-#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:15
+#: HR/view/hr/minimum-wage/index.phtml:17 HR/view/hr/setting/index.phtml:15
 msgid "Minimum Wage"
 msgstr "Lương tối thiểu"
 
-#: HR/view/hr/position/add.phtml:21 HR/view/hr/position/edit.phtml:21
-#: HR/view/hr/position/list.phtml:8
+#: HR/view/hr/position/add.phtml:23 HR/view/hr/position/edit.phtml:23
+#: HR/view/hr/position/list.phtml:12
 msgid "New Postion"
 msgstr "Thêm vị trí"
 
-#: HR/view/hr/position/add.phtml:29 HR/view/hr/position/edit.phtml:33
-#: HR/view/hr/position/show.phtml:33
+#: HR/view/hr/position/add.phtml:33 HR/view/hr/position/edit.phtml:40
+#: HR/view/hr/position/show.phtml:37
 msgid "Postion Code"
 msgstr "Mã Vị Trí"
 
-#: HR/view/hr/position/add.phtml:32 HR/view/hr/position/edit.phtml:36
-#: HR/view/hr/position/show.phtml:36
+#: HR/view/hr/position/add.phtml:38 HR/view/hr/position/edit.phtml:45
+#: HR/view/hr/position/show.phtml:42
 msgid "please enter position code"
 msgstr ""
 
-#: HR/view/hr/position/add.phtml:40 HR/view/hr/position/edit.phtml:44
-#: HR/view/hr/position/show.phtml:44
+#: HR/view/hr/position/add.phtml:50 HR/view/hr/position/edit.phtml:57
+#: HR/view/hr/position/show.phtml:54
 #, fuzzy
 #| msgid "Period Name"
 msgid "Postion Name"
 msgstr "Tên kỳ hạch toán"
 
-#: HR/view/hr/position/add.phtml:43 HR/view/hr/position/edit.phtml:47
-#: HR/view/hr/position/show.phtml:47
+#: HR/view/hr/position/add.phtml:55 HR/view/hr/position/edit.phtml:62
+#: HR/view/hr/position/show.phtml:59
 msgid "please enter position name"
 msgstr ""
 
-#: HR/view/hr/position/list.phtml:31
+#: HR/view/hr/position/list.phtml:35
 msgid "Postion name"
 msgstr "Vị trí Công Việc"
 
@@ -4656,23 +4702,23 @@ msgstr ""
 msgid "Payroll Adjustment:"
 msgstr ""
 
-#: HR/view/hr/salary-calculator/adjust-payroll.phtml:23
-#: HR/view/hr/salary-calculator/input-check.phtml:89
-#: HR/view/hr/salary-calculator/input-consolidate.phtml:32
-#: HR/view/hr/salary-calculator/payroll-period.phtml:48
-#: HR/view/hr/salary-calculator/simulate.phtml:63
+#: HR/view/hr/salary-calculator/adjust-payroll.phtml:25
+#: HR/view/hr/salary-calculator/input-check.phtml:100
+#: HR/view/hr/salary-calculator/input-consolidate.phtml:34
+#: HR/view/hr/salary-calculator/payroll-period.phtml:51
+#: HR/view/hr/salary-calculator/simulate.phtml:66
 msgid "Back"
 msgstr ""
 
-#: HR/view/hr/salary-calculator/adjust-payroll.phtml:25
-#: HR/view/hr/salary-calculator/input-check.phtml:90
-#: HR/view/hr/salary-calculator/input-consolidate.phtml:33
-#: HR/view/hr/salary-calculator/payroll-period.phtml:49
-#: HR/view/hr/salary-calculator/simulate.phtml:64
+#: HR/view/hr/salary-calculator/adjust-payroll.phtml:28
+#: HR/view/hr/salary-calculator/input-check.phtml:102
+#: HR/view/hr/salary-calculator/input-consolidate.phtml:36
+#: HR/view/hr/salary-calculator/payroll-period.phtml:53
+#: HR/view/hr/salary-calculator/simulate.phtml:68
 msgid "Next"
 msgstr ""
 
-#: HR/view/hr/salary-calculator/close-period.phtml:18
+#: HR/view/hr/salary-calculator/close-period.phtml:19
 msgid "Input check"
 msgstr ""
 
@@ -4700,7 +4746,7 @@ msgstr ""
 msgid "Final Caculation"
 msgstr ""
 
-#: HR/view/hr/salary-calculator/create-draft.phtml:21
+#: HR/view/hr/salary-calculator/create-draft.phtml:22
 msgid "Running"
 msgstr ""
 
@@ -4708,7 +4754,7 @@ msgstr ""
 msgid "Start Payroll Calculation"
 msgstr ""
 
-#: HR/view/hr/salary-calculator/index.phtml:20
+#: HR/view/hr/salary-calculator/index.phtml:21
 msgid "Start"
 msgstr ""
 
@@ -4720,8 +4766,8 @@ msgstr ""
 msgid "New salary component"
 msgstr ""
 
-#: HR/view/hr/salary/assign.phtml:93
-#: Inventory/view/inventory/item-accounting/assign.phtml:80
+#: HR/view/hr/salary/assign.phtml:100
+#: Inventory/view/inventory/item-accounting/assign.phtml:89
 #: Inventory/view/inventory/item-batch/assign.phtml:80
 #: Inventory/view/inventory/item-group/assign.phtml:80
 #: Inventory/view/inventory/item-serial/assign.phtml:80
@@ -4732,54 +4778,54 @@ msgstr ""
 msgid "Assign"
 msgstr ""
 
-#: HR/view/hr/salary/edit.phtml:57 HR/view/hr/salary/list1.phtml:31
-#: HR/view/hr/salary/simulate.phtml:28
+#: HR/view/hr/salary/edit.phtml:65 HR/view/hr/salary/list1.phtml:34
+#: HR/view/hr/salary/simulate.phtml:30
 msgid "Amount"
 msgstr ""
 
-#: HR/view/hr/salary/edit.phtml:67
+#: HR/view/hr/salary/edit.phtml:81
 msgid "Payment Frequerency"
 msgstr ""
 
-#: HR/view/hr/salary/edit.phtml:73
+#: HR/view/hr/salary/edit.phtml:90
 msgid "Valid from"
 msgstr ""
 
-#: HR/view/hr/salary/edit.phtml:76
+#: HR/view/hr/salary/edit.phtml:96
 msgid "Valid to"
 msgstr ""
 
-#: HR/view/hr/salary/list1.phtml:7
+#: HR/view/hr/salary/list1.phtml:8
 msgid "Add Income"
 msgstr ""
 
-#: HR/view/hr/salary/list1.phtml:13 HR/view/hr/salary/simulate.phtml:10
+#: HR/view/hr/salary/list1.phtml:15 HR/view/hr/salary/simulate.phtml:12
 msgid "No record found!"
 msgstr ""
 
-#: HR/view/hr/salary/list1.phtml:28 HR/view/hr/salary/simulate.phtml:25
+#: HR/view/hr/salary/list1.phtml:31 HR/view/hr/salary/simulate.phtml:27
 msgid "Revision#"
 msgstr ""
 
-#: HR/view/hr/salary/list1.phtml:30 HR/view/hr/salary/simulate.phtml:27
+#: HR/view/hr/salary/list1.phtml:33 HR/view/hr/salary/simulate.phtml:29
 #, fuzzy
 #| msgid "Income Setup"
 msgid "Income Name"
 msgstr "Thiết lập các khoản thu nhập"
 
-#: HR/view/hr/salary/list1.phtml:33 HR/view/hr/salary/simulate.phtml:30
+#: HR/view/hr/salary/list1.phtml:36 HR/view/hr/salary/simulate.phtml:32
 msgid "SSO"
 msgstr ""
 
-#: HR/view/hr/salary/list1.phtml:34 HR/view/hr/salary/simulate.phtml:31
+#: HR/view/hr/salary/list1.phtml:37 HR/view/hr/salary/simulate.phtml:33
 msgid "PIT"
 msgstr ""
 
-#: HR/view/hr/salary/list1.phtml:35 HR/view/hr/salary/simulate.phtml:32
+#: HR/view/hr/salary/list1.phtml:38 HR/view/hr/salary/simulate.phtml:34
 msgid "Frequency"
 msgstr ""
 
-#: HR/view/hr/salary/show.phtml:197
+#: HR/view/hr/salary/show.phtml:229
 msgid "Add income"
 msgstr ""
 
@@ -4795,24 +4841,24 @@ msgstr "Thiết lập các khác trợ cấp"
 msgid "Default Deduction Setup"
 msgstr "Thiết lập các khoản khấu trừ"
 
-#: HR/view/layout/Copy of layout-fluid.phtml:191
-#: HR/view/layout/layout-fluid.phtml:187
+#: HR/view/layout/Copy of layout-fluid.phtml:208
+#: HR/view/layout/layout-fluid.phtml:202
 msgid "HR MANAGEMENT"
 msgstr "QUẢN LÝ NHÂN SỰ"
 
-#: HR/view/layout/Copy of layout-fluid.phtml:195
+#: HR/view/layout/Copy of layout-fluid.phtml:216
 msgid "search term..."
 msgstr "nhập từ khóa để tìm ....."
 
-#: Inventory/view/inventory/dashboard/index.phtml:42
+#: Inventory/view/inventory/dashboard/index.phtml:48
 msgid "Recently received items"
 msgstr ""
 
-#: Inventory/view/inventory/dashboard/last-created-items.phtml:21
+#: Inventory/view/inventory/dashboard/last-created-items.phtml:20
 #: Inventory/view/inventory/dashboard/last-ordered-items.phtml:16
 #: Inventory/view/inventory/dashboard/last-received-items.phtml:21
-#: Inventory/view/inventory/dashboard/most-order-items.phtml:21
-#: Inventory/view/inventory/dashboard/most-value-items.phtml:21
+#: Inventory/view/inventory/dashboard/most-order-items.phtml:22
+#: Inventory/view/inventory/dashboard/most-value-items.phtml:20
 msgid "Item name"
 msgstr ""
 
@@ -4834,21 +4880,21 @@ msgstr "Đơn Vị"
 msgid "Unit Price"
 msgstr "Giá Đơn vị"
 
-#: Inventory/view/inventory/dashboard/most-order-items.phtml:22
+#: Inventory/view/inventory/dashboard/most-order-items.phtml:23
 msgid "No. Orders"
 msgstr ""
 
-#: Inventory/view/inventory/dashboard/most-value-items.phtml:22
+#: Inventory/view/inventory/dashboard/most-value-items.phtml:21
 msgid "U/P LAK"
 msgstr ""
 
 #: Inventory/view/inventory/gi-row/addGI099.phtml:15
 #: Inventory/view/inventory/gi-row/addGI100.phtml:15
 #: Inventory/view/inventory/gi-row/addGI102.phtml:17
-#: Inventory/view/inventory/gi-row/bk/addGI100.phtml:14
+#: Inventory/view/inventory/gi-row/bk/addGI100.phtml:11
 #: Inventory/view/inventory/gi-row/crud.phtml:17
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:21
-#: Inventory/view/inventory/gi-row/crudGI102.phtml:23
+#: Inventory/view/inventory/gi-row/crudGI102.phtml:21
 #: Inventory/view/inventory/transfer-row/bk/addGI100.phtml:14
 #: Inventory/view/inventory/transfer-row/crud.phtml:15
 msgid "Add Good Issue Row:"
@@ -4857,10 +4903,10 @@ msgstr ""
 #: Inventory/view/inventory/gi-row/addGI099.phtml:20
 #: Inventory/view/inventory/gi-row/addGI100.phtml:20
 #: Inventory/view/inventory/gi-row/addGI102.phtml:22
-#: Inventory/view/inventory/gi-row/bk/addGI100.phtml:19
+#: Inventory/view/inventory/gi-row/bk/addGI100.phtml:16
 #: Inventory/view/inventory/gi-row/crud.phtml:22
 #: Inventory/view/inventory/gi-row/crudGI100.phtml:26
-#: Inventory/view/inventory/gi-row/crudGI102.phtml:28
+#: Inventory/view/inventory/gi-row/crudGI102.phtml:26
 #: Inventory/view/inventory/transfer-row/bk/addGI100.phtml:19
 #: Inventory/view/inventory/transfer-row/crud.phtml:20
 msgid "Edit Good Issue Row:"
@@ -4869,8 +4915,8 @@ msgstr ""
 #: Inventory/view/inventory/gi/Copy of add.phtml:86
 #: Inventory/view/inventory/gi/add.phtml:106
 #: Inventory/view/inventory/gi/crud.phtml:125
-#: Inventory/view/inventory/gi/reverse.phtml:171
-#: Inventory/view/inventory/gi/review.phtml:119
+#: Inventory/view/inventory/gi/reverse.phtml:173
+#: Inventory/view/inventory/gi/review.phtml:120
 #: Inventory/view/inventory/gi/show.phtml:110
 #: Inventory/view/inventory/gr/show.phtml:100
 #: Inventory/view/inventory/item-transaction/crud.phtml:141
@@ -4888,13 +4934,13 @@ msgstr ""
 msgid "Source Warehouse"
 msgstr "Kho"
 
-#: Inventory/view/inventory/gi/reverse.phtml:26
+#: Inventory/view/inventory/gi/reverse.phtml:27
 #, fuzzy
 #| msgid "New Goods Issue"
 msgid "Reverse Goods Issue"
 msgstr "Xuất hàng"
 
-#: Inventory/view/inventory/gi/reverse.phtml:222
+#: Inventory/view/inventory/gi/reverse.phtml:224
 #: Procure/view/procure/gr/reverse.phtml:264
 #, fuzzy
 #| msgid " will be posted!"
@@ -4908,13 +4954,13 @@ msgstr " sẽ được ghi sổ!"
 msgid "Edit Document Header"
 msgstr "Ngày Hợp đồng"
 
-#: Inventory/view/inventory/gi/review.phtml:168
+#: Inventory/view/inventory/gi/review.phtml:169
 #, fuzzy
 #| msgid " will be posted!"
 msgid " Good issue will be posted!"
 msgstr " sẽ được ghi sổ!"
 
-#: Inventory/view/inventory/gi/review.phtml:171
+#: Inventory/view/inventory/gi/review.phtml:172
 #: Inventory/view/inventory/transfer/review.phtml:272
 #, fuzzy
 #| msgid "Document can't be changed anymore when submitted!"
@@ -4943,7 +4989,7 @@ msgstr "Danh sách Dự án /Công việc"
 msgid "Assign Serial Number"
 msgstr "Gán số Sêri"
 
-#: Inventory/view/inventory/item-accounting/assign.phtml:53
+#: Inventory/view/inventory/item-accounting/assign.phtml:60
 #: Inventory/view/inventory/item-batch/assign.phtml:53
 #: Inventory/view/inventory/item-group/assign.phtml:53
 #: Inventory/view/inventory/item-serial/assign.phtml:53
@@ -4971,15 +5017,15 @@ msgstr "DANH MỤC HÀNG HÓA"
 #: Inventory/view/inventory/item-group/crud.phtml:68
 #: Inventory/view/inventory/item-group/edit.phtml:19
 #: Inventory/view/inventory/item-group/edit.phtml:45
-#: Inventory/view/inventory/item/add.phtml:315
-#: Inventory/view/inventory/item/copy/add.phtml:315
-#: Inventory/view/inventory/item/copy/edit.phtml:155
-#: Inventory/view/inventory/item/copy/show.phtml:266
-#: Inventory/view/inventory/item/copy/show1.phtml:249
+#: Inventory/view/inventory/item/add.phtml:314
+#: Inventory/view/inventory/item/copy/add.phtml:314
+#: Inventory/view/inventory/item/copy/edit.phtml:202
+#: Inventory/view/inventory/item/copy/show.phtml:268
+#: Inventory/view/inventory/item/copy/show1.phtml:248
 #: Inventory/view/inventory/item/crud.phtml:331
-#: Inventory/view/inventory/item/edit.phtml:332
+#: Inventory/view/inventory/item/edit.phtml:334
 #: Inventory/view/inventory/item/show.phtml:456
-#: Inventory/view/inventory/item/show1.phtml:419
+#: Inventory/view/inventory/item/show1.phtml:439
 #: Inventory/view/inventory/report/index.phtml:14
 #: Inventory/view/inventory/setting/index.phtml:14
 #: Inventory/view/inventory/stock/add.phtml:19
@@ -5158,26 +5204,26 @@ msgstr ""
 #: Inventory/view/inventory/item/add.phtml:126
 #: Inventory/view/inventory/item/copy/add.phtml:126
 #: Inventory/view/inventory/item/crud.phtml:158
-#: Inventory/view/inventory/item/edit.phtml:143
+#: Inventory/view/inventory/item/edit.phtml:146
 #: Inventory/view/inventory/item/show.phtml:267
-#: Inventory/view/inventory/item/show1.phtml:241
+#: Inventory/view/inventory/item/show1.phtml:251
 msgid "Standard Unit"
 msgstr ""
 
 #: Inventory/view/inventory/item/add.phtml:130
 #: Inventory/view/inventory/item/copy/add.phtml:130
-#: Inventory/view/inventory/item/edit.phtml:147
+#: Inventory/view/inventory/item/edit.phtml:150
 #: Inventory/view/inventory/item/show.phtml:271
-#: Inventory/view/inventory/item/show1.phtml:245
+#: Inventory/view/inventory/item/show1.phtml:255
 msgid "Select standard unit"
 msgstr ""
 
 #: Inventory/view/inventory/item/add.phtml:159
 #: Inventory/view/inventory/item/copy/add.phtml:159
 #: Inventory/view/inventory/item/crud.phtml:192
-#: Inventory/view/inventory/item/edit.phtml:176
+#: Inventory/view/inventory/item/edit.phtml:179
 #: Inventory/view/inventory/item/show.phtml:300
-#: Inventory/view/inventory/item/show1.phtml:270
+#: Inventory/view/inventory/item/show1.phtml:284
 #, fuzzy
 #| msgid "Inventory"
 msgid "Inventory Unit"
@@ -5186,110 +5232,110 @@ msgstr "Hàng Hóa"
 #: Inventory/view/inventory/item/add.phtml:164
 #: Inventory/view/inventory/item/copy/add.phtml:164
 #: Inventory/view/inventory/item/crud.phtml:197
-#: Inventory/view/inventory/item/edit.phtml:181
+#: Inventory/view/inventory/item/edit.phtml:184
 #: Inventory/view/inventory/item/show.phtml:305
-#: Inventory/view/inventory/item/show1.phtml:275
+#: Inventory/view/inventory/item/show1.phtml:289
 #, fuzzy
 #| msgid "Select Position"
 msgid "Select inventory unit"
 msgstr "Chọn Vị trí"
 
 #: Inventory/view/inventory/item/add.phtml:190
-#: Inventory/view/inventory/item/add.phtml:238
-#: Inventory/view/inventory/item/add.phtml:285
+#: Inventory/view/inventory/item/add.phtml:237
+#: Inventory/view/inventory/item/add.phtml:284
 #: Inventory/view/inventory/item/copy/add.phtml:190
-#: Inventory/view/inventory/item/copy/add.phtml:238
-#: Inventory/view/inventory/item/copy/add.phtml:285
+#: Inventory/view/inventory/item/copy/add.phtml:237
+#: Inventory/view/inventory/item/copy/add.phtml:284
 #: Inventory/view/inventory/item/crud.phtml:222
 #: Inventory/view/inventory/item/crud.phtml:268
 #: Inventory/view/inventory/item/crud.phtml:315
-#: Inventory/view/inventory/item/edit.phtml:207
-#: Inventory/view/inventory/item/edit.phtml:255
-#: Inventory/view/inventory/item/edit.phtml:302
+#: Inventory/view/inventory/item/edit.phtml:210
+#: Inventory/view/inventory/item/edit.phtml:257
+#: Inventory/view/inventory/item/edit.phtml:304
 #: Inventory/view/inventory/item/show.phtml:331
 #: Inventory/view/inventory/item/show.phtml:379
 #: Inventory/view/inventory/item/show.phtml:426
-#: Inventory/view/inventory/item/show1.phtml:301
-#: Inventory/view/inventory/item/show1.phtml:345
-#: Inventory/view/inventory/item/show1.phtml:388
+#: Inventory/view/inventory/item/show1.phtml:315
+#: Inventory/view/inventory/item/show1.phtml:362
+#: Inventory/view/inventory/item/show1.phtml:409
 msgid "Conversion Factor"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:205
-#: Inventory/view/inventory/item/copy/add.phtml:205
+#: Inventory/view/inventory/item/add.phtml:204
+#: Inventory/view/inventory/item/copy/add.phtml:204
 #: Inventory/view/inventory/item/crud.phtml:236
-#: Inventory/view/inventory/item/edit.phtml:222
+#: Inventory/view/inventory/item/edit.phtml:224
 #: Inventory/view/inventory/item/show.phtml:346
-#: Inventory/view/inventory/item/show1.phtml:316
+#: Inventory/view/inventory/item/show1.phtml:329
 #, fuzzy
 #| msgid "New Purchase Request (PR)"
 msgid "Purchase Unit"
 msgstr "Tạo yêu cầu mua (PR)"
 
-#: Inventory/view/inventory/item/add.phtml:210
-#: Inventory/view/inventory/item/copy/add.phtml:210
+#: Inventory/view/inventory/item/add.phtml:209
+#: Inventory/view/inventory/item/copy/add.phtml:209
 #: Inventory/view/inventory/item/crud.phtml:241
-#: Inventory/view/inventory/item/edit.phtml:227
+#: Inventory/view/inventory/item/edit.phtml:229
 #: Inventory/view/inventory/item/show.phtml:351
-#: Inventory/view/inventory/item/show1.phtml:321
+#: Inventory/view/inventory/item/show1.phtml:334
 msgid "Select purchase unit"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:252
-#: Inventory/view/inventory/item/copy/add.phtml:252
+#: Inventory/view/inventory/item/add.phtml:251
+#: Inventory/view/inventory/item/copy/add.phtml:251
 #: Inventory/view/inventory/item/crud.phtml:282
-#: Inventory/view/inventory/item/edit.phtml:269
+#: Inventory/view/inventory/item/edit.phtml:271
 #: Inventory/view/inventory/item/show.phtml:393
-#: Inventory/view/inventory/item/show1.phtml:359
+#: Inventory/view/inventory/item/show1.phtml:376
 msgid "Sales Unit"
 msgstr ""
 
-#: Inventory/view/inventory/item/add.phtml:257
-#: Inventory/view/inventory/item/copy/add.phtml:257
+#: Inventory/view/inventory/item/add.phtml:256
+#: Inventory/view/inventory/item/copy/add.phtml:256
 #: Inventory/view/inventory/item/crud.phtml:287
-#: Inventory/view/inventory/item/edit.phtml:274
+#: Inventory/view/inventory/item/edit.phtml:276
 #: Inventory/view/inventory/item/show.phtml:398
-#: Inventory/view/inventory/item/show1.phtml:364
+#: Inventory/view/inventory/item/show1.phtml:381
 #, fuzzy
 #| msgid "Select Position"
 msgid "Select Sales Unit"
 msgstr "Chọn Vị trí"
 
-#: Inventory/view/inventory/item/add.phtml:318
-#: Inventory/view/inventory/item/copy/add.phtml:318
-#: Inventory/view/inventory/item/copy/edit.phtml:158
-#: Inventory/view/inventory/item/copy/show.phtml:269
-#: Inventory/view/inventory/item/copy/show1.phtml:252
+#: Inventory/view/inventory/item/add.phtml:317
+#: Inventory/view/inventory/item/copy/add.phtml:317
+#: Inventory/view/inventory/item/copy/edit.phtml:205
+#: Inventory/view/inventory/item/copy/show.phtml:271
+#: Inventory/view/inventory/item/copy/show1.phtml:251
 #: Inventory/view/inventory/item/crud.phtml:334
-#: Inventory/view/inventory/item/edit.phtml:335
+#: Inventory/view/inventory/item/edit.phtml:337
 #: Inventory/view/inventory/item/show.phtml:459
-#: Inventory/view/inventory/item/show1.phtml:422
+#: Inventory/view/inventory/item/show1.phtml:442
 msgid "Select Group"
 msgstr ""
 
-#: Inventory/view/inventory/item/copy/edit.phtml:36
-#: Inventory/view/inventory/item/edit.phtml:39
+#: Inventory/view/inventory/item/copy/edit.phtml:44
+#: Inventory/view/inventory/item/edit.phtml:40
 msgid "Item#"
 msgstr ""
 
 #: Inventory/view/inventory/item/copy/show.phtml:46
 #: Inventory/view/inventory/item/copy/show1.phtml:46
 #: Inventory/view/inventory/item/show.phtml:91
-#: Inventory/view/inventory/item/show1.phtml:88
+#: Inventory/view/inventory/item/show1.phtml:101
 msgid "Picture"
 msgstr "Hình ảnh"
 
 #: Inventory/view/inventory/item/copy/show.phtml:62
 #: Inventory/view/inventory/item/copy/show1.phtml:62
 #: Inventory/view/inventory/item/show.phtml:107
-#: Inventory/view/inventory/item/show1.phtml:104
+#: Inventory/view/inventory/item/show1.phtml:117
 msgid "Attachments"
 msgstr ""
 
 #: Inventory/view/inventory/item/copy/show.phtml:70
 #: Inventory/view/inventory/item/copy/show1.phtml:70
 #: Inventory/view/inventory/item/show.phtml:116
-#: Inventory/view/inventory/item/show1.phtml:113
+#: Inventory/view/inventory/item/show1.phtml:126
 #: Procure/view/procure/pr-row/pr-of-item.phtml:7
 #: Procure/view/procure/pr-row/pr-of-item1.phtml:7
 #, fuzzy
@@ -5300,7 +5346,7 @@ msgstr "Tạo yêu cầu mua (PR)"
 #: Inventory/view/inventory/item/copy/show.phtml:73
 #: Inventory/view/inventory/item/copy/show1.phtml:73
 #: Inventory/view/inventory/item/show.phtml:119
-#: Inventory/view/inventory/item/show1.phtml:116
+#: Inventory/view/inventory/item/show1.phtml:129
 #: Procure/view/procure/quote-row/qo-of-item.phtml:7
 #, fuzzy
 #| msgid "Action"
@@ -5308,9 +5354,9 @@ msgid "Quotation"
 msgstr "Hành động"
 
 #: Inventory/view/inventory/item/copy/show.phtml:76
-#: Inventory/view/inventory/item/copy/show1.phtml:75
+#: Inventory/view/inventory/item/copy/show1.phtml:76
 #: Inventory/view/inventory/item/show.phtml:122
-#: Inventory/view/inventory/item/show1.phtml:119
+#: Inventory/view/inventory/item/show1.phtml:132
 #: Procure/view/procure/po-row/po-of-item.phtml:7
 #: Procure/view/procure/price-comparison/price-of-item.phtml:7
 msgid "Purchase Order"
@@ -5351,23 +5397,23 @@ msgid "Select Standard unit"
 msgstr "Chọn Vị trí"
 
 #: Inventory/view/inventory/item/show.phtml:86
-#: Inventory/view/inventory/item/show1.phtml:82
+#: Inventory/view/inventory/item/show1.phtml:94
 msgid "Price Comparison"
 msgstr ""
 
 #: Inventory/view/inventory/item/show.phtml:129
-#: Inventory/view/inventory/item/show1.phtml:127
+#: Inventory/view/inventory/item/show1.phtml:140
 msgid "Item Attributes"
 msgstr ""
 
 #: Inventory/view/inventory/item/show.phtml:130
-#: Inventory/view/inventory/item/show1.phtml:128
+#: Inventory/view/inventory/item/show1.phtml:141
 msgid "Attributes"
 msgstr ""
 
 #: Inventory/view/inventory/opening-balance/list.phtml:171
 #: Procure/view/procure/po/copy/show.phtml:83
-#: Procure/view/procure/po/review-v1.phtml:287
+#: Procure/view/procure/po/review-v1.phtml:290
 #: Procure/view/procure/po/review.phtml:155
 #: Procure/view/procure/po/view.phtml:142
 #: Procure/view/procure/price-comparison/copy/show.phtml:83
@@ -5638,6 +5684,10 @@ msgstr "Thanh toán sẽ được ghi sổ!"
 msgid "PROCUREMENT"
 msgstr "QUẢN LÝ THU MUA"
 
+#: Procure/view/layout/layout-fluid.phtml:318
+msgid "Processing........Please Wait!"
+msgstr "Đang xử lý……. Vui lòng đơi!"
+
 #: Procure/view/layout/layout.phtml:215
 msgid "Add New PR"
 msgstr "Tạo yêu cầu mua"
@@ -5673,7 +5723,7 @@ msgstr "Tải Excel"
 #: Procure/view/procure/gr/add1.phtml:48
 #: Procure/view/procure/po/copy/add1.phtml:49
 #: Procure/view/procure/po/copy/show.phtml:58
-#: Procure/view/procure/po/review-v1.phtml:305
+#: Procure/view/procure/po/review-v1.phtml:308
 #: Procure/view/procure/po/review.phtml:166
 #: Procure/view/procure/po/view.phtml:153
 #: Procure/view/procure/price-comparison/copy/add1.phtml:49
@@ -5685,7 +5735,7 @@ msgstr ""
 #: Procure/view/procure/gr/add1.phtml:53 Procure/view/procure/gr/show.phtml:60
 #: Procure/view/procure/po/copy/add1.phtml:54
 #: Procure/view/procure/po/copy/show.phtml:64
-#: Procure/view/procure/po/review-v1.phtml:310
+#: Procure/view/procure/po/review-v1.phtml:313
 #: Procure/view/procure/po/review.phtml:172
 #: Procure/view/procure/po/view.phtml:159
 #: Procure/view/procure/price-comparison/copy/add1.phtml:54
@@ -5748,7 +5798,7 @@ msgid "Edit PO"
 msgstr "Sửa"
 
 #: Procure/view/procure/po/copy/show.phtml:82
-#: Procure/view/procure/po/review-v1.phtml:286
+#: Procure/view/procure/po/review-v1.phtml:289
 #: Procure/view/procure/po/review.phtml:15
 #: Procure/view/procure/po/review.phtml:154
 #: Procure/view/procure/po/view.phtml:141
@@ -5768,7 +5818,7 @@ msgstr ""
 msgid "Paid amount"
 msgstr "Incoterm Object không tìm thấy!"
 
-#: Procure/view/procure/po/review-v1.phtml:158
+#: Procure/view/procure/po/review-v1.phtml:161
 #: Procure/view/procure/po/review.phtml:33
 #: Procure/view/procure/po/view.phtml:14
 #, fuzzy
@@ -5776,7 +5826,7 @@ msgstr "Incoterm Object không tìm thấy!"
 msgid "PO List"
 msgstr "Danh sách yêu cầu mua "
 
-#: Procure/view/procure/po/review-v1.phtml:202
+#: Procure/view/procure/po/review-v1.phtml:205
 #: Procure/view/procure/po/review.phtml:67
 #: Procure/view/procure/po/view.phtml:54
 #, fuzzy
@@ -5788,38 +5838,44 @@ msgid ""
 "when posted! <br> "
 msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 
-#: Procure/view/procure/po/review-v1.phtml:272
-#: Procure/view/procure/po/review-v1.phtml:293
+#: Procure/view/procure/po/review-v1.phtml:275
+#: Procure/view/procure/po/review-v1.phtml:296
 msgid "P/O Amendment"
 msgstr ""
 
-#: Procure/view/procure/po/review-v1.phtml:276
+#: Procure/view/procure/po/review-v1.phtml:279
 #, fuzzy
 #| msgid "Postion name"
 msgid "Post Amendment"
 msgstr "Vị trí Công Việc"
 
-#: Procure/view/procure/po/review-v1.phtml:297
+#: Procure/view/procure/po/review-v1.phtml:300
 #, fuzzy
 #| msgid "Amend"
 msgid "Amendment"
 msgstr "Sửa"
 
-#: Procure/view/procure/po/review-v1.phtml:302
+#: Procure/view/procure/po/review-v1.phtml:305
 #: Procure/view/procure/po/review.phtml:161
 #: Procure/view/procure/po/view.phtml:148
 msgid "Pay P/O"
 msgstr ""
 
-#: Procure/view/procure/po/review-v1.phtml:321
+#: Procure/view/procure/po/review-v1.phtml:324
 msgid "Review PO Amendment"
 msgstr ""
 
-#: Procure/view/procure/po/review-v1.phtml:322
+#: Procure/view/procure/po/review-v1.phtml:325
 msgid "Review Amendment"
 msgstr ""
 
-#: Procure/view/procure/po/review-v1.phtml:542
+#: Procure/view/procure/po/review-v1.phtml:457
+#, fuzzy
+#| msgid "Contract Date"
+msgid "Update document hearder"
+msgstr "Ngày Hợp đồng"
+
+#: Procure/view/procure/po/review-v1.phtml:565
 #: Procure/view/procure/po/review.phtml:459
 #: Procure/view/procure/po/view.phtml:428
 #, fuzzy
@@ -5827,14 +5883,20 @@ msgstr ""
 msgid "PO will be posted!"
 msgstr " sẽ được ghi sổ!"
 
-#: Procure/view/procure/po/review-v1.phtml:570
+#: Procure/view/procure/po/review-v1.phtml:593
 msgid "PO will be enabled for ammendment!"
 msgstr ""
 
-#: Procure/view/procure/po/review-v1.phtml:598
+#: Procure/view/procure/po/review-v1.phtml:621
 #, fuzzy
 #| msgid " will be posted!"
 msgid "PO amendment will be posted!"
+msgstr " sẽ được ghi sổ!"
+
+#: Procure/view/procure/po/review-v1.phtml:646
+#, fuzzy
+#| msgid " will be posted!"
+msgid "Document header amendment will be posted!"
 msgstr " sẽ được ghi sổ!"
 
 #: Procure/view/procure/pr-row-attachment/upload.phtml:21

@@ -14,6 +14,14 @@ use Procure\Domain\Exception\InvalidArgumentException;
 abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterface
 {
 
+    protected $docRows;
+
+    protected $rowIdArray;
+
+    protected $rowsOutput;
+
+    // Posting Date
+    // =========================
     protected $postingYear;
 
     protected $postingMonth;
@@ -22,20 +30,27 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     protected $docMonth;
 
-    protected $docRows;
-
-    protected $rowIdArray;
-
-    protected $rowsOutput;
-
     // Company
     // =========================
     protected $companyName;
 
+    protected $companyId;
+
     protected $companyToken;
 
     protected $companyCode;
+    
+    // Vendor Details
+    // =========================
+    protected $vendorId;
 
+    protected $vendorToken;
+
+    protected $vendorAddress;
+
+    protected $vendorCountry;
+
+    // Doc Details
     // =========================
     protected $paymentTermName;
 
@@ -76,7 +91,17 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $completedRows;
 
     protected $openAPAmount;
+    
+    protected $docCurrencyISO;
+    
+    protected $localCurrencyISO;
+    
+    protected $docCurrencyId;
+    
+    protected $localCurrencyId;
+    
 
+    // Doc Orignal
     // ==================================
     protected $id;
 
@@ -1944,13 +1969,94 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
         $this->discountRate = $discountRate;
     }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
+    }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorToken()
+    {
+        return $this->vendorToken;
+    }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorAddress()
+    {
+        return $this->vendorAddress;
+    }
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorCountry()
+    {
+        return $this->vendorCountry;
+    }
 
+    /**
+     *
+     * @param mixed $companyId
+     */
+    protected function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+    }
 
+    /**
+     *
+     * @param mixed $vendorId
+     */
+    protected function setVendorId($vendorId)
+    {
+        $this->vendorId = $vendorId;
+    }
 
+    /**
+     *
+     * @param mixed $vendorToken
+     */
+    protected function setVendorToken($vendorToken)
+    {
+        $this->vendorToken = $vendorToken;
+    }
 
+    /**
+     *
+     * @param mixed $vendorAddress
+     */
+    protected function setVendorAddress($vendorAddress)
+    {
+        $this->vendorAddress = $vendorAddress;
+    }
 
+    /**
+     *
+     * @param mixed $vendorCountry
+     */
+    protected function setVendorCountry($vendorCountry)
+    {
+        $this->vendorCountry = $vendorCountry;
+    }
+  
 }

@@ -18,8 +18,13 @@ class POSnapshot extends AbstractDTO
     public $docYear;
     public $docMonth;
     public $companyName;
+    public $companyId;
     public $companyToken;
     public $companyCode;
+    public $vendorId;
+    public $vendorToken;
+    public $vendorAddress;
+    public $vendorCountry;
     public $paymentTermName;
     public $paymentTermCode;
     public $warehouseName;
@@ -40,6 +45,10 @@ class POSnapshot extends AbstractDTO
     public $billedAmount;
     public $completedRows;
     public $openAPAmount;
+    public $docCurrencyISO;
+    public $localCurrencyISO;
+    public $docCurrencyId;
+    public $localCurrencyId;
     public $id;
     public $token;
     public $vendorName;
@@ -167,6 +176,14 @@ class POSnapshot extends AbstractDTO
     /**
      * @return mixed
      */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getCompanyToken()
     {
         return $this->companyToken;
@@ -178,6 +195,38 @@ class POSnapshot extends AbstractDTO
     public function getCompanyCode()
     {
         return $this->companyCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorToken()
+    {
+        return $this->vendorToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorAddress()
+    {
+        return $this->vendorAddress;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendorCountry()
+    {
+        return $this->vendorCountry;
     }
 
     /**
@@ -338,6 +387,38 @@ class POSnapshot extends AbstractDTO
     public function getOpenAPAmount()
     {
         return $this->openAPAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyISO()
+    {
+        return $this->docCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyISO()
+    {
+        return $this->localCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyId()
+    {
+        return $this->docCurrencyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyId()
+    {
+        return $this->localCurrencyId;
     }
 
     /**
@@ -820,5 +901,5 @@ class POSnapshot extends AbstractDTO
         return $this->discountRate;
     }
 
-     
+    
 }

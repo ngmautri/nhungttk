@@ -46,7 +46,7 @@ class PODoc extends GenericPO
     {}
 
     /**
-     * 
+     *
      * @return \Procure\Domain\PurchaseOrder\PODoc
      */
     public static function getInstance()
@@ -243,6 +243,7 @@ class PODoc extends GenericPO
     }
 
     /**
+     * This should be only call when constructing object from storage.
      *
      * @param PODetailsSnapshot $snapshot
      * @return void|\Procure\Domain\PurchaseOrder\PODoc
@@ -261,6 +262,7 @@ class PODoc extends GenericPO
     }
 
     /**
+     * This should be only call when constructing object from storage.
      *
      * @param PoSnapshot $snapshot
      * @return void|\Procure\Domain\PurchaseOrder\PODoc
@@ -281,7 +283,7 @@ class PODoc extends GenericPO
     }
 
     /**
-     *
+     * @deprecated
      * @param PoSnapshot $snapshot
      * @param POSpecService $specService
      * @return void|\Procure\Domain\PurchaseOrder\PODoc

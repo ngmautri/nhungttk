@@ -13,6 +13,58 @@ use Procure\Domain\Exception\InvalidArgumentException;
 class AbstractRow extends AbstractEntity
 {
 
+    // Doc Details
+    // ====================
+    protected $companyId;
+
+    protected $companyToken;
+
+    protected $companyName;
+
+    protected $vendorId;
+
+    protected $vendorToken;
+
+    protected $vendorName;
+
+    protected $vendorCountry;
+
+    protected $docNumber;
+
+    protected $docSysNumber;
+
+    protected $docCurrencyISO;
+
+    protected $localCurrencyISO;
+
+    protected $docCurrencyId;
+
+    protected $localCurrencyId;
+
+    protected $docToken;
+
+    protected $docId;
+    
+    protected $exchangeRate;
+
+    // Warehouse Details
+    // ====================
+    protected $docWarehouseName;
+
+    protected $docWarehouseCode;
+
+    protected $warehouseName;
+
+    protected $warehouseCode;
+
+    // UOM Details
+    // ====================
+    protected $docUomName;
+
+    protected $docUomCode;
+
+    protected $docUomDescription;
+
     // Item Details
     // ====================
     protected $itemToken;
@@ -37,6 +89,8 @@ class AbstractRow extends AbstractEntity
 
     protected $itemStandardUnitName;
 
+    protected $itemStandardUnitCode;
+    
     protected $itemVersion;
 
     // PR Details
@@ -63,7 +117,13 @@ class AbstractRow extends AbstractEntity
 
     protected $prRowVersion;
 
-    // PO
+    // Row Details
+    // ====================
+    protected $createdByName;
+
+    protected $lastChangeByName;
+
+    // Row Original
     // ====================
     protected $id;
 
@@ -200,17 +260,17 @@ class AbstractRow extends AbstractEntity
     protected $glAccount;
 
     protected $costCenter;
-    
+
     /**
-      *
-     * @return \Procure\Domain\PurchaseOrder\PORow
+     *
+     * @return \Procure\Domain\AbstractRow
      */
     public function refresh()
     {
         $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
         $taxAmount = $netAmount * $this->getTaxRate();
         $grosAmount = $netAmount + $taxAmount;
-        
+
         $this->netAmount = $netAmount;
         $this->taxAmount = $taxAmount;
         $this->grossAmount = $grosAmount;
@@ -1890,5 +1950,418 @@ class AbstractRow extends AbstractEntity
     {
         $this->costCenter = $costCenter;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyToken()
+    {
+        return $this->companyToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorToken()
+    {
+        return $this->vendorToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorName()
+    {
+        return $this->vendorName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorCountry()
+    {
+        return $this->vendorCountry;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocSysNumber()
+    {
+        return $this->docSysNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocCurrencyISO()
+    {
+        return $this->docCurrencyISO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalCurrencyISO()
+    {
+        return $this->localCurrencyISO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocCurrencyId()
+    {
+        return $this->docCurrencyId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocalCurrencyId()
+    {
+        return $this->localCurrencyId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocToken()
+    {
+        return $this->docToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocId()
+    {
+        return $this->docId;
+    }
+
+    /**
+     *
+     * @param mixed $companyId
+     */
+    protected function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+    }
+
+    /**
+     *
+     * @param mixed $companyToken
+     */
+    protected function setCompanyToken($companyToken)
+    {
+        $this->companyToken = $companyToken;
+    }
+
+    /**
+     *
+     * @param mixed $companyName
+     */
+    protected function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+    }
+
+    /**
+     *
+     * @param mixed $vendorId
+     */
+    protected function setVendorId($vendorId)
+    {
+        $this->vendorId = $vendorId;
+    }
+
+    /**
+     *
+     * @param mixed $vendorToken
+     */
+    protected function setVendorToken($vendorToken)
+    {
+        $this->vendorToken = $vendorToken;
+    }
+
+    /**
+     *
+     * @param mixed $vendorName
+     */
+    protected function setVendorName($vendorName)
+    {
+        $this->vendorName = $vendorName;
+    }
+
+    /**
+     *
+     * @param mixed $vendorCountry
+     */
+    protected function setVendorCountry($vendorCountry)
+    {
+        $this->vendorCountry = $vendorCountry;
+    }
+
+    /**
+     *
+     * @param mixed $docNumber
+     */
+    protected function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+    }
+
+    /**
+     *
+     * @param mixed $docSysNumber
+     */
+    protected function setDocSysNumber($docSysNumber)
+    {
+        $this->docSysNumber = $docSysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $docCurrencyISO
+     */
+    protected function setDocCurrencyISO($docCurrencyISO)
+    {
+        $this->docCurrencyISO = $docCurrencyISO;
+    }
+
+    /**
+     *
+     * @param mixed $localCurrencyISO
+     */
+    protected function setLocalCurrencyISO($localCurrencyISO)
+    {
+        $this->localCurrencyISO = $localCurrencyISO;
+    }
+
+    /**
+     *
+     * @param mixed $docCurrencyId
+     */
+    protected function setDocCurrencyId($docCurrencyId)
+    {
+        $this->docCurrencyId = $docCurrencyId;
+    }
+
+    /**
+     *
+     * @param mixed $localCurrencyId
+     */
+    protected function setLocalCurrencyId($localCurrencyId)
+    {
+        $this->localCurrencyId = $localCurrencyId;
+    }
+
+    /**
+     *
+     * @param mixed $docToken
+     */
+    protected function setDocToken($docToken)
+    {
+        $this->docToken = $docToken;
+    }
+
+    /**
+     *
+     * @param mixed $docId
+     */
+    protected function setDocId($docId)
+    {
+        $this->docId = $docId;
+    }
+    /**
+     * @return mixed
+     */
+    public function getDocWarehouseName()
+    {
+        return $this->docWarehouseName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocWarehouseCode()
+    {
+        return $this->docWarehouseCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseName()
+    {
+        return $this->warehouseName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseCode()
+    {
+        return $this->warehouseCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUomName()
+    {
+        return $this->docUomName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUomCode()
+    {
+        return $this->docUomCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocUomDescription()
+    {
+        return $this->docUomDescription;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByName()
+    {
+        return $this->createdByName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastChangeByName()
+    {
+        return $this->lastChangeByName;
+    }
+    /**
+     * @param mixed $docWarehouseName
+     */
+    protected function setDocWarehouseName($docWarehouseName)
+    {
+        $this->docWarehouseName = $docWarehouseName;
+    }
+
+    /**
+     * @param mixed $docWarehouseCode
+     */
+    protected function setDocWarehouseCode($docWarehouseCode)
+    {
+        $this->docWarehouseCode = $docWarehouseCode;
+    }
+
+    /**
+     * @param mixed $warehouseName
+     */
+    protected function setWarehouseName($warehouseName)
+    {
+        $this->warehouseName = $warehouseName;
+    }
+
+    /**
+     * @param mixed $warehouseCode
+     */
+    protected function setWarehouseCode($warehouseCode)
+    {
+        $this->warehouseCode = $warehouseCode;
+    }
+
+    /**
+     * @param mixed $docUomName
+     */
+    protected function setDocUomName($docUomName)
+    {
+        $this->docUomName = $docUomName;
+    }
+
+    /**
+     * @param mixed $docUomCode
+     */
+    protected function setDocUomCode($docUomCode)
+    {
+        $this->docUomCode = $docUomCode;
+    }
+
+    /**
+     * @param mixed $docUomDescription
+     */
+    protected function setDocUomDescription($docUomDescription)
+    {
+        $this->docUomDescription = $docUomDescription;
+    }
+
+    /**
+     * @param mixed $createdByName
+     */
+    protected function setCreatedByName($createdByName)
+    {
+        $this->createdByName = $createdByName;
+    }
+
+    /**
+     * @param mixed $lastChangeByName
+     */
+    protected function setLastChangeByName($lastChangeByName)
+    {
+        $this->lastChangeByName = $lastChangeByName;
+    }
+
 
 }

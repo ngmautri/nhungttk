@@ -174,10 +174,12 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 		<div class="alert alert-<?php echo $alert;?>" role="alert"
 			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-				<li><b><?php if (!$headerDTO == null): echo "PO #" . $headerDTO->getSysNumber(); endif;?></b></li>
-				<li>-----</li>
+				<li><b><?php if (!$headerDTO == null): echo sprintf("PO #%s (Version #%s)", $headerDTO->getSysNumber(),$headerDTO->getDocVersion()); endif;?></b></li>
+					<li>-----</li>
 
 				<li><b><?php if (!$headerDTO == null): echo $headerDTO->vendorName; endif;?></b></li>
+				<li><i><?php if (!$headerDTO == null): echo sprintf("%s %s", $headerDTO->getVendorAddress(), $headerDTO->getVendorCountry()); endif;?></i></li>
+		
 				<li>-----</li>
 
 				<li><?php if (!$headerDTO == null): echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;?> </li>
@@ -458,7 +460,7 @@ if ($isViewing) :
 								class="btn btn-default btn-sm"
 								style="color: navy; font-weight: bold;"
 								href="<?php echo $update_header_url; ?>"><i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Update');?></a>
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Edit');?></a>
 								<hr>
 									</div>
 								</div>

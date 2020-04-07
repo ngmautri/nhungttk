@@ -92,6 +92,10 @@ class AbstractRow extends AbstractEntity
     protected $itemStandardUnitCode;
     
     protected $itemVersion;
+    
+    protected $isInventoryItem;
+    
+    protected $isFixedAsset;
 
     // PR Details
     // ====================
@@ -260,6 +264,70 @@ class AbstractRow extends AbstractEntity
     protected $glAccount;
 
     protected $costCenter;
+
+    /**
+     * @param mixed $exchangeRate
+     */
+    protected function setExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
+
+    /**
+     * @param mixed $itemStandardUnitCode
+     */
+    protected function setItemStandardUnitCode($itemStandardUnitCode)
+    {
+        $this->itemStandardUnitCode = $itemStandardUnitCode;
+    }
+
+    /**
+     * @param mixed $isInventoryItem
+     */
+    protected function setIsInventoryItem($isInventoryItem)
+    {
+        $this->isInventoryItem = $isInventoryItem;
+    }
+
+    /**
+     * @param mixed $isFixedAsset
+     */
+    protected function setIsFixedAsset($isFixedAsset)
+    {
+        $this->isFixedAsset = $isFixedAsset;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExchangeRate()
+    {
+        return $this->exchangeRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemStandardUnitCode()
+    {
+        return $this->itemStandardUnitCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsInventoryItem()
+    {
+        return $this->isInventoryItem;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsFixedAsset()
+    {
+        return $this->isFixedAsset;
+    }
 
     /**
      *

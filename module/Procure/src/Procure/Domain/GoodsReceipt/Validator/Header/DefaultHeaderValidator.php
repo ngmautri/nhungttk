@@ -53,40 +53,6 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
             }
 
-            // ==== GR DATE =======
-            $spec = $this->sharedSpecificationFactory->getDateSpecification();
-            
-            if (! $spec->isSatisfiedBy($rootEntity->getGrDate())) {
-                $rootEntity->addError("Good Receipt date is not correct or empty");
-            } else {
-           
-                $spec1 = $this->getSharedSpecificationFactory()->getCanPostOnDateSpecification();
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "movementDate" => $rootEntity->getGrDate()
-                );
-
-                if (! $spec1->isSatisfiedBy($subject)) {
-                    $rootEntity->addError(sprintf("Can not post on this date (Date %s CompanyID %s). Period is not created or closed. ", 
-                        $rootEntity->getGrDate(),
-                        $rootEntity->getCompany()));
-                }
-            }
-
-            // ===== WAREHOUSE =======
-            if ($rootEntity->getWarehouse() == null) {
-                $rootEntity->addError("Source warehouse is not set");
-            } else {
-
-                $spec1 = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "warehouseId" => $rootEntity->getWarehouse(),
-                );
-                if (! $spec1->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));
-            }
-
             // ===== DOC CURRENCY =======
             if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
                 $rootEntity->addError(sprintf("Doc Currency is empty or invalid! %s", $rootEntity->getDocCurrency()));
@@ -121,9 +87,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy());
                 }
             }
-            
-            
-            
+              
         } catch (GrCreateException $e) {
             $rootEntity->addError($e->getMessage());
         }

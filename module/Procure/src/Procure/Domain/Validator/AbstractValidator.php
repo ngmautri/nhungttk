@@ -27,9 +27,9 @@ abstract class AbstractValidator
      * @param FXServiceInterface $fxService
      * @throws PoInvalidArgumentException
      */
-    public function __construct(SharedSpecsFactory $sharedSpecificationFactory,FXServiceInterface $fxService, ProcureSpecsFactory $procureSpecificationFactory = null)
+    public function __construct(SharedSpecsFactory $sharedSpecsFactory, FXServiceInterface $fxService, ProcureSpecsFactory $procureSpecsFactory = null)
     {
-        if (! $sharedSpecificationFactory instanceof SharedSpecsFactory) {
+        if (! $sharedSpecsFactory instanceof SharedSpecsFactory) {
             throw new PoInvalidArgumentException("Shared Specification is required");
         }
 
@@ -37,8 +37,8 @@ abstract class AbstractValidator
             throw new PoInvalidArgumentException("FX service is required");
         }
 
-        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
-        $this->procureSpecificationFactory = $procureSpecificationFactory;
+        $this->sharedSpecificationFactory = $sharedSpecsFactory;
+        $this->procureSpecificationFactory = $procureSpecsFactory;
         $this->fxService = $fxService;
     }
 

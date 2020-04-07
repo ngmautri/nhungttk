@@ -485,15 +485,6 @@ abstract class GenericGR extends AbstractGR
     {
         $dto = new GrDetailsDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
-
-        if (count($this->docRows) > 0) {
-            foreach ($this->docRows as $row) {
-
-                if ($row instanceof GrRow) {
-                    $dto->docRowsDTO[] = $row->makeDetailsDTO();
-                }
-            }
-        }
         return $dto;
     }
 

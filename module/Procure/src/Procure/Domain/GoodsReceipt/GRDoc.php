@@ -48,7 +48,7 @@ class GRDoc extends GenericGR
      * @throws GrInvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function createFromPo(PODoc $sourceObj)
+    public static function createFromPo(PODoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
     {
         if (! $sourceObj instanceof PODoc) {
             throw new GrInvalidArgumentException("PO Entity is required");
@@ -65,9 +65,12 @@ class GRDoc extends GenericGR
         }
 
         if ($sourceObj->getTransactionStatus() == \Procure\Domain\Shared\Constants::TRANSACTION_STATUS_COMPLETED) {
-            throw new GrInvalidOperationException("PO is completed!");
+            throw new GrInvalidOperationException("GR is completed!");
         }
 
+        if ($options == null) {
+            throw new GrInvalidOperationException("No Options is found");
+        }
         /**
          *
          * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
@@ -77,15 +80,14 @@ class GRDoc extends GenericGR
         $instance->setIsDraft(1);
         $instance->setIsPosted(0);
         $instance->setDocVersion(0);
-        $instance->setRevisionNo(0);        
+        $instance->setRevisionNo(0);
         $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
         $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR);
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
+        $instance->setCreatedBy($options->getUserId());
         
-        $instance->setCreatedBy(39);
-        $instance->setGrDate("2020-03-14");
-        $instance->setWarehouse(5);
+        $instance->validateHeader($headerValidators);
         
         foreach ($rows as $r) {
 
@@ -102,6 +104,8 @@ class GRDoc extends GenericGR
             $grRow = GrRow::createFromPoRow($r);
             // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
+            
+            $instance->validateRow($grRow, $rowValidators);
         }
         return $instance;
     }

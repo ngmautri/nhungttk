@@ -16,6 +16,12 @@ use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use PHPUnit_Framework_TestCase;
 use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\NullHeaderValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\NullRowValidator;
+use Procure\Application\Command\GR\CreateFromPOCmd;
+use Procure\Application\Command\GR\Options\CreateFromPOOptions;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 
 class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -52,27 +58,37 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             // $id = 283;
             // $token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
 
+            $options = new CreateFromPOOptions(1, 39, __METHOD__);
+
             $po = $rep->getPODetailsById($id, $token);
-            $gr = GRDoc::createFromPo($po);
 
             $headerValidators = new HeaderValidatorCollection();
 
-            $sharedSpecFactory = new ZendSpecificationFactory($doctrineEM);
+            $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
             $procureSpecsFactory = new ProcureSpecificationFactory($doctrineEM);
             $fxService = new FXService();
             $fxService->setDoctrineEM($doctrineEM);
 
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService,$procureSpecsFactory);
             $headerValidators->add($validator);
 
+            $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
+            $headerValidators->add($validator);
+            
+            $validator = new GrPostingValidator($sharedSpecsFactory, $fxService);
+            $headerValidators->add($validator);
+            
             $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
+            $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
             $rowValidators->add($validator);
 
-            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
+            $validator = new GLAccountValidator($sharedSpecsFactory, $fxService);
             $rowValidators->add($validator);
 
-            var_dump($gr->validate($headerValidators, $rowValidators));
+            
+            $gr = GRDoc::createFromPo($po,$options,$headerValidators, $rowValidators);
+            var_dump($gr->makeDetailsDTO());
+            
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

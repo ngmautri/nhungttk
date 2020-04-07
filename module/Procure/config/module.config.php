@@ -247,7 +247,8 @@ return array(
 
             // Appliation Service
             'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
-
+            'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
+            
             // Search Service
             'Procure\Application\Service\Search\ApSearchService' => 'Procure\Application\Service\Search\ApSearchServiceFactory',
             'Procure\Application\Service\Search\PoSearchService' => 'Procure\Application\Service\Search\PoSearchServiceFactory',

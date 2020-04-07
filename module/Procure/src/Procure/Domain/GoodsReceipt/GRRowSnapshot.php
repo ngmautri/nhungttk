@@ -97,6 +97,10 @@ class GRRowSnapshot extends AbstractDTO
 
     public $itemVersion;
 
+    public $isInventoryItem;
+
+    public $isFixedAsset;
+
     public $pr;
 
     public $prToken;
@@ -600,6 +604,22 @@ class GRRowSnapshot extends AbstractDTO
     public function getItemVersion()
     {
         return $this->itemVersion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsInventoryItem()
+    {
+        return $this->isInventoryItem;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsFixedAsset()
+    {
+        return $this->isFixedAsset;
     }
 
     /**

@@ -6,6 +6,8 @@ use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use Application\Domain\Shared\DTOFactory;
+use Procure\Application\DTO\Gr\GrRowDetailsDTO;
 
 /**
  * Goods Receipt Row
@@ -36,6 +38,18 @@ class GRRow extends AbstractRow
 
     private function __construct()
     {}
+    
+    /**
+     *
+     * @return NULL|object
+     */
+    public function makeDetailsDTO()
+    {
+        $dto = new GrRowDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        return $dto;
+    }
+    
 
     /**
      *

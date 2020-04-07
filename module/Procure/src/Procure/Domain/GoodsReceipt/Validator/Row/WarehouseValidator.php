@@ -16,7 +16,7 @@ use Procure\Domain\AbstractRow;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GLAccountValidator extends AbstractValidator implements RowValidatorInterface
+class WarehouseValidator extends AbstractValidator implements RowValidatorInterface
 {
 
     /**
@@ -43,30 +43,15 @@ class GLAccountValidator extends AbstractValidator implements RowValidatorInterf
              * @var AbstractSpecification $spec ;
              */
 
-            // ======= GL Account ==========
-            $spec = $this->sharedSpecificationFactory->getGLAccountExitsSpecification();
-
-            $subject = array(
-                "companyId" => $rootEntity->getCompany(),
-                "glAccountId" => $localEntity->getGlAccount()
-            );
-
-            if (! $spec->isSatisfiedBy($subject)) {
-                $localEntity->addError(sprintf("GL #%s not exits in the company #%s", $localEntity->getGlAccount(), $rootEntity->getCompany()));
-            }
-
-            $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
-
-            // ======= COST CENTER =========
-            if ($localEntity->getCostCenter() !== null) {
+            // ===== WAREHOUSE =======
+            if (! $localEntity->getWarehouse() == null) {
+                $spec = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
                 $subject = array(
                     "companyId" => $rootEntity->getCompany(),
-                    "costCenter" => $localEntity->getCostCenter()
+                    "warehouseId" => $localEntity->getWarehouse()
                 );
-
-                if (! $spec->isSatisfiedBy($subject)) {
-                    $localEntity->addError(sprintf("Cost center #%s not exits in company #%s", $localEntity->getCostCenter(), $rootEntity->getCompany()));
-                }
+                if (! $spec->isSatisfiedBy($subject))
+                    $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $localEntity->getWarehouse(), $rootEntity->getCreatedBy()));
             }
             
         } catch (GrCreateException $e) {

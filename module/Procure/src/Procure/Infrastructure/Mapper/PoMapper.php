@@ -395,7 +395,7 @@ class PoMapper
             $snapshot->vendorName = $entity->getVendor()->getVendorName();
             $snapshot->vendorId = $snapshot->vendor;
             $snapshot->vendorToken = $entity->getVendor()->getToken();
-            $snapshot->vendorAddress = sprintf("%s %s",$entity->getVendor()->getStreet() , $entity->getVendor()->getCity());
+            $snapshot->vendorAddress = sprintf("%s %s", $entity->getVendor()->getStreet(), $entity->getVendor()->getCity());
 
             if ($entity->getVendor()->getCountry() !== null) {
                 $snapshot->vendorCountry = $entity->getVendor()
@@ -664,6 +664,15 @@ class PoMapper
 
         // $snapshot->item= $entity->getItem();
         if ($entity->getItem() !== null) {
+
+            if ($entity->getItem()->getIsFixedAsset() == 1) {
+                $snapshot->isFixedAsset = 1;
+            }
+
+            if ($entity->getItem()->getIsStocked() == 1) {
+                $snapshot->isInventoryItem = 1;
+            }
+
             $snapshot->item = $entity->getItem()->getId();
             $snapshot->itemToken = $entity->getItem()->getToken();
             $snapshot->itemName = $entity->getItem()->getItemName();

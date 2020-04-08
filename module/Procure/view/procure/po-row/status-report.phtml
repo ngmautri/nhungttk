@@ -288,7 +288,7 @@ if ($output == PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
     var columns = [
       
         { title: "Vendor", dataType: "string", dataIndx: "vendorName", align: 'left',minWidth: 150,editable: false},
-        { title: "Po#", dataType: "string", dataIndx: "poNumber", align: 'left',minWidth: 150,editable: false},
+        { title: "Po#", dataType: "string", dataIndx: "docNumber", align: 'left',minWidth: 150,editable: false},
        	{ title: "Item", dataType: "string", dataIndx: "itemName", width: 250,editable: false },
     	{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width: 10,editable: false },
     	   
@@ -296,7 +296,7 @@ if ($output == PoRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
       	{ title: "Row name", dataType: "string", dataIndx: "vendorItemCode", width: 100,editable: false },
              
          { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 60,align: 'right',hidden: false,editable: false},
-         { title: "UP", dataType: "integer", dataIndx: "unitPrice", width: 60,align: 'right',hidden: false,editable: false},
+         { title: "UP", dataType: "integer", dataIndx: "docUnitPrice", width: 60,align: 'right',hidden: false,editable: false},
          { title: "NetAmt", dataType: "integer", dataIndx: "netAmount", width: 100,align: 'right',hidden: false,editable: false},
          
               { title: "Cur", dataType: "string", dataIndx: "docCurrencyISO", width: 10,align: 'center',hidden: false,editable: false},

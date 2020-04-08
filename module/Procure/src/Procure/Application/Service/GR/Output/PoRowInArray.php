@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Service\PO\Output;
+namespace Procure\Application\Service\GR\Output;
 
 use Zend\Escaper\Escaper;
 
@@ -9,7 +9,7 @@ use Zend\Escaper\Escaper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowInArray extends PoRowOutputStrategy
+class GrRowInArray extends PoRowOutputStrategy
 {
 
     /**

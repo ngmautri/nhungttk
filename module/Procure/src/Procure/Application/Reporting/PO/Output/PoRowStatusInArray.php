@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Reporting\PO\Output;
 
-use Procure\Application\Reporting\PO\Output\PoRowStatusOutputStrategy;
 use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 use Zend\Escaper\Escaper;
 

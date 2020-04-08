@@ -1,71 +1,25 @@
 <?php
 namespace Procure\Application\Service\PO\Output;
 
-use Procure\Application\Service\Output\RowOutputDecorator;
-use Procure\Domain\GenericDoc;
-use Procure\Domain\GenericRow;
+use Procure\Application\Service\Output\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 
 /**
- * PR Row Output.
+ * PO Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowInArray extends RowOutputDecorator
+class PoRowFormatter extends RowFormatterDecorator
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\RowOutputInterface::formatMultiplyRows()
+     * @see \Procure\Application\Service\Output\AbstractRowFormatter::format()
      */
-    public function formatMultiplyRows($rows)
-    {
-        if (count($rows) == 0) {
-            return null;
-        }
-
-        $output = array();
-        foreach ($rows as $row) {
-            $output[] = $this->formatRow($row);
-        }
-
-        return $output;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\RowOutputInterface::createOutput()
-     */
-    public function createOutput(GenericDoc $doc)
-    {
-        if (! $doc instanceof GenericDoc) {
-            throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
-        }
-
-        if (count($doc->getDocRows()) == null) {
-            return;
-        }
-
-        $output = array();
-        foreach ($doc->getDocRows() as $row) {
-            /**
-             * @var GenericRow $row ;
-             */
-            $output[] =  $this->formatRow($row->makeSnapshot());
-        }
-        return $output;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\RowOutputStrategy::formatRow()
-     */
-    public function formatRow(RowSnapshot $row)
+    public function format(RowSnapshot $row)
     {
         if (! $row instanceof RowSnapshot) {
             return null;
@@ -82,8 +36,9 @@ class PoRowInArray extends RowOutputDecorator
             $decimalNo = 2;
         }
 
-        $row = $this->outputStrategy->formatRow($row);
-
+        $row = $this->formatter->format($row);
+        
+        // then decorate
         if ($row instanceof PORowSnapshot) {
             $row->billedAmount = ($row->getBilledAmount() !== null ? number_format($row->getBilledAmount(), $decimalNo) : 0);
             $row->draftAPQuantity = ($row->getDraftAPQuantity() !== null ? number_format($row->getDraftAPQuantity(), $decimalNo) : 0);
@@ -94,8 +49,7 @@ class PoRowInArray extends RowOutputDecorator
             $row->confirmedGrBalance = ($row->getConfirmedGrBalance() !== null ? number_format($row->getConfirmedGrBalance(), $decimalNo) : 0);
             $row->openGrBalance = ($row->getOpenGrBalance() !== null ? number_format($row->getOpenGrBalance(), $decimalNo) : 0);
         }
-        
+
         return $row;
     }
-
 }

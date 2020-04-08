@@ -7,6 +7,14 @@ use Procure\Application\Service\PO\Output\PoRowInExcel;
 use Procure\Application\Service\PO\Output\PoRowOutputStrategy;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Application\Service\Output\RowInArray;
+use Procure\Application\Service\Output\RowOutputStrategy;
+use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\PO\Output\PoRowFormatter;
+use Procure\Application\Service\Output\RowFormatter;
+use Procure\Application\Service\Output\SaveAsArray;
+use Procure\Application\Service\Output\RowNumberFormatter;
+use Procure\Application\Service\PO\Output\PoSaveAsExcel;
 
 /**
  * PO Service.
@@ -71,21 +79,25 @@ class POService extends AbstractService
         }
 
         $factory = null;
-        switch ($outputStrategy) {
-            case PoRowOutputStrategy::OUTPUT_IN_ARRAY:
-                $factory = new PoRowInArray();
-                break;
-            case PoRowOutputStrategy::OUTPUT_IN_EXCEL:
-                $factory = new PoRowInExcel();
-                break;
+        $formatter = null;
 
+        switch ($outputStrategy) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new PoRowFormatter(new RowFormatter());
+                $factory = new SaveAsArray();
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $factory = new PoSaveAsExcel();
+                break;
             default:
-                $factory = new PoRowInArray();
+                $formatter = new PoRowFormatter(new RowFormatter());
+                $factory = new SaveAsArray();
                 break;
         }
 
-        if ($factory !== null) {
-            $output = $factory->createOutput($po);
+        if ($factory !== null && $formatter !== null) {
+            $output = $factory->saveDocAs($po, $formatter);
             $po->setRowsOutput($output);
         }
 
@@ -110,7 +122,7 @@ class POService extends AbstractService
      */
     public function getPOHeaderById($id, $token = null)
     {
-        return $this->getQueryRepository()->getHeaderById($id,$token);
+        return $this->getQueryRepository()->getHeaderById($id, $token);
     }
 
     // ======================================================================

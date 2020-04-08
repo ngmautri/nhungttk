@@ -24,13 +24,14 @@ use Procure\Domain\Shared\Constants;
 use Ramsey\Uuid\Uuid;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Procure\Domain\GenericDoc;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericPO extends AbstractPO
+abstract class GenericPO extends GenericDoc
 {
 
     abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);

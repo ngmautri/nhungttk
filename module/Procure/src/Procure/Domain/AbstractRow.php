@@ -44,7 +44,7 @@ class AbstractRow extends AbstractEntity
     protected $docToken;
 
     protected $docId;
-    
+
     protected $exchangeRate;
 
     // Warehouse Details
@@ -90,11 +90,11 @@ class AbstractRow extends AbstractEntity
     protected $itemStandardUnitName;
 
     protected $itemStandardUnitCode;
-    
+
     protected $itemVersion;
-    
+
     protected $isInventoryItem;
-    
+
     protected $isFixedAsset;
 
     // PR Details
@@ -120,6 +120,12 @@ class AbstractRow extends AbstractEntity
     protected $prRowUnit;
 
     protected $prRowVersion;
+
+    protected $projectId;
+
+    protected $projectToken;
+
+    protected $projectName;
 
     // Row Details
     // ====================
@@ -266,6 +272,7 @@ class AbstractRow extends AbstractEntity
     protected $costCenter;
 
     /**
+     *
      * @param mixed $exchangeRate
      */
     protected function setExchangeRate($exchangeRate)
@@ -274,6 +281,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $itemStandardUnitCode
      */
     protected function setItemStandardUnitCode($itemStandardUnitCode)
@@ -282,6 +290,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isInventoryItem
      */
     protected function setIsInventoryItem($isInventoryItem)
@@ -290,6 +299,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $isFixedAsset
      */
     protected function setIsFixedAsset($isFixedAsset)
@@ -298,6 +308,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExchangeRate()
@@ -306,6 +317,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getItemStandardUnitCode()
@@ -314,6 +326,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsInventoryItem()
@@ -322,6 +335,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsFixedAsset()
@@ -370,7 +384,7 @@ class AbstractRow extends AbstractEntity
             "lastChangeBy",
             "lastChangeOn",
             "rowIdentifer",
-            "docType",
+            "docType"
         ];
 
         $sourceObj = $this;
@@ -2295,7 +2309,9 @@ class AbstractRow extends AbstractEntity
     {
         $this->docId = $docId;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getDocWarehouseName()
@@ -2304,6 +2320,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocWarehouseCode()
@@ -2312,6 +2329,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseName()
@@ -2320,6 +2338,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseCode()
@@ -2328,6 +2347,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUomName()
@@ -2336,6 +2356,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUomCode()
@@ -2344,6 +2365,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocUomDescription()
@@ -2352,6 +2374,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedByName()
@@ -2360,13 +2383,16 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangeByName()
     {
         return $this->lastChangeByName;
     }
+
     /**
+     *
      * @param mixed $docWarehouseName
      */
     protected function setDocWarehouseName($docWarehouseName)
@@ -2375,6 +2401,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docWarehouseCode
      */
     protected function setDocWarehouseCode($docWarehouseCode)
@@ -2383,6 +2410,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $warehouseName
      */
     protected function setWarehouseName($warehouseName)
@@ -2391,6 +2419,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $warehouseCode
      */
     protected function setWarehouseCode($warehouseCode)
@@ -2399,6 +2428,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docUomName
      */
     protected function setDocUomName($docUomName)
@@ -2407,6 +2437,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docUomCode
      */
     protected function setDocUomCode($docUomCode)
@@ -2415,6 +2446,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $docUomDescription
      */
     protected function setDocUomDescription($docUomDescription)
@@ -2423,6 +2455,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $createdByName
      */
     protected function setCreatedByName($createdByName)
@@ -2431,6 +2464,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $lastChangeByName
      */
     protected function setLastChangeByName($lastChangeByName)

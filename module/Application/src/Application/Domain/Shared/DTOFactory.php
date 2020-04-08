@@ -42,9 +42,9 @@ class DTOFactory
         }
 
         $reflectionClass = new \ReflectionClass($obj);
-        $itemProperites = $reflectionClass->getProperties();
+        $props = $reflectionClass->getProperties();
 
-        foreach ($itemProperites as $property) {
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
 

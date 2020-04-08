@@ -34,6 +34,23 @@ class PODoc extends GenericPO
     {
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);
+
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+
+            if ($property->class == $reflectionClass->getName()) {
+                $property->setAccessible(true);
+                $propertyName = $property->getName();
+                print "\n" . "public $" . $propertyName . ";";
+            }
+        }
+    }
+
+    public static function createAllSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
@@ -283,6 +300,7 @@ class PODoc extends GenericPO
     }
 
     /**
+     *
      * @deprecated
      * @param PoSnapshot $snapshot
      * @param POSpecService $specService

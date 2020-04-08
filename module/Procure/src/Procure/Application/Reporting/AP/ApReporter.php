@@ -23,6 +23,7 @@ class ApReporter extends AbstractService
     public function getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset,$outputStrategy)
     {
         $results = $this->getReporterRespository()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset);
+        
         if ($results == null) {
             return null;
         }

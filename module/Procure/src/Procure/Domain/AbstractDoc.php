@@ -224,6 +224,38 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $discountRate;
 
     /**
+     * @return mixed
+     */
+    public function getDocCurrencyISO()
+    {
+        return $this->docCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyISO()
+    {
+        return $this->localCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocCurrencyId()
+    {
+        return $this->docCurrencyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocalCurrencyId()
+    {
+        return $this->localCurrencyId;
+    }
+
+    /**
      *
      * @param int $id
      * @return NULL|\Procure\Domain\AbstractRow

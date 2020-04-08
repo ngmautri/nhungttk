@@ -4,14 +4,14 @@ namespace Procure\Domain\PurchaseOrder;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Domain\AbstractDoc;
+use Procure\Domain\GenericDoc;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractPO extends AbstractDoc
+abstract class AbstractPO extends GenericDoc
 {
 
     private function __construct()

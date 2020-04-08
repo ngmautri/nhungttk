@@ -1,13 +1,13 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
-use Procure\Domain\AbstractRow;
-use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
-use Procure\Domain\Shared\ProcureDocStatus;
-use Ramsey\Uuid\Uuid;
 use Application\Domain\Shared\DTOFactory;
 use Procure\Application\DTO\Gr\GrRowDetailsDTO;
+use Procure\Domain\GenericRow;
+use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
+use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Goods Receipt Row
@@ -15,13 +15,13 @@ use Procure\Application\DTO\Gr\GrRowDetailsDTO;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRRow extends AbstractRow
+class GRRow extends GenericRow
 {
 
     private static $instance = null;
 
-    // Addtional Properties
-    
+    // Specific Attributes
+    // =================================
     protected $grDate;
 
     protected $reversalReason;
@@ -38,7 +38,7 @@ class GRRow extends AbstractRow
 
     private function __construct()
     {}
-    
+
     /**
      *
      * @return NULL|object
@@ -49,7 +49,6 @@ class GRRow extends AbstractRow
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }
-    
 
     /**
      *
@@ -100,8 +99,27 @@ class GRRow extends AbstractRow
     {
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
+
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+
+            if ($property->class == $reflectionClass->getName()) {
+                $property->setAccessible(true);
+                $propertyName = $property->getName();
+                print "\n" . "public $" . $propertyName . ";";
+            }
+        }
+    }
+
+    public static function createAllSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
             print "\n" . "public $" . $propertyName . ";";

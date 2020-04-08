@@ -5,7 +5,8 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Domain\AbstractRow;
+use Procure\Domain\GenericDoc;
+use Procure\Domain\GenericRow;
 
 /**
  * PO Row
@@ -13,7 +14,7 @@ use Procure\Domain\AbstractRow;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORow extends AbstractRow
+class PORow extends GenericRow
 {
     
     private static $instance = null;
@@ -56,7 +57,27 @@ class PORow extends AbstractRow
         return self::$instance;
     }
 
+    /**
+     * Create properities
+     */
     public static function createSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        
+        $props = $reflectionClass->getProperties();
+        
+        foreach ($props as $property) {
+            
+            if ($property->class == $reflectionClass->getName()) {
+                $property->setAccessible(true);
+                $propertyName = $property->getName();
+                print "\n" . "public $" . $propertyName . ";";
+            }
+        }
+    }
+    
+    public static function createAllSnapshotProps()
     {
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);

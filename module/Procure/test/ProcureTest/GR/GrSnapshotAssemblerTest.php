@@ -30,9 +30,9 @@ class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            GRSnapshotAssembler::findMissingPropertiesOfEntity();
+            //GRSnapshotAssembler::findMissingPropertiesOfEntity();
             //GRSnapshotAssembler::findMissingPropertiesOfSnapshot();
-            //GRDoc::createSnapshotProps();
+            GRDoc::createSnapshotProps();
             
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

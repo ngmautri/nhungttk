@@ -86,9 +86,9 @@ class GRDoc extends GenericGR
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
         $instance->setCreatedBy($options->getUserId());
-        
+
         $instance->validateHeader($headerValidators);
-        
+
         foreach ($rows as $r) {
 
             /**
@@ -104,7 +104,7 @@ class GRDoc extends GenericGR
             $grRow = GrRow::createFromPoRow($r);
             // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
-            
+
             $instance->validateRow($grRow, $rowValidators);
         }
         return $instance;
@@ -123,6 +123,23 @@ class GRDoc extends GenericGR
     }
 
     public static function createSnapshotProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+
+            if ($property->class == $reflectionClass->getName()) {
+                $property->setAccessible(true);
+                $propertyName = $property->getName();
+                print "\n" . "public $" . $propertyName . ";";
+            }
+        }
+    }
+
+    public static function createAllSnapshotProps()
     {
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);

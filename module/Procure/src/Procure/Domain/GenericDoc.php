@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain;
 
+use Application\Domain\Shared\SnapshotAssembler;
 
 /**
  *
@@ -10,4 +11,24 @@ namespace Procure\Domain;
 class GenericDoc extends AbstractDoc
 {
 
+    public static function printProps()
+    {
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+        $props = $reflectionClass->getProperties();
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print sprintf("\n public $%s;", $propertyName);
+        }
+    }
+
+    /**
+     *
+     * @return NULL|object
+     */
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new DocSnapshot());
+    }
 }

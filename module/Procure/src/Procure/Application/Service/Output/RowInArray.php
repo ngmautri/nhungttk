@@ -1,9 +1,11 @@
 <?php
 namespace Procure\Application\Service\Output;
 
+use Procure\Domain\GenericDoc;
 use Procure\Domain\GenericRow;
 use Procure\Domain\RowSnapshot;
 use Zend\Escaper\Escaper;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -16,11 +18,47 @@ class RowInArray extends RowOutputStrategy
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\RowOutputStrategy::formatRowOutput()
+     * @see \Procure\Application\Service\Output\RowOutputInterface::formatMultiplyRows()
      */
-    public function formatRow(GenericRow $docRow)
+    public function formatMultiplyRows($rows)
     {
-        if ($docRow instanceof GenericRow) {
+        if (count($rows) == 0) {
+            return null;
+        }
+
+        $output = array();
+        foreach ($rows as $row) {
+            $output[] = $this->formatRow($row);
+        }
+        return $output;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Output\RowOutputInterface::createOutput()
+     */
+    public function createOutput(GenericDoc $doc)
+    {
+        if (! $doc instanceof GenericDoc) {
+            throw new InvalidArgumentException(sprintf("Invalid input %s", "doc."));
+        }
+        
+        if (count($doc->getDocRows() == null)) {
+            return;
+        }
+        
+        $this->formatMultiplyRows($doc->getDocRows());
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Output\RowOutputStrategy::formatRow()
+     */
+    public function formatRow(GenericRow $row)
+    {
+        if ($row instanceof GenericRow) {
             continue;
         }
 
@@ -31,7 +69,7 @@ class RowInArray extends RowOutputStrategy
             "EUR"
         );
 
-        if (in_array($docRow->getDocCurrencyISO(), $curency)) {
+        if (in_array($row->getDocCurrencyISO(), $curency)) {
             $decimalNo = 2;
         }
 
@@ -39,7 +77,7 @@ class RowInArray extends RowOutputStrategy
          *
          * @var RowSnapshot $dto
          */
-        $dto = $docRow->makeSnapshot();
+        $dto = $row->makeSnapshot();
 
         if ($dto == null) {
             continue;
@@ -91,4 +129,5 @@ class RowInArray extends RowOutputStrategy
 
        return $dto;
     }
+
 }

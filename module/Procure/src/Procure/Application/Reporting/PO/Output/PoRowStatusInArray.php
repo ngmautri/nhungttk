@@ -96,9 +96,9 @@ class PoRowStatusInArray extends PoRowStatusOutputStrategy
             $a->vendorItemCode= sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $a->vendorItemCode);
             
             $po_link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/po/view?token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', 
-                $a->rowIdentifer, $a->poToken, $a->po);
+                $a->rowIdentifer, $a->getDocToken(), $a->po);
             
-            $a->poNumber = $a->poNumber . $po_link;
+            $a->docNumber = $a->docNumber . $po_link;
             $output[] = $a;
         }
 

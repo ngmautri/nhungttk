@@ -5,7 +5,7 @@ use Procure\Domain\RowSnapshot;
 use Zend\Escaper\Escaper;
 
 /**
- *
+ * Default Row Formatter
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

@@ -27,6 +27,40 @@ class GRService extends AbstractService
     private $queryRepository;
 
     /**
+     * 
+     * @param DoctrinePOQueryRepository $cmdRepository
+     */
+    public function setCmdRepository(DoctrinePOQueryRepository $cmdRepository)
+    {
+        $this->cmdRepository = $cmdRepository;
+    }
+
+    /**
+     * 
+     * @param DoctrinePOQueryRepository $queryRepository
+     */
+    public function setQueryRepository(DoctrinePOQueryRepository $queryRepository)
+    {
+        $this->queryRepository = $queryRepository;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCmdRepository()
+    {
+        return $this->cmdRepository;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQueryRepository()
+    {
+        return $this->queryRepository;
+    }
+
+    /**
      *
      * @param int $target_id
      * @param string $target_token

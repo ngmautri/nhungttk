@@ -4,7 +4,7 @@ namespace Procure\Application\Service\Output;
 use Procure\Domain\RowSnapshot;
 
 /**
- *
+ * only for format number. this is used when exporting excel or saving as pdf.
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

@@ -22,6 +22,8 @@ use Procure\Application\Command\GR\CreateFromPOCmd;
 use Procure\Application\Command\GR\Options\CreateFromPOOptions;
 use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
+use Procure\Application\Command\GR\CopyFromPOCmd;
+use Procure\Application\Command\GR\Options\CopyFromPOOptions;
 
 class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -58,7 +60,7 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             // $id = 283;
             // $token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
 
-            $options = new CreateFromPOOptions(1, 39, __METHOD__);
+            $options = new CopyFromPOOptions(1, 39, __METHOD__);
 
             $po = $rep->getPODetailsById($id, $token);
 

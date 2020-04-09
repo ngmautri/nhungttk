@@ -217,6 +217,7 @@ class Constants
     const PROCURE_TRANSACTION_STATUS_CLEARED = 'cleared';
 
     const PROCURE_TRANSACTION_STATUS_CLOSED = 'closed';
+    
 
     const FORM_ACTION_ADD = 'ADD';
 
@@ -235,32 +236,12 @@ class Constants
     const FORM_ACTION_AP_FROM_GR = 'AP-GR';
 
     const FORM_ACTION_PO_FROM_QO = 'QO-PO';
+    
+    const FORM_ACTION_GR_FROM_PO = 'GR-PO';
 
     const AJAX_OK = '1';
 
     const AJAX_FAILED = '-1';
 
-    public static function v4()
-    {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', 
-
-            // 32 bits for "time_low"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), 
-
-            // 16 bits for "time_mid"
-            mt_rand(0, 0xffff), 
-
-            // 16 bits for "time_hi_and_version",
-            // four most significant bits holds version number 4
-            mt_rand(0, 0x0fff) | 0x4000, 
-
-            // 16 bits, 8 bits for "clk_seq_hi_res",
-            // 8 bits for "clk_seq_low",
-            // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand(0, 0x3fff) | 0x8000, 
-
-            // 48 bits for "node"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-    }
 }
 

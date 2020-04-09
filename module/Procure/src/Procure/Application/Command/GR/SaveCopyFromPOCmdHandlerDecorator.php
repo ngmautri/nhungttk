@@ -10,7 +10,7 @@ use Application\Application\Command\AbstractDoctrineCmd;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateFromPOCmdHandlerDecorator extends AbstractCommandHandlerDecorator
+class SaveCopyFromPOCmdHandlerDecorator extends AbstractCommandHandlerDecorator
 {
 
     /**

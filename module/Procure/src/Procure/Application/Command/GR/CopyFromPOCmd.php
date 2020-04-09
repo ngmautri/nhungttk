@@ -9,7 +9,7 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateFromPOCmd extends AbstractDoctrineCmd
+class CopyFromPOCmd extends AbstractDoctrineCmd
 {
 
     /**

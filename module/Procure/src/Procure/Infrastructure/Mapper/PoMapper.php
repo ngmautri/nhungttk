@@ -461,7 +461,7 @@ class PoMapper
         if ($entity->getIncoterm2() !== null) {
             $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
             $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
-            $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
+            $snapshot->incotermName = $entity->getIncoterm2()->getIncotermDescription();
         }
 
         // MAPPING DATE

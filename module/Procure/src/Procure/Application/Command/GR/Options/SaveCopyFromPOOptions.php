@@ -10,7 +10,7 @@ use Procure\Domain\Exception\Gr\GrCreateException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateFromPOOptions implements CommandOptions
+class CopyFromPOOptions implements CommandOptions
 {
 
     private $companyId;

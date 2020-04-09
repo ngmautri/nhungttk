@@ -4,7 +4,7 @@ namespace Procure\Application\Service\PO\Output;
 use Procure\Application\Service\Output\AbstractRowFormatter;
 use Procure\Application\Service\Output\AbstractSaveAsPdf;
 use Procure\Domain\GenericDoc;
-use Procure\Domain\AbstractRow;
+use Procure\Domain\PurchaseOrder\PORowSnapshot;
 
 /**
  *
@@ -61,7 +61,8 @@ class PoSaveAsPdf extends AbstractSaveAsPdf
 
         // Set Header
         $params = [
-            "docNumber" => $doc->getSysNumber()
+            "docNumber" => $doc->getSysNumber(),
+            "doc"=>$doc,
         ];
         $this->getBuilder()->buildHeader($params);
         
@@ -109,6 +110,7 @@ class PoSaveAsPdf extends AbstractSaveAsPdf
         $details.='</table>';
         
         $params=[
+            "doc" =>$doc,
             "details" =>$details,
         ];
         $this->getBuilder()->buildBody($params);

@@ -72,7 +72,7 @@ if (! $headerDTO == null) {
     $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/create-from-po?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/copy-from-po?source_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $ap_from_po_url = sprintf($this->baseUrl . "/finance/v-invoice/copy-from-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());

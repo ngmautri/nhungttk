@@ -2,6 +2,7 @@
 namespace Procure\Application\Service\PO\Output\Pdf;
 
 use Application\Application\Service\Document\Pdf\AbstractBuilder;
+use Procure\Domain\PurchaseOrder\PODoc;
 
 /**
  *
@@ -25,20 +26,20 @@ class PoPdfBuilder extends AbstractBuilder
             $detail = $params["details"];
         }
         
-        $docNumber = "";
-        if (isset($params["docNumber"])) {
-            $docNumber = $params["docNumber"];
+        /**
+         * 
+         * @var PODoc $doc ;
+         */
+        $doc = "";
+        if (isset($params["doc"])) {
+            $doc = $params["doc"];
         }
-
-        // create some HTML content
-        $tbl = <<<EOD
-<h3 style="text-align: center">Purchase Order</h3>
-<table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">
-<tr><td><img src="public/images/mascot.gif" border="0" height="41" width="41" /></td></tr>
-<tr style="text-align:left;"><td>Just a test <img src="public/images/mascot.gif" border="0" height="41" width="41" align="top" /></td></tr>
-</table>
-
-EOD;
+        
+        $detail1 = sprintf("%s.<br>", $doc->getVendorName());
+        $detail1 = $detail1.sprintf("Incoterm: %s %s.<br>", $doc->getIncotermCode(), $doc->getIncotermPlace());
+        
+        $pdf->writeHTML($detail1, true, false, false, false, '');
+        
 
         // output the HTML content
         $pdf->SetFont('helvetica', '', 10);
@@ -88,9 +89,9 @@ EOD;
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Nguyen Mau Tri - MLA ');
-        $pdf->SetTitle('Purchase Request ' . "");
-        $pdf->SetSubject('TCPDF Tutorial');
-        $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+        $pdf->SetTitle('Purchase Order ' . "");
+        $pdf->SetSubject('PO');
+        $pdf->SetKeywords('MLA, po, example, test, guide');
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

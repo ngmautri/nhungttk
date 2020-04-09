@@ -1,14 +1,15 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
-use Procure\Domain\RowSnapshot;
+
+use Procure\Domain\DocSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRSnapshot extends RowSnapshot
+class GRSnapshot extends DocSnapshot
 {
 
     public $reversalDoc;

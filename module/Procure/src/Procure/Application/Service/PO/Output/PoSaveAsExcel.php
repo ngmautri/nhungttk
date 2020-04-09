@@ -8,7 +8,7 @@ use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 
 /**
- *
+ * Director
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

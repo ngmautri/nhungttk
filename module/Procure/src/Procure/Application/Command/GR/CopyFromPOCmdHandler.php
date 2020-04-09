@@ -28,7 +28,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateFromPOCmdHandler extends AbstractCommandHandler
+class CopyFromPOCmdHandler extends AbstractCommandHandler
 {
 
     /**

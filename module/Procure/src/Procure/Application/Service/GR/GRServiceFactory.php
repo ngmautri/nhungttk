@@ -32,8 +32,8 @@ class GRServiceFactory implements FactoryInterface
         $queryRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository');
         $service->setQueryRepository($queryRepository);
 
-        $cmdRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository');
-        $service->setCmdRepository($cmdRepository);
+        //$cmdRepository = $container->get('Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository');
+        //$service->setCmdRepository($cmdRepository);
         
         return $service;
     }

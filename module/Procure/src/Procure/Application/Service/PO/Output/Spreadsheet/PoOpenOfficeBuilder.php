@@ -1,38 +1,23 @@
 <?php
-namespace Procure\Application\Service\Output;
+namespace Procure\Application\Service\PO\Output\Spreadsheet;
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Procure\Domain\GenericDoc;
+use Procure\Application\Service\Output\AbstractSpreadsheetBuilder;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsExcel implements SaveAsInterface
+class PoOpenOfficeBuilder extends AbstractSpreadsheetBuilder
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\SaveAsInterface::saveMultiplyRowsAs()
+     * @see \Procure\Application\Service\Output\SpreadsheetBuilderInterface::setHeader()
      */
-    public function saveMultiplyRowsAs($rows, AbstractRowFormatter $formatter)
-    {}
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\SaveAsInterface::saveDocAs()
-     */
-    public function saveDocAs(GenericDoc $doc, AbstractRowFormatter $formatter)
+    public function setHeader($params)
     {
-        
-    }
-
-    protected function createHeader(Spreadsheet $objPHPExcel)
-    {
-
         // $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
         /*
          * $drawing->setName('Logo');
@@ -44,26 +29,43 @@ class SaveAsExcel implements SaveAsInterface
         // $drawing->setWorksheet($objPHPExcel->getActiveSheet());
 
         // Set document properties
-        $objPHPExcel->getProperties()
+        $this->getPhpSpreadsheet()
+            ->getProperties()
             ->setCreator("Nguyen Mau Tri")
             ->setLastModifiedBy("Nguyen Mau Tri")
             ->setTitle("Office 2007 XLSX Test Document")
             ->setSubject("Office 2007 XLSX Test Document")
             ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
             ->setKeywords("office 2007 openxml php")
-            ->setCategory("Test result file");
+            ->setCategory("PO File");
     }
 
-    protected function createFooter(Spreadsheet $objPHPExcel)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Output\SpreadsheetBuilderInterface::setFooter()
+     */
+    public function setFooter($params)
     {
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-        $objPHPExcel->setActiveSheetIndex(0);
+        $docNumber = null;
+        if (isset($params["docNumber"])) {
+            $docNumber = $params["docNumber"];
+        }
 
-        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:U3");
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $this->getPhpSpreadsheet()->setActiveSheetIndex(0);
+
+        $this->getPhpSpreadsheet()
+            ->getActiveSheet()
+            ->setAutoFilter("A3:U3");
 
         // Redirect output to a client's web browser (Excel2007)
+
+        $filename_tmp = sprintf("po_%s.ods", $docNumber);
+        $filename = sprintf('Content-Disposition: attachment;filename="%s"', $filename_tmp);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . 'ap-report' . '.xlsx"');
+        header($filename);
+     
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -74,7 +76,7 @@ class SaveAsExcel implements SaveAsInterface
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header('Pragma: public'); // HTTP/1.0
 
-        $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($objPHPExcel, 'Xlsx');
+        $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->getPhpSpreadsheet(), 'Ods');
         $objWriter->save('php://output');
         exit();
     }

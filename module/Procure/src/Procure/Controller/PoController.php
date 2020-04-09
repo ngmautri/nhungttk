@@ -1444,6 +1444,56 @@ class PoController extends AbstractActionController
         $viewModel->setTemplate("procure/po/review-v1");
         return $viewModel;
     }
+    
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function saveAsAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('not_found');
+         * }
+         */
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $file_type = $this->params()->fromQuery('file_type');
+        
+        $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($id, $token, $file_type);
+        
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        
+        $viewModel = new ViewModel(array(
+            'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_SHOW,
+            'form_action' => "/procure/po/view",
+            'form_title' => $nmtPlugin->translate("Show PO"),
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin
+        ));
+        
+        $viewModel->setTemplate("procure/po/review-v1");
+        return $viewModel;
+    }
+    
 
     /**
      *

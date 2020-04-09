@@ -2,19 +2,17 @@
 namespace Procure\Application\Service\PO;
 
 use Application\Service\AbstractService;
-use Procure\Application\Service\PO\Output\PoRowInArray;
-use Procure\Application\Service\PO\Output\PoRowInExcel;
-use Procure\Application\Service\PO\Output\PoRowOutputStrategy;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Application\Service\Output\RowInArray;
-use Procure\Application\Service\Output\RowOutputStrategy;
+use Procure\Application\Service\Output\RowNumberFormatter;
+use Procure\Application\Service\Output\RowTextAndNumberFormatter;
+use Procure\Application\Service\Output\SaveAsArray;
 use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
-use Procure\Application\Service\Output\RowFormatter;
-use Procure\Application\Service\Output\SaveAsArray;
-use Procure\Application\Service\Output\RowNumberFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
+use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
+use Procure\Application\Service\PO\Output\Spreadsheet\PoExcelBuilder;
+use Procure\Application\Service\PO\Output\Spreadsheet\PoOpenOfficeBuilder;
+use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  * PO Service.
@@ -83,15 +81,21 @@ class POService extends AbstractService
 
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new PoRowFormatter(new RowFormatter());
+                $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new SaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new PoExcelBuilder();
                 $formatter = new PoRowFormatter(new RowNumberFormatter());
-                $factory = new PoSaveAsExcel();
+                $factory = new PoSaveAsExcel($builder);
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new PoOpenOfficeBuilder();                
+                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $factory = new PoSaveAsOpenOffice($builder);
                 break;
             default:
-                $formatter = new PoRowFormatter(new RowFormatter());
+                $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new SaveAsArray();
                 break;
         }

@@ -2,20 +2,16 @@
 namespace Procure\Application\Reporting\PO;
 
 use Application\Service\AbstractService;
-use Procure\Application\Reporting\PO\Output\PoRowStatusInExcel;
-use Procure\Application\Reporting\PO\Output\PoRowStatusInOpenOffice;
-use Procure\Application\Service\Output\RowInArray;
-use Procure\Application\Service\Output\RowOutputStrategy;
-use Procure\Application\Service\PO\Output\PoRowInExcel;
-use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
-use Procure\Application\Service\PO\Output\PoRowInArray;
+use Procure\Application\Service\Output\RowFormatter;
+use Procure\Application\Service\Output\RowNumberFormatter;
+use Procure\Application\Service\Output\SaveAsArray;
 use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
-use Procure\Application\Service\Output\RowNumberFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
-use Procure\Application\Service\Output\SaveAsArray;
-use Procure\Application\Service\Output\RowFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
+use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
+use Procure\Application\Service\PO\Output\Spreadsheet\PoReportExcelBuilder;
+use Procure\Application\Service\PO\Output\Spreadsheet\PoReportOpenOfficeBuilder;
 
 /**
  * PR Row Service.
@@ -40,40 +36,40 @@ class PoReporter extends AbstractService
 
     public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
     {
-        
         $results = $this->getListRespository()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, $limit, $offset);
-        
-          
+
         if ($results == null) {
             return null;
         }
 
-        //var_dump($results);
-        
+        // var_dump($results);
+
         $factory = null;
         $formatter = null;
-        
+
         switch ($outputStrategy) {
-            case RowOutputStrategy::OUTPUT_IN_ARRAY:
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new PoRowFormatter(new RowFormatter());
                 $factory = new SaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new PoReportExcelBuilder();
                 $formatter = new PoRowFormatter(new RowNumberFormatter());
-                $factory = new PoSaveAsExcel();
+                $factory = new PoSaveAsExcel($builder);
                 break;
-            
+
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new PoReportOpenOfficeBuilder();
                 $formatter = new PoRowFormatter(new RowNumberFormatter());
-                $factory = new PoSaveAsOpenOffice();                
-                 break;
+                $factory = new PoSaveAsOpenOffice($builder);
+                break;
             default:
                 $formatter = new PoRowFormatter(new RowFormatter());
                 $factory = new SaveAsArray();
                 break;
         }
 
-        return $factory->saveMultiplyRowsAs($results,$formatter);
+        return $factory->saveMultiplyRowsAs($results, $formatter);
     }
 
     

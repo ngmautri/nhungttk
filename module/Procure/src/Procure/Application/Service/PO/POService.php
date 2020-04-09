@@ -13,6 +13,8 @@ use Procure\Application\Service\PO\Output\Spreadsheet\PoExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoOpenOfficeBuilder;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
+use Procure\Application\Service\PO\Output\PoSaveAsPdf;
 
 /**
  * PO Service.
@@ -90,10 +92,17 @@ class POService extends AbstractService
                 $factory = new PoSaveAsExcel($builder);
                 break;
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
-                $builder = new PoOpenOfficeBuilder();                
+                $builder = new PoOpenOfficeBuilder();
                 $formatter = new PoRowFormatter(new RowNumberFormatter());
                 $factory = new PoSaveAsOpenOffice($builder);
                 break;
+
+            case SaveAsSupportedType::OUTPUT_IN_PDF:
+                $builder = new PoPdfBuilder();
+                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $factory = new PoSaveAsPdf($builder);
+                break;
+
             default:
                 $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
                 $factory = new SaveAsArray();

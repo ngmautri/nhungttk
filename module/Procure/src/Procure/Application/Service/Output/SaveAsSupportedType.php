@@ -16,4 +16,6 @@ class SaveAsSupportedType
     const OUTPUT_IN_HMTL_TABLE = "3";
 
     const OUTPUT_IN_OPEN_OFFICE = "4";
+    
+    const OUTPUT_IN_PDF = "5";
 }

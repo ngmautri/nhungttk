@@ -1,51 +1,38 @@
 <?php
 namespace Procure\Application\Service\PO\Output\Spreadsheet;
 
-use Procure\Application\Service\Output\AbstractSpreadsheetBuilder;
+use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoExcelBuilder extends AbstractSpreadsheetBuilder
+class PoExcelBuilder extends AbstractBuilder
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\SpreadsheetBuilderInterface::setHeader()
+     * @see \Application\Application\Service\Document\DocumentBuilderInterface::buildBody()
      */
-    public function setHeader($params)
-    {
-         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-        
-          $drawing->setName('Logo');
-          $drawing->setDescription('Logo');
-          $drawing->setPath(ROOT . '/public/images/mascot.gif');
-          $drawing->setHeight(80);
-         
-
-          $drawing->setWorksheet($this->getPhpSpreadsheet()->getActiveSheet());
-
-        // Set document properties
-        $this->getPhpSpreadsheet()
-            ->getProperties()
-            ->setCreator("Nguyen Mau Tri")
-            ->setLastModifiedBy("Nguyen Mau Tri")
-            ->setTitle("Office 2007 XLSX Test Document")
-            ->setSubject("Office 2007 XLSX Test Document")
-            ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
-            ->setKeywords("office 2007 openxml php")
-            ->setCategory("PO File");
-    }
+    public function buildBody($params = null)
+    {}
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\SpreadsheetBuilderInterface::setFooter()
+     * @see \Application\Application\Service\Document\DocumentBuilderInterface::getDocument()
      */
-    public function setFooter($params)
+    public function getDocument()
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Application\Service\Document\DocumentBuilderInterface::buildFooter()
+     */
+    public function buildFooter($params = null)
     {
         $docNumber = null;
         if (isset($params["docNumber"])) {
@@ -65,7 +52,7 @@ class PoExcelBuilder extends AbstractSpreadsheetBuilder
         $filename = sprintf('Content-Disposition: attachment;filename="%s"', $filename_tmp);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header($filename);
-     
+
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -79,5 +66,34 @@ class PoExcelBuilder extends AbstractSpreadsheetBuilder
         $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->getPhpSpreadsheet(), 'Xlsx');
         $objWriter->save('php://output');
         exit();
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Application\Service\Document\DocumentBuilderInterface::buildHeader()
+     */
+    public function buildHeader($params = null)
+    {
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo');
+        $drawing->setPath(ROOT . '/public/images/mascot.gif');
+        $drawing->setHeight(80);
+
+        $drawing->setWorksheet($this->getPhpSpreadsheet()
+            ->getActiveSheet());
+
+        // Set document properties
+        $this->getPhpSpreadsheet()
+            ->getProperties()
+            ->setCreator("Nguyen Mau Tri")
+            ->setLastModifiedBy("Nguyen Mau Tri")
+            ->setTitle("Office 2007 XLSX Test Document")
+            ->setSubject("Office 2007 XLSX Test Document")
+            ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+            ->setKeywords("office 2007 openxml php")
+            ->setCategory("PO File");
     }
 }

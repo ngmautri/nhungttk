@@ -22,7 +22,7 @@ class PoSaveAsExcel extends AbstractSaveAsSpreadsheet
      */
     public function saveMultiplyRowsAs($rows, AbstractRowFormatter $formatter)
     {
-        if ($this->getSpreadSheetBuilder() == null) {
+        if ($this->getBuilder() == null) {
             return null;
         }
 
@@ -31,12 +31,11 @@ class PoSaveAsExcel extends AbstractSaveAsSpreadsheet
         }
 
         // created header
-        $params=[
-        ];
-        
-        $this->getSpreadSheetBuilder()->setHeader($params);
-        $objPHPExcel = $this->getSpreadSheetBuilder()->getPhpSpreadsheet();
-        
+        $params = [];
+
+        $this->getBuilder()->buildHeader($params);
+        $objPHPExcel = $this->getBuilder()->getPhpSpreadsheet();
+
         $header = 3;
         $i = 0;
 
@@ -116,24 +115,22 @@ class PoSaveAsExcel extends AbstractSaveAsSpreadsheet
         }
 
         // created footer and export
-        $params=[
-        ];
-        
-        $this->getSpreadSheetBuilder()->setFooter($params);
+        $params = [];
+        $this->getBuilder()->buildFooter($params);
     }
 
     /**
+     * Build in Builder pattern
      *
      * {@inheritdoc}
      * @see \Procure\Application\Service\Output\SaveAsInterface::saveDocAs()
      */
     public function saveDocAs(GenericDoc $doc, AbstractRowFormatter $formatter)
     {
-        
-        if ($this->getSpreadSheetBuilder() == null) {
+        if ($this->getBuilder() == null) {
             return null;
         }
-        
+
         if (! $doc instanceof GenericDoc) {
             throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
         }
@@ -141,16 +138,16 @@ class PoSaveAsExcel extends AbstractSaveAsSpreadsheet
         if (count($doc->getDocRows()) == null) {
             return;
         }
-        
+
         // Set Header
-        
-      
-        $params=[
-            "docNumber" =>$doc->getSysNumber()
+
+        $params = [
+            "docNumber" => $doc->getSysNumber()
         ];
-        $this->getSpreadSheetBuilder()->setHeader($params);
-        $objPHPExcel = $this->getSpreadSheetBuilder()->getPhpSpreadsheet();
-        
+        $this->getBuilder()->buildHeader($params);
+
+        $objPHPExcel = $this->getBuilder()->getPhpSpreadsheet();
+
         $header = 7;
         $i = 0;
 
@@ -232,7 +229,7 @@ class PoSaveAsExcel extends AbstractSaveAsSpreadsheet
             "docNumber" =>$doc->getSysNumber()
         ];
         // created footer and export
-        $this->getSpreadSheetBuilder()->setFooter($params);
+        $this->getBuilder()->buildFooter($params);        
     }
    
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\Service\Output;
 
-use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
+use Application\Application\Service\Document\Pdf\AbstractBuilder;
 
 /**
  * Director in Builder Pattern.
@@ -9,7 +9,7 @@ use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractSaveAsSpreadsheet implements SaveAsInterface
+abstract class AbstractSaveAsPdf implements SaveAsInterface
 {
 
     protected $builder;
@@ -22,9 +22,10 @@ abstract class AbstractSaveAsSpreadsheet implements SaveAsInterface
     {
         $this->builder = $builder;
     }
-    
+
     /**
-     * @return \Application\Application\Service\Document\Spreadsheet\AbstractBuilder
+     *
+     * @return \Application\Application\Service\Document\Pdf\AbstractBuilder
      */
     public function getBuilder()
     {

@@ -4,6 +4,7 @@ namespace Procure\Application\Service\Output;
 use Procure\Domain\GenericDoc;
 
 /**
+ * Director in builder pattern
  * SaveAs Interface
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com

@@ -1,25 +1,24 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Notification;
+use Application\Domain\Shared\DTOFactory;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcurePo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Procure\Application\Command\GR\SaveCopyFromPOCmd;
+use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
+use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecorator;
+use Procure\Application\Command\GR\Options\CopyFromPOOptions;
+use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
+use Procure\Application\DTO\Gr\GrDTO;
+use Procure\Application\Service\GR\GRService;
+use Procure\Domain\Shared\Constants;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Procure\Domain\Shared\Constants;
-use Application\Domain\Shared\DTOFactory;
-use Application\Notification;
-use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Service\GR\GRServiceFactory;
-use Procure\Application\Service\GR\GRService;
-use Procure\Application\Command\GR\Options\CopyFromPOOptions;
-use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
-use Procure\Application\Command\GR\SaveCopyFromPOCmd;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecorator;
 
 /**
  * Good Receipt Controller
@@ -114,27 +113,28 @@ class GrController extends AbstractActionController
 
             $userId = $u->getId();
             $companyId = $u->getCompany()->getId();
-            $entity_id = $data['entity_id'];
-            $entity_token = $data['entity_token'];
+            $source_id = $data['source_id'];
+            $source_token = $data['source_token'];
             $version = $data['version'];
 
             $dto = DTOFactory::createDTOFromArray($data, new GrDTO());
+            $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
 
-            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            $rootEntity = $this->getGoodsReceiptService()->createFromPO($source_id, $source_token, $options);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $rootEntity = $this->getGoodsReceiptService()->createFromPO($source_id, $source_token, $options);
             $options = new SaveCopyFromPOOptions($companyId, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
             $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecorator($cmdHandler);
-            $cmd = new SaveCopyFromPOCmd($this->getDoctrineEM(), $options, $cmdHandlerDecorator);
+            $cmd = new SaveCopyFromPOCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
+            $notification = new Notification();
             $notification->addError($e->getMessage());
         }
 
@@ -142,15 +142,15 @@ class GrController extends AbstractActionController
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'rootEntity' => $rootEntity,
-                'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'entity_id' => null,
+                'entity_token' => null,
+                'source_id' => $source_id,
+                'source_token' => $source_token,
+                'dto' => $dto,
+                'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'version' => $version,
                 'action' => $action
             ));
 
@@ -1470,24 +1470,22 @@ class GrController extends AbstractActionController
     {
         $this->grService = $grService;
     }
-    
-   /**
-    * 
-    * @return \Procure\Application\Service\GR\GRService
-    */
+
+    /**
+     *
+     * @return \Procure\Application\Service\GR\GRService
+     */
     public function getGoodsReceiptService()
     {
         return $this->goodsReceiptService;
     }
-    
- /**
-  * 
-  * @param GRService $goodsReceiptService
-  */
+
+    /**
+     *
+     * @param GRService $goodsReceiptService
+     */
     public function setGoodsReceiptService(GRService $goodsReceiptService)
     {
         $this->goodsReceiptService = $goodsReceiptService;
     }
-    
-    
 }

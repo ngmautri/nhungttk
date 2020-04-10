@@ -1,21 +1,19 @@
 <?php
 namespace ProcureTest\GR\Command;
 
+use Application\Entity\NmtProcureGrRow;
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Command\GR\Options\CopyFromPOOptions;
-use Procure\Application\DTO\Po\PoDTO;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\GoodsReceipt\GRRowSnapshot;
+use Procure\Infrastructure\Mapper\GrMapper;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Command\GR\Options\CopyFromPOOptions;
 use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
-use Procure\Application\Command\GR\SaveCopyFromPOCmd;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecorator;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecoratorTest;
+use Procure\Domain\GoodsReceipt\GRRow;
 
-class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
+class RepTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -33,35 +31,41 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\GR\GRService');
-
+            
+            $rowEntity = new NmtProcureGrRow();
+            $snapshot = new GRRowSnapshot();
+            $snapshot->token = "sdfdfdsf";
+            
+            
             $source_id = 344;
             $source_token = "544fe921-8fd7-45dd-bc57-c8a98f5ee358";
             $version = 1;
             $userId = 39;
             $dto = new PoDTO();
-
+            
             $options = new CopyFromPOOptions(1, $userId, __METHOD__);
-
+            
             /**
              *
              * @var GRDoc $rootEntity ;
              */
             $rootEntity = $sv->createFromPO($source_id, $source_token, $options);
-            //var_dump($rootEntity);
-         
-            $dto = new GrDTO();
-            $dto->grDate = "2020-04-05";
-            $dto->warehouse = 5;            
-
-            $options = new SaveCopyFromPOOptions(1, $userId, __METHOD__, $rootEntity);
-            $cmdHandler = new SaveCopyFromPOCmdHandler();
-            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecorator($cmdHandler);
-            $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
-            $cmd->execute();
-
+            
+            $rows = $rootEntity->getDocRows();
+            
+            foreach ($rows as $row){
+                
+                /**
+                 * @var GRRow $row ; 
+                 */
+                $rowEntity = new NmtProcureGrRow();
+                $snapshot = $row->makeSnapshot();
+                GrMapper::mapRowSnapshotEntity($doctrineEM, $snapshot, $rowEntity);
+                var_dump($rowEntity->getToken());                   
+            }
                         
-        } catch (\Exception $e) {
-            echo $e->getTraceAsString();
+        } catch (InvalidArgumentException $e) {
+            var_dump($e->getMessage());
         }
     }
 }

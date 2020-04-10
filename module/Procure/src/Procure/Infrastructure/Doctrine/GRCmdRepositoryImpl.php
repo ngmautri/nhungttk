@@ -71,7 +71,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
         } else {
 
             $entity = new \Application\Entity\NmtProcureGrRow();
-            $entity->setPo($rootEntityDoctrine);
+            $entity->setGr($rootEntityDoctrine);
         }
 
         $entity = GrMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
@@ -158,23 +158,98 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
         try {
 
             if ($rootEntity == null) {
-                throw new InvalidArgumentException("GenericGR not retrieved.");
+                throw new InvalidArgumentException("GenericPO not retrieved.");
             }
 
-            $snapShot = $this->storeHeader($rootEntity, $generateSysNumber, $isPosting);
+            /**
+             *
+             * @var \Procure\Domain\GoodsReceipt\GRSnapshot $snapshot ;
+             * @var \Application\Entity\NmtProcureGr $entity ;
+             *     
+             */
 
-           /*  $rows = $rootEntity->getDocRows();
+            $snapshot = $rootEntity->makeSnapshot();
+            if ($snapshot == null) {
+                throw new InvalidArgumentException("Root Snapshot not created!");
+            }
+
+            if ($rootEntity->getId() > 0) {
+
+                $entity = $this->getDoctrineEM()->find("\Application\Entity\NmtProcureGr", $rootEntity->getId());
+                if ($entity == null) {
+                    throw new InvalidArgumentException("Entity not found.");
+                }
+
+                // just in case, it is not updated.
+                if ($entity->getToken() == null) {
+                    $entity->setToken($entity->getUuid());
+                }
+            } else {
+                $entity = new \Application\Entity\NmtProcureGr();
+            }
+
+            // Populate with data
+            $entity = GrMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
+
+            $rows = $rootEntity->getDocRows();
 
             if (count($rows) == null) {
                 return;
             }
 
-            foreach ($rows as $row) {
-                $this->storeRow($rootEntity, $row, $isPosting);
-            } */
+            foreach ($rows as $localEntity) {
 
-            return $snapShot;
+                // create snapshot
+                $rowSnapshot = $localEntity->makeSnapshot();
+
+                if ($rowSnapshot == null) {
+                    throw new InvalidArgumentException("GR row snapshot can not be created");
+                }
+
+                /**
+                 *
+                 * @var \Application\Entity\NmtProcureGrRow $rowEntity ;
+                 */
+                if ($localEntity->getId() > 0) {
+
+                    $rowEntity = $this->doctrineEM->find("\Application\Entity\NmtProcureGrRow", $localEntity->getId());
+
+                    if ($rowEntity == null) {
+                        throw new InvalidArgumentException("Local Entity can't be retrieved.");
+                    }
+
+                    if ($rowEntity->getGr() == null) {
+                        throw new InvalidArgumentException("Root entity is not valid");
+                    }
+
+                    if (! $rowEntity->getGr()->getId() == $rootEntity->getId()) {
+                        throw new InvalidArgumentException("PO row is corrupted");
+                    }
+                } else {
+
+                    $rowEntity = new \Application\Entity\NmtProcureGrRow();
+                    $rowEntity->setGr($entity);
+                }
+
+                $rowEntity = GrMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $rowSnapshot, $rowEntity);
+
+                $this->doctrineEM->persist($rowEntity);
+            }
+            
+           $entity->setRevisionNo($entity->getRevisionNo() + 1);
+
+            $this->getDoctrineEM()->persist($entity);
+
+            $this->getDoctrineEM()->flush();
+
+            // Update ID, Revision, Doc Version Numbner
+            $snapshot->id = $entity->getId();
+            $snapshot->revisionNo = $entity->getRevisionNo();
+            $snapshot->docVersion = $entity->getDocVersion();
+            return $snapshot;
+            
         } catch (\Exception $e) {
+            echo $e->getMessage();
             throw new GrCreateException($e->getMessage());
         }
     }

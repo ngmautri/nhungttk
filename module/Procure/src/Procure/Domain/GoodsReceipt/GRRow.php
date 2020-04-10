@@ -8,6 +8,8 @@ use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
 
 /**
  * Goods Receipt Row
@@ -43,6 +45,15 @@ class GRRow extends GenericRow
      *
      * @return NULL|object
      */
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new GRRowSnapshot());
+    }
+
+    /**
+     *
+     * @return NULL|object
+     */
     public function makeDetailsDTO()
     {
         $dto = new GrRowDetailsDTO();
@@ -56,10 +67,13 @@ class GRRow extends GenericRow
      * @throws GrInvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRRow
      */
-    public static function createFromPoRow(PORow $sourceObj)
+    public static function createFromPoRow(PORow $sourceObj, CommandOptions $options)
     {
         if (! $sourceObj instanceof PORow) {
             throw new GrInvalidArgumentException("PO document is required!");
+        }
+        if ($options == null) {
+            throw new GrInvalidArgumentException("No Options is found");
         }
 
         /**
@@ -68,7 +82,7 @@ class GRRow extends GenericRow
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
-        
+
         $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_PO); // important.
         $instance->setPoRow($sourceObj->getId());
         $instance->setIsDraft(1);
@@ -76,7 +90,8 @@ class GRRow extends GenericRow
         $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
-
+        $instance->setCreatedBy($options->getUserId());
+        
         return $instance;
     }
 

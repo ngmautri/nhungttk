@@ -67,7 +67,7 @@ class GRDoc extends GenericGR
         $rows = $sourceObj->getDocRows();
 
         if ($rows == null) {
-            throw new GrInvalidOperationException("PO Entity  is empty!");
+            throw new GrInvalidOperationException("PO Entity is empty!");
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
@@ -113,7 +113,7 @@ class GRDoc extends GenericGR
                 continue;
             }
 
-            $grRow = GrRow::createFromPoRow($r);
+            $grRow = GrRow::createFromPoRow($r, $options);
             // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
 
@@ -140,6 +140,10 @@ class GRDoc extends GenericGR
             throw new GrInvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         }
 
+        if ($this->getDocRows() == null) {
+            throw new GrInvalidOperationException(sprintf("Documment is empty! %s", $this->getId()));
+        }
+        
         if (! $this->getDocType() == Constants::PROCURE_DOC_TYPE_GR_FROM_PO) {
             throw new GrInvalidOperationException(sprintf("Doctype is not vadid! %s", $this->getDocType()));
         }
@@ -179,14 +183,10 @@ class GRDoc extends GenericGR
         }
 
         $this->clearEvents();
-        echo "Test";
-        
-        
         $rootSnapshot = $postingService->getCmdRepository()->store($this);
         
-        echo "Test end";
-        var_dump($rootSnapshot);
-      }
+        return $rootSnapshot;
+       }
 
     /**
      *

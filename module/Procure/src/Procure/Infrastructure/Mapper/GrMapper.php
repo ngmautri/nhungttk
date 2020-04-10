@@ -8,6 +8,7 @@ use Procure\Domain\GoodsReceipt\GRDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -217,7 +218,7 @@ class GrMapper
     public static function mapRowSnapshotEntity(EntityManager $doctrineEM, GRRowSnapshot $snapshot, NmtProcureGrRow $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
-            return null;
+             return null;
         }
 
         // $entity->setId($snapshot->id);
@@ -361,9 +362,9 @@ class GrMapper
         if ($snapshot->prRow > 0) {
             /**
              *
-             * @var \Application\Entity\NmtProcureGrRow $obj ;
+             * @var \Application\Entity\NmtProcurePrRow $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->find($snapshot->prRow);
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($snapshot->prRow);
             $entity->setPrRow($obj);
         }
 
@@ -388,13 +389,13 @@ class GrMapper
         }
 
         // $entity->setLastchangedBy($snapshot->lastchangedBy);
-        if ($snapshot->lastchangedBy > 0) {
+        if ($snapshot->lastchangeBy > 0) {
             /**
              *
              * @var \Application\Entity\MlaUsers $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastchangedBy);
-            $entity->setLastchangedBy($obj);
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastchangeBy);
+            $entity->setLastchangeBy($obj);
         }
 
         // $entity->setItem($snapshot->item);
@@ -416,6 +417,8 @@ class GrMapper
             $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($snapshot->poRow);
             $entity->setPoRow($obj);
         }
+        
+        return $entity;
     }
 
     /**

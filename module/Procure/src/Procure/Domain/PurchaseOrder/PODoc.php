@@ -13,11 +13,11 @@ use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoPostingException;
 use Procure\Domain\Exception\PoUpdateException;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey;
 
 /**
@@ -260,6 +260,16 @@ class PODoc extends GenericPO
     }
 
     /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeSnapshot()
+     */
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
+    }
+
+    /**
      * This should be only call when constructing object from storage.
      *
      * @param PODetailsSnapshot $snapshot
@@ -340,9 +350,4 @@ class PODoc extends GenericPO
 
     protected function raiseEvent()
     {}
-
-   
-
-  
-  
 }

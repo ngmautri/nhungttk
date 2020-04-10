@@ -1,10 +1,15 @@
 <?php
 namespace ProcureTest\PO;
 
+use Application\Notification;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
+use Procure\Application\Command\PO\AddRowCmd;
+use Procure\Application\Command\PO\AddRowCmdHandler;
+use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Service\FXService;
 use Procure\Application\Service\PO\POService;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -13,13 +18,6 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\Service\POSpecService;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\Command\PO\CreateHeaderCmd;
-use Procure\Application\Command\PO\CreateHeaderCmdHandler;
-use Application\Domain\Shared\DTOFactory;
-use Procure\Application\DTO\Po\PoDTO;
-use Application\Notification;
-use Procure\Application\Command\PO\AddRowCmd;
-use Procure\Application\Command\PO\AddRowCmdHandler;
 
 class CreateeHeaderCmdTest extends PHPUnit_Framework_TestCase
 {

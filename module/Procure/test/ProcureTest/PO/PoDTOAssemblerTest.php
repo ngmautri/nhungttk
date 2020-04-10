@@ -20,19 +20,18 @@ class PoDTOAssemblerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        // echo $root;
         require ($root . '/Bootstrap.php');
     }
 
     public function testOther()
     {
         try {
-            
-            //var_dump(Inflector::singularize('cakes'));
+
+            // var_dump(Inflector::singularize('cakes'));
 
             PoDTOAssembler::createDTOProperities();
-            
-           } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

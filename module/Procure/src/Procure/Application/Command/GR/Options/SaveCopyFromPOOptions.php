@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Command\GR\Options;
 
-use Procure\Domain\Exception\PoCreateException;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Exception\Gr\GrCreateException;
 
@@ -10,7 +9,7 @@ use Procure\Domain\Exception\Gr\GrCreateException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CopyFromPOOptions implements CommandOptions
+class SaveCopyFromPOOptions implements CommandOptions
 {
 
     private $companyId;
@@ -23,14 +22,24 @@ class CopyFromPOOptions implements CommandOptions
 
     private $triggeredOn;
     
+    private $rootEntity;
     
+    
+    /**
+     * @return mixed
+     */
+    public function getRootEntity()
+    {
+        return $this->rootEntity;
+    }
+
     /**
      *
      * @param int $companyId
      * @param int $userId
      * @param string $triggeredBy
      */
-    public function __construct($companyId, $userId, $triggeredBy)
+    public function __construct($companyId, $userId, $triggeredBy, $rootEntity)
     {
         if ($companyId == null) {
             throw new GrCreateException(sprintf("Company ID not given! %s", $companyId));
@@ -43,10 +52,15 @@ class CopyFromPOOptions implements CommandOptions
         if ($triggeredBy == null || $triggeredBy == "") {
             throw new GrCreateException(sprintf("Trigger not given! %s", $userId));
         }
+        
+        if ($rootEntity == null) {
+            throw new GrCreateException(sprintf("Root entity not given! %s", $userId));
+        }
 
         $this->companyId = $companyId;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
+        $this->rootEntity = $rootEntity;
     }
 
     /**

@@ -68,6 +68,8 @@ class GRRow extends GenericRow
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
+        
+        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_PO); // important.
         $instance->setPoRow($sourceObj->getId());
         $instance->setIsDraft(1);
         $instance->setIsPosted(0);

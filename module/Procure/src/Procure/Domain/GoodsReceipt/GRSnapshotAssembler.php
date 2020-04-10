@@ -1,10 +1,10 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
-use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Domain\GenericDoc;
 use Procure\Application\DTO\Gr\GrDTOAssembler;
+use Procure\Application\DTO\Po\PoDTO;
+use Procure\Domain\GenericDoc;
 
 /**
  *

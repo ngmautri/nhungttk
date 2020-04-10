@@ -1228,9 +1228,11 @@ class PoController extends AbstractActionController
             return $viewModel;
         }
 
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
-
+        
+        //$this->flashMessenger()->addMessage($notification->successMessage(false));
+        $this->flashMessenger()->addMessage($redirectUrl);
+      
         return $this->redirect()->toUrl($redirectUrl);
     }
 

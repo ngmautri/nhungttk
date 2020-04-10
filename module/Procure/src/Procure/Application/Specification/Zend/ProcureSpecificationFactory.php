@@ -3,6 +3,7 @@ namespace Procure\Application\Specification\Zend;
 
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\Shared\Specification\AbstractSpecificationFactory;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -23,6 +24,9 @@ class ProcureSpecificationFactory extends AbstractSpecificationFactory
      */
     public function __construct(EntityManager $doctrineEM)
     {
+        if (!$doctrineEM instanceof EntityManager){
+            throw new InvalidArgumentException(sprintf("Entity Doctrine manager not found! %s", __METHOD__));
+        }
         $this->doctrineEM = $doctrineEM;
     }
     

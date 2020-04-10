@@ -16,6 +16,10 @@ use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Service\GR\GRServiceFactory;
 use Procure\Application\Service\GR\GRService;
 use Procure\Application\Command\GR\Options\CopyFromPOOptions;
+use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
+use Procure\Application\Command\GR\SaveCopyFromPOCmd;
+use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
+use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecorator;
 
 /**
  * Good Receipt Controller
@@ -65,24 +69,24 @@ class GrController extends AbstractActionController
             $source_token = $this->params()->fromQuery('source_token');
 
             $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
-            $gr = $this->getGoodsReceiptService()->createFromPO($source_id, $source_token, $options);
+            $rootEntity = $this->getGoodsReceiptService()->createFromPO($source_id, $source_token, $options);
 
             // echo memory_get_usage();
             // var_dump($po->makeDTOForGrid());
             // echo memory_get_usage();
 
-            if ($gr == null) {
+            if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $dto = $gr->makeDetailsDTO();
+            $dto = $rootEntity->makeDetailsDTO();
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'entity_token' => null,
-                
+
                 'source_id' => $source_id,
                 'source_token' => $source_token,
                 'dto' => $dto,
@@ -96,6 +100,70 @@ class GrController extends AbstractActionController
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
+
+        // POSTING
+        // ===============================
+
+        try {
+            $data = $prg;
+
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $userId = $u->getId();
+            $companyId = $u->getCompany()->getId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $dto = DTOFactory::createDTOFromArray($data, new GrDTO());
+
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $rootEntity = $this->getGoodsReceiptService()->createFromPO($source_id, $source_token, $options);
+            $options = new SaveCopyFromPOOptions($companyId, $userId, __METHOD__, $rootEntity);
+            $cmdHandler = new SaveCopyFromPOCmdHandler();
+            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecorator($cmdHandler);
+            $cmd = new SaveCopyFromPOCmd($this->getDoctrineEM(), $options, $cmdHandlerDecorator);
+            $cmd->execute();
+
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $version,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = sprintf("/procure/gr/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+
+        // $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $this->flashMessenger()->addMessage($redirectUrl);
+
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**

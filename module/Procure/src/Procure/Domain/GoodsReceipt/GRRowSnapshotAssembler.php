@@ -3,8 +3,6 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericRow;
-use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\PurchaseOrder\PORowSnapshot;
 
 /**
  *

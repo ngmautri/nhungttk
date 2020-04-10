@@ -5,7 +5,7 @@ use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 
 /**
- * Transaction Domain Service
+ * 
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

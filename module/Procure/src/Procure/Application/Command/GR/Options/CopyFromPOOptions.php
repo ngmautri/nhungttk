@@ -12,8 +12,7 @@ use Procure\Domain\Exception\Gr\GrCreateException;
 class CopyFromPOOptions implements CommandOptions
 {
 
-    private $companyId;
-
+  
     private $userId;
 
     private $version;
@@ -21,7 +20,7 @@ class CopyFromPOOptions implements CommandOptions
     private $triggeredBy;
 
     private $triggeredOn;
-    
+     
     
     /**
      *
@@ -42,11 +41,11 @@ class CopyFromPOOptions implements CommandOptions
         if ($triggeredBy == null || $triggeredBy == "") {
             throw new GrCreateException(sprintf("Trigger not given! %s", $userId));
         }
-
+  
         $this->companyId = $companyId;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
-    }
+     }
 
     /**
      *

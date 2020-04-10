@@ -4,6 +4,7 @@ namespace Application\Application\Specification\Zend;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Doctrine\ORM\EntityManager;
 use User\Infrastructure\Persistence\DoctrineUserRepository;
+use Application\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -24,6 +25,9 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
      */
     public function __construct(EntityManager $doctrineEM)
     {
+        if (!$doctrineEM instanceof EntityManager) {
+            throw new InvalidArgumentException(sprintf("Entity Doctrine manager not found! %s", __METHOD__));
+        }
         $this->doctrineEM = $doctrineEM;
     }
 

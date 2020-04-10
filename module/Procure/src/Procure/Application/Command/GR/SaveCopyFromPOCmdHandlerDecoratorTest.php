@@ -1,16 +1,16 @@
 <?php
-namespace Procure\Application\Command\PO;
+namespace Procure\Application\Command\GR;
 
-use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Domain\Shared\Command\AbstractCommandHandlerDecorator;
 use Application\Domain\Shared\Command\CommandInterface;
+use Application\Application\Command\AbstractDoctrineCmd;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PostCmdHandlerDecorator extends AbstractCommandHandlerDecorator
+class SaveCopyFromPOCmdHandlerDecoratorTest extends AbstractCommandHandlerDecorator
 {
 
     /**
@@ -30,11 +30,9 @@ class PostCmdHandlerDecorator extends AbstractCommandHandlerDecorator
 
         try {
 
-            //throw new \Exception(sprintf("Testing only %s...", "haha"));
-            
             $this->handler->run($cmd);
 
-            $cmd->getDoctrineEM()->commit(); // now commit
+            //$cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
 
             $cmd->getDto()->addError($e->getMessage());
@@ -44,5 +42,3 @@ class PostCmdHandlerDecorator extends AbstractCommandHandlerDecorator
         }
     }
 }
-
- 

@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
-use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
@@ -20,6 +19,7 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
@@ -41,6 +41,16 @@ class GRDoc extends GenericGR
 
     private function __construct()
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeSnapshot()
+     */
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new GRSnapshot());
+    }
 
     /**
      *
@@ -77,12 +87,14 @@ class GRDoc extends GenericGR
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
+
+        // overwrite.
+        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_PO); // important.
         $instance->setIsDraft(1);
         $instance->setIsPosted(0);
         $instance->setDocVersion(0);
         $instance->setRevisionNo(0);
         $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
-        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR);
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
         $instance->setCreatedBy($options->getUserId());
@@ -108,6 +120,65 @@ class GRDoc extends GenericGR
             $instance->validateRow($grRow, $rowValidators);
         }
         return $instance;
+    }
+
+    /**
+     *
+     * @param CommandOptions $options
+     * @param GRSnapshot $snapshot
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param GrPostingService $postingService
+     * @throws GrInvalidOperationException
+     * @throws GrInvalidArgumentException
+     * @throws GrPostingException
+     */
+    public function saveFromPO(GRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
+    {
+        if (! $this->getDocStatus() == GRDocStatus::DOC_STATUS_DRAFT) {
+            throw new GrInvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
+        }
+
+        if (! $this->getDocType() == Constants::PROCURE_DOC_TYPE_GR_FROM_PO) {
+            throw new GrInvalidOperationException(sprintf("Doctype is not vadid! %s", $this->getDocType()));
+        }
+
+        if ($headerValidators == null) {
+            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($rowValidators == null) {
+            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($sharedService == null) {
+            throw new GrInvalidArgumentException("SharedService service not found");
+        }
+
+        if ($postingService == null) {
+            throw new GrInvalidArgumentException("postingService service not found");
+        }
+
+        if ($options == null) {
+            throw new GrInvalidArgumentException("Comnand Options not found!");
+        }
+
+        // Update Good Receipt Date and WH
+        if ($snapshot !== null) {
+            $this->setGrDate($snapshot->getGrDate());
+            $this->setWarehouse($snapshot->getWarehouse());
+        }
+
+        $this->validate($headerValidators, $rowValidators);
+        if ($this->hasErrors()) {
+            throw new GrPostingException($this->getErrorMessage());
+        }
+
+        $this->clearEvents();
+
+        $postingService->getCmdRepository()->store($this);
+        
     }
 
     /**
@@ -190,7 +261,7 @@ class GRDoc extends GenericGR
         $instance->validateHeader($headerValidators);
 
         if ($instance->hasErrors()) {
-            throw new PoCreateException($instance->getNotification()->errorMessage());
+            throw new GrCreateException($instance->getNotification()->errorMessage());
         }
 
         $createdDate = new \Datetime();
@@ -355,12 +426,7 @@ class GRDoc extends GenericGR
 
     protected function raiseEvent()
     {}
+
     protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {}
-
-
-
- 
-  
-  
 }

@@ -4,26 +4,20 @@ namespace ProcureTest\PO;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
+use Procure\Application\Command\GR\Options\CopyFromPOOptions;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use PHPUnit_Framework_TestCase;
-use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\NullHeaderValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\NullRowValidator;
-use Procure\Application\Command\GR\CreateFromPOCmd;
-use Procure\Application\Command\GR\Options\CreateFromPOOptions;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
-use Procure\Application\Command\GR\CopyFromPOCmd;
-use Procure\Application\Command\GR\Options\CopyFromPOOptions;
 
 class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -89,7 +83,7 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 
             
             $gr = GRDoc::createFromPo($po,$options,$headerValidators, $rowValidators);
-            var_dump($gr->makeDetailsDTO());
+            var_dump($gr->getDocRows());
             
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

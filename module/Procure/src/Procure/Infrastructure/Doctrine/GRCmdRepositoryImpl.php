@@ -2,11 +2,12 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Infrastructure\Mapper\GrMapper;
 
 /**
@@ -25,7 +26,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
     public function storeRow(GenericGR $rootEntity, GRRow $localEntity, $isPosting = false)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException("PO is empty");
+            throw new InvalidArgumentException("GR is empty");
         }
 
         /**
@@ -39,13 +40,13 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
         }
 
         if ($localEntity == null) {
-            throw new InvalidArgumentException("PO row is empty");
+            throw new InvalidArgumentException("GR row is empty");
         }
 
         // create snapshot
         $snapshot = $localEntity->makeSnapshot();
         if ($snapshot == null) {
-            throw new InvalidArgumentException("PO row snapshot can not be created");
+            throw new InvalidArgumentException("GR row snapshot can not be created");
         }
 
         /**
@@ -154,20 +155,27 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
      */
     public function store(GenericGR $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("GenericGR not retrieved.");
-        }
+        try {
 
-        $this->storeHeader($rootEntity, $generateSysNumber, $isPosting);
+            if ($rootEntity == null) {
+                throw new InvalidArgumentException("GenericGR not retrieved.");
+            }
 
-        $rows = $rootEntity->getDocRows();
+            $snapShot = $this->storeHeader($rootEntity, $generateSysNumber, $isPosting);
 
-        if (count($rows) == null) {
-            return;
-        }
+           /*  $rows = $rootEntity->getDocRows();
 
-        foreach ($rows as $row) {
-            $this->storeRow($rootEntity, $row, $isPosting);
+            if (count($rows) == null) {
+                return;
+            }
+
+            foreach ($rows as $row) {
+                $this->storeRow($rootEntity, $row, $isPosting);
+            } */
+
+            return $snapShot;
+        } catch (\Exception $e) {
+            throw new GrCreateException($e->getMessage());
         }
     }
 

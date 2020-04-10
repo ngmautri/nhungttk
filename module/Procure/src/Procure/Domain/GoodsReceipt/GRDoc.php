@@ -169,17 +169,24 @@ class GRDoc extends GenericGR
             $this->setGrDate($snapshot->getGrDate());
             $this->setWarehouse($snapshot->getWarehouse());
         }
-
+        
+        $createdDate = new \Datetime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
             throw new GrPostingException($this->getErrorMessage());
         }
 
         $this->clearEvents();
-
-        $postingService->getCmdRepository()->store($this);
+        echo "Test";
         
-    }
+        
+        $rootSnapshot = $postingService->getCmdRepository()->store($this);
+        
+        echo "Test end";
+        var_dump($rootSnapshot);
+      }
 
     /**
      *

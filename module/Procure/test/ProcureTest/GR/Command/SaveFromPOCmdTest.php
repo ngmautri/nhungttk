@@ -56,10 +56,11 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             $options = new SaveCopyFromPOOptions(1, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
             $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecoratorTest($cmdHandler);
-            $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
+            $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandler);
             $cmd->execute();
 
-            var_dump($rootEntity->getErrors());
+            //var_dump($rootEntity->makeHeaderDTO());
+            
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

@@ -4,12 +4,10 @@ namespace Procure\Infrastructure\Mapper;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcureGrRow;
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\APInvoice\APDocRowDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
-use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 
 /**
  *
@@ -36,7 +34,6 @@ class GrMapper
         $entity->setToken($snapshot->token);
         $entity->setVendorName($snapshot->vendorName);
         $entity->setInvoiceNo($snapshot->invoiceNo);
-        $entity->setInvoiceDate($snapshot->invoiceDate);
         $entity->setCurrencyIso3($snapshot->currencyIso3);
         $entity->setExchangeRate($snapshot->exchangeRate);
         $entity->setRemarks($snapshot->remarks);
@@ -45,9 +42,7 @@ class GrMapper
         $entity->setTrxType($snapshot->trxType);
         $entity->setSapDoc($snapshot->sapDoc);
         $entity->setContractNo($snapshot->contractNo);
-        $entity->setContractDate($snapshot->contractDate);
-        $entity->setQuotationNo($snapshot->quotationNo);
-        $entity->setQuotationDate($snapshot->quotationDate);
+         $entity->setQuotationNo($snapshot->quotationNo);
         $entity->setSysNumber($snapshot->sysNumber);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setDeliveryMode($snapshot->deliveryMode);
@@ -95,6 +90,22 @@ class GrMapper
         if ($snapshot->reversalDate !== null) {
             $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
         }
+        
+        //$entity->setQuotationDate($snapshot->quotationDate);
+        if ($snapshot->quotationDate !== null) {
+            $entity->setQuotationDate(new \DateTime($snapshot->quotationDate));
+        }
+        
+        //$entity->setInvoiceDate($snapshot->invoiceDate);
+        if ($snapshot->invoiceDate !== null) {
+            $entity->setInvoiceDate(new \DateTime($snapshot->invoiceDate));
+        }
+        
+        //$entity->setContractDate($snapshot->contractDate);
+        if ($snapshot->contractDate !== null) {
+            $entity->setContractDate(new \DateTime($snapshot->contractDate));
+        }
+        
 
         // REFERRENCE MAPPING
         // ++++++++++++++++++++++++++++++++

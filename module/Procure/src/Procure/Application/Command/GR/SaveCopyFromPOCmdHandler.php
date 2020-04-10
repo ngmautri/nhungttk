@@ -27,6 +27,7 @@ use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 
 /**
  *
@@ -128,7 +129,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 
             $validator = new PoRowValidator($sharedSpecsFactory, $fxService,$procureSpecsFactory);
             $rowValidators->add($validator);
-
+    
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
              

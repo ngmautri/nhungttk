@@ -8,6 +8,8 @@ use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Infrastructure\Mapper\PoMapper;
+use Procure\Domain\PurchaseOrder\POSnapshot;
+use Application\Entity\NmtProcurePo;
 
 /**
  *
@@ -28,9 +30,36 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
      */
     public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false)
     {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        /**
+         *
+         * @var PORowSnapshot $localSnapshot ;
+         */
+        $localSnapshot = $this->_getLocalSnapshot($localEntity);
+
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Doctrine root entity not found.");
+        }
+
         $isFlush = true;
         $increaseVersion = true;
-        return $this->_storeRow($rootEntity, $localEntity, $isPosting, $isFlush, $increaseVersion);
+        $rowEntityDoctrine = $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException("Something wrong. Row Doctrine Entity not created");
+        }
+
+        $localSnapshot->id = $rowEntityDoctrine->getId();
+        $localSnapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
+        $localSnapshot->docVersion = $rowEntityDoctrine->getDocVersion();
+        $localSnapshot->revisionNo = $rowEntityDoctrine->getRevisionNo();
+
+        return $localSnapshot;
     }
 
     /**
@@ -41,34 +70,45 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
     public function post(GenericPO $rootEntity, $generateSysNumber = True)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException("Generic GR not given.");
-        }
-
-        if ($rootEntity->getId() == null) {
-            throw new InvalidArgumentException("Entity ID not found.");
+            throw new InvalidArgumentException("Root entity not given.");
         }
 
         $rows = $rootEntity->getDocRows();
 
-        if ($rows == null) {
-            throw new InvalidArgumentException("Document is empty");
+        if (count($rows) == null) {
+            throw new InvalidArgumentException("Document is empty.");
         }
+
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
         $isPosting = true;
         $isFlush = true;
         $increaseVersion = true;
 
-        $rootSnapshot = $this->_storeHeader($rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+        $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not found.");
+        }
 
         $increaseVersion = false;
+        $isFlush = false;
         $n = 0;
+
         foreach ($rows as $localEntity) {
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
+
             $n ++;
-            $this->_storeRow($rootEntity, $localEntity, $isPosting, $isFlush, $increaseVersion, $n);
+            $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n);
         }
 
         // it is time to flush.
         $this->doctrineEM->flush();
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
         return $rootSnapshot;
     }
 
@@ -79,9 +119,22 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
      */
     public function storeHeader(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
         $isFlush = true;
         $increaseVersion = true;
-        return $this->_storeHeader($rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+        $entity = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($entity == null) {
+            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
+        }
+
+        $rootSnapshot->id = $entity->getId();
+        $rootSnapshot->docVersion = $entity->getDocVersion();
+        $rootSnapshot->sysNumber = $entity->getSysNumber();
+        $rootSnapshot->revisionNo = $entity->getRevisionNo();
+
+        return $rootSnapshot;
     }
 
     /**
@@ -92,7 +145,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
     public function store(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException("GenericPO not retrieved.");
+            throw new InvalidArgumentException("Root entity not given!");
         }
 
         $rows = $rootEntity->getDocRows();
@@ -101,51 +154,59 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
             throw new InvalidArgumentException("Document is empty.");
         }
 
-        $isFlush = false;
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
+        $isFlush = true;
         $increaseVersion = true;
-        $rootSnapShot = $this->_storeHeader($rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+        $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not created!");
+        }
 
         $increaseVersion = false;
+        $isFlush = false;
+
         foreach ($rows as $localEntity) {
-            $this->_storeRow($rootEntity, $localEntity, $isPosting, $isFlush, $increaseVersion);
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
+            $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
         }
 
         // it is time to flush.
         $this->getDoctrineEM()->flush();
-        return $rootSnapShot;
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
+        return $rootSnapshot;
     }
 
     /**
      *
-     * @param GenericPO $rootEntity
+     * @param POSnapshot $rootSnapshot
      * @param boolean $generateSysNumber
      * @param boolean $isPosting
      * @param boolean $isFlush
      * @param boolean $increaseVersion
      * @throws InvalidArgumentException
-     * @return \Procure\Domain\PurchaseOrder\POSnapshot
+     * @return \Application\Entity\NmtProcurePo
      */
-    private function _storeHeader(GenericPO $rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
+    private function _storeHeader(POSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Generic PO not retrieved.");
+        if ($rootSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not given.");
         }
 
         /**
          *
-         * @var \Procure\Domain\PurchaseOrder\POSnapshot $snapshot ;
          * @var \Application\Entity\NmtProcurePo $entity ;
          *     
          */
-        $snapshot = $rootEntity->makeSnapshot();
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Root Snapshot not created!");
-        }
-
-        if ($rootEntity->getId() > 0) {
-            $entity = $this->getDoctrineEM()->find(Self::ROOT_ENTITY_NAME, $rootEntity->getId());
+        if ($rootSnapshot->getId() > 0) {
+            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());
             if ($entity == null) {
-                throw new InvalidArgumentException(sprintf("Entity not found. %s", $rootEntity->getId()));
+                throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootSnapshot->getId()));
             }
 
             // just in case, it is not updated.
@@ -158,7 +219,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
         }
 
         // Populate with data
-        $entity = PoMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
+        $entity = PoMapper::mapSnapshotEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
 
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));
@@ -166,7 +227,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
 
         if ($increaseVersion) {
             // Optimistic Locking
-            if ($rootEntity->getId() > 0) {
+            if ($rootSnapshot->getId() > 0) {
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
             }
         }
@@ -177,89 +238,61 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
             $this->doctrineEM->flush();
         }
 
-        $snapshot->id = $entity->getId();
-        $snapshot->revisionNo = $entity->getRevisionNo();
-        $snapshot->docVersion = $entity->getDocVersion();
-        $snapshot->sysNumber = $entity->getSysNumber();
-        return $snapshot;
+        return $entity;
     }
 
     /**
      *
-     * @param GenericPO $rootEntity
-     * @param PORow $localEntity
+     * @param object $rootEntityDoctrine
+     * @param PORowSnapshot $localSnapshot
      * @param boolean $isPosting
      * @param boolean $isFlush
      * @param boolean $increaseVersion
      * @param boolean $n
      * @throws InvalidArgumentException
-     * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
+     * @return \Application\Entity\NmtProcurePoRow
      */
-    private function _storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting, $isFlush, $increaseVersion, $n = null)
+    private function _storeRow($rootEntityDoctrine, PORowSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity is empty");
+        if (! $rootEntityDoctrine instanceof NmtProcurePo) {
+            throw new InvalidArgumentException("Doctrine root entity not given!");
         }
 
-        if ($localEntity == null) {
-            throw new InvalidArgumentException("Local row is empty");
+        if ($localSnapshot == null) {
+            throw new InvalidArgumentException("Row snapshot is not given!");
         }
 
         /**
          *
          * @var \Application\Entity\NmtProcurePoRow $rowEntityDoctrine ;
-         * @var PORowSnapshot $snapshot ;
-         * @var \Application\Entity\NmtProcurePo $rootEntityDoctrine ;
          */
 
-        $rootEntityDoctrine = $this->doctrineEM->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+        if ($localSnapshot->getId() > 0) {
 
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Root Entity not retrieved.");
-        }
-
-        $snapshot = $localEntity->makeSnapshot();
-
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Root snapshot can not be created");
-        }
-
-        if ($localEntity->getId() > 0) {
-
-            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
+            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localSnapshot->getId());
 
             if ($rowEntityDoctrine == null) {
-                throw new InvalidArgumentException("Local Entity can't be retrieved.");
+                throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getId()));
             }
 
-            /**
-             *
-             * @todo update
-             */
+            // to update
             if ($rowEntityDoctrine->getPo() == null) {
-                throw new InvalidArgumentException("Root entity is not valid");
+                throw new InvalidArgumentException("Doctrine row entity is not valid");
             }
 
-            /**
-             *
-             * @todo update
-             */
-            if (! $rowEntityDoctrine->getPo()->getId() == $rootEntity->getId()) {
-                throw new InvalidArgumentException(sprintf("Local row is corrupted! %s <> %s ", $rowEntityDoctrine->getPo()->getId(), $rootEntity->getId()));
+            // to update
+            if (! $rowEntityDoctrine->getPo()->getId() == $rootEntityDoctrine->getId()) {
+                throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getPo()->getId(), $rootEntityDoctrine->getId()));
             }
         } else {
-
             $localClassName = self::LOCAL_ENTITY_NAME;
             $rowEntityDoctrine = new $localClassName();
 
-            /**
-             *
-             * @todo: To update.
-             */
-            $rowEntityDoctrine->setPO($rootEntityDoctrine);
+            // to update
+            $rowEntityDoctrine->setPo($rootEntityDoctrine);
         }
 
-        $rowEntityDoctrine = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $rowEntityDoctrine);
+        $rowEntityDoctrine = PoMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
         if ($n > 0) {
             $rowEntityDoctrine->setRowIdentifer(sprintf("%s-%s", $rootEntityDoctrine->getSysNumber(), $n));
@@ -276,11 +309,56 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
             $this->doctrineEM->flush();
         }
 
-        if ($snapshot->getId() == null) {
-            $snapshot->id = $rowEntityDoctrine->getId();
-        }
-        $snapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
+        return $rowEntityDoctrine;
+    }
 
-        return $snapshot;
+    /**
+     *
+     * @param GenericPO $rootEntity
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\PurchaseOrder\POSnapshot
+     */
+    private function _getRootSnapshot(GenericPO $rootEntity)
+    {
+        if (! $rootEntity instanceof GenericPO) {
+            throw new InvalidArgumentException("Root entity not given!");
+        }
+
+        /**
+         *
+         * @todo
+         * @var POSnapshot $rootSnapshot ;
+         */
+        $rootSnapshot = $rootEntity->makeSnapshot();
+        if ($rootSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not created!");
+        }
+
+        return $rootSnapshot;
+    }
+
+    /**
+     *
+     * @param PORow $localEntity
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
+     */
+    private function _getLocalSnapshot(PORow $localEntity)
+    {
+        if (! $localEntity instanceof PORow) {
+            throw new InvalidArgumentException("Local entity not given!");
+        }
+
+        /**
+         *
+         * @todo
+         * @var PORowSnapshot $localSnapshot ;
+         */
+        $localSnapshot = $localEntity->makeSnapshot();
+        if ($localSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not created!");
+        }
+
+        return $localSnapshot;
     }
 }

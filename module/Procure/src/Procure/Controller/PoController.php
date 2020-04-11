@@ -803,7 +803,7 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         // $this->flashMessenger()->addMessage($redirectUrl);
 
         return $this->redirect()->toUrl($redirectUrl);
@@ -1175,14 +1175,14 @@ class PoController extends AbstractActionController
             $notification = new Notification();
 
             $data = $prg;
-          
+
             /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
 
             $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-          
+
             $userId = $u->getId();
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
@@ -1190,7 +1190,7 @@ class PoController extends AbstractActionController
 
             $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
 
-             if ($rootEntity == null) {
+            if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
@@ -1202,37 +1202,45 @@ class PoController extends AbstractActionController
             $cmd->execute();
 
             $notification = $dto->getNotification();
+            $msg = sprintf("PO #%s is posted", $entity_id);
+            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
-
+            $msg = sprintf("%s", $msg = sprintf("PO #%s is posted", $entity_id));
+            $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
             $notification->addError($e->getMessage());
         }
 
-        if ($notification->hasErrors()) {
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'rootEntity' => $rootEntity,
-                'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'version' => $version,
-                'action' => $action
-            ));
+        /*
+         * if ($notification->hasErrors()) {
+         * $viewModel = new ViewModel(array(
+         * 'errors' => $notification->getErrors(),
+         * 'redirectUrl' => null,
+         * 'entity_id' => $entity_id,
+         * 'entity_token' => $entity_token,
+         * 'rootEntity' => $rootEntity,
+         * 'rowOutput' => $rootEntity->getRowsOutput(),
+         * 'headerDTO' => $rootEntity->makeDTOForGrid(),
+         * 'nmtPlugin' => $nmtPlugin,
+         * 'form_action' => $form_action,
+         * 'form_title' => $form_title,
+         * 'version' => $version,
+         * 'action' => $action
+         * ));
+         *
+         * $viewModel->setTemplate($viewTemplete);
+         * return $viewModel;
+         * }
+         * $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+         * $this->flashMessenger()->addMessage($notification->successMessage(false));
+         * $this->flashMessenger()->addMessage($redirectUrl);
+         * return $this->redirect()->toUrl($redirectUrl);
+         */
 
-            $viewModel->setTemplate($viewTemplete);
-            // return $viewModel;
-        }
-
-        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-
-       
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $this->flashMessenger()->addMessage($redirectUrl);
-        return $this->redirect()->toUrl($redirectUrl);
+        $this->flashMessenger()->addMessage($msg);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($redirectUrl));
+        return $response;
     }
 
     public function reviewAmendmentAction()

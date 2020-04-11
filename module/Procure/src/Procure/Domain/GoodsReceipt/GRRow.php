@@ -42,8 +42,9 @@ class GRRow extends GenericRow
     {}
 
     /**
-     *
-     * @return NULL|object
+     * 
+     * {@inheritDoc}
+     * @see \Procure\Domain\GenericRow::makeSnapshot()
      */
     public function makeSnapshot()
     {

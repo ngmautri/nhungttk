@@ -1,10 +1,12 @@
 <?php
 namespace Procure\Infrastructure\Doctrine;
 
+use Application\Entity\NmtProcureGr;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
 use Procure\Infrastructure\Mapper\GrMapper;
@@ -28,9 +30,36 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
      */
     public function storeRow(GenericGR $rootEntity, GRRow $localEntity, $isPosting = false)
     {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given.");
+        }
+
+        /**
+         *
+         * @var GRRowSnapshot $localSnapshot ;
+         */
+        $localSnapshot = $this->_getLocalSnapshot($localEntity);
+
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Doctrine root entity not found.");
+        }
+
         $isFlush = true;
         $increaseVersion = true;
-        return $this->_storeRow($rootEntity, $localEntity, $isPosting, $isFlush, $increaseVersion);
+        $rowEntityDoctrine = $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rowEntityDoctrine == null) {
+            throw new InvalidArgumentException("Something wrong. Row Doctrine Entity not created");
+        }
+
+        $localSnapshot->id = $rowEntityDoctrine->getId();
+        $localSnapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
+        $localSnapshot->docVersion = $rowEntityDoctrine->getDocVersion();
+        $localSnapshot->revisionNo = $rowEntityDoctrine->getRevisionNo();
+
+        return $localSnapshot;
     }
 
     /**
@@ -40,9 +69,22 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
      */
     public function storeHeader(GenericGR $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
         $isFlush = true;
         $increaseVersion = true;
-        return $this->_storeHeader($rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+        $entity = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($entity == null) {
+            throw new InvalidArgumentException("Something wrong. Doctrine root entity not created");
+        }
+
+        $rootSnapshot->id = $entity->getId();
+        $rootSnapshot->docVersion = $entity->getDocVersion();
+        $rootSnapshot->sysNumber = $entity->getSysNumber();
+        $rootSnapshot->revisionNo = $entity->getRevisionNo();
+
+        return $rootSnapshot;
     }
 
     /**
@@ -62,19 +104,32 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
             throw new InvalidArgumentException("Document is empty.");
         }
 
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
+
         $isFlush = true;
         $increaseVersion = true;
-        $rootSnapShot = $this->_storeHeader($rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+        $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not found.");
+        }
 
         $increaseVersion = false;
         $isFlush = false;
+
         foreach ($rows as $localEntity) {
-            $this->_storeRow($rootEntity, $localEntity, $isPosting, $isFlush, $increaseVersion);
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
+            $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
         }
 
         // it is time to flush.
         $this->getDoctrineEM()->flush();
-        return $rootSnapShot;
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
+        return $rootSnapshot;
     }
 
     /**
@@ -85,67 +140,73 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
     public function post(GenericGR $rootEntity, $generateSysNumber = True)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException("Generic GR not given.");
-        }
-
-        if ($rootEntity->getId() == null) {
-            throw new InvalidArgumentException("Entity ID not found.");
+            throw new InvalidArgumentException("Root entity not given.");
         }
 
         $rows = $rootEntity->getDocRows();
 
-        if ($rows == null) {
-            throw new InvalidArgumentException("Document is empty");
+        if (count($rows) == null) {
+            throw new InvalidArgumentException("Document is empty.");
         }
+
+        $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
         $isPosting = true;
         $isFlush = true;
         $increaseVersion = true;
 
-        $rootSnapshot = $this->_storeHeader($rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+        $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
+
+        if ($rootEntityDoctrine == null) {
+            throw new InvalidArgumentException("Root doctrine entity not found.");
+        }
 
         $increaseVersion = false;
+        $isFlush = false;
         $n = 0;
+
         foreach ($rows as $localEntity) {
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
             $n ++;
-            $this->_storeRow($rootEntity, $localEntity, $isPosting, $isFlush, $increaseVersion, $n);
+
+            $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n);
         }
 
         // it is time to flush.
         $this->doctrineEM->flush();
+
+        $rootSnapshot->id = $rootEntityDoctrine->getId();
+        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
         return $rootSnapshot;
     }
 
     /**
      *
-     * @param GenericGR $rootEntity
+     * @param GRSnapshot $rootSnapshot
      * @param boolean $generateSysNumber
      * @param boolean $isPosting
      * @param boolean $isFlush
+     * @param boolean $increaseVersion
      * @throws InvalidArgumentException
+     * @return \Application\Entity\NmtProcureGr
      */
-    private function _storeHeader(GenericGR $rootEntity, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
+    private function _storeHeader(GRSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Generic GR not retrieved.");
+        if ($rootSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not given.");
         }
 
         /**
          *
-         * @var \Procure\Domain\GoodsReceipt\GRSnapshot $snapshot ;
          * @var \Application\Entity\NmtProcureGr $entity ;
          *     
          */
-
-        $snapshot = $rootEntity->makeSnapshot();
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Root Snapshot not created!");
-        }
-
-        if ($rootEntity->getId() > 0) {
-            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
+        if ($rootSnapshot->getId() > 0) {
+            $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());
             if ($entity == null) {
-                throw new InvalidArgumentException(sprintf("Entity not found. %s", $rootEntity->getId()));
+                throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootSnapshot->getId()));
             }
 
             // just in case, it is not updated.
@@ -158,7 +219,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
         }
 
         // Populate with data
-        $entity = GrMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
+        $entity = GrMapper::mapSnapshotEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
 
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));
@@ -166,7 +227,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
 
         if ($increaseVersion) {
             // Optimistic Locking
-            if ($rootEntity->getId() > 0) {
+            if ($rootSnapshot->getId() > 0) {
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
             }
         }
@@ -177,67 +238,49 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
             $this->doctrineEM->flush();
         }
 
-        $snapshot->id = $entity->getId();
-        $snapshot->revisionNo = $entity->getRevisionNo();
-        $snapshot->docVersion = $entity->getDocVersion();
-        $snapshot->sysNumber = $entity->getSysNumber();
-        return $snapshot;
+        return $entity;
     }
 
     /**
      *
-     * @param GenericGR $rootEntity
+     * @param object $rootEntityDoctrine
      * @param GRRow $localEntity
      * @param boolean $isPosting
      * @param boolean $isFlush
      * @param boolean $increaseVersion
      * @param int $n
      * @throws InvalidArgumentException
-     * @return \Procure\Domain\GoodsReceipt\GRRowSnapshot
+     * @return \Application\Entity\NmtProcureGrRow
      */
-    private function _storeRow(GenericGR $rootEntity, GRRow $localEntity, $isPosting, $isFlush, $increaseVersion, $n = null)
+    private function _storeRow($rootEntityDoctrine, GRRowSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("GR is empty");
+        if (! $rootEntityDoctrine instanceof NmtProcureGr) {
+            throw new InvalidArgumentException("Doctrine root entity not given!");
         }
 
-        if ($localEntity == null) {
-            throw new InvalidArgumentException("GR row is empty");
+        if ($localSnapshot == null) {
+            throw new InvalidArgumentException("Row snapshot is not given!");
         }
 
         /**
          *
          * @var \Application\Entity\NmtProcureGrRow $rowEntityDoctrine ;
-         * @var GRRowSnapshot $snapshot ;
-         * @var \Application\Entity\NmtProcureGr $rootEntityDoctrine ;
          */
 
-        $rootEntityDoctrine = $this->doctrineEM->find("\Application\Entity\NmtProcureGr", $rootEntity->getId());
+        if ($localSnapshot->getId() > 0) {
 
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("GR Entity not retrieved.");
-        }
-
-        $snapshot = $localEntity->makeSnapshot();
-
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("GR row snapshot can not be created");
-        }
-
-        if ($localEntity->getId() > 0) {
-
-            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localEntity->getId());
+            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localSnapshot->getId());
 
             if ($rowEntityDoctrine == null) {
-                throw new InvalidArgumentException("Local Entity can't be retrieved.");
+                throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getId()));
             }
 
             if ($rowEntityDoctrine->getGr() == null) {
-                throw new InvalidArgumentException("Root entity is not valid");
+                throw new InvalidArgumentException("Doctrine row entity is not valid");
             }
 
-            if (! $rowEntityDoctrine->getGr()->getId() == $rootEntity->getId()) {
-                throw new InvalidArgumentException(sprintf("Local row is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntity->getId()));
+            if (! $rowEntityDoctrine->getGr()->getId() == $rootEntityDoctrine->getId()) {
+                throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntityDoctrine->getId()));
             }
         } else {
             $localClassName = self::LOCAL_ENTITY_NAME;
@@ -250,7 +293,7 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
             $rowEntityDoctrine->setGr($rootEntityDoctrine);
         }
 
-        $rowEntityDoctrine = GrMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $snapshot, $rowEntityDoctrine);
+        $rowEntityDoctrine = GrMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
         if ($n > 0) {
             $rowEntityDoctrine->setRowIdentifer(sprintf("%s-%s", $rootEntityDoctrine->getSysNumber(), $n));
@@ -267,11 +310,56 @@ class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements GrCmdRep
             $this->doctrineEM->flush();
         }
 
-        if ($snapshot->getId() == null) {
-            $snapshot->id = $rowEntityDoctrine->getId();
-        }
-        $snapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
+        return $rowEntityDoctrine;
+    }
 
-        return $snapshot;
+    /**
+     *
+     * @param GenericGR $rootEntity
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\GoodsReceipt\GRSnapshot
+     */
+    private function _getRootSnapshot(GenericGR $rootEntity)
+    {
+        if ($rootEntity == null) {
+            throw new InvalidArgumentException("Root entity not given!");
+        }
+
+        /**
+         *
+         * @todo
+         * @var GRSnapshot $rootSnapshot ;
+         */
+        $rootSnapshot = $rootEntity->makeSnapshot();
+        if ($rootSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not created!");
+        }
+
+        return $rootSnapshot;
+    }
+
+    /**
+     *
+     * @param GRRow $localEntity
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\GoodsReceipt\GRRowSnapshot
+     */
+    private function _getLocalSnapshot(GRRow $localEntity)
+    {
+        if (! $localEntity instanceof GRRow) {
+            throw new InvalidArgumentException("Local entity not given!");
+        }
+
+        /**
+         *
+         * @todo
+         * @var GRRowSnapshot $localSnapshot ;
+         */
+        $localSnapshot = $localEntity->makeSnapshot();
+        if ($localSnapshot == null) {
+            throw new InvalidArgumentException("Root snapshot not created!");
+        }
+
+        return $localSnapshot;
     }
 }

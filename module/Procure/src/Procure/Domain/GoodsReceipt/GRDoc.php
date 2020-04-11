@@ -7,9 +7,7 @@ use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
-use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\Exception\Gr\GrInvalidOperationException;
@@ -50,6 +48,26 @@ class GRDoc extends GenericGR
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new GRSnapshot());
+    }
+    
+   /**
+    * 
+    * @param GRSnapshot $snapshot
+    * @return void|\Procure\Domain\GoodsReceipt\GRDoc
+    */
+    public static function makeFromSnapshot(GRSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof GRSnapshot)
+            return;
+            
+            if ($snapshot->uuid == null) {
+                $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+                $snapshot->token = $snapshot->uuid;
+            }
+            
+            $instance = new self();
+            SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+            return $instance;
     }
 
     /**
@@ -143,7 +161,7 @@ class GRDoc extends GenericGR
         if ($this->getDocRows() == null) {
             throw new GrInvalidOperationException(sprintf("Documment is empty! %s", $this->getId()));
         }
-        
+
         if (! $this->getDocType() == Constants::PROCURE_DOC_TYPE_GR_FROM_PO) {
             throw new GrInvalidOperationException(sprintf("Doctype is not vadid! %s", $this->getDocType()));
         }
@@ -173,10 +191,10 @@ class GRDoc extends GenericGR
             $this->setGrDate($snapshot->getGrDate());
             $this->setWarehouse($snapshot->getWarehouse());
         }
-        
+
         $createdDate = new \Datetime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        
+
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
             throw new GrPostingException($this->getErrorMessage());
@@ -184,9 +202,9 @@ class GRDoc extends GenericGR
 
         $this->clearEvents();
         $rootSnapshot = $postingService->getCmdRepository()->store($this);
-        
+
         return $rootSnapshot;
-       }
+    }
 
     /**
      *
@@ -237,8 +255,8 @@ class GRDoc extends GenericGR
      * @param SharedService $sharedService
      * @param GrPostingService $postingService
      * @throws GrInvalidArgumentException
-     * @throws PoCreateException
-     * @throws PoUpdateException
+     * @throws GrCreateException
+     * @throws GrUpdateException
      * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
     public static function createFrom(GRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, GrPostingService $postingService)
@@ -255,8 +273,8 @@ class GRDoc extends GenericGR
             throw new GrInvalidArgumentException("Shared service not found!");
         }
 
-        if (! $postingService instanceof GrPostingException) {
-            throw new GrInvalidArgumentException("Posting service not found!");
+        if (!$postingService instanceof GrPostingService) {
+            throw new GrInvalidArgumentException(sprintf("Posting service not found! %s", "GRdoc"));
         }
 
         $instance = new self();
@@ -307,20 +325,20 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
-    /**
-     *
-     * @param GrSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
-     * @throws GrCreateException
-     * @throws GrUpdateException
-     * @return \Procure\Domain\GoodsReceipt\GRDoc
-     */
-    public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+   /**
+    * 
+    * @param GrSnapshot $snapshot
+    * @param CommandOptions $options
+    * @param unknown $params
+    * @param HeaderValidatorCollection $headerValidators
+    * @param SharedService $sharedService
+    * @param GrPostingService $postingService
+    * @throws PoInvalidArgumentException
+    * @throws GrCreateException
+    * @throws GrUpdateException
+    * @return \Procure\Domain\GoodsReceipt\GRDoc
+    */
+    public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, GrPostingService $postingService)
     {
         if (! $snapshot instanceof GrSnapshot) {
             throw new PoInvalidArgumentException("PO snapshot not found!");
@@ -334,7 +352,7 @@ class GRDoc extends GenericGR
             throw new PoInvalidArgumentException("Shared service not found!");
         }
 
-        if (! $postingService instanceof POPostingService) {
+        if (! $postingService instanceof GrPostingService) {
             throw new PoInvalidArgumentException("Posting service not found!");
         }
 

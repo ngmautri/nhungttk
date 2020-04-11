@@ -1,15 +1,17 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\GR\Options;
 
-use Procure\Domain\Exception\PoCreateException;
 use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Domain\Exception\PoCreateException;
+use Procure\Domain\Exception\Gr\GrAmendmentException;
+use Procure\Domain\Exception\Gr\GrCreateException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoCreateOptions implements CommandOptions
+class GrCreateOptions implements CommandOptions
 {
 
     private $companyId;
@@ -31,15 +33,15 @@ class PoCreateOptions implements CommandOptions
     public function __construct($companyId, $userId, $triggeredBy)
     {
         if ($companyId == null) {
-            throw new PoCreateException(sprintf("Company ID not given! %s", $companyId));
+            throw new GrCreateException(sprintf("Company ID not given! %s", $companyId));
         }
 
         if ($userId == null) {
-            throw new PoCreateException(sprintf("User ID not given! %s", $userId));
+            throw new GrCreateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoCreateException(sprintf("Trigger not given! %s", $userId));
+            throw new GrCreateException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->companyId = $companyId;

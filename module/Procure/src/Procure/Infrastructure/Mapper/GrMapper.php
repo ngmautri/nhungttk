@@ -43,7 +43,7 @@ class GrMapper
         $entity->setTrxType($snapshot->trxType);
         $entity->setSapDoc($snapshot->sapDoc);
         $entity->setContractNo($snapshot->contractNo);
-         $entity->setQuotationNo($snapshot->quotationNo);
+        $entity->setQuotationNo($snapshot->quotationNo);
         $entity->setSysNumber($snapshot->sysNumber);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setDeliveryMode($snapshot->deliveryMode);
@@ -91,22 +91,21 @@ class GrMapper
         if ($snapshot->reversalDate !== null) {
             $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
         }
-        
-        //$entity->setQuotationDate($snapshot->quotationDate);
+
+        // $entity->setQuotationDate($snapshot->quotationDate);
         if ($snapshot->quotationDate !== null) {
             $entity->setQuotationDate(new \DateTime($snapshot->quotationDate));
         }
-        
-        //$entity->setInvoiceDate($snapshot->invoiceDate);
+
+        // $entity->setInvoiceDate($snapshot->invoiceDate);
         if ($snapshot->invoiceDate !== null) {
             $entity->setInvoiceDate(new \DateTime($snapshot->invoiceDate));
         }
-        
-        //$entity->setContractDate($snapshot->contractDate);
+
+        // $entity->setContractDate($snapshot->contractDate);
         if ($snapshot->contractDate !== null) {
             $entity->setContractDate(new \DateTime($snapshot->contractDate));
         }
-        
 
         // REFERRENCE MAPPING
         // ++++++++++++++++++++++++++++++++
@@ -218,7 +217,7 @@ class GrMapper
     public static function mapRowSnapshotEntity(EntityManager $doctrineEM, GRRowSnapshot $snapshot, NmtProcureGrRow $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
-             return null;
+            return null;
         }
 
         // $entity->setId($snapshot->id);
@@ -417,7 +416,7 @@ class GrMapper
             $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($snapshot->poRow);
             $entity->setPoRow($obj);
         }
-        
+
         return $entity;
     }
 
@@ -440,13 +439,6 @@ class GrMapper
         // $snapshot->vendor= $entity->getVendor();
         if ($entity->getVendor() !== null) {
             $snapshot->vendor = $entity->getVendor()->getId();
-        }
-
-        // $snapshot->pmtTerm = $entity->getPmtTerm();
-        if ($entity->getPmtTerm() !== null) {
-            $snapshot->pmtTerm = $entity->getPmtTerm()->getId();
-            $snapshot->paymentTermName = $entity->getPmtTerm()->getPmtTermName();
-            $snapshot->paymentTermCode = $entity->getPmtTerm()->getPmtTermCode();
         }
 
         // $snapshot->warehouse = $entity->getWarehouse();
@@ -492,11 +484,11 @@ class GrMapper
         }
 
         // $snapshot->incoterm2 = $entity->getIncoterm2();
-        if ($entity->getIncoterm2() !== null) {
+       /*  if ($entity->getIncoterm2() !== null) {
             $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
             $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
             $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
-        }
+        } */
 
         if ($entity->getCompany() !== null) {
             $snapshot->company = $entity->getCompany()->getId();
@@ -507,22 +499,23 @@ class GrMapper
 
         // MAPPING DATE
         // =====================
-        $snapshot->invoiceDate = $entity->getInvoiceDate();
+
+        // $snapshot->invoiceDate = $entity->getInvoiceDate();
         if (! $entity->getInvoiceDate() == null) {
             $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d");
         }
 
-        $snapshot->postingDate = $entity->getPostingDate();
+        // $snapshot->postingDate = $entity->getPostingDate();
         if (! $entity->getPostingDate() == null) {
             $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d");
         }
 
-        $snapshot->grDate = $entity->getGrDate();
+        // $snapshot->grDate = $entity->getGrDate();
         if (! $entity->getGrDate() == null) {
             $snapshot->grDate = $entity->getGrDate()->format("Y-m-d");
         }
 
-        $snapshot->quotationDate = $entity->getQuotationDate();
+        // $snapshot->quotationDate = $entity->getQuotationDate();
         if (! $entity->getQuotationDate() == null) {
             $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d");
         }
@@ -568,13 +561,6 @@ class GrMapper
         $snapshot->workflowStatus = $entity->getWorkflowStatus();
         $snapshot->transactionStatus = $entity->getTransactionStatus();
         $snapshot->docType = $entity->getDocType();
-        $snapshot->paymentStatus = $entity->getPaymentStatus();
-        $snapshot->totalDocValue = $entity->getTotalDocValue();
-        $snapshot->totalDocTax = $entity->getTotalDocTax();
-        $snapshot->totalDocDiscount = $entity->getTotalDocDiscount();
-        $snapshot->totalLocalValue = $entity->getTotalLocalValue();
-        $snapshot->totalLocalTax = $entity->getTotalLocalTax();
-        $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docVersion = $entity->getDocVersion(); // new/

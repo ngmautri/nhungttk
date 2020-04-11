@@ -9,19 +9,21 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Command\GR\Options\GrCreateOptions;
+use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\Exception\PoCreateException;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\Service\POPostingService;
+use Procure\Domain\Exception\Gr\GrCreateException;
+use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 
 /**
  *
@@ -39,23 +41,23 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new PoCreateException(sprintf("% not found!", get_class($cmd)));
+            throw new GrCreateException(sprintf("% not found!", get_class($cmd)));
         }
 
         /**
          *
-         * @var PoDTO $dto ;
-         * @var PoCreateOptions $options ;
+         * @var GrDTO $dto ;
+         * @var GrCreateOptions $options ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();
 
-        if (! $dto instanceof PoDTO) {
-            throw new PoCreateException("PoDTO object not found!");
+        if (! $dto instanceof GrDTO) {
+            throw new GrCreateException("DTO object not found!");
         }
 
         if (! $options instanceof CommandOptions) {
-            throw new PoCreateException("No Options given. Pls check command configuration!");
+            throw new GrCreateException("No Options given. Pls check command configuration!");
         }
 
         try {
@@ -83,11 +85,11 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var POSnapshot $snapshot ;
-             * @var POSnapshot $rootSnapshot ;
-             * @var PODoc $rootEntity ;
+             * @var GRSnapshot $snapshot ;
+             * @var GRSnapshot $rootSnapshot ;
+             * @var GRDoc $rootEntity ;
              */
-            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new POSnapshot());
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new GRSnapshot());
 
             $headerValidators = new HeaderValidatorCollection();
 
@@ -96,17 +98,23 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-
-            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new POPostingService($cmdRepository);
+            
+            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
+            
+            $validator = new GrPostingValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
+            
+            $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity = PODoc::createFrom($snapshot, $options, $headerValidators, $sharedService, $postingService);
+            $rootEntity = GRDoc::createFrom($snapshot, $options, $headerValidators, $sharedService, $postingService);
 
             $dto->id = $rootEntity->getId();
             $dto->token = $rootEntity->getToken();
 
-            $m = sprintf("[OK] PO # %s created", $dto->getId());
+            $m = sprintf("[OK] GR # %s created", $dto->getId());
             $notification->addSuccess($m);
 
             // event dispatcher

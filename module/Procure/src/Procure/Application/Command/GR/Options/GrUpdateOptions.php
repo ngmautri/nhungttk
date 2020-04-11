@@ -1,15 +1,15 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\GR\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\Exception\Gr\GrUpdateException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoUpdateOptions implements CommandOptions
+class GrUpdateOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -31,15 +31,15 @@ class PoUpdateOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy, $isPosting = false)
     {
         if ($rootEntity == null) {
-            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
+            throw new GrUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new GrUpdateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
+            throw new GrUpdateException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
@@ -113,7 +113,9 @@ class PoUpdateOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
     /**
+     *
      * @return string
      */
     public function getIsPosting()

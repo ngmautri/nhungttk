@@ -21,7 +21,17 @@ Interface GrQueryRepositoryInterface
 
     public function getPODetailsById($id, $token = null);
 
+    /**
+     * 
+     * @param int $id
+     * @param string $token
+     */
     public function getVersion($id, $token = null);
 
+    /**
+     * 
+     * @param int $id
+     * @param string $token
+     */
     public function getVersionArray($id, $token = null);
 }

@@ -20,5 +20,4 @@ Interface POCmdRepositoryInterface
 
     public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false);
 
-    public function createRow($poId, PORow $localEntity, $isPosting = false);
 }

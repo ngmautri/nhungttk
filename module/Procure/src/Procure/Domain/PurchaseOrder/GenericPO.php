@@ -191,7 +191,7 @@ abstract class GenericPO extends GenericDoc
     }
 
     /**
-     * 
+     *
      * @param PORowSnapshot $snapshot
      * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators

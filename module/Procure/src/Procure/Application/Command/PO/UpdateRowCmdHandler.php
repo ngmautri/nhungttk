@@ -18,12 +18,12 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\PurchaseOrder\Validator\HeaderValidatorCollection;
-use Procure\Domain\PurchaseOrder\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -138,10 +138,9 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             $rowValidators->add($validator);
             
             
-            $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
+            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
-            
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);            
 
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
             

@@ -1,9 +1,9 @@
 <?php
 namespace Procure\Application\Command\PO;
 
+use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Domain\Shared\Command\AbstractCommandHandlerDecorator;
 use Application\Domain\Shared\Command\CommandInterface;
-use Application\Application\Command\AbstractDoctrineCmd;
 
 /**
  *

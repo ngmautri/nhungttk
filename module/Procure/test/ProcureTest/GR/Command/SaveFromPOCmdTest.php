@@ -34,8 +34,8 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\GR\GRService');
 
-            $source_id = 344;
-            $source_token = "544fe921-8fd7-45dd-bc57-c8a98f5ee358";
+            $source_id = 348;
+            $source_token = "c19339ef-ee7a-4565-8e5f-7fecda95574d";
             $version = 1;
             $userId = 39;
             $dto = new PoDTO();
@@ -55,11 +55,11 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 
             $options = new SaveCopyFromPOOptions(1, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
-            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecorator($cmdHandler);
+            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecoratorTest($cmdHandler);
             $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
-                        
+            var_dump($dto->getErrors());            
         } catch (\Exception $e) {
             echo $e->getTraceAsString();
         }

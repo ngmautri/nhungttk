@@ -73,7 +73,7 @@ if (count($errors) > 0) {
 $docStatus = null;
 if (! $dto == null) {
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&token=%s", $dto->getId(), $dto->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
     
 }
 ?>

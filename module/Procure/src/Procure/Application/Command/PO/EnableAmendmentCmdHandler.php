@@ -19,8 +19,8 @@ use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -86,7 +86,7 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
-            $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
+            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
@@ -110,7 +110,6 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-                  
             $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
 
             // time to check version - concurency
@@ -123,13 +122,11 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
             $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
 
-             $cmd->getDoctrineEM()
+            $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
-             
-                throw new PoAmendmentException($e->getMessage());
-                
-        }
 
-     }
+            throw new PoAmendmentException($e->getMessage());
+        }
+    }
 }

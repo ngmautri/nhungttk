@@ -2,49 +2,47 @@
 namespace Procure\Controller;
 
 use Application\Notification;
+use Application\Controller\Plugin\NmtPlugin;
 use Application\Domain\Shared\DTOFactory;
-use Application\Entity\MlaUsers;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Procure\Application\Command\PO\AcceptAmendmentCmd;
+use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
 use Procure\Application\Command\PO\AddRowCmd;
 use Procure\Application\Command\PO\AddRowCmdHandler;
 use Procure\Application\Command\PO\CreateHeaderCmd;
 use Procure\Application\Command\PO\CreateHeaderCmdHandler;
+use Procure\Application\Command\PO\CreateHeaderCmdHandlerDecorator;
 use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
+use Procure\Application\Command\PO\EditHeaderCmdHandlerDecorator;
+use Procure\Application\Command\PO\EnableAmendmentCmd;
+use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
+use Procure\Application\Command\PO\PostCmd;
+use Procure\Application\Command\PO\PostCmdHandler;
+use Procure\Application\Command\PO\PostCmdHandlerDecorator;
 use Procure\Application\Command\PO\UpdateRowCmd;
 use Procure\Application\Command\PO\UpdateRowCmdHandler;
+use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
+use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Application\DTO\Po\PORowDTO;
+use Procure\Application\Command\PO\Options\PoPostOptions;
+use Procure\Application\Command\PO\Options\PoRowCreateOptions;
+use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
+use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\PO\POService;
 use Procure\Domain\Exception\PoCreateException;
+use Procure\Domain\Shared\Constants;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Procure\Application\Command\PO\Options\PoRowCreateOptions;
-use Procure\Application\Command\PO\Options\PoUpdateOptions;
-use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
-use Procure\Application\Command\PO\PostCmd;
-use Procure\Application\Command\PO\PostCmdHandler;
-use Procure\Application\Command\PO\Options\PoPostOptions;
-use Procure\Domain\Shared\Constants;
-use Application\Controller\Plugin\NmtPlugin;
-use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
-use Procure\Application\Command\PO\EnableAmendmentCmd;
-use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
-use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
-use Procure\Application\Command\PO\AcceptAmendmentCmd;
-use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
-use Procure\Application\Command\PO\CreateHeaderCmdHandlerDecorator;
-use Procure\Application\Command\PO\EditHeaderCmdHandlerDecorator;
-use Procure\Application\Command\PO\UpdateHeaderAndPostCmd;
-use Procure\Application\Command\PO\PostCmdHandlerDecorator;
+use Procure\Application\DTO\Po\PORowDTO;
 
 /**
  *
@@ -500,7 +498,7 @@ class PoController extends AbstractActionController
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
             $target_id = (int) $this->params()->fromQuery('target_id');
-            $target_token = $this->params()->fromQuery('token');
+            $target_token = $this->params()->fromQuery('target_token');
 
             $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
 
@@ -553,7 +551,7 @@ class PoController extends AbstractActionController
 
             /**
              *
-             * @var PoRowDTO $dto ;
+             * @var PORowDTO $dto ;
              */
             $dto = DTOFactory::createDTOFromArray($data, new PORowDetailsDTO());
 
@@ -624,7 +622,7 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -686,10 +684,10 @@ class PoController extends AbstractActionController
             $cmd->execute();
 
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
-            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&enity_token=%s", $entity_id, $entity_token);
         }
 
         $this->flashMessenger()->addMessage($msg);
@@ -806,8 +804,7 @@ class PoController extends AbstractActionController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
-        //$this->flashMessenger()->addMessage($redirectUrl);
-        
+        // $this->flashMessenger()->addMessage($redirectUrl);
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -1141,7 +1138,7 @@ class PoController extends AbstractActionController
             // probably this is the first time the form was loaded
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $entity_token = $this->params()->fromQuery('token');
+            $entity_token = $this->params()->fromQuery('entity_token');
 
             $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
 
@@ -1171,18 +1168,21 @@ class PoController extends AbstractActionController
             return $viewModel;
         }
 
+        // POSTING
+        // ====================================
+
         try {
+            $notification = new Notification();
 
-            // POSTING
             $data = $prg;
-
+          
             /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
 
             $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
-
+          
             $userId = $u->getId();
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
@@ -1190,21 +1190,20 @@ class PoController extends AbstractActionController
 
             $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
 
-            if ($rootEntity == null) {
+             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);            
+            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new PostCmdHandlerDecorator($cmdHandler);
-            
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);      
+
+            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
-            
+
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
 
-            $notification = new Notification();
             $notification->addError($e->getMessage());
         }
 
@@ -1225,14 +1224,14 @@ class PoController extends AbstractActionController
             ));
 
             $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
+            // return $viewModel;
         }
 
-        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
-        
-        //$this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+
+       
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
         $this->flashMessenger()->addMessage($redirectUrl);
-      
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -1258,7 +1257,7 @@ class PoController extends AbstractActionController
             // probably this is the first time the form was loaded
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $entity_token = $this->params()->fromQuery('token');
+            $entity_token = $this->params()->fromQuery('entity_token');
 
             $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
 
@@ -1319,10 +1318,10 @@ class PoController extends AbstractActionController
             $cmd->execute();
 
             $msg = sprintf("Ammendment of PO #%s is posted", $entity_id);
-            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         }
 
         $this->flashMessenger()->addMessage($msg);
@@ -1422,7 +1421,7 @@ class PoController extends AbstractActionController
         ));
 
         $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
+        $token = $this->params()->fromQuery('entity_token');
 
         $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($id, $token);
 
@@ -1446,8 +1445,7 @@ class PoController extends AbstractActionController
         $viewModel->setTemplate("procure/po/review-v1");
         return $viewModel;
     }
-    
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -1460,25 +1458,25 @@ class PoController extends AbstractActionController
          * return $this->redirect()->toRoute('not_found');
          * }
          */
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
+
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
         $file_type = $this->params()->fromQuery('file_type');
-        
+
         $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($id, $token, $file_type);
-        
+
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
-        
+
         $viewModel = new ViewModel(array(
             'action' => \Procure\Domain\Shared\Constants::FORM_ACTION_SHOW,
             'form_action' => "/procure/po/view",
@@ -1491,11 +1489,10 @@ class PoController extends AbstractActionController
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin
         ));
-        
+
         $viewModel->setTemplate("procure/po/review-v1");
         return $viewModel;
     }
-    
 
     /**
      *

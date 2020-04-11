@@ -3,9 +3,9 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
@@ -18,14 +18,13 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Application\Domain\Shared\Command\AbstractCommandHandler;
 
 /**
  *
@@ -92,7 +91,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecificationFactory, $fxService);
             $rowValidators->add($validator);
 
-            $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
+            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
 
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);

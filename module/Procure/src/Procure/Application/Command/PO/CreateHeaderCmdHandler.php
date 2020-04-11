@@ -20,7 +20,7 @@ use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
+use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -97,7 +97,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
-            $cmdRepository = new DoctrinePOCmdRepository($cmd->getDoctrineEM());
+            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 

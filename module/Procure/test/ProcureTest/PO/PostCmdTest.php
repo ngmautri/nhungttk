@@ -30,8 +30,8 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $sv= Bootstrap::getServiceManager()->get('Procure\Application\Service\PO\POService');
             
-            $entity_id = 344;
-            $entity_token = "544fe921-8fd7-45dd-bc57-c8a98f5ee358";
+            $entity_id = 346;
+            $entity_token = "5279c722-e2ac-43e5-9f49-23cf3f8fcd27";
             $version = 1;
             $userId =39;
             $dto = new PoDTO();

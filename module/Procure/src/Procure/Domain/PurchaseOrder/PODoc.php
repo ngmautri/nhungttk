@@ -85,7 +85,6 @@ class PODoc extends GenericPO
         /**
          *
          * @var \Procure\Domain\PurchaseOrder\PORow $row ;
-         *     
          * @todo: decoup dependency
          * @var PoPostOptions $options ;
          */

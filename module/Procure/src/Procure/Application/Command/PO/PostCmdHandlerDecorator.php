@@ -30,8 +30,6 @@ class PostCmdHandlerDecorator extends AbstractCommandHandlerDecorator
 
         try {
 
-            //throw new \Exception(sprintf("Testing only %s...", "haha"));
-            
             $this->handler->run($cmd);
 
             $cmd->getDoctrineEM()->commit(); // now commit

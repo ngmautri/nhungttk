@@ -3,17 +3,15 @@ namespace ProcureTest\GR\Command;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Command\GR\Options\CopyFromPOOptions;
-use Procure\Application\DTO\Po\PoDTO;
-use Procure\Domain\Exception\InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
-use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
 use Procure\Application\Command\GR\SaveCopyFromPOCmd;
+use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
 use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecorator;
-use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecoratorTest;
+use Procure\Application\Command\GR\Options\CopyFromPOOptions;
+use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
+use Procure\Application\DTO\Gr\GrDTO;
+use Procure\Application\DTO\Po\PoDTO;
+use Procure\Domain\GoodsReceipt\GRDoc;
+use PHPUnit_Framework_TestCase;
 
 class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 {
@@ -55,7 +53,7 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 
             $options = new SaveCopyFromPOOptions(1, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
-            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecoratorTest($cmdHandler);
+            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecorator($cmdHandler);
             $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 

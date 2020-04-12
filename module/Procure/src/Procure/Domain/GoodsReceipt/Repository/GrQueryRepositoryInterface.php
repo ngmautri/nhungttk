@@ -19,7 +19,7 @@ Interface GrQueryRepositoryInterface
 
     public function getByUUID($uuid);
 
-    public function getPODetailsById($id, $token = null);
+    public function getRootEntityByTokenId($id, $token = null);
 
     /**
      * 

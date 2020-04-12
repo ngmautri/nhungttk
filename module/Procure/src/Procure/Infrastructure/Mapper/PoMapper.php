@@ -568,34 +568,7 @@ class PoMapper
 
         // $snapshot->prRow= $entity->getPrRow();
         if ($entity->getPrRow() !== null) {
-            $snapshot->prRow = $entity->getPrRow()->getId();
-            $snapshot->prRowIndentifer = $entity->getPrRow()->getRowIdentifer();
-            $snapshot->prRowCode = $entity->getPrRow()->getRowCode();
-            $snapshot->prRowName = $entity->getPrRow()->getRowName();
-            $snapshot->prRowConvertFactor = $entity->getPrRow()->getConversionFactor();
-            $snapshot->prRowUnit = $entity->getPrRow()->getRowUnit();
-
-            if ($entity->getPrRow()->getPr() !== null) {
-                $snapshot->pr = $entity->getPrRow()
-                    ->getPr()
-                    ->getId();
-
-                $snapshot->prSysNumber = $entity->getPrRow()
-                    ->getPr()
-                    ->getPrAutoNumber();
-
-                $snapshot->prNumber = $entity->getPrRow()
-                    ->getPr()
-                    ->getPrNumber();
-
-                $snapshot->prToken = $entity->getPrRow()
-                    ->getPr()
-                    ->getToken();
-
-                $snapshot->prChecksum = $entity->getPrRow()
-                    ->getPr()
-                    ->getChecksum();
-            }
+            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
         }
 
         // $snapshot->createdBy= $entity->getCreatedBy();
@@ -606,99 +579,17 @@ class PoMapper
 
         // $snapshot->warehouse= $entity->getWarehouse();
         if ($entity->getWarehouse() !== null) {
-            $snapshot->warehouse = $entity->getWarehouse()->getId();
-            $snapshot->warehouseCode = $entity->getWarehouse()->getWhCode();
-            $snapshot->warehouseName = $entity->getWarehouse()->getWhName();
-            $snapshot->docWarehouseCode = $snapshot->warehouseCode;
-            $snapshot->docWarehouseName = $snapshot->warehouseName;
+            RowMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
         }
 
         // $snapshot->po= $entity->getPo();
         if ($entity->getPo() !== null) {
-            $snapshot->po = $entity->getPo()->getId();
-            $snapshot->vendorName = $entity->getPo()->getVendorName();
-            $snapshot->docCurrencyISO = $entity->getPo()->getCurrencyIso3();
-
-            $snapshot->docId = $snapshot->po;
-            $snapshot->docToken = $entity->getPo()->getToken();
-
-            $snapshot->exchangeRate = $entity->getPo()->getExchangeRate();
-            $snapshot->docNumber = $entity->getPo()->getContractNo();
-
-            if ($entity->getPo()->getDocCurrency() !== null) {
-                $snapshot->docCurrencyId = $entity->getPo()
-                    ->getDocCurrency()
-                    ->getId();
-                $snapshot->docCurrencyISO = $entity->getPo()
-                    ->getDocCurrency()
-                    ->getCurrency();
-            }
-
-            if ($entity->getPo()->getLocalCurrency() !== null) {
-                $snapshot->localCurrencyId = $entity->getPo()
-                    ->getLocalCurrency()
-                    ->getId();
-                $snapshot->localCurrencyISO = $entity->getPo()
-                    ->getLocalCurrency()
-                    ->getCurrency();
-            }
-
-            if ($entity->getPo()->getVendor() !== null) {
-                $snapshot->vendorId = $entity->getPo()
-                    ->getVendor()
-                    ->getId();
-                $snapshot->vendorToken = $entity->getPo()
-                    ->getVendor()
-                    ->getToken();
-
-                if ($entity->getPo()
-                    ->getVendor()
-                    ->getCountry() !== null) {
-                    $snapshot->vendorCountry = $entity->getPo()
-                        ->getVendor()
-                        ->getCountry()
-                        ->getCountryName();
-                }
-            }
+            RowMapper::updatePODetails($snapshot, $entity->getPo());
         }
 
         // $snapshot->item= $entity->getItem();
         if ($entity->getItem() !== null) {
-
-            if ($entity->getItem()->getIsFixedAsset() == 1) {
-                $snapshot->isFixedAsset = 1;
-            }
-
-            if ($entity->getItem()->getIsStocked() == 1) {
-                $snapshot->isInventoryItem = 1;
-            }
-
-            $snapshot->item = $entity->getItem()->getId();
-            $snapshot->itemToken = $entity->getItem()->getToken();
-            $snapshot->itemName = $entity->getItem()->getItemName();
-            $snapshot->itemName1 = $entity->getItem()->getItemNameForeign();
-
-            $snapshot->itemSKU = $entity->getItem()->getItemSku();
-
-            $snapshot->itemSKU1 = $entity->getItem()->getItemSku1();
-            $snapshot->itemSKU2 = $entity->getItem()->getItemSku2();
-
-            $snapshot->itemChecksum = $entity->getItem()->getChecksum();
-
-            $snapshot->itemVersion = $entity->getItem()->getRevisionNo();
-
-            if ($entity->getItem()->getStandardUom() != null) {
-                $snapshot->itemStandardUnit = $entity->getItem()
-                    ->getStandardUom()
-                    ->getId();
-                $snapshot->itemStandardUnitName = $entity->getItem()
-                    ->getStandardUom()
-                    ->getUomName();
-
-                $snapshot->itemStandardUnitCode = $entity->getItem()
-                    ->getStandardUom()
-                    ->getUomCode();
-            }
+            RowMapper::updateItemDetails($snapshot, $entity->getItem());
         }
 
         // $snapshot->docUom = $entity->getDocUom();

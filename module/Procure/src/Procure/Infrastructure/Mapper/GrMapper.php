@@ -8,7 +8,6 @@ use Procure\Domain\GoodsReceipt\GRDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
-use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -316,7 +315,7 @@ class GrMapper
              * @var \Application\Entity\NmtProcureGr $obj ;
              */
             $obj = $doctrineEM->getRepository('Application\Entity\NmtProcureGr')->find($snapshot->gr);
-            $entity->gr($obj);
+            $entity->setGr($obj);
         }
 
         // $entity->setApInvoiceRow($snapshot->apInvoiceRow);
@@ -484,11 +483,13 @@ class GrMapper
         }
 
         // $snapshot->incoterm2 = $entity->getIncoterm2();
-       /*  if ($entity->getIncoterm2() !== null) {
-            $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
-            $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
-            $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
-        } */
+        /*
+         * if ($entity->getIncoterm2() !== null) {
+         * $snapshot->incoterm2 = $entity->getIncoterm2()->getId();
+         * $snapshot->incotermCode = $entity->getIncoterm2()->getIncoterm();
+         * $snapshot->incotermName = $entity->getIncoterm2()->getIncoterm1();
+         * }
+         */
 
         if ($entity->getCompany() !== null) {
             $snapshot->company = $entity->getCompany()->getId();
@@ -690,32 +691,37 @@ class GrMapper
 
         // $snapshot->prRow = $entity->getPrRow();
         if ($entity->getPrRow() !== null) {
-            $snapshot->prRow = $entity->getPrRow()->getId();
+            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
         }
 
         // $snapshot->createdBy = $entity->getCreatedBy();
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
+            // $snapshot->createdByName = sprintf("%s %s", $entity->getCreatedBy()->getFirstname(), $entity->getCreatedBy()->getFirstname());
         }
 
         // $snapshot->warehouse = $entity->getWarehouse();
         if ($entity->getWarehouse() !== null) {
-            $snapshot->warehouse = $entity->getWarehouse()->getId();
+            RowMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
         }
-
         // $snapshot->lastchangedBy = $entity->getLastchangedBy();
-        if ($entity->getLastchangedBy() !== null) {
-            $snapshot->lastchangedBy = $entity->getLastchangedBy()->getId();
+        if ($entity->getLastchangeBy()) {
+            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
+            $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
         }
 
         // $snapshot->item = $entity->getItem();
         if ($entity->getItem() !== null) {
-            $snapshot->item = $entity->getItem()->getId();
+            RowMapper::updateItemDetails($snapshot, $entity->getItem());
         }
 
         // $snapshot->poRow= $entity->getPoRow();
         if ($entity->getPoRow() !== null) {
             $snapshot->poRow = $entity->getPoRow()->getId();
+
+            if ($entity->getPoRow()->getPo() !== null) {
+                RowMapper::updatePODetails($snapshot, $entity->getPoRow()->getPo());
+            }
         }
         return $snapshot;
     }

@@ -1,15 +1,15 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\GR\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoRowUpdateException;
+use Procure\Domain\Exception\Gr\GrRowUpdateException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowUpdateOptions implements CommandOptions
+class GrRowUpdateOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -23,9 +23,11 @@ class PoRowUpdateOptions implements CommandOptions
     private $version;
 
     private $userId;
+
     private $triggeredBy;
+
     private $triggeredOn;
-    
+
     /**
      *
      * @param int $companyId
@@ -35,19 +37,19 @@ class PoRowUpdateOptions implements CommandOptions
     public function __construct($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoRowUpdateException(sprintf("rootEntity not given! %s", "x"));
+            throw new GrRowUpdateException(sprintf("rootEntity not given! %s", __METHOD__));
         }
 
         if ($localEntity == null) {
-            throw new PoRowUpdateException(sprintf(" localEntity not given! %s", "x"));
+            throw new GrRowUpdateException(sprintf(" localEntity not given! %s", __METHOD__));
         }
 
         if ($userId == null) {
-            throw new PoRowUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new GrRowUpdateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoRowUpdateException(sprintf("Trigger not given! %s", $triggeredBy));
+            throw new GrRowUpdateException(sprintf("Trigger not given! %s", $triggeredBy));
         }
 
         $this->rootEntity = $rootEntity;
@@ -105,20 +107,25 @@ class PoRowUpdateOptions implements CommandOptions
     }
 
     /**
+     *
      * @return string
      */
     public function getTriggeredBy()
     {
         return $this->triggeredBy;
     }
+
     /**
+     *
      * @return int
      */
     public function getUserId()
     {
         return $this->userId;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getTriggeredOn()

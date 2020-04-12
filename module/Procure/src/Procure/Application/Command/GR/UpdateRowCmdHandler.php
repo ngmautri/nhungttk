@@ -3,27 +3,28 @@ namespace Procure\Application\Command\GR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
-use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Application\Command\GR\Options\GrRowUpdateOptions;
+use Procure\Application\DTO\Gr\GrRowDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoRowUpdateException;
 use Procure\Domain\Exception\PoVersionChangedException;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\Service\POPostingService;
+use Procure\Domain\Exception\Gr\GrRowUpdateException;
+use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\GRRowSnapshot;
+use Procure\Domain\GoodsReceipt\GRRowSnapshotAssembler;
+use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
+use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -31,7 +32,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
+class UpdateRowCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -46,18 +47,18 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
         }
         /**
          *
-         * @var PORowDetailsDTO $dto ;
-         * @var PODoc $rootEntity ;
-         * @var PoRowUpdateOptions $options ;
+         * @var GrRowDTO $dto ;
+         * @var GRDoc $rootEntity ;
+         * @var GrRowUpdateOptions $options ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();
 
-        if (! $options instanceof PoRowUpdateOptions) {
-            throw new PoRowUpdateException("No Options given. Pls check command configuration!");
+        if (! $options instanceof GrRowUpdateOptions) {
+            throw new GrRowUpdateException("No Options given. Pls check command configuration!");
         }
-        if (! $cmd->getDto() instanceof PORowDetailsDTO) {
-            throw new PoRowUpdateException("PORowDetailsDTO object not found!");
+        if (! $cmd->getDto() instanceof GrRowDTO) {
+            throw new GrRowUpdateException("GrRowDTO object not found!");
         }
 
         try {
@@ -71,21 +72,22 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             /**
              *
-             * @var PORowSnapshot $snapshot ;
-             * @var PORowSnapshot $newSnapshot ;
-             * @var PORow $row ;
+             * @var GRRowSnapshot $snapshot ;
+             * @var GRRowSnapshot $newSnapshot ;
+             * @var GRRow $row ;
              *     
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $editableProperties = [
-                "isActive",
+            $editableProperties = [                
                 "remarks",
                 "rowNumber",
                 "item",
                 "prRow",
+                "poRow",
+                "apInvoiceRow",
                 "vendorItemCode",
                 "vendorItemName",
                 "docQuantity",
@@ -96,15 +98,11 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
                 "taxRate"
             ];
 
-            /*
-             * $newSnapshot->rowNumber;
-             */
-
-            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+            $newSnapshot = GRRowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
-                $notification->addError("Nothing change on PO row#" . $row->getId());
+                $notification->addError("Nothing change on row#" . $row->getId());
                 $dto->setNotification($notification);
                 return;
             }
@@ -117,33 +115,28 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             // do change
 
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
-
             $newSnapshot->lastchangeBy = $userId;
             $newSnapshot->revisionNo ++;
-            
+
             $headerValidators = new HeaderValidatorCollection();
-            
+
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            
+
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            
+
             $rowValidators = new RowValidatorCollection();
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
-            
-            
-            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new POPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);            
+
+            $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new GrPostingService($cmdRepository);
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
-            
+
             // event dispatcher
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
@@ -166,20 +159,16 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             $notification->addSuccess($m);
 
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());            
+            $queryRep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());            
             // revision numner hasnt been increased.
             $currentVersion = $queryRep->getVersion($rootEntity->getId())-1;
             if($version != $currentVersion){
                 throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
             }
             
-            $cmd->getDoctrineEM()->commit(); // now commit
-        } catch (\Exception $e) {
+         } catch (\Exception $e) {
             
             $notification->addError($e->getMessage());
-            $cmd->getDoctrineEM()
-            ->getConnection()
-            ->rollBack();
         }
         
         $dto->setNotification($notification);

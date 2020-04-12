@@ -18,6 +18,7 @@ use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use PHPUnit_Framework_TestCase;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
 class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 {
@@ -43,6 +44,11 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
 
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+
+            $rep1 = new POQueryRepositoryImpl($doctrineEM);
+
+        
+
             $rep = new DoctrinePOQueryRepository($doctrineEM);
 
             // $id = 302;

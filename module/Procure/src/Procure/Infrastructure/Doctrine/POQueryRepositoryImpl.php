@@ -7,18 +7,49 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface;
+use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Doctrine\SQL\PoSQL;
 use Procure\Infrastructure\Mapper\PoMapper;
-use Procure\Domain\Shared\Constants;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements POQueryRepositoryInterface
+class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getHeaderByRowId()
+     */
+    public function getHeaderIdByRowId($id)
+    {
+        $sql = "
+SELECT
+nmt_procure_po_row.po_id AS poId,
+FROM nmt_procure_po_row
+WHERE id = %s";
+
+        $sql = sprintf($sql, $id);
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
+            $rsm->addScalarResult("poId", "poId");
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return $query->getSingleResult()["poId"];
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseOrder\Repository\POQueryRepositoryInterface::getVersionArray()
+     */
     public function getVersionArray($id, $token = null)
     {
         $criteria = array(
@@ -137,8 +168,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
 
         $rows = $this->getPoRowsDetails($id);
 
-        //$rows = null;
-        
+        // $rows = null;
+
         if (count($rows) == 0) {
             $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
             return $rootEntity;
@@ -199,8 +230,8 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
             $poRow = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
             $rowIdArray[] = $poRow->getId();
-            
-            //break;
+
+            // break;
         }
 
         if ($completed == true) {
@@ -217,7 +248,7 @@ class DoctrinePOQueryRepository extends AbstractDoctrineRepository implements PO
         $poDetailsSnapshot->discountAmount = $discountAmount;
         $poDetailsSnapshot->billedAmount = $billedAmount;
         $poDetailsSnapshot->completedRows = $completedRows;
-    
+
         $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
@@ -280,9 +311,4 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             return null;
         }
     }
-    public function getHeaderIdByRowId($id)
-    {}
-
-  
-  
 }

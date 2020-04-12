@@ -1,17 +1,17 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Repository;
+namespace Procure\Domain\APInvoice\Repository;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface POQueryRepositoryInterface
+Interface ApQueryRepositoryInterface
 {
 
     public function findAll();
 
-    public function getById($id, $outputStragegy = null);
+    public function getById($id);
 
     public function getHeaderById($id, $token = null);
 
@@ -21,9 +21,17 @@ Interface POQueryRepositoryInterface
 
     public function getPODetailsById($id, $token = null);
 
+    /**
+     * 
+     * @param int $id
+     * @param string $token
+     */
     public function getVersion($id, $token = null);
 
+    /**
+     * 
+     * @param int $id
+     * @param string $token
+     */
     public function getVersionArray($id, $token = null);
-    
-    public function getHeaderIdByRowId($id);
 }

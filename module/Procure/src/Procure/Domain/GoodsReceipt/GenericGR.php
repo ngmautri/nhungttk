@@ -3,6 +3,7 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Application\Command\GR\Options\GrRowCreateOptions;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\DTO\Gr\GrDetailsDTO;
 use Procure\Domain\Event\Gr\GrPosted;
@@ -15,6 +16,7 @@ use Procure\Domain\Exception\Gr\GrAmendmentException;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\Exception\Gr\GrInvalidOperationException;
 use Procure\Domain\Exception\Gr\GrPostingException;
+use Procure\Domain\Exception\Gr\GrRowCreateException;
 use Procure\Domain\Exception\Gr\GrRowUpdateException;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
@@ -85,7 +87,7 @@ abstract class GenericGR extends AbstractGR
         return $this;
     }
 
-    public function deactivateRow(GRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    public function deactivateRow(GRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
     /**
@@ -162,25 +164,11 @@ abstract class GenericGR extends AbstractGR
             throw new GrInvalidOperationException(sprintf("Document is not on amendment! %s", $this->getId()));
         }
 
-        if ($headerValidators == null) {
-            throw new GrInvalidOperationException($this->translate("HeaderValidatorCollection not found"));
-        }
-
-        if ($rowValidators == null) {
-            throw new GrInvalidOperationException($this->translate("HeaderValidatorCollection not found"));
-        }
-
-        if ($sharedService == null) {
-            throw new GrInvalidOperationException($this->translate("SharedService service not found"));
-        }
-
-        if ($postingService == null) {
-            throw new GrInvalidOperationException($this->translate("postingService service not found"));
-        }
-
         if ($options == null) {
             throw new GrInvalidOperationException($this->translate("Comnand Options not found!"));
         }
+
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $createdDate = new \Datetime();
         $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
@@ -229,28 +217,14 @@ abstract class GenericGR extends AbstractGR
     public function createRowFrom(GRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
         if ($this->getDocStatus() == GRDocStatus::DOC_STATUS_POSTED) {
-            throw new GrInvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+            throw new GrInvalidOperationException(sprintf("GR is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
             throw new GrInvalidArgumentException("PORowSnapshot not found");
         }
 
-        if ($headerValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection service not found");
-        }
-
-        if ($rowValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection service not found");
-        }
-
-        if ($sharedService == null) {
-            throw new GrInvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new GrInvalidArgumentException("postingService service not found");
-        }
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $createdDate = new \Datetime();
         $snapshot->createdOn = date_format($createdDate, 'Y-m-d H:i:s');
@@ -265,6 +239,24 @@ abstract class GenericGR extends AbstractGR
         $snapshot->isDraft = 1;
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
         $snapshot->unit = $snapshot->getDocUnit();
+
+        /**
+         *
+         * @todo
+         */
+        if ($snapshot->poRow > 0) {
+            // update reference to PO aggregate root.
+            $snapshot->po;
+        }
+
+        /**
+         *
+         * @todo
+         */
+        if ($snapshot->apInvoiceRow > 0) {
+            // update reference to AP aggregate root.
+            $snapshot->invoice;
+        }
 
         $row = GRRow::makeFromSnapshot($snapshot);
 
@@ -283,11 +275,11 @@ abstract class GenericGR extends AbstractGR
         $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new GrRowUpdateException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
+            throw new GrRowCreateException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
         $trigger = null;
-        if ($options instanceof PoRowCreateOptions) {
+        if ($options instanceof GrRowCreateOptions) {
             $trigger = $options->getTriggeredBy();
         }
 
@@ -315,7 +307,7 @@ abstract class GenericGR extends AbstractGR
      * @throws GrRowUpdateException
      * @return \Procure\Domain\GoodsReceipt\GRRowSnapshot
      */
-    public function updateRowFrom(GRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    public function updateRowFrom(GRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
         if ($this->getDocStatus() == GRDocStatus::DOC_STATUS_POSTED) {
             throw new GrInvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
@@ -325,21 +317,7 @@ abstract class GenericGR extends AbstractGR
             throw new GrInvalidArgumentException("PORowSnapshot not found");
         }
 
-        if ($headerValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection service not found");
-        }
-
-        if ($rowValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection service not found");
-        }
-
-        if ($sharedService == null) {
-            throw new GrInvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new GrInvalidArgumentException("postingService service not found");
-        }
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $createdDate = new \Datetime();
         $snapshot->lastchangeOn = date_format($createdDate, 'Y-m-d H:i:s');
@@ -353,6 +331,11 @@ abstract class GenericGR extends AbstractGR
         $snapshot->isDraft = 1;
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();
         $snapshot->unit = $snapshot->getDocUnit();
+
+        /**
+         *
+         * @todo update reference to PO aggregate.
+         */
 
         $row = GrRow::makeFromSnapshot($snapshot);
 
@@ -402,25 +385,7 @@ abstract class GenericGR extends AbstractGR
             throw new GrInvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         }
 
-        if ($headerValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($rowValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($sharedService == null) {
-            throw new GrInvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new GrInvalidArgumentException("postingService service not found");
-        }
-
-        if ($options == null) {
-            throw new GrInvalidArgumentException("Comnand Options not found!");
-        }
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
@@ -519,6 +484,33 @@ abstract class GenericGR extends AbstractGR
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
+    }
+    
+   /**
+    * 
+    * @param HeaderValidatorCollection $headerValidators
+    * @param RowValidatorCollection $rowValidators
+    * @param SharedService $sharedService
+    * @param GrPostingService $postingService
+    * @throws GrInvalidArgumentException
+    */
+    private function _checkParams(HeaderValidatorCollection $headerValidators,RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService){
+        
+        if ($headerValidators == null) {
+            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+        
+        if ($rowValidators == null) {
+            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+        
+        if ($sharedService == null) {
+            throw new GrInvalidArgumentException("SharedService service not found");
+        }
+        
+        if ($postingService == null) {
+            throw new GrInvalidArgumentException("postingService service not found");
+        }
     }
   
 }

@@ -1,15 +1,15 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\GR\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoRowCreateException;
+use Procure\Domain\Exception\Gr\GrRowCreateException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoRowCreateOptions implements CommandOptions
+class GrRowCreateOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -35,15 +35,15 @@ class PoRowCreateOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoRowCreateException(sprintf("$rootEntity not given! %s", $rootEntity));
+            throw new GrRowCreateException(sprintf("$rootEntity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoRowCreateException(sprintf("User ID not given! %s", $userId));
+        	throw new GrRowCreateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoRowCreateException(sprintf("Trigger not given! %s", $userId));
+        	throw new GrRowCreateException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;

@@ -2,14 +2,14 @@
 namespace Procure\Domain\GoodsReceipt;
 
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Gr\GrRowDetailsDTO;
 use Procure\Domain\GenericRow;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
-use Application\Domain\Shared\SnapshotAssembler;
-use Application\Domain\Shared\Command\CommandOptions;
 
 /**
  * Goods Receipt Row
@@ -42,8 +42,25 @@ class GRRow extends GenericRow
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * @param GRRowSnapshot $snapshot
+     * @return NULL|\Procure\Domain\GoodsReceipt\GRRow
+     */
+    public static function makeFromSnapshot(GRRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof GRRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\GenericRow::makeSnapshot()
      */
     public function makeSnapshot()
@@ -92,7 +109,7 @@ class GRRow extends GenericRow
         $instance->setUuid(Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
         $instance->setCreatedBy($options->getUserId());
-        
+
         return $instance;
     }
 

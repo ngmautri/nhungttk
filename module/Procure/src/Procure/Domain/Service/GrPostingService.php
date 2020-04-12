@@ -19,7 +19,7 @@ class GrPostingService
     public function __construct(GrCmdRepositoryInterface $cmdRepository)
     {
         if ($cmdRepository == null) {
-            throw new GrInvalidArgumentException("PO cmd repository not set!");
+            throw new GrInvalidArgumentException("GR cmd repository not set!");
         }
         $this->cmdRepository = $cmdRepository;
     }

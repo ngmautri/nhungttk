@@ -28,7 +28,7 @@ class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQuer
     {
         $sql = "
 SELECT
-nmt_procure_po_row.po_id AS poId,
+nmt_procure_po_row.po_id AS poId
 FROM nmt_procure_po_row
 WHERE id = %s";
 

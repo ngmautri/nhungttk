@@ -5,11 +5,11 @@ use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Application\Command\GR\EditHeaderCmd;
 use Procure\Application\Command\GR\EditHeaderCmdHandler;
-use Procure\Application\Command\GR\EditHeaderCmdHandlerDecoratorTest;
 use Procure\Application\Command\GR\Options\GrUpdateOptions;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\Command\TransactionalCmdHandlerDecoratorTest;
 
 class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 {
@@ -48,7 +48,7 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             $options = new GrUpdateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
             
             $cmdHandler = new EditHeaderCmdHandler();
-            $cmdHandlerDecorator = new EditHeaderCmdHandlerDecoratorTest($cmdHandler);
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecoratorTest($cmdHandler);
             $cmd= new EditHeaderCmd($doctrineEM, $dto, $options,$cmdHandlerDecorator);
             $cmd->execute();           
 

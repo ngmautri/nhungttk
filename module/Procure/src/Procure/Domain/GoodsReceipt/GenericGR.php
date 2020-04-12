@@ -25,6 +25,7 @@ use Procure\Domain\Shared\Constants;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  *
@@ -233,8 +234,11 @@ abstract class GenericGR extends AbstractGR
 
         if ($snapshot->token == null) {
             $snapshot->token = Uuid::uuid4()->toString();
+            $snapshot->uuid = $snapshot->getToken();
         }
 
+        $snapshot->docStatus = ProcureDocStatus::DOC_STATUS_DRAFT;
+        $snapshot->isActive = 1;
         $snapshot->docType = $this->docType;
         $snapshot->isDraft = 1;
         $snapshot->unitPrice = $snapshot->getDocUnitPrice();

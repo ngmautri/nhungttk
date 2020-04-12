@@ -11,6 +11,7 @@ use Procure\Application\Command\GR\Options\GrRowCreateOptions;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Application\Service\GR\RowSnapshotReference;
 use Procure\Domain\Exception\Gr\GrRowCreateException;
 use Procure\Domain\Exception\Gr\GrVersionChangedException;
 use Procure\Domain\GoodsReceipt\GRDoc;
@@ -24,7 +25,7 @@ use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 
 /**
  *
@@ -75,18 +76,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $dto->company = $rootEntity->getCompany();
 
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new GRRowSnapshot());
-
-            // extending snapshot.
-            if ($snapshot->getPoRow() > 0) {
-                $poQuery = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-                $snapshot->po = $poQuery->getHeaderIdByRowId($snapshot->getPoRow());
-            }
-      
-            if ($snapshot->getApInvoiceRow() > 0) {
-                //$poQuery = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-                $snapshot->invoice = $poQuery->getHeaderIdByRowId($snapshot->getPoRow());
-            }
-            
+            $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
@@ -99,6 +89,10 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $rowValidators = new RowValidatorCollection();
             $validator = new DefaultRowValidator($sharedSpecificationFactory, $fxService);
             $rowValidators->add($validator);
+            
+            $validator = new GLAccountValidator($sharedSpecificationFactory, $fxService);
+            $rowValidators->add($validator);
+            
 
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);

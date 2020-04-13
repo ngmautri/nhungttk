@@ -1,6 +1,8 @@
 <?php
 namespace Inventory\Domain\Item;
 
+use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\AggregateRootInterface;
 use Inventory\Application\DTO\Item\ItemAssembler;
 
 /**
@@ -8,7 +10,7 @@ use Inventory\Application\DTO\Item\ItemAssembler;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractItem
+abstract class AbstractItem extends AbstractEntity implements AggregateRootInterface
 {
 
     protected $id;

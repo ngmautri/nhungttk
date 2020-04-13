@@ -6,22 +6,27 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\PO\Options\PoPostOptions;
-use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Command\GR\Options\GrPostOptions;
+use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\Exception\PoUpdateException;
-use Procure\Domain\Exception\PoVersionChangedException;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\Service\POPostingService;
+use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Domain\APInvoice\Validator\Row\PoRowValidator;
+use Procure\Domain\Exception\Gr\GrPostingException;
+use Procure\Domain\Exception\Gr\GrVersionChangedException;
+use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
+use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -43,27 +48,23 @@ class PostCmdHandler extends AbstractCommandHandler
             throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof PoDTO) {
-            throw new \Exception("PoDTO object not found!");
-        }
-
         /**
          *
-         * @var PoDTO $dto ;
-         * @var PODoc $rootEntity ;
-         * @var POSnapshot $rootSnapshot ;
-         * @var PoPostOptions $options ;
+         * @var GrDTO $dto ;
+         * @var GRDoc $rootEntity ;
+         * @var GRSnapshot $rootSnapshot ;
+         * @var GrPostOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof PoPostOptions) {
-            throw new PoUpdateException("No Options given. Pls check command configuration!");
+        if (! $options instanceof GrPostOptions) {
+            throw new GrPostingException("No Options given. Pls check command configuration!");
         }
 
-        if (! $dto instanceof PoDTO) {
-            throw new PoUpdateException("PoDTO object not found!");
+        if (! $dto instanceof GrDTO) {
+            throw new GrPostingException("DTO object not found!");
         }
 
         $options = $cmd->getOptions();
@@ -78,27 +79,31 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            /**
-             *
-             * @var POSnapshot $snapshot ;
-             * @var POSnapshot $rootSnapshot ;
-             * @var PODoc $rootEntity ;
-             */
-
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $headerValidators = new HeaderValidatorCollection();
+
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
+            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
+            $validator = new GrPostingValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $rowValidators = new RowValidatorCollection();
+
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
+            $validator = new PoRowValidator($sharedSpecFactory, $fxService,$procureSpecsFactory);
+            $rowValidators->add($validator);
+            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
+            $rowValidators->add($validator);
 
-            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new POPostingService($cmdRepository);
+            $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
@@ -121,23 +126,23 @@ class PostCmdHandler extends AbstractCommandHandler
                 }
             }
 
-            $m = sprintf("PO #%s posted", $rootEntity->getId());
+            $m = sprintf("GR #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            $queryRep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new GrVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-         } catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());
         }
 
         $dto->setNotification($notification);
-    }
+     }
 }

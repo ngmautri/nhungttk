@@ -1,11 +1,12 @@
 <?php
 namespace Procure\Infrastructure\Mapper;
 
+use Application\Entity\NmtApplicationUom;
 use Application\Entity\NmtInventoryItem;
+use Application\Entity\NmtInventoryWarehouse;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePrRow;
 use Procure\Domain\RowSnapshot;
-use Application\Entity\NmtInventoryWarehouse;
 
 /**
  *
@@ -36,6 +37,28 @@ class RowMapper
         $snapshot->warehouseName = $entity->getWhName();
         $snapshot->docWarehouseCode = $snapshot->warehouseCode;
         $snapshot->docWarehouseName = $snapshot->warehouseName;
+        return $snapshot;
+    }
+    
+    /**
+     * 
+     * @param \Procure\Domain\RowSnapshot $snapshot
+     * @param \Application\Entity\NmtApplicationUom $entity
+     * @return NULL|\Procure\Domain\RowSnapshot
+     */
+    public static function updateUomDetails(RowSnapshot $snapshot, NmtApplicationUom $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+        
+        if ($entity == null) {
+            return $snapshot;
+        }
+        
+        $snapshot->docUom = $entity->getId();
+        $snapshot->docUomCode = $entity->getUomCode();
+        $snapshot->docUomName = $entity->getUomName();
         return $snapshot;
     }
 

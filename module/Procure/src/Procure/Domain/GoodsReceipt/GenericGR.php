@@ -26,6 +26,7 @@ use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Application\Domain\Util\Translator;
 
 /**
  *
@@ -372,28 +373,27 @@ abstract class GenericGR extends AbstractGR
     }
 
     /**
-     *
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param GrPostingException $postingService
-     * @throws GrInvalidOperationException
-     * @throws GrInvalidArgumentException
-     * @throws PoPostingException
+     * 
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\GrPostingService $postingService
+     * @throws \Procure\Domain\Exception\Gr\GrInvalidOperationException
+     * @throws \Procure\Domain\Exception\Gr\GrPostingException
      * @return \Procure\Domain\GoodsReceipt\GenericGR
      */
-    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingException $postingService)
+    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
         if (! $this->getDocStatus() == GRDocStatus::DOC_STATUS_DRAFT) {
-            throw new GrInvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
+            throw new GrInvalidOperationException(sprintf(Translator::translate("Document is already posted/closed or being amended! %s", $this->getId())));
         }
 
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
-            throw new PoPostingException($this->getErrorMessage());
+            throw new GrPostingException($this->getErrorMessage());
         }
 
         $this->clearEvents();

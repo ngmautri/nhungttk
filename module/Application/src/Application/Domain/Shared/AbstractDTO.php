@@ -23,7 +23,7 @@ abstract class AbstractDTO
     }
 
     /**
-     *
+     * 
      * @return array|\Application\multitype:
      */
     public function getErrors()

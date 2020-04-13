@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\GR\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Exception\PoUpdateException;
@@ -9,7 +9,7 @@ use Procure\Domain\Exception\PoUpdateException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoPostOptions implements CommandOptions
+class GrPostOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -23,9 +23,8 @@ class PoPostOptions implements CommandOptions
     private $version;
 
     private $triggeredBy;
-    
+
     private $triggeredOn;
-    
 
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
@@ -102,7 +101,9 @@ class PoPostOptions implements CommandOptions
     {
         return $this->triggeredBy;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getTriggeredOn()

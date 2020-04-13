@@ -4,10 +4,9 @@ namespace Procure\Infrastructure\Mapper;
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\FinVendorInvoiceRow;
 use Doctrine\ORM\EntityManager;
+use Procure\Domain\APInvoice\APDocRowDetailsSnapshot;
 use Procure\Domain\APInvoice\APDocRowSnapshot;
 use Procure\Domain\APInvoice\APDocSnapshot;
-use Procure\Domain\APInvoice\APDocDetailsSnapshot;
-use Procure\Domain\APInvoice\APDocRowDetailsSnapshot;
 
 /**
  *

@@ -383,39 +383,22 @@ class PoMapper
         // =====================
 
         if ($entity->getCompany() !== null) {
-            $snapshot->company = $entity->getCompany()->getId();
-            $snapshot->companyName = $entity->getCompany()->getCompanyName();
-            $snapshot->companyCode = $entity->getCompany()->getCompanyCode();
-            $snapshot->companyToken = $entity->getCompany()->getToken();
+            HeaderMapper::updateCompanyDetails($snapshot, $entity->getVendor());
         }
 
         // $snapshot->vendor= $entity->getVendor();
         if ($entity->getVendor() !== null) {
-            $snapshot->vendor = $entity->getVendor()->getId();
-            $snapshot->vendorName = $entity->getVendor()->getVendorName();
-            $snapshot->vendorId = $snapshot->vendor;
-            $snapshot->vendorToken = $entity->getVendor()->getToken();
-            $snapshot->vendorAddress = sprintf("%s %s", $entity->getVendor()->getStreet(), $entity->getVendor()->getCity());
-
-            if ($entity->getVendor()->getCountry() !== null) {
-                $snapshot->vendorCountry = $entity->getVendor()
-                    ->getCountry()
-                    ->getCountryName();
-            }
+            HeaderMapper::updateVendorDetails($snapshot, $entity->getVendor());
         }
 
         // $snapshot->pmtTerm = $entity->getPmtTerm();
         if ($entity->getPmtTerm() !== null) {
-            $snapshot->pmtTerm = $entity->getPmtTerm()->getId();
-            $snapshot->paymentTermName = $entity->getPmtTerm()->getPmtTermName();
-            $snapshot->paymentTermCode = $entity->getPmtTerm()->getPmtTermCode();
+            HeaderMapper::updatePmtTermDetails($snapshot, $entity->getVendor());
         }
 
         // $snapshot->warehouse = $entity->getWarehouse();
         if ($entity->getWarehouse() !== null) {
-            $snapshot->warehouse = $entity->getWarehouse()->getId();
-            $snapshot->warehouseName = $entity->getWarehouse()->getWhName();
-            $snapshot->warehouseCode = $entity->getWarehouse()->getWhCode();
+            HeaderMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
         }
 
         // $snapshot->createdBy = $entity->getCreatedBy();
@@ -437,24 +420,17 @@ class PoMapper
 
         // $snapshot->paymentMethod = $entity->getPaymentMethod();
         if ($entity->getPaymentMethod() !== null) {
-            $snapshot->paymentMethod = $entity->getPaymentMethod()->getId();
-            $snapshot->paymentMethodName = $entity->getPaymentMethod()->getMethodName();
-            $snapshot->paymentMethodCode = $entity->getPaymentMethod()->getMethodCode();
+            HeaderMapper::updatePmtMethodDetails($snapshot, $entity->getPaymentMethod());
         }
 
         // $snapshot->localCurrency = $entity->getLocalCurrency();
         if ($entity->getLocalCurrency() !== null) {
-            $snapshot->localCurrency = $entity->getLocalCurrency()->getId();
-            $snapshot->localCurrencyId = $snapshot->localCurrency;
-            $snapshot->localCurrencyISO = $entity->getLocalCurrency()->getCurrency();
+            HeaderMapper::updateLocalCurrencyDetails($snapshot, $entity->getLocalCurrency());
         }
 
         // $snapshot->docCurrency = $entity->getDocCurrency();
         if ($entity->getDocCurrency() !== null) {
-            $snapshot->docCurrency = $entity->getDocCurrency()->getId();
-            $snapshot->currencyIso3 = $entity->getDocCurrency()->getCurrency();
-            $snapshot->docCurrencyId = $snapshot->docCurrency;
-            $snapshot->docCurrencyISO = $snapshot->currencyIso3;
+            HeaderMapper::updateDocCurrencyDetails($snapshot, $entity->getDocCurrency());
         }
 
         // $snapshot->incoterm2 = $entity->getIncoterm2();
@@ -594,9 +570,7 @@ class PoMapper
 
         // $snapshot->docUom = $entity->getDocUom();
         if ($entity->getDocUom() !== null) {
-            $snapshot->docUom = $entity->getDocUom()->getId();
-            $snapshot->docUomCode = $entity->getDocUom()->getUomCode();
-            $snapshot->docUomName = $entity->getDocUom()->getUomName();
+            RowMapper::updateUomDetails($snapshot, $entity->getDocUom());
         }
 
         // Mapping Date

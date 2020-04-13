@@ -34,7 +34,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PostCmdHandler extends AbstractCommandHandler
+class ReverseCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -100,14 +100,14 @@ class PostCmdHandler extends AbstractCommandHandler
             $validator = new PoRowValidator($sharedSpecFactory, $fxService,$procureSpecsFactory);
             $rowValidators->add($validator);
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            //$rowValidators->add($validator);
+            $rowValidators->add($validator);
 
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-             
+
             // event dispatc
             if (count($rootEntity->getRecordedEvents() > 0)) {
 

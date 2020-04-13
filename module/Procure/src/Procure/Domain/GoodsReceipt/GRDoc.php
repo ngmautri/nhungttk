@@ -3,8 +3,6 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
 use Procure\Domain\Exception\PoInvalidArgumentException;
@@ -15,7 +13,6 @@ use Procure\Domain\Exception\Gr\GrPostingException;
 use Procure\Domain\Exception\Gr\GrUpdateException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\GrPostingService;
-use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -49,25 +46,25 @@ class GRDoc extends GenericGR
     {
         return SnapshotAssembler::createSnapshotFrom($this, new GRSnapshot());
     }
-    
-   /**
-    * 
-    * @param GRSnapshot $snapshot
-    * @return void|\Procure\Domain\GoodsReceipt\GRDoc
-    */
+
+    /**
+     *
+     * @param GRSnapshot $snapshot
+     * @return void|\Procure\Domain\GoodsReceipt\GRDoc
+     */
     public static function makeFromSnapshot(GRSnapshot $snapshot)
     {
         if (! $snapshot instanceof GRSnapshot)
             return;
-            
-            if ($snapshot->uuid == null) {
-                $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-                $snapshot->token = $snapshot->uuid;
-            }
-            
-            $instance = new self();
-            SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-            return $instance;
+
+        if ($snapshot->uuid == null) {
+            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $snapshot->token = $snapshot->uuid;
+        }
+
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
     }
 
     /**
@@ -166,20 +163,10 @@ class GRDoc extends GenericGR
             throw new GrInvalidOperationException(sprintf("Doctype is not vadid! %s", $this->getDocType()));
         }
 
-        if ($headerValidators == null) {
-            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
-        }
+        $this->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
 
         if ($rowValidators == null) {
             throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($sharedService == null) {
-            throw new GrInvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new GrInvalidArgumentException("postingService service not found");
         }
 
         if ($options == null) {
@@ -261,23 +248,9 @@ class GRDoc extends GenericGR
      */
     public static function createFrom(GRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, GrPostingService $postingService)
     {
-        if (! $snapshot instanceof GRSnapshot) {
-            throw new GrInvalidArgumentException("PO snapshot not found!");
-        }
-
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new GrInvalidArgumentException("Header Validator not found!");
-        }
-
-        if (! $sharedService instanceof SharedService) {
-            throw new GrInvalidArgumentException("Shared service not found!");
-        }
-
-        if (!$postingService instanceof GrPostingService) {
-            throw new GrInvalidArgumentException(sprintf("Posting service not found! %s", "GRdoc"));
-        }
-
         $instance = new self();
+        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
+
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
@@ -316,7 +289,7 @@ class GRDoc extends GenericGR
 
         $trigger = null;
         $params = null;
-        if ($options instanceof PoCreateOptions) {
+        if ($options !==null) {
             $trigger = $options->getTriggeredBy();
             $params = [];
         }
@@ -325,38 +298,24 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
-   /**
-    * 
-    * @param GrSnapshot $snapshot
-    * @param CommandOptions $options
-    * @param unknown $params
-    * @param HeaderValidatorCollection $headerValidators
-    * @param SharedService $sharedService
-    * @param GrPostingService $postingService
-    * @throws PoInvalidArgumentException
-    * @throws GrCreateException
-    * @throws GrUpdateException
-    * @return \Procure\Domain\GoodsReceipt\GRDoc
-    */
+    /**
+     *
+     * @param GrSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param GrPostingService $postingService
+     * @throws PoInvalidArgumentException
+     * @throws GrCreateException
+     * @throws GrUpdateException
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     */
     public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, GrPostingService $postingService)
     {
-        if (! $snapshot instanceof GrSnapshot) {
-            throw new PoInvalidArgumentException("PO snapshot not found!");
-        }
-
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("Header Validator not found!");
-        }
-
-        if (! $sharedService instanceof SharedService) {
-            throw new PoInvalidArgumentException("Shared service not found!");
-        }
-
-        if (! $postingService instanceof GrPostingService) {
-            throw new PoInvalidArgumentException("Posting service not found!");
-        }
-
         $instance = new self();
+        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
+
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
@@ -386,7 +345,7 @@ class GRDoc extends GenericGR
         $instance->id = $rootSnapshot->getId();
 
         $trigger = null;
-        if ($options instanceof PoUpdateOptions) {
+        if ($options !==null) {
             $trigger = $options->getTriggeredBy();
         }
 
@@ -434,24 +393,83 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
-    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+   
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
+     */
+    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
+    {
+        /**
+         *
+         * @var GRRow $row ;
+         */
+        $postedDate = new \Datetime();
+
+        $this->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+
+        foreach ($this->getDocRows() as $row) {
+
+            if ($row->getDocQuantity() == 0) {
+                continue;
+            }
+
+            $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+        }
+
+        $this->validate($headerValidators, $rowValidators, true);
+
+        if ($this->hasErrors()) {
+            throw new GrPostingException($this->getNotification()->errorMessage());
+        }
+
+        $postingService->getCmdRepository()->post($this, true);
+    }
+    
+    /**
+     * 
+     * @param GrSnapshot $snapshot
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\GrPostingService $postingService
+     * @throws \Procure\Domain\Exception\Gr\GrInvalidArgumentException
+     */
+    private function _checkInputParams(GrSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, GrPostingService $postingService)
+    {
+        if (! $snapshot instanceof GrSnapshot) {
+            throw new GrInvalidArgumentException("GR snapshot not found!");
+        }
+        
+        if ($headerValidators == null) {
+            throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
+        }
+           if ($sharedService == null) {
+               throw new GrInvalidArgumentException("SharedService service not found");
+        }
+        
+        if ($postingService == null) {
+            throw new GrInvalidArgumentException("postingService service not found");
+        }
+    }
+    
+    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
-    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
-    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
-    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
     protected function raiseEvent()
     {}
 
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
-    {}
 }

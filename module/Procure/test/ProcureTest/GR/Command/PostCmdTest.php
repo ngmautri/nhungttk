@@ -10,6 +10,7 @@ use Procure\Application\Command\GR\Options\GrPostOptions;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 
 class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 {
@@ -32,10 +33,9 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-        
             $rootEntityId = "94";
             $rootEntityToken = "cc15908b-e12f-4403-bbda-ceb5d824f1f5";
-            $version = 3;
+            $version = 4;
 
             $rep = new GRQueryRepositoryImpl($doctrineEM);
             $rootEntity = $rep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
@@ -43,14 +43,14 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             $options = new GrPostOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
 
             $dto = new GrDTO();
-            
+
             $cmdHandler = new PostCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecoratorTest($cmdHandler);
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new PostCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
-            
             var_dump($dto->getErrors());
-            
+
+            var_dump($rootEntity);
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

@@ -5,7 +5,6 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Domain\GenericDoc;
 use Procure\Domain\GenericRow;
 
 /**
@@ -89,19 +88,7 @@ class PORow extends GenericRow
         }
     }
 
-    /**
-     * this should be called when posted.
-     *
-     * @return \Procure\Domain\PurchaseOrder\PORow
-     */
-    public function setAsPosted($postedBy, $postedDate)
-    {
-        $this->isPosted = 1;
-        $this->isDraft = 0;
-        $this->docStatus = PODocStatus::DOC_STATUS_POSTED;
-        $this->lastchangeOn = (date_format($postedDate, 'Y-m-d H:i:s'));
-        $this->lastchangeBy = $postedBy;
-    }
+   
 
     /**
      *

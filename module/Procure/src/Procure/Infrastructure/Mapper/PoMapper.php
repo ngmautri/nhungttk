@@ -59,7 +59,6 @@ class PoMapper
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
 
-   
         // DATE MAPPING
         // $entity->setCreatedOn($snapshot->createdOn);
         if ($snapshot->createdOn !== null) {
@@ -210,18 +209,13 @@ class PoMapper
         return $entity;
     }
 
-    /**
-     *
-     * @param PORowSnapshot $snapshot
-     * @param NmtProcurePoRow $entity
-     * @return NULL|\Application\Entity\NmtProcurePoRow
-     */
     public static function mapRowSnapshotEntity(EntityManager $doctrineEM, PORowSnapshot $snapshot, NmtProcurePoRow $entity)
     {
         if ($snapshot == null || $entity == null || $doctrineEM == null) {
             return null;
         }
 
+        // $entity->setId($snapshot->id);
         $entity->setRowNumber($snapshot->rowNumber);
         $entity->setToken($snapshot->token);
         $entity->setQuantity($snapshot->quantity);
@@ -268,9 +262,27 @@ class PoMapper
         $entity->setDescriptionText($snapshot->descriptionText);
         $entity->setVendorItemName($snapshot->vendorItemName);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
+        $entity->setDocVersion($snapshot->docVersion);
+        $entity->setUuid($snapshot->uuid);
+        $entity->setLocalUnitPrice($snapshot->localUnitPrice);
+        $entity->setExwCurrency($snapshot->exwCurrency);
+        $entity->setLocalNetAmount($snapshot->localNetAmount);
+        $entity->setLocalGrossAmount($snapshot->localGrossAmount);
+        $entity->setTransactionType($snapshot->transactionType);
+        $entity->setIsReversed($snapshot->isReversed);
+        $entity->setGlAccount($snapshot->glAccount);
+        $entity->setCostCenter($snapshot->costCenter);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
-        
+
+        // ============================
         // DATE MAPPING
+        // ============================
+
+        /*
+         * $entity->setCreatedOn($snapshot->createdOn);
+         * $entity->setLastchangeOn($snapshot->lastchangeOn);
+         * $entity->setReversalDate($snapshot->reversalDate);
+         */
 
         // $entity->setLastchangeOn($snapshot->lastchangeOn);
         if ($snapshot->lastchangeOn !== null) {
@@ -282,7 +294,25 @@ class PoMapper
             $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
         }
 
+        // $entity->setReversalDate($snapshot->reversalDate);
+        if ($snapshot->reversalDate !== null) {
+            $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
+        }
+
+        // ============================
         // REFERRENCE MAPPING
+        // ============================
+
+        /*
+         * $entity->setInvoice($snapshot->invoice);
+         * $entity->setLastchangeBy($snapshot->lastchangeBy);
+         * $entity->setPrRow($snapshot->prRow);
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setWarehouse($snapshot->warehouse);
+         * $entity->setPo($snapshot->po);
+         * $entity->setItem($snapshot->item);
+         * $entity->setDocUom($snapshot->docUom);
+         */
 
         // $entity->setInvoice($snapshot->invoice);
         if ($snapshot->invoice > 0) {
@@ -363,6 +393,7 @@ class PoMapper
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->docUom);
             $entity->setDocUom($obj);
         }
+
         return $entity;
     }
 
@@ -371,7 +402,7 @@ class PoMapper
      * @param object $entity
      * @return NULL|\Procure\Domain\PurchaseOrder\PODetailsSnapshot
      */
-    public static function createDetailSnapshot(NmtProcurePo $entity = null)
+    public static function createDetailSnapshot(EntityManager $doctrineEM, NmtProcurePo $entity = null)
     {
         if ($entity == null) {
             return null;
@@ -379,8 +410,9 @@ class PoMapper
 
         $snapshot = new PODetailsSnapshot();
 
-        // Mapping Reference
-        // =====================
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
 
         if ($entity->getCompany() !== null) {
             HeaderMapper::updateCompanyDetails($snapshot, $entity->getVendor());
@@ -440,45 +472,48 @@ class PoMapper
             $snapshot->incotermName = $entity->getIncoterm2()->getIncotermDescription();
         }
 
-        // MAPPING DATE
-        // =====================
-        $snapshot->invoiceDate = $entity->getInvoiceDate();
+        // ============================
+        // DATE MAPPING
+        // ============================
+
+        // $snapshot->invoiceDate = $entity->getInvoiceDate();
         if (! $entity->getInvoiceDate() == null) {
-            $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d");
+            $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d H:i:s");
         }
 
         $snapshot->postingDate = $entity->getPostingDate();
         if (! $entity->getPostingDate() == null) {
-            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d");
+            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d H:i:s");
         }
 
         $snapshot->grDate = $entity->getGrDate();
         if (! $entity->getGrDate() == null) {
-            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d");
+            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d H:i:s");
         }
 
         $snapshot->quotationDate = $entity->getQuotationDate();
         if (! $entity->getQuotationDate() == null) {
-            $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d");
+            $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d H:i:s");
         }
 
         // $snapshot->createdOn = $entity->getCreatedOn();
         if (! $entity->getCreatedOn() == null) {
-            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
         }
 
         // $snapshot->lastchangeOn = $entity->getLastchangeOn();
         if (! $entity->getLastChangeOn() == null) {
-            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
         }
 
         // $snapshot->contractDate= $entity->getContractDate();
         if (! $entity->getContractDate() == null) {
-            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d");
+            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d H:i:s");
         }
 
+        // =================================
         // Mapping None-Object Field
-        // =====================
+        // =================================
 
         $snapshot->id = $entity->getId();
         $snapshot->token = $entity->getToken();
@@ -521,72 +556,17 @@ class PoMapper
      * @param NmtProcurePoRow $entity
      * @return NULL|\Procure\Domain\PurchaseOrder\PORowDetailsSnapshot
      */
-    public static function createRowDetailSnapshot(NmtProcurePoRow $entity)
+    public static function createRowDetailSnapshot(EntityManager $doctrineEM, NmtProcurePoRow $entity)
     {
-        if ($entity == null)
+        if ($entity == null) {
             return null;
+        }
 
         $snapshot = new PORowDetailsSnapshot();
 
-        // Mapping Reference
-        // =====================
-
-        // $snapshot->invoice= $entity->getInvoice();
-        if ($entity->getInvoice() !== null) {
-            $snapshot->invoice = $entity->getInvoice()->getId();
-        }
-
-        // $snapshot->lastchangeBy= $entity->getLastchangeBy();
-        if ($entity->getLastchangeBy() !== null) {
-            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
-            $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
-        }
-
-        // $snapshot->prRow= $entity->getPrRow();
-        if ($entity->getPrRow() !== null) {
-            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
-        }
-
-        // $snapshot->createdBy= $entity->getCreatedBy();
-        if ($entity->getCreatedBy() !== null) {
-            $snapshot->createdBy = $entity->getCreatedBy()->getId();
-            $snapshot->createdByName = sprintf("%s %s", $entity->getCreatedBy()->getFirstname(), $entity->getCreatedBy()->getFirstname());
-        }
-
-        // $snapshot->warehouse= $entity->getWarehouse();
-        if ($entity->getWarehouse() !== null) {
-            RowMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
-        }
-
-        // $snapshot->po= $entity->getPo();
-        if ($entity->getPo() !== null) {
-            RowMapper::updatePODetails($snapshot, $entity->getPo());
-        }
-
-        // $snapshot->item= $entity->getItem();
-        if ($entity->getItem() !== null) {
-            RowMapper::updateItemDetails($snapshot, $entity->getItem());
-        }
-
-        // $snapshot->docUom = $entity->getDocUom();
-        if ($entity->getDocUom() !== null) {
-            RowMapper::updateUomDetails($snapshot, $entity->getDocUom());
-        }
-
-        // Mapping Date
-        // =====================
-
-        if (! $entity->getCreatedOn() == null) {
-            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
-        }
-
-        if (! $entity->getLastChangeOn() == null) {
-            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
-        }
-
+        // =================================
         // Mapping None-Object Field
-        // =====================
-
+        // =================================
         $snapshot->id = $entity->getId();
         $snapshot->rowNumber = $entity->getRowNumber();
         $snapshot->token = $entity->getToken();
@@ -634,8 +614,114 @@ class PoMapper
         $snapshot->descriptionText = $entity->getDescriptionText();
         $snapshot->vendorItemName = $entity->getVendorItemName();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->localUnitPrice = $entity->getLocalUnitPrice();
+        $snapshot->exwCurrency = $entity->getExwCurrency();
+        $snapshot->localNetAmount = $entity->getLocalNetAmount();
+        $snapshot->localGrossAmount = $entity->getLocalGrossAmount();
+        $snapshot->transactionType = $entity->getTransactionType();
+        $snapshot->isReversed = $entity->getIsReversed();
         $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
 
-        return $snapshot;
+        $snapshot->glAccount = $entity->getGlAccount();
+        $snapshot->costCenter = $entity->getCostCenter();
+
+        if ($entity->getGlAccount() > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinAccount $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinAccount')->find($entity->getGlAccount());
+            RowMapper::updateGLAccountDetails($snapshot, $obj);
+        }
+
+        if ($entity->getCostCenter() > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinCostCenter $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($entity->getCostCenter());
+            RowMapper::updateCostCenterDetails($snapshot, $obj);
+        }
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        /*
+         * $snapshot->createdOn = $entity->getCreatedOn();
+         * $snapshot->lastchangeOn = $entity->getLastchangeOn();
+         * $snapshot->reversalDate = $entity->getReversalDate();
+         */
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->reversalDate() == null) {
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+
+        /*
+         * $snapshot->invoice = $entity->getInvoice();
+         * $snapshot->lastchangeBy = $entity->getLastchangeBy();
+         * $snapshot->prRow = $entity->getPrRow();
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->warehouse = $entity->getWarehouse();
+         * $snapshot->po = $entity->getPo();
+         * $snapshot->item = $entity->getItem();
+         * $snapshot->docUom = $entity->getDocUom();
+         */
+
+        // $snapshot->invoice= $entity->getInvoice();
+        if ($entity->getInvoice() !== null) {
+            $snapshot->invoice = $entity->getInvoice()->getId();
+        }
+
+        // $snapshot->lastchangeBy= $entity->getLastchangeBy();
+        if ($entity->getLastchangeBy() !== null) {
+            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
+            $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
+        }
+
+        // $snapshot->prRow= $entity->getPrRow();
+        if ($entity->getPrRow() !== null) {
+            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
+        }
+
+        // $snapshot->createdBy= $entity->getCreatedBy();
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+            $snapshot->createdByName = sprintf("%s %s", $entity->getCreatedBy()->getFirstname(), $entity->getCreatedBy()->getFirstname());
+        }
+
+        // $snapshot->warehouse= $entity->getWarehouse();
+        if ($entity->getWarehouse() !== null) {
+            RowMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
+        }
+
+        // $snapshot->po= $entity->getPo();
+        if ($entity->getPo() !== null) {
+            RowMapper::updatePODetails($snapshot, $entity->getPo());
+        }
+
+        // $snapshot->item= $entity->getItem();
+        if ($entity->getItem() !== null) {
+            RowMapper::updateItemDetails($snapshot, $entity->getItem());
+        }
+        
+        // $snapshot->docUom = $entity->getDocUom();
+        if ($entity->getDocUom() !== null) {
+            RowMapper::updateUomDetails($snapshot, $entity->getDocUom());
+        }
+  
     }
 }

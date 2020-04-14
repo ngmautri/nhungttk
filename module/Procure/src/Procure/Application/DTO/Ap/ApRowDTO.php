@@ -1,14 +1,13 @@
 <?php
 namespace Procure\Application\DTO\Ap;
 
-use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\AccountPayable\APRowSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApDTO extends APSnapshot
+class ApRowDTO extends APRowSnapshot
 {
-
 }

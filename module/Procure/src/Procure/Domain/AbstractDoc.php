@@ -30,6 +30,12 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     protected $docMonth;
 
+    protected $postingPeriodFrom;
+
+    protected $postingPeriodTo;
+    
+    protected $postingPeriodId;
+
     // Company
     // =========================
     protected $companyName;
@@ -39,7 +45,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $companyToken;
 
     protected $companyCode;
-    
+
     // Vendor Details
     // =========================
     protected $vendorId;
@@ -91,15 +97,14 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $completedRows;
 
     protected $openAPAmount;
-    
+
     protected $docCurrencyISO;
-    
+
     protected $localCurrencyISO;
-    
+
     protected $docCurrencyId;
-    
+
     protected $localCurrencyId;
-    
 
     // Doc Orignal
     // ==================================
@@ -224,6 +229,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $discountRate;
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrencyISO()
@@ -232,6 +238,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrencyISO()
@@ -240,6 +247,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrencyId()
@@ -248,6 +256,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrencyId()
@@ -357,11 +366,10 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
             "token",
             "docRows",
             "rowIdArray",
-            "instance",            
+            "instance",
             "sysNumber",
             "createdBy",
-            "lastchangeBy",
-            
+            "lastchangeBy"
         ];
 
         $sourceObj = $this;

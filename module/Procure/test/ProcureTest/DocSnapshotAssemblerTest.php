@@ -1,9 +1,8 @@
 <?php
 namespace ProcureTest;
 
-use Procure\Domain\GenericRow;
-use PHPUnit_Framework_TestCase;
 use Procure\Domain\GenericDoc;
+use PHPUnit_Framework_TestCase;
 
 class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -20,7 +19,10 @@ class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     }
 
     public function testOther()
-    {
+    {   
+        //POSnapshotAssembler::findMissingPropertiesOfEntity();
+        //GRSnapshotAssembler::findMissingPropertiesOfEntity();
+        //APSnapshotAssembler::findMissingPropertiesOfEntity();
         GenericDoc::printProps();
     }
 }

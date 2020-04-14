@@ -2,6 +2,8 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\AbstractDTO;
+use Ramsey\Uuid\Uuid;
+use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  * Row Snapshot
@@ -11,7 +13,6 @@ use Application\Domain\Shared\AbstractDTO;
  */
 class RowSnapshot extends AbstractDTO
 {
-
     public $companyId;
     public $companyToken;
     public $companyName;
@@ -66,6 +67,10 @@ class RowSnapshot extends AbstractDTO
     public $projectName;
     public $createdByName;
     public $lastChangeByName;
+    public $glAccountName;
+    public $glAccountNumber;
+    public $glAccountType;
+    public $costCenterName;
     public $id;
     public $rowNumber;
     public $token;
@@ -135,6 +140,66 @@ class RowSnapshot extends AbstractDTO
     public $glAccount;
     public $costCenter;
     public $standardConvertFactor;
+    
+    
+    /**
+     * @return mixed
+     */
+    public function getGlAccountName()
+    {
+        return $this->glAccountName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGlAccountNumber()
+    {
+        return $this->glAccountNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGlAccountType()
+    {
+        return $this->glAccountType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCostCenterName()
+    {
+        return $this->costCenterName;
+    }
+
+    /**
+     * 
+     * @param int $createdBy
+     * @param string $createdDate
+     */
+    public function initSnapshot($createdBy, $createdDate){
+        
+        $this->createdOn = $createdDate;
+        $this->createdBy = $createdBy;
+        
+        $this->quantity = $this->docQuantity;
+        $this->revisionNo = 0;
+        
+        if ($this->token == null) {
+            $this->token = Uuid::uuid4()->toString();
+            $this->uuid = $this->getToken();
+        }
+        
+        $this->docStatus = ProcureDocStatus::DOC_STATUS_DRAFT;
+        $this->isActive = 1;
+        $this->isDraft = 1;
+        $this->unitPrice = $this->getDocUnitPrice();
+        $this->unit = $this->getDocUnit();
+    }
+    
+    
     /**
      * @return mixed
      */

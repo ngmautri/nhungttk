@@ -7,7 +7,6 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface;
-use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Doctrine\SQL\GrSQL;
 use Procure\Infrastructure\Mapper\GrMapper;
@@ -267,5 +266,4 @@ WHERE nmt_procure_gr_row.gr_id=%s AND nmt_procure_gr_row.is_active=1 order by ro
             return null;
         }
     }
-   
 }

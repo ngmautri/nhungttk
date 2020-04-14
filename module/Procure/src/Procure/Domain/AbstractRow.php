@@ -133,6 +133,14 @@ class AbstractRow extends AbstractEntity
 
     protected $lastChangeByName;
 
+    protected $glAccountName;
+
+    protected $glAccountNumber;
+
+    protected $glAccountType;
+    
+    protected $costCenterName;
+    
     // Row Original
     // ====================
     protected $id;
@@ -270,10 +278,75 @@ class AbstractRow extends AbstractEntity
     protected $glAccount;
 
     protected $costCenter;
-    
+
     protected $standardConvertFactor;
 
     /**
+     * @param mixed $glAccountName
+     */
+    protected function setGlAccountName($glAccountName)
+    {
+        $this->glAccountName = $glAccountName;
+    }
+
+    /**
+     * @param mixed $glAccountNumber
+     */
+    protected function setGlAccountNumber($glAccountNumber)
+    {
+        $this->glAccountNumber = $glAccountNumber;
+    }
+
+    /**
+     * @param mixed $glAccountType
+     */
+    protected function setGlAccountType($glAccountType)
+    {
+        $this->glAccountType = $glAccountType;
+    }
+
+    /**
+     * @param mixed $costCenterName
+     */
+    protected function setCostCenterName($costCenterName)
+    {
+        $this->costCenterName = $costCenterName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGlAccountName()
+    {
+        return $this->glAccountName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGlAccountNumber()
+    {
+        return $this->glAccountNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGlAccountType()
+    {
+        return $this->glAccountType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCostCenterName()
+    {
+        return $this->costCenterName;
+    }
+
+    /**
+     *
      * @param mixed $projectId
      */
     protected function setProjectId($projectId)
@@ -282,6 +355,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $projectToken
      */
     protected function setProjectToken($projectToken)
@@ -290,6 +364,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $projectName
      */
     protected function setProjectName($projectName)
@@ -298,6 +373,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @param mixed $standardConvertFactor
      */
     protected function setStandardConvertFactor($standardConvertFactor)
@@ -306,6 +382,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProjectId()
@@ -314,6 +391,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProjectToken()
@@ -322,6 +400,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProjectName()
@@ -330,6 +409,7 @@ class AbstractRow extends AbstractEntity
     }
 
     /**
+     *
      * @return mixed
      */
     public function getStandardConvertFactor()
@@ -342,9 +422,9 @@ class AbstractRow extends AbstractEntity
      * @param mixed $exchangeRate
      */
     protected function setExchangeRate($exchangeRate)
-{
-    $this->exchangeRate = $exchangeRate;
-}
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
 
     /**
      *

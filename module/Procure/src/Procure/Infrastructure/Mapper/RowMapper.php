@@ -7,6 +7,8 @@ use Application\Entity\NmtInventoryWarehouse;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePrRow;
 use Procure\Domain\RowSnapshot;
+use Application\Entity\FinAccount;
+use Application\Entity\FinCostCenter;
 
 /**
  *
@@ -16,6 +18,49 @@ use Procure\Domain\RowSnapshot;
 class RowMapper
 {
 
+    /**
+     *
+     * @param \Procure\Domain\RowSnapshot $snapshot
+     * @param \Application\Entity\NmtInventoryWarehouse $entity
+     * @return NULL|\Procure\Domain\RowSnapshot
+     */
+    public static function updateGLAccountDetails(RowSnapshot $snapshot, FinAccount $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+        
+        if ($entity == null) {
+            return $snapshot;
+        }
+        $snapshot->glAccount = $entity->getId();
+        $snapshot->glAccountName = $entity->getAccountName();
+        $snapshot->glAccountNumber = $entity->getAccountNumber();
+        $snapshot->glAccountType = $entity->getAccountType();
+        return $snapshot;
+    }
+    
+   /**
+    * 
+    * @param \Procure\Domain\RowSnapshot $snapshot
+    * @param \Application\Entity\FinCostCenter $entity
+    * @return NULL|\Procure\Domain\RowSnapshot
+    */
+    public static function updateCostCenterDetails(RowSnapshot $snapshot, FinCostCenter $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+        
+        if ($entity == null) {
+            return $snapshot;
+        }
+        
+        $snapshot->costCenter = $entity->getId();        
+        $snapshot->costCenterName = $entity->getCostCenterName();
+         return $snapshot;
+    }
+    
     /**
      *
      * @param \Procure\Domain\RowSnapshot $snapshot

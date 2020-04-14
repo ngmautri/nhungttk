@@ -3,6 +3,7 @@ namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Zend\Validator\Uuid;
 
 /**
  * Generic Row
@@ -13,6 +14,28 @@ use Procure\Domain\Shared\ProcureDocStatus;
 class GenericRow extends AbstractRow
 {
 
+    
+    /**
+     *
+     * @param int $createdBy
+     * @param string $createdDate
+     */
+    protected function initRow($createdBy, $createdDate)
+    {
+        $this->setCreatedOn($createdDate);
+        $this->setCreatedBy($createdBy);
+        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsPosted(0);
+        
+        $this->setRevisionNo(0);
+        $this->setDocVersion(0);
+        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
+    }
+    
     protected function calculate()
     {
         $convertedPurchaseQuantity = $this->getDocQuantity();

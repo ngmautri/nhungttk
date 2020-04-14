@@ -1,11 +1,13 @@
 <?php
-namespace Procure\Domain\Exception\Ap;
+namespace Procure\Domain\AccountPayable\Factory;
+
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApRowException extends \Exception
+class GRFactory
 {
+
 }

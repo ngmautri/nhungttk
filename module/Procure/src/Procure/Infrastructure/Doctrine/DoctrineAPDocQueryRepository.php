@@ -2,15 +2,14 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy;
-use Procure\Domain\APInvoice\APDocQueryRepositoryInterface;
-use Procure\Domain\APInvoice\APInvoice;
 use Procure\Application\DTO\Ap\Output\APDocRowInArray;
 use Procure\Application\DTO\Ap\Output\APDocRowInExcel;
+use Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy;
 use Procure\Application\DTO\Ap\Output\ApDocRowInOpenOffice;
+use Procure\Domain\APInvoice\APDocQueryRepositoryInterface;
 use Procure\Domain\APInvoice\APDocRow;
-use Procure\Domain\APInvoice\APDocSnapshot;
 use Procure\Domain\APInvoice\APDocRowSnapshot;
+use Procure\Domain\APInvoice\APDocSnapshot;
 use Procure\Domain\APInvoice\Factory\APFactory;
 
 /**

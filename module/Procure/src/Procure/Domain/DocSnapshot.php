@@ -26,6 +26,12 @@ class DocSnapshot extends AbstractDTO
 
     public $docMonth;
 
+    public $postingPeriodFrom;
+
+    public $postingPeriodTo;
+
+    public $postingPeriodId;
+
     public $companyName;
 
     public $companyId;
@@ -209,7 +215,36 @@ class DocSnapshot extends AbstractDTO
     public $transactionType;
 
     public $discountRate;
+
     /**
+     *
+     * @return mixed
+     */
+    public function getPostingPeriodFrom()
+    {
+        return $this->postingPeriodFrom;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostingPeriodTo()
+    {
+        return $this->postingPeriodTo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPostingPeriodId()
+    {
+        return $this->postingPeriodId;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getDocRows()
@@ -218,6 +253,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowIdArray()
@@ -226,6 +262,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowsOutput()
@@ -234,6 +271,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingYear()
@@ -242,6 +280,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingMonth()
@@ -250,6 +289,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocYear()
@@ -258,6 +298,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocMonth()
@@ -266,6 +307,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyName()
@@ -274,6 +316,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyId()
@@ -282,6 +325,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyToken()
@@ -290,6 +334,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompanyCode()
@@ -298,6 +343,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorId()
@@ -306,6 +352,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorToken()
@@ -314,6 +361,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorAddress()
@@ -322,6 +370,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorCountry()
@@ -330,6 +379,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTermName()
@@ -338,6 +388,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTermCode()
@@ -346,6 +397,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseName()
@@ -354,6 +406,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouseCode()
@@ -362,6 +415,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethodName()
@@ -370,6 +424,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethodCode()
@@ -378,6 +433,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermCode()
@@ -386,6 +442,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermName()
@@ -394,6 +451,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedByName()
@@ -402,6 +460,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastChangedByName()
@@ -410,6 +469,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalRows()
@@ -418,6 +478,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalActiveRows()
@@ -426,6 +487,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getMaxRowNumber()
@@ -434,6 +496,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getNetAmount()
@@ -442,6 +505,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTaxAmount()
@@ -450,6 +514,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrossAmount()
@@ -458,6 +523,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountAmount()
@@ -466,6 +532,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBilledAmount()
@@ -474,6 +541,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompletedRows()
@@ -482,6 +550,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenAPAmount()
@@ -490,6 +559,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrencyISO()
@@ -498,6 +568,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrencyISO()
@@ -506,6 +577,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrencyId()
@@ -514,6 +586,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrencyId()
@@ -522,6 +595,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getId()
@@ -530,6 +604,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getToken()
@@ -538,6 +613,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendorName()
@@ -546,6 +622,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceNo()
@@ -554,6 +631,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getInvoiceDate()
@@ -562,6 +640,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrencyIso3()
@@ -570,6 +649,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getExchangeRate()
@@ -578,6 +658,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRemarks()
@@ -586,6 +667,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
@@ -594,6 +676,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentState()
@@ -602,6 +685,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsActive()
@@ -610,6 +694,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTrxType()
@@ -618,6 +703,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeOn()
@@ -626,6 +712,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingDate()
@@ -634,6 +721,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrDate()
@@ -642,6 +730,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSapDoc()
@@ -650,6 +739,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractNo()
@@ -658,6 +748,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getContractDate()
@@ -666,6 +757,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationNo()
@@ -674,6 +766,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getQuotationDate()
@@ -682,6 +775,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSysNumber()
@@ -690,6 +784,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
@@ -698,6 +793,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDeliveryMode()
@@ -706,6 +802,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm()
@@ -714,6 +811,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncotermPlace()
@@ -722,6 +820,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentTerm()
@@ -730,6 +829,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocStatus()
@@ -738,6 +838,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWorkflowStatus()
@@ -746,6 +847,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionStatus()
@@ -754,6 +856,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocType()
@@ -762,6 +865,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentStatus()
@@ -770,6 +874,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocValue()
@@ -778,6 +883,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocTax()
@@ -786,6 +892,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalDocDiscount()
@@ -794,6 +901,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalValue()
@@ -802,6 +910,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalTax()
@@ -810,6 +919,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTotalLocalDiscount()
@@ -818,6 +928,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalBlocked()
@@ -826,6 +937,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUuid()
@@ -834,6 +946,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocVersion()
@@ -842,6 +955,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getVendor()
@@ -850,6 +964,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPmtTerm()
@@ -858,6 +973,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
@@ -866,6 +982,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getWarehouse()
@@ -874,6 +991,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCreatedBy()
@@ -882,6 +1000,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLastchangeBy()
@@ -890,6 +1009,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrency()
@@ -898,6 +1018,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPaymentMethod()
@@ -906,6 +1027,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalCurrency()
@@ -914,6 +1036,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocCurrency()
@@ -922,6 +1045,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIncoterm2()
@@ -930,6 +1054,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsDraft()
@@ -938,6 +1063,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsPosted()
@@ -946,6 +1072,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversed()
@@ -954,6 +1081,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDate()
@@ -962,6 +1090,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalReason()
@@ -970,6 +1099,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingPeriod()
@@ -978,6 +1108,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCurrentStatus()
@@ -986,6 +1117,7 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTransactionType()
@@ -994,11 +1126,11 @@ class DocSnapshot extends AbstractDTO
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDiscountRate()
     {
         return $this->discountRate;
     }
-
 }

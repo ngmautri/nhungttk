@@ -1,11 +1,11 @@
 <?php
-namespace Procure\Domain\Exception\Ap;
+namespace Procure\Domain\Exception;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApRowUpdateException extends \Exception
+class OperationFailedException extends \Exception
 {
 }

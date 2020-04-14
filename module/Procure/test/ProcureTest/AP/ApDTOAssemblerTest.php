@@ -1,17 +1,20 @@
 <?php
-namespace ProcureTest\PR;
+namespace ProcureTest\AP;
 
+use Doctrine\ORM\EntityManager;
+use Procure\Application\DTO\Ap\ApDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Zend\Stdlib\StringWrapper\Intl;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\DTO\Po\PORowDTOAssembler;
 
-class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
+class ApDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
 
-  
+    /**
+     *
+     * @var EntityManager $em;
+     */
     protected $em;
 
     public function setUp()
@@ -25,8 +28,8 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $test = PORowDTOAssembler::createGetMapping();
-            //var_dump($test);
+            ApDTOAssembler::createStoreMapping();
+
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

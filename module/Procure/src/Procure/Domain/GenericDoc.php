@@ -3,6 +3,9 @@ namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\Shared\Constants;
+use Ramsey\Uuid\Uuid;
+use function Ramsey\Uuid\v1;
 
 /**
  *
@@ -11,10 +14,31 @@ use Procure\Domain\Shared\ProcureDocStatus;
  */
 class GenericDoc extends AbstractDoc
 {
-    protected function refresh(){
+
+    protected function refresh()
+    {}
+
+    /**
+     * 
+     * @param int $createdBy
+     * @param string $createdDate
+     */
+    protected function initDoc($createdBy, $createdDate)
+    {
+        $this->setCreatedOn($createdDate);
+        $this->setCreatedBy($createdBy);
+        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
         
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsPosted(0);
+        
+        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        $this->setRevisionNo(0);
+        $this->setDocVersion(0);
+        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
     }
-    
 
     /**
      *

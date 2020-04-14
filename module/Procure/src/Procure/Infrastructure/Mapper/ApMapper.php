@@ -657,7 +657,7 @@ class ApMapper
             HeaderMapper::updateIncotermDetails($snapshot, $entity->getIncoterm2());
         }
         if ($entity->getPmtTerm() !== null) {
-            HeaderMapper::updatePmtTermDetails($snapshot, $entity->getVendor());
+            HeaderMapper::updatePmtTermDetails($snapshot, $entity->getPmtTerm());
         }
         if ($entity->getWarehouse() !== null) {
             HeaderMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
@@ -681,7 +681,7 @@ class ApMapper
         }
 
         if ($entity->getCompany() !== null) {
-            HeaderMapper::updateCompanyDetails($snapshot, $entity->getVendor());
+            HeaderMapper::updateCompanyDetails($snapshot, $entity->getCompany());
         }
 
         if ($entity->getPaymentMethod() !== null) {
@@ -787,7 +787,7 @@ class ApMapper
             $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
         }
 
-        if (! $entity->reversalDate() == null) {
+        if (! $entity->getReversalDate() == null) {
             $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
         }
 
@@ -809,7 +809,7 @@ class ApMapper
          */
 
         if ($entity->getInvoice() !== null) {
-            $snapshot->invoice = $entity->getInvoice()->getId();
+            RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice());
         }
 
         if ($entity->getGlAccount() !== null) {
@@ -851,6 +851,9 @@ class ApMapper
 
         if ($entity->getPoRow() !== null) {
             $snapshot->poRow = $entity->getPoRow()->getId();
+            if($entity->getPoRow()->getPo()!==null){
+                $snapshot->po = $entity->getPoRow()->getPo()->getId();
+            }
         }
 
         return $snapshot;

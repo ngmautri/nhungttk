@@ -9,6 +9,7 @@ use Application\Entity\NmtProcurePrRow;
 use Procure\Domain\RowSnapshot;
 use Application\Entity\FinAccount;
 use Application\Entity\FinCostCenter;
+use Application\Entity\FinVendorInvoice;
 
 /**
  *
@@ -29,7 +30,7 @@ class RowMapper
         if ($snapshot == null) {
             return null;
         }
-        
+
         if ($entity == null) {
             return $snapshot;
         }
@@ -39,28 +40,28 @@ class RowMapper
         $snapshot->glAccountType = $entity->getAccountType();
         return $snapshot;
     }
-    
-   /**
-    * 
-    * @param \Procure\Domain\RowSnapshot $snapshot
-    * @param \Application\Entity\FinCostCenter $entity
-    * @return NULL|\Procure\Domain\RowSnapshot
-    */
+
+    /**
+     *
+     * @param \Procure\Domain\RowSnapshot $snapshot
+     * @param \Application\Entity\FinCostCenter $entity
+     * @return NULL|\Procure\Domain\RowSnapshot
+     */
     public static function updateCostCenterDetails(RowSnapshot $snapshot, FinCostCenter $entity)
     {
         if ($snapshot == null) {
             return null;
         }
-        
+
         if ($entity == null) {
             return $snapshot;
         }
-        
-        $snapshot->costCenter = $entity->getId();        
+
+        $snapshot->costCenter = $entity->getId();
         $snapshot->costCenterName = $entity->getCostCenterName();
-         return $snapshot;
+        return $snapshot;
     }
-    
+
     /**
      *
      * @param \Procure\Domain\RowSnapshot $snapshot
@@ -84,9 +85,9 @@ class RowMapper
         $snapshot->docWarehouseName = $snapshot->warehouseName;
         return $snapshot;
     }
-    
+
     /**
-     * 
+     *
      * @param \Procure\Domain\RowSnapshot $snapshot
      * @param \Application\Entity\NmtApplicationUom $entity
      * @return NULL|\Procure\Domain\RowSnapshot
@@ -96,11 +97,11 @@ class RowMapper
         if ($snapshot == null) {
             return null;
         }
-        
+
         if ($entity == null) {
             return $snapshot;
         }
-        
+
         $snapshot->docUom = $entity->getId();
         $snapshot->docUomCode = $entity->getUomCode();
         $snapshot->docUomName = $entity->getUomName();
@@ -191,6 +192,20 @@ class RowMapper
      */
     public static function updatePODetails(RowSnapshot $snapshot, NmtProcurePo $entity)
     {
+        if ($snapshot == null) {
+            return null;
+        }
+
+        if ($entity == null) {
+            return $snapshot;
+        }
+        
+        if($entity->getCompany()){
+            $snapshot->companyId = $entity->getCompany()->getId();
+            $snapshot->companyToken = $entity->getCompany()->getToken();
+            $snapshot->companyName = $entity->getCompany()->getCompanyName();
+        }
+        
         $snapshot->po = $entity->getId();
         $snapshot->vendorName = $entity->getVendorName();
         $snapshot->docCurrencyISO = $entity->getCurrencyIso3();
@@ -222,6 +237,56 @@ class RowMapper
             }
         }
 
+        return $snapshot;
+    }
+
+    public static function updateInvoiceDetails(RowSnapshot $snapshot, FinVendorInvoice $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+
+        if ($entity == null) {
+            return $snapshot;
+        }
+        
+        if($entity->getCompany()){
+            $snapshot->companyId = $entity->getCompany()->getId();
+            $snapshot->companyToken = $entity->getCompany()->getToken();
+            $snapshot->companyName = $entity->getCompany()->getCompanyName();
+        }
+        
+        $snapshot->invoice = $entity->getId();
+        $snapshot->vendorName = $entity->getVendorName();
+        $snapshot->docCurrencyISO = $entity->getCurrencyIso3();
+
+        $snapshot->docId = $snapshot->invoice;
+        $snapshot->docToken = $entity->getToken();
+
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->docNumber = $entity->getContractNo();
+
+        if ($entity->getDocCurrency() !== null) {
+            $snapshot->docCurrencyId = $entity->getDocCurrency()->getId();
+            $snapshot->docCurrencyISO = $entity->getDocCurrency()->getCurrency();
+        }
+
+        if ($entity->getLocalCurrency() !== null) {
+            $snapshot->localCurrencyId = $entity->getLocalCurrency()->getId();
+            $snapshot->localCurrencyISO = $entity->getLocalCurrency()->getCurrency();
+        }
+
+        if ($entity->getVendor() !== null) {
+            $snapshot->vendorId = $entity->getVendor()->getId();
+            $snapshot->vendorToken = $entity->getVendor()->getToken();
+            
+            if ($entity->getVendor()->getCountry() !== null) {
+                $snapshot->vendorCountry = $entity->getVendor()
+                ->getCountry()
+                ->getCountryName();
+            }
+        }
+        
         return $snapshot;
     }
 }

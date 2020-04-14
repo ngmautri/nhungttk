@@ -415,7 +415,7 @@ class PoMapper
         // ============================
 
         if ($entity->getCompany() !== null) {
-            HeaderMapper::updateCompanyDetails($snapshot, $entity->getVendor());
+            HeaderMapper::updateCompanyDetails($snapshot, $entity->getCompany());
         }
 
         // $snapshot->vendor= $entity->getVendor();
@@ -425,7 +425,7 @@ class PoMapper
 
         // $snapshot->pmtTerm = $entity->getPmtTerm();
         if ($entity->getPmtTerm() !== null) {
-            HeaderMapper::updatePmtTermDetails($snapshot, $entity->getVendor());
+            HeaderMapper::updatePmtTermDetails($snapshot, $entity->getPmtTerm());
         }
 
         // $snapshot->warehouse = $entity->getWarehouse();
@@ -662,7 +662,7 @@ class PoMapper
             $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
         }
 
-        if (! $entity->reversalDate() == null) {
+        if (! $entity->getReversalDate() == null) {
             $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
         }
 
@@ -722,6 +722,6 @@ class PoMapper
         if ($entity->getDocUom() !== null) {
             RowMapper::updateUomDetails($snapshot, $entity->getDocUom());
         }
-  
+        return $snapshot;
     }
 }

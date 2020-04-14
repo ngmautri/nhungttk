@@ -34,7 +34,7 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
             /**@var \Application\Entity\NmtProcurePo $po ;*/
             $po = $r[0];
 
-            $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
+            $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->doctrineEM,$po);
 
             if ($poDetailsSnapshot == null) {
                 continue;

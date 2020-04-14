@@ -15,6 +15,7 @@ use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
 use Procure\Application\Service\PO\Output\PoSaveAsPdf;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
 /**
  * PO Service.
@@ -158,20 +159,20 @@ class POService extends AbstractService
         $this->cmdRepository = $cmdRepository;
     }
 
-    /**
-     *
-     * @return \Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository
-     */
+   /**
+    * 
+    * @return \Procure\Infrastructure\Doctrine\POQueryRepositoryImpl
+    */
     public function getQueryRepository()
     {
         return $this->queryRepository;
     }
 
     /**
-     *
-     * @param DoctrinePOQueryRepository $queryRepository
+     * 
+     * @param POQueryRepositoryImpl $queryRepository
      */
-    public function setQueryRepository(DoctrinePOQueryRepository $queryRepository)
+    public function setQueryRepository(POQueryRepositoryImpl $queryRepository)
     {
         $this->queryRepository = $queryRepository;
     }

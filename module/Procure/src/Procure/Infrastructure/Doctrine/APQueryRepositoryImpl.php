@@ -8,7 +8,6 @@ use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\AccountPayable\Repository\APQueryRepositoryInterface;
 use Procure\Domain\Shared\Constants;
-use Procure\Infrastructure\Doctrine\SQL\ApSQL;
 use Procure\Infrastructure\Mapper\ApMapper;
 
 /**
@@ -104,7 +103,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             ->getRepository('\Application\Entity\FinVendorInvoice')
             ->findOneBy($criteria);
 
-        $rootSnapshot = ApMapper::createDetailSnapshot($rootEntityDoctrine);
+        $rootSnapshot = ApMapper::createDetailSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
         if ($rootSnapshot == null) {
             return null;
         }
@@ -116,49 +115,27 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             return $rootEntity;
         }
 
-        $completed = True;
-        $completedRows = 0;
         $totalRows = 0;
         $totalActiveRows = 0;
         $netAmount = 0;
         $taxAmount = 0;
-        $billedAmount = 0;
         $grossAmount = 0;
         foreach ($rows as $r) {
 
             /**@var \Application\Entity\FinVendorInvoiceRow $localEnityDoctrine ;*/
-            $localEnityDoctrine = $r[0];
+            $localEnityDoctrine = $r;
 
-            $localSnapshot = ApMapper::createRowDetailSnapshot($localEnityDoctrine);
+            $localSnapshot = ApMapper::createRowDetailSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
 
             if ($localSnapshot == null) {
                 continue;
             }
-
-            /**
-             *
-             * @todo
-             */
-            if ($r['open_ap_qty'] <= 0) {
-                $localSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
-                $completedRows ++;
-            } else {
-                $completed = false;
-                $localSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
-            }
-
-            $localSnapshot->draftAPQuantity = $r["draft_ap_qty"];
-            $localSnapshot->postedAPQuantity = $r["posted_ap_qty"];
-            $localSnapshot->openAPQuantity = $r["open_ap_qty"];
-            $localSnapshot->billedAmount = $r["billed_amount"];
-            $localSnapshot->openAPAmount = $localSnapshot->netAmount - $localSnapshot->billedAmount;
 
             $totalRows ++;
             $totalActiveRows ++;
             $netAmount = $netAmount + $localSnapshot->netAmount;
             $taxAmount = $taxAmount + $localSnapshot->taxAmount;
             $grossAmount = $grossAmount + $localSnapshot->grossAmount;
-            $billedAmount = $billedAmount + $localSnapshot->billedAmount;
 
             $localEntity = APRow::makeFromSnapshot($localSnapshot);
 
@@ -168,19 +145,11 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             // break;
         }
 
-        if ($completed == true) {
-            $rootSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
-        } else {
-            $rootSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
-        }
-
         $rootSnapshot->totalRows = $totalRows;
         $rootSnapshot->totalActiveRows = $totalActiveRows;
         $rootSnapshot->netAmount = $netAmount;
         $rootSnapshot->taxAmount = $taxAmount;
         $rootSnapshot->grossAmount = $grossAmount;
-        $rootSnapshot->billedAmount = $billedAmount;
-        $rootSnapshot->completedRows = $completedRows;
 
         $rootEntity = APDoc::makeFromSnapshot($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
@@ -197,36 +166,19 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
     {
         $sql = "
 SELECT
-*
-FROM nmt_procure_gr_row
-            
-LEFT JOIN
-(%s)
-AS fin_vendor_invoice_row
-ON fin_vendor_invoice_row.gr_row_id = nmt_procure_gr_row.id
-            
-WHERE nmt_procure_gr_row.gr_id=%s AND nmt_procure_gr_row.is_active=1 order by row_number";
+fin_vendor_invoice_row.*
+FROM fin_vendor_invoice_row
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+WHERE fin_vendor_invoice_row.invoice_id=%s AND fin_vendor_invoice_row.is_active=1 order by row_number";
 
-        /**
-         *
-         * @todo To add Return and Credit Memo
-         */
-
-        $tmp1 = sprintf(" AND nmt_procure_gr_row.gr_id=%s AND nmt_procure_gr_row.is_active=1", $id);
-        $sql1 = sprintf(ApSQL::SQL_ROW_AP_GR, $tmp1);
-
-        $sql = sprintf($sql, $sql1, $id);
+        $sql = sprintf($sql, $id);
 
         // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGrRow', 'nmt_procure_gr_row');
-            $rsm->addScalarResult("draft_ap_qty", "draft_ap_qty");
-            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-            $rsm->addScalarResult("confirmed_ap_balance", "confirmed_ap_balance");
-            $rsm->addScalarResult("open_ap_qty", "open_ap_qty");
-            $rsm->addScalarResult("billed_amount", "billed_amount");
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);            
             return $query->getResult();
         } catch (NoResultException $e) {
             return null;

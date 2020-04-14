@@ -74,6 +74,15 @@ class APDoc extends GenericAP
         return $instance;
     }
 
+    /**
+     * 
+     * @param PODoc $sourceObj
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\AccountPayable\APDoc
+     */
     public static function createFromPo(PODoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
     {
         if (! $sourceObj instanceof PODoc) {

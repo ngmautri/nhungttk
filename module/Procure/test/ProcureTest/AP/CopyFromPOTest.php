@@ -1,5 +1,5 @@
-<?php 
-namespace ProcureTest\PO;
+<?php
+namespace ProcureTest\AP;
 
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Doctrine\ORM\EntityManager;
@@ -7,20 +7,19 @@ use ProcureTest\Bootstrap;
 use Procure\Application\Command\GR\Options\CopyFromPOOptions;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use PHPUnit_Framework_TestCase;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use PHPUnit_Framework_TestCase;
+use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
+use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 
-class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
+class CopyFromPOTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -45,16 +44,13 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        
-        
-
             $rep = new POQueryRepositoryImpl($doctrineEM);
 
             // $id = 302;
             // $token = "b69a9fbe-e7e5-48da-a7a7-cf7e27040d1b";
 
-            $id = 338;
-            $token = "040b6a84-e217-4cfa-80e3-a9a9eb2c76ef";
+            $id = 349;
+            $token = "4947d69d-78c8-44f5-b89f-07952cdc81ef";
 
             // $id = 283;
             // $token = "6Q7fdJQdhX_GyaE8h5qLD7fwQZ2QjwfE";
@@ -70,13 +66,13 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             $fxService = new FXService();
             $fxService->setDoctrineEM($doctrineEM);
 
-            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService,$procureSpecsFactory);
+            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
             $headerValidators->add($validator);
 
             $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
             $headerValidators->add($validator);
             
-            $validator = new GrPostingValidator($sharedSpecsFactory, $fxService);
+            $validator = new APPostingValidator($sharedSpecsFactory, $fxService);
             $headerValidators->add($validator);
             
             $rowValidators = new RowValidatorCollection();
@@ -87,9 +83,10 @@ class POQueryRepositoryTest extends PHPUnit_Framework_TestCase
             $rowValidators->add($validator);
 
             
-            $gr = GRDoc::createFromPo($po,$options,$headerValidators, $rowValidators);
-            var_dump($gr->getDocRows());
+            $ap = APDoc::createFromPo($po,$options,$headerValidators, $rowValidators);
             
+            var_dump($ap);
+             
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

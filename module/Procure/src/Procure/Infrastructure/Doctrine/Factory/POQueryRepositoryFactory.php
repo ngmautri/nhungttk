@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Infrastructure\Doctrine\Factory;
 
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -24,7 +24,7 @@ class POQueryRepositoryFactory implements FactoryInterface
         $container = $serviceLocator;
         $sv = $container->get('doctrine.entitymanager.orm_default');
         
-        $service = new DoctrinePOQueryRepository($sv);
+        $service = new POQueryRepositoryImpl($sv);
          return $service;
     }
     

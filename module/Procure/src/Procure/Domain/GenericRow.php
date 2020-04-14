@@ -32,7 +32,7 @@ class GenericRow extends AbstractRow
         
         $this->setRevisionNo(0);
         $this->setDocVersion(0);
-        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setUuid(\Ramsey\Uuid\Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
     }
     

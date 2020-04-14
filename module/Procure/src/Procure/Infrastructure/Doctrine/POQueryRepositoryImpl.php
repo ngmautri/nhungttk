@@ -1,4 +1,4 @@
-O<?php
+<?php
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
@@ -122,7 +122,7 @@ WHERE id = %s";
         }
 
         $po = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
-        $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
+        $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->getDoctrineEM(), $po);
 
         if ($poDetailsSnapshot == null) {
             return null;
@@ -160,7 +160,7 @@ WHERE id = %s";
             ->getRepository('\Application\Entity\NmtProcurePo')
             ->findOneBy($criteria);
 
-        $poDetailsSnapshot = PoMapper::createDetailSnapshot($po);
+        $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->getDoctrineEM(), $po);
 
         if ($poDetailsSnapshot == null) {
             return null;
@@ -192,8 +192,7 @@ WHERE id = %s";
             /**@var \Application\Entity\NmtProcurePoRow $poRowEntity ;*/
             $po_row = $r[0];
 
-            $poRowDetailSnapshot = PoMapper::createRowDetailSnapshot($po_row);
-
+            $poRowDetailSnapshot = PoMapper::createRowDetailSnapshot($this->getDoctrineEM(), $po_row);
             if ($poRowDetailSnapshot == null) {
                 continue;
             }

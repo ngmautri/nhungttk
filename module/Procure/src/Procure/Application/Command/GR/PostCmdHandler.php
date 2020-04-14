@@ -106,7 +106,7 @@ class PostCmdHandler extends AbstractCommandHandler
             $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+             $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
              
             // event dispatc
             if (count($rootEntity->getRecordedEvents() > 0)) {

@@ -31,10 +31,10 @@ class PoSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
             //update snapshot // step 0
             
-           //  POSnapshotAssembler::findMissingPropertiesOfEntity(); //step 1
+             POSnapshotAssembler::findMissingPropertiesOfEntity(); //step 1
              
             //POSnapshotAssembler::findMissingPropertiesOfSnapshot(); //step 2
-            PODoc::createSnapshotProps();  // step 3
+            //PODoc::createSnapshotProps();  // step 3
             
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

@@ -289,7 +289,7 @@ class GRDoc extends GenericGR
 
         $trigger = null;
         $params = null;
-        if ($options !==null) {
+        if ($options !== null) {
             $trigger = $options->getTriggeredBy();
             $params = [];
         }
@@ -345,7 +345,7 @@ class GRDoc extends GenericGR
         $instance->id = $rootSnapshot->getId();
 
         $trigger = null;
-        if ($options !==null) {
+        if ($options !== null) {
             $trigger = $options->getTriggeredBy();
         }
 
@@ -393,8 +393,6 @@ class GRDoc extends GenericGR
         return $instance;
     }
 
-   
-
     /**
      *
      * {@inheritdoc}
@@ -427,9 +425,42 @@ class GRDoc extends GenericGR
 
         $postingService->getCmdRepository()->post($this, true);
     }
-    
+
     /**
-     * 
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\GenericGR::doReverse()
+     */
+    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
+    {
+        /**
+         *
+         * @var GRRow $row ;
+         */
+        $postedDate = new \Datetime();
+
+        $this->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+
+        foreach ($this->getDocRows() as $row) {
+
+            if ($row->getDocQuantity() == 0) {
+                continue;
+            }
+
+            $row->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+        }
+
+        $this->validate($headerValidators, $rowValidators, true);
+
+        if ($this->hasErrors()) {
+            throw new GrPostingException($this->getNotification()->errorMessage());
+        }
+
+        $postingService->getCmdRepository()->post($this, false);
+    }
+
+    /**
+     *
      * @param GrSnapshot $snapshot
      * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
      * @param \Procure\Domain\Service\SharedService $sharedService
@@ -441,25 +472,23 @@ class GRDoc extends GenericGR
         if (! $snapshot instanceof GrSnapshot) {
             throw new GrInvalidArgumentException("GR snapshot not found!");
         }
-        
+
         if ($headerValidators == null) {
             throw new GrInvalidArgumentException("HeaderValidatorCollection not found");
         }
-           if ($sharedService == null) {
-               throw new GrInvalidArgumentException("SharedService service not found");
+        if ($sharedService == null) {
+            throw new GrInvalidArgumentException("SharedService service not found");
         }
-        
+
         if ($postingService == null) {
             throw new GrInvalidArgumentException("postingService service not found");
         }
     }
-    
+
     protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
-    {}
-
+ 
     protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {}
 

@@ -271,6 +271,8 @@ class GrMapper
         $entity->setDescriptionText($snapshot->descriptionText);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
+        $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
+        
 
         // DATE MAPPING
         // ++++++++++++++++++++++++++++++++
@@ -625,6 +627,7 @@ class GrMapper
         $snapshot->descriptionText = $entity->getDescriptionText();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
         $snapshot->uuid = $entity->getUuid();
+        $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
 
         // Date Reference
         // ==========================================

@@ -59,8 +59,7 @@ class PoMapper
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
 
-        $entity->setDocVersion($snapshot->docVersion); // new
-
+   
         // DATE MAPPING
         // $entity->setCreatedOn($snapshot->createdOn);
         if ($snapshot->createdOn !== null) {
@@ -269,7 +268,8 @@ class PoMapper
         $entity->setDescriptionText($snapshot->descriptionText);
         $entity->setVendorItemName($snapshot->vendorItemName);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
-
+        $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
+        
         // DATE MAPPING
 
         // $entity->setLastchangeOn($snapshot->lastchangeOn);
@@ -634,6 +634,7 @@ class PoMapper
         $snapshot->descriptionText = $entity->getDescriptionText();
         $snapshot->vendorItemName = $entity->getVendorItemName();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
 
         return $snapshot;
     }

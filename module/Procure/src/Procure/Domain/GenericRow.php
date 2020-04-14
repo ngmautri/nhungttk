@@ -19,7 +19,12 @@ class GenericRow extends AbstractRow
         $convertedPurchaseUnitPrice = $this->getDocUnitPrice();
 
         $conversionFactor = $this->getConversionFactor();
-        $standardCF = $this->getConversionFactor();
+
+        $standardCF = 1;
+
+        if ($this->getStandardConvertFactor() > 0) {
+            $standardCF = $this->getStandardConvertFactor();
+        }
 
         $prRowConvertFactor = $this->getPrRowConvertFactor();
 

@@ -442,6 +442,13 @@ class FinVendorInvoiceRow
     private $docVersion;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="standard_convert_factor", type="integer", nullable=true)
+     */
+    private $standardConvertFactor;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -2001,6 +2008,30 @@ class FinVendorInvoiceRow
     public function getDocVersion()
     {
         return $this->docVersion;
+    }
+
+    /**
+     * Set standardConvertFactor
+     *
+     * @param integer $standardConvertFactor
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get standardConvertFactor
+     *
+     * @return integer
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
     }
 
     /**

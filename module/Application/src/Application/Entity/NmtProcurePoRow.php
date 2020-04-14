@@ -435,6 +435,13 @@ class NmtProcurePoRow
     private $costCenter;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="standard_convert_factor", type="integer", nullable=true)
+     */
+    private $standardConvertFactor;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1940,6 +1947,30 @@ class NmtProcurePoRow
     public function getCostCenter()
     {
         return $this->costCenter;
+    }
+
+    /**
+     * Set standardConvertFactor
+     *
+     * @param integer $standardConvertFactor
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get standardConvertFactor
+     *
+     * @return integer
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
     }
 
     /**

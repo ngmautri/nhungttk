@@ -5,6 +5,7 @@ use Procure\Application\DTO\Po\PORowDTO;
 use Zend\Form\Annotation\Object;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericRow;
+use Procure\Application\DTO\Po\PORowDTOAssembler;
 
 /**
  *
@@ -51,14 +52,10 @@ class PORowSnapshotAssembler
     {
         $missingProperties = array();
         
-        $entity = new PORowSnapshot();
-        
+        $entityProps = PORowDTOAssembler::createDTOProperities();
         $dto = new GenericRow();
         
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
                 echo (sprintf("\n protected $%s;", $propertyName));

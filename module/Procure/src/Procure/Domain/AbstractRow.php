@@ -270,15 +270,81 @@ class AbstractRow extends AbstractEntity
     protected $glAccount;
 
     protected $costCenter;
+    
+    protected $standardConvertFactor;
+
+    /**
+     * @param mixed $projectId
+     */
+    protected function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
+
+    /**
+     * @param mixed $projectToken
+     */
+    protected function setProjectToken($projectToken)
+    {
+        $this->projectToken = $projectToken;
+    }
+
+    /**
+     * @param mixed $projectName
+     */
+    protected function setProjectName($projectName)
+    {
+        $this->projectName = $projectName;
+    }
+
+    /**
+     * @param mixed $standardConvertFactor
+     */
+    protected function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectToken()
+    {
+        return $this->projectToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectName()
+    {
+        return $this->projectName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
+    }
 
     /**
      *
      * @param mixed $exchangeRate
      */
     protected function setExchangeRate($exchangeRate)
-    {
-        $this->exchangeRate = $exchangeRate;
-    }
+{
+    $this->exchangeRate = $exchangeRate;
+}
 
     /**
      *

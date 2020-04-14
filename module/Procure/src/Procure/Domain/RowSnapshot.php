@@ -13,248 +13,128 @@ class RowSnapshot extends AbstractDTO
 {
 
     public $companyId;
-
     public $companyToken;
-
     public $companyName;
-
     public $vendorId;
-
     public $vendorToken;
-
     public $vendorName;
-
     public $vendorCountry;
-
     public $docNumber;
-
     public $docSysNumber;
-
     public $docCurrencyISO;
-
     public $localCurrencyISO;
-
     public $docCurrencyId;
-
     public $localCurrencyId;
-
     public $docToken;
-
     public $docId;
-
     public $exchangeRate;
-
     public $docWarehouseName;
-
     public $docWarehouseCode;
-
     public $warehouseName;
-
     public $warehouseCode;
-
     public $docUomName;
-
     public $docUomCode;
-
     public $docUomDescription;
-
     public $itemToken;
-
     public $itemChecksum;
-
     public $itemName;
-
     public $itemName1;
-
     public $itemSKU;
-
     public $itemSKU1;
-
     public $itemSKU2;
-
     public $itemUUID;
-
     public $itemSysNumber;
-
     public $itemStandardUnit;
-
     public $itemStandardUnitName;
-
     public $itemStandardUnitCode;
-
     public $itemVersion;
-
     public $isInventoryItem;
-
     public $isFixedAsset;
-
     public $pr;
-
     public $prToken;
-
     public $prChecksum;
-
     public $prNumber;
-
     public $prSysNumber;
-
     public $prRowIndentifer;
-
     public $prRowCode;
-
     public $prRowName;
-
     public $prRowConvertFactor;
-
     public $prRowUnit;
-
     public $prRowVersion;
-
     public $projectId;
-
     public $projectToken;
-
     public $projectName;
-
     public $createdByName;
-
     public $lastChangeByName;
-
     public $id;
-
     public $rowNumber;
-
     public $token;
-
     public $quantity;
-
     public $unitPrice;
-
     public $netAmount;
-
     public $unit;
-
     public $itemUnit;
-
     public $conversionFactor;
-
     public $converstionText;
-
     public $taxRate;
-
     public $remarks;
-
     public $isActive;
-
     public $createdOn;
-
     public $lastchangeOn;
-
     public $currentState;
-
     public $vendorItemCode;
-
     public $traceStock;
-
     public $grossAmount;
-
     public $taxAmount;
-
     public $faRemarks;
-
     public $rowIdentifer;
-
     public $discountRate;
-
     public $revisionNo;
-
     public $targetObject;
-
     public $sourceObject;
-
     public $targetObjectId;
-
     public $sourceObjectId;
-
     public $docStatus;
-
     public $workflowStatus;
-
     public $transactionStatus;
-
     public $isPosted;
-
     public $isDraft;
-
     public $exwUnitPrice;
-
     public $totalExwPrice;
-
     public $convertFactorPurchase;
-
     public $convertedPurchaseQuantity;
-
     public $convertedStandardQuantity;
-
     public $convertedStockQuantity;
-
     public $convertedStandardUnitPrice;
-
     public $convertedStockUnitPrice;
-
     public $docQuantity;
-
     public $docUnit;
-
     public $docUnitPrice;
-
     public $convertedPurchaseUnitPrice;
-
     public $docType;
-
     public $descriptionText;
-
     public $vendorItemName;
-
     public $reversalBlocked;
-
     public $invoice;
-
     public $lastchangeBy;
-
     public $prRow;
-
     public $createdBy;
-
     public $warehouse;
-
     public $po;
-
     public $item;
-
     public $docUom;
-
     public $docVersion;
-
     public $uuid;
-
     public $localUnitPrice;
-
     public $exwCurrency;
-
     public $localNetAmount;
-
     public $localGrossAmount;
-
     public $transactionType;
-
     public $isReversed;
-
     public $reversalDate;
-
     public $glAccount;
-
     public $costCenter;
+    public $standardConvertFactor;
     /**
      * @return mixed
      */
@@ -1229,6 +1109,14 @@ class RowSnapshot extends AbstractDTO
     public function getCostCenter()
     {
         return $this->costCenter;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
     }
 
 }

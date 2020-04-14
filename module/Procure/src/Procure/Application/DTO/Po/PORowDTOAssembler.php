@@ -17,12 +17,8 @@ class PORowDTOAssembler
     {
         $entity = new \Application\Entity\NmtProcurePoRow();
         $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
+        $props = $reflectionClass->getProperties();
+        return $props;
     }
 
     /**

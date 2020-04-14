@@ -3,6 +3,7 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericRow;
+use Procure\Application\DTO\Gr\GrRowDTOAssembler;
 
 /**
  *
@@ -47,15 +48,11 @@ class GRRowSnapshotAssembler
     public static function findMissingPropertiesOfEntity()
     {
         $missingProperties = array();
-
-        $entity = new GRRowSnapshot();
-
+        
+        $entityProps = GrRowDTOAssembler::createDTOProperities();
         $dto = new GenericRow();
-
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        
+        foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
                 echo (sprintf("\n protected $%s;", $propertyName));

@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\DTO\Gr;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -17,12 +16,8 @@ class GrRowDTOAssembler
     {
         $entity = new \Application\Entity\NmtProcureGrRow();
         $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
+        $props = $reflectionClass->getProperties();
+        return $props;
     }
 
     /**

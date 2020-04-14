@@ -52,8 +52,6 @@ class EventHandlerFactory
             case PoPosted::class:
                 $handlers[] = new PoPostedHandler($doctrineEM);
                 break;
-                
-                
             case PoAmendmentEnabled::class:
                 $handlers[] = new PoAmendmentEnabledHandler($doctrineEM);
                 break;

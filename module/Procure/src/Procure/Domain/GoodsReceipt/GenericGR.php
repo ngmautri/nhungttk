@@ -21,6 +21,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\Event\Gr\GrReversed;
 
 /**
  *
@@ -245,8 +246,8 @@ abstract class GenericGR extends AbstractGR
      */
     public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
-        if (! $this->getDocStatus() == GRDocStatus::DOC_STATUS_DRAFT) {
-            throw new GrInvalidOperationException(sprintf(Translator::translate("Document is already posted/closed or being amended! %s", $this->getId())));
+        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+            throw new GrInvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __METHOD__)));
         }
 
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
@@ -263,6 +264,40 @@ abstract class GenericGR extends AbstractGR
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
         $this->addEvent(new GrPosted($this->makeSnapshot()));
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\GrPostingService $postingService
+     * @throws \Procure\Domain\Exception\Gr\GrInvalidOperationException
+     * @throws \Procure\Domain\Exception\Gr\GrPostingException
+     * @return \Procure\Domain\GoodsReceipt\GenericGR
+     */
+    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
+    {
+        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new GrInvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
+        }
+        
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        
+        $this->validate($headerValidators, $rowValidators);
+        if ($this->hasErrors()) {
+            throw new GrPostingException($this->getErrorMessage());
+        }
+        
+        $this->clearEvents();
+        
+        $this->preReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        
+        $this->addEvent(new GrReversed($this->makeSnapshot()));
         return $this;
     }
 

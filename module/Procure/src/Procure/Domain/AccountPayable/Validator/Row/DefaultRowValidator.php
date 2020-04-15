@@ -78,6 +78,12 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
                     $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
                 }
             }
+
+            if (! $localEntity->getTaxRate() == null) {
+                if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
+                    $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
+                }
+            }
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

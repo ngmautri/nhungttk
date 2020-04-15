@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\GR\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Exception\Gr\GrCreateException;
@@ -12,7 +12,6 @@ use Procure\Domain\Exception\Gr\GrCreateException;
 class CopyFromPOOptions implements CommandOptions
 {
 
-  
     private $userId;
 
     private $version;
@@ -20,8 +19,7 @@ class CopyFromPOOptions implements CommandOptions
     private $triggeredBy;
 
     private $triggeredOn;
-     
-    
+
     /**
      *
      * @param int $companyId
@@ -41,11 +39,11 @@ class CopyFromPOOptions implements CommandOptions
         if ($triggeredBy == null || $triggeredBy == "") {
             throw new GrCreateException(sprintf("Trigger not given! %s", $userId));
         }
-  
+
         $this->companyId = $companyId;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
-     }
+    }
 
     /**
      *

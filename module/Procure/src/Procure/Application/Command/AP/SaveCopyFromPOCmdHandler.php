@@ -16,17 +16,16 @@ use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Service\SharedService;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\SharedService;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -111,7 +110,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
                 "docCurrency",
                 "grDate",
                 "pmtTerm",
-                "warehouse",
+                "warehouse"
             ];
 
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
@@ -134,11 +133,10 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
             $rowValidators->add($validator);
 
-            
             $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new APPostingService($cmdRepository);
-             
-            $rootEntity->saveFromPO($snapshot, $options , $headerValidators, $rowValidators, $sharedService, $postingService);
+
+            $rootEntity->saveFromPO($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             $dto->id = $rootEntity->getId();
             $dto->token = $rootEntity->getToken();
@@ -164,7 +162,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
                 }
             }
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+            $notification->addError($e->getMessage() . $e->getTraceAsString());
         }
 
         $dto->setNotification($notification);

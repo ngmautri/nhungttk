@@ -1,6 +1,7 @@
 <?php
 /**
- * 
+ * Configuration file.
+ * @author Ngyuyen Mau Tri
  */
 return array(
     'navigation' => array(
@@ -189,7 +190,7 @@ return array(
                         'controller' => 'Procure\API\PrController'
                     )
                 )
-            ),
+            )
         )
     ),
 
@@ -248,16 +249,16 @@ return array(
             // Appliation Service
             'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
             'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
-            
+            'Procure\Application\Service\AP\APService' => 'Procure\Application\Service\AP\APServiceFactory',
+
             // Search Service
             'Procure\Application\Service\Search\ApSearchService' => 'Procure\Application\Service\Search\ApSearchServiceFactory',
             'Procure\Application\Service\Search\PoSearchService' => 'Procure\Application\Service\Search\PoSearchServiceFactory',
             'Procure\Application\Service\Search\PrSearchService' => 'Procure\Application\Service\Search\PrSearchServiceFactory',
             'Procure\Application\Service\Search\QrSearchService' => 'Procure\Application\Service\Search\QrSearchServiceFactory',
-            
-            //Event Handler        
-            'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory',
-            
+
+            // Event Handler
+            'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory'
         )
     ),
 
@@ -299,9 +300,9 @@ return array(
 
             'Procure\Controller\PriceComparison' => 'Procure\Controller\PriceComparisonControllerFactory',
             'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
-            
+
             // API
-            'Procure\API\PrController' => 'Procure\API\PrControllerFactory',
+            'Procure\API\PrController' => 'Procure\API\PrControllerFactory'
         )
     ),
     'view_manager' => array(

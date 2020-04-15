@@ -286,11 +286,8 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
             $localClassName = self::LOCAL_ENTITY_NAME;
             $rowEntityDoctrine = new $localClassName();
 
-            /**
-             *
-             * @todo: To update.
-             */
-            $rowEntityDoctrine->setGr($rootEntityDoctrine);
+            // to update
+            $rowEntityDoctrine->setInvoice($rootEntityDoctrine);
         }
 
         $rowEntityDoctrine = ApMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);

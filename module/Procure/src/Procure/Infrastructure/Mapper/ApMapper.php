@@ -383,12 +383,10 @@ class ApMapper
             $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
         }
 
-        // $entity->setCreatedOn($snapshot->createdOn);
         if ($snapshot->createdOn !== null) {
             $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
         }
 
-        // $entity->setReversalDate($snapshot->reversalDate);
         if ($snapshot->reversalDate !== null) {
             $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
         }
@@ -865,8 +863,10 @@ class ApMapper
 
         if ($entity->getPoRow() !== null) {
             $snapshot->poRow = $entity->getPoRow()->getId();
-            if($entity->getPoRow()->getPo()!==null){
-                $snapshot->po = $entity->getPoRow()->getPo()->getId();
+            if ($entity->getPoRow()->getPo() !== null) {
+                $snapshot->po = $entity->getPoRow()
+                    ->getPo()
+                    ->getId();
             }
         }
 

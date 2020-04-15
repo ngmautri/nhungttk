@@ -3,13 +3,13 @@ namespace Procure\Infrastructure\Mapper;
 
 use Application\Entity\NmtApplicationCompany;
 use Application\Entity\NmtApplicationCurrency;
+use Application\Entity\NmtApplicationIncoterms;
 use Application\Entity\NmtApplicationPmtMethod;
 use Application\Entity\NmtApplicationPmtTerm;
 use Application\Entity\NmtBpVendor;
 use Application\Entity\NmtFinPostingPeriod;
 use Application\Entity\NmtInventoryWarehouse;
 use Procure\Domain\DocSnapshot;
-use Application\Entity\NmtApplicationIncoterms;
 
 /**
  *
@@ -18,21 +18,22 @@ use Application\Entity\NmtApplicationIncoterms;
  */
 class HeaderMapper
 {
-    
+
     /**
-     * 
+     *
      * @param \Procure\Domain\DocSnapshot $snapshot
      * @param \Application\Entity\NmtApplicationIncoterms $entity
      */
-    public static function updateIncotermDetails(DocSnapshot $snapshot, NmtApplicationIncoterms $entity){
+    public static function updateIncotermDetails(DocSnapshot $snapshot, NmtApplicationIncoterms $entity)
+    {
         if ($snapshot == null) {
             return null;
         }
-        
+
         if ($entity == null) {
             return $snapshot;
         }
-        
+
         $snapshot->incoterm = $entity->getId();
         $snapshot->incotermCode = $entity->getIncoterm();
         $snapshot->incotermName = $entity->getIncoterm();
@@ -79,8 +80,8 @@ class HeaderMapper
 
         $snapshot->postingPeriod = $entity->getId();
         $snapshot->postingPeriodId = $entity->getId();
-        $snapshot->postingPeriodFrom = $entity->getPostingFromDate();
-        $snapshot->postingPeriodTo = $entity->getPostingToDate();
+        // $snapshot->postingPeriodFrom = $entity->getPostingFromDate();
+        // $snapshot->postingPeriodTo = $entity->getPostingToDate();
         return $snapshot;
     }
 

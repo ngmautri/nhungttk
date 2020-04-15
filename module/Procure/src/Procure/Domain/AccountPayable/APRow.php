@@ -11,7 +11,7 @@ use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Shared\Constants;
 
 /**
- * Goods Receipt Row
+ * AP Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -37,11 +37,11 @@ class APRow extends GenericRow
     private function __construct()
     {}
 
-   /**
-    * 
-    * @param APRowSnapshot $snapshot
-    * @return NULL|\Procure\Domain\AccountPayable\APRow
-    */
+    /**
+     *
+     * @param APRowSnapshot $snapshot
+     * @return NULL|\Procure\Domain\AccountPayable\APRow
+     */
     public static function makeFromSnapshot(APRowSnapshot $snapshot)
     {
         if (! $snapshot instanceof APRowSnapshot) {
@@ -75,13 +75,13 @@ class APRow extends GenericRow
         return $dto;
     }
 
-   /**
-    * 
-    * @param \Procure\Domain\PurchaseOrder\PORow $sourceObj
-    * @param \Application\Domain\Shared\Command\CommandOptions $options
-    * @throws \Procure\Domain\Exception\InvalidArgumentException
-    * @return \Procure\Domain\AccountPayable\APRow
-    */
+    /**
+     *
+     * @param \Procure\Domain\PurchaseOrder\PORow $sourceObj
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @return \Procure\Domain\AccountPayable\APRow
+     */
     public static function createFromPoRow(PORow $sourceObj, CommandOptions $options)
     {
         if (! $sourceObj instanceof PORow) {
@@ -103,13 +103,13 @@ class APRow extends GenericRow
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, $createdDate);
-        
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
         return $instance;
     }
 
     /**
-     * 
+     *
      * @return \Procure\Domain\AccountPayable\APRow
      */
     public static function getInstance()
@@ -121,7 +121,7 @@ class APRow extends GenericRow
     }
 
     /**
-     * 
+     *
      * @return \Procure\Domain\AccountPayable\APRow
      */
     public static function createInstance()
@@ -222,24 +222,27 @@ class APRow extends GenericRow
     {
         return $this->reversalDoc;
     }
-    
+
     /**
+     *
      * @return mixed
      */
     public function getIsReversable()
     {
         return $this->isReversable;
     }
-    
+
     /**
+     *
      * @return mixed
      */
     public function getGrRow()
     {
         return $this->grRow;
     }
-    
+
     /**
+     *
      * @return mixed
      */
     public function getPoRow()

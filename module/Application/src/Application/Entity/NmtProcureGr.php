@@ -309,13 +309,6 @@ class NmtProcureGr
     private $docNumber;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="nmt_procure_grcol", type="string", length=45, nullable=true)
-     */
-    private $nmtProcureGrcol;
-
-    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1399,30 +1392,6 @@ class NmtProcureGr
     public function getDocNumber()
     {
         return $this->docNumber;
-    }
-
-    /**
-     * Set nmtProcureGrcol
-     *
-     * @param string $nmtProcureGrcol
-     *
-     * @return NmtProcureGr
-     */
-    public function setNmtProcureGrcol($nmtProcureGrcol)
-    {
-        $this->nmtProcureGrcol = $nmtProcureGrcol;
-
-        return $this;
-    }
-
-    /**
-     * Get nmtProcureGrcol
-     *
-     * @return string
-     */
-    public function getNmtProcureGrcol()
-    {
-        return $this->nmtProcureGrcol;
     }
 
     /**

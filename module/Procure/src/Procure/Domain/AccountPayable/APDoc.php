@@ -75,7 +75,7 @@ class APDoc extends GenericAP
     }
 
     /**
-     * 
+     *
      * @param PODoc $sourceObj
      * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators
@@ -119,7 +119,6 @@ class APDoc extends GenericAP
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
         $instance->validateHeader($headerValidators);
 
         foreach ($rows as $r) {

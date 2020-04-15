@@ -7,13 +7,14 @@ use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
+use Application\Domain\Util\Translator;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderValidatorInterface
+class IncotermValidator extends AbstractValidator implements HeaderValidatorInterface
 {
 
     /**
@@ -32,27 +33,23 @@ class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderVal
          * @var AbstractSpecification $spec ;
          */
         try {
-            // ==== GR DATE =======
-            $spec = $this->sharedSpecificationFactory->getDateSpecification();
 
-            if (! $spec->isSatisfiedBy($rootEntity->getGrDate())) {
-                $rootEntity->addError("Good Receipt date is not correct or empty");
-            }
+            // ===== INCOTERM =======
+            if ($rootEntity->getIncoterm() !== null) {
 
-            // ===== WAREHOUSE =======
-            if ($rootEntity->getWarehouse() == null) {
-                $rootEntity->addError("Source warehouse is not set");
-            } else {
-
-                $spec1 = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
+                $spec = $this->sharedSpecificationFactory->getIncotermSpecification();
                 $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "warehouseId" => $rootEntity->getWarehouse()
+                    "incotermId" => $rootEntity->getIncoterm()
                 );
-                if (! $spec1->isSatisfiedBy($subject)) {
-                    $rootEntity->addError(sprintf("Wareouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));
+                if (! $spec->isSatisfiedBy($subject)) {
+                    $rootEntity->addError(Translator::translate(sprintf("Incoterm not found!C#%s", $rootEntity->getIncoterm())));
+                }
+
+                if ($rootEntity->getIncotermPlace() == null or $rootEntity->getIncotermPlace() == "") {
+                    $rootEntity->addError(Translator::translate(sprintf("Incoterm place not set")));
                 }
             }
+         
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }

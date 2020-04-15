@@ -7,6 +7,7 @@ use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
+use Application\Domain\Util\Translator;
 
 /**
  *
@@ -36,12 +37,12 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             // ==== CK COMPANY =======
             $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
             if (! $spec->isSatisfiedBy($rootEntity->getCompany())) {
-                $rootEntity->addError("Company not exits. #" . $rootEntity->getCompany());
+                $rootEntity->addError(Translator::translate("Company not exits. #" . $rootEntity->getCompany()));
             }
 
             // ===== CK VENDOR =======
             if ($rootEntity->getVendor() == null) {
-                $rootEntity->addError("Vendor is not set");
+                $rootEntity->addError(Translator::translate("Vendor is not set"));
             } else {
                 $spec = $this->sharedSpecificationFactory->getVendorExitsSpecification();
                 $subject = array(
@@ -49,21 +50,21 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     "vendorId" => $rootEntity->getVendor()
                 );
                 if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
+                    $rootEntity->addError(Translator::translate(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor())));
             }
 
             // ===== DOC CURRENCY =======
             if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
-                $rootEntity->addError(sprintf("Doc Currency is empty or invalid! %s", $rootEntity->getDocCurrency()));
+                $rootEntity->addError(Translator::translate(sprintf("Doc Currency is empty or invalid! %s", $rootEntity->getDocCurrency())));
             }
 
             // ===== LOCAL CURRENCY =======
             if ($rootEntity->getLocalCurrency() == null) {
-                $rootEntity->addError("Local currency is not set");
+                $rootEntity->addError(Translator::translate("Local currency is not set"));
             } else {
                 $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
                 if (! $spec->isSatisfiedBy($rootEntity->getLocalCurrency()))
-                    $rootEntity->addError("Local currency not exits..." . $rootEntity->getLocalCurrency());
+                    $rootEntity->addError(Translator::translate("Local currency not exits..." . $rootEntity->getLocalCurrency()));
             }
 
             // ===== USER ID =======
@@ -74,7 +75,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             );
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getCreatedBy());
+                $rootEntity->addError(Translator::translate("User is not identified for this transaction. #" . $rootEntity->getCreatedBy()));
             }
 
             if ($rootEntity->getLastchangeBy() !== null) {
@@ -83,7 +84,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     "userId" => $rootEntity->getLastchangeBy()
                 );
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy());
+                    $rootEntity->addError(Translator::translate("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy()));
                 }
             }
               

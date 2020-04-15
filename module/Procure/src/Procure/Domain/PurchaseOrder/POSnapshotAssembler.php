@@ -3,6 +3,8 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Domain\GenericDoc;
+use ProcureTest\PR\PoDTOAssemblerTest;
+use Procure\Application\DTO\Po\PoDTOAssembler;
 
 /**
  *
@@ -23,17 +25,14 @@ class POSnapshotAssembler
     public static function findMissingPropertiesOfSnapshot()
     {
         $missingProperties = array();
-        $entity = new GenericDoc();
-        $dto = new POSnapshot();
         
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        $entityProps = PoDTOAssembler::createDTOProperities();
+        $dto = new GenericDoc();
+        
+        foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
                 echo (sprintf("\n protected $%s;", $propertyName));
-                
                 $missingProperties[] = $propertyName;
             }
         }
@@ -48,14 +47,10 @@ class POSnapshotAssembler
     {
         $missingProperties = array();
         
-        $entity = new POSnapshot();
-        
+        $entityProps = PoDTOAssembler::createDTOProperities();
         $dto = new GenericDoc();
         
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
                 echo (sprintf("\n protected $%s;", $propertyName));

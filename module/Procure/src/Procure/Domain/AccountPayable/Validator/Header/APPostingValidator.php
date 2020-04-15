@@ -40,7 +40,16 @@ class APPostingValidator extends AbstractValidator implements HeaderValidatorInt
             );
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError(sprintf("Can not post on this date (Date %s CompanyID %s). Period is not created or closed. ", $rootEntity->getGrDate(), $rootEntity->getCompany()));
+                $rootEntity->addError(sprintf("Can not post goods receipt on this date (Date %s CompanyID %s). Period is not created or closed. ", $rootEntity->getGrDate(), $rootEntity->getCompany()));
+            }
+
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "movementDate" => $rootEntity->getPostingDate()
+            );
+
+            if (! $spec->isSatisfiedBy($subject)) {
+                $rootEntity->addError(sprintf("Can not post accouting entry on this date (Date %s CompanyID %s). Period is not created or closed. ", $rootEntity->getPostingDate(), $rootEntity->getCompany()));
             }
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());

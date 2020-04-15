@@ -281,6 +281,20 @@ class NmtProcureQo
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_number", type="string", length=100, nullable=true)
+     */
+    private $docNumber;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="doc_date", type="datetime", nullable=true)
+     */
+    private $docDate;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1278,6 +1292,54 @@ class NmtProcureQo
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set docNumber
+     *
+     * @param string $docNumber
+     *
+     * @return NmtProcureQo
+     */
+    public function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get docNumber
+     *
+     * @return string
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     * Set docDate
+     *
+     * @param \DateTime $docDate
+     *
+     * @return NmtProcureQo
+     */
+    public function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+
+        return $this;
+    }
+
+    /**
+     * Get docDate
+     *
+     * @return \DateTime
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
     }
 
     /**

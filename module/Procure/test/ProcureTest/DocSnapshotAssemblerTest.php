@@ -3,6 +3,9 @@ namespace ProcureTest;
 
 use Procure\Domain\GenericDoc;
 use PHPUnit_Framework_TestCase;
+use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
+use Procure\Domain\GoodsReceipt\GRSnapshotAssembler;
+use Procure\Domain\AccountPayable\APSnapshotAssembler;
 
 class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {

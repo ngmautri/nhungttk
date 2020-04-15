@@ -176,6 +176,20 @@ class NmtProcurePr
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_number", type="string", length=100, nullable=true)
+     */
+    private $docNumber;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="doc_date", type="datetime", nullable=true)
+     */
+    private $docDate;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -763,6 +777,54 @@ class NmtProcurePr
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set docNumber
+     *
+     * @param string $docNumber
+     *
+     * @return NmtProcurePr
+     */
+    public function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get docNumber
+     *
+     * @return string
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     * Set docDate
+     *
+     * @param \DateTime $docDate
+     *
+     * @return NmtProcurePr
+     */
+    public function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+
+        return $this;
+    }
+
+    /**
+     * Get docDate
+     *
+     * @return \DateTime
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
     }
 
     /**

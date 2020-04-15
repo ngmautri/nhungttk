@@ -16,7 +16,7 @@ use Procure\Infrastructure\Mapper\ApMapper;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRepositoryInterface
+class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRepositoryInterface
 {
 
     const ROOT_ENTITY_NAME = "\Application\Entity\FinVendorInvoice";

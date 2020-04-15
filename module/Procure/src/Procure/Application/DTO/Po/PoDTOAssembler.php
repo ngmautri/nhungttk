@@ -19,12 +19,8 @@ class PoDTOAssembler
     {
         $entity = new \Application\Entity\NmtProcurePo();
         $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
+        $props = $reflectionClass->getProperties();
+        return $props;
     }
 
     /**

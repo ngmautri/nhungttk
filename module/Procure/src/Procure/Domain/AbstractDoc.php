@@ -33,7 +33,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $postingPeriodFrom;
 
     protected $postingPeriodTo;
-    
+
     protected $postingPeriodId;
 
     // Company
@@ -228,6 +228,82 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     protected $discountRate;
 
+    protected $docNumber;
+
+    protected $docDate;
+
+    /**
+     * @param mixed $postingPeriodFrom
+     */
+    protected function setPostingPeriodFrom($postingPeriodFrom)
+    {
+        $this->postingPeriodFrom = $postingPeriodFrom;
+    }
+
+    /**
+     * @param mixed $postingPeriodTo
+     */
+    protected function setPostingPeriodTo($postingPeriodTo)
+    {
+        $this->postingPeriodTo = $postingPeriodTo;
+    }
+
+    /**
+     * @param mixed $postingPeriodId
+     */
+    protected function setPostingPeriodId($postingPeriodId)
+    {
+        $this->postingPeriodId = $postingPeriodId;
+    }
+
+    /**
+     * @param mixed $docCurrencyISO
+     */
+    protected function setDocCurrencyISO($docCurrencyISO)
+    {
+        $this->docCurrencyISO = $docCurrencyISO;
+    }
+
+    /**
+     * @param mixed $localCurrencyISO
+     */
+    protected function setLocalCurrencyISO($localCurrencyISO)
+    {
+        $this->localCurrencyISO = $localCurrencyISO;
+    }
+
+    /**
+     * @param mixed $docCurrencyId
+     */
+    protected function setDocCurrencyId($docCurrencyId)
+    {
+        $this->docCurrencyId = $docCurrencyId;
+    }
+
+    /**
+     * @param mixed $localCurrencyId
+     */
+    protected function setLocalCurrencyId($localCurrencyId)
+    {
+        $this->localCurrencyId = $localCurrencyId;
+    }
+
+    /**
+     * @param mixed $docNumber
+     */
+    protected function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+    }
+
+    /**
+     * @param mixed $docDate
+     */
+    protected function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+    }
+
     /**
      *
      * @return mixed
@@ -235,6 +311,46 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     public function getDocCurrencyISO()
     {
         return $this->docCurrencyISO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostingPeriodFrom()
+    {
+        return $this->postingPeriodFrom;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostingPeriodTo()
+    {
+        return $this->postingPeriodTo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostingPeriodId()
+    {
+        return $this->postingPeriodId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
     }
 
     /**

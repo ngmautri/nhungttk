@@ -74,6 +74,7 @@ class ApMapper
         $entity->setUuid($snapshot->uuid);
         $entity->setDiscountRate($snapshot->discountRate);
         $entity->setDiscountAmount($snapshot->discountAmount);
+        $entity->setDocNumber($snapshot->getDocNumber());
 
         // ============================
         // DATE MAPPING
@@ -120,6 +121,10 @@ class ApMapper
 
         if ($snapshot->reversalDate !== null) {
             $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
+        }
+
+        if ($snapshot->docDate !== null) {
+            $entity->setDocDate(new \DateTime($snapshot->docDate));
         }
 
         // ============================
@@ -564,6 +569,7 @@ class ApMapper
         $snapshot->uuid = $entity->getUuid();
         $snapshot->discountRate = $entity->getDiscountRate();
         $snapshot->discountAmount = $entity->getDiscountAmount();
+        $snapshot->docNumber = $entity->getDocNumber();
 
         // ============================
         // DATE MAPPING
@@ -609,6 +615,10 @@ class ApMapper
 
         if (! $entity->getQuotationDate() == null) {
             $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getDocDate() == null) {
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d H:i:s");
         }
 
         // ============================
@@ -809,7 +819,7 @@ class ApMapper
          */
 
         if ($entity->getInvoice() !== null) {
-            RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice());
+            RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice()); // Parent Detial.
         }
 
         if ($entity->getGlAccount() !== null) {
@@ -823,8 +833,12 @@ class ApMapper
         if ($entity->getDocUom() !== null) {
             RowMapper::updateUomDetails($snapshot, $entity->getDocUom());
         }
+
         if ($entity->getGrRow() !== null) {
             $snapshot->grRow = $entity->getGrRow()->getId();
+            if ($entity->getGrRow()->getGr() !== null) {
+                // today
+            }
         }
 
         if ($entity->getItem() !== null) {

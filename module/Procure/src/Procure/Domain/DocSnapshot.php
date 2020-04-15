@@ -216,6 +216,28 @@ class DocSnapshot extends AbstractDTO
 
     public $discountRate;
 
+    public $docNumber;
+
+    public $docDate;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
+    }
+
     /**
      *
      * @return mixed

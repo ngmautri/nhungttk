@@ -295,6 +295,27 @@ class NmtProcureGr
     private $docVersion;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="doc_date", type="datetime", nullable=true)
+     */
+    private $docDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_number", type="string", length=100, nullable=true)
+     */
+    private $docNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nmt_procure_grcol", type="string", length=45, nullable=true)
+     */
+    private $nmtProcureGrcol;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1330,6 +1351,78 @@ class NmtProcureGr
     public function getDocVersion()
     {
         return $this->docVersion;
+    }
+
+    /**
+     * Set docDate
+     *
+     * @param \DateTime $docDate
+     *
+     * @return NmtProcureGr
+     */
+    public function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+
+        return $this;
+    }
+
+    /**
+     * Get docDate
+     *
+     * @return \DateTime
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
+    }
+
+    /**
+     * Set docNumber
+     *
+     * @param string $docNumber
+     *
+     * @return NmtProcureGr
+     */
+    public function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get docNumber
+     *
+     * @return string
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     * Set nmtProcureGrcol
+     *
+     * @param string $nmtProcureGrcol
+     *
+     * @return NmtProcureGr
+     */
+    public function setNmtProcureGrcol($nmtProcureGrcol)
+    {
+        $this->nmtProcureGrcol = $nmtProcureGrcol;
+
+        return $this;
+    }
+
+    /**
+     * Get nmtProcureGrcol
+     *
+     * @return string
+     */
+    public function getNmtProcureGrcol()
+    {
+        return $this->nmtProcureGrcol;
     }
 
     /**

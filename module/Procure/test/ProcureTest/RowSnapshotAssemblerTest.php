@@ -23,7 +23,7 @@ class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        //PORowSnapshotAssembler::findMissingPropertiesOfEntity();
+        PORowSnapshotAssembler::findMissingPropertiesOfEntity();
         //GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
         //APRowSnapshotAssembler::findMissingPropertiesOfEntity();
         

@@ -316,6 +316,20 @@ class NmtInventoryMv
     private $uuid;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="doc_date", type="datetime", nullable=true)
+     */
+    private $docDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_number", type="string", length=100, nullable=true)
+     */
+    private $docNumber;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1433,6 +1447,54 @@ class NmtInventoryMv
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set docDate
+     *
+     * @param \DateTime $docDate
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+
+        return $this;
+    }
+
+    /**
+     * Get docDate
+     *
+     * @return \DateTime
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
+    }
+
+    /**
+     * Set docNumber
+     *
+     * @param string $docNumber
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get docNumber
+     *
+     * @return string
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
     }
 
     /**

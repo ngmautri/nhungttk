@@ -30,7 +30,9 @@ class PoMapper
 
         // $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
+        $entity->setVendorName($snapshot->vendorName);
         $entity->setInvoiceNo($snapshot->invoiceNo);
+        $entity->setCurrencyIso3($snapshot->currencyIso3);
         $entity->setExchangeRate($snapshot->exchangeRate);
         $entity->setRemarks($snapshot->remarks);
         $entity->setCurrentState($snapshot->currentState);
@@ -58,34 +60,54 @@ class PoMapper
         $entity->setTotalLocalDiscount($snapshot->totalLocalDiscount);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
+        $entity->setDocVersion($snapshot->docVersion);
+        $entity->setIsDraft($snapshot->isDraft);
+        $entity->setIsPosted($snapshot->isPosted);
+        $entity->setIsReversed($snapshot->isReversed);
+        $entity->setReversalReason($snapshot->reversalReason);
+        $entity->setPostingPeriod($snapshot->postingPeriod);
+        $entity->setCurrentStatus($snapshot->currentStatus);
+        $entity->setTransactionType($snapshot->transactionType);
+        $entity->setDiscountRate($snapshot->discountRate);
+        $entity->setDiscountAmount($snapshot->discountAmount);
+        $entity->setDocNumber($snapshot->docNumber);
 
+        // ============================
         // DATE MAPPING
-        // $entity->setCreatedOn($snapshot->createdOn);
-        if ($snapshot->createdOn !== null) {
-            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
-        }
+        // ============================
+        /*
+         * $entity->setInvoiceDate($snapshot->invoiceDate);
+         * $entity->setCreatedOn($snapshot->createdOn);
+         * $entity->setLastchangeOn($snapshot->lastchangeOn);
+         * $entity->setPostingDate($snapshot->postingDate);
+         * $entity->setGrDate($snapshot->grDate);
+         * $entity->setContractDate($snapshot->contractDate);
+         * $entity->setQuotationDate($snapshot->quotationDate);
+         * $entity->setReversalDate($snapshot->reversalDate);
+         * $entity->setDocDate($snapshot->docDate);
+         */
 
-        // $entity->setInvoiceDate($snapshot->invoiceDate);
+        // =================
         if ($snapshot->invoiceDate !== null) {
             $entity->setInvoiceDate(new \DateTime($snapshot->invoiceDate));
         }
 
-        // $entity->setLastchangeOn($snapshot->lastchangeOn);
+        if ($snapshot->createdOn !== null) {
+            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
+        }
+
         if ($snapshot->lastchangeOn !== null) {
             $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
         }
 
-        // $entity->setPostingDate($snapshot->postingDate);
         if ($snapshot->postingDate !== null) {
             $entity->setPostingDate(new \DateTime($snapshot->postingDate));
         }
 
-        // $entity->setGrDate($snapshot->grDate);
         if ($snapshot->grDate !== null) {
             $entity->setGrDate(new \DateTime($snapshot->grDate));
         }
 
-        // $entity->setContractDate($snapshot->contractDate);
         if ($snapshot->contractDate !== null) {
             $entity->setContractDate(new \DateTime($snapshot->contractDate));
         }
@@ -95,9 +117,32 @@ class PoMapper
             $entity->setQuotationDate(new \DateTime($snapshot->quotationDate));
         }
 
-        // REFERRENCE MAPPING
+        if ($snapshot->reversalDate !== null) {
+            $entity->setReversalDate(new \DateTime($snapshot->reversalDate));
+        }
 
-        // $entity->setVendor($snapshot->vendor);
+        if ($snapshot->docDate !== null) {
+            $entity->setDocDate(new \DateTime($snapshot->docDate));
+        }
+
+        // =================
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+        /*
+         * $entity->setVendor($snapshot->vendor);
+         * $entity->setPmtTerm($snapshot->pmtTerm);
+         * $entity->setCompany($snapshot->company);
+         * $entity->setWarehouse($snapshot->warehouse);
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setLastchangeBy($snapshot->lastchangeBy);
+         * $entity->setCurrency($snapshot->currency);
+         * $entity->setPaymentMethod($snapshot->paymentMethod);
+         * $entity->setLocalCurrency($snapshot->localCurrency);
+         * $entity->setDocCurrency($snapshot->docCurrency);
+         * $entity->setIncoterm2($snapshot->incoterm2);
+         */
         if ($snapshot->vendor > 0) {
             /**
              *
@@ -109,7 +154,6 @@ class PoMapper
             $entity->setVendorName($obj->getVendorName());
         }
 
-        // $entity->setPmtTerm($snapshot->pmtTerm);
         if ($snapshot->pmtTerm > 0) {
             /**
              *
@@ -119,7 +163,6 @@ class PoMapper
             $entity->setPmtTerm($obj);
         }
 
-        // $entity->setCompany($snapshot->company);
         if ($snapshot->company > 0) {
             /**
              *
@@ -129,7 +172,6 @@ class PoMapper
             $entity->setCompany($obj);
         }
 
-        // $entity->setWarehouse($snapshot->warehouse);
         if ($snapshot->warehouse > 0) {
             /**
              *
@@ -139,7 +181,6 @@ class PoMapper
             $entity->setWarehouse($obj);
         }
 
-        // $entity->setCreatedBy($snapshot->createdBy);
         if ($snapshot->createdBy > 0) {
             /**
              *
@@ -158,7 +199,7 @@ class PoMapper
             $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastchangeBy);
             $entity->setLastchangeBy($obj);
         }
-        // $entity->setCurrency($snapshot->currency);
+
         if ($snapshot->currency > 0) {
             /**
              *
@@ -167,7 +208,7 @@ class PoMapper
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->currency);
             $entity->setCurrency($obj);
         }
-        // $entity->setPaymentMethod($snapshot->paymentMethod);
+
         if ($snapshot->paymentMethod > 0) {
             /**
              *
@@ -176,7 +217,7 @@ class PoMapper
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationPmtMethod')->find($snapshot->paymentMethod);
             $entity->setPaymentMethod($obj);
         }
-        // $entity->setLocalCurrency($snapshot->localCurrency);
+
         if ($snapshot->localCurrency > 0) {
             /**
              *
@@ -185,7 +226,7 @@ class PoMapper
             $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($snapshot->localCurrency);
             $entity->setLocalCurrency($obj);
         }
-        // $entity->setDocCurrency($snapshot->docCurrency);
+
         if ($snapshot->docCurrency > 0) {
             /**
              *
@@ -196,7 +237,6 @@ class PoMapper
             $entity->setCurrencyIso3($obj->getCurrency());
         }
 
-        // $entity->setIncoterm2($snapshot->incoterm2);
         if ($snapshot->incoterm2 > 0) {
             /**
              *
@@ -206,6 +246,7 @@ class PoMapper
             $entity->setIncoterm2($obj);
         }
 
+        // ==============
         return $entity;
     }
 
@@ -511,6 +552,10 @@ class PoMapper
             $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d H:i:s");
         }
 
+        if (! $entity->getDocDate() == null) {
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d H:i:s");
+        }
+
         // =================================
         // Mapping None-Object Field
         // =================================
@@ -546,7 +591,8 @@ class PoMapper
         $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
         $snapshot->uuid = $entity->getUuid();
-        $snapshot->docVersion = $entity->getDocVersion(); // new/
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->docNumber = $entity->getDocNumber();
 
         return $snapshot;
     }
@@ -717,7 +763,7 @@ class PoMapper
         if ($entity->getItem() !== null) {
             RowMapper::updateItemDetails($snapshot, $entity->getItem());
         }
-        
+
         // $snapshot->docUom = $entity->getDocUom();
         if ($entity->getDocUom() !== null) {
             RowMapper::updateUomDetails($snapshot, $entity->getDocUom());

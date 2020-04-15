@@ -7,7 +7,6 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\AccountPayable\Repository\APQueryRepositoryInterface;
-use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Mapper\ApMapper;
 
 /**
@@ -68,8 +67,37 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
         return null;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\AccountPayable\Repository\APQueryRepositoryInterface::getHeaderById()
+     */
     public function getHeaderById($id, $token = null)
-    {}
+    {
+        if ($token == null) {
+            $criteria = array(
+                'id' => $id
+            );
+        } else {
+            $criteria = array(
+                'id' => $id,
+                'token' => $token
+            );
+        }
+
+        /**
+         *
+         * @var \Application\Entity\FinVendorInvoice $entity ;
+         */
+        $entity = $this->doctrineEM->getRepository('\Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        $snapshot = ApMapper::createDetailSnapshot($this->doctrineEM, $entity);
+
+        if ($snapshot == null) {
+            return null;
+        }
+
+        return APDoc::makeFromSnapshot($snapshot);
+    }
 
     public function getById($id, $outputStragegy = null)
     {}
@@ -178,7 +206,7 @@ WHERE fin_vendor_invoice_row.invoice_id=%s AND fin_vendor_invoice_row.is_active=
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);            
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {
             return null;

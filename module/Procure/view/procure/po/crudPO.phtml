@@ -4,7 +4,7 @@
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 $currency_list = $nmtPlugin->currencyList();
 $currency_option = "";
-$review_url =null;
+$review_url = null;
 
 if ($currency_list !== null) :
     foreach ($currency_list as $l) :
@@ -74,15 +74,14 @@ $docStatus = null;
 if (! $dto == null) {
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
-    
 }
 ?>
 
 
 <div id="wrapper" class="toggled">
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" style="font-size: 9.5pt;">
 					<?php
     $current_step = "STEP1";
     include (ROOT . '/module/Procure/view/procure/create-wizard.php');
@@ -90,31 +89,39 @@ if (! $dto == null) {
 
 
 	</div>
-	<!-- /#sidebar-wrapper -->
+    <!-- /#sidebar-wrapper -->
 
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
+    <!-- Page Content -->
+    <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+        <div class="container-fluid" id="main_container"
+            style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+            <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle"
+                class="btn btn-primary btn-sm" id="menu-toggle"><span title="Hide Menu"><i
+                    class="fa fa-chevron-left" aria-hidden="true"></i> Menu <span></a>
 
 
-			<div id="tabs" style="font-size: 10pt">
-				<ul>
-					<li><a href="#general"><?php echo $form_title;?>:</a></li>
-		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
- 	 	<li><a href="<?php echo $log_url;?>"><span
-							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
-		<?php endif;?>			
+            <div id="tabs" style="font-size: 10pt">
+                <ul>
+                    <li><a href="#general"><?php
+
+                    echo $form_title;
+                    ?>:</a></li>
+		<?php
+
+if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
+    ?>
+ 	 	<li><a href="<?php
+
+    echo $log_url;
+    ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		<?php endif;
+
+?>			
 	
 				</ul>
 
-				<div id="general" style="font-size: 9pt">
-					<!-- Tab1 -->
+                <div id="general" style="font-size: 9pt">
+                    <!-- Tab1 -->
 		
 <?php
 // ==================
@@ -123,200 +130,284 @@ echo $error_msg;
 ?>
 
 
-	<form id="Creating_Form" class="form-horizontal"
-						action="<?php echo $form_action;?>" method="post"
-						enctype="multipart/form-data">
-						<input type="hidden" name="redirectUrl"
-							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-							id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
-						<input type="hidden" id="entity_token" name="entity_token"
-							value="<?php echo $entity_token; ?>" /> <input type="hidden"
-							name="version" value="<?php echo $version;?>" />
+	<form id="Creating_Form" class="form-horizontal" action="<?php
+
+echo $form_action;
+?>"
+                        method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="redirectUrl"
+                            value="<?php
+
+                            echo $redirectUrl?>" /> <input type="hidden" id="entity_id" name="entity_id"
+                            value="<?php
+
+                            echo $entity_id;
+                            ?>" /> <input type="hidden" id="entity_token" name="entity_token"
+                            value="<?php
+
+                            echo $entity_token;
+                            ?>" /> <input type="hidden" name="version"
+                            value="<?php
+
+                            echo $version;
+                            ?>" />
 	            			
            			<?php
 
             if ($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO) :
                 ?>
              	
-          			<?php endif;?>
+          			<?php endif;
+
+            ?>
             			
             			
             			
             			<fieldset>
-							<legend style="font-size: 9.5pt; color: gray;">
-								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php echo "Version ".  $version; ?>):</a>
-							</legend>
-							<div id="invoice_header" class="collapse in">
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2">Current State:</label>
-									<div class="col-sm-3">
-										<select name="currentState" class="form-control input-sm">
-											<option value="">Please Select</option>
-											<option
-												<?php if($dto!==null): if($dto->getCurrentState()=="draftPo"): echo "selected"; endif;endif; ?>
-												value="draftPo">Draft</option>
-											<option
-												<?php if($dto!==null): if($dto->getCurrentState()=="finalPo"): echo "selected"; endif;endif; ?>
-												value="finalPo">Final</option>
-										</select>
-									</div>
+                            <legend style="font-size: 9.5pt; color: gray;">
+                                <small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+                                <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
 
-									<div class="col-sm-3">
-										<input
-											<?php if(!$dto== null): echo ($dto->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isActive" value="1">&nbsp;Is
-										Active&nbsp;&nbsp;&nbsp;&nbsp;
+                                echo "Version " . $version;
+                                ?>):</a>
+                            </legend>
+                            <div id="invoice_header" class="collapse in">
+                                <div class="form-group margin-bottom required">
+                                    <label class="control-label col-sm-2">Current State:</label>
+                                    <div class="col-sm-3">
+                                        <select name="currentState" class="form-control input-sm">
+                                            <option value="">Please Select</option>
+                                            <option
+                                                <?php
 
-									</div>
+                                                if ($dto !== null) :
+                                                    if ($dto->getCurrentState() == "draftPo") :
+                                                        echo "selected"; endif;endif;
 
-								</div>
 
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2 ">Vendor:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											id="vendor_name_1" placeholder="Enter term to search vendor"
-											name="vendorName"
-											value="<?php if (!$dto == null): echo $dto->getVendorName();endif;?>">
+                                                ?>
+                                                value="draftPo">Draft</option>
+                                            <option
+                                                <?php
 
-										<input type="hidden" id="vendor_id" placeholder=""
-											name="vendor"
-											value="<?php if (!$dto == null): echo $dto->getVendor();endif;?>">
-									</div>
-									<div class="col-sm-3">
+                                                if ($dto !== null) :
+                                                    if ($dto->getCurrentState() == "finalPo") :
+                                                        echo "selected"; endif;endif;
 
-										<a target="blank" style="font-size: 9pt;"
-											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
-											class="glyphicon glyphicon-new-window"></i></small>
-									</div>
-								</div>
 
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2">Contract /PO No.:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="contractNo" name="contractNo"
-											value="<?php echo (!$dto == null)? $dto->getContractNo():"";?>">
-									</div>
-									<label class="control-label col-sm-2">Contract /PO Date:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="contractDate" name="contractDate"
-											value="<?php if(!$dto == null):echo $dto->getContractDate(); endif;?>">
-									</div>
-								</div>
+                                                ?>
+                                                value="finalPo">Final</option>
+                                        </select>
+                                    </div>
 
-								<div class="form-group margin-bottom required">
+                                    <div class="col-sm-3">
+                                        <input
+                                            <?php
 
-									<label class="control-label col-sm-2">Currency:</label>
-									<div class="col-sm-3">
-										<select name="docCurrency" class="form-control input-sm">
-											<option value="">Select Currency</option>
+                                            if (! $dto == null) :
+                                                echo ($dto->getIsActive() == "1") ? "checked" : "";
+                                            else :
+                                                echo "checked";
+                                            endif;
+                                            ?>
+                                            type="checkbox" name="isActive" value="1">&nbsp;Is
+                                        Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group margin-bottom required">
+                                    <label class="control-label col-sm-2 ">Vendor:</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" type="text"
+                                            id="vendor_name_1"
+                                            placeholder="Enter term to search vendor"
+                                            name="vendorName"
+                                            value="<?php
+
+                                            if (! $dto == null) :
+                                                echo $dto->getVendorName();endif;
+
+                                            ?>"> <input type="hidden" id="vendor_id" placeholder=""
+                                            name="vendor"
+                                            value="<?php
+
+                                            if (! $dto == null) :
+                                                echo $dto->getVendor();endif;
+
+                                            ?>">
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <a target="blank" style="font-size: 9pt;"
+                                            href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
+                                            class="glyphicon glyphicon-new-window"></i></small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group margin-bottom">
+                                    <label class="control-label col-sm-2">Contract /PO No.:</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" type="text"
+                                            placeholder="" id="contractNo" name="contractNo"
+                                            value="<?php
+
+                                            echo (! $dto == null) ? $dto->getContractNo() : "";
+                                            ?>">
+                                    </div>
+                                    <label class="control-label col-sm-2">Contract /PO Date:</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" type="text"
+                                            placeholder="" id="contractDate" name="contractDate"
+                                            value="<?php
+
+                                            if (! $dto == null) :
+                                                echo $dto->getContractDate(); endif;
+
+                                            ?>">
+                                    </div>
+                                </div>
+
+                                <div class="form-group margin-bottom required">
+
+                                    <label class="control-label col-sm-2">Currency:</label>
+                                    <div class="col-sm-3">
+                                        <select name="docCurrency" class="form-control input-sm">
+                                            <option value="">Select Currency</option>
  <?php
 // ================
 echo $currency_option;
 // ================
 ?>   											</select>
-									</div>
+                                    </div>
 
-									<label class="control-label col-sm-2">Exchange Rate:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="exchangeRate" name="exchangeRate"
-											value="<?php echo (!$dto == null)? $dto->getExchangeRate():"";?>">
-									</div>
-								</div>
+                                    <label class="control-label col-sm-2">Exchange Rate:</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" type="text"
+                                            placeholder="" id="exchangeRate" name="exchangeRate"
+                                            value="<?php
+
+                                            echo (! $dto == null) ? $dto->getExchangeRate() : "";
+                                            ?>">
+                                    </div>
+                                </div>
 
 
 
-								<div class="form-group margin-bottom required">
+                                <div class="form-group margin-bottom required">
 
-									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
-									<div class="col-sm-3">
-										<select name="incoterm" class="form-control input-sm">
-											<option value="">---</option>
+                                    <label class="control-label col-sm-2"><?php
+
+                                    echo $this->translate("Incoterm");
+                                    ?>:</label>
+                                    <div class="col-sm-3">
+                                        <select name="incoterm" class="form-control input-sm">
+                                            <option value="">---</option>
 <?php
 // ================
 echo $incoterm_option;
 // ================
 ?>
             							</select>
-									</div>
+                                    </div>
 
-									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="incotermPlace" name="incotermPlace"
-											value="<?php echo (!$dto == null)? $dto->getIncotermPlace():"";?>">
-									</div>
+                                    <label class="control-label col-sm-2"><?php
 
-								</div>
+                                    echo $this->translate("Incoterm Place");
+                                    ?>:</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" type="text"
+                                            placeholder="" id="incotermPlace" name="incotermPlace"
+                                            value="<?php
+
+                                            echo (! $dto == null) ? $dto->getIncotermPlace() : "";
+                                            ?>">
+                                    </div>
+
+                                </div>
 
 
-								<div class="form-group margin-bottom required">
+                                <div class="form-group margin-bottom required">
 
-									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
-									<div class="col-sm-3">
-										<select name="paymentTerm" class="form-control input-sm">
-											<option value=""><?php echo $this->translate("---");?></option>
+                                    <label class="control-label col-sm-2"><?php
+
+                                    echo $this->translate("Payment Term");
+                                    ?>:</label>
+                                    <div class="col-sm-3">
+                                        <select name="paymentTerm" class="form-control input-sm">
+                                            <option value=""><?php
+
+                                            echo $this->translate("---");
+                                            ?></option>
  <?php
 // ================
 echo $paymentTerm_option;
 // ================
 ?>>
        					</select>
-									</div>
+                                    </div>
 
 
-								</div>
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
-									<div class="col-sm-5">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="paymentTermDetail"
-											name="paymentTermDetail"
-											value="<?php echo (!$dto == null)? $dto->getPaymentTerm() :"";?>">
-									</div>
-								</div>
+                                </div>
+                                <div class="form-group margin-bottom">
+                                    <label class="control-label col-sm-2"><?php
+
+                                    echo $this->translate("Payment Term Detail");
+                                    ?>:</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control input-sm" type="text"
+                                            placeholder="" id="paymentTermDetail"
+                                            name="paymentTermDetail"
+                                            value="<?php
+
+                                            echo (! $dto == null) ? $dto->getPaymentTerm() : "";
+                                            ?>">
+                                    </div>
+                                </div>
 
 
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2">Description</label>
-									<div class="col-sm-8">
-										<input class="form-control input-sm" type="text" id="remarks"
-											placeholder="" name="remarks"
-											value="<?php echo (!$dto == null)? $dto->getRemarks() :"";?>">
-									</div>
-								</div>
+                                <div class="form-group margin-bottom">
+                                    <label class="control-label col-sm-2">Description</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-sm" type="text"
+                                            id="remarks" placeholder="" name="remarks"
+                                            value="<?php
+
+                                            echo (! $dto == null) ? $dto->getRemarks() : "";
+                                            ?>">
+                                    </div>
+                                </div>
 
 
-							</div>
+                            </div>
 
-							<hr>
-							<div class="form-group margin-bottom">
-								<label class="control-label col-sm-2" for="inputTag"></label>
-								<div class="col-sm-3">
-									<button id="submit" onclick="submitForm('Creating_Form');"
-										class="btn btn-default btn-sm">
-										<i class="glyphicon glyphicon-floppy-disk"> </i> Save
-									</button>
-									<a class="btn btn-default btn-sm"
-										href="<?php echo $review_url; ?>"><small><i
-											class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+                            <hr>
+                            <div class="form-group margin-bottom">
+                                <label class="control-label col-sm-2" for="inputTag"></label>
+                                <div class="col-sm-3">
+                                    <button id="submit" onclick="submitForm('Creating_Form');"
+                                        class="btn btn-default btn-sm">
+                                        <i class="glyphicon glyphicon-floppy-disk"> </i> Save
+                                    </button>
+                                    <a class="btn btn-default btn-sm"
+                                        href="<?php
 
-								</div>
-							</div>
-						</fieldset>
-					</form>
+                                        echo $review_url;
+                                        ?>"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
-				</div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
 
-				<!-- end tab -->
-			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
+                </div>
+
+                <!-- end tab -->
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
 
 </div>
 <!-- /#wrapper -->
@@ -356,7 +447,9 @@ $("#remarks").attr("disabled", false);
 $("#entity_id").attr("disabled", false);
 $("#entity_token").attr("disabled", false);
 $("#submit").attr("disabled", false);
- <?php endif;?>
+ <?php endif;
+
+?>
 
   
 </script>

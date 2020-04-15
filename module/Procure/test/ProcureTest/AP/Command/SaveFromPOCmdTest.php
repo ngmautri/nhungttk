@@ -13,6 +13,7 @@ use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Service\AP\APService;
 use Procure\Domain\AccountPayable\APDoc;
 use PHPUnit_Framework_TestCase;
+use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 
 class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 {
@@ -53,17 +54,17 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
             $rootEntity = $sv->createFromPO($source_id, $source_token, $options);
 
             $dto = new ApDTO();
-            $dto->grDate = "2020-04-05";
+            $dto->grDate = "2020-05-08";
             $dto->warehouse = 5;
 
             $options = new SaveCopyFromPOOptions(1, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecoratorTest($cmdHandler);
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
-            // var_dump($rootEntity);
             var_dump($dto->getErrors());
+            // var_dump($rootEntity);
         } catch (\Exception $e) {
             echo $e->getMessage();
             echo $e->getTraceAsString();

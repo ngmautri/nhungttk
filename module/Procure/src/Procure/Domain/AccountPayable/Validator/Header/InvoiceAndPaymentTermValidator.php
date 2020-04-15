@@ -2,12 +2,12 @@
 namespace Procure\Domain\AccountPayable\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Application\Domain\Util\Translator;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
-use Application\Domain\Util\Translator;
 
 /**
  *
@@ -44,7 +44,7 @@ class InvoiceAndPaymentTermValidator extends AbstractValidator implements Header
 
             // ==== INVOICE DATE =======
             if (! $spec->isSatisfiedBy($rootEntity->getDocDate())) {
-                $rootEntity->addError(Translator::translate("Good Receipt date is not correct or empty"));
+                $rootEntity->addError(Translator::translate("Document date is not correct or empty"));
             }
 
             // ==== PAYMENT TERM =======
@@ -53,9 +53,8 @@ class InvoiceAndPaymentTermValidator extends AbstractValidator implements Header
                 "paymentTermId" => $rootEntity->getPmtTerm()
             );
             if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError(Translator::translate("Payment term is required!"));
+                $rootEntity->addError(Translator::translate("Payment term is required!. " . $rootEntity->getPmtTerm()));
             }
-         
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }

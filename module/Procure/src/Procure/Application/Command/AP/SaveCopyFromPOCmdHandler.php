@@ -162,7 +162,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
                 }
             }
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage() . $e->getTraceAsString());
+            $notification->addError($e->getMessage());
         }
 
         $dto->setNotification($notification);

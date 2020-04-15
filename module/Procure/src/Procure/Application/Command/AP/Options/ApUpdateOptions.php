@@ -1,15 +1,16 @@
 <?php
-namespace Procure\Application\Command\GR\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Exception\Gr\GrUpdateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrUpdateOptions implements CommandOptions
+class ApUpdateOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -31,15 +32,15 @@ class GrUpdateOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy, $isPosting = false)
     {
         if ($rootEntity == null) {
-            throw new GrUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
+            throw new InvalidArgumentException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new GrUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new GrUpdateException(sprintf("Trigger not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
@@ -122,7 +123,4 @@ class GrUpdateOptions implements CommandOptions
     {
         return $this->isPosting;
     }
-
-
-
 }

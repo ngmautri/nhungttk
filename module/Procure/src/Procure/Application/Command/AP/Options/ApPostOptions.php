@@ -1,15 +1,15 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoAmendmentException;
+use Procure\Domain\Exception\PoUpdateException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoAmendmentEnableOptions implements CommandOptions
+class ApPostOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -29,15 +29,15 @@ class PoAmendmentEnableOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoAmendmentException(sprintf("Root Entity not given! %s", $rootEntity));
+            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoAmendmentException(sprintf("User ID not given! %s", $userId));
+            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoAmendmentException(sprintf("Trigger not given! %s", $userId));
+            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
@@ -95,8 +95,7 @@ class PoAmendmentEnableOptions implements CommandOptions
 
     /**
      *
-     * {@inheritdoc}
-     * @see \Application\Domain\Shared\Command\CommandOptions::getTriggeredBy()
+     * @return mixed
      */
     public function getTriggeredBy()
     {
@@ -105,8 +104,7 @@ class PoAmendmentEnableOptions implements CommandOptions
 
     /**
      *
-     * {@inheritdoc}
-     * @see \Application\Domain\Shared\Command\CommandOptions::getTriggeredOn()
+     * @return mixed
      */
     public function getTriggeredOn()
     {

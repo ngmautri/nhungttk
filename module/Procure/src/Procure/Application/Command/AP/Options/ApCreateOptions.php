@@ -11,7 +11,7 @@ use Procure\Domain\Exception\Gr\GrCreateException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrCreateOptions implements CommandOptions
+class ApCreateOptions implements CommandOptions
 {
 
     private $companyId;

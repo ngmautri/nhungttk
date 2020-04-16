@@ -275,11 +275,13 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
                 throw new InvalidArgumentException(sprintf("Doctrine row entity not found! #%s", $localSnapshot->getId()));
             }
 
-            if ($rowEntityDoctrine->getGr() == null) {
+            // to update
+            if ($rowEntityDoctrine->getInvoice() == null) {
                 throw new InvalidArgumentException("Doctrine row entity is not valid");
             }
 
-            if (! $rowEntityDoctrine->getGr()->getId() == $rootEntityDoctrine->getId()) {
+            // to update
+            if (! $rowEntityDoctrine->getInvoice()->getId() == $rootEntityDoctrine->getId()) {
                 throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getGr()->getId(), $rootEntityDoctrine->getId()));
             }
         } else {

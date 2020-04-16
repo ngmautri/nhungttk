@@ -1,15 +1,15 @@
 <?php
-namespace Procure\Application\Command\GR\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\Gr\GrRowUpdateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrRowUpdateOptions implements CommandOptions
+class ApRowUpdateOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -37,19 +37,19 @@ class GrRowUpdateOptions implements CommandOptions
     public function __construct($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new GrRowUpdateException(sprintf("rootEntity not given! %s", __METHOD__));
+            throw new InvalidArgumentException(sprintf("rootEntity not given! %s", __METHOD__));
         }
 
         if ($localEntity == null) {
-            throw new GrRowUpdateException(sprintf(" localEntity not given! %s", __METHOD__));
+            throw new InvalidArgumentException(sprintf(" localEntity not given! %s", __METHOD__));
         }
 
         if ($userId == null) {
-            throw new GrRowUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new GrRowUpdateException(sprintf("Trigger not given! %s", $triggeredBy));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", $triggeredBy));
         }
 
         $this->rootEntity = $rootEntity;
@@ -132,7 +132,4 @@ class GrRowUpdateOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
-
-
-
 }

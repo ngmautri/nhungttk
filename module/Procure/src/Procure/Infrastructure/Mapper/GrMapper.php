@@ -531,11 +531,11 @@ class GrMapper
         }
 
         if (! $entity->getCreatedOn() == null) {
-            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
         }
 
         if (! $entity->getLastChangeOn() == null) {
-            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
         }
 
         if (! $entity->getPostingDate() == null) {
@@ -715,12 +715,12 @@ class GrMapper
 
         // $snapshot->grDate = $entity->getGrDate();
         if (! $entity->getGrDate() == null) {
-            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d H:i:s");
+            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d");
         }
 
         // $snapshot->reversalDate = $entity->getReversalDate();
         if (! $entity->getReversalDate() == null) {
-            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d");
         }
 
         // ------------------------
@@ -793,16 +793,16 @@ class GrMapper
 
         if ($entity->getPoRow() !== null) {
             $snapshot->poRow = $entity->getPoRow()->getId();
-            
+
             if ($entity->getPoRow()->getPo() !== null) {
-                $snapshot->po  = $entity->getPoRow()->getPo()->getId();
+                $snapshot->po = $entity->getPoRow()
+                    ->getPo()
+                    ->getId();
             }
         }
 
         // -----------------------------
 
-     
-        
         return $snapshot;
     }
 }

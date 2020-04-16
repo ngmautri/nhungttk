@@ -9,6 +9,8 @@ namespace Procure\Domain\GoodsReceipt\Repository;
 Interface GrQueryRepositoryInterface
 {
 
+    public function getHeaderIdByRowId($id);
+
     public function findAll();
 
     public function getById($id, $outputStragegy = null);
@@ -22,14 +24,14 @@ Interface GrQueryRepositoryInterface
     public function getRootEntityByTokenId($id, $token = null);
 
     /**
-     * 
+     *
      * @param int $id
      * @param string $token
      */
     public function getVersion($id, $token = null);
 
     /**
-     * 
+     *
      * @param int $id
      * @param string $token
      */

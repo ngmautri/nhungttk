@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\GR\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Exception\Gr\GrRowCreateException;
@@ -9,7 +9,7 @@ use Procure\Domain\Exception\Gr\GrRowCreateException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrRowCreateOptions implements CommandOptions
+class ApRowCreateOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -39,11 +39,11 @@ class GrRowCreateOptions implements CommandOptions
         }
 
         if ($userId == null) {
-        	throw new GrRowCreateException(sprintf("User ID not given! %s", $userId));
+            throw new GrRowCreateException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-        	throw new GrRowCreateException(sprintf("Trigger not given! %s", $userId));
+            throw new GrRowCreateException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
@@ -116,8 +116,4 @@ class GrRowCreateOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
-
-
-
-   
 }

@@ -14,6 +14,7 @@ use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Header\IncotermValidator;
 use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
@@ -113,7 +114,8 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
                     "grDate",
                     "warehouse",
                     "pmtTerm",
-                    "remarks"
+                    "remarks",
+                    "docCurrency"
                 ];
             }
 
@@ -134,6 +136,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $params = [
                 "changeLog" => $changeLog
             ];
+            var_dump($changeLog);
 
             // do change
             $newSnapshot->lastchangeBy = $userId;
@@ -145,6 +148,9 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $headerValidators->add($validator);
+
+            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $validator = new InvoiceAndPaymentTermValidator($sharedSpecFactory, $fxService);

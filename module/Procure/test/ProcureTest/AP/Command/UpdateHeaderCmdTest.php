@@ -3,7 +3,7 @@ namespace ProcureTest\AP\Command;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Command\TransactionalCmdHandlerDecoratorTest;
+use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\AP\EditHeaderCmd;
 use Procure\Application\Command\AP\EditHeaderCmdHandler;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
@@ -34,21 +34,23 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
 
             $rootEntityId = 2817;
             $rootEntityToken = "8178443a-55ef-44e8-a819-874e68480614";
-            $version = 0;
+            $version = 5;
 
             $dto = new ApDTO();
-            $dto->docCurrency = 2481;
+            $dto->docCurrency = 248;
             $dto->vendor = 229;
             $dto->warehouse = 5;
+            $dto->grDate = "2020-03-06";
             $dto->docDate = "2020-03-06";
             $dto->pmtTerm = 1;
+
             $queryRep = new APQueryRepositoryImpl($doctrineEM);
 
             $rootEntity = $queryRep->getHeaderById($rootEntityId, $rootEntityToken);
             $options = new ApUpdateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__, false);
 
             $cmdHandler = new EditHeaderCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecoratorTest($cmdHandler);
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new EditHeaderCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 

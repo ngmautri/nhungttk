@@ -584,7 +584,7 @@ class ApMapper
          */
 
         if (! $entity->getInvoiceDate() == null) {
-            $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d H:i:s");
+            $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d");
         }
 
         if (! $entity->getCreatedOn() == null) {
@@ -592,7 +592,7 @@ class ApMapper
         }
 
         if (! $entity->getReversalDate() == null) {
-            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d");
         }
 
         if (! $entity->getLastChangeOn() == null) {
@@ -600,23 +600,23 @@ class ApMapper
         }
 
         if (! $entity->getPostingDate() == null) {
-            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d H:i:s");
+            $snapshot->postingDate = $entity->getPostingDate()->format("Y-m-d");
         }
 
         if (! $entity->getGrDate() == null) {
-            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d H:i:s");
+            $snapshot->grDate = $entity->getGrDate()->format("Y-m-d");
         }
 
         if (! $entity->getContractDate() == null) {
-            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d H:i:s");
+            $snapshot->contractDate = $entity->getContractDate()->format("Y-m-d");
         }
 
         if (! $entity->getQuotationDate() == null) {
-            $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d H:i:s");
+            $snapshot->quotationDate = $entity->getQuotationDate()->format("Y-m-d");
         }
 
         if (! $entity->getDocDate() == null) {
-            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d H:i:s");
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
         }
 
         // ============================
@@ -796,7 +796,7 @@ class ApMapper
         }
 
         if (! $entity->getReversalDate() == null) {
-            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d H:i:s");
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d");
         }
 
         // ============================

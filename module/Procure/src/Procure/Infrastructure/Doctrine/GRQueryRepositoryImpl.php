@@ -19,6 +19,27 @@ use Procure\Infrastructure\Mapper\GrMapper;
 class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQueryRepositoryInterface
 {
 
+    public function getHeaderIdByRowId($id)
+    {
+        $sql = "
+SELECT
+nmt_procure_gr_row.gr_id AS grId
+FROM nmt_procure_gr_row
+WHERE id = %s";
+
+        $sql = sprintf($sql, $id);
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGrRow', 'nmt_procure_gr_row');
+            $rsm->addScalarResult("grId", "grId");
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return $query->getSingleResult()["grId"];
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     /**
      *
      * {@inheritdoc}

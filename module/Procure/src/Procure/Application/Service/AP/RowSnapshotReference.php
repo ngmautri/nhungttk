@@ -2,8 +2,8 @@
 namespace Procure\Application\Service\AP;
 
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\GoodsReceipt\GRRowSnapshot;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Domain\AccountPayable\APRowSnapshot;
+use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 
@@ -17,13 +17,13 @@ class RowSnapshotReference
 
     /**
      *
-     * @param GRRowSnapshot $snapshot
+     * @param APRowSnapshot $snapshot
      * @param EntityManager $doctrineEM
-     * @return NULL|\Procure\Domain\GoodsReceipt\GRRowSnapshot
+     * @return NULL|\Procure\Domain\AccountPayable\APRowSnapshot
      */
-    public static function updateReferrence(GRRowSnapshot $snapshot, EntityManager $doctrineEM)
+    public static function updateReferrence(APRowSnapshot $snapshot, EntityManager $doctrineEM)
     {
-        if (! $snapshot instanceof GRRowSnapshot || ! $doctrineEM instanceof EntityManager) {
+        if (! $snapshot instanceof APRowSnapshot || ! $doctrineEM instanceof EntityManager) {
             return null;
         }
 
@@ -38,9 +38,9 @@ class RowSnapshotReference
             $snapshot->pr = $poQuery->getHeaderIdByRowId($snapshot->getPrRow());
         }
 
-        if ($snapshot->getApInvoiceRow() > 0) {
-            $apQuery = new APQueryRepositoryImpl($doctrineEM);
-            $snapshot->invoice = $apQuery->getHeaderIdByRowId($snapshot->getApInvoiceRow());
+        if ($snapshot->getGrRow() > 0) {
+            $apQuery = new GRQueryRepositoryImpl($doctrineEM);
+            // $snapshot-> = $apQuery->getHeaderIdByRowId($snapshot->getApInvoiceRow());
         }
 
         return $snapshot;

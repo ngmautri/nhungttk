@@ -2,10 +2,9 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Shared\Constants;
+use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
-use function Ramsey\Uuid\v1;
 
 /**
  *
@@ -19,7 +18,7 @@ class GenericDoc extends AbstractDoc
     {}
 
     /**
-     * 
+     *
      * @param int $createdBy
      * @param string $createdDate
      */
@@ -28,11 +27,11 @@ class GenericDoc extends AbstractDoc
         $this->setCreatedOn($createdDate);
         $this->setCreatedBy($createdBy);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
-        
+
         $this->setIsActive(1);
         $this->setIsDraft(1);
         $this->setIsPosted(0);
-        
+
         $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $this->setRevisionNo(0);
         $this->setDocVersion(0);
@@ -52,6 +51,7 @@ class GenericDoc extends AbstractDoc
 
         $this->setIsPosted(1);
         $this->setIsDraft(0);
+        $this->setIsActive(1);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_POSTED);
     }
 
@@ -66,6 +66,7 @@ class GenericDoc extends AbstractDoc
         $this->setReversalDate($postedDate);
         $this->setIsReversed(1);
         $this->setIsDraft(0);
+        $this->setIsActive(1);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_REVERSED);
         $this->setLastchangeBy($postedBy);
     }

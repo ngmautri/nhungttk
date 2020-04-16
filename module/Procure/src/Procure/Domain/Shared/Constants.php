@@ -79,7 +79,6 @@ class Constants
     // =============================
     // ACCOUNT PAYABLE
     // =============================
-    
     const PROCURE_DOC_TYPE_PR = 'AP-100';
 
     const PROCURE_DOC_TYPE_REVERSAL = 'AP-100-1';
@@ -97,6 +96,8 @@ class Constants
     const PROCURE_DOC_TYPE_GR = 'AP-130';
 
     const PROCURE_DOC_TYPE_GR_FROM_PO = 'AP-130-120';
+
+    const PROCURE_DOC_TYPE_GR_FROM_INVOICE = 'AP-130-140';
 
     const PROCURE_DOC_TYPE_GR_REVERSAL = 'AP-130-1';
 

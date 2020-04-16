@@ -231,7 +231,7 @@ abstract class GenericAP extends AbstractAP
     public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
-            throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __METHOD__)));
+            throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);

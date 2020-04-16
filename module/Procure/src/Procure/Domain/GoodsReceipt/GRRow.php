@@ -6,10 +6,9 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Gr\GrRowDetailsDTO;
 use Procure\Domain\GenericRow;
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
+use Procure\Domain\AccountPayable\APRow;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Shared\ProcureDocStatus;
-use Ramsey\Uuid\Uuid;
 
 /**
  * Goods Receipt Row
@@ -82,16 +81,16 @@ class GRRow extends GenericRow
     /**
      *
      * @param PORow $sourceObj
-     * @throws GrInvalidArgumentException
+     * @throws InvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRRow
      */
     public static function createFromPoRow(PORow $sourceObj, CommandOptions $options)
     {
         if (! $sourceObj instanceof PORow) {
-            throw new GrInvalidArgumentException("PO document is required!");
+            throw new InvalidArgumentException("PO document is required!");
         }
         if ($options == null) {
-            throw new GrInvalidArgumentException("No Options is found");
+            throw new InvalidArgumentException("No Options is found");
         }
 
         /**
@@ -102,13 +101,42 @@ class GRRow extends GenericRow
         $instance = $sourceObj->convertTo($instance);
 
         $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_PO); // important.
-        $instance->setPoRow($sourceObj->getId());
-        $instance->setIsDraft(1);
-        $instance->setIsPosted(0);
-        $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
-        $instance->setUuid(Uuid::uuid4()->toString());
-        $instance->setToken($instance->getUuid());
-        $instance->setCreatedBy($options->getUserId());
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        return $instance;
+    }
+
+    /**
+     *
+     * @param APRow $sourceObj
+     * @param CommandOptions $options
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\GoodsReceipt\GRRow
+     */
+    public static function copyFromApRow(APRow $sourceObj, CommandOptions $options)
+    {
+        if (! $sourceObj instanceof APRow) {
+            throw new InvalidArgumentException("AP document is required!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        /**
+         *
+         * @var \Procure\Domain\GoodsReceipt\GRRow $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         return $instance;
     }

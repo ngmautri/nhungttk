@@ -3,9 +3,9 @@ namespace ProcureTest\GR\Command;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\GR\SaveCopyFromPOCmd;
 use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
+use Procure\Application\Command\GR\SaveCopyFromPOCmdHandlerDecorator;
 use Procure\Application\Command\GR\Options\CopyFromPOOptions;
 use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Gr\GrDTO;
@@ -45,19 +45,19 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
              * @var GRDoc $rootEntity ;
              */
             $rootEntity = $sv->createFromPO($source_id, $source_token, $options);
-            // var_dump($rootEntity);
-
+            //var_dump($rootEntity);
+         
             $dto = new GrDTO();
             $dto->grDate = "2020-04-05";
-            $dto->warehouse = 5;
+            $dto->warehouse = 5;            
 
             $options = new SaveCopyFromPOOptions(1, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmdHandlerDecorator = new SaveCopyFromPOCmdHandlerDecorator($cmdHandler);
             $cmd = new SaveCopyFromPOCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
-            var_dump($dto->getErrors());
+            var_dump($dto->getErrors());            
         } catch (\Exception $e) {
             echo $e->getTraceAsString();
         }

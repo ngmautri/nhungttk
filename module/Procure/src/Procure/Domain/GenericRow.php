@@ -87,6 +87,7 @@ class GenericRow extends AbstractRow
         $this->setLastchangeOn($postedDate);
         $this->setLastchangeBy($postedBy);
         $this->setIsPosted(1);
+        $this->setIsActive(1);
         $this->setIsDraft(0);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_POSTED);
     }
@@ -103,6 +104,7 @@ class GenericRow extends AbstractRow
         $this->setLastchangeBy($postedBy);
         $this->setLastchangeOn($postedDate);
         $this->setIsReversed(1);
+        $this->setIsActive(1);
         $this->setIsDraft(0);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_REVERSED);
     }

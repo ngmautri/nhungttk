@@ -3,8 +3,8 @@ namespace Procure\Domain\APInvoice;
 
 use Procure\Application\DTO\Ap\APDocRowDTOAssembler;
 use Procure\Domain\AbstractRow;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Exception\Ap\ApInvalidArgumentException;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 
@@ -34,15 +34,15 @@ class APDocRow extends AbstractRow
     {}
 
     /**
-     * 
+     *
      * @param PORow $sourceObj
-     * @throws ApInvalidArgumentException
+     * @throws InvalidArgumentException
      * @return \Procure\Domain\APInvoice\APDocRow
      */
     public static function createFromPoRow(PORow $sourceObj)
     {
         if (! $sourceObj instanceof PORow) {
-            throw new ApInvalidArgumentException("PO document is required!");
+            throw new InvalidArgumentException("PO document is required!");
         }
 
         /**

@@ -8,11 +8,9 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApPostOptions;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\APInvoice\Validator\Row\PoRowValidator;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
@@ -20,8 +18,9 @@ use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
+use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\Gr\GrVersionChangedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -64,8 +63,8 @@ class ReverseCmdHandler extends AbstractCommandHandler
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
-        if (! $dto instanceof GrDTO) {
-            throw new InvalidArgumentException("DTO object not found!");
+        if (! $dto instanceof ApDTO) {
+            throw new InvalidArgumentException(sprintf("DTO object not found! %s", __FUNCTION__));
         }
 
         $options = $cmd->getOptions();
@@ -79,7 +78,6 @@ class ReverseCmdHandler extends AbstractCommandHandler
         try {
 
             $notification = new Notification();
-
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
@@ -137,7 +135,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new GrVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
         } catch (\Exception $e) {
 

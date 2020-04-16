@@ -11,22 +11,22 @@ use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\APInvoice\Validator\Row\PoRowValidator;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
+use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
+use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -90,7 +90,7 @@ class PostCmdHandler extends AbstractCommandHandler
             $headerValidators->add($validator);
             $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            $validator = new GrPostingValidator($sharedSpecFactory, $fxService);
+            $validator = new APPostingValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $rowValidators = new RowValidatorCollection();
@@ -98,7 +98,6 @@ class PostCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
             $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
             // $rowValidators->add($validator);
 
@@ -129,7 +128,7 @@ class PostCmdHandler extends AbstractCommandHandler
             $m = sprintf("GR #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;

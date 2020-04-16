@@ -34,13 +34,14 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
 
             $rootEntityId = 2817;
             $rootEntityToken = "8178443a-55ef-44e8-a819-874e68480614";
-            $version = 5;
+            $version = 12;
 
             $dto = new ApDTO();
             $dto->docCurrency = 248;
             $dto->vendor = 229;
             $dto->warehouse = 5;
-            $dto->grDate = "2020-03-06";
+            $dto->grDate = "2020-04-06";
+            $dto->postingDate = "2020-04-06";
             $dto->docDate = "2020-03-06";
             $dto->pmtTerm = 1;
 

@@ -34,7 +34,7 @@ class UpdateRowCmdTest extends PHPUnit_Framework_TestCase
 
             $dto = new ApRowDTO();
             $dto->docQuantity = 10;
-            $dto->docUnitPrice = 22;
+            $dto->docUnitPrice = 20.5;
             $dto->poRow = 2629;
             $dto->item = 4245;
             $dto->conversionFactor = 1;
@@ -42,7 +42,7 @@ class UpdateRowCmdTest extends PHPUnit_Framework_TestCase
 
             $rootEntityId = 2828;
             $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
-            $version = 10;
+            $version = 11;
 
             $entityId = 8940;
             $entityToken = "4eb5fba5-2cae-43b0-bf29-037482bfd458";

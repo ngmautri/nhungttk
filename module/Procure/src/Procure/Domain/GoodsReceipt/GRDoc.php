@@ -7,11 +7,11 @@ use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
+use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Exception\Gr\GrPostingException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
@@ -203,7 +203,7 @@ class GRDoc extends GenericGR
      * @throws InvalidArgumentException
      * @throws InvalidOperationException
      * @throws OperationFailedException
-     * @return object
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
     public static function postCopyFromAP(APDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
@@ -258,7 +258,15 @@ class GRDoc extends GenericGR
         }
 
         $instance->clearEvents();
-        return $postingService->getCmdRepository()->post($instance, true);
+
+        $snapshot = $postingService->getCmdRepository()->post($instance, true);
+        if (! $snapshot instanceof GRSnapshot) {
+            throw new OperationFailedException(sprintf("Error orcured when creating GR #%s", $instance->getId()));
+        }
+        $instance->addEvent(new GrPosted($snapshot));
+        $instance->setId($snapshot->getId());
+        $instance->setToken($snapshot->getToken());
+        return $instance;
     }
 
     /**
@@ -271,7 +279,7 @@ class GRDoc extends GenericGR
      * @param GrPostingService $postingService
      * @throws InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws GrPostingException
+     * @throws OperationFailedException
      */
     public function saveFromPO(GRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
@@ -308,7 +316,7 @@ class GRDoc extends GenericGR
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
-            throw new GrPostingException($this->getErrorMessage());
+            throw new OperationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
@@ -544,7 +552,7 @@ class GRDoc extends GenericGR
         $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new GrPostingException($this->getNotification()->errorMessage());
+            throw new OperationFailedException($this->getNotification()->errorMessage());
         }
 
         $postingService->getCmdRepository()->post($this, true);
@@ -577,7 +585,7 @@ class GRDoc extends GenericGR
         $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new GrPostingException($this->getNotification()->errorMessage());
+            throw new OperationFailedException($this->getNotification()->errorMessage());
         }
 
         $postingService->getCmdRepository()->post($this, false);

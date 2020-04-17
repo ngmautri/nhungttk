@@ -1,11 +1,11 @@
 <?php
-namespace Procure\Application\Event\Handler\PO;
+namespace Procure\Application\Event\Handler\AP;
 
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
-use Procure\Domain\Event\Po\PoPosted;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\Event\Ap\ApPosted;
+use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -24,20 +24,20 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
     public static function getSubscribedEvents()
     {
         return [
-            PoPosted::class => 'onPosted'
+            ApPosted::class => 'onPosted'
         ];
     }
 
     /**
      *
-     * @param PoPosted $ev
+     * @param ApPosted $ev
      */
-    public function onPosted(PoPosted $ev)
+    public function onPosted(ApPosted $ev)
     {
 
         /**
          *
-         * @var POSnapshot $rootSnapshot ;
+         * @var APSnapshot $rootSnapshot ;
          */
         $rootSnapshot = $ev->getTarget();
 
@@ -57,7 +57,7 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message = new MessageStore();
 
-        $queryRep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+        $queryRep = new APQueryRepositoryImpl($this->getDoctrineEM());
 
         // time to check version - concurency
         $verArray = $queryRep->getVersionArray($rootSnapshot->getId());
@@ -79,8 +79,8 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
-        $message->setQueueName("procure.po");
-        $message->setChangeLog(sprintf("P/O #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
+        $message->setQueueName("procure.ap");
+        $message->setChangeLog(sprintf("AP Invoice #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());

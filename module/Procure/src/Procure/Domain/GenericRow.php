@@ -34,6 +34,22 @@ class GenericRow extends AbstractRow
         $this->setToken($this->getUuid());
     }
 
+    protected function updateRow($createdBy, $createdDate)
+    {
+        $this->setCreatedOn($createdDate);
+        $this->setCreatedBy($createdBy);
+        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsPosted(0);
+
+        $this->setRevisionNo(0);
+        $this->setDocVersion(0);
+        $this->setUuid(\Ramsey\Uuid\Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
+    }
+
     protected function calculate()
     {
         $convertedPurchaseQuantity = $this->getDocQuantity();

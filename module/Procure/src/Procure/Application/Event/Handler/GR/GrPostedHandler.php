@@ -1,11 +1,11 @@
 <?php
-namespace Procure\Application\Event\Handler\PO;
+namespace Procure\Application\Event\Handler\GR;
 
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
-use Procure\Domain\Event\Po\PoPosted;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Domain\Event\Gr\GrPosted;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class GrPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -24,20 +24,20 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
     public static function getSubscribedEvents()
     {
         return [
-            PoPosted::class => 'onPosted'
+            GrPosted::class => 'onPosted'
         ];
     }
 
     /**
      *
-     * @param PoPosted $ev
+     * @param GrPosted $ev
      */
-    public function onPosted(PoPosted $ev)
+    public function onPosted(GrPosted $ev)
     {
 
         /**
          *
-         * @var POSnapshot $rootSnapshot ;
+         * @var GRSnapshot $rootSnapshot ;
          */
         $rootSnapshot = $ev->getTarget();
 
@@ -57,7 +57,7 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message = new MessageStore();
 
-        $queryRep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+        $queryRep = new GRQueryRepositoryImpl($this->getDoctrineEM());
 
         // time to check version - concurency
         $verArray = $queryRep->getVersionArray($rootSnapshot->getId());
@@ -79,8 +79,8 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
-        $message->setQueueName("procure.po");
-        $message->setChangeLog(sprintf("P/O #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
+        $message->setQueueName("procure.gr");
+        $message->setChangeLog(sprintf("G/R #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());

@@ -32,8 +32,8 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = "2817";
-            $rootEntityToken = "8178443a-55ef-44e8-a819-874e68480614";
+            $rootEntityId = 2828;
+            $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
             $version = 13;
 
             $rep = new APQueryRepositoryImpl($doctrineEM);
@@ -47,7 +47,6 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
             $cmd = new PostCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             var_dump($dto->getErrors());
-
             var_dump($rootEntity);
         } catch (\Exception $e) {
             echo $e->getMessage();

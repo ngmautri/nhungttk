@@ -1,33 +1,31 @@
 <?php
-namespace Procure\Application\Command\AP;
+namespace Procure\Application\Command\GR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApPostOptions;
-use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
+use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Domain\APInvoice\Validator\Row\PoRowValidator;
 use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
+use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -35,7 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PostCmdHandler extends AbstractCommandHandler
+class PostCopyFromAPCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -46,35 +44,28 @@ class PostCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
         /**
          *
-         * @var ApDTO $dto ;
-         * @var APDoc $rootEntity ;
-         * @var APSnapshot $rootSnapshot ;
-         * @var ApPostOptions $options ;
+         * @var GrDTO $dto ;
+         * @var GRDoc $rootEntity ;
+         * @var PostCopyFromAPOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof ApPostOptions) {
+        if (! $options instanceof PostCopyFromAPOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
-        if (! $dto instanceof ApDTO) {
-            throw new InvalidArgumentException("DTO object not found!");
+        $sourceObj = $options->getSourceObj();
+
+        if (! $sourceObj instanceof APDoc) {
+            throw new InvalidArgumentException(sprintf("Source object not given! %s", "AP Document required"));
         }
-
-        $options = $cmd->getOptions();
-
-        $rootEntity = $options->getRootEntity();
-        $rootEntityId = $options->getRootEntityId();
-        $version = $options->getVersion();
-        $userId = $options->getUserId();
-        $trigger = $options->getTriggeredBy();
 
         try {
 
@@ -91,7 +82,7 @@ class PostCmdHandler extends AbstractCommandHandler
             $headerValidators->add($validator);
             $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            $validator = new APPostingValidator($sharedSpecFactory, $fxService);
+            $validator = new GrPostingValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $rowValidators = new RowValidatorCollection();
@@ -99,14 +90,15 @@ class PostCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
             $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
+            $rowValidators->add($validator);
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
             // $rowValidators->add($validator);
 
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
+            $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $rootEntity = GRDoc::postCopyFromAP($sourceObj, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatc
             if (count($rootEntity->getRecordedEvents() > 0)) {
@@ -126,22 +118,11 @@ class PostCmdHandler extends AbstractCommandHandler
                 }
             }
 
-            $m = sprintf("GR #%s posted", $rootEntity->getId());
+            $m = sprintf("GR #%s copied from AP #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
             $notification->addSuccess($m);
-
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
-
-            // time to check version - concurency
-            $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
-
-            // revision numner has been increased.
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
-            }
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

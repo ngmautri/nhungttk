@@ -2,20 +2,24 @@
 namespace Procure\Application\Event\Handler;
 
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\Event\Po\PoHeaderCreated;
-use Procure\Domain\Event\Po\PoHeaderUpdated;
-use Procure\Domain\Event\Po\PoRowAdded;
-use Procure\Domain\Event\Po\PoRowUpdated;
+use Procure\Application\Event\Handler\AP\ApPostedHandler;
+use Procure\Application\Event\Handler\GR\GrPostedHandler;
+use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
+use Procure\Application\Event\Handler\PO\PoAmendmentEnabledHandler;
 use Procure\Application\Event\Handler\PO\PoHeaderCreatedHandler;
 use Procure\Application\Event\Handler\PO\PoHeaderUpdatedHandler;
+use Procure\Application\Event\Handler\PO\PoPostedHandler;
 use Procure\Application\Event\Handler\PO\PoRowAddedHandler;
 use Procure\Application\Event\Handler\PO\PoRowUpdatedHandler;
-use Procure\Domain\Event\Po\PoPosted;
-use Procure\Application\Event\Handler\PO\PoPostedHandler;
-use Procure\Domain\Event\Po\PoAmendmentEnabled;
-use Procure\Application\Event\Handler\PO\PoAmendmentEnabledHandler;
+use Procure\Domain\Event\Ap\ApPosted;
+use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
-use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
+use Procure\Domain\Event\Po\PoAmendmentEnabled;
+use Procure\Domain\Event\Po\PoHeaderCreated;
+use Procure\Domain\Event\Po\PoHeaderUpdated;
+use Procure\Domain\Event\Po\PoPosted;
+use Procure\Domain\Event\Po\PoRowAdded;
+use Procure\Domain\Event\Po\PoRowUpdated;
 
 /**
  *
@@ -44,22 +48,29 @@ class EventHandlerFactory
             case PoRowAdded::class:
                 $handlers[] = new PoRowAddedHandler($doctrineEM);
                 break;
-                
+
             case PoRowUpdated::class:
                 $handlers[] = new PoRowUpdatedHandler($doctrineEM);
                 break;
-                
+
             case PoPosted::class:
                 $handlers[] = new PoPostedHandler($doctrineEM);
                 break;
             case PoAmendmentEnabled::class:
                 $handlers[] = new PoAmendmentEnabledHandler($doctrineEM);
                 break;
-                
+
             case PoAmendmentAccepted::class:
                 $handlers[] = new PoAmendmentAcceptedHandler($doctrineEM);
                 break;
-                
+
+            case ApPosted::class:
+                $handlers[] = new ApPostedHandler($doctrineEM);
+                break;
+
+            case GrPosted::class:
+                $handlers[] = new GrPostedHandler($doctrineEM);
+                break;
         }
 
         return $handlers;

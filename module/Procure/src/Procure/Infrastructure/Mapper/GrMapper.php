@@ -121,15 +121,17 @@ class GrMapper
         // ============================
         // REFERRENCE MAPPING
         // ============================
-        $entity->setVendor($snapshot->vendor);
-        $entity->setWarehouse($snapshot->warehouse);
-        $entity->setCreatedBy($snapshot->createdBy);
-        $entity->setLastchangeBy($snapshot->lastchangeBy);
-        $entity->setCurrency($snapshot->currency);
-        $entity->setLocalCurrency($snapshot->localCurrency);
-        $entity->setDocCurrency($snapshot->docCurrency);
-        $entity->setPostingPeriod($snapshot->postingPeriod);
-        $entity->setCompany($snapshot->company);
+        /*
+         * $entity->setVendor($snapshot->vendor);
+         * $entity->setWarehouse($snapshot->warehouse);
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setLastchangeBy($snapshot->lastchangeBy);
+         * $entity->setCurrency($snapshot->currency);
+         * $entity->setLocalCurrency($snapshot->localCurrency);
+         * $entity->setDocCurrency($snapshot->docCurrency);
+         * $entity->setPostingPeriod($snapshot->postingPeriod);
+         * $entity->setCompany($snapshot->company);
+         */
 
         if ($snapshot->vendor > 0) {
             /**

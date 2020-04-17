@@ -109,8 +109,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 $dto->setNotification($notification);
                 return;
             }
-
-            var_dump($changeLog);
+            // var_dump($changeLog);
             $params = [
                 "rowId" => $row->getId(),
                 "rowToken" => $row->getToken(),

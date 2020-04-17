@@ -22,7 +22,9 @@ class APRowSnapshot extends RowSnapshot
     public $grRow;
 
     public $poRow;
+
     /**
+     *
      * @return mixed
      */
     public function getInstance()
@@ -31,6 +33,7 @@ class APRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalReason()
@@ -39,6 +42,7 @@ class APRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getReversalDoc()
@@ -47,6 +51,7 @@ class APRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getIsReversable()
@@ -55,6 +60,7 @@ class APRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getGrRow()
@@ -63,11 +69,11 @@ class APRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPoRow()
     {
         return $this->poRow;
     }
-
 }

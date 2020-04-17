@@ -18,7 +18,6 @@ use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -182,14 +181,8 @@ abstract class GenericAP extends AbstractAP
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $createdDate = new \Datetime();
-        $snapshot->lastchangeOn = date_format($createdDate, 'Y-m-d H:i:s');
-        $snapshot->lastchangeBy = $options->getUserId();
-        $snapshot->revisionNo ++;
-        $snapshot->quantity = $snapshot->docQuantity;
-
-        if ($snapshot->token == null) {
-            $snapshot->token = Uuid::uuid4()->toString();
-        }
+        $createdBy = $options->getUserId();
+        $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         $row = APRow::makeFromSnapshot($snapshot);
 

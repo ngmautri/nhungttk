@@ -5,16 +5,16 @@ use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
 use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -50,8 +50,8 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $class = new \ReflectionClass($rootSnapshot);
         $className = null;
-
-        if ($class !== null) {
+        
+         if ($class !== null) {
             $className = $class->getShortName();
         }
 

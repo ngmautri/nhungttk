@@ -8,7 +8,6 @@ use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
@@ -238,13 +237,12 @@ class APDoc extends GenericAP
     /**
      *
      * @param APSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\Gr\GrCreateException
-     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param APPostingService $postingService
+     * @throws InvalidArgumentException
+     * @throws OperationFailedException
      * @return \Procure\Domain\AccountPayable\APDoc
      */
     public static function createFrom(APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
@@ -253,7 +251,7 @@ class APDoc extends GenericAP
         $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
 
         if ($options == null) {
-            throw new InvalidArgumentException("Opptions is null");
+            throw new InvalidArgumentException("Options is null");
         }
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
@@ -264,7 +262,7 @@ class APDoc extends GenericAP
         $instance->validateHeader($headerValidators);
 
         if ($instance->hasErrors()) {
-            throw new GrCreateException($instance->getNotification()->errorMessage());
+            throw new OperationFailedException($instance->getNotification()->errorMessage());
         }
 
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE);
@@ -287,12 +285,8 @@ class APDoc extends GenericAP
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = null;
-        $params = null;
-        if ($options !== null) {
-            $trigger = $options->getTriggeredBy();
-            $params = [];
-        }
+        $trigger = $options->getTriggeredBy();
+        $params = [];
 
         $instance->addEvent(new ApHeaderCreated($rootSnapshot, $trigger, $params));
         return $instance;

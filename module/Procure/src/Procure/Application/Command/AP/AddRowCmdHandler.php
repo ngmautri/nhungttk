@@ -20,6 +20,7 @@ use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -122,15 +123,15 @@ class AddRowCmdHandler extends AbstractCommandHandler
 
             $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
 
+            $dto->setNotification($notification);
+
             // revision numner has been increased.
             $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
         } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

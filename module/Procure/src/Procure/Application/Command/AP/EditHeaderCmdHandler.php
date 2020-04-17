@@ -20,6 +20,7 @@ use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidato
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
@@ -136,7 +137,8 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $params = [
                 "changeLog" => $changeLog
             ];
-            var_dump($changeLog);
+
+            // var_dump($changeLog);
 
             // do change
             $newSnapshot->lastchangeBy = $userId;
@@ -195,11 +197,10 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! %s", $version, $currentVersion, ""));
             }
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
 
         $dto->setNotification($notification);

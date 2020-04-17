@@ -233,6 +233,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $docDate;
 
     /**
+     *
      * @param mixed $postingPeriodFrom
      */
     protected function setPostingPeriodFrom($postingPeriodFrom)
@@ -241,6 +242,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $postingPeriodTo
      */
     protected function setPostingPeriodTo($postingPeriodTo)
@@ -249,6 +251,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $postingPeriodId
      */
     protected function setPostingPeriodId($postingPeriodId)
@@ -257,6 +260,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $docCurrencyISO
      */
     protected function setDocCurrencyISO($docCurrencyISO)
@@ -265,6 +269,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $localCurrencyISO
      */
     protected function setLocalCurrencyISO($localCurrencyISO)
@@ -273,6 +278,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $docCurrencyId
      */
     protected function setDocCurrencyId($docCurrencyId)
@@ -281,6 +287,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $localCurrencyId
      */
     protected function setLocalCurrencyId($localCurrencyId)
@@ -289,6 +296,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $docNumber
      */
     protected function setDocNumber($docNumber)
@@ -297,6 +305,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @param mixed $docDate
      */
     protected function setDocDate($docDate)
@@ -314,6 +323,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingPeriodFrom()
@@ -322,6 +332,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingPeriodTo()
@@ -330,6 +341,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostingPeriodId()
@@ -338,6 +350,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocNumber()
@@ -346,6 +359,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDocDate()
@@ -485,7 +499,9 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
             "instance",
             "sysNumber",
             "createdBy",
-            "lastchangeBy"
+            "lastchangeBy",
+            "docNumber",
+            "docDate"
         ];
 
         $sourceObj = $this;
@@ -2218,5 +2234,4 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     {
         $this->vendorCountry = $vendorCountry;
     }
-  
 }

@@ -18,6 +18,7 @@ use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoRowUpdateException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
@@ -109,6 +110,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 return;
             }
 
+            var_dump($changeLog);
             $params = [
                 "rowId" => $row->getId(),
                 "rowToken" => $row->getToken(),
@@ -116,9 +118,6 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             ];
 
             // do change
-
-            $newSnapshot->lastchangeBy = $userId;
-            $newSnapshot->revisionNo ++;
 
             $headerValidators = new HeaderValidatorCollection();
 
@@ -170,11 +169,10 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
+
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

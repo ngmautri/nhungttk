@@ -184,6 +184,7 @@ abstract class GenericAP extends AbstractAP
         $createdDate = new \Datetime();
         $snapshot->lastchangeOn = date_format($createdDate, 'Y-m-d H:i:s');
         $snapshot->lastchangeBy = $options->getUserId();
+        $snapshot->revisionNo ++;
         $snapshot->quantity = $snapshot->docQuantity;
 
         if ($snapshot->token == null) {

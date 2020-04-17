@@ -36,7 +36,7 @@ class InvoiceAndPaymentTermValidator extends AbstractValidator implements Header
             $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
 
             // ==== INVOICE NUMBER =======
-            if (! $spec->isSatisfiedBy($rootEntity->getDocNumber())) {
+            if ($spec->isSatisfiedBy($rootEntity->getDocNumber())) {
                 $rootEntity->addError(Translator::translate("Invoice number is required!"));
             }
 

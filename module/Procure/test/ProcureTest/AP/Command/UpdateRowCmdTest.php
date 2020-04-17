@@ -40,12 +40,12 @@ class UpdateRowCmdTest extends PHPUnit_Framework_TestCase
             $dto->conversionFactor = 1;
             $dto->unit = "pcs";
 
-            $rootEntityId = 28199;
-            $rootEntityToken = "8178443a-55ef-44e8-a819-874e68480614";
-            $version = 11;
+            $rootEntityId = 2828;
+            $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
+            $version = 10;
 
-            $entityId = 8933;
-            $entityToken = "e5503296-f3c6-4386-a08b-56526e640674";
+            $entityId = 8940;
+            $entityToken = "4eb5fba5-2cae-43b0-bf29-037482bfd458";
 
             $rep = new APQueryRepositoryImpl($doctrineEM);
             $rootEntity = $rep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
@@ -59,7 +59,7 @@ class UpdateRowCmdTest extends PHPUnit_Framework_TestCase
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new UpdateRowCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
-            var_dump($dto->getErrors());
+            var_dump($dto->getNotification());
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

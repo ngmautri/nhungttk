@@ -1,10 +1,8 @@
 <?php
-namespace Procure\Application\Command\GR\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoCreateException;
-use Procure\Domain\Exception\Gr\GrAmendmentException;
-use Procure\Domain\Exception\Gr\GrCreateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -33,15 +31,15 @@ class ApCreateOptions implements CommandOptions
     public function __construct($companyId, $userId, $triggeredBy)
     {
         if ($companyId == null) {
-            throw new GrCreateException(sprintf("Company ID not given! %s", $companyId));
+            throw new \Procure\Domain\Exception\InvalidArgumentException(sprintf("Company ID not given! %s", $companyId));
         }
 
         if ($userId == null) {
-            throw new GrCreateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new GrCreateException(sprintf("Trigger not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->companyId = $companyId;

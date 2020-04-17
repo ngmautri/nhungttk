@@ -33,7 +33,7 @@ class AddRowCmdTest extends PHPUnit_Framework_TestCase
             $userId = 39;
 
             $dto = new ApRowDTO();
-            $dto->docQuantity = 248;
+            $dto->docQuantity = 10;
             $dto->docUnitPrice = 229;
             $dto->poRow = 2629;
             $dto->item = 4245;
@@ -42,9 +42,9 @@ class AddRowCmdTest extends PHPUnit_Framework_TestCase
             $dto->glAccount = 6;
             $dto->costCenter = 2;
 
-            $rootEntityId = "2817";
-            $rootEntityToken = "8178443a-55ef-44e8-a819-874e68480614";
-            $version = 6;
+            $rootEntityId = 2828;
+            $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
+            $version = 9;
 
             $rep = new APQueryRepositoryImpl($doctrineEM);
             $rootEntity = $rep->getHeaderById($rootEntityId, $rootEntityToken);
@@ -55,7 +55,7 @@ class AddRowCmdTest extends PHPUnit_Framework_TestCase
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new AddRowCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
-            var_dump($dto->getErrors());
+            var_dump($dto->getNotification());
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

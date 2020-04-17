@@ -32,9 +32,9 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 2817;
-            $rootEntityToken = "8178443a-55ef-44e8-a819-874e68480614";
-            $version = 12;
+            $rootEntityId = 2828;
+            $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
+            $version = 7;
 
             $dto = new ApDTO();
             $dto->docCurrency = 248;
@@ -42,8 +42,9 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
             $dto->warehouse = 5;
             $dto->grDate = "2020-04-06";
             $dto->postingDate = "2020-04-06";
-            $dto->docDate = "2020-03-06";
+            $dto->docDate = "2020-04-06";
             $dto->pmtTerm = 1;
+            $dto->docNumber = "SDD7";
 
             $queryRep = new APQueryRepositoryImpl($doctrineEM);
 
@@ -55,10 +56,10 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
             $cmd = new EditHeaderCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
-            var_dump($dto->getErrors());
+            var_dump($dto->getNotification());
         } catch (\Exception $e) {
             echo $e->getMessage() . "\n\n\n";
-            echo $e->getTraceAsString();
+            // echo $e->getTraceAsString();
         }
     }
 }

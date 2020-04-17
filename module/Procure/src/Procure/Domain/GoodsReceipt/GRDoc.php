@@ -248,11 +248,7 @@ class GRDoc extends GenericGR
 
             $grRow = GrRow::copyFromApRow($r, $options);
             $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
-            // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($grRow);
-
-            $instance->validateRow($grRow, $rowValidators);
         }
 
         $instance->validate($headerValidators, $rowValidators);

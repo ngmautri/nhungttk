@@ -1,0 +1,606 @@
+<?php
+
+/**@var \Procure\Application\DTO\Po\PoDetailsDTO $rootDto ;*/
+/**@var \Procure\Application\DTO\Po\PORowDetailsDTO $dto ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+// var_dump($rootDto);
+
+// echo memory_get_usage();
+$message_url = null;
+$review_url = null;
+$rowNumber = null;
+
+// var_dump($rootDto);
+if ($rootDto !== null) {
+    $target_id = $rootDto->getId();
+    $target_token = $rootDto->getToken();
+
+    $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
+    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
+    // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+    $rowNumber = $rootDto->getTotalRows() + 1;
+}
+
+
+if($dto!==null){
+    $rowNumber = $dto->getRowNumber();    
+}
+
+$error_msg = "";
+if (count($errors) > 0) {
+    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
+    $error_msg = $error_msg . '<ul>';
+    foreach ($errors as $error) :
+        $error_msg = $error_msg . '<li>' . $error . '</li>';
+    endforeach
+    ;
+    $error_msg = $error_msg . '</ul>';
+    $error_msg = $error_msg . '</div>';
+}
+
+// echo memory_get_usage();
+
+?>
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+    	
+    	<?php
+    $current_step = "STEP2";
+    include (ROOT . '/module/Procure/view/procure/create-wizard.php');
+    ?>
+      					
+      					<hr>
+		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
+
+		<div class="alert alert-info" role="alert"
+			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
+				<li><b><?php if (!$rootDto == null): echo $rootDto->getVendorName(); endif;?></b></li>
+				<li>-----</li>
+
+				<li><?php if (!$rootDto == null): echo $rootDto->getIncoterm() . " " . $rootDto->getIncotermPlace(); endif;?> </li>
+
+				<li>Total rows:<?php if (!$rootDto == null): echo $rootDto->getTotalRows(); endif;?></li>
+				<li>Status:<?php if (!$rootDto == null): echo $rootDto->getTransactionStatus(); endif;?> </li>
+
+				<li>-----</li>
+
+				<li>Net: <?php if (!$rootDto == null): echo number_format($rootDto->getNetAmount(),2) . " " . $rootDto->getCurrencyIso3() ; endif;?></li>
+				<li>Tax: <?php if (!$rootDto == null): echo number_format($rootDto->getTaxAmount(),2); endif;?></li>
+				<li>Gross: <?php if(!$rootDto == null):  echo number_format($rootDto->getGrossAmount(),2) . " " . $rootDto->getCurrencyIso3(); endif;?></li>
+				<li>Billed: <?php if (!$rootDto == null):echo number_format($rootDto->getBilledAmount(),2) . " " . $rootDto->getCurrencyIso3(); endif;?></li>
+				<li>-----</li>
+
+				<li>Created by: <?php if (!$rootDto == null): echo $rootDto->getCreatedByName(); endif;?></li>
+
+			</ul>
+		</div>
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general"><?php echo $form_title;?></a></li>
+					
+<?php
+if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
+    ?>
+ 	 	<li><a href=""<?php echo $message_url;?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+<?php endif;?>			
+				</ul>
+
+				<div id="general" style="font-size: 9pt">
+					<!-- Tab1 -->
+    	
+<?php
+// ================================
+echo $error_msg;
+// ===============================
+?>
+    
+					<form id="New_Invoice_Row" class="form-horizontal"
+						action="<?php echo $form_action;?>" method="post"
+						enctype="multipart/form-data">
+
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							id="target_id" name="target_id" value="<?php echo $target_id; ?>" />
+						<input type="hidden" id="target_token" name="target_token"
+							value="<?php echo $target_token; ?>" /> <input type="hidden"
+							name="version" value="<?php echo $version;?>" /> <input
+							type="hidden" id="entity_id" name="entity_id"
+							value="<?php echo $entity_id; ?>" /> <input type="hidden"
+							id="entity_token" name="entity_token"
+							value="<?php echo $entity_token; ?>" />
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2">Row Number: </label>
+							<div class="col-sm-1">
+								<input tabindex="0" class="form-control input-sm" type="text"
+									id="rowNumber" name="rowNumber"
+									value="<?php echo $rowNumber;?>">
+							</div>
+
+							<div class="col-sm-2">
+								<input
+									<?php if(!$dto== null): echo ($dto->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+									type="checkbox" name="isActive" value="1">&nbsp;Is
+								Active&nbsp;&nbsp;&nbsp;&nbsp;
+							</div>
+						</div>
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2">PR Item: </label>
+							<div class="col-sm-3">
+								<input tabindex="1" class="form-control input-sm" type="text"
+									id="pr_item_name" placeholder="Select PR item"
+									name="pr_item_name"
+									value="<?php if (!$dto == null): if($dto->getPrRow()!==null): echo $dto->getPrRow(); endif;endif;?>">
+								<input type="hidden" id="pr_row_id" placeholder=""
+									name="prRow" value="">
+
+								<div id="pr_row_url" style="display: none;"></div>
+
+							</div>
+
+							<div class="col-sm-1">
+
+								<span title="<?php echo $this->translate("Line Detail");?>"
+									id="pr_row_detail" style="display: none;"> &nbsp;&nbsp;<a
+									style="color: #0080ff;" href="javascript:;"
+									onclick="showSelectedPrRow();"><i style="color: navy"
+										class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
+								</span>
+							</div>
+
+							<div class="col-sm-1">
+
+								<a tabindex="100" style="color: #0080ff;" href="javascript:;"
+									onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+									class="glyphicon glyphicon-folder-open"></i>
+								</a>
+							</div>
+
+							<div class="col-sm-1">
+
+
+								<a tabindex="" target="_blank" style="font-size: 9pt;"
+									href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i
+									class="glyphicon glyphicon-new-window"></i></small>
+							</div>
+						</div>
+
+						<div class="form-group margin-bottom  required">
+							<label class="control-label col-sm-2">Item: </label>
+							<div class="col-sm-3">
+								<input tabindex="2" class="form-control" type="text"
+									id="item_name" placeholder="Enter keyword to search item..."
+									name="itemName"
+									value="<?php if (!$dto == null): echo $dto->getItemName();endif;?>">
+
+
+								<input type="hidden" id="item_id" placeholder="" name="item"
+									value="<?php if (!$dto== null): echo $dto->getItem(); endif;?>">
+
+								<div id="item_url" style="display: none;"></div>
+
+
+							</div>
+
+
+							<div class="col-sm-1" style="margin: 0px">
+								<span title="<?php echo $this->translate("Item Detail");?>"
+									id="item_detail" style="display: none;"> &nbsp;&nbsp;<a
+									style="color: #0080ff;" href="javascript:;"
+									onclick="showSelectedItem();"><i style="color: navy"
+										class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a> <br>
+								</span>
+							</div>
+							<div class="col-sm-1" style="margin: 0px">
+								<a style="color: #0080ff;" href="javascript:;"
+									onclick="showJqueryDialog('Select Item','1350',$(window).height()-50, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+									class="glyphicon glyphicon-folder-open"></i>
+								</a>
+
+							</div>
+							<div class="col-sm-1">
+								<a target="_blank" style="font-size: 9pt;"
+									href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
+									class="glyphicon glyphicon-new-window"></i></small>
+							</div>
+						</div>
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">Vendor Item
+								Name:</label>
+							<div class="col-sm-3">
+								<input tabindex="3" class="form-control input-sm" type="text"
+									id="vendorItemName" name="vendorItemName"
+									value="<?php echo (!$dto == null)? $dto->getVendorItemName():"";?>">
+							</div>
+
+							<label class="control-label col-sm-2" for="inputTag">Vendor Item
+								Code:</label>
+							<div class="col-sm-3">
+								<input tabindex="3" class="form-control input-sm" type="text"
+									id="vendor_item_code" name="vendorItemCode"
+									value="<?php echo (!$dto == null)? $dto->getVendorItemCode():"";?>">
+							</div>
+						</div>
+						<hr style="margin: 5pt 1pt 5pt 1pt;">
+						<div class="form-group margin-bottom required">
+							<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+							<div class="col-sm-3">
+								<input tabindex="4" class="form-control input-sm" type="text"
+									id="quantity" name="docQuantity"
+									value="<?php echo (!$dto == null)? $dto->getDocQuantity():"";?>">
+							</div>
+							<div class="col-sm-3">
+								<div style="color: graytext; padding-bottom: 5px;"
+									id="purchase_uom_convert_factor"></div>
+							</div>
+
+						</div>
+						<div class="form-group margin-bottom required">
+							<label class="control-label col-sm-2" for="inputTag">Unit:</label>
+							<div class="col-sm-3">
+								<input tabindex="5" class="form-control input-sm" type="text"
+									name="docUnit" id="rowUnit"
+									value="<?php echo (!$dto == null)? $dto->getDocUnit():"each";?>">
+							</div>
+							<label class="control-label col-sm-2" for="inputTag">Converstion
+								Factor:</label>
+							<div class="col-sm-1">
+								<input tabindex="6" class="form-control input-sm" type="text"
+									name="conversionFactor"
+									value="<?php echo (!$dto == null)? $dto->getConversionFactor():"1";?>">
+
+							</div>
+
+							<div class="col-sm-3">
+								<span
+									style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt"
+									id="">Converstion to order unit (see PR).</span>
+							</div>
+
+						</div>
+
+
+						<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+						<div class="form-group margin-bottom required">
+							<label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
+							<div class="col-sm-3">
+								<input tabindex="7" class="form-control input-sm" type="text"
+									id="unit_price" name="docUnitPrice"
+									value="<?php echo (!$dto == null)? $dto->getDocUnitPrice():"";?>">
+							</div>
+							<div class="col-sm-1" style="margin-left: 0px">
+								<strong><?php if (!$rootDto == null): echo $rootDto->getCurrencyIso3(); endif;?></strong>
+							</div>
+
+							<label class="control-label col-sm-1" for="inputTag">Exw Price
+								(info):</label>
+							<div class="col-sm-3">
+								<input tabindex="8" class="form-control input-sm" type="text"
+									id="exw_unit_price" name="exwUnitPrice"
+									value="<?php echo (!$dto == null)? $dto->getExwUnitPrice():"";?>">
+
+							</div>
+						</div>
+						<div class="form-group margin-bottom required">
+							<label class="control-label col-sm-2" for="inputTag">Net Amount:</label>
+							<div class="col-sm-3">
+								<input readonly class="form-control input-sm" type="text"
+									id="net_amount" name="netAmount"
+									value="<?php echo (!$dto == null)? $dto->getNetAmount():"";?>">
+
+							</div>
+							<div class="col-sm-3">
+								<strong><?php if (!$rootDto == null): echo $rootDto->getCurrencyIso3(); endif;?></strong>
+							</div>
+						</div>
+						<div class="form-group margin-bottom required">
+							<label class="control-label col-sm-2" for="inputTag">Tax Rate:</label>
+							<div class="col-sm-3">
+								<input tabindex="9" class="form-control input-sm" type="text"
+									id="tax_rate" name="taxRate"
+									value="<?php echo (!$dto == null)? $dto->getTaxRate():"0";?>">
+							</div>
+							<label class="control-label col-sm-2" for="inputTag">Tax Amount:</label>
+							<div class="col-sm-3">
+								<input readonly class="form-control input-sm" type="text"
+									id="tax_amount" name="taxAmount"
+									value="<?php echo (!$dto == null)? $dto->getTaxAmount():"";?>">
+							</div>
+						</div>
+
+						<div class="form-group margin-bottom required">
+							<label class="control-label col-sm-2" for="inputTag">Gross
+								Amount:</label>
+							<div class="col-sm-3">
+								<input readonly class="form-control input-sm" type="text"
+									id="gross_amount" name="grossAmount"
+									value="<?php echo (!$dto == null)? $dto->getGrossAmount():"";?>">
+
+							</div>
+							<div class="col-sm-1">
+								<strong><?php if (!$rootDto == null): echo $rootDto->getCurrencyIso3(); endif;?></strong>
+							</div>
+
+							<label class="control-label col-sm-1" for="inputTag">Total Exw
+								(info):</label>
+							<div class="col-sm-3">
+								<input readonly tabindex="10" class="form-control input-sm"
+									type="text" id="total_exw_price" name="totalExwPrice"
+									value="<?php echo (!$dto == null)? $dto->getTotalExwPrice():"";?>">
+
+							</div>
+
+
+						</div>
+						<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2">Remark:</label>
+							<div class="col-sm-3">
+								<input tabindex="11" class="form-control input-sm" type="text"
+									placeholder="" name="remarks"
+									value="<?php echo (!$dto == null)? $dto->getRemarks():"";?>">
+							</div>
+						</div>
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2">Description:</label>
+							<div class="col-sm-4">
+								<textarea class="form-control input-sm" type="text" rows="6"
+									placeholder="" name="descriptionText" style="font-size: 9pt;"><?php echo (!$dto == null)? $dto->getDescriptionText():"";?></textarea>
+							</div>
+						</div>
+						<hr style="margin: 5pt 1pt 5pt 1pt">
+
+
+						<div class="form-group margin-bottom" style="margin-top: 10pt">
+							<label class="control-label col-sm-2" for="inputTag"></label>
+							<div class="col-sm-3">
+								<a tabindex="11" class="btn btn-default btn-sm"
+									onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
+										class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate("Save");?></a>
+								<a tabindex="12" class="btn btn-default btn-sm"
+									href="<?php echo $review_url ;?>"><small><i
+										class="glyphicon glyphicon-remove"></i></small>&nbsp;<?php echo $this->translate("Cancel");?></a>
+
+							</div>
+
+
+							<div class="col-sm-3"></div>
+						</div>
+					</form>
+
+
+				</div>
+
+				<!-- end tab -->
+			</div>
+		</div>
+	</div>
+	<!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<script type="text/javascript">
+
+        $('#unit_price').bind('change', function() {
+        	$('#exw_unit_price').val($('#unit_price').val());
+        });
+
+
+    	$("#Create_Inv_Form :input").attr("disabled", "disabled");
+
+        $( "#pr_item_name" ).focus();   
+        
+
+    	// select pr item
+        $( "#pr_item_name" ).autocomplete({
+            source: "/procure/pr-search/auto-complete",
+            minLength: 2,
+            select: function( event, ui ) {
+                $( "#pr_row_id" ).val(ui.item.pr_row_id);
+                $( "#quantity" ).val(ui.item.row_quantity);
+                $( "#item_id" ).val(ui.item.item_id);
+                $( "#item_name" ).val(ui.item.item_name);
+    
+                $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
+                $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.pr_row_id+'&token='+ui.item.token);
+           
+                            
+                 //alert(ui.item.item_id);
+                $('#global-notice').show();
+                $('#global-notice').html('"' + ui.item.item_name + '" selected');
+                $('#global-notice').fadeOut(5000);
+    
+            	$('#item_detail').show();
+             	$('#pr_row_detail').show();            
+             	$( "#quantity" ).focus();
+
+             	var url = '/procure/pr-row/get-row?id='+ui.item.pr_row_id;
+     		  		$.get(url, {   	}, function(data, status) {
+                		//alert(data.pr_convert_factor);
+                		$('#purchase_uom_convert_factor').text('Ordered: '+ data.pr_qty + ' '+ data.pr_uom + ' = ' + data.pr_converted_standard_qty +  ' '+ data.item_standard_uom);
+                 		$('#rowUnit').val(data.pr_uom);                        
+                 	});
+      
+            }
+            })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+      	  var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
+    	  var total_hit =item.total_hit;
+    	  
+        
+        return $( '<li>'	 )
+        .append('<div><table><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt"><span style="font-size: 9.5pt;font-weight: bold;">' + item.item_sku_key  +  ' | ' + item.item_name + ' | Qty: ' + item.row_quantity + '</span><br>	<span style="padding-top: 7px;color:gray;font-size: 9pt;">' + item.pr_number + ' | ' + item.row_name + '</span></td></tr></table></div>')
+    	.append('<div style="color:graytext;font-size: 8pt; border-bottom: thin solid gray;">' + item.n + ' /' + total_hit + ' record found.</div>' )
+     	.appendTo( ul );
+   
+            };	
+    
+    
+
+        // if select item, then delete all pr item    
+        $( "#item_name" ).autocomplete({
+            source: "/inventory/item-search/auto-complete",
+            minLength: 2,
+            select: function( event, ui ) {
+
+              // set pr row empty	
+              $( "#pr_row_id" ).val("");
+              $( "#pr_item_name" ).val("");              
+              $( "#item_id" ).val(ui.item.id);
+                  
+              $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
+              
+            
+          	 	$('#global-notice').show();
+          		$('#global-notice').html('"' + ui.item.value + '" selected');
+          		$('#global-notice').fadeOut(5000);
+          		//$("#jquery_dialog").dialog("close");
+    
+           	  	$('#item_detail').show();
+            	$( "#quantity" ).focus();
+        
+            }
+           
+          })
+          .autocomplete( "instance" )._renderItem = function( ul, item ) {
+        	  var serial_no = "";
+        	  if(item.item_serial!=""){
+        		  serial_no = " : " + item.item_serial;
+        	  }
+        	   
+             return $( "<li>" )
+               .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+               .appendTo( ul );
+           };
+    
+        $('#quantity').bind('change', function() {
+           	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+           	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+    
+        });
+    
+        $('#unit_price').bind('change', function() {
+        	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);	
+        });
+    
+        $('#tax_rate').bind('change', function() {
+        	$('#tax_amount').val($('#net_amount').val() * $('#tax_rate').val()/100);
+        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+        });
+    
+    	$( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+    
+        $( function() {
+             $( "#vendor_name" ).autocomplete({
+              source: "/bp/vendor-search/auto-complete",
+              minLength: 3,
+              select: function( event, ui ) {
+            	  $( "#vendor_id" ).val(ui.item.id);
+                //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+            	  //alert($( "#vendor_id" ).val());
+        
+            	 	$('#global-notice').show();
+            		$('#global-notice').html('"' + ui.item.value + '" selected');
+            		$('#global-notice').fadeOut(5000);
+            		//$("#jquery_dialog").dialog("close");
+              }
+              })
+              .autocomplete( "instance" )._renderItem = function( ul, item ) {
+              return $( "<li>" )
+                .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+                .appendTo( ul );
+            };
+              ;
+         } );
+    
+        function showSelectedItem(){
+    		var url= $('#item_url').text(); 
+    	   	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
+    	}
+    
+        function showSelectedPrRow(){
+    		var url= $('#pr_row_url').text();
+    	   	showJqueryDialog('PR Row Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
+    	}
+
+        <?php
+        if ($dto !== null) :
+            ?>
+        		  $("#item_id" ).val(<?php echo $dto->getItem();?>);      	  
+        	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php echo $dto->getItem();?>&token=<?php echo $dto->getItemToken();?>');
+        		  $('#item_detail').show();
+        		  $("#pr_row_id" ).val(<?php echo $dto->getPrRow();?>);    	 	  
+          	      $('#pr_row_url').text('/procure/pr-row/show1?tab_idx=0&entity_id=<?php echo $dto->getPrRow();?>');
+          	      $('#pr_row_detail').show();
+        <?php
+       	 endif
+        ?>
+        
+        
+        
+        
+        
+    
+    function selectItem(id, token,target, name, target_name, context = null){
+    	var target_id = '#' + target;
+    	$(target_id).val(id);
+
+        var target_name_id = '#' + target_name;
+    	$(target_name_id).val(name);
+    	$('#modal1.close').click();
+    	$('#global-notice').show();
+    	$('#global-notice').html('"' + name + '" selected');
+    	$('#global-notice').fadeOut(5000);
+    	$("#jquery_dialog").dialog("close");
+
+
+        $("#item_id" ).val(id);
+    	  	$('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+id+'&token='+token);
+    	 
+    		$('#item_detail').show();
+    		$("#quantity").focus();
+
+    	var url = '/inventory/item/get-item?id='+id;
+    		$('#rowUnit').val("Loading...");
+    		$('#purchase_uom_convert_text').text("Loading...");
+    		
+    	$.get(url, {   	}, function(data, status) {
+        		//alert(data.purchase_uom_code);
+        		$('#rowUnit').val(data.purchase_uom_code);
+        		$('#standard_uom_id').text(data.uom_code);
+        		$('#conversionFactor').val(data.purchase_uom_convert_factor);                
+                $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+       	   
+       	});
+    }
+        
+    
+     </script>

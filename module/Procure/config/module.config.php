@@ -292,14 +292,15 @@ return array(
             'Procure\Controller\GrAttachment' => 'Procure\Controller\GrAttachmentControllerFactory',
             'Procure\Controller\GrSearch' => 'Procure\Controller\GrSearchControllerFactory',
 
-            'Procure\Controller\ApSearch' => 'Procure\Controller\ApSearchControllerFactory',
-
             'Procure\Controller\Return' => 'Procure\Controller\ReturnControllerFactory',
             'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',
             'Procure\Controller\ReturnAttachment' => 'Procure\Controller\ReturnAttachmentControllerFactory',
 
             'Procure\Controller\PriceComparison' => 'Procure\Controller\PriceComparisonControllerFactory',
+
+            'Procure\Controller\ApSearch' => 'Procure\Controller\ApSearchControllerFactory',
             'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
+            'Procure\Controller\Ap' => 'Procure\Controller\ApControllerFactory',
 
             // API
             'Procure\API\PrController' => 'Procure\API\PrControllerFactory'

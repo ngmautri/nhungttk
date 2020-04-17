@@ -1,0 +1,1085 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Domain\PurchaseOrder\PODocStatus;
+use Procure\Domain\Shared\Constants;
+
+/**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
+/**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+// var_dump($headerDTO);
+
+// echo memory_get_usage();
+
+$add_row_url = null;
+$review_url = null;
+$picture_url = null;
+$attachment_url = null;
+$status_url = null;
+$log_url = null;
+
+$pay_url = null;
+$gr_from_po_url = null;
+$ap_from_po_url = null;
+$update_header_url = null;
+
+$pdf_url = null;
+$excel_url = null;
+$openoffice_url = null;
+$hoverMode = "row";
+
+$isViewing = false;
+
+if ($action == Constants::FORM_ACTION_SHOW) {
+    $isViewing = true;
+}
+
+$isDraft = false;
+$isPosted = false;
+$isAmending = false;
+$canPost = false;
+$canAmend = false;
+$canAcceptAmendment = false;
+
+$transactionStatus = "";
+$alert = "info";
+
+if (! $headerDTO == null) {
+
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
+
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
+    }
+
+    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $enable_amendment_url = sprintf($this->baseUrl . "/procure/po/enable-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_amendment_url = sprintf($this->baseUrl . "/procure/po/review-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $update_header_url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/create-from-po?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $ap_from_po_url = sprintf($this->baseUrl . "/finance/v-invoice/copy-from-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $pdf_url = sprintf($this->baseUrl . "procure/po-row/print-pdf?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $excel_url = sprintf($this->baseUrl . "/procure/po-row/download?format=xlsx&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $openoffice_url = sprintf($this->baseUrl . "/procure/po-row/download?format=ods&target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $save_as_pdf = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_excel = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_openoffice = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
+
+    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+        $hoverMode = "cell";
+        $canPost = true;
+    endif;
+
+    switch ($headerDTO->getDocStatus()) {
+        case PODocStatus::DOC_STATUS_DRAFT:
+            $isDraft = true;
+            $canPost = true;
+            break;
+        case PODocStatus::DOC_STATUS_POSTED:
+            $isPosted = true;
+            $canAmend = true;
+            break;
+        case PODocStatus::DOC_STATUS_AMENDING:
+            $isAmending = true;
+            $canAcceptAmendment = true;
+            break;
+    }
+}
+
+$currency_list = $nmtPlugin->currencyList();
+$currency_option = "";
+
+if ($currency_list !== null) :
+    foreach ($currency_list as $curr) :
+        if ($headerDTO !== null) :
+            if ($headerDTO->getDocCurrency() == $curr->getId()) :
+                $currency_option = $currency_option . sprintf('<option selected value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
+            else :
+                $currency_option = $currency_option . '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+            endif;
+        else :
+            $currency_option = $currency_option . '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+        endif;
+    endforeach
+    ;
+endif;
+
+$incoterm_option = "";
+$incoterm_list = $nmtPlugin->incotermList();
+
+if ($incoterm_list !== null) :
+    foreach ($incoterm_list as $l) :
+        if ($headerDTO !== null) :
+            if ($headerDTO->getIncoterm() == $l->getId()) :
+                $incoterm_option = $incoterm_option . '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
+            else :
+                $incoterm_option = $incoterm_option . '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
+            endif;
+        else :
+            $incoterm_option = $incoterm_option . '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
+        endif;
+    endforeach
+    ;
+endif;
+
+$error_msg = "";
+if (count($errors) > 0) {
+    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
+    $error_msg = $error_msg . '<ul>';
+    foreach ($errors as $error) :
+        $error_msg = $error_msg . '<li>' . $error . '</li>';
+    endforeach
+    ;
+    $error_msg = $error_msg . '</ul>';
+    $error_msg = $error_msg . '</div>';
+}
+
+// ============================
+?>
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+
+		<a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt"
+			class="btn btn-default btn-sm" href="/procure/po/list"> <small><i
+				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate("PO List");?></a>
+
+<?php
+if ($action == Constants::FORM_ACTION_REVIEW) :
+    $current_step = "STEP3";
+    include (ROOT . '/module/Procure/view/procure/create-wizard.php');
+    endif;
+
+?>
+  					
+  		<hr>
+		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
+
+		<div class="alert alert-<?php echo $alert;?>" role="alert"
+			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
+				<li><b><?php if (!$headerDTO == null): echo sprintf("PO #%s (Version #%s)", $headerDTO->getSysNumber(),$headerDTO->getDocVersion()); endif;?></b></li>
+				<li>-----</li>
+
+				<li><b><?php if (!$headerDTO == null): echo $headerDTO->vendorName; endif;?></b></li>
+				<li><i><?php if (!$headerDTO == null): echo sprintf("%s %s", $headerDTO->getVendorAddress(), $headerDTO->getVendorCountry()); endif;?></i></li>
+
+				<li>-----</li>
+
+				<li><?php if (!$headerDTO == null): echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;?> </li>
+				<li>Status: <?php if (!$headerDTO == null): echo $headerDTO->getDocStatus() ; endif;?> </li>
+				<li>Total rows: <?php echo ($headerDTO->totalRows);?></li>
+				<li>Status: <?php echo $transactionStatus;?> </li>
+
+				<li>-----</li>
+
+				<li>Net: <?php echo number_format($headerDTO->netAmount,2) . " " . $headerDTO->currencyIso3 ;?></li>
+				<li>Tax: <?php echo number_format($headerDTO->taxAmount,2);?></li>
+				<li>Gross: <?php echo number_format($headerDTO->grossAmount,2) . " " . $headerDTO->currencyIso3;?></li>
+				<li>Billed: <?php echo number_format($headerDTO->getBilledAmount(),2) . " " . $headerDTO->currencyIso3;?></li>
+				<li>-----</li>
+
+				<li>Created by: <?php echo $headerDTO->getCreatedByName();?></li>
+
+			</ul>
+		</div>
+		
+	<?php if($action == Constants::FORM_ACTION_REVIEW):?>
+		<div class="alert alert-warning" role="alert"
+			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
+			<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+			<?php echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');?>
+		</div>
+	<?php endif;?>
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 9.5pt">
+				<ul>
+					<li><a href="#general"><small><i class="fa fa-calculator"
+								aria-hidden="true"></i></small>&nbsp;<?php echo $form_title;?></a></li>
+					<li><a href="<?php echo $picture_url; ?>"><span
+							class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
+					<li><a href="#logistic"><small><i class="fa fa-calculator"
+								aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
+					<li><a href="#accounting"><small><i class="fa fa-calculator"
+								aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
+					<li><a href="<?php echo $status_url;?>"> <span
+							class="glyphicon glyphicon-picture"></span> </span>&nbsp;Status
+					</a></li>
+					<li><a href="<?php echo $attachment_url ;?>"> <small><span
+								class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
+					</a></li>
+					<li><a href="<?php echo $log_url ;?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+				</ul>
+
+
+				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+					<!-- Tab1 -->
+	
+	
+<?php
+// ================================
+echo $error_msg;
+// ===============================
+?>
+	
+ 				<form id="Posting_Form" class="form-horizontal"
+						action="<?php echo $form_action;?>" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							name="entity_id"
+							value="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>" />
+						<input type="hidden" name="entity_token"
+							value="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>" />
+						<input type="hidden" name="version" value="<?php echo $version;?>" />
+
+						<div style="position: relative; float: right;">
+					
+				<?php if ($isViewing == false) : ?>
+						  		
+						<?php if($canPost):?>
+						 <a class="btn btn-primary btn-sm" style="color: white"
+								onclick="confirmPost();" href="javascript:;"><i
+								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+		  				<?php endif;?>
+		  				
+		  				<?php if($canAcceptAmendment):?>
+						 <a title="<?php echo $this->translate('P/O Amendment');?>"
+								class="btn btn-default btn-sm"
+								style="color: navy; font-weight: bold;"
+								onclick="confirmPostAmendment();" href="javascript:;"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Post Amendment');?></a>
+		  				<?php endif;?>
+				<?php endif;?>
+
+
+<?php
+if ($isViewing) :
+    if ($isDraft) :
+        ?>
+<a class="btn btn-default btn-sm" href="<?php echo $review_url      ;?>"
+								title="<?php echo $this->translate('Review PO');?>"> <i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Review");?>
+</a>
+					
+					<?php endif;?>
+					
+					  <?php if($canAmend):?>
+						 <a title="<?php echo $this->translate('P/O Amendment');?>"
+								class="btn btn-default btn-sm"
+								style="color: navy; font-weight: bold;"
+								onclick="confirmAmendment();" href="javascript:;"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Amendment');?></a>
+		  				<?php endif;?>
+	
+					
+					<?php if($isPosted):?>					
+							<a title="<?php echo $this->translate("Pay P/O");?>"
+								class="btn btn-default btn-sm" href="<?php echo $pay_url;?>"><i
+								class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay</a> <a
+								title="<?php echo $this->translate("Create Good Receipt from this P/O");?>"
+								class="btn btn-default btn-sm"
+								href="<?php echo $gr_from_po_url;?>"> <i class="fa fa-plus"
+								aria-hidden="true"></i>&nbsp;&nbsp;Goods Receipt
+							</a> <a
+								title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"
+								class="btn btn-default btn-sm"
+								href="<?php echo $ap_from_po_url;?>"> <i class="fa fa-plus"
+								aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice
+							</a>      	
+					<?php endif;?>
+					
+					
+					<?php if($isAmending):?>					
+							<a class="btn btn-default btn-sm"
+								href="<?php echo $review_amendment_url;?>"
+								title="<?php echo $this->translate('Review PO Amendment');?>"> <i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Review Amendment");?>
+							</a>
+					<?php endif;?>
+					
+				<?php endif;?>
+							
+						</div>
+
+						<fieldset>
+							<legend style="font-size: 9.5pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$headerDTO == null)? sprintf("%s - version #%s",$headerDTO->getSysNumber(),$headerDTO->getDocVersion()):"";?>)</a>
+							</legend>
+							<div id="invoice_header" class="collapse">
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Current State:</label>
+									<div class="col-sm-3">
+										<select name="currentState" class="form-control input-sm">
+											<option value="">Please Select</option>
+											<option
+												<?php if($headerDTO->getCurrentState()=="draftPo"): echo "selected"; endif ?>
+												value="draftPo">Draft</option>
+											<option
+												<?php if($headerDTO->getCurrentState()=="finalPo"): echo "selected"; endif ?>
+												value="finalPo">Final</option>
+										</select>
+									</div>
+
+									<div class="col-sm-3">
+										<input
+											<?php if(!$headerDTO== null): echo ($headerDTO->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Is
+										Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2 ">Vendor:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm input-sm" type="text"
+											id="vendor_name_1" placeholder="Enter term to search vendor"
+											name="vendor_name"
+											value="<?php if (!$headerDTO == null):  echo $headerDTO->getVendorName() ;endif;?>">
+
+										<input type="hidden" id="vendor_id" placeholder=""
+											name="vendor_id"
+											value="<?php if (!$headerDTO == null): echo $headerDTO->getVendor();endif;?>">
+									</div>
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt;"
+											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Contract /PO:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="contractNo" name="contractNo"
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getContractNo():"";?>">
+									</div>
+									<label class="control-label col-sm-2">Contract /PO Date:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="contractDate" name="contractDate"
+											value="<?php if(!$headerDTO == null): echo ($headerDTO->getContractDate() !== null); endif;?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2">Currency:</label>
+									<div class="col-sm-3">
+										<select name="currency_id" class="form-control input-sm">
+											<option value="">Select Currency</option>
+   	    									<?php echo $currency_option ; ?>
+   										</select>
+									</div>
+
+									<label class="control-label col-sm-2">Exchange Rate:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="exchangeRate" name="exchangeRate"
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getExchangeRate():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+									<div class="col-sm-3">
+										<select name="incoterm_id" class="form-control input-sm">
+											<option value="">Select Incoterm</option>
+   	    									<?php echo $incoterm_option; ?>
+   										</select>
+									</div>
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="incotermPlace" name="incotermPlace"
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getIncotermPlace():"";?>">
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<div class="col-sm-5">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="paymentTerm" name="paymentTerm"
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getPaymentTerm():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Description</label>
+									<div class="col-sm-8">
+										<input class="form-control input-sm" type="text"
+											placeholder="" name="remarks"
+											value="<?php echo (!$headerDTO == null)? $headerDTO->getRemarks():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"></label>
+									<div class="col-sm-8">
+										<a
+											title="<?php echo $this->translate('Update document hearder');?>"
+											class="btn btn-default btn-sm"
+											style="color: navy; font-weight: bold;"
+											href="<?php echo $update_header_url; ?>"><i
+											class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Edit');?></a>
+										<hr>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+
+
+					<form action="">
+						<fieldset>
+							<legend style="font-size: 9pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+							</legend>
+							<div id="rows" class="collapse in">
+
+								<div style="font-size: 9pt">
+
+									<div class="dropdown">
+										<button
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											title="" class="btn btn-default dropdown-toggle btn-sm"
+											type="button" id="dropdownMenu1" data-toggle="dropdown"
+											aria-haspopup="true" aria-expanded="true">
+											<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span
+												class="caret"></span>
+										</button>
+										<a
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											title="<?php echo $this->translate("Refresh");?>"
+											class="btn btn-default btn-sm" href="javascript:;"
+											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
+											aria-hidden="true"></i>&nbsp;
+										</a> <a <?php echo $this->translate("Full Screen");?>
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											class="btn btn-default btn-sm" href="javascript:;"
+											onclick="showJqueryDialog('Contract /PO: <?php echo $headerDTO->getSysNumber().' - '. $headerDTO->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $headerDTO->getToken() ?>&entity_id=<?php echo $headerDTO->getId() ?>','j_loaded_data',true);"><i
+											class="fa fa-window-maximize" aria-hidden="true"></i></a>
+
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$headerDTO == null)? $headerDTO->getSysNumber():"";?> // </strong></span>
+
+										<span class=""
+											style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
+						Net amount: <?php echo number_format($headerDTO->getNetAmount(),2) . " " . $headerDTO->getCurrencyIso3() ;?>
+                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($headerDTO->getTaxAmount(),2);?>
+                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($headerDTO->getGrossAmount(),2) . "</b> " .$headerDTO->getCurrencyIso3();?>
+                        &nbsp;|&nbsp;Total rows:<?php echo ($headerDTO->getTotalActiveRows());?>
+					</span>
+
+
+										<ul style="font-size: 9.5pt;" class="dropdown-menu"
+											aria-labelledby="dropdownMenu1">
+
+											<li><a target="_blank" class=""
+												href="<?php echo $save_as_pdf;?>"> <i
+													class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+													&nbsp;Pdf (*.pdf)
+											</a></li>
+											<li><a class="" href="<?php echo $save_as_excel;?>"> <i
+													class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+													&nbsp;Excel (*.xlxs)
+											</a></li>
+											<li><a class="" href="<?php echo $save_as_openoffice;?>"> <i
+													class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+													&nbsp;Open Office (*.ods)
+											</a></li>
+										</ul>
+									</div>
+
+								</div>
+								<div id="pr_row_gird" style="font-size: 8pt;"></div>
+						
+						</fieldset>
+					</form>
+				</div>
+
+				<div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
+				<div id="accounting" style="font-size: 9pt">Payment Term, Payment
+					method etc.</div>
+
+				<!-- end tab -->
+			</div>
+		</div>
+	</div>
+	<!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+
+<!-- Modal -->
+<div class="modal" id="confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>#<?php echo$this->translate('PO will be posted!');?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+					created.
+					 -->
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doPosting();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="amendment_confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>#<?php echo$this->translate('PO will be enabled for ammendment!');?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+					created.
+					 -->
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doAmendment();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="post_amendment_confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>#<?php echo$this->translate('PO amendment will be posted!');?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doPostAmendment();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="update_header_confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>#<?php echo$this->translate('Document header amendment will be posted!');?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doPostAmendment();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var data = <?php echo json_encode($rowOutput) ; ?>
+    
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+$("#Posting_Form :input").attr("disabled", "disabled");
+
+
+function confirmPost() {
+ 	$('#confirm_modal_sm').modal();
+}
+
+function doPosting() {
+	$('#confirm_modal_sm').modal('hide');		
+	$('#b_modal_no_header').modal();
+	
+	//submitForm('Posting_Form');
+	
+	var url="/procure/po/review1";
+	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
+	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
+	var version="<?php echo $version;?>";
+
+	$.post(url, {
+		entity_id 	: entity_id,
+		entity_token: entity_token,
+		version: version,
+	}, function(data, status, dataType) {
+	//	alert(data);
+        window.location.href= data;
+   	});
+}
+
+function confirmAmendment() {
+ 	$('#amendment_confirm_modal_sm').modal();
+}
+
+function doAmendment() {
+	$('#amendment_confirm_modal_sm').modal('hide');		
+	$('#b_modal_no_header').modal();
+	
+	var url="/procure/po/enable-amendment";
+	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
+	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
+	var version="<?php echo $version;?>";
+
+	$.post(url, {
+		entity_id 	: entity_id,
+		entity_token: entity_token,
+		version: version,
+	}, function(data, status, dataType) {
+	//	alert(data);
+        window.location.href= data;
+   	});
+}
+
+
+function confirmPostAmendment() {
+ 	$('#post_amendment_confirm_modal_sm').modal();
+}
+
+function doPostAmendment() {
+	$('#post_amendment_confirm_modal_sm').modal('hide');		
+	$('#b_modal_no_header').modal();
+	
+	var url="/procure/po/review-amendment";
+	var entity_id="<?php echo (!$headerDTO == null)? $headerDTO->getId():"";?>";
+	var entity_token="<?php echo (!$headerDTO == null)? $headerDTO->getToken():"";?>";
+	var version="<?php echo $version;?>";
+	$.post(url, {
+		entity_id 	: entity_id,
+		entity_token: entity_token,
+		version: version,
+	}, function(data, status, dataType) {
+        window.location.href= data;
+   	});
+}
+
+
+$( "#pr_item_name" ).autocomplete({
+    source: "/procure/pr-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#pr_row_id" ).val(ui.item.pr_row_id);
+  	  
+     alert	( ui.item.pr_row_id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.item_name + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
+      .appendTo( ul );
+    };
+
+    $( "#item_name" ).autocomplete({
+        source: "/inventory/item-search/auto-complete",
+        minLength: 2,
+        select: function( event, ui ) {
+      	  $( "#item_id" ).val(ui.item.id);
+        
+      	 	$('#global-notice').show();
+      		$('#global-notice').html('"' + ui.item.value + '" selected');
+      		$('#global-notice').fadeOut(5000);
+      		//$("#jquery_dialog").dialog("close");
+        }
+       
+      })
+      .autocomplete( "instance" )._renderItem = function( ul, item ) {
+   	  var serial_no = "";
+   	  if(item.item_serial!=""){
+   		  serial_no = " : " + item.item_serial;
+   	  }
+    	   
+         return $( "<li>" )
+           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+           .appendTo( ul );
+       };
+
+
+
+//$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+	
+	//$("#Create_PR_Form :input").attr("disabled", "disabled");
+
+
+	    var autoCompleteEditor = function (ui) {
+        var $inp = ui.$cell.find("input");
+        var rowData = ui.rowData;
+      
+        //initialize the editor
+        $inp.autocomplete({
+        	source: "/bp/vendor-search/auto-complete",
+            minLength: 3,
+            select: function( event, ui ) {
+          	  //$( "#vendor_id" ).val(ui.item.id);
+              //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+          	  //alert($( "#vendor_id" ).val());
+          	  //alert(ui.item.id);
+          	  rowData.vendor_id = ui.item.id;
+
+          	 	$('#global-notice').show();
+          		$('#global-notice').html('"' + ui.item.value + '" selected');
+          		$('#global-notice').fadeOut(5000);
+          		//$("#jquery_dialog").dialog("close");
+            }
+            })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+              .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+              .appendTo( ul );
+          };
+    }
+    
+
+    //var container_height = $('#main_container').height();
+    //alert(container_height);
+    
+   
+       
+	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
+			resizable:true,
+			//draggable:true,
+			sortable: true,
+			freezeCols:1,
+			hoverMode: '<?php echo $hoverMode;?>',
+		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
+		  	editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            editor: {
+                select: true
+            },
+		 columnBorders: true,
+
+				  	  toolbar: {
+				  	 	<?php if(!$isViewing):?> 
+                    	<?php if($canPost || $canAcceptAmendment):?>
+                        items: [
+                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+                            { "click": function (evt, ui) {
+                                var $grid = $(this).closest('.pq-grid');
+                                redirectUrl="<?php echo $add_row_url; ?>";
+                                window.location.href= redirectUrl;
+                             }
+                            }
+                        ]
+                        }
+                        ]
+                    	<?php endif;?>
+                    	<?php endif;?>
+
+                     	<?php if($action == Constants::FORM_ACTION_SHOW):?>
+                      	items: [
+                            { type: 'button', icon: 'ui-icon-refresh', label: '', listeners: [
+                                { "click": function (evt, ui) {
+                                    var $grid = $(this).closest('.pq-grid');
+                                  }
+                                }
+                            ]
+                            }
+                        ]
+                     	<?php endif;?>
+                        
+                    
+                },
+        			 
+
+        change: function (evt, ui) {                
+            
+            if (ui.source == 'commit' || ui.source == 'rollback') {
+                return;
+            }
+            console.log(ui);
+            var $grid = $(this),
+                grid = $grid.pqGrid('getInstance').grid;
+            var rowList = ui.rowList,
+                addList = [],
+                recIndx = grid.option('dataModel').recIndx,
+                deleteList = [],
+                updateList = [];
+            
+            for (var i = 0; i < rowList.length; i++) {
+                var obj = rowList[i],
+                    rowIndx = obj.rowIndx,
+                    newRow = obj.newRow,
+                    type = obj.type,
+                    rowData = obj.rowData;
+                 if (type == 'add') {                        
+                    var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                    if (valid) {
+                        addList.push(newRow);
+                    }
+                }
+                else if (type == 'update') {                        
+                    var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                    if (valid) {
+                        if (rowData[recIndx] == null) {
+                            addList.push(rowData);
+                        }
+                        //else if (grid.isDirty({rowData: rowData})) {
+                        else {
+                            updateList.push(rowData);
+                      		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                             
+                        }
+                    }
+                }
+              }
+
+              if (addList.length || updateList.length || deleteList.length) {
+				var sent_list = JSON.stringify({
+                    updateList: updateList,
+                    addList: addList,
+                    deleteList: deleteList
+                });
+                //alert(sent_list);
+                  
+                  $.ajax({
+                      url: '/procure/po/update-row',
+                      data: {
+                          sent_list: sent_list
+                      },
+                      dataType: "json",
+                      type: "POST",
+                      async: true,
+                      beforeSend: function (jqXHR, settings) {
+                          //$(".saving", $grid).show();
+
+						  	
+                          //$("#global-notice").text("Updating...").show();
+                          //alert(updateList[0].item_name  +  updateList[0].row_id);
+                      },
+                      success: function (changes) {
+                          //commit the changes.
+                      
+                      	  if(changes.status == <?php echo Constants::AJAX_FAILED;?>){
+                      		$("#global-notice").text(changes.message).show();
+                      	  }else{
+                      		$("#global-notice").text("[OK] Updated...").show();  
+                      	  }
+            		      //alert('it is ok');                
+                          /* grid.commit({ type: 'add', rows: changes.addList });
+                          grid.commit({ type: 'update', rows: changes.updateList });
+                          grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                      },
+                      complete: function () {
+                          //$(".saving", $grid).hide();
+                          $("#global-notice").delay(2200).fadeOut(500);
+                     	  refreshGird();
+                      }
+                  });
+              }
+            //alert(updateList.length);
+           
+        },     
+	              
+	};
+
+    obj.dataModel = {
+            data: data,
+            location: "local",
+            sorting: "local",
+            sortDir: "down"
+    };
+
+    obj.colModel = [
+    	<?php if(!$isViewing):?>   
+      	<?php if($canPost || $canAcceptAmendment):?>
+             { title: "", editable: false, minWidth: 55, sortable: false,
+           render: function (ui) {
+               //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+        		return '<button type="button" class="edit_btn">Edit </button>';
+           }
+       },
+       <?php endif;?>
+       <?php endif;?>
+
+
+       <?php  //$rowDTO->convertedStandardQuantity;?>
+       
+       { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+   	   { title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
+	
+       { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
+       
+       { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
+  		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+       { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
+       { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
+       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+       
+      	<?php if($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW):?>
+        { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
+        <?php else:?>
+        { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
+       	<?php endif;?>
+
+       
+       { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
+       
+       { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
+       { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
+       { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
+
+       { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
+       { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
+       { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
+       { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
+       { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:90,editable: false },
+
+       { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
+       { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
+        
+ 
+		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
+	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+              
+      ];
+
+    var $grid = $("#pr_row_gird").pqGrid(obj);
+    
+
+    $grid.on('pqgridrefresh pqgridrefreshrow', function () {
+        //debugger;
+        var $grid = $(this);
+
+        $grid.find("button.edit_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
+
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+            redirectUrl="/procure/po/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+          	//alert(redirectUrl);
+			window.location.href = redirectUrl;
+          	//window.open(redirectUrl,'_blank');
+        });
+
+     });        
+
+	// important for datamodel: local.
+    $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+     
+    function refreshGird(){
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+    }
+</script>

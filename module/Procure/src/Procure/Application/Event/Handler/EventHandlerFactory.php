@@ -3,6 +3,7 @@ namespace Procure\Application\Event\Handler;
 
 use Doctrine\ORM\EntityManager;
 use Procure\Application\Event\Handler\AP\ApPostedHandler;
+use Procure\Application\Event\Handler\AP\GrFromApPosted;
 use Procure\Application\Event\Handler\GR\GrPostedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentEnabledHandler;
@@ -66,10 +67,12 @@ class EventHandlerFactory
 
             case ApPosted::class:
                 $handlers[] = new ApPostedHandler($doctrineEM);
+                $handlers[] = new GrFromApPosted($doctrineEM);
                 break;
 
             case GrPosted::class:
                 $handlers[] = new GrPostedHandler($doctrineEM);
+
                 break;
         }
 

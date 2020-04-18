@@ -21,6 +21,7 @@ use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Header\IncotermValidator;
 use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -30,7 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -143,11 +144,10 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
+
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

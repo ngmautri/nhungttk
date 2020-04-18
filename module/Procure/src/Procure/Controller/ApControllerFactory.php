@@ -1,13 +1,14 @@
 <?php
 namespace Procure\Controller;
 
+use Procure\Application\Service\AP\APService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApControllerFactory implements FactoryInterface
 {
@@ -21,11 +22,12 @@ class ApControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $sm = $serviceLocator->getServiceLocator();
-
         $controller = new APController();
-
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
+
+        $sv = $sm->get(APService::class);
+        $controller->setApService($sv);
 
         return $controller;
     }

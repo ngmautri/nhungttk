@@ -12,7 +12,7 @@ use Procure\Infrastructure\Mapper\ApMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQueryRepositoryInterface
 {
@@ -74,16 +74,10 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
      */
     public function getHeaderById($id, $token = null)
     {
-        if ($token == null) {
-            $criteria = array(
-                'id' => $id
-            );
-        } else {
-            $criteria = array(
-                'id' => $id,
-                'token' => $token
-            );
-        }
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
 
         /**
          *

@@ -9,7 +9,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * Abstract Procure Document.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterface
 {
@@ -2014,7 +2014,7 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
      *
      * @param mixed $rowsOutput
      */
-    protected function setRowsOutput($rowsOutput)
+    public function setRowsOutput($rowsOutput)
     {
         $this->rowsOutput = $rowsOutput;
     }

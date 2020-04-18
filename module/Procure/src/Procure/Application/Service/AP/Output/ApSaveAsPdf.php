@@ -1,0 +1,114 @@
+<?php
+namespace Procure\Application\Service\AP\Output;
+
+use Procure\Application\Service\Output\AbstractRowFormatter;
+use Procure\Application\Service\Output\AbstractSaveAsPdf;
+use Procure\Domain\GenericDoc;
+use Procure\Domain\PurchaseOrder\PORowSnapshot;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
+class ApSaveAsPdf extends AbstractSaveAsPdf
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Output\SaveAsInterface::saveMultiplyRowsAs()
+     */
+    public function saveMultiplyRowsAs($rows, AbstractRowFormatter $formatter)
+    {
+        if ($this->getBuilder() == null) {
+            return null;
+        }
+
+        if (count($rows) == 0) {
+            return null;
+        }
+
+        // created header
+        $params = [];
+
+        $this->getBuilder()->buildHeader($params);
+
+        // created footer and export
+        $params = [];
+        $this->getBuilder()->buildFooter($params);
+    }
+
+    /**
+     * Build in Builder pattern
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Output\SaveAsInterface::saveDocAs()
+     */
+    public function saveDocAs(GenericDoc $doc, AbstractRowFormatter $formatter)
+    {
+        if ($this->getBuilder() == null) {
+            return null;
+        }
+
+        if (! $doc instanceof GenericDoc) {
+            throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
+        }
+
+        if (count($doc->getDocRows()) == null) {
+            return;
+        }
+
+        // Set Header
+        $params = [
+            "docNumber" => $doc->getSysNumber(),
+            "doc" => $doc
+        ];
+        $this->getBuilder()->buildHeader($params);
+
+        $details = '<h3 style="text-align: center">Invoice</h3>';
+
+        $details .= '
+        <table style="font-size: 10px; border: 0.5px solid black; width:100%">
+        <tr style="font-size: 9.5px; border: 0.5px solid black;">
+        <td style="width: 30px; border: 0.5px solid black;">#</td>
+        <td style="width: 35%; border: 0.5px solid black;">#Item</td>
+        <td style="width: 30px; border: 0.5px solid black;">#Unit</td>
+        <td style="width: 40px; border: 0.5px solid black;">#Qty</td>
+        <td style="border: 0.5px solid black;">#UP</td>
+        <td style="border: 0.5px solid black;">#Net</td>
+        </tr>/';
+
+        $n = 0;
+        foreach ($doc->getDocRows() as $r) {
+
+            $n ++;
+
+            /**
+             *
+             * @var PORowSnapshot $row ;
+             */
+            $row = $formatter->format($r->makeSnapshot());
+
+            $details .= '<tr style="font-size: 9.5px; border: 0px solid black;">';
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s <br></td>', $n);
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getItemName());
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getDocUnit());
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getDocQuantity());
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getDocUnitPrice());
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getNetAmount());
+            $details .= '</tr>';
+        }
+
+        $details .= '</table>';
+
+        $params = [
+            "doc" => $doc,
+            "details" => $details
+        ];
+        $this->getBuilder()->buildBody($params);
+
+        // created footer and export
+        $this->getBuilder()->buildFooter();
+    }
+}

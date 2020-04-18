@@ -1,33 +1,100 @@
 <?php
 namespace Procure\Application\Service\AP;
 
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
-use Procure\Application\Service\FXService;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Application\Service\AP\Output\ApRowFormatter;
+use Procure\Application\Service\AP\Output\ApSaveAsExcel;
+use Procure\Application\Service\AP\Output\ApSaveAsOpenOffice;
+use Procure\Application\Service\AP\Output\ApSaveAsPdf;
+use Procure\Application\Service\AP\Output\Pdf\ApPdfBuilder;
+use Procure\Application\Service\AP\Output\Spreadsheet\ApExcelBuilder;
+use Procure\Application\Service\AP\Output\Spreadsheet\ApOpenOfficeBuilder;
+use Procure\Application\Service\Output\RowNumberFormatter;
+use Procure\Application\Service\Output\RowTextAndNumberFormatter;
+use Procure\Application\Service\Output\SaveAsArray;
+use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
 /**
  * AP Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APService extends AbstractService
 {
 
-    private $queryRepository;
+    /**
+     * '
+     *
+     * @param int $id
+     * @param string $token
+     */
+    public function getDocHeaderByTokenId($id, $token)
+    {
+        $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
+        return $rep->getHeaderById($id, $token);
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param string $outputStrategy
+     * @return NULL|\Procure\Domain\AccountPayable\APDoc
+     */
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    {
+        $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+
+        if (! $rootEntity instanceof APDoc) {
+            return null;
+        }
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($outputStrategy) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new ApRowFormatter(new RowTextAndNumberFormatter());
+                $factory = new SaveAsArray();
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new ApExcelBuilder();
+                $formatter = new ApRowFormatter(new RowNumberFormatter());
+                $factory = new ApSaveAsExcel($builder);
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new ApOpenOfficeBuilder();
+                $formatter = new ApRowFormatter(new RowNumberFormatter());
+                $factory = new ApSaveAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_PDF:
+                $builder = new ApPdfBuilder();
+                $formatter = new ApRowFormatter(new RowNumberFormatter());
+                $factory = new ApSaveAsPdf($builder);
+                break;
+
+            default:
+                $formatter = new ApRowFormatter(new RowTextAndNumberFormatter());
+                $factory = new SaveAsArray();
+                break;
+        }
+
+        if ($factory !== null && $formatter !== null) {
+            $output = $factory->saveDocAs($rootEntity, $formatter);
+            $rootEntity->setRowsOutput($output);
+        }
+
+        return $rootEntity;
+    }
 
     public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
     {
-        $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
 
         $rootEntity = null;
         $localEntity = null;
@@ -53,54 +120,5 @@ class APService extends AbstractService
             "rootDTO" => $rootDTO,
             "localDTO" => $localDTO
         ];
-    }
-
-    /**
-     *
-     * @param GRQueryRepositoryImpl $queryRepository
-     */
-    public function setQueryRepository(GRQueryRepositoryImpl $queryRepository)
-    {
-        $this->queryRepository = $queryRepository;
-    }
-
-    /**
-     *
-     * @return \Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl
-     */
-    public function getQueryRepository()
-    {
-        return $this->queryRepository;
-    }
-
-    /**
-     *
-     * @param int $target_id
-     * @param string $target_token
-     * @param int $entity_id
-     * @param string $entity_token
-     */
-    public function createFromPO($id, $token, CommandOptions $options)
-    {
-        $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
-
-        $po = $rep->getPODetailsById($id, $token);
-
-        $headerValidators = new HeaderValidatorCollection();
-
-        $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $fxService = new FXService();
-        $fxService->setDoctrineEM($this->getDoctrineEM());
-
-        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
-        $headerValidators->add($validator);
-
-        $rowValidators = new RowValidatorCollection();
-        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
-
-        $gr = APDoc::createFromPo($po, $options, $headerValidators, $rowValidators);
-        return $gr;
     }
 }

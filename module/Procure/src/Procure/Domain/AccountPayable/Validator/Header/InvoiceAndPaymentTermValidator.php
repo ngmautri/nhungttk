@@ -12,7 +12,7 @@ use Procure\Domain\Validator\HeaderValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class InvoiceAndPaymentTermValidator extends AbstractValidator implements HeaderValidatorInterface
 {

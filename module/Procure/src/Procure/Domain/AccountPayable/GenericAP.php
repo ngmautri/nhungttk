@@ -22,7 +22,7 @@ use Procure\Domain\Validator\RowValidatorCollection;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class GenericAP extends AbstractAP
 {
@@ -354,7 +354,7 @@ abstract class GenericAP extends AbstractAP
             foreach ($this->docRows as $row) {
 
                 if ($row instanceof APRow) {
-                    $rowDTOList[] = $row->makeDTOForGrid();
+                    $rowDTOList[] = $row->makeDetailsDTO();
                 }
             }
         }

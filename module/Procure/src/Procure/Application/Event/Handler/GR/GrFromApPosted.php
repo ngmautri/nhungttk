@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Event\Handler\AP;
+namespace Procure\Application\Event\Handler\GR;
 
 use Application\Application\Event\AbstractEventHandler;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
@@ -16,7 +16,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GrFromApPosted extends AbstractEventHandler implements EventSubscriberInterface
 {

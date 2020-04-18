@@ -4,9 +4,11 @@ namespace Procure\Application\Service\Output;
 use Procure\Domain\RowSnapshot;
 
 /**
- * only for format number. this is used when exporting excel or saving as pdf.
+ * only for format number.
+ * this is used when exporting excel or saving as pdf.
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowNumberFormatter extends AbstractRowFormatter
 {
@@ -26,7 +28,8 @@ class RowNumberFormatter extends AbstractRowFormatter
         $curency = array(
             "USD",
             "THB",
-            "EUR"
+            "EUR",
+            "DKK"
         );
 
         if (in_array($row->getDocCurrencyISO(), $curency)) {

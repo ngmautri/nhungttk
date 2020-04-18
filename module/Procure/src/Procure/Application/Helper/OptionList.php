@@ -62,7 +62,7 @@ class OptionList
                 $option = $option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getAccountNumber(), $l->getDescription());
             } else {
                 if ($id == $l->getId()) {
-                    $option = $option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getAccountName(), $l->getDescription());
+                    $option = $option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getAccountNumber(), $l->getDescription());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getAccountName(), $l->getDescription());
                 }

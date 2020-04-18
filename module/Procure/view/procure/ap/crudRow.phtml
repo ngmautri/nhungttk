@@ -24,7 +24,7 @@ if ($rootDto !== null) {
     $target_token = $rootDto->getToken();
 
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
-    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
+    $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
     // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
     $rowNumber = $rootDto->getTotalRows() + 1;
 }
@@ -790,6 +790,7 @@ echo $cost_center_option;
         <?php
        	 endif
         ?>
+
 
 
 

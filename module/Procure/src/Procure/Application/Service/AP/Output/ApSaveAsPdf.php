@@ -72,6 +72,9 @@ class ApSaveAsPdf extends AbstractSaveAsPdf
         <table style="font-size: 10px; border: 0.5px solid black; width:100%">
         <tr style="font-size: 9.5px; border: 0.5px solid black;">
         <td style="width: 30px; border: 0.5px solid black;">#</td>
+        <td style="width: 30px; border: 0.5px solid black;">#Acc</td>
+        <td style="width: 50px; border: 0.5px solid black;">#CC</td>
+
         <td style="width: 35%; border: 0.5px solid black;">#Item</td>
         <td style="width: 30px; border: 0.5px solid black;">#Unit</td>
         <td style="width: 40px; border: 0.5px solid black;">#Qty</td>
@@ -91,7 +94,9 @@ class ApSaveAsPdf extends AbstractSaveAsPdf
             $row = $formatter->format($r->makeSnapshot());
 
             $details .= '<tr style="font-size: 9.5px; border: 0px solid black;">';
-            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s <br></td>', $n);
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s<br></td>', $n);
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getGlAccountNumber() . $row->getGlAccountName());
+            $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getCostCenterName());
             $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getItemName());
             $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getDocUnit());
             $details .= sprintf('<td style="font-size: 9.5px; solid black;">%s</td>', $row->getDocQuantity());

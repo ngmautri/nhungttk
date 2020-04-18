@@ -4,6 +4,8 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
+use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -13,7 +15,6 @@ use Procure\Domain\Shared\ProcureDocStatus;
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 // var_dump($headerDTO);
-
 // echo memory_get_usage();
 
 $add_row_url = null;
@@ -48,6 +49,11 @@ $canAcceptAmendment = false;
 
 $transactionStatus = "";
 $alert = "info";
+
+$wh_id = null;
+$pmtTermId = null;
+$currencyId = null;
+$incotermId = null;
 
 if (! $headerDTO == null) {
 
@@ -101,55 +107,18 @@ if (! $headerDTO == null) {
             $canAcceptAmendment = true;
             break;
     }
+
+    $wh_id = $headerDTO->getWarehouse();
+    $pmtTermId = $headerDTO->getPmtTerm();
+    $currencyId = $headerDTO->getDocCurrency();
+    $incotermId = $headerDTO->getIncoterm();
 }
 
-$currency_list = $nmtPlugin->currencyList();
-$currency_option = "";
-
-if ($currency_list !== null) :
-    foreach ($currency_list as $curr) :
-        if ($headerDTO !== null) :
-            if ($headerDTO->getDocCurrency() == $curr->getId()) :
-                $currency_option = $currency_option . sprintf('<option selected value="%s">%s</option>', $curr->getId(), $curr->getCurrency());
-            else :
-                $currency_option = $currency_option . '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-            endif;
-        else :
-            $currency_option = $currency_option . '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-        endif;
-    endforeach
-    ;
-endif;
-
-$incoterm_option = "";
-$incoterm_list = $nmtPlugin->incotermList();
-
-if ($incoterm_list !== null) :
-    foreach ($incoterm_list as $l) :
-        if ($headerDTO !== null) :
-            if ($headerDTO->getIncoterm() == $l->getId()) :
-                $incoterm_option = $incoterm_option . '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-            else :
-                $incoterm_option = $incoterm_option . '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-            endif;
-        else :
-            $incoterm_option = $incoterm_option . '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
-        endif;
-    endforeach
-    ;
-endif;
-
-$error_msg = "";
-if (count($errors) > 0) {
-    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
-    $error_msg = $error_msg . '<ul>';
-    foreach ($errors as $error) :
-        $error_msg = $error_msg . '<li>' . $error . '</li>';
-    endforeach
-    ;
-    $error_msg = $error_msg . '</ul>';
-    $error_msg = $error_msg . '</div>';
-}
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$paymentTerm_option = OptionList::createPmtTermOption($nmtPlugin->getPaymentTerms(), $pmtTermId);
+$incoterm_option = OptionList::createIncotermOption($nmtPlugin->incotermList(), $incotermId);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
+$error_msg = ErrorMessage::showErrorMessage($errors);
 
 // ============================
 ?>
@@ -487,12 +456,34 @@ if ($isViewing) :
 
 
 
+
+
+
+
+
+
+
+
+
+
+
                                                 value="draftPo">Draft</option>
                                             <option
                                                 <?php
 
                                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                                     echo "selected"; endif ?>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1372,7 +1363,7 @@ echo $hoverMode;
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
 
-            redirectUrl="/procure/po/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+            redirectUrl="/procure/ap/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

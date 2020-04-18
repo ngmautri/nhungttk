@@ -33,7 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateRowCmdHandler extends AbstractCommandHandler
 {
@@ -78,7 +78,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
              * @var APRow $snapshot ;
              * @var GRRowSnapshot $newSnapshot ;
              * @var GRRow $row ;
-             *     
+             *
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
@@ -98,7 +98,9 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "docUnitPrice",
                 "conversionFactor",
                 "descriptionText",
-                "taxRate"
+                "taxRate",
+                "glAccount",
+                "costCenter"
             ];
 
             $newSnapshot = APRowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);

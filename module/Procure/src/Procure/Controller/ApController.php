@@ -23,14 +23,12 @@ use Procure\Application\Command\AP\Options\ApUpdateOptions;
 use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
-use Procure\Application\DTO\Po\PORowDTO;
-use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Service\AP\APService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 
 /**
  *
@@ -240,14 +238,22 @@ class ApController extends AbstractActionController
      */
     public function updateRowAction()
     {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         * @var \Application\Entity\MlaUsers $u ;
+         * @var ApRowDTO $dto ;
+         */
         $this->layout("Procure/layout-fullscreen");
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/po/update-row";
-        $form_title = "Update PO Row";
+        $form_action = "/procure/ap/update-row";
+        $form_title = "Update Invoice Row";
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT;
-        $viewTemplete = "/procure/po/crudPORow";
+        $viewTemplete = "/procure/ap/crudRow";
+
         $prg = $this->prg($form_action, true);
+
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
             return $prg;
@@ -258,7 +264,8 @@ class ApController extends AbstractActionController
             $entity_token = $this->params()->fromQuery('entity_token');
             $target_id = (int) $this->params()->fromQuery('target_id');
             $target_token = $this->params()->fromQuery('target_token');
-            $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+            $result = $this->getApService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+
             $rootDTO = null;
             $localDTO = null;
             if (isset($result["rootDTO"])) {
@@ -267,7 +274,7 @@ class ApController extends AbstractActionController
             if (isset($result["localDTO"])) {
                 $localDTO = $result["localDTO"];
             }
-            if (! $rootDTO instanceof PoDetailsDTO || ! $localDTO instanceof PORowDetailsDTO) {
+            if (! $rootDTO instanceof ApDTO || ! $localDTO instanceof ApRowDTO) {
                 return $this->redirect()->toRoute('not_found');
             }
             $viewModel = new ViewModel(array(
@@ -292,26 +299,24 @@ class ApController extends AbstractActionController
         // =============================
         try {
             $data = $prg;
-            /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
             /**
-             *
-             * @var PORowDTO $dto ;
              */
-            $dto = DTOFactory::createDTOFromArray($data, new PORowDetailsDTO());
+            $dto = DTOFactory::createDTOFromArray($data, new ApRowDTO());
             $userId = $u->getId();
             $target_id = $data['target_id'];
             $target_token = $data['target_token'];
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
-            $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+            $result = $this->getApService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
             $rootEntity = null;
             $localEntity = null;
             $rootDTO = null;
             $localDTO = null;
+
             if (isset($result["rootEntity"])) {
                 $rootEntity = $result["rootEntity"];
             }
@@ -327,8 +332,11 @@ class ApController extends AbstractActionController
             if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, new UpdateRowCmdHandler());
+            $options = new ApRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new UpdateRowCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -355,7 +363,7 @@ class ApController extends AbstractActionController
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -518,7 +526,7 @@ class ApController extends AbstractActionController
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            $options = new ApPostOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
+            $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);

@@ -9,12 +9,14 @@ use Procure\Domain\GenericRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Shared\Constants;
+use Procure\Application\DTO\Ap\ApDetailsDTO;
+use Procure\Application\DTO\Ap\ApRowDTO;
 
 /**
  * AP Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APRow extends GenericRow
 {
@@ -70,7 +72,7 @@ class APRow extends GenericRow
      */
     public function makeDetailsDTO()
     {
-        $dto = new ApRowDetailsDTO();
+        $dto = new ApRowDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }

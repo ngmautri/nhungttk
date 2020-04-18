@@ -6,8 +6,9 @@ use Zend\Escaper\Escaper;
 
 /**
  * Default Row Formatter
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowFormatter extends AbstractRowFormatter
 {
@@ -27,7 +28,8 @@ class RowFormatter extends AbstractRowFormatter
         $curency = array(
             "USD",
             "THB",
-            "EUR"
+            "EUR",
+            "DKK"
         );
 
         if (in_array($row->getDocCurrencyISO(), $curency)) {

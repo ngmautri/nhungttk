@@ -3,7 +3,7 @@ namespace Procure\Application\Event\Handler;
 
 use Doctrine\ORM\EntityManager;
 use Procure\Application\Event\Handler\AP\ApPostedHandler;
-use Procure\Application\Event\Handler\AP\GrFromApPosted;
+use Procure\Application\Event\Handler\GR\GrFromApPosted;
 use Procure\Application\Event\Handler\GR\GrPostedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentEnabledHandler;
@@ -25,7 +25,7 @@ use Procure\Domain\Event\Po\PoRowUpdated;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class EventHandlerFactory
 {

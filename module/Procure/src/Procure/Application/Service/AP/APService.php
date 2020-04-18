@@ -15,6 +15,8 @@ use Procure\Application\Service\Output\SaveAsArray;
 use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Domain\AccountPayable\APRow;
 
 /**
  * AP Service.
@@ -105,12 +107,12 @@ class APService extends AbstractService
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid();
+            $rootDTO = $rootEntity->makeDTOForGrid(new ApDTO());
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 
-            if ($localEntity !== null) {
-                $localDTO = $localEntity->makeDTOForGrid();
+            if ($localEntity instanceof APRow) {
+                $localDTO = $localEntity->makeDetailsDTO();
             }
         }
 

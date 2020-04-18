@@ -17,15 +17,14 @@ use Procure\Application\Command\AP\PostCmdHandler;
 use Procure\Application\Command\AP\UpdateRowCmd;
 use Procure\Application\Command\AP\UpdateRowCmdHandler;
 use Procure\Application\Command\AP\Options\ApCreateOptions;
+use Procure\Application\Command\AP\Options\ApPostOptions;
+use Procure\Application\Command\AP\Options\ApRowCreateOptions;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
-use Procure\Application\Command\PO\PostCmdHandlerDecorator;
-use Procure\Application\Command\PO\Options\PoPostOptions;
-use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Service\AP\APService;
 use Procure\Domain\Exception\OperationFailedException;
@@ -135,13 +134,20 @@ class ApController extends AbstractActionController
      */
     public function addRowAction()
     {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         * @var \Application\Entity\MlaUsers $u ;
+         * @var ApRowDTO $dto ;
+         */
         $this->layout("Procure/layout-fullscreen");
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/po/add-row";
-        $form_title = "Add PO Row";
+        $form_action = "/procure/ap/add-row";
+        $form_title = "Add Invoice Row";
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
-        $viewTemplete = "procure/po/crudPORow";
+        $viewTemplete = "procure/ap/crudRow";
+
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -150,8 +156,8 @@ class ApController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
             $target_id = (int) $this->params()->fromQuery('target_id');
-            $target_token = $this->params()->fromQuery('token');
-            $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
+            $target_token = $this->params()->fromQuery('target_token');
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($target_id, $target_token);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
@@ -173,29 +179,31 @@ class ApController extends AbstractActionController
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
-        $data = $prg;
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-        /**
-         *
-         * @var PoRowDTO $dto ;
-         */
-        $dto = DTOFactory::createDTOFromArray($data, new PoRowDetailsDTO());
-        // var_dump($dto);
-        $userId = $u->getId();
-        $target_id = $data['target_id'];
-        $target_token = $data['target_token'];
-        $version = $data['version'];
-        $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-        $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
-        $cmdHander = new AddRowCmdHandler();
-        $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHander);
+
         try {
+
+            $data = $prg;
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $dto = DTOFactory::createDTOFromArray($data, new ApRowDTO());
+
+            // var_dump($dto);
+            $userId = $u->getId();
+            $rootEntityId = $data['target_id'];
+            $rootEntityToken = $data['target_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($rootEntityId, $rootEntityToken);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new ApRowCreateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
+
+            $cmdHander = new AddRowCmdHandler();
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHander);
+            $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -208,8 +216,8 @@ class ApController extends AbstractActionController
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'entity_token' => null,
-                'target_id' => $target_id,
-                'target_token' => $target_token,
+                'target_id' => $rootEntityId,
+                'target_token' => $rootEntityToken,
                 'dto' => $dto,
                 'rootDto' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
@@ -222,7 +230,7 @@ class ApController extends AbstractActionController
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/procure/ap/add-row?target_id=%s&target_token=%s", $target_id, $target_token);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -451,13 +459,15 @@ class ApController extends AbstractActionController
      */
     public function reviewAction()
     {
-        $this->layout("Procure/layout-fullscreen");
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $this->layout("Procure/layout-fullscreen");
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/po/review1";
-        $form_title = "Review PO";
+        $form_action = "/procure/ap/review";
+        $form_title = "Review Invoice";
         $action = Constants::FORM_ACTION_REVIEW;
-        $viewTemplete = "procure/po/review-v1";
+        $viewTemplete = "procure/ap/review";
+
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -467,7 +477,7 @@ class ApController extends AbstractActionController
             // probably this is the first time the form was loaded
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
-            $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
@@ -481,7 +491,7 @@ class ApController extends AbstractActionController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -496,57 +506,33 @@ class ApController extends AbstractActionController
         try {
             $notification = new Notification();
             $data = $prg;
-            /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
-            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+            $dto = DTOFactory::createDTOFromArray($data, new ApDTO());
             $userId = $u->getId();
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
-            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $options = new ApPostOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
+
             $cmdHandler = new PostCmdHandler();
-            $cmdHandlerDecorator = new PostCmdHandlerDecorator($cmdHandler);
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             $notification = $dto->getNotification();
-            $msg = sprintf("PO #%s is posted", $entity_id);
-            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $msg = sprintf("AP #%s is posted", $entity_id);
+            $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
-            $msg = sprintf("%s", $msg = sprintf("PO #%s is posted", $entity_id));
-            $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $msg = sprintf("%s", $e->getMessage());
+            $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
             $notification->addError($e->getMessage());
         }
-        /*
-         * if ($notification->hasErrors()) {
-         * $viewModel = new ViewModel(array(
-         * 'errors' => $notification->getErrors(),
-         * 'redirectUrl' => null,
-         * 'entity_id' => $entity_id,
-         * 'entity_token' => $entity_token,
-         * 'rootEntity' => $rootEntity,
-         * 'rowOutput' => $rootEntity->getRowsOutput(),
-         * 'headerDTO' => $rootEntity->makeDTOForGrid(),
-         * 'nmtPlugin' => $nmtPlugin,
-         * 'form_action' => $form_action,
-         * 'form_title' => $form_title,
-         * 'version' => $version,
-         * 'action' => $action
-         * ));
-         *
-         * $viewModel->setTemplate($viewTemplete);
-         * return $viewModel;
-         * }
-         * $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-         * $this->flashMessenger()->addMessage($notification->successMessage(false));
-         * $this->flashMessenger()->addMessage($redirectUrl);
-         * return $this->redirect()->toUrl($redirectUrl);
-         */
+
         $this->flashMessenger()->addMessage($msg);
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');

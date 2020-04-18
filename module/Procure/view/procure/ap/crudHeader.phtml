@@ -1,97 +1,39 @@
 <?php
+use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\OptionList;
+
 /**
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- * ===========================================
+ *         ===========================================
  */
 /**@var \Procure\Application\DTO\Ap\ApDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-$currency_list = $nmtPlugin->currencyList();
-$currency_option = "";
-$review_url = null;
-if ($currency_list !== null) :
-    foreach ($currency_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getDocCurrency() == $l->getId()) :
-                $currency_option = $currency_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getCurrency());
-            else :
-                $currency_option = $currency_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getCurrency());
-            endif;
-        else :
-            $currency_option = $currency_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getCurrency());
-        endif;
-    endforeach
-    ;
-endif;
 
-$incoterm_option = "";
-$incoterm_list = $nmtPlugin->incotermList();
-if ($incoterm_list !== null) :
-    foreach ($incoterm_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getIncoterm() == $l->getId()) :
-                $incoterm_option = $incoterm_option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-            else :
-                $incoterm_option = $incoterm_option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-            endif;
-        else :
-            $incoterm_option = $incoterm_option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-        endif;
-    endforeach
-    ;
-endif;
+$error_msg = ErrorMessage::showErrorMessage($errors);
 
-$paymentTerm_option = "";
-$pmtTerm_list = $nmtPlugin->getPaymentTerms();
-if ($pmtTerm_list !== null) :
-    foreach ($pmtTerm_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getPmtTerm() == $l->getId()) :
-                $paymentTerm_option = $paymentTerm_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
-            else :
-                $paymentTerm_option = $paymentTerm_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
-            endif;
-        else :
-            $paymentTerm_option = $paymentTerm_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
-        endif;
-    endforeach
-    ;
-endif;
-
-$wh_option = "";
-$wh_list = $nmtPlugin->warehouseList();
-if ($wh_list !== null) :
-    foreach ($wh_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getWarehouse() == $l->getId()) :
-                $wh_option = $wh_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getWhName());
-            else :
-                $wh_option = $wh_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getWhName());
-            endif;
-        else :
-            $wh_option = $wh_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getWhName());
-        endif;
-    endforeach
-    ;
-endif;
-
-$error_msg = "";
-if (count($errors) > 0) {
-    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
-    $error_msg = $error_msg . '<ul>';
-    foreach ($errors as $error) :
-        $error_msg = $error_msg . '<li>' . $error . '</li>';
-    endforeach
-    ;
-    $error_msg = $error_msg . '</ul>';
-    $error_msg = $error_msg . '</div>';
-}
 $docStatus = null;
+$wh_id = null;
+$pmtTermId = null;
+$currencyId = null;
+$incotermId = null;
+
 if (! $dto == null) {
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
+    $wh_id = $dto->getWarehouse();
+    $pmtTermId = $dto->getPmtTerm();
+    $currencyId = $dto->getDocCurrency();
+    $incotermId = $dto->getIncoterm();
 }
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$paymentTerm_option = OptionList::createPmtTermOption($nmtPlugin->getPaymentTerms(), $pmtTermId);
+$incoterm_option = OptionList::createIncotermOption($nmtPlugin->incotermList(), $incotermId);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
 // ===========================================================
 ?>
+
 
 <div id="wrapper" class="toggled">
     <!-- Sidebar -->

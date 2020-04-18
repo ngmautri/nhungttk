@@ -125,6 +125,10 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             ->getRepository('\Application\Entity\FinVendorInvoice')
             ->findOneBy($criteria);
 
+        if ($rootEntityDoctrine == null) {
+            return null;
+        }
+
         $rootSnapshot = ApMapper::createDetailSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
         if ($rootSnapshot == null) {
             return null;

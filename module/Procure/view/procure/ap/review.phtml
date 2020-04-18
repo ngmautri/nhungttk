@@ -61,14 +61,14 @@ if (! $headerDTO == null) {
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $enable_amendment_url = sprintf($this->baseUrl . "/procure/po/enable-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $review_amendment_url = sprintf($this->baseUrl . "/procure/po/review-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $update_header_url = sprintf($this->baseUrl . "/procure/ap/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $add_row_url = sprintf($this->baseUrl . "/procure/ap/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/create-from-po?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -159,15 +159,10 @@ if (count($errors) > 0) {
     <!-- Sidebar -->
     <div id="sidebar-wrapper" style="font-size: 9.5pt;">
 
-        <a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt" class="btn btn-default btn-sm" href="/procure/po/list"> <small><i class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
-
-        echo $this->translate("PO List");
-        ?></a>
-
 <?php
 if ($action == Constants::FORM_ACTION_REVIEW) :
     $current_step = "STEP3";
-    include (ROOT . '/module/Procure/view/procure/create-wizard.php');
+    include (ROOT . '/module/Procure/view/procure/ap-create-wizard.php');
     endif;
 
 ?>
@@ -324,16 +319,17 @@ echo $error_msg;
     ?>" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="redirectUrl" value="<?php
 
-                        echo $redirectUrl?>" /> <input type="hidden" name="entity_id" value="<?php
+                        echo $redirectUrl?>" /> <input type="hidden" name="entity_id"
+                            value="<?php
 
-                        echo (! $headerDTO == null) ? $headerDTO->getId() : "";
-                        ?>" /> <input type="hidden" name="entity_token" value="<?php
+                            echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+                            ?>" /> <input type="hidden" name="entity_token" value="<?php
 
-                        echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-                        ?>" /> <input type="hidden" name="version" value="<?php
+                            echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+                            ?>" /> <input type="hidden" name="version" value="<?php
 
-                        echo $version;
-                        ?>" />
+                            echo $version;
+                            ?>" />
 
                         <div style="position: relative; float: right;">
 
@@ -343,7 +339,6 @@ echo $error_msg;
         ?>
 
 						<?php
-
         if ($canPost) :
             ?>
 						 <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;"><i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
@@ -355,7 +350,6 @@ echo $error_msg;
         ?>
 
 		  				<?php
-
         if ($canAcceptAmendment) :
             ?>
 						 <a title="<?php
@@ -482,24 +476,30 @@ if ($isViewing) :
                                     <div class="col-sm-3">
                                         <select name="currentState" class="form-control input-sm">
                                             <option value="">Please Select</option>
-                                            <option <?php
+                                            <option
+                                                <?php
 
-                                            if ($headerDTO->getCurrentState() == "draftPo") :
-                                                echo "selected"; endif ?>
-
-
-
-
-                                             value="draftPo">Draft</option>
-                                            <option <?php
-
-                                            if ($headerDTO->getCurrentState() == "finalPo") :
-                                                echo "selected"; endif ?>
+                                                if ($headerDTO->getCurrentState() == "draftPo") :
+                                                    echo "selected"; endif ?>
 
 
 
 
-                                             value="finalPo">Final</option>
+
+
+                                                value="draftPo">Draft</option>
+                                            <option
+                                                <?php
+
+                                                if ($headerDTO->getCurrentState() == "finalPo") :
+                                                    echo "selected"; endif ?>
+
+
+
+
+
+
+                                                value="finalPo">Final</option>
                                         </select>
                                     </div>
 
@@ -528,7 +528,8 @@ if ($isViewing) :
                                             if (! $headerDTO == null) :
                                                 echo $headerDTO->getVendorName();endif;
 
-                                            ?>"> <input type="hidden" id="vendor_id" placeholder="" name="vendor_id" value="<?php
+                                            ?>"> <input type="hidden" id="vendor_id" placeholder="" name="vendor_id"
+                                            value="<?php
 
                                             if (! $headerDTO == null) :
                                                 echo $headerDTO->getVendor();endif;
@@ -646,7 +647,8 @@ if ($isViewing) :
                                         <a title="<?php
 
                                         echo $this->translate('Update document hearder');
-                                        ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;"
+                                        ?>"
+                                            class="btn btn-default btn-sm" style="color: navy; font-weight: bold;"
                                             href="<?php
 
                                             echo $update_header_url;
@@ -676,16 +678,17 @@ if ($isViewing) :
                                             id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                             <i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span class="caret"></span>
                                         </button>
-                                        <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
+                                        <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+                                            title="<?php
 
-                                        echo $this->translate("Refresh");
-                                        ?>"
+                                            echo $this->translate("Refresh");
+                                            ?>"
                                             class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();">&nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;
                                         </a> <a <?php
 
                                         echo $this->translate("Full Screen");
-                                        ?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-                                            class="btn btn-default btn-sm" href="javascript:;"
+                                        ?>
+                                            style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
                                             onclick="showJqueryDialog('Contract /PO: <?php
 
                                             echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
@@ -718,10 +721,11 @@ if ($isViewing) :
 
                                         <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
-                                            <li><a target="_blank" class="" href="<?php
+                                            <li><a target="_blank" class=""
+                                                href="<?php
 
-                                            echo $save_as_pdf;
-                                            ?>"> <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> &nbsp;Pdf (*.pdf)
+                                                echo $save_as_pdf;
+                                                ?>"> <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> &nbsp;Pdf (*.pdf)
                                             </a></li>
                                             <li><a class="" href="<?php
 
@@ -912,9 +916,8 @@ function doPosting() {
 
 	//submitForm('Posting_Form');
 
-	var url="/procure/po/review1";
+	var url="/procure/ap/review";
 	var entity_id="<?php
-
 echo (! $headerDTO == null) ? $headerDTO->getId() : "";
 ?>";
 	var entity_token="<?php
@@ -922,7 +925,6 @@ echo (! $headerDTO == null) ? $headerDTO->getId() : "";
 echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
 ?>";
 	var version="<?php
-
 echo $version;
 ?>";
 
@@ -931,7 +933,7 @@ echo $version;
 		entity_token: entity_token,
 		version: version,
 	}, function(data, status, dataType) {
-	//	alert(data);
+		alert(data);
         window.location.href= data;
    	});
 }

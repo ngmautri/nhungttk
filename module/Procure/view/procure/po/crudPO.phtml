@@ -1,61 +1,8 @@
 <?php
+use Procure\Application\Helper\OptionList;
 
 /**@var \Procure\Application\DTO\Po\PoDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-$currency_list = $nmtPlugin->currencyList();
-$currency_option = "";
-$review_url = null;
-
-if ($currency_list !== null) :
-    foreach ($currency_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getDocCurrency() == $l->getId()) :
-                $currency_option = $currency_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getCurrency());
-            else :
-                $currency_option = $currency_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getCurrency());
-            endif;
-        else :
-            $currency_option = $currency_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getCurrency());
-        endif;
-    endforeach
-    ;
-endif;
-
-$incoterm_option = "";
-$incoterm_list = $nmtPlugin->incotermList();
-
-if ($incoterm_list !== null) :
-    foreach ($incoterm_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getIncoterm() == $l->getId()) :
-                $incoterm_option = $incoterm_option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-            else :
-                $incoterm_option = $incoterm_option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-            endif;
-        else :
-            $incoterm_option = $incoterm_option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
-        endif;
-    endforeach
-    ;
-endif;
-
-$paymentTerm_option = "";
-$pmtTerm_list = $nmtPlugin->getPaymentTerms();
-
-if ($pmtTerm_list !== null) :
-    foreach ($pmtTerm_list as $l) :
-        if ($dto !== null) :
-            if ($dto->getPaymentTerm() == $l->getId()) :
-                $paymentTerm_option = $paymentTerm_option . sprintf('<option selected value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
-            else :
-                $paymentTerm_option = $paymentTerm_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
-            endif;
-        else :
-            $paymentTerm_option = $paymentTerm_option . sprintf('<option value="%s">%s</option>', $l->getId(), $l->getPmtTermCode());
-        endif;
-    endforeach
-    ;
-endif;
 
 $error_msg = "";
 
@@ -71,10 +18,26 @@ if (count($errors) > 0) {
 }
 
 $docStatus = null;
+$wh_id = null;
+$pmtTermId = null;
+$currencyId = null;
+$incotermId = null;
+
 if (! $dto == null) {
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
+    $wh_id = $dto->getWarehouse();
+    $pmtTermId = $dto->getPmtTerm();
+    $currencyId = $dto->getDocCurrency();
+    $incotermId = $dto->getIncoterm();
 }
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$paymentTerm_option = OptionList::createPmtTermOption($nmtPlugin->getPaymentTerms(), $pmtTermId);
+$incoterm_option = OptionList::createIncotermOption($nmtPlugin->incotermList(), $incotermId);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
+
+// ===================================
 ?>
 
 
@@ -116,13 +79,13 @@ if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
     ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 		<?php endif;
 
-?>			
-	
+?>
+
 				</ul>
 
                 <div id="general" style="font-size: 9pt">
                     <!-- Tab1 -->
-		
+
 <?php
 // ==================
 echo $error_msg;
@@ -151,18 +114,18 @@ echo $form_action;
 
                             echo $version;
                             ?>" />
-	            			
+
            			<?php
 
             if ($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO) :
                 ?>
-             	
+
           			<?php endif;
 
             ?>
-            			
-            			
-            			
+
+
+
             			<fieldset>
                             <legend style="font-size: 9.5pt; color: gray;">
                                 <small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -451,5 +414,5 @@ $("#submit").attr("disabled", false);
 
 ?>
 
-  
+
 </script>

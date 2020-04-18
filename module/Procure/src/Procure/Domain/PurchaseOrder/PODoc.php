@@ -11,8 +11,8 @@ use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Exception\PoPostingException;
 use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
@@ -23,7 +23,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PODoc extends GenericPO
 {
@@ -89,9 +89,8 @@ class PODoc extends GenericPO
          * @var PoPostOptions $options ;
          */
         $postedDate = new \Datetime();
-        $this->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
-        $this->setLastchangeOn(date_format($postedDate, 'Y-m-d H:i:s'));
-        $this->setLastchangeBy($options->getUserId());
+        $postedBy = $options->getUserId();
+        $this->markAsPosted($postedBy, date_format($postedDate, 'Y-m-d H:i:s'));
 
         foreach ($this->getDocRows() as $row) {
 
@@ -99,13 +98,13 @@ class PODoc extends GenericPO
                 continue;
             }
 
-            $row->setAsPosted($options->getUserId(), $postedDate);
+            $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
         $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new PoPostingException($this->getNotification()->errorMessage());
+            throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
 
         $postingService->getCmdRepository()->post($this, true);

@@ -20,7 +20,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APDoc extends GenericAP
 {
@@ -51,6 +51,13 @@ class APDoc extends GenericAP
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new APSnapshot());
+    }
+
+    public function makeDetailsSnapshot()
+    {
+        $snapshot = new APSnapshot();
+        $snapshot = SnapshotAssembler::createSnapshotFrom($this, $snapshot);
+        return $snapshot;
     }
 
     /**

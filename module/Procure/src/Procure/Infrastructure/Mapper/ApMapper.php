@@ -836,7 +836,12 @@ class ApMapper
         if ($entity->getGrRow() !== null) {
             $snapshot->grRow = $entity->getGrRow()->getId();
             if ($entity->getGrRow()->getGr() !== null) {
-                // today
+                $snapshot->grToken = $entity->getGrRow()
+                    ->getGr()
+                    ->getToken();
+                $snapshot->grId = $entity->getGrRow()
+                    ->getGr()
+                    ->getId();
             }
         }
 
@@ -868,6 +873,14 @@ class ApMapper
                 $snapshot->po = $entity->getPoRow()
                     ->getPo()
                     ->getId();
+
+                $snapshot->poId = $entity->getPoRow()
+                    ->getPo()
+                    ->getId();
+
+                $snapshot->poToken = $entity->getPoRow()
+                    ->getPo()
+                    ->getToken();
             }
         }
 

@@ -3,6 +3,7 @@ namespace Procure\Application\Event\Handler\AP;
 
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
+use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\Event\Ap\ApPosted;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
@@ -12,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
@@ -88,6 +89,34 @@ class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         $message->setCreatedOn(new \DateTime());
         $message->setEventName(get_class($ev));
         $this->getDoctrineEM()->persist($message);
+
+        // Create PO message
+
+        $rows = $rootSnapshot->getDocRows();
+        if (count($rows) > 0) {
+
+            foreach ($rows as $row) {
+                /**
+                 *
+                 * @var APRow $row ;
+                 */
+                if ($row->getPoRow() > 0) {
+                    $message = new MessageStore();
+                    $message->setEntityId($row->getPoId());
+                    $message->setEntityToken($row->getPoToken());
+                    $message->setQueueName("procure.ap");
+                    $message->setChangeLog(sprintf("AP for PO #%s is %s!", $row->getPoId(), $rootSnapshot->getDocStatus()));
+                    $message->setClassName($className);
+                    $message->setTriggeredBy($ev->getTrigger());
+                    $message->setUuid(Uuid::uuid4());
+                    $message->setMsgBody("");
+                    $message->setCreatedOn(new \DateTime());
+                    $message->setEventName(get_class($ev));
+                    $this->getDoctrineEM()->persist($message);
+                }
+            }
+        }
+
         $this->getDoctrineEM()->flush();
     }
 }

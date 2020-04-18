@@ -1,7 +1,11 @@
 <?php
 namespace Procure\Application\Service\AP;
 
+use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
+use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Service\FXService;
 use Procure\Application\Service\AP\Output\ApRowFormatter;
 use Procure\Application\Service\AP\Output\ApSaveAsExcel;
 use Procure\Application\Service\AP\Output\ApSaveAsOpenOffice;
@@ -13,10 +17,15 @@ use Procure\Application\Service\Output\RowNumberFormatter;
 use Procure\Application\Service\Output\RowTextAndNumberFormatter;
 use Procure\Application\Service\Output\SaveAsArray;
 use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
-use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Domain\AccountPayable\APRow;
+use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
+use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
 /**
  * AP Service.
@@ -122,5 +131,29 @@ class APService extends AbstractService
             "rootDTO" => $rootDTO,
             "localDTO" => $localDTO
         ];
+    }
+
+    public function createFromPO($id, $token, CommandOptions $options)
+    {
+        $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
+
+        $po = $rep->getPODetailsById($id, $token);
+
+        $headerValidators = new HeaderValidatorCollection();
+
+        $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+        $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
+        $fxService = new FXService();
+        $fxService->setDoctrineEM($this->getDoctrineEM());
+
+        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
+        $headerValidators->add($validator);
+
+        $rowValidators = new RowValidatorCollection();
+        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
+        $rowValidators->add($validator);
+
+        $rootEntity = APDoc::createFromPo($po, $options, $headerValidators, $rowValidators);
+        return $rootEntity;
     }
 }

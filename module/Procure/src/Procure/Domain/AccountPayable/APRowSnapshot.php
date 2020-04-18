@@ -6,12 +6,10 @@ use Procure\Domain\RowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APRowSnapshot extends RowSnapshot
 {
-
-    public $instance;
 
     public $reversalReason;
 
@@ -22,6 +20,50 @@ class APRowSnapshot extends RowSnapshot
     public $grRow;
 
     public $poRow;
+
+    public $poId;
+
+    public $poToken;
+
+    public $grId;
+
+    public $grToken;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoId()
+    {
+        return $this->poId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoToken()
+    {
+        return $this->poToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrId()
+    {
+        return $this->grId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrToken()
+    {
+        return $this->grToken;
+    }
 
     /**
      *

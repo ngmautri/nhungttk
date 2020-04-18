@@ -4,13 +4,11 @@ namespace Procure\Domain\AccountPayable;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\DTO\Ap\ApRowDetailsDTO;
+use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Domain\GenericRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Shared\Constants;
-use Procure\Application\DTO\Ap\ApDetailsDTO;
-use Procure\Application\DTO\Ap\ApRowDTO;
 
 /**
  * AP Row
@@ -34,6 +32,32 @@ class APRow extends GenericRow
     protected $grRow;
 
     protected $poRow;
+
+    protected $poId;
+
+    protected $poToken;
+
+    protected $grId;
+
+    protected $grToken;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrId()
+    {
+        return $this->grId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrToken()
+    {
+        return $this->grToken;
+    }
 
     // =================================
     private function __construct()
@@ -250,5 +274,23 @@ class APRow extends GenericRow
     public function getPoRow()
     {
         return $this->poRow;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoId()
+    {
+        return $this->poId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoToken()
+    {
+        return $this->poToken;
     }
 }

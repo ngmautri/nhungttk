@@ -14,6 +14,8 @@ use Procure\Application\Command\AP\EditHeaderCmd;
 use Procure\Application\Command\AP\EditHeaderCmdHandler;
 use Procure\Application\Command\AP\PostCmd;
 use Procure\Application\Command\AP\PostCmdHandler;
+use Procure\Application\Command\AP\SaveCopyFromPOCmd;
+use Procure\Application\Command\AP\SaveCopyFromPOCmdHandler;
 use Procure\Application\Command\AP\UpdateRowCmd;
 use Procure\Application\Command\AP\UpdateRowCmdHandler;
 use Procure\Application\Command\AP\Options\ApCreateOptions;
@@ -21,6 +23,8 @@ use Procure\Application\Command\AP\Options\ApPostOptions;
 use Procure\Application\Command\AP\Options\ApRowCreateOptions;
 use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
+use Procure\Application\Command\AP\Options\CopyFromPOOptions;
+use Procure\Application\Command\AP\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Application\Service\AP\APService;
@@ -40,6 +44,129 @@ class ApController extends AbstractActionController
     protected $doctrineEM;
 
     protected $apService;
+
+    public function createFromPoAction()
+    {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $this->layout("Procure/layout-fullscreen");
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/ap/create-from-po";
+        $form_title = "Invoice from PO";
+        $action = Constants::FORM_ACTION_AP_FROM_PO;
+        $viewTemplete = "procure/ap/crudHeader";
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $source_id = (int) $this->params()->fromQuery('source_id');
+            $source_token = $this->params()->fromQuery('source_token');
+
+            $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+            $rootEntity = $this->getApService()->createFromPO($source_id, $source_token, $options);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $dto = $rootEntity->makeDetailsDTO();
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+
+                'source_id' => $source_id,
+                'source_token' => $source_token,
+                'dto' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // POSTING
+        // ===============================
+
+        try {
+            $data = $prg;
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $userId = $u->getId();
+            $companyId = $u->getCompany()->getId();
+            $source_id = $data['source_id'];
+            $source_token = $data['source_token'];
+            $version = $data['version'];
+
+            $dto = DTOFactory::createDTOFromArray($data, new ApDTO());
+            $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+
+            $rootEntity = $this->getApService()->createFromPO($source_id, $source_token, $options);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new SaveCopyFromPOOptions($companyId, $userId, __METHOD__, $rootEntity);
+            $cmdHandler = new SaveCopyFromPOCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new SaveCopyFromPOCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd->execute();
+
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'source_id' => $source_id,
+                'source_token' => $source_token,
+                'dto' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&token=%s", $entity_id, $entity_token);
+
+        // $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $this->flashMessenger()->addMessage($redirectUrl);
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
 
     /**
      *

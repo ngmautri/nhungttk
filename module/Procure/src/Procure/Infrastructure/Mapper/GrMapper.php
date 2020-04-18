@@ -12,7 +12,7 @@ use Procure\Domain\GoodsReceipt\GRSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GrMapper
 {
@@ -757,6 +757,14 @@ class GrMapper
 
         if ($entity->getApInvoiceRow() !== null) {
             $snapshot->apInvoiceRow = $entity->getApInvoiceRow()->getId();
+            if ($entity->getApInvoiceRow()->getInvoice() !== null) {
+                $snapshot->apId = $entity->getApInvoiceRow()
+                    ->getInvoice()
+                    ->getId();
+                $snapshot->apToken = $entity->getApInvoiceRow()
+                    ->getInvoice()
+                    ->getToken();
+            }
         }
 
         if ($entity->getGlAccount() !== null) {
@@ -800,6 +808,14 @@ class GrMapper
                 $snapshot->po = $entity->getPoRow()
                     ->getPo()
                     ->getId();
+
+                $snapshot->poId = $entity->getPoRow()
+                    ->getPo()
+                    ->getId();
+
+                $snapshot->poToken = $entity->getPoRow()
+                    ->getPo()
+                    ->getToken();
             }
         }
 

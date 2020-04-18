@@ -5,14 +5,14 @@ use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
 use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
@@ -57,7 +57,7 @@ class PoPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message = new MessageStore();
 
-        $queryRep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+        $queryRep = new POQueryRepositoryImpl($this->getDoctrineEM());
 
         // time to check version - concurency
         $verArray = $queryRep->getVersionArray($rootSnapshot->getId());

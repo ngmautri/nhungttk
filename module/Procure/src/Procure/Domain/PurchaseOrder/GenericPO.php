@@ -5,6 +5,7 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\APInvoice\Factory\APFactory;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
@@ -13,23 +14,20 @@ use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\PoAmendmentException;
-use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Exception\PoInvalidOperationException;
-use Procure\Domain\Exception\PoPostingException;
 use Procure\Domain\Exception\PoRowCreateException;
 use Procure\Domain\Exception\PoRowException;
+use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
-use Ramsey\Uuid\Uuid;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Domain\GenericDoc;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class GenericPO extends GenericDoc
 {
@@ -70,26 +68,26 @@ abstract class GenericPO extends GenericDoc
     public function enableAmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_POSTED) {
-            throw new PoInvalidOperationException(sprintf("PO can not be amended! %s", $this->getId()));
+            throw new InvalidArgumentException(sprintf("PO can not be amended! %s", $this->getId()));
         }
 
         if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("Validators not found");
+            throw new InvalidArgumentException("Validators not found");
         }
         if ($sharedService == null) {
-            throw new PoInvalidArgumentException("SharedService service not found");
+            throw new InvalidArgumentException("SharedService service not found");
         }
 
         if ($postingService == null) {
-            throw new PoInvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException("postingService service not found");
         }
 
         if ($options == null) {
-            throw new PoInvalidArgumentException("command options not found");
+            throw new InvalidArgumentException("command options not found");
         }
 
         if ($this->getTransactionStatus() == Constants::TRANSACTION_STATUS_COMPLETED) {
-            throw new PoInvalidArgumentException("PO is completed");
+            throw new InvalidArgumentException("PO is completed");
         }
 
         $createdDate = new \Datetime();
@@ -130,33 +128,33 @@ abstract class GenericPO extends GenericDoc
      * @param HeaderValidatorCollection $headerValidators
      * @param SharedService $sharedService
      * @param POPostingService $postingService
-     * @throws PoInvalidOperationException
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function acceptAmendment(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() !== PODocStatus::DOC_STATUS_AMENDING) {
-            throw new PoInvalidOperationException(sprintf("Document is not on amendment! %s", $this->getId()));
+            throw new InvalidArgumentException(sprintf("Document is not on amendment! %s", $this->getId()));
         }
 
         if ($headerValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
         }
 
         if ($rowValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
         }
 
         if ($sharedService == null) {
-            throw new PoInvalidArgumentException("SharedService service not found");
+            throw new InvalidArgumentException("SharedService service not found");
         }
 
         if ($postingService == null) {
-            throw new PoInvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException("postingService service not found");
         }
 
         if ($options == null) {
-            throw new PoInvalidArgumentException("Comnand Options not found!");
+            throw new InvalidArgumentException("Comnand Options not found!");
         }
 
         $createdDate = new \Datetime();
@@ -198,34 +196,34 @@ abstract class GenericPO extends GenericDoc
      * @param RowValidatorCollection $specService
      * @param SharedService $sharedService
      * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws PoRowException
      * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
      */
     public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
-            throw new PoInvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+            throw new InvalidArgumentException(sprintf("PO is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
-            throw new PoInvalidArgumentException("PORowSnapshot not found");
+            throw new InvalidArgumentException("PORowSnapshot not found");
         }
 
         if ($headerValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection service not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection service not found");
         }
 
         if ($rowValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection service not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection service not found");
         }
 
         if ($sharedService == null) {
-            throw new PoInvalidArgumentException("SharedService service not found");
+            throw new InvalidArgumentException("SharedService service not found");
         }
 
         if ($postingService == null) {
-            throw new PoInvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException("postingService service not found");
         }
 
         $createdDate = new \Datetime();
@@ -286,7 +284,7 @@ abstract class GenericPO extends GenericDoc
      * @param RowValidatorCollection $rowValidators
      * @param SharedService $sharedService
      * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws PoRowCreateException
      * @throws PoRowException
      * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
@@ -294,27 +292,27 @@ abstract class GenericPO extends GenericDoc
     public function updateRowFrom(PORowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if ($this->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
-            throw new PoInvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+            throw new InvalidArgumentException(sprintf("PO is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
-            throw new PoInvalidArgumentException("PORowSnapshot not found");
+            throw new InvalidArgumentException("PORowSnapshot not found");
         }
 
         if ($headerValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection service not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection service not found");
         }
 
         if ($rowValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection service not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection service not found");
         }
 
         if ($sharedService == null) {
-            throw new PoInvalidArgumentException("SharedService service not found");
+            throw new InvalidArgumentException("SharedService service not found");
         }
 
         if ($postingService == null) {
-            throw new PoInvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException("postingService service not found");
         }
 
         $createdDate = new \Datetime();
@@ -372,32 +370,32 @@ abstract class GenericPO extends GenericDoc
     public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
         if (! $this->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT) {
-            throw new PoInvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
+            throw new InvalidArgumentException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         }
 
         if ($headerValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
         }
 
         if ($rowValidators == null) {
-            throw new PoInvalidArgumentException("HeaderValidatorCollection not found");
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
         }
 
         if ($sharedService == null) {
-            throw new PoInvalidArgumentException("SharedService service not found");
+            throw new InvalidArgumentException("SharedService service not found");
         }
 
         if ($postingService == null) {
-            throw new PoInvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException("postingService service not found");
         }
 
         if ($options == null) {
-            throw new PoInvalidArgumentException("Comnand Options not found!");
+            throw new InvalidArgumentException("Comnand Options not found!");
         }
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
-            throw new PoPostingException($this->getErrorMessage());
+            throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
@@ -415,17 +413,17 @@ abstract class GenericPO extends GenericDoc
      * @param HeaderValidatorCollection $headerValidators
      * @param RowValidatorCollection $rowValidators
      * @param boolean $isPosting
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
      * @return \Procure\Domain\PurchaseOrder\GenericPO
      */
     public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("PO Validators not given!");
+            throw new InvalidArgumentException("PO Validators not given!");
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new PoInvalidArgumentException("PO Validators not given!");
+            throw new InvalidArgumentException("PO Validators not given!");
         }
 
         // Clear Notification.
@@ -457,7 +455,7 @@ abstract class GenericPO extends GenericDoc
     public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
     {
         if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("PO Validators not given!");
+            throw new InvalidArgumentException("PO Validators not given!");
         }
 
         $headerValidators->validate($this);
@@ -468,16 +466,16 @@ abstract class GenericPO extends GenericDoc
      * @param PORow $row
      * @param RowValidatorCollection $rowValidators
      * @param boolean $isPosting
-     * @throws PoInvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function validateRow(PORow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         if (! $row instanceof PORow) {
-            throw new PoInvalidArgumentException("Po Row not given!");
+            throw new InvalidArgumentException("Po Row not given!");
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new PoInvalidArgumentException("Row Validator not given!");
+            throw new InvalidArgumentException("Row Validator not given!");
         }
 
         $rowValidators->validate($this, $row);
@@ -547,7 +545,7 @@ abstract class GenericPO extends GenericDoc
         return APFactory::createAPInvoiceFromPO($this);
     }
 
-          /**
+    /**
      *
      * @param mixed $rowsOutput
      */
@@ -555,5 +553,4 @@ abstract class GenericPO extends GenericDoc
     {
         $this->rowsOutput = $rowsOutput;
     }
-
 }

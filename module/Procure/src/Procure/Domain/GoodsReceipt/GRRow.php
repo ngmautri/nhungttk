@@ -14,7 +14,7 @@ use Procure\Domain\PurchaseOrder\PORow;
  * Goods Receipt Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRRow extends GenericRow
 {
@@ -36,6 +36,50 @@ class GRRow extends GenericRow
     protected $apInvoiceRow;
 
     protected $poRow;
+
+    protected $poId;
+
+    protected $poToken;
+
+    protected $apId;
+
+    protected $apToken;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoId()
+    {
+        return $this->poId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoToken()
+    {
+        return $this->poToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getApId()
+    {
+        return $this->apId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getApToken()
+    {
+        return $this->apToken;
+    }
 
     private function __construct()
     {}

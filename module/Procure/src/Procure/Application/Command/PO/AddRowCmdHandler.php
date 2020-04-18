@@ -12,8 +12,8 @@ use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\PoRowCreateException;
-use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
@@ -22,14 +22,14 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AddRowCmdHandler extends AbstractCommandHandler
 {
@@ -117,12 +117,12 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] PO Row # %s created", $localSnapshot->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // revision numner has been increased.
             $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
             if ($version != $currentVersion) {
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
 
             $cmd->getDoctrineEM()

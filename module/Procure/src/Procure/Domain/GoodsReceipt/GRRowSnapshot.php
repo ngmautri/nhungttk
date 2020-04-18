@@ -6,7 +6,7 @@ use Procure\Domain\RowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRRowSnapshot extends RowSnapshot
 {
@@ -24,6 +24,50 @@ class GRRowSnapshot extends RowSnapshot
     public $apInvoiceRow;
 
     public $poRow;
+
+    public $poId;
+
+    public $poToken;
+
+    public $apId;
+
+    public $apToken;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoId()
+    {
+        return $this->poId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoToken()
+    {
+        return $this->poToken;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getApId()
+    {
+        return $this->apId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getApToken()
+    {
+        return $this->apToken;
+    }
 
     /**
      *

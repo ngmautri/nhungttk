@@ -11,14 +11,14 @@ use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
 /**
  * GR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRService extends AbstractService
 {
@@ -82,7 +82,7 @@ class GRService extends AbstractService
      */
     public function createFromPO($id, $token, CommandOptions $options)
     {
-        $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+        $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
 
         $po = $rep->getPODetailsById($id, $token);
 

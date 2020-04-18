@@ -12,6 +12,7 @@ use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Application\Service\AP\RowSnapshotReference;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
@@ -20,6 +21,7 @@ use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -30,7 +32,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 {
@@ -114,6 +116,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             ];
 
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
+            $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
@@ -161,10 +164,10 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
-        } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
-        }
 
-        $dto->setNotification($notification);
+            $dto->setNotification($notification);
+        } catch (\Exception $e) {
+            throw new OperationFailedException($e->getMessage());
+        }
     }
 }

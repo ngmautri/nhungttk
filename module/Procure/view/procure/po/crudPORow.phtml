@@ -7,6 +7,8 @@
 // var_dump($rootDto);
 
 // echo memory_get_usage();
+use Procure\Application\Helper\ErrorMessage;
+
 $message_url = null;
 $review_url = null;
 $rowNumber = null;
@@ -26,17 +28,7 @@ if ($dto !== null) {
     $rowNumber = $dto->getRowNumber();
 }
 
-$error_msg = "";
-if (count($errors) > 0) {
-    $error_msg = $error_msg . '<div class="alert alert-danger" role="alert" style="font-size: 9.5pt">[ERROR]:';
-    $error_msg = $error_msg . '<ul>';
-    foreach ($errors as $error) :
-        $error_msg = $error_msg . '<li>' . $error . '</li>';
-    endforeach
-    ;
-    $error_msg = $error_msg . '</ul>';
-    $error_msg = $error_msg . '</div>';
-}
+$error_msg = ErrorMessage::showErrorMessage($errors);
 
 // echo memory_get_usage();
 
@@ -177,25 +169,26 @@ echo $error_msg;
                         echo $target_id;
                         ?>" /> <input type="hidden" id="target_token" name="target_token" value="<?php
 
-echo $target_token;
-?>" /> <input type="hidden" name="version" value="<?php
+                        echo $target_token;
+                        ?>" /> <input type="hidden" name="version" value="<?php
 
                         echo $version;
                         ?>" /> <input type="hidden" id="entity_id" name="entity_id" value="<?php
 
-                            echo $entity_id;
-                            ?>" /> <input type="hidden" id="entity_token" name="entity_token" value="<?php
+                        echo $entity_id;
+                        ?>" /> <input type="hidden" id="entity_token" name="entity_token" value="<?php
 
-                            echo $entity_token;
-                            ?>" />
+                        echo $entity_token;
+                        ?>" />
 
                         <div class="form-group margin-bottom">
                             <label class="control-label col-sm-2">Row Number: </label>
                             <div class="col-sm-1">
-                                <input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber" value="<?php
+                                <input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber"
+                                    value="<?php
 
-                                echo $rowNumber;
-                                ?>">
+                                    echo $rowNumber;
+                                    ?>">
                             </div>
 
                             <div class="col-sm-2">
@@ -234,7 +227,8 @@ echo $target_token;
                                 <span title="<?php
 
                                 echo $this->translate("Line Detail");
-                                ?>" id="pr_row_detail" style="display: none;"> &nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;" onclick="showSelectedPrRow();"><i style="color: navy"
+                                ?>" id="pr_row_detail"
+                                    style="display: none;"> &nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;" onclick="showSelectedPrRow();"><i style="color: navy"
                                         class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
                                 </span>
                             </div>
@@ -685,6 +679,11 @@ echo $target_token;
         <?php
        	 endif
         ?>
+
+
+
+
+
 
 
 

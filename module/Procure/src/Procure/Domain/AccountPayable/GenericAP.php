@@ -241,7 +241,7 @@ abstract class GenericAP extends AbstractAP
         $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new ApPosted($this->makeSnapshot()));
+        $this->addEvent(new ApPosted($this->makeDetailsDTO()));
         return $this;
     }
 

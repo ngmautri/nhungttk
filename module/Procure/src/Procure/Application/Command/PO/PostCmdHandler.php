@@ -10,8 +10,9 @@ use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\Exception\PoUpdateException;
-use Procure\Domain\Exception\PoVersionChangedException;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
@@ -20,14 +21,14 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCmdHandler extends AbstractCommandHandler
 {
@@ -53,17 +54,17 @@ class PostCmdHandler extends AbstractCommandHandler
          * @var PODoc $rootEntity ;
          * @var POSnapshot $rootSnapshot ;
          * @var PoPostOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
         if (! $options instanceof PoPostOptions) {
-            throw new PoUpdateException("No Options given. Pls check command configuration!");
+            throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
         if (! $dto instanceof PoDTO) {
-            throw new PoUpdateException("PoDTO object not found!");
+            throw new InvalidArgumentException("PoDTO object not found!");
         }
 
         $options = $cmd->getOptions();
@@ -124,20 +125,20 @@ class PostCmdHandler extends AbstractCommandHandler
             $m = sprintf("PO #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-         } catch (\Exception $e) {
 
-            $notification->addError($e->getMessage());
+            $dto->setNotification($notification);
+        } catch (\Exception $e) {
+
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

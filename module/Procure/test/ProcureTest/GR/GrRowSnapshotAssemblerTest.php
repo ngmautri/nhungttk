@@ -3,11 +3,8 @@ namespace ProcureTest\GR;
 
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
-use PHPUnit_Framework_TestCase;
-use Procure\Domain\GoodsReceipt\GRSnapshotAssembler;
-use Procure\Domain\GoodsReceipt\GRRowSnapshotAssembler;
 use Procure\Domain\GoodsReceipt\GRRow;
+use PHPUnit_Framework_TestCase;
 
 class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -23,7 +20,7 @@ class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        // echo $root;
         require ($root . '/Bootstrap.php');
     }
 
@@ -31,13 +28,12 @@ class GrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-             $result = GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
-            //$result = GRRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
-            //$result = GRRow::createSnapshotProps();
-            //var_dump($result);
-            //var_dump($result);
-            
-           } catch (InvalidArgumentException $e) {
+            // $result = GRRowSnapshotAssembler::findMissingPropertiesOfEntity();
+            // $result = GRRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
+            $result = GRRow::createSnapshotProps();
+            // var_dump($result);
+            // var_dump($result);
+        } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

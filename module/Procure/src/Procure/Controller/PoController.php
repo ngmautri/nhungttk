@@ -8,21 +8,19 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\PO\AcceptAmendmentCmd;
 use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
 use Procure\Application\Command\PO\AddRowCmd;
 use Procure\Application\Command\PO\AddRowCmdHandler;
 use Procure\Application\Command\PO\CreateHeaderCmd;
 use Procure\Application\Command\PO\CreateHeaderCmdHandler;
-use Procure\Application\Command\PO\CreateHeaderCmdHandlerDecorator;
 use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
-use Procure\Application\Command\PO\EditHeaderCmdHandlerDecorator;
 use Procure\Application\Command\PO\EnableAmendmentCmd;
 use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
 use Procure\Application\Command\PO\PostCmd;
 use Procure\Application\Command\PO\PostCmdHandler;
-use Procure\Application\Command\PO\PostCmdHandlerDecorator;
 use Procure\Application\Command\PO\UpdateRowCmd;
 use Procure\Application\Command\PO\UpdateRowCmdHandler;
 use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
@@ -32,6 +30,7 @@ use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
+use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
@@ -42,12 +41,11 @@ use Procure\Domain\Shared\Constants;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Procure\Application\DTO\Po\PORowDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoController extends AbstractActionController
 {
@@ -1196,8 +1194,7 @@ class PoController extends AbstractActionController
 
             $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmdHandler = new PostCmdHandler();
-            $cmdHandlerDecorator = new PostCmdHandlerDecorator($cmdHandler);
-
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
@@ -1812,7 +1809,7 @@ class PoController extends AbstractActionController
 
             if ($sort_by == null) :
                 $sort_by = "sysNumber";
-            endif;            
+            endif;
         endif;
 
 

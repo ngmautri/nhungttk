@@ -2,7 +2,10 @@
 namespace Procure\Application\Event\Handler;
 
 use Doctrine\ORM\EntityManager;
+use Procure\Application\Event\Handler\AP\ApHeaderUpdatedHandler;
 use Procure\Application\Event\Handler\AP\ApPostedHandler;
+use Procure\Application\Event\Handler\AP\ApRowAddedHandler;
+use Procure\Application\Event\Handler\AP\ApRowUpdatedHandler;
 use Procure\Application\Event\Handler\GR\GrFromApPosted;
 use Procure\Application\Event\Handler\GR\GrPostedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
@@ -12,7 +15,10 @@ use Procure\Application\Event\Handler\PO\PoHeaderUpdatedHandler;
 use Procure\Application\Event\Handler\PO\PoPostedHandler;
 use Procure\Application\Event\Handler\PO\PoRowAddedHandler;
 use Procure\Application\Event\Handler\PO\PoRowUpdatedHandler;
+use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\Event\Ap\ApPosted;
+use Procure\Domain\Event\Ap\ApRowAdded;
+use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
@@ -68,6 +74,16 @@ class EventHandlerFactory
             case ApPosted::class:
                 $handlers[] = new ApPostedHandler($doctrineEM);
                 $handlers[] = new GrFromApPosted($doctrineEM);
+                break;
+
+            case ApHeaderUpdated::class:
+                $handlers[] = new ApHeaderUpdatedHandler($doctrineEM);
+                break;
+            case ApRowAdded::class:
+                $handlers[] = new ApRowAddedHandler($doctrineEM);
+                break;
+            case ApRowUpdated::class:
+                $handlers[] = new ApRowUpdatedHandler($doctrineEM);
                 break;
 
             case GrPosted::class:

@@ -11,7 +11,6 @@ use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\APInvoice\Validator\Row\PoRowValidator;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -21,6 +20,7 @@ use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -31,7 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCopyFromAPCmdHandler extends AbstractCommandHandler
 {
@@ -52,7 +52,7 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
          * @var GrDTO $dto ;
          * @var GRDoc $rootEntity ;
          * @var PostCopyFromAPOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -92,7 +92,7 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
             $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
             $rowValidators->add($validator);
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            // $rowValidators->add($validator);
+            $rowValidators->add($validator);
 
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);

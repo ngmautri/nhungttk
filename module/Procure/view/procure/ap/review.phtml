@@ -150,7 +150,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                 <li><b><?php
 
                 if (! $headerDTO == null) :
-                    echo sprintf("AP #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()); endif;
+                    echo sprintf("AP #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
 
                 ?></b></li>
                 <li>-----</li>
@@ -435,7 +435,7 @@ if ($isViewing) :
                             <legend style="font-size: 9.5pt; color: gray;">
                                 <small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp; <a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php
 
-                                echo (! $headerDTO == null) ? sprintf("%s - version #%s", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()) : "";
+                                echo (! $headerDTO == null) ? sprintf("%s - version #%s", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()) : "";
                                 ?>)</a>
                             </legend>
                             <div id="invoice_header" class="collapse">
@@ -467,12 +467,18 @@ if ($isViewing) :
 
 
 
+
+
+
                                                 value="draftPo">Draft</option>
                                             <option
                                                 <?php
 
                                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                                     echo "selected"; endif ?>
+
+
+
 
 
 
@@ -924,7 +930,7 @@ echo $version;
 		entity_token: entity_token,
 		version: version,
 	}, function(data, status, dataType) {
-		alert(data);
+		//alert(data);
         window.location.href= data;
    	});
 }

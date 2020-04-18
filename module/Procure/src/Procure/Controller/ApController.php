@@ -19,8 +19,8 @@ use Procure\Application\Command\AP\UpdateRowCmdHandler;
 use Procure\Application\Command\AP\Options\ApCreateOptions;
 use Procure\Application\Command\AP\Options\ApPostOptions;
 use Procure\Application\Command\AP\Options\ApRowCreateOptions;
+use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
-use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Application\Service\AP\APService;
@@ -28,7 +28,6 @@ use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 
 /**
  *
@@ -228,7 +227,7 @@ class ApController extends AbstractActionController
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/ap/add-row?target_id=%s&target_token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/procure/ap/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -299,18 +298,19 @@ class ApController extends AbstractActionController
         // =============================
         try {
             $data = $prg;
+
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
-            /**
-             */
             $dto = DTOFactory::createDTOFromArray($data, new ApRowDTO());
             $userId = $u->getId();
+
             $target_id = $data['target_id'];
             $target_token = $data['target_token'];
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
+
             $result = $this->getApService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
             $rootEntity = null;
             $localEntity = null;

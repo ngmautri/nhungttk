@@ -13,7 +13,7 @@ use Procure\Domain\Validator\RowValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoRowValidator extends AbstractValidator implements RowValidatorInterface
 {
@@ -30,7 +30,7 @@ class PoRowValidator extends AbstractValidator implements RowValidatorInterface
         }
 
         if (! $localEntity instanceof APRow) {
-            throw new InvalidArgumentException('GR Row not given!');
+            throw new InvalidArgumentException('AP Row not given!');
         }
 
         // do verification now
@@ -42,14 +42,17 @@ class PoRowValidator extends AbstractValidator implements RowValidatorInterface
 
         try {
 
-            $subject = [
-                "vendorId" => $rootEntity->getVendor(),
-                "poRowId" => $localEntity->getPoRow()
-            ];
+            if ($localEntity->getPoRow() != null) {
 
-            $spec = $this->getProcureSpecificationFactory()->getPoRowSpecification();
-            if (! $spec->isSatisfiedBy($subject)) {
-                $localEntity->addError(sprintf("PO %s does not belong to vendor %s", $localEntity->getPoRow(), $rootEntity->getVendor()));
+                $subject = [
+                    "vendorId" => $rootEntity->getVendor(),
+                    "poRowId" => $localEntity->getPoRow()
+                ];
+
+                $spec = $this->getProcureSpecificationFactory()->getPoRowSpecification();
+                if (! $spec->isSatisfiedBy($subject)) {
+                    $localEntity->addError(sprintf("[AP] PO %s not of vendor %s", $localEntity->getPoRow(), $rootEntity->getVendor()));
+                }
             }
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());

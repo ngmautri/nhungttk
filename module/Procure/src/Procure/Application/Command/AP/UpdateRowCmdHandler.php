@@ -168,7 +168,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             // revision numner hasnt been increased.
             $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
             if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
 
             $dto->setNotification($notification);

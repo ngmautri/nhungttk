@@ -33,7 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCmdHandler extends AbstractCommandHandler
 {
@@ -55,7 +55,7 @@ class PostCmdHandler extends AbstractCommandHandler
          * @var APDoc $rootEntity ;
          * @var APSnapshot $rootSnapshot ;
          * @var ApPostOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -98,9 +98,12 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
+
             $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
+            $rowValidators->add($validator);
+
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            // $rowValidators->add($validator);
+            $rowValidators->add($validator);
 
             $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new APPostingService($cmdRepository);

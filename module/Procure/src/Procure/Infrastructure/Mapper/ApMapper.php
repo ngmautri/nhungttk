@@ -11,7 +11,7 @@ use Procure\Domain\AccountPayable\APSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApMapper
 {
@@ -518,8 +518,9 @@ class ApMapper
      */
     public static function createDetailSnapshot(EntityManager $doctrineEM, FinVendorInvoice $entity)
     {
-        if ($entity == null)
+        if ($entity == null) {
             return null;
+        }
 
         $snapshot = new APSnapshot();
 

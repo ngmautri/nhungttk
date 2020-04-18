@@ -145,7 +145,7 @@ abstract class GenericAP extends AbstractAP
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $this->addEvent(new ApRowAdded($this->getId(), $trigger, $params));
+        $this->addEvent(new ApRowAdded($this->makeSnapshot(), $trigger, $params));
 
         return $localSnapshot;
     }
@@ -206,7 +206,7 @@ abstract class GenericAP extends AbstractAP
 
         $trigger = $options->getTriggeredBy();
 
-        $this->addEvent(new ApRowUpdated($this->getId(), $trigger, $params));
+        $this->addEvent(new ApRowUpdated($this->makeSnapshot(), $trigger, $params));
 
         return $localSnapshot;
     }

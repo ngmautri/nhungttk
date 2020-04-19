@@ -18,6 +18,7 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
+use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -32,7 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AddRowCmdHandler extends AbstractCommandHandler
 {
@@ -90,6 +91,9 @@ class AddRowCmdHandler extends AbstractCommandHandler
 
             $rowValidators = new RowValidatorCollection();
             $validator = new DefaultRowValidator($sharedSpecificationFactory, $fxService);
+            $rowValidators->add($validator);
+
+            $validator = new WarehouseValidator($sharedSpecificationFactory, $fxService);
             $rowValidators->add($validator);
 
             $validator = new GLAccountValidator($sharedSpecificationFactory, $fxService);

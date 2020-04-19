@@ -19,6 +19,7 @@ use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -100,6 +101,9 @@ class PostCmdHandler extends AbstractCommandHandler
             $rowValidators->add($validator);
 
             $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
+            $rowValidators->add($validator);
+
+            $validator = new WarehouseValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
 
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);

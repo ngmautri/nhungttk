@@ -2,12 +2,12 @@
 namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\Gr\GrCreateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SaveCopyFromPOOptions implements CommandOptions
 {
@@ -21,11 +21,11 @@ class SaveCopyFromPOOptions implements CommandOptions
     private $triggeredBy;
 
     private $triggeredOn;
-    
+
     private $rootEntity;
-    
-    
+
     /**
+     *
      * @return mixed
      */
     public function getRootEntity()
@@ -42,19 +42,19 @@ class SaveCopyFromPOOptions implements CommandOptions
     public function __construct($companyId, $userId, $triggeredBy, $rootEntity)
     {
         if ($companyId == null) {
-            throw new GrCreateException(sprintf("Company ID not given! %s", $companyId));
+            throw new InvalidArgumentException(sprintf("Company ID not given! %s", __METHOD__));
         }
 
         if ($userId == null) {
-            throw new GrCreateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", __METHOD__));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new GrCreateException(sprintf("Trigger not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", __METHOD__));
         }
-        
+
         if ($rootEntity == null) {
-            throw new GrCreateException(sprintf("Root entity not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Root entity not given! %s", __METHOD__));
         }
 
         $this->companyId = $companyId;

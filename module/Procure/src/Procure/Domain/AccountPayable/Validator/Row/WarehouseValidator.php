@@ -9,10 +9,11 @@ use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\RowValidatorInterface;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class WarehouseValidator extends AbstractValidator implements RowValidatorInterface
 {
@@ -27,7 +28,7 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
         if (! $rootEntity instanceof GenericAP) {
             throw new InvalidArgumentException('Root entity not given!');
         }
-        
+
         if (! $localEntity instanceof APRow) {
             throw new InvalidArgumentException('GR Row not given!');
         }
@@ -42,16 +43,17 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
              */
 
             // ===== WAREHOUSE =======
-            if (! $localEntity->getWarehouse() == null) {
+            if ($localEntity->getIsInventoryItem() == 1) {
+
                 $spec = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
                 $subject = array(
                     "companyId" => $rootEntity->getCompany(),
                     "warehouseId" => $localEntity->getWarehouse()
                 );
-                if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $localEntity->getWarehouse(), $rootEntity->getCreatedBy()));
+                if (! $spec->isSatisfiedBy($subject)) {
+                    $localEntity->addError(sprintf("Warehouse is needed to inventory item. %s-%s", $localEntity->getWarehouse(), $localEntity->getItemName()));
+                }
             }
-            
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

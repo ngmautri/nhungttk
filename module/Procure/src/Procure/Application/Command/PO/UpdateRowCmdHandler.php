@@ -10,8 +10,9 @@ use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\Exception\PoRowUpdateException;
-use Procure\Domain\Exception\PoVersionChangedException;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
@@ -22,14 +23,14 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 {
@@ -42,7 +43,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new PoRowUpdateException(sprintf("% not found!", "AbstractDoctrineCmd"));
+            throw new InvalidArgumentException(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
         /**
          *
@@ -54,10 +55,10 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
         $options = $cmd->getOptions();
 
         if (! $options instanceof PoRowUpdateOptions) {
-            throw new PoRowUpdateException("No Options given. Pls check command configuration!");
+            throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
         if (! $cmd->getDto() instanceof PORowDetailsDTO) {
-            throw new PoRowUpdateException("PORowDetailsDTO object not found!");
+            throw new InvalidArgumentException("PORowDetailsDTO object not found!");
         }
 
         try {
@@ -74,7 +75,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
              * @var PORowSnapshot $snapshot ;
              * @var PORowSnapshot $newSnapshot ;
              * @var PORow $row ;
-             *     
+             *
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
@@ -123,27 +124,26 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             $newSnapshot->lastchangeBy = $userId;
             $newSnapshot->revisionNo ++;
-            
+
             $headerValidators = new HeaderValidatorCollection();
-            
+
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            
+
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            
+
             $rowValidators = new RowValidatorCollection();
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
-            
-            
+
             $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new POPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);            
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
-            
+
             // event dispatcher
             if (count($rootEntity->getRecordedEvents() > 0)) {
 
@@ -166,22 +166,16 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
 
             $notification->addSuccess($m);
 
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());            
+            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
             // revision numner hasnt been increased.
-            $currentVersion = $queryRep->getVersion($rootEntity->getId())-1;
-            if($version != $currentVersion){
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
+            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
+            if ($version != $currentVersion) {
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-            
-            $cmd->getDoctrineEM()->commit(); // now commit
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-            
-            $notification->addError($e->getMessage());
-            $cmd->getDoctrineEM()
-            ->getConnection()
-            ->rollBack();
+
+            throw new OperationFailedException($e->getMessage());
         }
-        
-        $dto->setNotification($notification);
     }
 }

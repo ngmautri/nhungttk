@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GenericDoc extends AbstractDoc
 {

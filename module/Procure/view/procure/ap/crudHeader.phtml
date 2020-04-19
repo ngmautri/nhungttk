@@ -1,16 +1,16 @@
 <?php
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\OptionList;
+use Procure\Domain\Shared\Constants;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *         ===========================================
+ *         ===================================
  */
+
 /**@var \Procure\Application\DTO\Ap\ApDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-
-$error_msg = ErrorMessage::showErrorMessage($errors);
 
 $docStatus = null;
 $wh_id = null;
@@ -31,6 +31,9 @@ $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_
 $paymentTerm_option = OptionList::createPmtTermOption($nmtPlugin->getPaymentTerms(), $pmtTermId);
 $incoterm_option = OptionList::createIncotermOption($nmtPlugin->incotermList(), $incotermId);
 $currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
 // ===========================================================
 ?>
 
@@ -89,6 +92,17 @@ echo $form_action;
                         echo $version;
                         ?>" />
 
+                        <?php
+                        if ($action == Constants::FORM_ACTION_AP_FROM_PO) :
+                            ?>
+                        <input type="hidden" id="source_id" name="source_id" value="<?php
+                            echo $source_id;
+                            ?>" /> <input type="hidden" id="source_token" name="source_token" value="<?php
+                            echo $source_token;
+                            ?>" />
+                        <?php endif;
+
+                        ?>
                         <fieldset>
                             <legend style="font-size: 9.5pt; color: gray;">
                                 <small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp; <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
@@ -181,7 +195,7 @@ echo $currency_option;
                                 <div class="form-group margin-bottom required">
                                     <label class="control-label col-sm-2">Invoice number:</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control input-sm" type="text" placeholder="" id="invoiceNo" name="docNumber"
+                                        <input class="form-control input-sm" type="text" placeholder="" id="docNumber" name="docNumber"
                                             value="<?php
                                             echo (! $dto == null) ? $dto->getDocNumber() : "";
                                             ?>">

@@ -8,17 +8,16 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
-use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Application\Service\AP\RowSnapshotReference;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -51,13 +50,13 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var ApDTO $dto ;
-         * @var SaveCopyFromPOOptions $options ;
+         * @var SaveCopyFromPOCmd $options ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();
 
         if (! $dto instanceof ApDTO) {
-            throw new InvalidArgumentException("GrDTO object not found!");
+            throw new InvalidArgumentException("ApDTO object not found!");
         }
 
         if (! $options instanceof CommandOptions) {
@@ -103,20 +102,18 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 
             // important
             $editableProperties = [
-                "contractNo",
-                "sapDoc",
-                "postingDate",
-                "contractDate",
-                "grDate",
-                "remarks",
                 "docCurrency",
+                "docNumber",
+                "sapDoc",
+                "docDate",
+                "postingDate",
                 "grDate",
+                "warehouse",
                 "pmtTerm",
-                "warehouse"
+                "remarks"
             ];
 
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
-            $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
@@ -128,6 +125,10 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $headerValidators = new HeaderValidatorCollection();
             $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
             $headerValidators->add($validator);
+
+            $validator = new InvoiceAndPaymentTermValidator($sharedSpecsFactory, $fxService);
+            $headerValidators->add($validator);
+
             $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
             $headerValidators->add($validator);
 
@@ -144,7 +145,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $dto->id = $rootEntity->getId();
             $dto->token = $rootEntity->getToken();
 
-            $m = sprintf("[OK] AP # %s save from PO", $dto->getId());
+            $m = sprintf("[OK] AP # %s saved from PO", $dto->getId());
             $notification->addSuccess($m);
 
             // event dispatcher

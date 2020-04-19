@@ -45,10 +45,15 @@ class ApController extends AbstractActionController
 
     protected $apService;
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function createFromPoAction()
     {
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         /**@var \Application\Entity\MlaUsers $u ;*/
+        /**@var ApDTO $dto ;*/
         $this->layout("Procure/layout-fullscreen");
 
         $nmtPlugin = $this->Nmtplugin();
@@ -57,7 +62,6 @@ class ApController extends AbstractActionController
         $action = Constants::FORM_ACTION_AP_FROM_PO;
         $viewTemplete = "procure/ap/crudHeader";
 
-        /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
@@ -88,7 +92,6 @@ class ApController extends AbstractActionController
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'entity_token' => null,
-
                 'source_id' => $source_id,
                 'source_token' => $source_token,
                 'dto' => $dto,
@@ -160,10 +163,8 @@ class ApController extends AbstractActionController
             return $viewModel;
         }
 
-        $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&token=%s", $entity_id, $entity_token);
-
-        // $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $this->flashMessenger()->addMessage($redirectUrl);
+        $redirectUrl = sprintf("/procure/ap/view?entity_token=%s&entity_id=%s", $dto->getToken(), $dto->getId());
+        $this->flashMessenger()->addMessage($notification->successMessage(true));
 
         return $this->redirect()->toUrl($redirectUrl);
     }

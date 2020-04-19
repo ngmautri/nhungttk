@@ -6,11 +6,12 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
+use Procure\Infrastructure\Mapper\RowMapper;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowSnapshotReference
 {
@@ -41,6 +42,11 @@ class RowSnapshotReference
         if ($snapshot->getGrRow() > 0) {
             $apQuery = new GRQueryRepositoryImpl($doctrineEM);
             // $snapshot-> = $apQuery->getHeaderIdByRowId($snapshot->getApInvoiceRow());
+        }
+
+        if ($snapshot->getItem() > 0) {
+            $entity = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->getItem());
+            $snapshot = RowMapper::updateItemDetails($snapshot, $entity);
         }
 
         return $snapshot;

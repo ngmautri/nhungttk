@@ -16,6 +16,7 @@ use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
+use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -131,6 +132,9 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $rowValidators = new RowValidatorCollection();
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
+            $rowValidators->add($validator);
+
+            $validator = new WarehouseValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
 
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);

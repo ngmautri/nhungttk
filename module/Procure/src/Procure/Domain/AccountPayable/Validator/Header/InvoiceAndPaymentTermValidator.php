@@ -37,14 +37,14 @@ class InvoiceAndPaymentTermValidator extends AbstractValidator implements Header
 
             // ==== INVOICE NUMBER =======
             if ($spec->isSatisfiedBy($rootEntity->getDocNumber())) {
-                $rootEntity->addError(Translator::translate("Invoice number is required!"));
+                $rootEntity->addError(Translator::translate(\sprintf("Invoice number is required!%s", $rootEntity->getDocNumber())));
             }
 
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
 
             // ==== INVOICE DATE =======
             if (! $spec->isSatisfiedBy($rootEntity->getDocDate())) {
-                $rootEntity->addError(Translator::translate("Document date is not correct or empty"));
+                $rootEntity->addError(Translator::translate(sprintf("Document date is not correct or empty", $rootEntity->getDocDate())));
             }
 
             // ==== PAYMENT TERM =======

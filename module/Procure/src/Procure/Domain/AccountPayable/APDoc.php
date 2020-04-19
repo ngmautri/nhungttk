@@ -8,6 +8,7 @@ use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
+use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
@@ -181,10 +182,16 @@ class APDoc extends GenericAP
             throw new InvalidArgumentException("Comnand Options not found!");
         }
 
-        // Update Good Receipt Date and WH
+        // Entity from Snapshot
         if ($snapshot !== null) {
+            $this->setDocCurrency($snapshot->getDocCurrency());
+            $this->setDocDate($snapshot->getDocDate());
+            $this->setDocNumber($snapshot->getDocNumber());
+            $this->setPostingDate($snapshot->getPostingDate());
             $this->setGrDate($snapshot->getGrDate());
             $this->setWarehouse($snapshot->getWarehouse());
+            $this->setPmtTerm($snapshot->getPmtTerm());
+            $this->setRemarks($snapshot->getRemarks());
         }
 
         $createdDate = new \Datetime();
@@ -192,7 +199,7 @@ class APDoc extends GenericAP
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
-            throw new OperationFailedException($this->getErrorMessage());
+            throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
@@ -269,7 +276,7 @@ class APDoc extends GenericAP
         $instance->validateHeader($headerValidators);
 
         if ($instance->hasErrors()) {
-            throw new OperationFailedException($instance->getNotification()->errorMessage());
+            throw new ValidationFailedException($instance->getNotification()->errorMessage());
         }
 
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE);
@@ -328,7 +335,7 @@ class APDoc extends GenericAP
         $instance->validateHeader($headerValidators);
 
         if ($instance->hasErrors()) {
-            throw new OperationFailedException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
+            throw new ValidationFailedException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
         }
 
         $createdDate = new \Datetime();
@@ -429,7 +436,7 @@ class APDoc extends GenericAP
         $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new OperationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
+            throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
         $postingService->getCmdRepository()->post($this, true);
@@ -461,7 +468,7 @@ class APDoc extends GenericAP
         $this->validate($headerValidators, $rowValidators, true);
 
         if ($this->hasErrors()) {
-            throw new OperationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
+            throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
         $postingService->getCmdRepository()->post($this, false);

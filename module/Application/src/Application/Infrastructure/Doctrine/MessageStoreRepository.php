@@ -2,15 +2,15 @@
 namespace Application\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Doctrine\ORM\NoResultException;
-use Application\Infrastructure\Persistence\MessageStoreRepositoryInterface;
 use Application\Infrastructure\Mapper\MessageStoreMapper;
+use Application\Infrastructure\Persistence\MessageStoreRepositoryInterface;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class MessageStoreRepository extends AbstractDoctrineRepository implements MessageStoreRepositoryInterface
 {
@@ -114,7 +114,7 @@ WHERE message_store.sent_on IS NULL";
     private function _getMessages($entityId, $entityToken, $limit, $offset)
     {
         $sql = 'SELECT * FROM message_store
-WHERE entity_id=%s AND entity_token="%s"  order by revision_no desc ';
+WHERE entity_id=%s AND entity_token="%s"  order by created_on desc ';
 
         $sql = sprintf($sql, $entityId, $entityToken);
 

@@ -41,11 +41,11 @@ class PostCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
         }
 
         if (! $cmd->getDto() instanceof PoDTO) {
-            throw new \Exception("PoDTO object not found!");
+            throw new InvalidArgumentException("PoDTO object not found!");
         }
 
         /**

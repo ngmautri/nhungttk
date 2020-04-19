@@ -10,9 +10,10 @@ use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoInvalidOperationException;
-use Procure\Domain\Exception\PoUpdateException;
-use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
@@ -21,14 +22,14 @@ use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class EditHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -54,17 +55,17 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
          * @var PODoc $rootEntity ;
          * @var POSnapshot $rootSnapshot ;
          * @var PoUpdateOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
         if (! $options instanceof PoUpdateOptions) {
-            throw new PoUpdateException("No Options given. Pls check command configuration!");
+            throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
         if (! $dto instanceof PoDTO) {
-            throw new PoUpdateException("PoDTO object not found!");
+            throw new InvalidArgumentException("PoDTO object not found!");
         }
 
         $options = $cmd->getOptions();
@@ -152,20 +153,18 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $notification->addSuccess($m);
 
             // No Check Version when Posting when posting.
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

@@ -13,6 +13,7 @@ use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoRowCreateException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
@@ -70,10 +71,6 @@ class AddRowCmdHandler extends AbstractCommandHandler
         $version = $options->getVersion();
 
         try {
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
-
             $dto->createdBy = $userId;
             $dto->company = $rootEntity->getCompany();
 
@@ -125,18 +122,9 @@ class AddRowCmdHandler extends AbstractCommandHandler
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
 
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->commit();
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->rollBack();
-            $cmd->getDoctrineEM()->close();
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

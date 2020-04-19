@@ -36,7 +36,6 @@ use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\PO\POService;
-use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Shared\Constants;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -69,8 +68,9 @@ class PoController extends AbstractActionController
     {}
 
     /**
-     * Make P/O from QO
-     * case GR-IR
+     *
+     * @deprecated Make P/O from QO
+     *             case GR-IR
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
@@ -255,6 +255,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @version 2.6
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function createAction()
@@ -313,16 +314,15 @@ class PoController extends AbstractActionController
             $options = new PoCreateOptions($companyId, $userId, __METHOD__);
 
             $cmdHandler = new CreateHeaderCmdHandler();
-            $cmdHandlerDecorator = new CreateHeaderCmdHandlerDecorator($cmdHandler);
-
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
 
             $cmd->execute();
             $notification = $dto->getNotification();
-        } catch (PoCreateException $e) {
+        } catch (\Exception $e) {
 
             $notification = new Notification();
-            $notification->addError($e->getT());
+            $notification->addError($e->getMessage());
         }
 
         if ($notification->hasErrors()) {
@@ -344,20 +344,27 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/add-row?token=%s&target_id=%s", $dto->getToken(), $dto->getId());
+        $redirectUrl = sprintf("/procure/po/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
 
         return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
      *
+     * @version 2.6
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addRowAction()
     {
         $this->layout("Procure/layout-fullscreen");
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         * @var \Application\Entity\MlaUsers $u ;
+         * @var PORowDTO $dto ;
+         */
+
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/add-row";
         $form_title = "Add PO Row";
@@ -373,7 +380,7 @@ class PoController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
             $target_id = (int) $this->params()->fromQuery('target_id');
-            $target_token = $this->params()->fromQuery('token');
+            $target_token = $this->params()->fromQuery('target_token');
             $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
 
             if ($rootEntity == null) {
@@ -402,38 +409,33 @@ class PoController extends AbstractActionController
             return $viewModel;
         }
 
-        $data = $prg;
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        /**
-         *
-         * @var PoRowDTO $dto ;
-         */
-        $dto = DTOFactory::createDTOFromArray($data, new PoRowDetailsDTO());
-        // var_dump($dto);
-
-        $userId = $u->getId();
-
-        $target_id = $data['target_id'];
-        $target_token = $data['target_token'];
-        $version = $data['version'];
-
-        $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
-
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-
-        $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
-        $cmdHander = new AddRowCmdHandler();
-
-        $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHander);
+        // ==============
 
         try {
+
+            $data = $prg;
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $dto = DTOFactory::createDTOFromArray($data, new PoRowDetailsDTO());
+            $userId = $u->getId();
+
+            $target_id = $data['target_id'];
+            $target_token = $data['target_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
+            $cmdHandler = new AddRowCmdHandler();
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -464,20 +466,27 @@ class PoController extends AbstractActionController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&target_token=%s", $target_id, $target_token);
 
         return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
      *
+     * @version 2.6
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function updateRowAction()
     {
         $this->layout("Procure/layout-fullscreen");
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         * @var \Application\Entity\MlaUsers $u ;
+         * @var PORowDetailsDTO $dto ;
+         */
+
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/update-row";
         $form_title = "Update PO Row";
@@ -542,15 +551,10 @@ class PoController extends AbstractActionController
 
             $data = $prg;
 
-            /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
 
-            /**
-             *
-             * @var PORowDTO $dto ;
-             */
             $dto = DTOFactory::createDTOFromArray($data, new PORowDetailsDTO());
 
             $userId = $u->getId();
@@ -588,7 +592,9 @@ class PoController extends AbstractActionController
             }
 
             $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, new UpdateRowCmdHandler());
+            $cmdHandler = new UpdateRowCmdHandler();
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -627,6 +633,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @version 2.6
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function enableAmendmentAction()
@@ -634,6 +641,8 @@ class PoController extends AbstractActionController
         $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/enable-amendment";
         $form_title = "Create PO";
@@ -656,7 +665,6 @@ class PoController extends AbstractActionController
             // POSTING
             $data = $prg;
 
-            /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
@@ -678,7 +686,9 @@ class PoController extends AbstractActionController
 
             $options = new PoAmendmentEnableOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $dto = null;
-            $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, new EnableAmendmentCmdHandler());
+            $cmdHandler = new EnableAmendmentCmdHandler();
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
             $cmd->execute();
 
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
@@ -705,6 +715,8 @@ class PoController extends AbstractActionController
         $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/update";
         $form_title = "Edit PO";
@@ -749,7 +761,6 @@ class PoController extends AbstractActionController
             // POSTING
             $data = $prg;
 
-            /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
@@ -770,9 +781,8 @@ class PoController extends AbstractActionController
             $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__, False);
 
             $cmdHandler = new EditHeaderCmdHandler();
-            $cmdHandlerDecorator = new EditHeaderCmdHandlerDecorator($cmdHandler);
-
-            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -809,6 +819,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -928,6 +939,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function reviewAction()
@@ -1240,12 +1252,18 @@ class PoController extends AbstractActionController
         return $response;
     }
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
+     */
     public function reviewAmendmentAction()
 
     {
         $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
         $nmtPlugin = $this->Nmtplugin();
         $form_action = "/procure/po/review-amendment";
         $form_title = "Review Amendment";
@@ -1295,7 +1313,6 @@ class PoController extends AbstractActionController
             // POSTING
             $data = $prg;
 
-            /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
@@ -1319,7 +1336,10 @@ class PoController extends AbstractActionController
 
             $options = new PoAmendmentAcceptOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $dto = null;
-            $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, new AcceptAmendmentCmdHandler());
+
+            $cmdHandler = new AcceptAmendmentCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
             $msg = sprintf("Ammendment of PO #%s is posted", $entity_id);
@@ -1339,6 +1359,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function showAction()
@@ -1501,6 +1522,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function statusAction()
@@ -1534,6 +1556,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function updateStatusAction()
@@ -1560,6 +1583,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function editAction()
@@ -1849,6 +1873,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Helper\ViewModel
      */
     public function vendorAction()
@@ -1925,6 +1950,7 @@ class PoController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function updateTokenAction()

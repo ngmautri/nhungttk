@@ -114,6 +114,9 @@ abstract class GenericAP extends AbstractAP
 
         $snapshot->docType = $this->docType;
 
+        if ($snapshot->getWarehouse() == null) {
+            // $snapshot->warehouse = $this->getWarehouse();
+        }
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
@@ -179,6 +182,10 @@ abstract class GenericAP extends AbstractAP
         }
 
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+
+        if ($snapshot->getWarehouse() == null) {
+            $snapshot->warehouse = $this->getWarehouse();
+        }
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

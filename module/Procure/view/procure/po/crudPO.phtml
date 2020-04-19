@@ -1,4 +1,10 @@
 <?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
 use Procure\Application\Helper\OptionList;
 
 /**@var \Procure\Application\DTO\Po\PoDTO $dto ;*/
@@ -56,11 +62,9 @@ $currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), 
 
     <!-- Page Content -->
     <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-        <div class="container-fluid" id="main_container"
-            style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-            <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle"
-                class="btn btn-primary btn-sm" id="menu-toggle"><span title="Hide Menu"><i
-                    class="fa fa-chevron-left" aria-hidden="true"></i> Menu <span></a>
+        <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+            <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span title="Hide Menu"><i class="fa fa-chevron-left"
+                    aria-hidden="true"></i> Menu <span></a>
 
 
             <div id="tabs" style="font-size: 10pt">
@@ -70,7 +74,6 @@ $currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), 
                     echo $form_title;
                     ?>:</a></li>
 		<?php
-
 if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
     ?>
  	 	<li><a href="<?php
@@ -96,24 +99,19 @@ echo $error_msg;
 	<form id="Creating_Form" class="form-horizontal" action="<?php
 
 echo $form_action;
-?>"
-                        method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="redirectUrl"
-                            value="<?php
+?>" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="redirectUrl" value="<?php
 
-                            echo $redirectUrl?>" /> <input type="hidden" id="entity_id" name="entity_id"
-                            value="<?php
+                        echo $redirectUrl?>" /> <input type="hidden" id="entity_id" name="entity_id" value="<?php
 
-                            echo $entity_id;
-                            ?>" /> <input type="hidden" id="entity_token" name="entity_token"
-                            value="<?php
+                        echo $entity_id;
+                        ?>" /> <input type="hidden" id="entity_token" name="entity_token" value="<?php
 
-                            echo $entity_token;
-                            ?>" /> <input type="hidden" name="version"
-                            value="<?php
+                        echo $entity_token;
+                        ?>" /> <input type="hidden" name="version" value="<?php
 
-                            echo $version;
-                            ?>" />
+                        echo $version;
+                        ?>" />
 
            			<?php
 
@@ -128,8 +126,7 @@ echo $form_action;
 
             			<fieldset>
                             <legend style="font-size: 9.5pt; color: gray;">
-                                <small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-                                <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
+                                <small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp; <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
 
                                 echo "Version " . $version;
                                 ?>):</a>
@@ -173,8 +170,7 @@ echo $form_action;
                                                 echo "checked";
                                             endif;
                                             ?>
-                                            type="checkbox" name="isActive" value="1">&nbsp;Is
-                                        Active&nbsp;&nbsp;&nbsp;&nbsp;
+                                            type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
 
                                     </div>
 
@@ -183,17 +179,13 @@ echo $form_action;
                                 <div class="form-group margin-bottom required">
                                     <label class="control-label col-sm-2 ">Vendor:</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control input-sm" type="text"
-                                            id="vendor_name_1"
-                                            placeholder="Enter term to search vendor"
-                                            name="vendorName"
+                                        <input class="form-control input-sm" type="text" id="vendor_name_1" placeholder="Enter term to search vendor" name="vendorName"
                                             value="<?php
 
                                             if (! $dto == null) :
                                                 echo $dto->getVendorName();endif;
 
-                                            ?>"> <input type="hidden" id="vendor_id" placeholder=""
-                                            name="vendor"
+                                            ?>"> <input type="hidden" id="vendor_id" placeholder="" name="vendor"
                                             value="<?php
 
                                             if (! $dto == null) :
@@ -203,17 +195,14 @@ echo $form_action;
                                     </div>
                                     <div class="col-sm-3">
 
-                                        <a target="blank" style="font-size: 9pt;"
-                                            href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
-                                            class="glyphicon glyphicon-new-window"></i></small>
+                                        <a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
                                     </div>
                                 </div>
 
                                 <div class="form-group margin-bottom">
                                     <label class="control-label col-sm-2">Contract /PO No.:</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control input-sm" type="text"
-                                            placeholder="" id="contractNo" name="contractNo"
+                                        <input class="form-control input-sm" type="text" placeholder="" id="contractNo" name="contractNo"
                                             value="<?php
 
                                             echo (! $dto == null) ? $dto->getContractNo() : "";
@@ -221,8 +210,7 @@ echo $form_action;
                                     </div>
                                     <label class="control-label col-sm-2">Contract /PO Date:</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control input-sm" type="text"
-                                            placeholder="" id="contractDate" name="contractDate"
+                                        <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate"
                                             value="<?php
 
                                             if (! $dto == null) :
@@ -247,8 +235,7 @@ echo $currency_option;
 
                                     <label class="control-label col-sm-2">Exchange Rate:</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control input-sm" type="text"
-                                            placeholder="" id="exchangeRate" name="exchangeRate"
+                                        <input class="form-control input-sm" type="text" placeholder="" id="exchangeRate" name="exchangeRate"
                                             value="<?php
 
                                             echo (! $dto == null) ? $dto->getExchangeRate() : "";
@@ -280,8 +267,7 @@ echo $incoterm_option;
                                     echo $this->translate("Incoterm Place");
                                     ?>:</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control input-sm" type="text"
-                                            placeholder="" id="incotermPlace" name="incotermPlace"
+                                        <input class="form-control input-sm" type="text" placeholder="" id="incotermPlace" name="incotermPlace"
                                             value="<?php
 
                                             echo (! $dto == null) ? $dto->getIncotermPlace() : "";
@@ -319,9 +305,7 @@ echo $paymentTerm_option;
                                     echo $this->translate("Payment Term Detail");
                                     ?>:</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control input-sm" type="text"
-                                            placeholder="" id="paymentTermDetail"
-                                            name="paymentTermDetail"
+                                        <input class="form-control input-sm" type="text" placeholder="" id="paymentTermDetail" name="paymentTermDetail"
                                             value="<?php
 
                                             echo (! $dto == null) ? $dto->getPaymentTerm() : "";
@@ -333,8 +317,7 @@ echo $paymentTerm_option;
                                 <div class="form-group margin-bottom">
                                     <label class="control-label col-sm-2">Description</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" type="text"
-                                            id="remarks" placeholder="" name="remarks"
+                                        <input class="form-control input-sm" type="text" id="remarks" placeholder="" name="remarks"
                                             value="<?php
 
                                             echo (! $dto == null) ? $dto->getRemarks() : "";
@@ -349,15 +332,13 @@ echo $paymentTerm_option;
                             <div class="form-group margin-bottom">
                                 <label class="control-label col-sm-2" for="inputTag"></label>
                                 <div class="col-sm-3">
-                                    <button id="submit" onclick="submitForm('Creating_Form');"
-                                        class="btn btn-default btn-sm">
+                                    <button id="submit" onclick="submitForm('Creating_Form');" class="btn btn-default btn-sm">
                                         <i class="glyphicon glyphicon-floppy-disk"> </i> Save
                                     </button>
-                                    <a class="btn btn-default btn-sm"
-                                        href="<?php
+                                    <a class="btn btn-default btn-sm" href="<?php
 
-                                        echo $review_url;
-                                        ?>"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+                                    echo $review_url;
+                                    ?>"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
                                 </div>
                             </div>

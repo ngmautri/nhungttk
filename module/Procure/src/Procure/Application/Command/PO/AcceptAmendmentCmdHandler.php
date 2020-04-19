@@ -9,8 +9,9 @@ use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoAmendmentException;
-use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
@@ -19,14 +20,14 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
 {
@@ -47,7 +48,7 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
          * @var PoDTO $dto ;
          * @var PODoc $rootEntity ;
          * @var PoAmendmentAcceptOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -63,10 +64,6 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
         $version = $options->getVersion();
 
         try {
-
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
             /**
              *
              * @var POSnapshot $snapshot ;
@@ -110,23 +107,17 @@ class AcceptAmendmentCmdHandler extends AbstractDoctrineCmdHandler
                 }
             }
 
-            $queryRep = new DoctrinePOQueryRepository($cmd->getDoctrineEM());
+            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-            $cmd->getDoctrineEM()->commit(); // now commit
-            
         } catch (\Exception $e) {
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->rollBack();
-                throw new PoAmendmentException($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-        
-      }
+    }
 }

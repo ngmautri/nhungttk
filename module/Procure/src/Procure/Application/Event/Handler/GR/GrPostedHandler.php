@@ -4,6 +4,7 @@ namespace Procure\Application\Event\Handler\GR;
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
 use Procure\Domain\Event\Gr\GrPosted;
+use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
@@ -12,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GrPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
@@ -88,6 +89,34 @@ class GrPostedHandler extends AbstractEventHandler implements EventSubscriberInt
         $message->setCreatedOn(new \DateTime());
         $message->setEventName(get_class($ev));
         $this->getDoctrineEM()->persist($message);
+
+        // Create PO message
+
+        $rows = $rootSnapshot->getDocRows();
+        if (count($rows) > 0) {
+
+            foreach ($rows as $row) {
+                /**
+                 *
+                 * @var GRRow $row ;
+                 */
+                if ($row->getPoRow() > 0) {
+                    $message = new MessageStore();
+                    $message->setEntityId($row->getPoId());
+                    $message->setEntityToken($row->getPoToken());
+                    $message->setQueueName("procure.gr");
+                    $message->setChangeLog(sprintf("GR for PO #%s is %s!", $row->getPoId(), $rootSnapshot->getDocStatus()));
+                    $message->setClassName($className);
+                    $message->setTriggeredBy($ev->getTrigger());
+                    $message->setUuid(Uuid::uuid4());
+                    $message->setMsgBody("");
+                    $message->setCreatedOn(new \DateTime());
+                    $message->setEventName(get_class($ev));
+                    $this->getDoctrineEM()->persist($message);
+                }
+            }
+        }
+
         $this->getDoctrineEM()->flush();
     }
 }

@@ -13,6 +13,7 @@ use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
@@ -26,7 +27,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -126,11 +127,10 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
                     $dispatcher->dispatch(get_class($event), $event);
                 }
             }
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
 
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

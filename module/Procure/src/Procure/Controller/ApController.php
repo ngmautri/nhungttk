@@ -36,7 +36,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApController extends AbstractActionController
 {
@@ -682,9 +682,9 @@ class ApController extends AbstractActionController
         /**@var \Application\Entity\MlaUsers $u ;*/
         $this->layout("Procure/layout-fullscreen");
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/ap/review";
-        $form_title = "Review Invoice";
-        $action = Constants::FORM_ACTION_REVIEW;
+        $form_action = "/procure/ap/reverse";
+        $form_title = "Reverse Invoice";
+        $action = Constants::FORM_ACTION_REVERSE;
         $viewTemplete = "procure/ap/review";
 
         $prg = $this->prg($form_action, true);

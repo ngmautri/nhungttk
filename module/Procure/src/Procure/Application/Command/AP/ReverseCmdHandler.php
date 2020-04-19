@@ -132,7 +132,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
                 }
             }
 
-            $m = sprintf("AP Reserval #%s posted", $reversalEntity->getId());
+            $m = sprintf("AP #%s reversed with #%s", $rootEntity->getId(), $reversalEntity->getId());
             $notification->addSuccess($m);
 
             $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());

@@ -313,11 +313,11 @@ echo $error_msg;
 
         if ($canPost) :
             ?>
-						 <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;"><i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
+    						 <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;"><i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
 
             echo $this->translate('Post');
             ?></a>
-		  				<?php endif;
+    		  				<?php endif;
 
         ?>
 
@@ -454,6 +454,7 @@ if ($isViewing) :
 
                                                 if ($headerDTO->getCurrentState() == "draftPo") :
                                                     echo "selected"; endif ?>
+                                                
 
 
 
@@ -463,6 +464,7 @@ if ($isViewing) :
 
                                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                                     echo "selected"; endif ?>
+                                                
 
 
 

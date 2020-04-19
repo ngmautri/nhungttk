@@ -19,6 +19,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey;
+use ZendSearch\Lucene\Search\QueryEntry\Term;
 
 /**
  *
@@ -201,6 +202,7 @@ class APDoc extends GenericAP
         /**
          *
          * @var APDoc $instance
+         * @var APRow $r ;
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
@@ -218,11 +220,6 @@ class APDoc extends GenericAP
         $sourceObj->validateHeader($headerValidators);
 
         foreach ($rows as $r) {
-
-            /**
-             *
-             * @var APRow $r ;
-             */
 
             // $sourceObj
             $r->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
@@ -249,12 +246,18 @@ class APDoc extends GenericAP
         if (! $snapshot instanceof APSnapshot) {
             throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
         }
-        $instance->addEvent(new ApReservalCreated($snapshot));
-        $instance->addEvent(new ApReversed($sourceSnapshot));
+        $e1 = new ApReservalCreated($snapshot);
+        $e2 = new ApReversed($sourceSnapshot);
+
+        $instance->addEvent($e1);
+        $instance->addEvent($e2);
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
 
         $postingService->getCmdRepository()->post($sourceObj, false);
+
+        $sourceObj->addEvent($e1);
+        $sourceObj->addEvent($e2);
 
         return $instance;
     }

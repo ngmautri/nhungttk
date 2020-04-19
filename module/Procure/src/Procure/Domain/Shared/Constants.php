@@ -4,7 +4,7 @@ namespace Procure\Domain\Shared;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Constants
 {
@@ -160,6 +160,8 @@ class Constants
     const FORM_ACTION_DELETE = 'DELETE';
 
     const FORM_ACTION_REVIEW = 'REVIEW';
+
+    const FORM_ACTION_REVERSE = 'REVERSE';
 
     const FORM_ACTION_REVIEW_AMENDMENT = 'REVIEW_AMENDMENT';
 

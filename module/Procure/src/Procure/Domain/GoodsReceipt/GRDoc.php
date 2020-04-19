@@ -235,8 +235,9 @@ class GRDoc extends GenericGR
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
+
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
 
         foreach ($rows as $r) {
 
@@ -246,7 +247,7 @@ class GRDoc extends GenericGR
              */
 
             $grRow = GrRow::copyFromApRow($r, $options);
-            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $grRow->markAsPosted($createdBy, $sourceObj->getPostingDate());
             $instance->addRow($grRow);
         }
 

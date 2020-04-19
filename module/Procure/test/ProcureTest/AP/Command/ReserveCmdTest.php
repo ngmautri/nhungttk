@@ -48,7 +48,7 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
             $cmd = new ReverseCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             var_dump($dto->getNotification());
-            var_dump($rootEntity);
+            var_dump($rootEntity->getRecordedEvents());
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

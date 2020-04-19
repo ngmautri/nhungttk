@@ -66,6 +66,7 @@ class GenericDoc extends AbstractDoc
         $this->setReversalDate($postedDate);
         $this->setIsReversed(1);
         $this->setIsDraft(0);
+        $this->setIsPosted(0);
         $this->setIsActive(1);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_REVERSED);
         $this->setLastchangeBy($postedBy);

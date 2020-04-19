@@ -5,6 +5,8 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Event\Ap\ApHeaderCreated;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
+use Procure\Domain\Event\Ap\ApReservalCreated;
+use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -143,6 +145,117 @@ class APDoc extends GenericAP
 
             $instance->validateRow($localEntity, $rowValidators);
         }
+        return $instance;
+    }
+
+    /**
+     *
+     * @param APDoc $sourceObj
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param APPostingService $postingService
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
+     * @throws OperationFailedException
+     */
+    public static function createAndPostReserval(APDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    {
+        if (! $sourceObj instanceof APDoc) {
+            throw new InvalidArgumentException("AP Entity is required");
+        }
+
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new InvalidOperationException("AP document is not posted!");
+        }
+
+        $rows = $sourceObj->getDocRows();
+
+        if ($rows == null) {
+            throw new InvalidArgumentException("AP Entity is empty!");
+        }
+
+        if ($rowValidators == null) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($headerValidators == null) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($postingService == null) {
+            throw new InvalidArgumentException("postingService service not found");
+        }
+
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        $createdDate = new \DateTime();
+        $createdBy = $options->getUserId();
+
+        /**
+         *
+         * @var APDoc $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        // overwrite.
+        $instance->setReversalDoc($sourceObj->getId()); // Important
+        $instance->setDocStatus(Constants::DOC_STATUS_REVERSED); // important.
+        $instance->setDocType(sprintf("%s-1", $sourceObj->getDocType())); // important.
+        $instance->setCreatedBy($createdBy);
+        $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->validateHeader($headerValidators);
+
+        // $sourceObj
+        $sourceObj->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $sourceObj->validateHeader($headerValidators);
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var APRow $r ;
+             */
+
+            // $sourceObj
+            $r->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $sourceObj->validateRow($r, $rowValidators);
+
+            $localEntity = APRow::createRowReserval($r, $options);
+            $instance->addRow($localEntity);
+            $instance->validateRow($localEntity, $rowValidators);
+        }
+
+        if ($instance->hasErrors()) {
+            throw new OperationFailedException($instance->getErrorMessage());
+        }
+
+        if ($sourceObj->hasErrors()) {
+            throw new OperationFailedException($sourceObj->getErrorMessage());
+        }
+
+        $sourceSnapshot = $postingService->getCmdRepository()->post($instance, false);
+
+        $instance->clearEvents();
+
+        $snapshot = $postingService->getCmdRepository()->post($instance, true);
+        if (! $snapshot instanceof APSnapshot) {
+            throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
+        }
+        $instance->addEvent(new ApReservalCreated($snapshot));
+        $instance->addEvent(new ApReversed($sourceSnapshot));
+        $instance->setId($snapshot->getId());
+        $instance->setToken($snapshot->getToken());
+
+        $postingService->getCmdRepository()->post($sourceObj, false);
+
         return $instance;
     }
 

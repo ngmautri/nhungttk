@@ -3,17 +3,17 @@ namespace Procure\Service;
 
 use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
+use Inventory\Model\AbstractTransactionStrategy;
+use Inventory\Model\InventoryTransactionStrategyFactory;
 use Procure\Model\Ap\AbstractAPRowPostingStrategy;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
-use Inventory\Model\AbstractTransactionStrategy;
-use Inventory\Model\InventoryTransactionStrategyFactory;
 
 /**
  * AP Invoice Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APInvoiceService extends AbstractService
 {
@@ -56,7 +56,7 @@ class APInvoiceService extends AbstractService
         $entity->setRemarks($remarks);
 
         // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
             return null;
         }
 
@@ -140,7 +140,7 @@ class APInvoiceService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
      */
-    public function saveHeader($entity, $data, $u, $isNew = FALSE, $trigger=null)
+    public function saveHeader($entity, $data, $u, $isNew = FALSE, $trigger = null)
     {
         $errors = array();
 
@@ -252,14 +252,14 @@ class APInvoiceService extends AbstractService
         $rowNumber = $data['rowNumber'];
         $vendorItemCode = $data['vendorItemCode'];
         $vendorItemName = $data['vendorItemName'];
-        
+
         $unit = $data['docUnit'];
         $conversionFactor = $data['conversionFactor'];
         $quantity = $data['docQuantity'];
         $unitPrice = $data['docUnitPrice'];
         $remarks = $data['remarks'];
         $descriptionText = $data['descriptionText'];
-        
+
         $taxRate = $data['taxRate'];
 
         $target_wh_id = $data['target_wh_id'];
@@ -472,7 +472,7 @@ class APInvoiceService extends AbstractService
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function post($entity, $data, $u, $isFlush = false, $isPosting = TRUE, $trigger=null)
+    public function post($entity, $data, $u, $isFlush = false, $isPosting = TRUE, $trigger = null)
     {
         $errors = array();
 
@@ -585,7 +585,7 @@ class APInvoiceService extends AbstractService
              * POSTING JOURNAL ENTRY
              * =====================
              */
-            $this->jeService->postAP($entity, $ap_rows, $u, $this->controllerPlugin, false, true,$trigger);
+            $this->jeService->postAP($entity, $ap_rows, $u, $this->controllerPlugin, false, true, $trigger);
 
             /**
              * POSTING WH GOODs RECEIPT
@@ -609,7 +609,7 @@ class APInvoiceService extends AbstractService
 
                 // do posting now
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, False, $entity->getGrDate(), $entity->getWarehouse(),$trigger);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, False, $entity->getGrDate(), $entity->getWarehouse(), $trigger);
             }
 
             // need to flush
@@ -668,7 +668,7 @@ class APInvoiceService extends AbstractService
      * @param bool $isFlush,
      *
      */
-    public function reverseAP($entity, $u, $reversalDate, $reversalReason,$trigger=null)
+    public function reverseAP($entity, $u, $reversalDate, $reversalReason, $trigger = null)
     {
         $errors = array();
 
@@ -813,7 +813,7 @@ class APInvoiceService extends AbstractService
              * @todo: Reverval JE
              * ======================
              */
-            $this->jeService->reverseAP($entity, $ap_rows, $u, $this->controllerPlugin, false, true,$trigger);
+            $this->jeService->reverseAP($entity, $ap_rows, $u, $this->controllerPlugin, false, true, $trigger);
 
             /**
              * REVERSAL WH GOODs RECEIPT
@@ -839,7 +839,7 @@ class APInvoiceService extends AbstractService
 
                 // do posting now
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse(),$trigger);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse(), $trigger);
             }
 
             /**
@@ -1092,7 +1092,7 @@ class APInvoiceService extends AbstractService
 
             $n ++;
             $row_tmp = new FinVendorInvoiceRow();
-            
+
             $row_tmp->setVendorItemCode($r->getVendorItemCode());
             $row_tmp->setVendorItemName($r->getVendorItemName());
             $row_tmp->setDescriptionText($r->getDescriptionText());

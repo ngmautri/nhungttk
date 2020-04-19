@@ -134,6 +134,35 @@ class APRow extends GenericRow
         return $instance;
     }
 
+    public static function createRowReserval(APRow $sourceObj, CommandOptions $options)
+    {
+        if (! $sourceObj instanceof APRow) {
+            throw new InvalidArgumentException("AP document is required!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        /**
+         *
+         * @var APRow $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $instance->setDocStatus(Constants::DOC_STATUS_REVERSED); // important.
+        $instance->setDocType(sprintf("%s-1", $sourceObj->getDocType())); // important.
+        $instance->setReversalDoc($sourceObj->getId()); // Important
+
+        $createdDate = new \Datetime();
+
+        $createdBy = $options->getUserId();
+        $instance->setCreatedBy($createdBy);
+        $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        return $instance;
+    }
+
     /**
      *
      * @return \Procure\Domain\AccountPayable\APRow

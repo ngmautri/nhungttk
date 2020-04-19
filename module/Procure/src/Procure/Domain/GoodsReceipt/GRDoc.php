@@ -24,7 +24,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRDoc extends GenericGR
 {
@@ -233,7 +233,6 @@ class GRDoc extends GenericGR
 
         // overwrite.
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
-
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));

@@ -12,6 +12,7 @@ use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
+use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
@@ -114,9 +115,6 @@ abstract class GenericAP extends AbstractAP
 
         $snapshot->docType = $this->docType;
 
-        if ($snapshot->getWarehouse() == null) {
-            // $snapshot->warehouse = $this->getWarehouse();
-        }
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
@@ -126,7 +124,7 @@ abstract class GenericAP extends AbstractAP
         $this->validateRow($row, $rowValidators);
 
         if ($this->hasErrors()) {
-            throw new OperationFailedException($this->getNotification()->errorMessage());
+            throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -183,10 +181,6 @@ abstract class GenericAP extends AbstractAP
 
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
-        if ($snapshot->getWarehouse() == null) {
-            $snapshot->warehouse = $this->getWarehouse();
-        }
-
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
@@ -196,7 +190,7 @@ abstract class GenericAP extends AbstractAP
         $this->validateRow($row, $rowValidators);
 
         if ($this->hasErrors()) {
-            throw new OperationFailedException($this->getNotification()->errorMessage());
+            throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -239,7 +233,7 @@ abstract class GenericAP extends AbstractAP
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
-            throw new OperationFailedException($this->getErrorMessage());
+            throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
@@ -266,14 +260,14 @@ abstract class GenericAP extends AbstractAP
     public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidArgumentException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
+            throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
 
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
-            throw new OperationFailedException($this->getErrorMessage());
+            throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();

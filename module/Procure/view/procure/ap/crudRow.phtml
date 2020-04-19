@@ -17,6 +17,7 @@ use Procure\Application\Helper\OptionList;
 $message_url = null;
 $review_url = null;
 $rowNumber = null;
+$doc_wh_id = null;
 
 // var_dump($rootDto);
 if ($rootDto !== null) {
@@ -27,6 +28,7 @@ if ($rootDto !== null) {
     $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
     // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
     $rowNumber = $rootDto->getTotalRows() + 1;
+    $doc_wh_id = $rootDto->getWarehouse();
 }
 
 $wh_id = null;
@@ -37,6 +39,10 @@ if ($dto !== null) {
     $wh_id = $dto->getWarehouse();
     $gl_account = $dto->getGlAccount();
     $cost_center = $dto->getCostCenter();
+}
+
+if ($wh_id == null) {
+    $wh_id = $doc_wh_id;
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -790,6 +796,9 @@ echo $cost_center_option;
         <?php
        	 endif
         ?>
+
+
+
 
 
 

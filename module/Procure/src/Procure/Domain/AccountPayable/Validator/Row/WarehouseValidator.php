@@ -51,7 +51,7 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
                     "warehouseId" => $localEntity->getWarehouse()
                 );
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $localEntity->addError(sprintf("Warehouse is needed to inventory item. %s-%s", $localEntity->getWarehouse(), $localEntity->getItemName()));
+                    $localEntity->addError(sprintf("Warehouse is required for inventory item! %s", $localEntity->getItemName()));
                 }
             }
         } catch (\Exception $e) {

@@ -1,15 +1,15 @@
 <?php
-namespace Procure\Application\Command\PO\Options;
+namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class PoUpdateHeaderAndPostOptions implements CommandOptions
+class ApReverseOptions implements CommandOptions
 {
 
     private $rootEntity;
@@ -23,22 +23,21 @@ class PoUpdateHeaderAndPostOptions implements CommandOptions
     private $version;
 
     private $triggeredBy;
-    
+
     private $triggeredOn;
-    
 
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
+            throw new InvalidArgumentException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;
@@ -102,12 +101,13 @@ class PoUpdateHeaderAndPostOptions implements CommandOptions
     {
         return $this->triggeredBy;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getTriggeredOn()
     {
         return $this->triggeredOn;
     }
-
 }

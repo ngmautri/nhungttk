@@ -6,7 +6,7 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApPostOptions;
+use Procure\Application\Command\AP\Options\ApReverseOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
@@ -19,8 +19,10 @@ use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -32,7 +34,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ReverseCmdHandler extends AbstractCommandHandler
 {
@@ -45,7 +47,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
         /**
@@ -53,13 +55,13 @@ class ReverseCmdHandler extends AbstractCommandHandler
          * @var ApDTO $dto ;
          * @var APDoc $rootEntity ;
          * @var APSnapshot $rootSnapshot ;
-         * @var ApPostOptions $options ;
-         *     
+         * @var ApReverseOptions $options ;
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof ApPostOptions) {
+        if (! $options instanceof ApReverseOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
@@ -96,23 +98,28 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
+
             $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
             $rowValidators->add($validator);
+
+            $validator = new WarehouseValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
+            $rowValidators->add($validator);
+
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            // $rowValidators->add($validator);
+            $rowValidators->add($validator);
 
             $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new APPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity->reverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $reversalEntity = APDoc::createAndPostReserval($rootEntity, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatc
-            if (count($rootEntity->getRecordedEvents() > 0)) {
+            if (count($reversalEntity->getRecordedEvents() > 0)) {
 
                 $dispatcher = new EventDispatcher();
 
-                foreach ($rootEntity->getRecordedEvents() as $event) {
+                foreach ($reversalEntity->getRecordedEvents() as $event) {
 
                     $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
 
@@ -125,7 +132,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
                 }
             }
 
-            $m = sprintf("GR #%s posted", $rootEntity->getId());
+            $m = sprintf("AP Reserval #%s posted", $reversalEntity->getId());
             $notification->addSuccess($m);
 
             $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
@@ -135,13 +142,12 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
+
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

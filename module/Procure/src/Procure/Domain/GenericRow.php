@@ -8,7 +8,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
  * Generic Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GenericRow extends AbstractRow
 {
@@ -105,6 +105,7 @@ class GenericRow extends AbstractRow
         $this->setIsPosted(1);
         $this->setIsActive(1);
         $this->setIsDraft(0);
+        $this->setIsReversed(0);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_POSTED);
     }
 
@@ -122,6 +123,7 @@ class GenericRow extends AbstractRow
         $this->setIsReversed(1);
         $this->setIsActive(1);
         $this->setIsDraft(0);
+        $this->setIsPosted(0);
         $this->setDocStatus(ProcureDocStatus::DOC_STATUS_REVERSED);
     }
 

@@ -2,12 +2,12 @@
 namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoUpdateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApPostOptions implements CommandOptions
 {
@@ -29,15 +29,15 @@ class ApPostOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
+            throw new InvalidArgumentException(sprintf("Root Entity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;

@@ -6,7 +6,6 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
-use Procure\Infrastructure\Mapper\RowMapper;
 
 /**
  *
@@ -46,7 +45,14 @@ class RowSnapshotReference
 
         if ($snapshot->getItem() > 0) {
             $entity = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->getItem());
-            $snapshot = RowMapper::updateItemDetails($snapshot, $entity);
+
+            if ($entity->getIsFixedAsset() == 1) {
+                $snapshot->isFixedAsset = 1;
+            }
+
+            if ($entity->getIsStocked() == 1) {
+                $snapshot->isInventoryItem = 1;
+            }
         }
 
         return $snapshot;

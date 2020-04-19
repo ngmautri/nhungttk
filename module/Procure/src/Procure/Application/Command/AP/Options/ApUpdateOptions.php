@@ -2,13 +2,12 @@
 namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\Gr\GrUpdateException;
 use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApUpdateOptions implements CommandOptions
 {

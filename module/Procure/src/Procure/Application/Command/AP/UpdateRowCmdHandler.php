@@ -10,6 +10,7 @@ use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Application\Service\AP\RowSnapshotReference;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
@@ -86,14 +87,13 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
-                "remarks",
                 "rowNumber",
                 "item",
                 "prRow",
                 "poRow",
-                "apInvoiceRow",
                 "vendorItemCode",
                 "vendorItemName",
+                "warehouse",
                 "docQuantity",
                 "docUnit",
                 "docUnitPrice",
@@ -101,10 +101,12 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "descriptionText",
                 "taxRate",
                 "glAccount",
-                "costCenter"
+                "costCenter",
+                "remarks"
             ];
 
             $newSnapshot = APRowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
@@ -144,6 +146,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $postingService = new APPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
+            $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatcher

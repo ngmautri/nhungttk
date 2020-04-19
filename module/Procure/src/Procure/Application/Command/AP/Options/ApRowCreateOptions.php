@@ -2,12 +2,12 @@
 namespace Procure\Application\Command\AP\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\Gr\GrRowCreateException;
+use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApRowCreateOptions implements CommandOptions
 {
@@ -35,15 +35,15 @@ class ApRowCreateOptions implements CommandOptions
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new GrRowCreateException(sprintf("$rootEntity not given! %s", $rootEntity));
+            throw new InvalidArgumentException(sprintf("$rootEntity not given! %s", $rootEntity));
         }
 
         if ($userId == null) {
-            throw new GrRowCreateException(sprintf("User ID not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("User ID not given! %s", $userId));
         }
 
         if ($triggeredBy == null || $triggeredBy == "") {
-            throw new GrRowCreateException(sprintf("Trigger not given! %s", $userId));
+            throw new InvalidArgumentException(sprintf("Trigger not given! %s", $userId));
         }
 
         $this->rootEntity = $rootEntity;

@@ -7,7 +7,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApCreateOptions implements CommandOptions
 {
@@ -31,7 +31,7 @@ class ApCreateOptions implements CommandOptions
     public function __construct($companyId, $userId, $triggeredBy)
     {
         if ($companyId == null) {
-            throw new \Procure\Domain\Exception\InvalidArgumentException(sprintf("Company ID not given! %s", $companyId));
+            throw new InvalidArgumentException(sprintf("Company ID not given! %s", $companyId));
         }
 
         if ($userId == null) {

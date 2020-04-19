@@ -676,6 +676,89 @@ class ApController extends AbstractActionController
         return $response;
     }
 
+    public function reverseAction()
+    {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $this->layout("Procure/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/ap/review";
+        $form_title = "Review Invoice";
+        $action = Constants::FORM_ACTION_REVIEW;
+        $viewTemplete = "procure/ap/review";
+
+        $prg = $this->prg($form_action, true);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            // echo memory_get_usage();
+            // var_dump($po->makeDTOForGrid());
+            // echo memory_get_usage();
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        // POSTING
+        // ====================================
+        try {
+            $notification = new Notification();
+            $data = $prg;
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+            $dto = DTOFactory::createDTOFromArray($data, new ApDTO());
+            $userId = $u->getId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new PostCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd->execute();
+            $notification = $dto->getNotification();
+            $msg = sprintf("AP #%s is posted", $entity_id);
+            $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        } catch (\Exception $e) {
+            $msg = sprintf("%s", $e->getMessage());
+            $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $notification->addError($e->getMessage());
+        }
+
+        $this->flashMessenger()->addMessage($msg);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($redirectUrl));
+        return $response;
+    }
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel

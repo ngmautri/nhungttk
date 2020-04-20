@@ -641,8 +641,10 @@ class ApController extends AbstractActionController
         }
         // POSTING
         // ====================================
+
         try {
             $notification = new Notification();
+
             $data = $prg;
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
@@ -654,6 +656,7 @@ class ApController extends AbstractActionController
             $version = $data['version'];
             $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
             if ($rootEntity == null) {
+                $this->flashMessenger()->addMessage(\sprintf("%s-%s", $entity_id, $entity_token));
                 return $this->redirect()->toRoute('not_found');
             }
             $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
@@ -671,11 +674,27 @@ class ApController extends AbstractActionController
             $notification->addError($e->getMessage());
         }
 
-        $this->flashMessenger()->addMessage($msg);
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($redirectUrl));
-        return $response;
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     public function reverseAction()
@@ -761,22 +780,27 @@ class ApController extends AbstractActionController
             $notification->addError($e->getMessage());
         }
 
-        $viewModel = new ViewModel(array(
-            'errors' => $notification->getErrors(),
-            'redirectUrl' => null,
-            'entity_id' => $entity_id,
-            'entity_token' => $entity_token,
-            'rootEntity' => $rootEntity,
-            'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
-            'nmtPlugin' => $nmtPlugin,
-            'form_action' => $form_action,
-            'form_title' => $form_title,
-            'version' => $rootEntity->getRevisionNo(),
-            'action' => $action
-        ));
-        $viewModel->setTemplate($viewTemplete);
-        return $viewModel;
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        return $this->redirect()->toUrl($redirectUrl);
 
         /*
          * $this->flashMessenger()->addMessage($msg);

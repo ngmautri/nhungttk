@@ -9,6 +9,7 @@ use Procure\Domain\GenericRow;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
+use Procure\Domain\Shared\Constants;
 
 /**
  * Goods Receipt Row
@@ -186,7 +187,45 @@ class GRRow extends GenericRow
 
         $instance->setApInvoiceRow($sourceObj->getId()); // important
         $instance->setInvoice($sourceObj->getDocId());
-        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
+
+        return $instance;
+    }
+
+    /**
+     *
+     * @param GRDoc $rootEntity
+     * @param APRow $sourceObj
+     * @param CommandOptions $options
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\GoodsReceipt\GRRow
+     */
+    public static function copyFromApRowReserval(GRDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
+    {
+        if (! $rootEntity instanceof GRDoc) {
+            throw new InvalidArgumentException("GR document is required!");
+        }
+        if (! $sourceObj instanceof APRow) {
+            throw new InvalidArgumentException("AP document is required!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        /**
+         *
+         * @var \Procure\Domain\GoodsReceipt\GRRow $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        $instance->setApInvoiceRow($sourceObj->getId()); // important
+        $instance->setInvoice($sourceObj->getDocId()); // important
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
 
         return $instance;
     }

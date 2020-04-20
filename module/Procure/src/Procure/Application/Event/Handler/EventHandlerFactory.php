@@ -8,7 +8,9 @@ use Procure\Application\Event\Handler\AP\ApReversedHandler;
 use Procure\Application\Event\Handler\AP\ApRowAddedHandler;
 use Procure\Application\Event\Handler\AP\ApRowUpdatedHandler;
 use Procure\Application\Event\Handler\GR\GrFromApPosted;
+use Procure\Application\Event\Handler\GR\GrFromApReversalPosted;
 use Procure\Application\Event\Handler\GR\GrPostedHandler;
+use Procure\Application\Event\Handler\GR\GrReversedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentAcceptedHandler;
 use Procure\Application\Event\Handler\PO\PoAmendmentEnabledHandler;
 use Procure\Application\Event\Handler\PO\PoHeaderCreatedHandler;
@@ -22,6 +24,7 @@ use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
 use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Event\Gr\GrPosted;
+use Procure\Domain\Event\Gr\GrReversed;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoHeaderCreated;
@@ -90,10 +93,15 @@ class EventHandlerFactory
 
             case ApReversed::class:
                 $handlers[] = new ApReversedHandler($doctrineEM);
+                $handlers[] = new GrFromApReversalPosted($doctrineEM);
+
                 break;
 
             case GrPosted::class:
                 $handlers[] = new GrPostedHandler($doctrineEM);
+
+            case GrReversed::class:
+                $handlers[] = new GrReversedHandler($doctrineEM);
 
                 break;
         }

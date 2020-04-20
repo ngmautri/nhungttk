@@ -1,12 +1,12 @@
 <?php
-namespace Procure\Application\Event\Handler\AP;
+namespace Procure\Application\Event\Handler\GR;
 
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
-use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\Event\Ap\ApPosted;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Domain\Event\Gr\GrReversed;
+use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
+class GrReversedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
 
     /**
@@ -25,20 +25,20 @@ class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInt
     public static function getSubscribedEvents()
     {
         return [
-            ApPosted::class => 'onPosted'
+            GrReversed::class => 'onReversed'
         ];
     }
 
     /**
      *
-     * @param ApPosted $ev
+     * @param GrReversed $ev
      */
-    public function onPosted(ApPosted $ev)
+    public function onReversed(GrReversed $ev)
     {
 
         /**
          *
-         * @var APSnapshot $rootSnapshot ;
+         * @var GRSnapshot $rootSnapshot ;
          */
         $rootSnapshot = $ev->getTarget();
 
@@ -58,7 +58,7 @@ class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message = new MessageStore();
 
-        $queryRep = new APQueryRepositoryImpl($this->getDoctrineEM());
+        $queryRep = new GRQueryRepositoryImpl($this->getDoctrineEM());
 
         // time to check version - concurency
         $verArray = $queryRep->getVersionArray($rootSnapshot->getId());
@@ -80,8 +80,8 @@ class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInt
 
         $message->setEntityId($rootSnapshot->getId());
         $message->setEntityToken($rootSnapshot->getToken());
-        $message->setQueueName("procure.ap");
-        $message->setChangeLog(sprintf("AP Invoice #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
+        $message->setQueueName("procure.gr");
+        $message->setChangeLog(sprintf("G/R #%s is %s!", $rootSnapshot->getId(), $rootSnapshot->getDocStatus()));
         $message->setClassName($className);
         $message->setTriggeredBy($ev->getTrigger());
         $message->setUuid(Uuid::uuid4());
@@ -98,14 +98,14 @@ class ApPostedHandler extends AbstractEventHandler implements EventSubscriberInt
             foreach ($rows as $row) {
                 /**
                  *
-                 * @var APRow $row ;
+                 * @var GRRow $row ;
                  */
                 if ($row->getPoRow() > 0) {
                     $message = new MessageStore();
                     $message->setEntityId($row->getPoId());
                     $message->setEntityToken($row->getPoToken());
-                    $message->setQueueName("procure.ap");
-                    $message->setChangeLog(sprintf("AP #% for PO #%s is %s!", $rootSnapshot->getId(), $row->getPoId(), $rootSnapshot->getDocStatus()));
+                    $message->setQueueName("procure.gr");
+                    $message->setChangeLog(sprintf("GR #%s for PO #%s is %s!", $rootSnapshot->getId(), $row->getPoId(), $rootSnapshot->getDocStatus()));
                     $message->setClassName($className);
                     $message->setTriggeredBy($ev->getTrigger());
                     $message->setUuid(Uuid::uuid4());

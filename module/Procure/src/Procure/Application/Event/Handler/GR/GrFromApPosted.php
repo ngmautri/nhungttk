@@ -2,7 +2,6 @@
 namespace Procure\Application\Event\Handler\GR;
 
 use Application\Application\Event\AbstractEventHandler;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\GR\PostCopyFromAPCmd;
 use Procure\Application\Command\GR\PostCopyFromAPCmdHandler;
 use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
@@ -16,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GrFromApPosted extends AbstractEventHandler implements EventSubscriberInterface
 {
@@ -58,8 +57,7 @@ class GrFromApPosted extends AbstractEventHandler implements EventSubscriberInte
 
         $dto = new GrDTO();
         $cmdHandler = new PostCopyFromAPCmdHandler();
-        $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-        $cmd = new PostCopyFromAPCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+        $cmd = new PostCopyFromAPCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler);
         $cmd->execute();
     }
 }

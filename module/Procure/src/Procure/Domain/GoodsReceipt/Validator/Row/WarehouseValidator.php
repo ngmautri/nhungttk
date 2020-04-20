@@ -2,14 +2,13 @@
 namespace Procure\Domain\GoodsReceipt\Validator\Row;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Procure\Domain\Exception\Gr\GrCreateException;
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
+use Procure\Domain\AbstractDoc;
+use Procure\Domain\AbstractRow;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\RowValidatorInterface;
-use Procure\Domain\AbstractDoc;
-use Procure\Domain\AbstractRow;
 
 /**
  *
@@ -27,11 +26,11 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
     public function validate(AbstractDoc $rootEntity, AbstractRow $localEntity)
     {
         if (! $rootEntity instanceof GenericGR) {
-            throw new GrInvalidArgumentException('Root entity not given!');
+            throw new InvalidArgumentException('Root entity not given!');
         }
 
         if (! $localEntity instanceof GRRow) {
-            throw new GrInvalidArgumentException('GR Row not given!');
+            throw new InvalidArgumentException('GR Row not given!');
         }
 
         // do verification now
@@ -44,17 +43,18 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
              */
 
             // ===== WAREHOUSE =======
-            if (! $localEntity->getWarehouse() == null) {
+            if ($localEntity->getIsInventoryItem() == 1) {
+
                 $spec = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
                 $subject = array(
                     "companyId" => $rootEntity->getCompany(),
                     "warehouseId" => $localEntity->getWarehouse()
                 );
-                if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $localEntity->getWarehouse(), $rootEntity->getCreatedBy()));
+                if (! $spec->isSatisfiedBy($subject)) {
+                    $localEntity->addError(sprintf("Warehouse is required for inventory item! %s", $localEntity->getItemName()));
+                }
             }
-            
-        } catch (GrCreateException $e) {
+        } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }
     }

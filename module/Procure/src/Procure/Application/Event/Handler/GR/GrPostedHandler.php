@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GrPostedHandler extends AbstractEventHandler implements EventSubscriberInterface
 {
@@ -105,7 +105,7 @@ class GrPostedHandler extends AbstractEventHandler implements EventSubscriberInt
                     $message->setEntityId($row->getPoId());
                     $message->setEntityToken($row->getPoToken());
                     $message->setQueueName("procure.gr");
-                    $message->setChangeLog(sprintf("GR for PO #%s is %s!", $row->getPoId(), $rootSnapshot->getDocStatus()));
+                    $message->setChangeLog(sprintf("GR #%s for PO #%s is %s!", $rootSnapshot->getId(), $row->getPoId(), $rootSnapshot->getDocStatus()));
                     $message->setClassName($className);
                     $message->setTriggeredBy($ev->getTrigger());
                     $message->setUuid(Uuid::uuid4());

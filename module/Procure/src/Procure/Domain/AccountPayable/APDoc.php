@@ -252,12 +252,12 @@ class APDoc extends GenericAP
             throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
         }
 
-        $sourceSnapshot = $postingService->getCmdRepository()->post($sourceObj, false);
-        $e1 = new ApReservalCreated($snapshot);
-        $e2 = new ApReversed($sourceSnapshot);
-
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
+
+        $postingService->getCmdRepository()->post($sourceObj, false);
+        $e1 = new ApReservalCreated($snapshot);
+        $e2 = new ApReversed($sourceObj);
 
         $instance->addEvent($e1);
         $instance->addEvent($e2);

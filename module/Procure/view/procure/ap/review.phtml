@@ -835,14 +835,29 @@ echo json_encode($rowOutput);
 
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='reversalDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-$("#HEADER_FORM :input").attr("disabled", "disabled");
 
+<?php
+
+if (! $canPost) :
+    ?>
+$("#HEADER_FORM :input").attr("disabled", "disabled");
+<?php endif;
+
+?>
 
 function confirmPost() {
  	$('#confirm_modal_sm').modal();
 }
 
 function doPosting() {
+   $('#confirm_modal_sm').modal('hide');
+   $('#b_modal_no_header').modal();
+   submitForm('HEADER_FORM');
+
+   
+}
+
+function doPosting1() {
 	$('#confirm_modal_sm').modal('hide');
 	$('#b_modal_no_header').modal();
 

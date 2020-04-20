@@ -8,6 +8,7 @@ use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
 use Procure\Domain\Event\Gr\GrPosted;
+use Procure\Domain\Event\Gr\GrReversed;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -265,6 +266,85 @@ class GRDoc extends GenericGR
             throw new OperationFailedException(sprintf("Error orcured when creating GR #%s", $instance->getId()));
         }
         $instance->addEvent(new GrPosted($snapshot));
+        $instance->setId($snapshot->getId());
+        $instance->setToken($snapshot->getToken());
+        return $instance;
+    }
+
+    /**
+     *
+     * @param APDoc $sourceObj
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param GrPostingService $postingService
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     */
+    public static function postCopyFromAPRerveral(APDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
+    {
+        if (! $sourceObj instanceof APDoc) {
+            throw new InvalidArgumentException("AP Entity is required");
+        }
+
+        $rows = $sourceObj->getDocRows();
+
+        if ($rows == null) {
+            throw new InvalidArgumentException("AP Entity is empty!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_REVERSED) {
+            throw new InvalidOperationException(\sprintf("AP document status is not valid for this operation! %s", $sourceObj->getDocStatus()));
+        }
+
+        /**
+         *
+         * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $createdBy = $options->getUserId();
+        $createdDate = new \DateTime();
+        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        // overwrite.
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
+        $instance->markAsReversed($createdBy, $sourceObj->getReversalDate());
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var APRow $r ;
+             */
+
+            $grRow = GrRow::copyFromApRow($instance, $r, $options);
+            $grRow->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $instance->addRow($grRow);
+        }
+
+        $instance->validate($headerValidators, $rowValidators);
+
+        if ($instance->hasErrors()) {
+            throw new ValidationFailedException($instance->getErrorMessage());
+        }
+
+        $instance->clearEvents();
+
+        $snapshot = $postingService->getCmdRepository()->post($instance, true);
+
+        if (! $snapshot instanceof GRSnapshot) {
+            throw new OperationFailedException(sprintf("Error orcured when copy GR from AP #%s", $sourceObj->getId()));
+        }
+        $instance->addEvent(new GrReversed($snapshot));
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
         return $instance;

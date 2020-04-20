@@ -186,6 +186,8 @@ WHERE id = %s";
         $discountAmount = 0;
         $billedAmount = 0;
         $completedRows = 0;
+        $grIdArray = array();
+        $apIdArray = array();
 
         foreach ($rows as $r) {
 
@@ -207,6 +209,14 @@ WHERE id = %s";
             } else {
                 $completed = false;
                 $poRowDetailSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
+            }
+
+            if ($r["gr_id"] > 0) {
+                $grIdArray[] = $r["gr_id"];
+            }
+
+            if ($r["ap_id"] > 0) {
+                $apIdArray[] = $r["ap_id"];
             }
 
             $poRowDetailSnapshot->draftGrQuantity = $r["draft_gr_qty"];
@@ -251,6 +261,9 @@ WHERE id = %s";
         $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
+        $rootEntity->addGrArray($grIdArray);
+        $rootEntity->addApArray($apIdArray);
+
         return $rootEntity;
     }
 
@@ -304,6 +317,9 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             $rsm->addScalarResult("confirmed_ap_balance", "confirmed_ap_balance");
             $rsm->addScalarResult("open_ap_qty", "open_ap_qty");
             $rsm->addScalarResult("billed_amount", "billed_amount");
+            $rsm->addScalarResult("gr_id", "gr_id");
+            $rsm->addScalarResult("ap_id", "ap_id");
+
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

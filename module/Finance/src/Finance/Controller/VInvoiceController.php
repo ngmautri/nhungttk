@@ -1,17 +1,17 @@
 <?php
 namespace Finance\Controller;
 
+use Application\Entity\FinVendorInvoice;
+use Application\Entity\FinVendorInvoiceRow;
+use Application\Entity\FinVendorInvoiceRowTmp;
+use Application\Entity\NmtInventoryTrx;
+use Application\Entity\NmtProcurePo;
+use Doctrine\ORM\EntityManager;
+use MLA\Paginator;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
-use Application\Entity\FinVendorInvoice;
-use Application\Entity\FinVendorInvoiceRow;
-use Application\Entity\NmtInventoryTrx;
-use Application\Entity\NmtProcurePo;
-use Application\Entity\FinVendorInvoiceRowTmp;
 
 /**
  * 02/07
@@ -32,6 +32,8 @@ class VInvoiceController extends AbstractActionController
      */
     public function reverseAction()
     {
+        trigger_error('Method ' . __METHOD__ . ' is deprecated', E_USER_DEPRECATED);
+
         $request = $this->getRequest();
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -181,6 +183,8 @@ class VInvoiceController extends AbstractActionController
      */
     public function addAction()
     {
+        trigger_error('Method ' . __METHOD__ . ' is deprecated', E_USER_DEPRECATED);
+
         $request = $this->getRequest();
         $this->layout("Finance/layout-fullscreen");
 

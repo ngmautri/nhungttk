@@ -1,12 +1,10 @@
 <?php
 namespace ApplicationTest\UtilityTest;
 
-use ApplicationTest\Bootstrap;
-use Doctrine\ORM\EntityManager;
-use User\Infrastructure\Persistence\DoctrineUserRepository;
-use PHPUnit_Framework_TestCase;
 use Application\Utility\Composite\Composite;
 use Application\Utility\Composite\Leaf;
+use Doctrine\ORM\EntityManager;
+use PHPUnit_Framework_TestCase;
 
 class CompositeTest extends PHPUnit_Framework_TestCase
 {

@@ -4,6 +4,7 @@ namespace Procure\Domain\PurchaseOrder;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\SimpleCollection;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
@@ -23,12 +24,92 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PODoc extends GenericPO
 {
 
+    // Addtional attribute.
     private static $instance = null;
+
+    private $grCollection;
+
+    private $apCollection;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrCollection()
+    {
+        if ($this->grCollection == null) {
+            $this->grCollection = new SimpleCollection();
+            return $this->grCollection;
+        }
+        return $this->grCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getApCollection()
+    {
+        if ($this->apCollection == null) {
+            $this->apCollection = new SimpleCollection();
+            return $this->apCollection;
+        }
+        return $this->apCollection;
+    }
+
+    /**
+     *
+     * @param mixed $grList
+     */
+    public function addGrId($id)
+    {
+        $collection = $this->getGrCollection();
+        $collection->add($id);
+    }
+
+    public function addGrArray($idArray)
+    {
+        if (count($idArray) == null) {
+            return;
+        }
+
+        foreach ($idArray as $e) {
+            $collection = $this->getGrCollection();
+            $collection->add($e);
+        }
+    }
+
+    public function addApArray($idArray)
+    {
+        if (count($idArray) == null) {
+            return;
+        }
+
+        foreach ($idArray as $e) {
+            $collection = $this->getApCollection();
+            $collection->add($e);
+        }
+    }
+
+    public function addApId($id)
+    {
+        $collection = $this->getApList();
+        $collection->add($id);
+    }
+
+    /**
+     *
+     * @param mixed $apList
+     */
+    public function setApList($apList)
+    {
+        $this->apList = $apList;
+    }
 
     public static function createSnapshotProps()
     {

@@ -4,7 +4,7 @@ namespace Procure\Infrastructure\Doctrine\SQL;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PoSQL
 {
@@ -15,6 +15,7 @@ SELECT
     nmt_procure_po.vendor_id as vendor_id,
     year(nmt_procure_po.contract_date) as po_year,
     nmt_procure_po.contract_no as po_number,
+    fin_vendor_invoice_row.invoice_id as ap_id,
 	IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS draft_ap_qty,
     IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS posted_ap_qty,
     IFNULL(nmt_procure_po_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS confirmed_ap_balance,
@@ -43,6 +44,7 @@ SELECT
     nmt_procure_po_row.id as po_row_id,
     nmt_procure_po.vendor_id as vendor_id,
     year(nmt_procure_po.contract_date) as po_year,
+    nmt_procure_gr_row.gr_id as gr_id,
     nmt_procure_po.contract_no as po_number
 
 

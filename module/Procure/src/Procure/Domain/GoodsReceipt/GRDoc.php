@@ -12,6 +12,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
+use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
@@ -24,7 +25,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GRDoc extends GenericGR
 {
@@ -231,12 +232,12 @@ class GRDoc extends GenericGR
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
-        // overwrite.
-        $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
-
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        // overwrite.
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
 
         foreach ($rows as $r) {
@@ -246,15 +247,15 @@ class GRDoc extends GenericGR
              * @var APRow $r ;
              */
 
-            $grRow = GrRow::copyFromApRow($r, $options);
-            $grRow->markAsPosted($createdBy, $sourceObj->getPostingDate());
+            $grRow = GrRow::copyFromApRow($instance, $r, $options);
+            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
             $instance->addRow($grRow);
         }
 
         $instance->validate($headerValidators, $rowValidators);
 
         if ($instance->hasErrors()) {
-            throw new OperationFailedException($instance->getErrorMessage());
+            throw new ValidationFailedException($instance->getErrorMessage());
         }
 
         $instance->clearEvents();

@@ -14,7 +14,7 @@ use Procure\Domain\PurchaseOrder\PORow;
  * Goods Receipt Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GRRow extends GenericRow
 {
@@ -155,13 +155,17 @@ class GRRow extends GenericRow
 
     /**
      *
+     * @param GRDoc $rootEntity
      * @param APRow $sourceObj
      * @param CommandOptions $options
      * @throws InvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRRow
      */
-    public static function copyFromApRow(APRow $sourceObj, CommandOptions $options)
+    public static function copyFromApRow(GRDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
+        if (! $rootEntity instanceof GRDoc) {
+            throw new InvalidArgumentException("GR document is required!");
+        }
         if (! $sourceObj instanceof APRow) {
             throw new InvalidArgumentException("AP document is required!");
         }
@@ -176,11 +180,13 @@ class GRRow extends GenericRow
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
-        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
-
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        $instance->setApInvoiceRow($sourceObj->getId()); // important
+        $instance->setInvoice($sourceObj->getDocId());
+        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
 
         return $instance;
     }

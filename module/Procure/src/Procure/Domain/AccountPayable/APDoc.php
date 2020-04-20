@@ -271,14 +271,16 @@ class APDoc extends GenericAP
     /**
      *
      * @param APSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param APPostingService $postingService
+     * @throws InvalidOperationException
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\AccountPayable\APSnapshot
      */
     public function saveFromPO(APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
     {
@@ -326,6 +328,11 @@ class APDoc extends GenericAP
 
         $this->clearEvents();
         $rootSnapshot = $postingService->getCmdRepository()->store($this);
+
+        if (! $rootSnapshot instanceof APSnapshot) {
+            throw new OperationFailedException(\sprintf("Errors occured when saving AP"));
+        }
+
         return $rootSnapshot;
     }
 

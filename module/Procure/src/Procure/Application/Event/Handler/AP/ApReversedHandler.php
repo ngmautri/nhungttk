@@ -105,7 +105,7 @@ class ApReversedHandler extends AbstractEventHandler implements EventSubscriberI
                     $message->setEntityId($row->getPoId());
                     $message->setEntityToken($row->getPoToken());
                     $message->setQueueName("procure.ap");
-                    $message->setChangeLog(sprintf("AP for PO #%s is %s!", $row->getPoId(), $rootSnapshot->getDocStatus()));
+                    $message->setChangeLog(sprintf("AP #%s for PO #%s is %s!", $rootSnapshot->getId(), $row->getPoId(), $rootSnapshot->getDocStatus()));
                     $message->setClassName($className);
                     $message->setTriggeredBy($ev->getTrigger());
                     $message->setUuid(Uuid::uuid4());

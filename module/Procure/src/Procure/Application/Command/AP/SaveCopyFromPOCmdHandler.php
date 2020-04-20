@@ -31,7 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 {
@@ -140,12 +140,12 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new APPostingService($cmdRepository);
 
-            $rootEntity->saveFromPO($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            $dto->id = $rootEntity->getId();
-            $dto->token = $rootEntity->getToken();
+            $dto->id = $rootSnapshot->getId();
+            $dto->token = $rootSnapshot->getToken();
 
-            $m = sprintf("[OK] AP # %s saved from PO", $dto->getId());
+            $m = sprintf("[OK] AP # %s copied from PO and saved!", $rootSnapshot->getId());
             $notification->addSuccess($m);
 
             // event dispatcher

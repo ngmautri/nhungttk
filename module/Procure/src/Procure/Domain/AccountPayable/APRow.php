@@ -14,7 +14,7 @@ use Procure\Domain\Shared\Constants;
  * AP Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APRow extends GenericRow
 {
@@ -153,9 +153,7 @@ class APRow extends GenericRow
         $instance->setDocStatus(Constants::DOC_STATUS_REVERSED); // important.
         $instance->setDocType(sprintf("%s-1", $sourceObj->getDocType())); // important.
         $instance->setReversalDoc($sourceObj->getId()); // Important
-
         $createdDate = new \Datetime();
-
         $createdBy = $options->getUserId();
         $instance->setCreatedBy($createdBy);
         $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));

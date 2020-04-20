@@ -4,7 +4,7 @@ namespace Procure\Application\Event\Handler\PO;
 use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
 use Procure\Domain\Event\Po\PoRowUpdated;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -33,7 +33,7 @@ class PoRowUpdatedHandler extends AbstractEventHandler implements EventSubscribe
      */
     public function onPoRowUpdated(PoRowUpdated $ev)
     {
-        $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+        $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getHeaderById($ev->getTarget());
 
         $class = new \ReflectionClass($rootEntity);

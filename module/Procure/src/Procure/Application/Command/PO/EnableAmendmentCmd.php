@@ -2,7 +2,7 @@
 namespace Procure\Application\Command\PO;
 
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 
 /**
  *
@@ -14,15 +14,15 @@ class EnableAmendmentCmd extends AbstractDoctrineCmd
 
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Command\CommandInterface::execute()
      */
     public function execute()
     {
-        if (!$this->handler instanceof AbstractDoctrineCmdHandler) {
-            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())) );
+        if (! $this->handler instanceof AbstractCommandHandler) {
+            throw new \Exception(sprintf("[Error] No handler is found! %s", get_class($this->getHandler())));
         }
-        
+
         $this->handler->run($this);
     }
 }

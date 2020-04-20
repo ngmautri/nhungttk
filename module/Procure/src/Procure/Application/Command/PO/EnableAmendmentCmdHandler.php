@@ -2,8 +2,8 @@
 namespace Procure\Application\Command\PO;
 
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
@@ -27,9 +27,9 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
+class EnableAmendmentCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -48,7 +48,7 @@ class EnableAmendmentCmdHandler extends AbstractDoctrineCmdHandler
          * @var PODoc $rootEntity ;
          * @var POSnapshot $rootSnapshot ;
          * @var PoUpdateOptions $options ;
-         *
+         *     
          */
         $options = $cmd->getOptions();
 

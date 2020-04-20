@@ -5,7 +5,7 @@ use Application\Application\Event\AbstractEventHandler;
 use Application\Entity\MessageStore;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowRemoved;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
+use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -34,13 +34,13 @@ class PoRowRemovedHandler extends AbstractEventHandler implements EventSubscribe
      */
     public function onPoRowRemoved(PoRowRemoved $ev)
     {
-        $rep = new DoctrinePOQueryRepository($this->getDoctrineEM());
+        $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getHeaderById($ev->getTarget());
 
         $class = new \ReflectionClass($rootEntity);
         $className = null;
-        
-         if ($class !== null) {
+
+        if ($class !== null) {
             $className = $class->getShortName();
         }
 

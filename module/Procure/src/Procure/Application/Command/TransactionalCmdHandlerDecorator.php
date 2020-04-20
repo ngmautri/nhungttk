@@ -44,7 +44,7 @@ class TransactionalCmdHandlerDecorator extends AbstractCommandHandlerDecorator
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
-            throw new OperationFailedException(sprintf("%s-%s", $e->getMessage(), " Catched at TransactionalCmdHandlerDecorator"));
+            throw new OperationFailedException(sprintf("%s-%s", $e->getMessage(), "."));
         }
     }
 }

@@ -3,8 +3,8 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Command\AbstractDoctrineCmdHandler;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
@@ -30,9 +30,9 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
-class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
+class UpdateRowCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -75,7 +75,7 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
              * @var PORowSnapshot $snapshot ;
              * @var PORowSnapshot $newSnapshot ;
              * @var PORow $row ;
-             *
+             *     
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
@@ -117,11 +117,6 @@ class UpdateRowCmdHandler extends AbstractDoctrineCmdHandler
             ];
 
             // do change
-
-            $cmd->getDoctrineEM()
-                ->getConnection()
-                ->beginTransaction(); // suspend auto-commit
-
             $newSnapshot->lastchangeBy = $userId;
             $newSnapshot->revisionNo ++;
 

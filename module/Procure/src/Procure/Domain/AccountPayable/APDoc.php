@@ -18,13 +18,12 @@ use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Ramsey;
-use ZendSearch\Lucene\Search\QueryEntry\Term;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APDoc extends GenericAP
 {
@@ -75,7 +74,7 @@ class APDoc extends GenericAP
             return;
 
         if ($snapshot->uuid == null) {
-            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $snapshot->uuid = Uuid::uuid4()->toString();
             $snapshot->token = $snapshot->uuid;
         }
 
@@ -152,6 +151,7 @@ class APDoc extends GenericAP
     /**
      *
      * @param APDoc $sourceObj
+     * @param APSnapshot $snapshot
      * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators
      * @param RowValidatorCollection $rowValidators
@@ -160,8 +160,9 @@ class APDoc extends GenericAP
      * @throws InvalidArgumentException
      * @throws InvalidOperationException
      * @throws OperationFailedException
+     * @return \Procure\Domain\AccountPayable\APDoc
      */
-    public static function createAndPostReserval(APDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public static function createAndPostReserval(APDoc $sourceObj, APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
     {
         if (! $sourceObj instanceof APDoc) {
             throw new InvalidArgumentException("AP Entity is required");
@@ -196,6 +197,11 @@ class APDoc extends GenericAP
             throw new InvalidArgumentException("No Options is found");
         }
 
+        if ($snapshot == null) {
+            throw new InvalidArgumentException("Input snapshot is given!");
+        }
+
+        $reversalDate = $snapshot->getReversalDate();
         $createdDate = new \DateTime();
         $createdBy = $options->getUserId();
 
@@ -206,26 +212,27 @@ class APDoc extends GenericAP
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
+        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         // overwrite.
         $instance->setReversalDoc($sourceObj->getId()); // Important
-        $instance->setDocStatus(Constants::DOC_STATUS_REVERSED); // important.
         $instance->setDocType(sprintf("%s-1", $sourceObj->getDocType())); // important.
-        $instance->setCreatedBy($createdBy);
-        $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->markAsReversed($createdBy, $reversalDate);
+
         $instance->validateHeader($headerValidators);
 
         // $sourceObj
-        $sourceObj->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $sourceObj->markAsReversed($createdBy, $reversalDate);
         $sourceObj->validateHeader($headerValidators);
 
         foreach ($rows as $r) {
 
             // $sourceObj
-            $r->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $r->markAsReversed($createdBy, $reversalDate);
             $sourceObj->validateRow($r, $rowValidators);
 
             $localEntity = APRow::createRowReserval($r, $options);
+
             $instance->addRow($localEntity);
             $instance->validateRow($localEntity, $rowValidators);
         }
@@ -238,23 +245,23 @@ class APDoc extends GenericAP
             throw new OperationFailedException($sourceObj->getErrorMessage());
         }
 
-        $sourceSnapshot = $postingService->getCmdRepository()->post($instance, false);
-
         $instance->clearEvents();
+        $sourceObj->clearEvents();
 
         $snapshot = $postingService->getCmdRepository()->post($instance, true);
         if (! $snapshot instanceof APSnapshot) {
             throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
         }
+
+        $sourceSnapshot = $postingService->getCmdRepository()->post($sourceObj, false);
         $e1 = new ApReservalCreated($snapshot);
         $e2 = new ApReversed($sourceSnapshot);
 
-        $instance->addEvent($e1);
-        $instance->addEvent($e2);
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
 
-        $postingService->getCmdRepository()->post($sourceObj, false);
+        $instance->addEvent($e1);
+        $instance->addEvent($e2);
 
         $sourceObj->addEvent($e1);
         $sourceObj->addEvent($e2);
@@ -496,7 +503,7 @@ class APDoc extends GenericAP
         }
 
         if ($snapshot->uuid == null) {
-            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $snapshot->uuid = Uuid::uuid4()->toString();
         }
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
@@ -516,7 +523,7 @@ class APDoc extends GenericAP
         }
 
         if ($snapshot->uuid == null) {
-            $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $snapshot->uuid = Uuid::uuid4()->toString();
             $snapshot->token = $snapshot->uuid;
         }
 

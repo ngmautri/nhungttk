@@ -2,7 +2,9 @@
 namespace Procure\Application\Helper;
 
 use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\Shared\Constants;
+use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  *
@@ -33,7 +35,60 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case Constants::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DOC_STATUS_DRAFT:
+
+                if ($action == Constants::FORM_ACTION_SHOW) {
+                    $toolbar = $reviewBtn;
+                }
+
+                if ($action == Constants::FORM_ACTION_REVIEW) {
+                    $toolbar = $postBtn;
+                }
+
+                break;
+
+            case ProcureDocStatus::DOC_STATUS_POSTED:
+                $toolbar = \sprintf("%s %s %s", $payBtn, $goodReturnBtn, $reverseBtn);
+                if ($action == Constants::FORM_ACTION_REVERSE) {
+                    $toolbar = "";
+                }
+                break;
+        }
+
+        return $toolbar;
+    }
+
+    public static function showToolbarPO(PoDetailsDTO $headerDTO, $action, $view)
+    {
+        $toolbar = "";
+
+        $review_url = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $reviewBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $review_url, $view->translate("Review & Post"));
+
+        $review_amendment_url = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $reviewAmendmentBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $review_amendment_url, $view->translate("Review & Post"));
+
+        $enableAmendmentBtn = sprintf(' <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmAmendment();" href="javascript:;" title="%s">
+<i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', "PO Amendment", $view->translate("Amendment"));
+
+        $postBtn = sprintf(' <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;">
+<i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $view->translate("Post"));
+
+        $postAmendmentBtn = sprintf(' <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPostAmendment();" href="javascript:;">
+<i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $view->translate("Post Amendment"));
+
+        $pay_url = sprintf("/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $payBtn = sprintf('<a title="Pay Invoice" class="btn btn-default btn-sm" href="%s"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $pay_url, $view->translate("Pay"));
+
+        $goods_receipt_url = sprintf("/procure/gr/create-from-po?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $goodsReceiptBtn = sprintf('<a title="Goods Receipt from PO" class="btn btn-default btn-sm" href="%s"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $goods_receipt_url, $view->translate("Goods Receipt"));
+
+        $invoice_url = sprintf("/procure/ap/create-from-po?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $invoiceBtn = sprintf('<a title="Invoice from PO" class="btn btn-default btn-sm" href="%s"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $invoice_url, $view->translate("A/P Invoice"));
+
+        switch ($headerDTO->getDocStatus()) {
+
+            case ProcureDocStatus::DOC_STATUS_DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -44,11 +99,20 @@ class Toolbar
                 }
                 break;
 
-            case Constants::DOC_STATUS_POSTED:
-                $toolbar = \sprintf("%s %s %s", $payBtn, $goodReturnBtn, $reverseBtn);
+            case ProcureDocStatus::DOC_STATUS_POSTED:
+                $toolbar = \sprintf("%s %s %s %s", $enableAmendmentBtn, $payBtn, $goodsReceiptBtn, $invoiceBtn);
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
                 }
+                break;
+            case ProcureDocStatus::DOC_STATUS_AMENDING:
+                $toolbar = \sprintf("%s", $postAmendmentBtn);
+
+                if ($action == Constants::FORM_ACTION_SHOW) {
+                    $toolbar = \sprintf("%s", $reviewAmendmentBtn);
+                }
+                break;
+
                 break;
         }
 

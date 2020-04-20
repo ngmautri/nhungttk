@@ -14,12 +14,14 @@ use Procure\Application\Command\AP\EditHeaderCmd;
 use Procure\Application\Command\AP\EditHeaderCmdHandler;
 use Procure\Application\Command\AP\PostCmd;
 use Procure\Application\Command\AP\PostCmdHandler;
+use Procure\Application\Command\AP\ReverseCmdHandler;
 use Procure\Application\Command\AP\SaveCopyFromPOCmd;
 use Procure\Application\Command\AP\SaveCopyFromPOCmdHandler;
 use Procure\Application\Command\AP\UpdateRowCmd;
 use Procure\Application\Command\AP\UpdateRowCmdHandler;
 use Procure\Application\Command\AP\Options\ApCreateOptions;
 use Procure\Application\Command\AP\Options\ApPostOptions;
+use Procure\Application\Command\AP\Options\ApReverseOptions;
 use Procure\Application\Command\AP\Options\ApRowCreateOptions;
 use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
@@ -722,12 +724,19 @@ class ApController extends AbstractActionController
         }
         // POSTING
         // ====================================
+
         try {
             $notification = new Notification();
+
             $data = $prg;
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
+
+            /**
+             *
+             * @var ApDTO $dto ;
+             */
             $dto = DTOFactory::createDTOFromArray($data, new ApDTO());
             $userId = $u->getId();
             $entity_id = $data['entity_id'];
@@ -737,14 +746,14 @@ class ApController extends AbstractActionController
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $options = new ApReverseOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
 
-            $cmdHandler = new PostCmdHandler();
+            $cmdHandler = new ReverseCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             $notification = $dto->getNotification();
-            $msg = sprintf("AP #%s is posted", $entity_id);
+            $msg = sprintf("AP #%s is reversed", $entity_id);
             $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
             $msg = sprintf("%s", $e->getMessage());
@@ -752,11 +761,30 @@ class ApController extends AbstractActionController
             $notification->addError($e->getMessage());
         }
 
-        $this->flashMessenger()->addMessage($msg);
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($redirectUrl));
-        return $response;
+        $viewModel = new ViewModel(array(
+            'errors' => $notification->getErrors(),
+            'redirectUrl' => null,
+            'entity_id' => $entity_id,
+            'entity_token' => $entity_token,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'version' => $rootEntity->getRevisionNo(),
+            'action' => $action
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+
+        /*
+         * $this->flashMessenger()->addMessage($msg);
+         * $response = $this->getResponse();
+         * $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+         * $response->setContent(json_encode($redirectUrl));
+         * return $response;
+         */
     }
 
     /**

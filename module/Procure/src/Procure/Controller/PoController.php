@@ -44,7 +44,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class PoController extends AbstractActionController
 {
@@ -71,7 +71,7 @@ class PoController extends AbstractActionController
      *
      * @deprecated Make P/O from QO
      *             case GR-IR
-     *
+     *            
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function copyFromQoAction()
@@ -685,7 +685,7 @@ class PoController extends AbstractActionController
             }
 
             $options = new PoAmendmentEnableOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $dto = null;
+            $dto = new PoDTO();
             $cmdHandler = new EnableAmendmentCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
@@ -695,7 +695,7 @@ class PoController extends AbstractActionController
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&enity_token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         }
 
         $this->flashMessenger()->addMessage($msg);
@@ -1335,7 +1335,7 @@ class PoController extends AbstractActionController
             }
 
             $options = new PoAmendmentAcceptOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $dto = null;
+            $dto = new PoDTO();
 
             $cmdHandler = new AcceptAmendmentCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);

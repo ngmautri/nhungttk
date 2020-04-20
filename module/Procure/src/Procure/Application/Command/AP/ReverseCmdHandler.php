@@ -4,6 +4,7 @@ namespace Procure\Application\Command\AP;
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApReverseOptions;
@@ -13,9 +14,8 @@ use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\Header\ReversalValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
@@ -34,7 +34,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ReverseCmdHandler extends AbstractCommandHandler
 {
@@ -56,7 +56,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
          * @var APDoc $rootEntity ;
          * @var APSnapshot $rootSnapshot ;
          * @var ApReverseOptions $options ;
-         *
+         *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -79,6 +79,9 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
         try {
 
+            $snapshot = new APSnapshot();
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, $snapshot);
+
             $notification = new Notification();
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
@@ -89,9 +92,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new APPostingValidator($sharedSpecFactory, $fxService);
+            $validator = new ReversalValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $rowValidators = new RowValidatorCollection();
@@ -112,7 +113,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
             $postingService = new APPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $reversalEntity = APDoc::createAndPostReserval($rootEntity, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatc
             if (count($reversalEntity->getRecordedEvents() > 0)) {

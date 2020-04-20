@@ -134,8 +134,19 @@ class APRow extends GenericRow
         return $instance;
     }
 
-    public static function createRowReserval(APRow $sourceObj, CommandOptions $options)
+    /**
+     *
+     * @param APDoc $rootEntity
+     * @param APRow $sourceObj
+     * @param CommandOptions $options
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\AccountPayable\APRow
+     */
+    public static function createRowReserval(APDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
+        if (! $rootEntity instanceof APDoc) {
+            throw new InvalidArgumentException("AP document is required!");
+        }
         if (! $sourceObj instanceof APRow) {
             throw new InvalidArgumentException("AP document is required!");
         }
@@ -147,16 +158,17 @@ class APRow extends GenericRow
          *
          * @var APRow $instance
          */
+
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
-        $instance->setDocStatus(Constants::DOC_STATUS_REVERSED); // important.
-        $instance->setDocType(sprintf("%s-1", $sourceObj->getDocType())); // important.
-        $instance->setReversalDoc($sourceObj->getId()); // Important
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $instance->setCreatedBy($createdBy);
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->setDocType($rootEntity->getDocType()); // important.
+        $instance->setReversalDoc($sourceObj->getId()); // Important
+        $instance->setInvoice($rootEntity->getId());
 
         return $instance;
     }

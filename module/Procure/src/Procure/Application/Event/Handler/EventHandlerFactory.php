@@ -4,6 +4,7 @@ namespace Procure\Application\Event\Handler;
 use Doctrine\ORM\EntityManager;
 use Procure\Application\Event\Handler\AP\ApHeaderUpdatedHandler;
 use Procure\Application\Event\Handler\AP\ApPostedHandler;
+use Procure\Application\Event\Handler\AP\ApReversedHandler;
 use Procure\Application\Event\Handler\AP\ApRowAddedHandler;
 use Procure\Application\Event\Handler\AP\ApRowUpdatedHandler;
 use Procure\Application\Event\Handler\GR\GrFromApPosted;
@@ -17,6 +18,7 @@ use Procure\Application\Event\Handler\PO\PoRowAddedHandler;
 use Procure\Application\Event\Handler\PO\PoRowUpdatedHandler;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\Event\Ap\ApPosted;
+use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
 use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Event\Gr\GrPosted;
@@ -31,7 +33,7 @@ use Procure\Domain\Event\Po\PoRowUpdated;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class EventHandlerFactory
 {
@@ -84,6 +86,10 @@ class EventHandlerFactory
                 break;
             case ApRowUpdated::class:
                 $handlers[] = new ApRowUpdatedHandler($doctrineEM);
+                break;
+
+            case ApReversed::class:
+                $handlers[] = new ApReversedHandler($doctrineEM);
                 break;
 
             case GrPosted::class:

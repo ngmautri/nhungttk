@@ -213,12 +213,11 @@ class APDoc extends GenericAP
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->markAsReversed($createdBy, $reversalDate);
 
         // overwrite.
         $instance->setReversalDoc($sourceObj->getId()); // Important
-        $instance->setDocType(sprintf("%s-1", $sourceObj->getDocType())); // important.
-        $instance->markAsReversed($createdBy, $reversalDate);
-
+        $instance->setDocType(sprintf("%s-1", "REV")); // important.
         $instance->validateHeader($headerValidators);
 
         // $sourceObj
@@ -231,7 +230,7 @@ class APDoc extends GenericAP
             $r->markAsReversed($createdBy, $reversalDate);
             $sourceObj->validateRow($r, $rowValidators);
 
-            $localEntity = APRow::createRowReserval($r, $options);
+            $localEntity = APRow::createRowReserval($instance, $r, $options);
 
             $instance->addRow($localEntity);
             $instance->validateRow($localEntity, $rowValidators);

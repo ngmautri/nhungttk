@@ -10,29 +10,89 @@ use Procure\Domain\RowSnapshot;
  */
 class PRRowSnapshot extends RowSnapshot
 {
-
+    public $draftPoQuantity;
+    public $postedPoQuantity;
+    public $draftGrQuantity;
+    public $postedGrQuantity;
+    public $draftApQuantity;
+    public $postedApQuantity;
+    public $draftStockQrQuantity;
+    public $postedStockQrQuantity;
     public $checksum;
-
     public $priority;
-
     public $rowName;
-
     public $rowDescription;
-
     public $rowCode;
-
     public $rowUnit;
-
     public $conversionText;
-
     public $edt;
-
     public $convertedStandardQuantiy;
-
     public $project;
+    /**
+     * @return mixed
+     */
+    public function getDraftPoQuantity()
+    {
+        return $this->draftPoQuantity;
+    }
 
     /**
-     *
+     * @return mixed
+     */
+    public function getPostedPoQuantity()
+    {
+        return $this->postedPoQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDraftGrQuantity()
+    {
+        return $this->draftGrQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostedGrQuantity()
+    {
+        return $this->postedGrQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDraftApQuantity()
+    {
+        return $this->draftApQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostedApQuantity()
+    {
+        return $this->postedApQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDraftStockQrQuantity()
+    {
+        return $this->draftStockQrQuantity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostedStockQrQuantity()
+    {
+        return $this->postedStockQrQuantity;
+    }
+
+    /**
      * @return mixed
      */
     public function getChecksum()
@@ -41,7 +101,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getPriority()
@@ -50,7 +109,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowName()
@@ -59,7 +117,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowDescription()
@@ -68,7 +125,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowCode()
@@ -77,7 +133,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getRowUnit()
@@ -86,7 +141,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConversionText()
@@ -95,7 +149,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getEdt()
@@ -104,7 +157,6 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getConvertedStandardQuantiy()
@@ -113,11 +165,11 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
-     *
      * @return mixed
      */
     public function getProject()
     {
         return $this->project;
     }
+
 }

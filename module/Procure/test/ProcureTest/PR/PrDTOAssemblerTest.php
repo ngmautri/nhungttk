@@ -21,7 +21,7 @@ class PrDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PrDTOAssembler::createDTOProperities();
+            PrDTOAssembler::createStoreMapping();
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePr
  *
- * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"}), @ORM\Index(name="nmt_procure_pr_KF4_idx", columns={"company_id"}), @ORM\Index(name="nmt_procure_pr_KF5_idx", columns={"warehouse_id"})})
+ * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"}), @ORM\Index(name="nmt_procure_pr_KF4_idx", columns={"company_id"}), @ORM\Index(name="nmt_procure_pr_KF5_idx", columns={"warehouse_id"})})
  * @ORM\Entity
  */
 class NmtProcurePr
@@ -66,9 +66,9 @@ class NmtProcurePr
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
      */
-    private $lastChangeOn;
+    private $lastchangeOn;
 
     /**
      * @var boolean
@@ -204,10 +204,10 @@ class NmtProcurePr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
      * })
      */
-    private $lastChangeBy;
+    private $lastchangeBy;
 
     /**
      * @var \Application\Entity\NmtApplicationDepartment
@@ -396,27 +396,27 @@ class NmtProcurePr
     }
 
     /**
-     * Set lastChangeOn
+     * Set lastchangeOn
      *
-     * @param \DateTime $lastChangeOn
+     * @param \DateTime $lastchangeOn
      *
      * @return NmtProcurePr
      */
-    public function setLastChangeOn($lastChangeOn)
+    public function setLastchangeOn($lastchangeOn)
     {
-        $this->lastChangeOn = $lastChangeOn;
+        $this->lastchangeOn = $lastchangeOn;
 
         return $this;
     }
 
     /**
-     * Get lastChangeOn
+     * Get lastchangeOn
      *
      * @return \DateTime
      */
-    public function getLastChangeOn()
+    public function getLastchangeOn()
     {
-        return $this->lastChangeOn;
+        return $this->lastchangeOn;
     }
 
     /**
@@ -852,27 +852,27 @@ class NmtProcurePr
     }
 
     /**
-     * Set lastChangeBy
+     * Set lastchangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
+     * @param \Application\Entity\MlaUsers $lastchangeBy
      *
      * @return NmtProcurePr
      */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
-        $this->lastChangeBy = $lastChangeBy;
+        $this->lastchangeBy = $lastchangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastChangeBy
+     * Get lastchangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastChangeBy()
+    public function getLastchangeBy()
     {
-        return $this->lastChangeBy;
+        return $this->lastchangeBy;
     }
 
     /**

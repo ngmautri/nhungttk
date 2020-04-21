@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureQoRow
  *
- * @ORM\Table(name="nmt_procure_qo_row", indexes={@ORM\Index(name="nmt_procure_qo_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_qo_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_qo_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_row_FK6_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_qo_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_qo_row_FK7_idx", columns={"qo_id"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx1", columns={"doc_uom"})})
+ * @ORM\Table(name="nmt_procure_qo_row", indexes={@ORM\Index(name="nmt_procure_qo_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_qo_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_qo_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_qo_row_FK7_idx", columns={"qo_id"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx1", columns={"doc_uom"})})
  * @ORM\Entity
  */
 class NmtProcureQoRow
@@ -302,6 +302,20 @@ class NmtProcureQoRow
     private $reversalBlocked;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
+     */
+    private $uuid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -346,10 +360,10 @@ class NmtProcureQoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
      * })
      */
-    private $lastChangeBy;
+    private $lastchangeBy;
 
     /**
      * @var \Application\Entity\NmtProcureQo
@@ -1344,6 +1358,54 @@ class NmtProcureQoRow
     }
 
     /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -1440,27 +1502,27 @@ class NmtProcureQoRow
     }
 
     /**
-     * Set lastChangeBy
+     * Set lastchangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
+     * @param \Application\Entity\MlaUsers $lastchangeBy
      *
      * @return NmtProcureQoRow
      */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
-        $this->lastChangeBy = $lastChangeBy;
+        $this->lastchangeBy = $lastchangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastChangeBy
+     * Get lastchangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastChangeBy()
+    public function getLastchangeBy()
     {
-        return $this->lastChangeBy;
+        return $this->lastchangeBy;
     }
 
     /**

@@ -1,11 +1,10 @@
 <?php
 namespace ProcureTest\PR;
 
-use Procure\Application\DTO\Pr\PrDTOAssembler;
-
+use Doctrine\ORM\EntityManager;
+use Procure\Application\DTO\Pr\PrRowDTOAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\DTO\Pr\PrRowDTOAssembler;
 
 class PrRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -21,7 +20,7 @@ class PrRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        // echo $root;
         require ($root . '/Bootstrap.php');
     }
 
@@ -29,8 +28,8 @@ class PrRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PrRowDTOAssembler::createGetMapping();
-           } catch (InvalidArgumentException $e) {
+            PrRowDTOAssembler::createStoreMapping();
+        } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

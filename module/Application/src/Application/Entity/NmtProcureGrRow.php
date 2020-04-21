@@ -169,9 +169,9 @@ class NmtProcureGrRow
     private $faRemarks;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="discount_rate", type="integer", nullable=true)
+     * @ORM\Column(name="discount_rate", type="decimal", precision=10, scale=2, nullable=true)
      */
     private $discountRate;
 
@@ -1066,7 +1066,7 @@ class NmtProcureGrRow
     /**
      * Set discountRate
      *
-     * @param integer $discountRate
+     * @param string $discountRate
      *
      * @return NmtProcureGrRow
      */
@@ -1080,7 +1080,7 @@ class NmtProcureGrRow
     /**
      * Get discountRate
      *
-     * @return integer
+     * @return string
      */
     public function getDiscountRate()
     {

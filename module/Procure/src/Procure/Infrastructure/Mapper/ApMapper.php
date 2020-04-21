@@ -11,7 +11,7 @@ use Procure\Domain\AccountPayable\APSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApMapper
 {
@@ -145,9 +145,8 @@ class ApMapper
          * $entity->setPo($snapshot->po);
          * $entity->setCompany($snapshot->company);
          * $entity->setPaymentMethod($snapshot->paymentMethod);
+         * $entity->setInventoryGr($snapshot->inventoryGr);
          */
-
-        $entity->setInventoryGr($snapshot->inventoryGr);
 
         if ($snapshot->vendor > 0) {
             /**

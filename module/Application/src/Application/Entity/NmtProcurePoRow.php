@@ -169,9 +169,9 @@ class NmtProcurePoRow
     private $rowIdentifer;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="discount_rate", type="integer", nullable=true)
+     * @ORM\Column(name="discount_rate", type="decimal", precision=10, scale=0, nullable=true)
      */
     private $discountRate;
 
@@ -1040,7 +1040,7 @@ class NmtProcurePoRow
     /**
      * Set discountRate
      *
-     * @param integer $discountRate
+     * @param string $discountRate
      *
      * @return NmtProcurePoRow
      */
@@ -1054,7 +1054,7 @@ class NmtProcurePoRow
     /**
      * Get discountRate
      *
-     * @return integer
+     * @return string
      */
     public function getDiscountRate()
     {

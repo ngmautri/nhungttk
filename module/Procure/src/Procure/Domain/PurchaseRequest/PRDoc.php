@@ -24,6 +24,9 @@ class PRDoc extends GenericPR
 {
 
     private static $instance = null;
+    
+    
+    
 
     private function __construct()
     {}

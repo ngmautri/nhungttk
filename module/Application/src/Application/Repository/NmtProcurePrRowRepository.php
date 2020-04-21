@@ -148,7 +148,7 @@ SELECT
 	nmt_procure_pr.id ,
     nmt_procure_pr.pr_number,
     nmt_procure_pr.created_on,
-    nmt_procure_pr.last_change_on,
+    nmt_procure_pr.lastchange_on,
     nmt_procure_pr.submitted_on,
     nmt_procure_pr.is_active,
     nmt_procure_pr.is_draft,

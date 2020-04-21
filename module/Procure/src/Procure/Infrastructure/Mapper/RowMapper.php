@@ -9,6 +9,7 @@ use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryWarehouse;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcurePo;
+use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Procure\Domain\RowSnapshot;
 
@@ -183,6 +184,28 @@ class RowMapper
             $snapshot->prToken = $entity->getPr()->getToken();
             $snapshot->prChecksum = $entity->getPr()->getChecksum();
         }
+
+        return $snapshot;
+    }
+
+    public static function updatePRHeaderDetails(RowSnapshot $snapshot, NmtProcurePr $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+
+        if ($entity == null) {
+            return $snapshot;
+        }
+
+        $snapshot->pr = $entity->getId();
+        $snapshot->prSysNumber = $entity->getPrAutoNumber();
+        $snapshot->prNumber = $entity->getPrNumber();
+        $snapshot->prToken = $entity->getToken();
+        $snapshot->prChecksum = $entity->getChecksum();
+        $snapshot->docId = $snapshot->pr;
+        $snapshot->docToken = $entity->getToken();
+        $snapshot->docNumber = $entity->getDocNumber();
 
         return $snapshot;
     }

@@ -295,6 +295,55 @@ class NmtProcureQo
     private $docDate;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
+     */
+    private $isDraft;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_status", type="string", length=45, nullable=true)
+     */
+    private $currentStatus;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="pmt_term", type="integer", nullable=true)
+     */
+    private $pmtTerm;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_rate", type="decimal", precision=10, scale=4, nullable=true)
+     */
+    private $discountRate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $discountAmount;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1340,6 +1389,174 @@ class NmtProcureQo
     public function getDocDate()
     {
         return $this->docDate;
+    }
+
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtProcureQo
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtProcureQo
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
+     * Set isDraft
+     *
+     * @param boolean $isDraft
+     *
+     * @return NmtProcureQo
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * Get isDraft
+     *
+     * @return boolean
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * Set currentStatus
+     *
+     * @param string $currentStatus
+     *
+     * @return NmtProcureQo
+     */
+    public function setCurrentStatus($currentStatus)
+    {
+        $this->currentStatus = $currentStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get currentStatus
+     *
+     * @return string
+     */
+    public function getCurrentStatus()
+    {
+        return $this->currentStatus;
+    }
+
+    /**
+     * Set pmtTerm
+     *
+     * @param integer $pmtTerm
+     *
+     * @return NmtProcureQo
+     */
+    public function setPmtTerm($pmtTerm)
+    {
+        $this->pmtTerm = $pmtTerm;
+
+        return $this;
+    }
+
+    /**
+     * Get pmtTerm
+     *
+     * @return integer
+     */
+    public function getPmtTerm()
+    {
+        return $this->pmtTerm;
+    }
+
+    /**
+     * Set discountRate
+     *
+     * @param string $discountRate
+     *
+     * @return NmtProcureQo
+     */
+    public function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+
+        return $this;
+    }
+
+    /**
+     * Get discountRate
+     *
+     * @return string
+     */
+    public function getDiscountRate()
+    {
+        return $this->discountRate;
+    }
+
+    /**
+     * Set discountAmount
+     *
+     * @param string $discountAmount
+     *
+     * @return NmtProcureQo
+     */
+    public function setDiscountAmount($discountAmount)
+    {
+        $this->discountAmount = $discountAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get discountAmount
+     *
+     * @return string
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
     }
 
     /**

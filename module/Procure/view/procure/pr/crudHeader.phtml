@@ -1,0 +1,423 @@
+<?php
+use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\OptionList;
+use Procure\Domain\Shared\Constants;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+/**@var \Procure\Application\DTO\Pr\PrDTO $dto ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+$docStatus = null;
+$wh_id = null;
+$pmtTermId = null;
+$currencyId = null;
+$incotermId = null;
+
+if (! $dto == null) {
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $dto->getId(), $dto->getToken());
+    $wh_id = $dto->getWarehouse();
+    $pmtTermId = $dto->getPmtTerm();
+    $currencyId = $dto->getDocCurrency();
+    $incotermId = $dto->getIncoterm();
+}
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$paymentTerm_option = OptionList::createPmtTermOption($nmtPlugin->getPaymentTerms(), $pmtTermId);
+$incoterm_option = OptionList::createIncotermOption($nmtPlugin->incotermList(), $incotermId);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+// ===========================================================
+?>
+<div id="wrapper" class="toggled">
+   <!-- Sidebar -->
+   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php
+    $current_step = "STEP1";
+    include (ROOT . '/module/Procure/view/procure/pr-create-wizard.php');
+    ?>
+
+
+	</div>
+   <!-- /#sidebar-wrapper -->
+   <!-- Page Content -->
+   <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+      <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+         <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+            <span title="Hide Menu">
+               <i class="fa fa-chevron-left" aria-hidden="true"></i>
+               Menu
+               <span>
+         
+         </a>
+         <div id="tabs" style="font-size: 10pt">
+            <ul>
+               <li>
+                  <a href="#general"><?php
+                echo $form_title;
+                ?>:</a>
+               </li>
+<?php
+if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
+    ?>
+ 	 	<li>
+                  <a href="<?php
+    echo $log_url;
+    ?>">
+                     <span class="glyphicon glyphicon-list"></span>
+                     &nbsp;Log
+                  </a>
+               </li>
+		<?php endif;
+
+?>
+				</ul>
+            <div id="general" style="font-size: 9pt">
+               <!-- Tab1 -->
+
+<?php
+// ==================
+echo $error_msg;
+// ==================
+?>
+
+
+	<FORM id="Creating_Form" class="form-horizontal" action="<?php
+echo $form_action;
+?>" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="redirectUrl" value="<?php
+                echo $redirectUrl?>" />
+                  <input type="hidden" id="entity_id" name="entity_id" value="<?php
+                echo $entity_id;
+                ?>" />
+                  <input type="hidden" id="entity_token" name="entity_token" value="<?php
+                echo $entity_token;
+                ?>" />
+                  <input type="hidden" name="version" value="<?php
+                echo $version;
+                ?>" />
+
+                        <?php
+                        if ($action == Constants::FORM_ACTION_AP_FROM_PO) :
+                            ?>
+                        <input type="hidden" id="source_id" name="source_id" value="<?php
+                            echo $source_id;
+                            ?>" />
+                  <input type="hidden" id="source_token" name="source_token" value="<?php
+                            echo $source_token;
+                            ?>" />
+                        <?php endif;
+
+                        ?>
+                        <fieldset>
+                     <legend style="font-size: 9.5pt; color: gray;">
+                        <small>
+                           <span class="glyphicon glyphicon-triangle-right"></span>
+                        </small>
+                        &nbsp;
+                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php
+                        echo "Version " . $version;
+                        ?>):</a>
+                     </legend>
+                     <div id="invoice_header" class="collapse in">
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Current State:</label>
+                           <div class="col-sm-3">
+                              <select name="currentState" class="form-control input-sm">
+                                 <option value="">Please Select</option>
+                                 <option
+                                    <?php
+                                    if ($dto !== null) :
+                                        if ($dto->getCurrentState() == "draftPo") :
+                                            echo "selected";
+                                                endif;
+                                                endif;
+
+
+                                    ?>
+                                    value="draftPo">Draft</option>
+                                 <option
+                                    <?php
+                                    if ($dto !== null) {
+                                        if ($dto->getCurrentState() == "finalPo") {
+                                            echo "selected";
+                                        }
+                                    }
+                                    ?>
+                                    value="finalPo">Final</option>
+                              </select>
+                           </div>
+                           <div class="col-sm-3">
+                              <input
+                                 <?php
+                                if (! $dto == null) {
+                                    echo ($dto->getIsActive() == "1") ? "checked" : "";
+                                } else {
+                                    echo "checked";
+                                }
+                                ?>
+                                 type="checkbox" name="isActive" value="1">
+                              &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2 ">Vendor:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" id="vendor_name_1" placeholder="Enter term to search vendor" name="vendorName"
+                                 value="<?php
+                                if (! $dto == null) {
+                                    echo $dto->getVendorName();
+                                }
+                                ?>">
+                              <input type="hidden" id="vendor_id" placeholder="" name="vendor" value="<?php
+                            if (! $dto == null) {
+                                echo $dto->getVendor();
+                            }
+                            ?>">
+                           </div>
+                           <div class="col-sm-3">
+                              <a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a>
+                              <small>
+                                 <i class="glyphicon glyphicon-new-window"></i>
+                              </small>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Currency:</label>
+                           <div class="col-sm-3">
+                              <select name="docCurrency" class="form-control input-sm">
+                                 <option value="">Select Currency</option>
+ <?php
+// ================
+echo $currency_option;
+// ================
+?>   											</select>
+                           </div>
+                           <label class="control-label col-sm-2">Exchange Rate:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="exchangeRate" name="exchangeRate" value="<?php
+                            echo (! $dto == null) ? $dto->getExchangeRate() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Invoice number:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="docNumber" name="docNumber" value="<?php
+                            echo (! $dto == null) ? $dto->getDocNumber() : "";
+                            ?>">
+                           </div>
+                           <label class="control-label col-sm-2">SAP Document No.:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="sapDoc" name="sapDoc" value="<?php
+                            echo (! $dto == null) ? $dto->getSapDoc() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2 required">Invoice Date:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" id="docDate" name="docDate" value="<?php
+                            if (! $dto == null) :
+                                echo $dto->getDocDate(); endif;
+
+                            ?>"
+                                 placeholder=" please select" />
+                           </div>
+                           <label class="control-label col-sm-2">Posting Date:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" id="postingDate" name="postingDate" value="<?php
+                            if (! $dto == null) :
+                                echo $dto->getPostingDate(); endif;
+
+                            ?>"
+                                 placeholder=" please select" />
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Goods Receipt Date:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" id="grDate" name="grDate" value="<?php
+                            if (! $dto == null) :
+                                echo $dto->getGrDate(); endif;
+
+                            ?>"
+                                 placeholder=" please select" />
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2"><?php
+                        echo $this->translate("Target Warehouse");
+                        ?>:</label>
+                           <div class="col-sm-3">
+                              <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm">
+                                 <option value=""><?php
+                                echo $this->translate("...");
+                                ?></option>
+<?php
+// ================
+echo $wh_option;
+// ================
+?>
+                                        </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2">Contract /PO No.:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="contractNo" name="contractNo" value="<?php
+                            echo (! $dto == null) ? $dto->getContractNo() : "";
+                            ?>">
+                           </div>
+                           <label class="control-label col-sm-2">Contract /PO Date:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate"
+                                 value="<?php
+                                if (! $dto == null) :
+                                    echo $dto->getContractDate(); endif;
+
+                                ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2"><?php
+                        echo $this->translate("Incoterm");
+                        ?>:</label>
+                           <div class="col-sm-3">
+                              <select name="incoterm" class="form-control input-sm">
+                                 <option value="">---</option>
+<?php
+// ================
+echo $incoterm_option;
+// ================
+?>
+                                        </select>
+                           </div>
+                           <label class="control-label col-sm-2"><?php
+                        echo $this->translate("Incoterm Place");
+                        ?>:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="incotermPlace" name="incotermPlace" value="<?php
+                            echo (! $dto == null) ? $dto->getIncotermPlace() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2"><?php
+                        echo $this->translate("Payment Term");
+                        ?>:</label>
+                           <div class="col-sm-3">
+                              <select name="pmtTerm" class="form-control input-sm">
+                                 <option value=""><?php
+                                echo $this->translate("---");
+                                ?></option>
+ <?php
+// ================
+echo $paymentTerm_option;
+// ================
+?>>
+       					</select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2"><?php
+                        echo $this->translate("Payment Term Detail");
+                        ?>:</label>
+                           <div class="col-sm-5">
+                              <input class="form-control input-sm" type="text" placeholder="" id="paymentTermDetail" name="paymentTermDetail" value="<?php
+                            echo (! $dto == null) ? $dto->getPmtTerm() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2">Description</label>
+                           <div class="col-sm-8">
+                              <input class="form-control input-sm" type="text" id="remarks" placeholder="" name="remarks" value="<?php
+                            echo (! $dto == null) ? $dto->getRemarks() : "";
+                            ?>">
+                           </div>
+                        </div>
+                     </div>
+                     <hr>
+                     <div class="form-group margin-bottom">
+                        <label class="control-label col-sm-2" for="inputTag"></label>
+                        <div class="col-sm-3">
+                           <button id="submit" onclick="submitForm('Creating_Form');" class="btn btn-default btn-sm">
+                              <i class="glyphicon glyphicon-floppy-disk"> </i>
+                              Save
+                           </button>
+                           <a class="btn btn-default btn-sm" href="<?php
+                        echo $review_url;
+                        ?>">
+                              <small>
+                                 <i class="glyphicon glyphicon-remove"></i>
+                              </small>
+                              &nbsp;Cancel
+                           </a>
+                        </div>
+                     </div>
+                  </fieldset>
+               </form>
+            </div>
+            <!-- end tab -->
+         </div>
+      </div>
+   </div>
+   <!-- /#page-content-wrapper -->
+</div>
+<!-- /#wrapper -->
+<script>
+
+$('#docDate').bind('change', function() {
+    $('#postingDate').val($('#docDate').val());
+    $('#grDate').val($('#docDate').val());
+});
+
+$( "input[id='docDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+
+<?php
+if ($docStatus == \Application\Model\Constants::DOC_STATUS_POSTED) :
+    ?>
+$("#Creating_Form :input").attr("disabled", "disabled");
+$("#remarks").attr("disabled", false);
+$("#entity_id").attr("disabled", false);
+$("#entity_token").attr("disabled", false);
+$("#submit").attr("disabled", false);
+<?php
+endif;
+
+?>
+
+
+</script>

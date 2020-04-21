@@ -247,6 +247,7 @@ return array(
             'Procure\Application\Reporting\AP\ApReporter' => 'Procure\Application\Reporting\AP\ApReporterFactory',
 
             // Appliation Service
+            'Procure\Application\Service\PR\PRService' => 'Procure\Application\Service\PR\PRServiceFactory',
             'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
             'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
             'Procure\Application\Service\AP\APService' => 'Procure\Application\Service\AP\APServiceFactory',

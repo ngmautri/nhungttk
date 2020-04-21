@@ -272,7 +272,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCompanyId()
+    public function getCompanyId()
     {
         return $this->companyId;
     }
@@ -281,7 +281,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCompanyToken()
+    public function getCompanyToken()
     {
         return $this->companyToken;
     }
@@ -290,7 +290,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCompanyName()
+    public function getCompanyName()
     {
         return $this->companyName;
     }
@@ -299,7 +299,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getVendorId()
+    public function getVendorId()
     {
         return $this->vendorId;
     }
@@ -308,7 +308,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getVendorToken()
+    public function getVendorToken()
     {
         return $this->vendorToken;
     }
@@ -317,7 +317,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getVendorName()
+    public function getVendorName()
     {
         return $this->vendorName;
     }
@@ -326,7 +326,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getVendorCountry()
+    public function getVendorCountry()
     {
         return $this->vendorCountry;
     }
@@ -335,7 +335,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocNumber()
+    public function getDocNumber()
     {
         return $this->docNumber;
     }
@@ -344,7 +344,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocSysNumber()
+    public function getDocSysNumber()
     {
         return $this->docSysNumber;
     }
@@ -353,7 +353,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocCurrencyISO()
+    public function getDocCurrencyISO()
     {
         return $this->docCurrencyISO;
     }
@@ -362,7 +362,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLocalCurrencyISO()
+    public function getLocalCurrencyISO()
     {
         return $this->localCurrencyISO;
     }
@@ -371,7 +371,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocCurrencyId()
+    public function getDocCurrencyId()
     {
         return $this->docCurrencyId;
     }
@@ -380,7 +380,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLocalCurrencyId()
+    public function getLocalCurrencyId()
     {
         return $this->localCurrencyId;
     }
@@ -389,7 +389,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocToken()
+    public function getDocToken()
     {
         return $this->docToken;
     }
@@ -398,7 +398,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocId()
+    public function getDocId()
     {
         return $this->docId;
     }
@@ -407,7 +407,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getExchangeRate()
+    public function getExchangeRate()
     {
         return $this->exchangeRate;
     }
@@ -416,7 +416,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocWarehouseName()
+    public function getDocWarehouseName()
     {
         return $this->docWarehouseName;
     }
@@ -425,7 +425,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocWarehouseCode()
+    public function getDocWarehouseCode()
     {
         return $this->docWarehouseCode;
     }
@@ -434,7 +434,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getWarehouseName()
+    public function getWarehouseName()
     {
         return $this->warehouseName;
     }
@@ -443,7 +443,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getWarehouseCode()
+    public function getWarehouseCode()
     {
         return $this->warehouseCode;
     }
@@ -452,7 +452,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocUomName()
+    public function getDocUomName()
     {
         return $this->docUomName;
     }
@@ -461,7 +461,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocUomCode()
+    public function getDocUomCode()
     {
         return $this->docUomCode;
     }
@@ -470,7 +470,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocUomDescription()
+    public function getDocUomDescription()
     {
         return $this->docUomDescription;
     }
@@ -479,7 +479,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemToken()
+    public function getItemToken()
     {
         return $this->itemToken;
     }
@@ -488,7 +488,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemChecksum()
+    public function getItemChecksum()
     {
         return $this->itemChecksum;
     }
@@ -497,7 +497,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemName()
+    public function getItemName()
     {
         return $this->itemName;
     }
@@ -506,7 +506,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemName1()
+    public function getItemName1()
     {
         return $this->itemName1;
     }
@@ -515,7 +515,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemSKU()
+    public function getItemSKU()
     {
         return $this->itemSKU;
     }
@@ -524,7 +524,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemSKU1()
+    public function getItemSKU1()
     {
         return $this->itemSKU1;
     }
@@ -533,7 +533,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemSKU2()
+    public function getItemSKU2()
     {
         return $this->itemSKU2;
     }
@@ -542,7 +542,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemUUID()
+    public function getItemUUID()
     {
         return $this->itemUUID;
     }
@@ -551,7 +551,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemSysNumber()
+    public function getItemSysNumber()
     {
         return $this->itemSysNumber;
     }
@@ -560,7 +560,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemStandardUnit()
+    public function getItemStandardUnit()
     {
         return $this->itemStandardUnit;
     }
@@ -569,7 +569,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemStandardUnitName()
+    public function getItemStandardUnitName()
     {
         return $this->itemStandardUnitName;
     }
@@ -578,7 +578,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemStandardUnitCode()
+    public function getItemStandardUnitCode()
     {
         return $this->itemStandardUnitCode;
     }
@@ -587,7 +587,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemVersion()
+    public function getItemVersion()
     {
         return $this->itemVersion;
     }
@@ -596,7 +596,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsInventoryItem()
+    public function getIsInventoryItem()
     {
         return $this->isInventoryItem;
     }
@@ -605,7 +605,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsFixedAsset()
+    public function getIsFixedAsset()
     {
         return $this->isFixedAsset;
     }
@@ -614,7 +614,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemMonitorMethod()
+    public function getItemMonitorMethod()
     {
         return $this->itemMonitorMethod;
     }
@@ -623,7 +623,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPr()
+    public function getPr()
     {
         return $this->pr;
     }
@@ -632,7 +632,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrToken()
+    public function getPrToken()
     {
         return $this->prToken;
     }
@@ -641,7 +641,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrChecksum()
+    public function getPrChecksum()
     {
         return $this->prChecksum;
     }
@@ -650,7 +650,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrNumber()
+    public function getPrNumber()
     {
         return $this->prNumber;
     }
@@ -659,7 +659,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrSysNumber()
+    public function getPrSysNumber()
     {
         return $this->prSysNumber;
     }
@@ -668,7 +668,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRowIndentifer()
+    public function getPrRowIndentifer()
     {
         return $this->prRowIndentifer;
     }
@@ -677,7 +677,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRowCode()
+    public function getPrRowCode()
     {
         return $this->prRowCode;
     }
@@ -686,7 +686,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRowName()
+    public function getPrRowName()
     {
         return $this->prRowName;
     }
@@ -695,7 +695,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRowConvertFactor()
+    public function getPrRowConvertFactor()
     {
         return $this->prRowConvertFactor;
     }
@@ -704,7 +704,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRowUnit()
+    public function getPrRowUnit()
     {
         return $this->prRowUnit;
     }
@@ -713,7 +713,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRowVersion()
+    public function getPrRowVersion()
     {
         return $this->prRowVersion;
     }
@@ -722,7 +722,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getProjectId()
+    public function getProjectId()
     {
         return $this->projectId;
     }
@@ -731,7 +731,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getProjectToken()
+    public function getProjectToken()
     {
         return $this->projectToken;
     }
@@ -740,7 +740,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getProjectName()
+    public function getProjectName()
     {
         return $this->projectName;
     }
@@ -749,7 +749,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCreatedByName()
+    public function getCreatedByName()
     {
         return $this->createdByName;
     }
@@ -758,7 +758,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLastChangeByName()
+    public function getLastChangeByName()
     {
         return $this->lastChangeByName;
     }
@@ -767,7 +767,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getGlAccountName()
+    public function getGlAccountName()
     {
         return $this->glAccountName;
     }
@@ -776,7 +776,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getGlAccountNumber()
+    public function getGlAccountNumber()
     {
         return $this->glAccountNumber;
     }
@@ -785,7 +785,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getGlAccountType()
+    public function getGlAccountType()
     {
         return $this->glAccountType;
     }
@@ -794,7 +794,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCostCenterName()
+    public function getCostCenterName()
     {
         return $this->costCenterName;
     }
@@ -803,7 +803,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getId()
+    public function getId()
     {
         return $this->id;
     }
@@ -812,7 +812,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getRowNumber()
+    public function getRowNumber()
     {
         return $this->rowNumber;
     }
@@ -821,7 +821,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getToken()
+    public function getToken()
     {
         return $this->token;
     }
@@ -830,7 +830,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getQuantity()
+    public function getQuantity()
     {
         return $this->quantity;
     }
@@ -839,7 +839,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getUnitPrice()
+    public function getUnitPrice()
     {
         return $this->unitPrice;
     }
@@ -848,7 +848,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getNetAmount()
+    public function getNetAmount()
     {
         return $this->netAmount;
     }
@@ -857,7 +857,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getUnit()
+    public function getUnit()
     {
         return $this->unit;
     }
@@ -866,7 +866,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItemUnit()
+    public function getItemUnit()
     {
         return $this->itemUnit;
     }
@@ -875,7 +875,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConversionFactor()
+    public function getConversionFactor()
     {
         return $this->conversionFactor;
     }
@@ -884,7 +884,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConverstionText()
+    public function getConverstionText()
     {
         return $this->converstionText;
     }
@@ -893,7 +893,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTaxRate()
+    public function getTaxRate()
     {
         return $this->taxRate;
     }
@@ -902,7 +902,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getRemarks()
+    public function getRemarks()
     {
         return $this->remarks;
     }
@@ -911,7 +911,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsActive()
+    public function getIsActive()
     {
         return $this->isActive;
     }
@@ -920,7 +920,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCreatedOn()
+    public function getCreatedOn()
     {
         return $this->createdOn;
     }
@@ -929,7 +929,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLastchangeOn()
+    public function getLastchangeOn()
     {
         return $this->lastchangeOn;
     }
@@ -938,7 +938,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCurrentState()
+    public function getCurrentState()
     {
         return $this->currentState;
     }
@@ -947,7 +947,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getVendorItemCode()
+    public function getVendorItemCode()
     {
         return $this->vendorItemCode;
     }
@@ -956,7 +956,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTraceStock()
+    public function getTraceStock()
     {
         return $this->traceStock;
     }
@@ -965,7 +965,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getGrossAmount()
+    public function getGrossAmount()
     {
         return $this->grossAmount;
     }
@@ -974,7 +974,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTaxAmount()
+    public function getTaxAmount()
     {
         return $this->taxAmount;
     }
@@ -983,7 +983,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getFaRemarks()
+    public function getFaRemarks()
     {
         return $this->faRemarks;
     }
@@ -992,7 +992,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getRowIdentifer()
+    public function getRowIdentifer()
     {
         return $this->rowIdentifer;
     }
@@ -1001,7 +1001,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDiscountRate()
+    public function getDiscountRate()
     {
         return $this->discountRate;
     }
@@ -1010,7 +1010,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getRevisionNo()
+    public function getRevisionNo()
     {
         return $this->revisionNo;
     }
@@ -1019,7 +1019,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTargetObject()
+    public function getTargetObject()
     {
         return $this->targetObject;
     }
@@ -1028,7 +1028,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getSourceObject()
+    public function getSourceObject()
     {
         return $this->sourceObject;
     }
@@ -1037,7 +1037,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTargetObjectId()
+    public function getTargetObjectId()
     {
         return $this->targetObjectId;
     }
@@ -1046,7 +1046,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getSourceObjectId()
+    public function getSourceObjectId()
     {
         return $this->sourceObjectId;
     }
@@ -1055,7 +1055,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocStatus()
+    public function getDocStatus()
     {
         return $this->docStatus;
     }
@@ -1064,7 +1064,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getWorkflowStatus()
+    public function getWorkflowStatus()
     {
         return $this->workflowStatus;
     }
@@ -1073,7 +1073,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTransactionStatus()
+    public function getTransactionStatus()
     {
         return $this->transactionStatus;
     }
@@ -1082,7 +1082,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsPosted()
+    public function getIsPosted()
     {
         return $this->isPosted;
     }
@@ -1091,7 +1091,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsDraft()
+    public function getIsDraft()
     {
         return $this->isDraft;
     }
@@ -1100,7 +1100,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getExwUnitPrice()
+    public function getExwUnitPrice()
     {
         return $this->exwUnitPrice;
     }
@@ -1109,7 +1109,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTotalExwPrice()
+    public function getTotalExwPrice()
     {
         return $this->totalExwPrice;
     }
@@ -1118,7 +1118,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertFactorPurchase()
+    public function getConvertFactorPurchase()
     {
         return $this->convertFactorPurchase;
     }
@@ -1127,7 +1127,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertedPurchaseQuantity()
+    public function getConvertedPurchaseQuantity()
     {
         return $this->convertedPurchaseQuantity;
     }
@@ -1136,7 +1136,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertedStandardQuantity()
+    public function getConvertedStandardQuantity()
     {
         return $this->convertedStandardQuantity;
     }
@@ -1145,7 +1145,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertedStockQuantity()
+    public function getConvertedStockQuantity()
     {
         return $this->convertedStockQuantity;
     }
@@ -1154,7 +1154,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertedStandardUnitPrice()
+    public function getConvertedStandardUnitPrice()
     {
         return $this->convertedStandardUnitPrice;
     }
@@ -1163,7 +1163,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertedStockUnitPrice()
+    public function getConvertedStockUnitPrice()
     {
         return $this->convertedStockUnitPrice;
     }
@@ -1172,7 +1172,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocQuantity()
+    public function getDocQuantity()
     {
         return $this->docQuantity;
     }
@@ -1181,7 +1181,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocUnit()
+    public function getDocUnit()
     {
         return $this->docUnit;
     }
@@ -1190,7 +1190,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocUnitPrice()
+    public function getDocUnitPrice()
     {
         return $this->docUnitPrice;
     }
@@ -1199,7 +1199,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getConvertedPurchaseUnitPrice()
+    public function getConvertedPurchaseUnitPrice()
     {
         return $this->convertedPurchaseUnitPrice;
     }
@@ -1208,7 +1208,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocType()
+    public function getDocType()
     {
         return $this->docType;
     }
@@ -1217,7 +1217,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDescriptionText()
+    public function getDescriptionText()
     {
         return $this->descriptionText;
     }
@@ -1226,7 +1226,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getVendorItemName()
+    public function getVendorItemName()
     {
         return $this->vendorItemName;
     }
@@ -1235,7 +1235,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getReversalBlocked()
+    public function getReversalBlocked()
     {
         return $this->reversalBlocked;
     }
@@ -1244,7 +1244,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getInvoice()
+    public function getInvoice()
     {
         return $this->invoice;
     }
@@ -1253,7 +1253,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLastchangeBy()
+    public function getLastchangeBy()
     {
         return $this->lastchangeBy;
     }
@@ -1262,7 +1262,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPrRow()
+    public function getPrRow()
     {
         return $this->prRow;
     }
@@ -1271,7 +1271,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCreatedBy()
+    public function getCreatedBy()
     {
         return $this->createdBy;
     }
@@ -1280,7 +1280,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getWarehouse()
+    public function getWarehouse()
     {
         return $this->warehouse;
     }
@@ -1289,7 +1289,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getPo()
+    public function getPo()
     {
         return $this->po;
     }
@@ -1298,7 +1298,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getItem()
+    public function getItem()
     {
         return $this->item;
     }
@@ -1307,7 +1307,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocUom()
+    public function getDocUom()
     {
         return $this->docUom;
     }
@@ -1316,7 +1316,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getDocVersion()
+    public function getDocVersion()
     {
         return $this->docVersion;
     }
@@ -1325,7 +1325,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getUuid()
+    public function getUuid()
     {
         return $this->uuid;
     }
@@ -1334,7 +1334,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLocalUnitPrice()
+    public function getLocalUnitPrice()
     {
         return $this->localUnitPrice;
     }
@@ -1343,7 +1343,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getExwCurrency()
+    public function getExwCurrency()
     {
         return $this->exwCurrency;
     }
@@ -1352,7 +1352,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLocalNetAmount()
+    public function getLocalNetAmount()
     {
         return $this->localNetAmount;
     }
@@ -1361,7 +1361,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getLocalGrossAmount()
+    public function getLocalGrossAmount()
     {
         return $this->localGrossAmount;
     }
@@ -1370,7 +1370,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getTransactionType()
+    public function getTransactionType()
     {
         return $this->transactionType;
     }
@@ -1379,7 +1379,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getIsReversed()
+    public function getIsReversed()
     {
         return $this->isReversed;
     }
@@ -1388,7 +1388,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getReversalDate()
+    public function getReversalDate()
     {
         return $this->reversalDate;
     }
@@ -1397,7 +1397,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getGlAccount()
+    public function getGlAccount()
     {
         return $this->glAccount;
     }
@@ -1406,7 +1406,7 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getCostCenter()
+    public function getCostCenter()
     {
         return $this->costCenter;
     }
@@ -1415,8 +1415,9 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
-    protected function getStandardConvertFactor()
+    public function getStandardConvertFactor()
     {
         return $this->standardConvertFactor;
     }
 }
+    

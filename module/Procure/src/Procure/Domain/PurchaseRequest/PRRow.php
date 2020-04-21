@@ -15,24 +15,26 @@ class PRRow extends BaseRow
 {
 
     private static $instance = null;
-    
-    // Adddtional Attributes
-    //====================
-    
+
+    // Adddtional Attributes.
+    // ====================
     protected $draftPoQuantity;
+
     protected $postedPoQuantity;
-    
+
     protected $draftGrQuantity;
+
     protected $postedGrQuantity;
 
     protected $draftApQuantity;
-    protected $postedApQuantity;
-    
-    protected $draftStockQrQuantity;
-    protected $postedStockQrQuantity;
-     
-    //===================
 
+    protected $postedApQuantity;
+
+    protected $draftStockQrQuantity;
+
+    protected $postedStockQrQuantity;
+
+    // ===================
     private function __construct()
     {}
 
@@ -130,7 +132,9 @@ class PRRow extends BaseRow
             print "\n" . "public $" . $propertyName . ";";
         }
     }
+
     /**
+     *
      * @return mixed
      */
     public function getDraftPoQuantity()
@@ -139,13 +143,16 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedPoQuantity()
     {
         return $this->postedPoQuantity;
     }
+
     /**
+     *
      * @param \Procure\Domain\PurchaseRequest\PRRow $instance
      */
     protected static function setInstance($instance)
@@ -154,6 +161,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $draftPoQuantity
      */
     protected function setDraftPoQuantity($draftPoQuantity)
@@ -162,13 +170,16 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $postedPoQuantity
      */
     protected function setPostedPoQuantity($postedPoQuantity)
     {
         $this->postedPoQuantity = $postedPoQuantity;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getDraftGrQuantity()
@@ -177,6 +188,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedGrQuantity()
@@ -185,6 +197,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftApQuantity()
@@ -193,6 +206,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedApQuantity()
@@ -201,6 +215,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftStockQrQuantity()
@@ -209,13 +224,16 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedStockQrQuantity()
     {
         return $this->postedStockQrQuantity;
     }
+
     /**
+     *
      * @param mixed $draftGrQuantity
      */
     protected function setDraftGrQuantity($draftGrQuantity)
@@ -224,6 +242,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $postedGrQuantity
      */
     protected function setPostedGrQuantity($postedGrQuantity)
@@ -232,6 +251,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $draftApQuantity
      */
     protected function setDraftApQuantity($draftApQuantity)
@@ -240,6 +260,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $postedApQuantity
      */
     protected function setPostedApQuantity($postedApQuantity)
@@ -248,6 +269,7 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $draftStockQrQuantity
      */
     protected function setDraftStockQrQuantity($draftStockQrQuantity)
@@ -256,14 +278,11 @@ class PRRow extends BaseRow
     }
 
     /**
+     *
      * @param mixed $postedStockQrQuantity
      */
     protected function setPostedStockQrQuantity($postedStockQrQuantity)
     {
         $this->postedStockQrQuantity = $postedStockQrQuantity;
     }
-
-
-
-
 }

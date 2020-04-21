@@ -24,9 +24,6 @@ class PRDoc extends GenericPR
 {
 
     private static $instance = null;
-    
-    
-    
 
     private function __construct()
     {}
@@ -60,7 +57,6 @@ class PRDoc extends GenericPR
 
         if ($snapshot->uuid == null) {
             $snapshot->uuid = Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
         }
 
         $instance = new self();

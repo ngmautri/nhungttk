@@ -305,6 +305,10 @@ class PrMapper
         $snapshot->docNumber = $entity->getDocNumber();
 
         // ============================
+        // Addtional Mapping
+        // ============================
+        $snapshot->sysNumber = $snapshot->prAutoNumber;
+        // ============================
         // DATE MAPPING
         // ============================
         /*

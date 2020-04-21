@@ -7,27 +7,23 @@ use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApRowCreateOptions;
-use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\DTO\Ap\ApRowDTO;
+use Procure\Application\Command\PR\Options\RowCreateOptions;
+use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Application\Service\AP\RowSnapshotReference;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APRowSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\PurchaseRequest\Validator\Row\DefaultRowValidator;
+use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -49,20 +45,20 @@ class AddRowCmdHandler extends AbstractCommandHandler
             throw new InvalidArgumentException(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof ApRowDTO) {
-            throw new InvalidArgumentException("ApRowDTO object not found!");
+        if (! $cmd->getDto() instanceof PrRowDTO) {
+            throw new InvalidArgumentException("PrRowDTO object not found!");
         }
 
-        if (! $cmd->getOptions() instanceof ApRowCreateOptions) {
+        if (! $cmd->getOptions() instanceof RowCreateOptions) {
             throw new InvalidArgumentException("Cmd Options object not found!");
         }
 
         /**
          *
-         * @var ApDTO $dto ;
+         * @var PrRowDTO $dto ;
          * @var InvalidArgumentException $options ;
-         * @var APRowSnapshot $snapshot ;
-         * @var APDoc $rootEntity ;
+         * @var PRRowSnapshot $snapshot ;
+         * @var PRDoc $rootEntity ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();
@@ -78,8 +74,8 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $dto->createdBy = $userId;
             $dto->company = $rootEntity->getCompany();
 
-            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APRowSnapshot());
-            $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new PRRowSnapshot());
+            $snapshot = \Procure\Application\Service\PR\RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
@@ -93,14 +89,8 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecificationFactory, $fxService);
             $rowValidators->add($validator);
 
-            $validator = new WarehouseValidator($sharedSpecificationFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new GLAccountValidator($sharedSpecificationFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
+            $cmdRepository = new PRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new PRPostingService($cmdRepository);
 
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
@@ -125,7 +115,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] Row # %s created", $localSnapshot->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new PRQueryRepositoryImpl($cmd->getDoctrineEM());
 
             $dto->setNotification($notification);
 

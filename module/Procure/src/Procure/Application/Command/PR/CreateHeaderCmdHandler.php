@@ -9,23 +9,19 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
-use Procure\Application\Command\AP\Options\ApCreateOptions;
-use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Command\PR\Options\CreateOptions;
+use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Header\IncotermValidator;
-use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -49,13 +45,13 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
         /**
          *
-         * @var ApDTO $dto ;
-         * @var ApCreateOptions $options ;
+         * @var PrDTO $dto ;
+         * @var CreateOptions $options ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();
 
-        if (! $dto instanceof ApDTO) {
+        if (! $dto instanceof PrDTO) {
             throw new InvalidArgumentException("DTO object not found!");
         }
 
@@ -88,11 +84,11 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var APSnapshot $snapshot ;
-             * @var APSnapshot $rootSnapshot ;
-             * @var APDoc $rootEntity ;
+             * @var PRSnapshot $snapshot ;
+             * @var PRSnapshot $rootSnapshot ;
+             * @var PRDoc $rootEntity ;
              */
-            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APSnapshot());
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new PRSnapshot());
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
@@ -103,28 +99,16 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $validator = new IncotermValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $validator = new InvoiceAndPaymentTermValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $validator = new APPostingValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
+            $cmdRepository = new PRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new PRPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $rootEntity = APDoc::createFrom($snapshot, $options, $headerValidators, $sharedService, $postingService);
+            $rootEntity = PRDoc::createFrom($snapshot, $options, $headerValidators, $sharedService, $postingService);
 
             $dto->id = $rootEntity->getId();
             $dto->token = $rootEntity->getToken();
 
-            $m = sprintf("[OK] AP # %s created", $dto->getId());
+            $m = sprintf("[OK] PR # %s created", $dto->getId());
             $notification->addSuccess($m);
 
             // event dispatcher

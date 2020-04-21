@@ -6,30 +6,26 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
-use Procure\Application\DTO\Ap\ApRowDTO;
+use Procure\Application\Command\PR\Options\RowUpdateOptions;
+use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Service\AP\RowSnapshotReference;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Exception\PoRowUpdateException;
-use Procure\Domain\GoodsReceipt\GRRow;
-use Procure\Domain\GoodsReceipt\GRRowSnapshot;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRRow;
+use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
+use Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -48,22 +44,22 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new PoRowUpdateException(sprintf("% not found!", "AbstractDoctrineCmd"));
+            throw new InvalidArgumentException(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
         /**
          *
-         * @var ApRowDTO $dto ;
-         * @var APDoc $rootEntity ;
-         * @var ApRowUpdateOptions $options ;
+         * @var PrRowDTO $dto ;
+         * @var PRDoc $rootEntity ;
+         * @var RowUpdateOptions $options ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();
 
-        if (! $options instanceof ApRowUpdateOptions) {
+        if (! $options instanceof RowUpdateOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
-        if (! $cmd->getDto() instanceof ApRowDTO) {
-            throw new InvalidArgumentException("ApRowDTO object not found!");
+        if (! $cmd->getDto() instanceof PrRowDTO) {
+            throw new InvalidArgumentException("PrRowDTO object not found!");
         }
 
         try {
@@ -77,9 +73,9 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var APRow $snapshot ;
-             * @var GRRowSnapshot $newSnapshot ;
-             * @var GRRow $row ;
+             * @var PRRowSnapshot $snapshot ;
+             * @var PRRowSnapshot $newSnapshot ;
+             * @var PRRow $row ;
              *     
              */
             $row = $localEntity;
@@ -105,7 +101,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "remarks"
             ];
 
-            $newSnapshot = APRowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+            $newSnapshot = PRRowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
 
             $changeLog = $snapshot->compare($newSnapshot);
 
@@ -136,14 +132,8 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
 
-            $validator = new WarehouseValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
+            $cmdRepository = new PRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new PRPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
@@ -167,11 +157,11 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 }
             }
 
-            $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
+            $m = sprintf("PR #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
 
             $notification->addSuccess($m);
 
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new PRQueryRepositoryImpl($cmd->getDoctrineEM());
             // revision numner hasnt been increased.
             $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
             if ($version != $currentVersion) {

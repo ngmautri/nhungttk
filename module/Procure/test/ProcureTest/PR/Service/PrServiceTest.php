@@ -1,13 +1,12 @@
 <?php
-namespace ProcureTest\GR\Command;
+namespace ProcureTest\PR;
 
-use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
+use Procure\Application\Service\PR\PRService;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
-class RepTest extends PHPUnit_Framework_TestCase
+class PrServiceTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -22,10 +21,9 @@ class RepTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         try {
-            /** @var EntityManager $doctrineEM ; */
-            $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new PRQueryRepositoryImpl($doctrineEM);
+            /** @var PRService $sv ; */
+            $sv = Bootstrap::getServiceManager()->get('Procure\Application\Service\PR\PRService');
 
             $id = 1165;
             $token = "e35fCqL7Be_JewXNMm_fZsseg93ehgYN";
@@ -33,8 +31,8 @@ class RepTest extends PHPUnit_Framework_TestCase
             $id = 1123;
             $token = "kKXsCBJre__Re87TdMH6tyZH_T7FatqR";
 
-            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            var_dump($rootEntity->getDocRows());
+            $rootEntity = $sv->getDocDetailsByTokenId($id, $token);
+            var_dump($rootEntity->getRowsOutput());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

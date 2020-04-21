@@ -1,23 +1,21 @@
 <?php
 namespace Procure\Controller;
 
-use Symfony\Component\Workflow\Exception\LogicException;
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
-use Application\Entity\NmtPmProject;
-use Zend\Validator\Date;
-use Zend\Math\Rand;
 use Application\Entity\NmtProcurePr;
-use Symfony\Component\Workflow\Dumper\GraphvizDumper;
 use Application\Entity\NmtProcurePrRow;
-use Endroid\QrCode\QrCode;
 use Application\Service\PdfService;
+use Doctrine\ORM\EntityManager;
+use Endroid\QrCode\QrCode;
+use MLA\Paginator;
+use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Service\PR\PRService;
+use Procure\Domain\Shared\Constants;
+use Symfony\Component\Workflow\Exception\LogicException;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
-use Ramsey\Uuid;
-use Ramsey;
+use Zend\Math\Rand;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -34,9 +32,98 @@ class PrController extends AbstractActionController
     protected $pdfService;
 
     protected $prService;
-    
+
     protected $attachmentService;
-    
+
+    protected $purchaseRequestService;
+
+    public function saveAsAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/pr/view";
+        $form_title = "Show PR:";
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/pr/review-v1";
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $file_type = $this->params()->fromQuery('file_type');
+        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($id, $token, $file_type);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
+    public function printAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/pr/view";
+        $form_title = "Show PR:";
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/pr/review-v1";
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $file_type = $this->params()->fromQuery('file_type');
+        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($id, $token, $file_type);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
 
     /*
      * Defaul Action
@@ -568,87 +655,55 @@ class PrController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function viewAction()
     {
+        $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
-        
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        
+
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('not_found');
         }
-        
-        // $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
-        
-        $redirectUrl = $this->getRequest()
-        ->getHeader('Referer')
-        ->getUri();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/pr/view";
+        $form_title = "View Purchase Request:";
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/pr/review-v1";
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
         $id = (int) $this->params()->fromQuery('entity_id');
-        // $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
-        
-        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
-        $pr = $res->getPrNew($id, $token);
-        
-        if ($pr == null) {
-            return $this->redirect()->toRoute('access_denied');
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($id, $token);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
         }
-        
-        $entity = null;
-        if ($pr[0] instanceof NmtProcurePr) {
-            $entity = $pr[0];
-        }
-        
-        if ($entity instanceof \Application\Entity\NmtProcurePr) {
-            
-            try {
-                /** @var \Symfony\Component\Workflow\Workflow $wf */
-                // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
-                
-                // var_dump($wf->getEnabledTransitions($entity));
-                
-                // $wf->apply($entity, "recall");
-                // $dumper = new GraphvizDumper();
-                // echo $dumper->dump($wf->getDefinition());
-                
-                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
-                $wf_plugin = $this->WfPlugin();
-                
-                /** @var \Workflow\Service\WorkflowService $wfService */
-                $wfService = $wf_plugin->getWorkflowSerive();
-                
-                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
-                $wf_factory = $wfService->getWorkFlowFactory($entity);
-                
-                /** @var \Symfony\Component\Workflow\Workflow  $wf */
-                // $wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
-                // $wf->apply($entity,"send");
-            } catch (LogicException $e) {
-                // echo $e->getMessage();
-            }
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'total_row' => $pr['total_row'],
-                'max_row_number' => $pr['max_row_number'],
-                'active_row' => $pr['active_row'],
-                'total_attachment' => $pr['total_attachment'],
-                'total_picture' => $pr['total_picture'],
-                'nmtPlugin' => $nmtPlugin
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'entity_id' => null,
+            'entity_token' => null
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
     }
-    
 
     /**
      *
@@ -668,8 +723,7 @@ class PrController extends AbstractActionController
         $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
             ->getUri();
-        
-            
+
         $id = (int) $this->params()->fromQuery('entity_id');
         // $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
@@ -1222,7 +1276,22 @@ class PrController extends AbstractActionController
     {
         $this->prService = $prService;
     }
-    
-    
-  
+
+    /**
+     *
+     * @return \Procure\Application\Service\PR\PRService
+     */
+    public function getPurchaseRequestService()
+    {
+        return $this->purchaseRequestService;
+    }
+
+    /**
+     *
+     * @param PRService $purchaseRequestService
+     */
+    public function setPurchaseRequestService(PRService $purchaseRequestService)
+    {
+        $this->purchaseRequestService = $purchaseRequestService;
+    }
 }

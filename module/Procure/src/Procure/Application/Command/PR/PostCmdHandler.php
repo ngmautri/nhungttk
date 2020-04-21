@@ -6,29 +6,24 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApPostOptions;
-use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Command\PR\Options\PostOptions;
+use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\PurchaseRequest\Validator\Row\DefaultRowValidator;
+use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -52,20 +47,20 @@ class PostCmdHandler extends AbstractCommandHandler
 
         /**
          *
-         * @var ApDTO $dto ;
-         * @var APDoc $rootEntity ;
-         * @var APSnapshot $rootSnapshot ;
-         * @var ApPostOptions $options ;
+         * @var PrDTO $dto ;
+         * @var PRDoc $rootEntity ;
+         * @var PRSnapshot $rootSnapshot ;
+         * @var PostOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof ApPostOptions) {
+        if (! $options instanceof PostOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
-        if (! $dto instanceof ApDTO) {
+        if (! $dto instanceof PrDTO) {
             throw new InvalidArgumentException("DTO object not found!");
         }
 
@@ -90,27 +85,14 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new APPostingValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
 
             $rowValidators = new RowValidatorCollection();
 
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
 
-            $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
-
-            $validator = new WarehouseValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
+            $cmdRepository = new PRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new PRPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
@@ -133,10 +115,10 @@ class PostCmdHandler extends AbstractCommandHandler
                 }
             }
 
-            $m = sprintf("GR #%s posted", $rootEntity->getId());
+            $m = sprintf("PR #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new PRQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;

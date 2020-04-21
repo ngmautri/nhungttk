@@ -6,28 +6,23 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApUpdateOptions;
-use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Command\PR\Options\UpdateOptions;
+use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Header\IncotermValidator;
-use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
+use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -46,25 +41,25 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new InvalidArgumentException(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof ApDTO) {
-            throw new InvalidArgumentException("ApDTO object not found!");
+        if (! $cmd->getDto() instanceof PrDTO) {
+            throw new InvalidArgumentException("PrDTO object not found!");
         }
 
         /**
          *
-         * @var ApDTO $dto ;
-         * @var APDoc $rootEntity ;
-         * @var APSnapshot $rootSnapshot ;
-         * @var ApUpdateOptions $options ;
+         * @var PrDTO $dto ;
+         * @var PRDoc $rootEntity ;
+         * @var PRSnapshot $rootSnapshot ;
+         * @var UpdateOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof ApUpdateOptions) {
+        if (! $options instanceof UpdateOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
@@ -84,8 +79,8 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var APSnapshot $snapshot ;
-             * @var APSnapshot $newSnapshot ;
+             * @var PRSnapshot $snapshot ;
+             * @var PRSnapshot $newSnapshot ;
              */
             $snapshot = $rootEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
@@ -105,24 +100,9 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
                 "remarks"
             ];
 
-            if ($rootEntity->getDocType() == Constants::PROCURE_DOC_TYPE_INVOICE_PO) {
-                $editableProperties = [
-                    "isActive",
-                    "docNumber",
-                    "docDate",
-                    "sapDoc",
-                    "postingDate",
-                    "grDate",
-                    "warehouse",
-                    "pmtTerm",
-                    "remarks",
-                    "docCurrency"
-                ];
-            }
-
             // $snapshot->warehouse;
 
-            $newSnapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+            $newSnapshot = PRSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
@@ -149,23 +129,14 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $validator = new \Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $validator = new InvoiceAndPaymentTermValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $validator = new IncotermValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
+            $cmdRepository = new PRCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new PRPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $newRootEntity = APDoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
+            $newRootEntity = PRDoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
 
             // event dispatcher
             if (count($newRootEntity->getRecordedEvents() > 0)) {
@@ -190,7 +161,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $notification->addSuccess($m);
 
             // No Check Version when Posting when posting.
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new PRQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
@@ -199,10 +170,9 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! %s", $version, $currentVersion, ""));
             }
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

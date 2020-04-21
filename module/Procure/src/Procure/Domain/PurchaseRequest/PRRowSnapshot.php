@@ -1,23 +1,15 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Procure\Domain\RowSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PRRowSnapshot extends AbstractValueObject
+class PRRowSnapshot extends RowSnapshot
 {
-
-    public $id;
-
-    public $rowNumber;
-
-    public $rowIdentifer;
-
-    public $token;
 
     public $checksum;
 
@@ -31,59 +23,101 @@ class PRRowSnapshot extends AbstractValueObject
 
     public $rowUnit;
 
-    public $conversionFactor;
-
     public $conversionText;
-
-    public $quantity;
 
     public $edt;
 
-    public $isDraft;
-
-    public $isActive;
-
-    public $createdOn;
-
-    public $remarks;
-
-    public $lastChangeOn;
-
-    public $currentState;
-
-    public $faRemarks;
-
-    public $revisionNo;
-
-    public $docStatus;
-
-    public $workflowStatus;
-
-    public $transactionStatus;
-
-    public $convertedStockQuantity;
-
     public $convertedStandardQuantiy;
-
-    public $docQuantity;
-
-    public $docUnit;
-
-    public $docType;
-
-    public $reversalBlocked;
-
-    public $createdBy;
-
-    public $pr;
-
-    public $item;
 
     public $project;
 
-    public $lastChangeBy;
+    /**
+     *
+     * @return mixed
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
 
-    public $docUom;
+    /**
+     *
+     * @return mixed
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
 
-    public $warehouse;
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowName()
+    {
+        return $this->rowName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowDescription()
+    {
+        return $this->rowDescription;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowCode()
+    {
+        return $this->rowCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowUnit()
+    {
+        return $this->rowUnit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getConversionText()
+    {
+        return $this->conversionText;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getEdt()
+    {
+        return $this->edt;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getConvertedStandardQuantiy()
+    {
+        return $this->convertedStandardQuantiy;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
 }

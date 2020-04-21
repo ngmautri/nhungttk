@@ -1,7 +1,9 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
-use Procure\Application\DTO\Pr\PrRowDTO;
+use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Application\DTO\Pr\PrRowDTOAssembler;
+use Procure\Domain\GenericRow;
 
 /**
  *
@@ -11,12 +13,82 @@ use Procure\Application\DTO\Pr\PrRowDTO;
 class PRRowSnapshotAssembler
 {
 
+    const EXCLUDED_FIELDS = 1;
+
+    const EDITABLE_FIELDS = 2;
+
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropsInSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericRow();
+        $dto = new PRRowSnapshot();
+
+        $reflectionClass = new \ReflectionClass($entity);
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingPropsInGenericRow()
+    {
+        $missingProperties = array();
+
+        $entityProps = PrRowDTOAssembler::createDTOProperities();
+        $dto = new GenericRow();
+
+        foreach ($entityProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    public static function findMissingPropsInEntity()
+    {
+        $missingProperties = array();
+        $baseObj = new GenericRow();
+
+        $reflectionClass = new \ReflectionClass($baseObj);
+        $baseProps = $reflectionClass->getProperties();
+
+        $entity = PrRowDTOAssembler::getEntity();
+
+        foreach ($baseProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($entity, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
     /**
      * generete fields.
      */
     public static function createProperities()
     {
-        $entity = new PRRowDetailsSnapshot();
+        $entity = new PRRowSnapshot();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -26,11 +98,7 @@ class PRRowSnapshotAssembler
         }
     }
 
-    /**
-     *
-     * @return LocationSnapshot;
-     */
-    public static function createFromSnapshotCode()
+    public static function createFromDetailsSnapshotCode()
     {
         $itemSnapshot = new PRRowSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
@@ -45,7 +113,7 @@ class PRRowSnapshotAssembler
     /**
      *
      * @param array $data
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRRowSnapshot
+     * @return NULL|\Procure\Domain\GoodsReceipt\GrRowSnapshot
      */
     public static function createSnapshotFromArray($data)
     {
@@ -69,12 +137,12 @@ class PRRowSnapshotAssembler
 
     /**
      *
-     * @param PrRowDTO $dto
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
+     * @param object $dto
+     * @return NULL|\Procure\Domain\GoodsReceipt\GrRowSnapshot
      */
-    public static function createSnapshotFromDTO(PrRowDTO $dto)
+    public static function createSnapshotFromDTO($dto)
     {
-        if (! $dto instanceof PrRowDTO)
+        if ($dto == null)
             return null;
 
         $snapShot = new PRRowSnapshot();
@@ -95,22 +163,18 @@ class PRRowSnapshotAssembler
     /**
      *
      * @param PRRowSnapshot $snapShot
-     * @param PrRowDTO $dto
+     * @param array $dto
+     * @param string $editMode
      * @return NULL|\Procure\Domain\PurchaseRequest\PRRowSnapshot
      */
-    public static function updateSnapshotFromDTO(PRRowSnapshot $snapShot, PrRowDTO $dto)
+    public static function updateSnapshotFromDTO(PRRowSnapshot $snapShot, $dto, $editMode = self::EDITABLE_FIELDS)
     {
-        if (! $dto instanceof PrRowDTO || ! $snapShot instanceof PRRowSnapshot)
+        if ($dto == null || ! $snapShot instanceof PRRowSnapshot)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+        $props = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
         $excludedProperties = array(
             "id",
             "uuid",
@@ -124,18 +188,81 @@ class PRRowSnapshotAssembler
             "company",
             "itemType",
             "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
+            "currencyIso3",
+            "vendorName",
+            "docStatus",
+            "workflowStatus",
+            "transactionStatus",
+            "paymentStatus"
         );
 
-        // $dto->isSparepart;
+        $editableProperties = array(
+            "isActive",
+            "vendor",
+            "contractNo",
+            "contractDate",
+            "docCurrency",
+            "exchangeRate",
+            "incoterm",
+            "incotermPlace",
+            "paymentTerm",
+            "remarks"
+        );
 
-        foreach ($itemProperites as $property) {
+        /**
+         *
+         * @var PORowDetailsDTO $dto ;
+         */
+
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+            if ($editMode == self::EXCLUDED_FIELDS) {
+                if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                        $snapShot->$propertyName = null;
+                    } else {
+                        $snapShot->$propertyName = $property->getValue($dto);
+                    }
+                }
+            }
+
+            if ($editMode == self::EDITABLE_FIELDS) {
+                if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
+
+                    if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                        $snapShot->$propertyName = null;
+                    } else {
+                        $snapShot->$propertyName = $property->getValue($dto);
+                    }
+                }
+            }
+        }
+        return $snapShot;
+    }
+
+    /**
+     *
+     * @param PRRowSnapshot $snapShot
+     * @param object $dto
+     * @param array $editableProperties
+     * @return NULL|\Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
+    public static function updateSnapshotFieldsFromDTO(PRRowSnapshot $snapShot, $dto, $editableProperties)
+    {
+        if ($dto == null || ! $snapShot instanceof PRRowSnapshot || $editableProperties == null)
+            return null;
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
 
                 if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                     $snapShot->$propertyName = null;

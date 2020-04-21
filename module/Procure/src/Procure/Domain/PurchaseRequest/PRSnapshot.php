@@ -1,41 +1,112 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Procure\Domain\DocSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PRSnapshot extends AbstractValueObject
+class PRSnapshot extends DocSnapshot
 {
 
-    public $id;
     public $prAutoNumber;
+
     public $prNumber;
+
     public $prName;
+
     public $keywords;
-    public $remarks;
-    public $createdOn;
-    public $lastChangeOn;
-    public $isDraft;
-    public $isActive;
+
     public $status;
-    public $token;
+
     public $checksum;
+
     public $submittedOn;
-    public $currentState;
+
     public $totalRowManual;
-    public $revisionNo;
-    public $docStatus;
-    public $workflowStatus;
-    public $transactionStatus;
-    public $docType;
-    public $reversalBlocked;
-    public $uuid;
-    public $createdBy;
-    public $lastChangeBy;
+
     public $department;
-    public $company;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrAutoNumber()
+    {
+        return $this->prAutoNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrNumber()
+    {
+        return $this->prNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrName()
+    {
+        return $this->prName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSubmittedOn()
+    {
+        return $this->submittedOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalRowManual()
+    {
+        return $this->totalRowManual;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
 }

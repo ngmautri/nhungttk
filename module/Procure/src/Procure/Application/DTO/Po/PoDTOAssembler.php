@@ -1,9 +1,6 @@
 <?php
 namespace Procure\Application\DTO\Po;
 
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\PODoc;
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -12,15 +9,26 @@ use Procure\Domain\PurchaseOrder\PODoc;
 class PoDTOAssembler
 {
 
+    const ROOT_ENTITY = "\Application\Entity\NmtProcurePo";
+
     /**
      * generete DTO File.
      */
     public static function createDTOProperities()
     {
-        $entity = new \Application\Entity\NmtProcurePo();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
         $reflectionClass = new \ReflectionClass($entity);
         $props = $reflectionClass->getProperties();
         return $props;
+    }
+
+    public static function getEntity()
+    {
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+        return $entity;
     }
 
     /**
@@ -28,7 +36,9 @@ class PoDTOAssembler
      */
     public static function createStoreMapping()
     {
-        $entity = new \Application\Entity\NmtProcurePo();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -43,7 +53,9 @@ class PoDTOAssembler
      */
     public static function createGetMapping()
     {
-        $entity = new \Application\Entity\NmtProcurePo();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -60,7 +72,9 @@ class PoDTOAssembler
     public static function findMissingProperties()
     {
         $missingProperties = array();
-        $entity = new \Application\Entity\NmtProcurePo();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
         $dto = new PoDTO();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();

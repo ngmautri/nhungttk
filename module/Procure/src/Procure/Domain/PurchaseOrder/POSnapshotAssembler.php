@@ -2,9 +2,8 @@
 namespace Procure\Domain\PurchaseOrder;
 
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Domain\GenericDoc;
-use ProcureTest\PR\PoDTOAssemblerTest;
 use Procure\Application\DTO\Po\PoDTOAssembler;
+use Procure\Domain\GenericDoc;
 
 /**
  *
@@ -17,7 +16,7 @@ class POSnapshotAssembler
     const EXCLUDED_FIELDS = 1;
 
     const EDITABLE_FIELDS = 2;
-    
+
     /**
      *
      * @return array;
@@ -25,10 +24,10 @@ class POSnapshotAssembler
     public static function findMissingPropertiesOfSnapshot()
     {
         $missingProperties = array();
-        
+
         $entityProps = PoDTOAssembler::createDTOProperities();
         $dto = new GenericDoc();
-        
+
         foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
@@ -38,18 +37,34 @@ class POSnapshotAssembler
         }
         return $missingProperties;
     }
-    
-    /**
-     *
-     * @return array;
-     */
-    public static function findMissingPropertiesOfEntity()
+
+    public static function findMissingPropsInEntity()
     {
         $missingProperties = array();
-        
+        $baseObj = new GenericDoc();
+
+        $reflectionClass = new \ReflectionClass($baseObj);
+        $baseProps = $reflectionClass->getProperties();
+
+        $entity = PoDTOAssembler::getEntity();
+
+        foreach ($baseProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($entity, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    public static function findMissingPropsInGenericDoc()
+    {
+        $missingProperties = array();
+
         $entityProps = PoDTOAssembler::createDTOProperities();
         $dto = new GenericDoc();
-        
+
         foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
@@ -61,7 +76,28 @@ class POSnapshotAssembler
     }
 
     /**
-     * 
+     *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfEntity()
+    {
+        $missingProperties = array();
+
+        $entityProps = PoDTOAssembler::createDTOProperities();
+        $dto = new GenericDoc();
+
+        foreach ($entityProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    /**
+     *
      * @param POSnapshot $snapShot
      * @param PoDTO $dto
      * @param array $editableProperties

@@ -1,21 +1,21 @@
 <?php
 namespace Procure\Infrastructure\Mapper;
 
-use Application\Entity\NmtApplicationUom;
-use Application\Entity\NmtInventoryItem;
-use Application\Entity\NmtInventoryWarehouse;
-use Application\Entity\NmtProcurePo;
-use Application\Entity\NmtProcurePrRow;
-use Procure\Domain\RowSnapshot;
 use Application\Entity\FinAccount;
 use Application\Entity\FinCostCenter;
 use Application\Entity\FinVendorInvoice;
+use Application\Entity\NmtApplicationUom;
+use Application\Entity\NmtInventoryItem;
+use Application\Entity\NmtInventoryWarehouse;
 use Application\Entity\NmtProcureGr;
+use Application\Entity\NmtProcurePo;
+use Application\Entity\NmtProcurePrRow;
+use Procure\Domain\RowSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class RowMapper
 {
@@ -134,6 +134,7 @@ class RowMapper
         $snapshot->itemSKU2 = $entity->getItemSku2();
         $snapshot->itemChecksum = $entity->getChecksum();
         $snapshot->itemVersion = $entity->getRevisionNo();
+        $snapshot->itemMonitorMethod = $entity->getMonitoredBy();
 
         if ($entity->getStandardUom() != null) {
             $snapshot->itemStandardUnit = $entity->getStandardUom()->getId();

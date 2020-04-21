@@ -1,27 +1,20 @@
 <?php
 namespace ProcureTest\PR;
 
-use Procure\Application\DTO\Pr\PrDTOAssembler;
-
 use Procure\Domain\Exception\InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
+use PHPUnit_Framework_TestCase;
 
 class PrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
 
-    /**
-     *
-     * @var EntityManager $em;
-     */
-    protected $em;
-
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        // echo $root;
         require ($root . '/Bootstrap.php');
     }
 
@@ -29,8 +22,11 @@ class PrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            PRSnapshotAssembler::createProperities();
-           } catch (InvalidArgumentException $e) {
+            PRSnapshotAssembler::findMissingPropsInEntity();
+            PRSnapshotAssembler::findMissingPropsInGenericDoc();
+
+            PRDoc::createSnapshotProps();
+        } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

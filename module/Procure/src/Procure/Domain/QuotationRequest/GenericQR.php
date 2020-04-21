@@ -1,392 +1,396 @@
 <?php
 namespace Procure\Domain\QuotationRequest;
 
-use Application\Notification;
-use Procure\Domain\Service\APPostingService;
-use Procure\Domain\Service\APSpecificationService;
+use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\Translator;
+use Procure\Application\DTO\Ap\ApDetailsDTO;
+use Procure\Domain\AccountPayable\APRow;
+use Procure\Domain\AccountPayable\APRowSnapshot;
+use Procure\Domain\AccountPayable\AbstractAP;
+use Procure\Domain\Event\Ap\ApPosted;
+use Procure\Domain\Event\Ap\ApReversed;
+use Procure\Domain\Event\Ap\ApRowAdded;
+use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\InvalidOperationException;
+use Procure\Domain\Exception\OperationFailedException;
+use Procure\Domain\Exception\ValidationFailedException;
+use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\SharedService;
+use Procure\Domain\Shared\Constants;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericQR extends AbstractPR
+abstract class GenericQR extends AbstractAP
 {
 
-    /**
-     *
-     * @var array
-     */
-    protected $apDocRows;
+    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
 
-    /**
-     *
-     * @var string
-     */
-    protected $rowsOutput;
+    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
 
-    abstract protected function prePost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
-
-    abstract protected function doPost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
-
-    abstract protected function afterPost(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function specificHeaderValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
 
-    abstract protected function specificRowValidation(ApDocRow $row, APSpecificationService $specificationService, Notification $notification, $isPosting = false);
+    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
 
-    abstract protected function specificValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false);
-
-    abstract protected function preReserve(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
-
-    abstract protected function doReverse(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
-
-    abstract protected function afterReserve(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null);
+    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
 
     /**
      *
-     * @param APSpecificationService $specificationService
-     * @param APPostingService $postingService
-     * @param Notification $notification
-     */
-    public function reverse(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
-    {
-        if ($specificationService == null) {
-            throw new InvalidArgumentException("Specification service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("Posting service not found");
-        }
-
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
-        $validationResult = $this->validate($specificationService, $notification, TRUE);
-        if ($validationResult instanceof Notification) {
-            if ($validationResult->hasErrors()) {
-                return $validationResult;
-            }
-        }
-
-        $this->recordedEvents = array();
-        $doReverseNotify = $this->doReverse($specificationService, $postingService, $notification);
-
-        if (! $doReverseNotify == null) {
-            $notification = $doReverseNotify;
-        }
-
-        return $notification;
-    }
-
-    /**
-     *
-     * @param APSpecificationService $specificationService
-     * @param APPostingService $postingService
-     * @param Notification $notification
-     * @throws InvalidArgumentException
-     * @return \Application\Notification
-     */
-    public function post(APSpecificationService $specificationService, APPostingService $postingService, Notification $notification = null)
-    {
-        if ($specificationService == null) {
-            throw new InvalidArgumentException("Specification service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("Posting service not found");
-        }
-
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
-        $validationResult = $this->validate($specificationService, $notification, TRUE);
-        if ($validationResult instanceof Notification) {
-            if ($validationResult->hasErrors()) {
-                return $validationResult;
-            }
-        }
-
-        $this->recordedEvents = array();
-
-        $prePostNotify = $this->prePost($specificationService, $postingService, $notification);
-        if (! $prePostNotify == null) {
-            $notification = $prePostNotify;
-        }
-
-        $doPostNotify = $this->doPost($specificationService, $postingService, $notification);
-
-        if (! $doPostNotify == null) {
-            $notification = $doPostNotify;
-        }
-
-        $afterPostNotify = $this->afterPost($specificationService, $postingService, $notification);
-
-        if (! $afterPostNotify == null) {
-            $notification = $afterPostNotify;
-        }
-
-        if (! $notification->hasErrors()) {
-            $this->raiseEvent();
-        }
-
-        return $notification;
-    }
-
-    /**
-     *
-     * @param APSpecificationService $specificationService
-     * @param Notification $notification
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
      * @param boolean $isPosting
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @return \Procure\Domain\AccountPayable\GenericAP
      */
-    public function validate(APSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
     {
-        if ($specificationService == null) {
-            throw new InvalidArgumentException("Specification service not found");
+        if (! $headerValidators instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Validators not given!");
         }
 
-        if ($notification == null) {
-            $notification = new Notification();
+        if (! $rowValidators instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("GR Validators not given!");
         }
 
-        $notification = $this->validateHeader($specificationService, $notification, $isPosting);
+        // Clear Notification.
+        $this->clearNotification();
 
-        if ($notification->hasErrors()) {
-            return $notification;
+        $this->validateHeader($headerValidators, $isPosting);
+
+        if ($this->hasErrors()) {
+            return $this;
         }
 
-        $specificValidationResult = $this->specificValidation($specificationService, $notification, $isPosting);
-        if ($specificValidationResult instanceof Notification) {
-            $notification = $specificValidationResult;
+        if (count($this->getDocRows()) == 0) {
+            $this->addError("Documment is empty. Please add line!");
+            return $this;
         }
 
-        if ($notification->hasErrors()) {
-            return $notification;
+        foreach ($this->getDocRows() as $row) {
+            $this->validateRow($row, $rowValidators, $isPosting);
         }
 
-        if (count($this->apDocRows) == 0) {
-            $notification->addError("AP Doc has no lines");
-            return $notification;
-        }
-
-        foreach ($this->apDocRows as $row) {
-
-            $checkRowResult = $this->validateRow($row, $specificationService, $notification, $isPosting);
-
-            if ($checkRowResult !== null) {
-                $notification = $checkRowResult;
-            }
-        }
-
-        return $notification;
+        return $this;
     }
+
+    public function deactivateRow(APRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    {}
 
     /**
      *
-     * @param APSpecificationService $specificationService
-     * @param Notification $notification
-     * @param boolean $isPosting
+     * @param APRowSnapshot $snapshot
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\APPostingService $postingService
+     * @throws \Procure\Domain\Exception\InvalidOperationException
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @return \Procure\Domain\AccountPayable\APRowSnapshot
      */
-    public function validateHeader(APSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
+    public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
     {
-        try {
-
-            if ($notification == null) {
-                $notification = new Notification();
-            }
-
-            if ($specificationService == null) {
-                $notification->addError("Specification service not found");
-                return $notification;
-            }
-
-            // general validation done
-            $notification = $this->generalHeaderValidation($specificationService, $notification, $isPosting);
-
-            if ($notification->hasErrors()) {
-                return $notification;
-            }
-
-            // Check and set exchange rate
-            // if ($isPosting) {
-            $fxRate = $specificationService->getFxService()->checkAndReturnFX($this->getDocCurrency(), $this->getLocalCurrency(), $this->getExchangeRate());
-            $this->exchangeRate = $fxRate;
-            // }
-
-            // specific validation
-            $specificHeaderValidationResult = $this->specificHeaderValidation($specificationService, $notification, $isPosting);
-
-            if ($specificHeaderValidationResult instanceof Notification) {
-                $notification = $specificHeaderValidationResult;
-            }
-        } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
+        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+            throw new InvalidOperationException(sprintf("AP is posted! %s", $this->getId()));
         }
 
-        return $notification;
-    }
-
-    /**
-     * Default implementation
-     *
-     * @param APSpecificationService $specificationService
-     * @param Notification $notification
-     * @param boolean $isPosting
-     * @return \Application\Notification
-     */
-    protected function generalHeaderValidation(APSpecificationService $specificationService, Notification $notification, $isPosting = false)
-    {
-        if ($notification == null) {
-            $notification = new Notification();
+        if ($snapshot == null) {
+            throw new InvalidArgumentException("Row Snapshot not found");
         }
 
-        if ($specificationService == null) {
-            $notification->addError("Specification not found");
-            return $notification;
+        if ($options == null) {
+            throw new InvalidArgumentException("Options not found");
         }
 
-        $notification = $specificationService->doGeneralHeaderValiation($this, $notification, $isPosting);
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
 
-        return $notification;
-    }
-
-    /**
-     *
-     * @param APSpecificationService $specificationService
-     * @param ApDocRow $row
-     * @param Notification $notification
-     * @param boolean $isPosting
-     */
-    public function validateRow(ApDocRow $row, APSpecificationService $specificationService, Notification $notification = null, $isPosting = false)
-    {
-        try {
-
-            if ($notification == null) {
-                $notification = new Notification();
-            }
-
-            if ($specificationService == null) {
-                $notification->addError("Specification service not found");
-                return $notification;
-            }
-
-            // general validation done
-            $notification = $this->generalRowValidation($row, $specificationService, $notification, $isPosting);
-
-            if ($notification->hasErrors()) {
-                return $notification;
-            }
-
-            // specific validation
-            $specificRowValidationResult = $this->specificRowValidation($row, $specificationService, $notification, $isPosting);
-
-            if ($specificRowValidationResult instanceof Notification) {
-                $notification = $specificRowValidationResult;
-            }
-        } catch (\Exception $e) {
-            $notification->addError($e->getMessage());
-        }
-
-        return $notification;
-    }
-
-    /**
-     *
-     * @param APSpecificationService $specificationService
-     * @param Notification $notification
-     * @param boolean $isPosting
-     * @return \Application\Notification
-     */
-    protected function generalRowValidation(ApDocRow $row, APSpecificationService $specificationService, Notification $notification, $isPosting = false)
-    {
-        if ($notification == null) {
-            $notification = new Notification();
-        }
-
-        if ($specificationService == null) {
-            $notification->addError("Specification not found");
-            return $notification;
-        }
-        $notification = $specificationService->doGeneralRowValiation($this, $row, $notification, $isPosting);
-
-        return $notification;
-    }
-
-    /**
-     *
-     * @param APSpecificationService $specificationService
-     * @param APDocRowSnapshot $snapshot
-     * @param Notification $notification
-     * @throws InvalidArgumentException
-     * @return NULL|\Procure\Domain\APInvoice\GenericAPDoc
-     */
-    public function addRowFromSnapshot(APDocRowSnapshot $snapshot, APSpecificationService $specificationService, Notification $notification = null)
-    {
-        if (! $snapshot instanceof APDocRowSnapshot)
-            return null;
-
-        // $snapshot-> = $this->uuid;
         $snapshot->docType = $this->docType;
-        $snapshot->transactionType = $this->docType;
-        $snapshot->quantity = $snapshot->docQuantity;
-        $snapshot->wh = $this->warehouse;
 
-        $row = new APDocRow();
-        $row->makeFromSnapshot($snapshot);
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $ckResult = $this->validateRow($row, $specificationService, $notification, false);
-        
-        $convertedPurchaseQuantity = $row->getDocQuantity();
-        $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
-        
-        $conversionFactor = $row->getConversionFactor();
-        $standardCF = $row->getConversionFactor();
-        
-        // converted to purchase quantity
-        $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-        $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-        
-        $convertedStandardQuantity = $entity->getDocQuantity();
-        $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-        
-        
-        if ($ckResult->hasErrors()) {
-            throw new InvalidArgumentException($ckResult->errorMessage());
+        $row = APRow::makeFromSnapshot($snapshot);
+
+        $this->validateRow($row, $rowValidators);
+
+        if ($this->hasErrors()) {
+            throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
 
-        $this->apDocRows[] = $row;
+        $this->recordedEvents = array();
+
+        /**
+         *
+         * @var APRowSnapshot $localSnapshot
+         */
+        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
+
+        if ($localSnapshot == null) {
+            throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
+        }
+
+        $trigger = $options->getTriggeredBy();
+
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $this->addEvent(new ApRowAdded($this->makeSnapshot(), $trigger, $params));
+
+        return $localSnapshot;
+    }
+
+    /**
+     *
+     * @param APRowSnapshot $snapshot
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param array $params
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\APPostingService $postingService
+     * @throws \Procure\Domain\Exception\InvalidOperationException
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @return \Procure\Domain\AccountPayable\APRowSnapshot
+     */
+    public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    {
+        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+            throw new InvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+        }
+
+        if ($snapshot == null) {
+            throw new InvalidArgumentException("APRowSnapshot not found");
+        }
+
+        if ($options == null) {
+            throw new InvalidArgumentException("Options not found");
+        }
+
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        $row = APRow::makeFromSnapshot($snapshot);
+
+        $this->validateRow($row, $rowValidators);
+
+        if ($this->hasErrors()) {
+            throw new ValidationFailedException($this->getNotification()->errorMessage());
+        }
+
+        $this->recordedEvents = array();
+
+        /**
+         *
+         * @var APRowSnapshot $localSnapshot
+         */
+        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
+
+        if ($localSnapshot == null) {
+            throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
+        }
+
+        $trigger = $options->getTriggeredBy();
+
+        $this->addEvent(new ApRowUpdated($this->makeSnapshot(), $trigger, $params));
+
+        return $localSnapshot;
+    }
+
+    /**
+     *
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\APPostingService $postingService
+     * @throws \Procure\Domain\Exception\InvalidOperationException
+     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @return \Procure\Domain\AccountPayable\GenericAP
+     */
+    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    {
+        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+            throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
+        }
+
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+
+        $this->validate($headerValidators, $rowValidators);
+        if ($this->hasErrors()) {
+            throw new ValidationFailedException($this->getErrorMessage());
+        }
+
+        $this->clearEvents();
+
+        $this->prePost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+
+        $this->addEvent(new ApPosted($this->makeDetailsDTO()));
         return $this;
     }
 
     /**
      *
-     * @param ApDocRow $row
+     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\APPostingService $postingService
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @return \Procure\Domain\AccountPayable\GenericAP
      */
-    public function addRow(ApDocRow $row)
+    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
     {
-        $this->apDocRows[] = $row;
+        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
+        }
+
+        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+
+        $this->validate($headerValidators, $rowValidators);
+        if ($this->hasErrors()) {
+            throw new ValidationFailedException($this->getErrorMessage());
+        }
+
+        $this->clearEvents();
+
+        $this->preReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+
+        $this->addEvent(new ApReversed($this->makeSnapshot()));
+        return $this;
     }
 
     /**
      *
-     * @return string
+     * @param HeaderValidatorCollection $headerValidators
+     * @param boolean $isPosting
      */
-    public function getRowsOutput()
+    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
     {
-        return $this->rowsOutput;
+        if (! $headerValidators instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Validators not given!");
+        }
+
+        $headerValidators->validate($this);
     }
 
     /**
      *
-     * @param string $rowsOutput
+     * @param APRow $row
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param boolean $isPosting
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
      */
-    public function setRowsOutput($rowsOutput)
+    public function validateRow(APRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
-        $this->rowsOutput = $rowsOutput;
+        if (! $row instanceof APRow) {
+            throw new InvalidArgumentException("GR Row not given!");
+        }
+
+        if (! $rowValidators instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Row Validator not given!");
+        }
+
+        $rowValidators->validate($this, $row);
+
+        if ($row->hasErrors()) {
+            $this->addErrorArray($row->getErrors());
+        } else {
+            $row->refresh();
+        }
+    }
+
+    /**
+     *
+     * @return NULL|object
+     */
+    public function makeDetailsDTO()
+    {
+        $dto = new ApDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        return $dto;
+    }
+
+    /**
+     *
+     * @return NULL|object
+     */
+    public function makeHeaderDTO()
+    {
+        $dto = new ApDetailsDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        return $dto;
+    }
+
+    /**
+     *
+     * @param object $dto
+     * @return NULL|object
+     */
+    public function makeDTOForGrid($dto)
+    {
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        $rowDTOList = [];
+        if (count($this->docRows) > 0) {
+            foreach ($this->docRows as $row) {
+
+                if ($row instanceof APRow) {
+                    $rowDTOList[] = $row->makeDetailsDTO();
+                }
+            }
+        }
+
+        $dto->docRowsDTO = $rowDTOList;
+        return $dto;
+    }
+
+    /**
+     *
+     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
+     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param \Procure\Domain\Service\SharedService $sharedService
+     * @param \Procure\Domain\Service\APPostingService $postingService
+     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     */
+    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    {
+        if ($headerValidators == null) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($rowValidators == null) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($postingService == null) {
+            throw new InvalidArgumentException("postingService service not found");
+        }
     }
 }

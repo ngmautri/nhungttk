@@ -1,15 +1,13 @@
 <?php
 namespace Procure\Domain\QuotationRequest;
 
-use Application\Domain\Shared\AggregateRoot;
+use Procure\Domain\GenericDoc;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractQR extends AggregateRoot
+abstract class AbstractQR extends GenericDoc
 {
-
-   
 }

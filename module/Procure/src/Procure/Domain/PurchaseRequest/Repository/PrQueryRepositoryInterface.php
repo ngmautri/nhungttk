@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseOrder\Repository;
+namespace Procure\Domain\PurchaseRequest\Repository;
 
 /**
  *
@@ -8,24 +8,28 @@ namespace Procure\Domain\PurchaseOrder\Repository;
  */
 Interface PrQueryRepositoryInterface
 {
-    
+
     /**
-     * 
+     *
      * @param int $id
      */
     public function getHeaderIdByRowId($id);
-    
+
     /**
-     * 
+     *
      * @param int $id
      * @param string $token
      */
     public function getVersion($id, $token = null);
 
     /**
-     * 
+     *
      * @param int $id
      * @param string $token
      */
     public function getVersionArray($id, $token = null);
+
+    public function getRootEntityByTokenId($id, $token = null);
+
+    public function getHeaderById($id, $token = null);
 }

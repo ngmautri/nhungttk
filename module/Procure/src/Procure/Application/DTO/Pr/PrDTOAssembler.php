@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\DTO\Pr;
 
-
+use Procure\Application\DTO\Qr\QrDTO;
 
 /**
  *
@@ -11,20 +11,26 @@ namespace Procure\Application\DTO\Pr;
 class PrDTOAssembler
 {
 
-   
+    const ROOT_ENTITY = "\Application\Entity\NmtProcurePr";
+
     /**
-     * generete DTO File.
+     *
+     * @return array
      */
     public static function createDTOProperities()
     {
-        $entity = new \Application\Entity\NmtProcurePr();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
         $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
+        $props = $reflectionClass->getProperties();
+        return $props;
+    }
+
+    public static function getEntity()
+    {
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+        return $entity;
     }
 
     /**
@@ -32,13 +38,15 @@ class PrDTOAssembler
      */
     public static function createStoreMapping()
     {
-        $entity = new \Application\Entity\NmtProcurePr();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
+            print \sprintf("\n \$entity->set%s(\$snapshot->%s)", ucfirst($propertyName), $propertyName);
         }
     }
 
@@ -47,13 +55,15 @@ class PrDTOAssembler
      */
     public static function createGetMapping()
     {
-        $entity = new \Application\Entity\NmtProcurePr();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$snapshot->" . $propertyName . "= " . "\$entity->get" . ucfirst($propertyName) . "();";
+            print \sprintf("\n \$snapshot->set%s = \$entity->get%s()", $propertyName, ucfirst($propertyName));
         }
     }
 
@@ -64,8 +74,10 @@ class PrDTOAssembler
     public static function findMissingProperties()
     {
         $missingProperties = array();
-        $entity = new \Application\Entity\NmtProcurePr();
-        $dto = new PrDTO();
+        $className = self::ROOT_ENTITY;
+        $entity = new $className();
+
+        $dto = new QrDTO();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {

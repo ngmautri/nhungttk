@@ -1,8 +1,8 @@
 <?php
-namespace Procure\Domain\PuchaseRequest\Repository;
+namespace Procure\Domain\PurchaseRequest\Repository;
 
-use Procure\Domain\GoodsReceipt\GRRow;
-use Procure\Domain\GoodsReceipt\GenericGR;
+use Procure\Domain\PurchaseRequest\GenericPR;
+use Procure\Domain\PurchaseRequest\PRRow;
 
 /**
  *
@@ -13,34 +13,33 @@ Interface PrCmdRepositoryInterface
 {
 
     /**
-     * Store whole Document
      *
-     * @param GenericGR $rootEntity
+     * @param GenericPR $rootEntity
      * @param boolean $generateSysNumber
      * @param boolean $isPosting
      */
-    public function store(GenericGR $rootEntity, $generateSysNumber = false, $isPosting = false);
+    public function store(GenericPR $rootEntity, $generateSysNumber = false, $isPosting = false);
 
     /**
      *
-     * @param GenericGR $rootEntity
+     * @param GenericPR $rootEntity
      * @param boolean $generateSysNumber
      */
-    public function post(GenericGR $rootEntity, $generateSysNumber = True);
+    public function post(GenericPR $rootEntity, $generateSysNumber = True);
 
     /**
      *
-     * @param GenericGR $rootEntity
+     * @param GenericPR $rootEntity
      * @param boolean $generateSysNumber
      * @param boolean $isPosting
      */
-    public function storeHeader(GenericGR $rootEntity, $generateSysNumber = false, $isPosting = false);
+    public function storeHeader(GenericPR $rootEntity, $generateSysNumber = false, $isPosting = false);
 
     /**
      *
-     * @param GenericGR $rootEntity
-     * @param GRRow $localEntity
+     * @param GenericPR $rootEntity
+     * @param PRRow $localEntity
      * @param boolean $isPosting
      */
-    public function storeRow(GenericGR $rootEntity, GRRow $localEntity, $isPosting = false);
+    public function storeRow(GenericPR $rootEntity, PRRow $localEntity, $isPosting = false);
 }

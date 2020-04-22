@@ -40,31 +40,16 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 $rootEntity->addError(Translator::translate("Company not exits. #" . $rootEntity->getCompany()));
             }
 
-            // ===== CK VENDOR =======
-            if ($rootEntity->getVendor() == null) {
-                $rootEntity->addError(Translator::translate("Vendor is not set"));
-            } else {
-                $spec = $this->sharedSpecificationFactory->getVendorExitsSpecification();
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "vendorId" => $rootEntity->getVendor()
-                );
-                if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(Translator::translate(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor())));
+            $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
+
+            // ==== PR NUMBER =======
+            if ($spec->isSatisfiedBy($rootEntity->getPrNumber())) {
+                $rootEntity->addError(Translator::translate(\sprintf("PR number is required!%s", $rootEntity->getPrNumber())));
             }
 
-            // ===== DOC CURRENCY =======
-            if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
-                $rootEntity->addError(Translator::translate(sprintf("Doc Currency is empty or invalid! %s", $rootEntity->getDocCurrency())));
-            }
-
-            // ===== LOCAL CURRENCY =======
-            if ($rootEntity->getLocalCurrency() == null) {
-                $rootEntity->addError(Translator::translate("Local currency is not set"));
-            } else {
-                $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
-                if (! $spec->isSatisfiedBy($rootEntity->getLocalCurrency()))
-                    $rootEntity->addError(Translator::translate("Local currency not exits..." . $rootEntity->getLocalCurrency()));
+            $spec = $this->sharedSpecificationFactory->getDateSpecification();
+            if (! $spec->isSatisfiedBy($rootEntity->getSubmittedOn())) {
+                $rootEntity->addError("PR Date is not correct or empty");
             }
 
             // ===== USER ID =======

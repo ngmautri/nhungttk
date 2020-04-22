@@ -307,7 +307,10 @@ class PrMapper
         // ============================
         // Addtional Mapping
         // ============================
-        $snapshot->sysNumber = $snapshot->prAutoNumber;
+        $snapshot->sysNumber = $snapshot->getPrAutoNumber();
+        $snapshot->docNumber = $snapshot->getPrName();
+        $snapshot->docDate = $snapshot->getSubmittedOn();
+        
         // ============================
         // DATE MAPPING
         // ============================
@@ -327,10 +330,10 @@ class PrMapper
         }
 
         if (! $entity->getSubmittedOn() == null) {
-            $snapshot->submittedOn = $entity->getSubmittedOn()->format("Y-m-d H:i:s");
+            $snapshot->submittedOn = $entity->getSubmittedOn()->format("Y-m-d");
         }
 
-        if (! $entity->getLastChangeOn() == null) {
+        if (! $entity->getDocDate() == null) {
             $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
         }
 
@@ -356,7 +359,7 @@ class PrMapper
         }
 
         if ($entity->getDepartment() !== null) {
-            $snapshot->department = $entity->getDepartment()->getId();
+            $snapshot->department = $entity->getDepartment()->getNodeId();
         }
 
         if ($entity->getCompany() !== null) {

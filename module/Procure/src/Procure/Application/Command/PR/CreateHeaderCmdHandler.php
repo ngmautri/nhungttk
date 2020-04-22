@@ -90,6 +90,8 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new PRSnapshot());
 
+            $snapshot->prName = $snapshot->getPrNumber();
+
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());

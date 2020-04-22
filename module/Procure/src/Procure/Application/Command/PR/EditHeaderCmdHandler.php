@@ -17,6 +17,7 @@ use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
+use Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -86,21 +87,15 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
-                "docNumber",
-                "docDate",
-                "sapDoc",
-                "postingDate",
-                "contractDate",
-                "grDate",
-                "remarks",
-                "docCurrency",
-                "pmtTerm",
+                "prNumber",
+                "submittedOn",
+                "keywords",
                 "warehouse",
-                "incoterm",
+                "department",
                 "remarks"
             ];
 
-            // $snapshot->warehouse;
+            $snapshot->keywords;
 
             $newSnapshot = PRSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
             $changeLog = $snapshot->compare($newSnapshot);
@@ -120,16 +115,13 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             // var_dump($changeLog);
 
-            // do change
-            $newSnapshot->lastchangeBy = $userId;
-
             $headerValidators = new HeaderValidatorCollection();
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
-            $validator = new \Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator($sharedSpecFactory, $fxService);
+            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
 
             $cmdRepository = new PRCmdRepositoryImpl($cmd->getDoctrineEM());

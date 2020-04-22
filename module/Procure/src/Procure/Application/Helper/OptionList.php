@@ -4,6 +4,7 @@ namespace Procure\Application\Helper;
 use Application\Entity\FinAccount;
 use Application\Entity\FinCostCenter;
 use Application\Entity\NmtApplicationCurrency;
+use Application\Entity\NmtApplicationDepartment;
 use Application\Entity\NmtApplicationIncoterms;
 use Application\Entity\NmtApplicationPmtTerm;
 use Application\Entity\NmtInventoryWarehouse;
@@ -11,7 +12,7 @@ use Application\Entity\NmtInventoryWarehouse;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class OptionList
 {
@@ -177,6 +178,34 @@ class OptionList
                     $option = $option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getIncoterm(), $l->getIncoterm1());
+                }
+            }
+        }
+        return $option;
+    }
+
+    public static function createDepartmentOption($list, $id)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var NmtApplicationDepartment $l ;
+             */
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s  %s</option>', $l->getNodeId(), $l->getNodeName(), "");
+            } else {
+                if ($id == $l->getNodeId()) {
+                    $option = $option . sprintf('<option selected value="%s">%s  %s</option>', $l->getNodeId(), $l->getNodeName(), "");
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s  %s</option>', $l->getNodeId(), $l->getNodeName(), "");
                 }
             }
         }

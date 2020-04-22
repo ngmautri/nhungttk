@@ -21,7 +21,7 @@ class RowSnapshotReference
      */
     public static function updateReferrence(PRRowSnapshot $snapshot, EntityManager $doctrineEM)
     {
-        if (! $snapshot instanceof APRowSnapshot || ! $doctrineEM instanceof EntityManager) {
+        if (! $snapshot instanceof PRRowSnapshot || ! $doctrineEM instanceof EntityManager) {
             return null;
         }
 

@@ -1,7 +1,6 @@
 <?php
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\OptionList;
-use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -11,11 +10,11 @@ use Procure\Domain\Shared\ProcureDocStatus;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
-/**@var \Procure\Application\DTO\Pr\PrDTO $rootDto ;*/
+/**@var \Procure\Application\DTO\Pr\PrDTO $rootDTO ;*/
 /**@var \Procure\Application\DTO\Pr\PrRowDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-// var_dump($headerDTO);
+// var_dump($rootDTO);
 // echo memory_get_usage();
 
 $add_row_url = null;
@@ -33,7 +32,7 @@ if ($action == Constants::FORM_ACTION_SHOW) {
     $isViewing = true;
 }
 
-$canPost = false;
+$canPost = true;
 
 $transactionStatus = "";
 $alert = "info";
@@ -43,36 +42,36 @@ $pmtTermId = null;
 $currencyId = null;
 $incotermId = null;
 
-if (! $headerDTO == null) {
+if (! $rootDTO == null) {
 
-    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $rootDTO->getTransactionStatus());
 
-    if ($headerDTO->getTransactionStatus() == "completed") {
-        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+    if ($rootDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $rootDTO->getTransactionStatus());
         $alert = "success";
     }
 
-    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $view_url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/pr/review?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $view_url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
 
-    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $update_header_url = sprintf($this->baseUrl . "/procure/ap/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $update_header_url = sprintf($this->baseUrl . "/procure/pr/update?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
 
-    $add_row_url = sprintf($this->baseUrl . "/procure/ap/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $add_row_url = sprintf($this->baseUrl . "/procure/pr/add-row?target_id=%s&target_token=%s", $rootDTO->getId(), $rootDTO->getToken());
 
-    $save_as_pdf = sprintf($this->baseUrl . "/procure/pr/print?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
-    $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
-    $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_pdf = sprintf($this->baseUrl . "/procure/pr/print?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $rootDTO->getId(), $rootDTO->getToken());
+    $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $rootDTO->getId(), $rootDTO->getToken());
+    $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $rootDTO->getId(), $rootDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($rootDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
-    switch ($headerDTO->getDocStatus()) {
+    switch ($rootDTO->getDocStatus()) {
         case ProcureDocStatus::DOC_STATUS_DRAFT:
             $isDraft = true;
             $canPost = true;
@@ -82,10 +81,10 @@ if (! $headerDTO == null) {
             break;
     }
 
-    $wh_id = $headerDTO->getWarehouse();
-    $pmtTermId = $headerDTO->getPmtTerm();
-    $currencyId = $headerDTO->getDocCurrency();
-    $incotermId = $headerDTO->getIncoterm();
+    $wh_id = $rootDTO->getWarehouse();
+    $pmtTermId = $rootDTO->getPmtTerm();
+    $currencyId = $rootDTO->getDocCurrency();
+    $incotermId = $rootDTO->getIncoterm();
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -109,8 +108,7 @@ endif;
 ?>
 
   		<hr>
-        <h5>PURCHASE REQUEST:</h5>
-   
+      <h5>PURCHASE REQUEST:</h5>
       <span style="color: gray; margin: 2pt 2pt 2pt 8pt">
        <?php
 
@@ -124,23 +122,22 @@ endif;
             <li>
                <b><?php
 
-            if (! $headerDTO == null) :
-                echo sprintf("PR #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
+            if (! $rootDTO == null) :
+                echo sprintf("PR #%s (Version #%s)", $rootDTO->getSysNumber(), $rootDTO->getRevisionNo()); endif;
 
             ?></b>
-            
-            <span style="color:fuchsia;">0sffff</span>
+               <span style="color: fuchsia;">0sffff</span>
             </li>
             <li>-----</li>
             <li>Status: <?php
 
-            if (! $headerDTO == null) :
-                echo $headerDTO->getDocStatus(); endif;
+            if (! $rootDTO == null) :
+                echo $rootDTO->getDocStatus(); endif;
 
             ?> </li>
             <li>Total rows: <?php
 
-            echo ($headerDTO->totalRows);
+            echo ($rootDTO->totalRows);
             ?></li>
             <li>Status: <?php
 
@@ -149,7 +146,7 @@ endif;
             <li>-----</li>
             <li>Created by: <?php
 
-            echo $headerDTO->getCreatedByName();
+            echo $rootDTO->getCreatedByName();
             ?></li>
          </ul>
       </div>
@@ -179,6 +176,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                <span>
          
          </a>
+         <!-- end tab -->
          <div id="tabs" style="font-size: 9.5pt">
             <ul>
                <li>
@@ -266,10 +264,10 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
     ?>" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="entity_id" value="<?php
 
-    echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+    echo (! $rootDTO == null) ? $rootDTO->getId() : "";
     ?>" />
                   <input type="hidden" name="entity_token" value="<?php
-    echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+    echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
     ?>" />
                   <input type="hidden" name="version" value="<?php
     echo $version;
@@ -299,7 +297,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                            <div class="col-sm-8">
                               <input class="form-control input-sm" type="text" placeholder="" name="reversalReason" value="<?php
 
-    echo (! $headerDTO == null) ? '[Reversal] ' . $headerDTO->getRemarks() : "";
+    echo (! $rootDTO == null) ? '[Reversal] ' . $rootDTO->getRemarks() : "";
     ?>">
                            </div>
                         </div>
@@ -334,7 +332,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
 <!-- ================ TOOL BAR ======================-->
                <div style="position: relative; float: right;">
                <?php
-            echo Toolbar::showToolbarAP($headerDTO, $action, $this);
+            // echo Toolbar::showToolbarAP($rootDTO, $action, $this);
             ?>
                </div>
                <!-- ================== TOOL BAR ===================-->
@@ -362,131 +360,33 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                         echo "Version " . $version;
                         ?>):</a>
                      </legend>
+                     <!-- HEADER  -->
                      <div id="invoice_header" class="collapse">
                         <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2">Current State:</label>
+                           <label class="control-label col-sm-2">PR number:</label>
                            <div class="col-sm-3">
-                              <select name="currentState" class="form-control input-sm">
-                                 <option value="">Please Select</option>
-                                 <option
-                                    <?php
-                                    if ($headerDTO !== null) :
-                                        if ($headerDTO->getCurrentState() == "draftPo") :
-                                            echo "selected";
-                                                endif;
-                                                endif;
-
-
-                                    ?>
-                                    value="draftPo">Draft</option>
-                                 <option
-                                    <?php
-                                    if ($headerDTO !== null) {
-                                        if ($headerDTO->getCurrentState() == "finalPo") {
-                                            echo "selected";
-                                        }
-                                    }
-                                    ?>
-                                    value="finalPo">Final</option>
-                              </select>
-                           </div>
-                           <div class="col-sm-3">
-                              <input
-                                 <?php
-                                if (! $headerDTO == null) {
-                                    echo ($headerDTO->getIsActive() == "1") ? "checked" : "";
-                                } else {
-                                    echo "checked";
-                                }
-                                ?>
-                                 type="checkbox" name="isActive" value="1">
-                              &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2 ">Vendor:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="vendor_name_1" placeholder="Enter term to search vendor" name="vendorName"
-                                 value="<?php
-                                if (! $headerDTO == null) {
-                                    echo $headerDTO->getVendorName();
-                                }
-                                ?>">
-                              <input type="hidden" id="vendor_id" placeholder="" name="vendor"
-                                 value="<?php
-                                if (! $headerDTO == null) {
-                                    echo $headerDTO->getVendor();
-                                }
-                                ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a>
-                              <small>
-                                 <i class="glyphicon glyphicon-new-window"></i>
-                              </small>
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2">Currency:</label>
-                           <div class="col-sm-3">
-                              <select name="docCurrency" class="form-control input-sm">
-                                 <option value="">Select Currency</option>
- <?php
-// ================
-echo $currency_option;
-// ================
-?>                                  </select>
-                           </div>
-                           <label class="control-label col-sm-2">Exchange Rate:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="exchangeRate" name="exchangeRate" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getExchangeRate() : "";
+                              <input class="form-control input-sm" type="text" placeholder="" id="submittedOn" name="submittedOn" value="<?php
+                            echo (! $rootDTO == null) ? $rootDTO->getPrName() : "";
                             ?>">
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2">Invoice number:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="docNumber" name="docNumber" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getDocNumber() : "";
-                            ?>">
-                           </div>
-                           <label class="control-label col-sm-2">SAP Document No.:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="sapDoc" name="sapDoc" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getSapDoc() : "";
-                            ?>">
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2 required">Invoice Date:</label>
+                           <label class="control-label col-sm-2 required">PR Date:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" id="docDate" name="docDate" value="<?php
-                            if (! $headerDTO == null) :
-                                echo $headerDTO->getDocDate(); endif;
+                            if (! $rootDTO == null) :
+                                echo $rootDTO->getSubmittedOn(); endif;
 
                             ?>"
                                  placeholder=" please select" />
-                           </div>
-                           <label class="control-label col-sm-2">Posting Date:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="postingDate" name="postingDate"
-                                 value="<?php
-                                if (! $headerDTO == null) :
-                                    echo $headerDTO->getPostingDate(); endif;
-
-                                ?>" placeholder=" please select" />
                            </div>
                         </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2">Goods Receipt Date:</label>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2">Keywords.:</label>
                            <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" id="grDate" name="grDate" value="<?php
-                            if (! $headerDTO == null) :
-                                echo $headerDTO->getGrDate(); endif;
-
-                            ?>"
-                                 placeholder=" please select" />
+                              <input class="form-control input-sm" type="text" placeholder="" id="" keywords"" name="keywords" value="<?php
+                            echo (! $rootDTO == null) ? $rootDTO->getKeywords() : "";
+                            ?>">
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
@@ -506,85 +406,53 @@ echo $wh_option;
                                         </select>
                            </div>
                         </div>
-                        <div class="form-group margin-bottom">
-                           <label class="control-label col-sm-2">Contract /PO No.:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="contractNo" name="contractNo" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getContractNo() : "";
-                            ?>">
-                           </div>
-                           <label class="control-label col-sm-2">Contract /PO Date:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate"
-                                 value="<?php
-                                if (! $headerDTO == null) :
-                                    echo $headerDTO->getContractDate(); endif;
-
-                                ?>">
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2"><?php
-                        echo $this->translate("Incoterm");
-                        ?>:</label>
-                           <div class="col-sm-3">
-                              <select name="incoterm" class="form-control input-sm">
-                                 <option value="">---</option>
-<?php
-// ================
-echo $incoterm_option;
-// ================
-?>
-                                        </select>
-                           </div>
-                           <label class="control-label col-sm-2"><?php
-                        echo $this->translate("Incoterm Place");
-                        ?>:</label>
-                           <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="incotermPlace" name="incotermPlace" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getIncotermPlace() : "";
-                            ?>">
-                           </div>
-                        </div>
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2"><?php
                         echo $this->translate("Payment Term");
                         ?>:</label>
                            <div class="col-sm-3">
-                              <select name="pmtTerm" class="form-control input-sm">
+                              <select name="department" class="form-control input-sm">
                                  <option value=""><?php
                                 echo $this->translate("---");
                                 ?></option>
  <?php
 // ================
-echo $paymentTerm_option;
+echo $department_option;
 // ================
 ?>>
                      </select>
                            </div>
                         </div>
                         <div class="form-group margin-bottom">
-                           <label class="control-label col-sm-2"><?php
-                        echo $this->translate("Payment Term Detail");
-                        ?>:</label>
-                           <div class="col-sm-5">
-                              <input class="form-control input-sm" type="text" placeholder="" id="paymentTermDetail" name="paymentTermDetail" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getPmtTerm() : "";
+                           <label class="control-label col-sm-2">Description</label>
+                           <div class="col-sm-8">
+                              <input class="form-control input-sm" type="text" id="remarks" placeholder="" name="remarks" value="<?php
+                            echo (! $rootDTO == null) ? $rootDTO->getRemarks() : "";
                             ?>">
                            </div>
                         </div>
                         <div class="form-group margin-bottom">
-                           <label class="control-label col-sm-2">Description</label>
+                           <label class="control-label col-sm-2"></label>
                            <div class="col-sm-8">
-                              <input class="form-control input-sm" type="text" id="remarks" placeholder="" name="remarks" value="<?php
-                            echo (! $headerDTO == null) ? $headerDTO->getRemarks() : "";
-                            ?>">
+                              <a title="<?php
+
+                            echo $this->translate('Update document hearder');
+                            ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;"
+                                 href="<?php
+
+                                echo $update_header_url;
+                                ?>">
+                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
+
+                                echo $this->translate('Edit');
+                                ?></a>
+                              <hr>
                            </div>
                         </div>
                      </div>
+                     <!-- HEADER END -->
                   </fieldset>
                </form>
-               <!-- HEADER END -->
                <!-- ROW -->
                <form action="">
                   <fieldset>
@@ -617,37 +485,37 @@ echo $paymentTerm_option;
                             ?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
                                  onclick="showJqueryDialog('Contract /PO: <?php
 
-                                echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
+                                echo $rootDTO->getSysNumber() . ' - ' . $rootDTO->getContractNo();
                                 ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php
 
-                                echo $headerDTO->getToken()?>&entity_id=<?php
+                                echo $rootDTO->getToken()?>&entity_id=<?php
 
-                                echo $headerDTO->getId()?>','j_loaded_data',true);">
+                                echo $rootDTO->getId()?>','j_loaded_data',true);">
                                  <i class="fa fa-window-maximize" aria-hidden="true"></i>
                               </a>
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               <span>
                                  <strong>PO#: <?php
 
-                                echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
+                                echo (! $rootDTO == null) ? $rootDTO->getSysNumber() : "";
                                 ?> // </strong>
                               </span>
                               <span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
 						Net amount: <?php
 
-    echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3();
+    echo number_format($rootDTO->getNetAmount(), 2) . " " . $rootDTO->getCurrencyIso3();
     ?>
                         &nbsp;|&nbsp;Tax amount: <?php
 
-                        echo number_format($headerDTO->getTaxAmount(), 2);
+                        echo number_format($rootDTO->getTaxAmount(), 2);
                         ?>
                         &nbsp;|&nbsp;Gross amount: <?php
 
-                        echo "<b>" . number_format($headerDTO->getGrossAmount(), 2) . "</b> " . $headerDTO->getCurrencyIso3();
+                        echo "<b>" . number_format($rootDTO->getGrossAmount(), 2) . "</b> " . $rootDTO->getCurrencyIso3();
                         ?>
                         &nbsp;|&nbsp;Total rows:<?php
 
-                        echo ($headerDTO->getTotalActiveRows());
+                        echo ($rootDTO->getTotalActiveRows());
                         ?>
 					</span>
                               <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -686,13 +554,12 @@ echo $paymentTerm_option;
                   </fieldset>
                </form>
             </div>
-            <div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
-            <div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
             <!-- end tab -->
          </div>
       </div>
    </div>
-   <!-- /#page-content-wrapper -->
+</div>
+<!-- /#page-content-wrapper -->
 </div>
 <!-- /#wrapper -->
 <!-- Modal -->
@@ -830,11 +697,11 @@ function doPosting1() {
 
 	var url="/procure/ap/review";
 	var entity_id="<?php
-echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+echo (! $rootDTO == null) ? $rootDTO->getId() : "";
 ?>";
 	var entity_token="<?php
 
-echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
 ?>";
 	var version="<?php
 echo $version;
@@ -868,11 +735,11 @@ function doAmendment() {
 	var url="/procure/po/enable-amendment";
 	var entity_id="<?php
 
-echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+echo (! $rootDTO == null) ? $rootDTO->getId() : "";
 ?>";
 	var entity_token="<?php
 
-echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
 ?>";
 	var version="<?php
 
@@ -901,11 +768,11 @@ function doPostAmendment() {
 	var url="/procure/po/review-amendment";
 	var entity_id="<?php
 
-echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+echo (! $rootDTO == null) ? $rootDTO->getId() : "";
 ?>";
 	var entity_token="<?php
 
-echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
 ?>";
 	var version="<?php
 
@@ -1047,54 +914,22 @@ echo $hoverMode;
 		 columnBorders: true,
 
 				  	  toolbar: {
-				  	 	<?php
-
-        if (! $isViewing) :
-            ?>
-                    	<?php
-
-            if ($canPost) :
-                ?>
-                        items: [
-                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
-                            { "click": function (evt, ui) {
-                                var $grid = $(this).closest('.pq-grid');
-                                redirectUrl="<?php
-
-                echo $add_row_url;
-                ?>";
-                                window.location.href= redirectUrl;
-                             }
-                            }
-                        ]
-                        }
-                        ]
-                    	<?php endif;
-
-            ?>
-                    	<?php endif;
-
-        ?>
-
-                     	<?php
-
-                    if ($action == Constants::FORM_ACTION_SHOW) :
-                        ?>
-                      	items: [
-                            { type: 'button', icon: 'ui-icon-refresh', label: '', listeners: [
+	                    items: [
+                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: 
+                            [
                                 { "click": function (evt, ui) {
                                     var $grid = $(this).closest('.pq-grid');
+                                    redirectUrl="<?php
+
+                                    echo $add_row_url;
+                                    ?>";
+                                    window.location.href= redirectUrl;
+                                    }
                                   }
-                                }
-                            ]
-                            }
-                        ]
-                     	<?php endif;
-
-                    ?>
-
-
-                },
+                              ]
+                              }
+                           ]
+                       },
 
 
         change: function (evt, ui) {
@@ -1234,7 +1069,7 @@ echo $hoverMode;
 
       	<?php
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($rootDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         <?php
@@ -1277,7 +1112,7 @@ echo $hoverMode;
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
 
-            redirectUrl="/procure/ap/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+            redirectUrl="/procure/pr/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

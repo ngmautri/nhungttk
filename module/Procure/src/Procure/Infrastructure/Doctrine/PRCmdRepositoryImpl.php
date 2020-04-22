@@ -73,6 +73,11 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
 
         $isFlush = true;
         $increaseVersion = true;
+        
+        /**
+         * 
+         * @var \Application\Entity\NmtProcurePr $entity
+         */
         $entity = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
 
         if ($entity == null) {
@@ -80,8 +85,7 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         }
 
         $rootSnapshot->id = $entity->getId();
-        $rootSnapshot->docVersion = $entity->getDocVersion();
-        $rootSnapshot->sysNumber = $entity->getSysNumber();
+        $rootSnapshot->sysNumber = $entity->getPrAutoNumber();
         $rootSnapshot->revisionNo = $entity->getRevisionNo();
 
         return $rootSnapshot;

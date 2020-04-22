@@ -11,6 +11,7 @@ use Procure\Application\Command\PR\Options\RowCreateOptions;
 use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Application\Service\PR\RowSnapshotReference;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -75,7 +76,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $dto->company = $rootEntity->getCompany();
 
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new PRRowSnapshot());
-            $snapshot = \Procure\Application\Service\PR\RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
+            $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();

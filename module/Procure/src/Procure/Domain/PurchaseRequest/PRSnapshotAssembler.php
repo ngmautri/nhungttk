@@ -3,9 +3,7 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\DTO\Pr\PrDTOAssembler;
-use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\GenericDoc;
-use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**
  *
@@ -86,12 +84,12 @@ class PRSnapshotAssembler
 
     /**
      *
-     * @param QRSnapshot $snapShot
-     * @param QrDTO $dto
+     * @param PRSnapshot $snapShot
+     * @param PrDTO $dto
      * @param array $editableProperties
-     * @return NULL|\Procure\Domain\QuotationRequest\QRSnapshot
+     * @return NULL|\Procure\Domain\PurchaseRequest\PRSnapshot
      */
-    public static function updateSnapshotFieldsFromDTO(PRSnapshot $snapShot, QrDTO $dto, $editableProperties)
+    public static function updateSnapshotFieldsFromDTO(PRSnapshot $snapShot, PrDTO $dto, $editableProperties)
     {
         if ($dto == null || ! $snapShot instanceof PRSnapshot || $editableProperties == null)
             return null;

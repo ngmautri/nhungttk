@@ -44,15 +44,87 @@ WHERE id = %s";
         }
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getVersion()
+     */
     public function getVersion($id, $token = null)
-    {}
+    {
+        $criteria = array(
+            'id' => $id
+        );
 
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePr $doctrineEntity ;
+         */
+
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        if ($doctrineEntity !== null) {
+            return $doctrineEntity->getRevisionNo();
+        }
+        return null;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getVersionArray()
+     */
     public function getVersionArray($id, $token = null)
-    {}
+    {
+        $criteria = array(
+            'id' => $id
+        );
 
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePr $doctrineEntity ;
+         */
+
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        if ($doctrineEntity !== null) {
+            return [
+                "revisionNo" => $doctrineEntity->getRevisionNo(),
+                "docVersion" => $doctrineEntity->getDocVersion()
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getHeaderById()
+     */
     public function getHeaderById($id, $token = null)
-    {}
+    {
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
 
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePr $entity ;
+         */
+        $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $snapshot = PrMapper::createSnapshot($this->doctrineEM, $entity);
+
+        if ($snapshot == null) {
+            return null;
+        }
+
+        return PRDoc::makeFromSnapshot($snapshot);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getRootEntityByTokenId()
+     */
     public function getRootEntityByTokenId($id, $token = null)
     {
         if ($id == null || $token == null) {
@@ -101,20 +173,18 @@ WHERE id = %s";
             }
             $localSnapshot->draftPoQuantity = $r["po_qty"];
             $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
-            
+
             $localSnapshot->draftGrQuantity = $r["gr_qty"];
             $localSnapshot->postedGrQuantity = $r["posted_gr_qty"];
-            
+
             $localSnapshot->draftApQuantity = $r["ap_qty"];
             $localSnapshot->postedApQuantity = $r["posted_ap_qty"];
-            
+
             $localSnapshot->draftStockQrQuantity = $r["stock_gr_qty"];
             $localSnapshot->postedStockQrQuantity = $r["posted_stock_gr_qty"];
-            
-            
 
             $localEntity = PRRow::makeFromSnapshot($localSnapshot);
-             
+
             $docRowsArray[] = $localEntity;
             $rowIdArray[] = $localEntity->getId();
 
@@ -209,23 +279,22 @@ WHERE nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1 order by ro
 
         $sql = sprintf($sql, $sql1, $sql2, $sql3, $sql4, $sql5, $id);
 
-        //echo $sql;
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
             $rsm->addScalarResult("po_qty", "po_qty");
             $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
-            
+
             $rsm->addScalarResult("gr_qty", "gr_qty");
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
-            
+
             $rsm->addScalarResult("ap_qty", "ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-            
+
             $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
             $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
-            
-            
+
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

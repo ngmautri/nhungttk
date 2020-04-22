@@ -135,11 +135,13 @@ class PRDoc extends GenericPR
             throw new ValidationFailedException($instance->getNotification()->errorMessage());
         }
 
-        $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE);
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_PR);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->setPrAutoNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        $instance->setDocNumber($instance->getPrName());
 
         $instance->recordedEvents = array();
 
@@ -168,7 +170,7 @@ class PRDoc extends GenericPR
         $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
 
         if ($options == null) {
-            throw new InvalidArgumentException("Opptions is null");
+            throw new InvalidArgumentException("Options is null");
         }
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
@@ -198,11 +200,7 @@ class PRDoc extends GenericPR
         }
 
         $instance->id = $rootSnapshot->getId();
-
-        $trigger = null;
-        if ($options !== null) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $trigger = $options->getTriggeredBy();
 
         $instance->addEvent(new PrHeaderUpdated($rootSnapshot, $trigger, $params));
         return $instance;

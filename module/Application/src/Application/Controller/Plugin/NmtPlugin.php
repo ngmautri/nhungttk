@@ -1,10 +1,10 @@
 <?php
 namespace Application\Controller\Plugin;
 
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Application\Entity\NmtInventoryItemPicture;
 use Doctrine\ORM\EntityManager;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
+use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
  *
@@ -361,6 +361,18 @@ class NmtPlugin extends AbstractPlugin
 
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->findBy($criteria, $sort_criteria);
         return $list;
+    }
+
+    public function departmentList()
+    {
+        $criteria = array(
+            'nodeParentId' => 1
+        );
+        $sort_criteria = array(
+            'nodeName' => 'ASC'
+        );
+        $wh_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDepartment')->findBy($criteria, $sort_criteria);
+        return $wh_list;
     }
 
     /**

@@ -70,12 +70,8 @@ class APDoc extends GenericAP
      */
     public static function makeFromSnapshot(APSnapshot $snapshot)
     {
-        if (! $snapshot instanceof APSnapshot)
+        if (! $snapshot instanceof APSnapshot) {
             return;
-
-        if ($snapshot->uuid == null) {
-            $snapshot->uuid = Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
         }
 
         $instance = new self();

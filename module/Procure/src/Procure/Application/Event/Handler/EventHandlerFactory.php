@@ -20,6 +20,8 @@ use Procure\Application\Event\Handler\PO\PoRowAddedHandler;
 use Procure\Application\Event\Handler\PO\PoRowUpdatedHandler;
 use Procure\Application\Event\Handler\PR\PrHeaderCreatedHandler;
 use Procure\Application\Event\Handler\PR\PrHeaderUpdatedHandler;
+use Procure\Application\Event\Handler\PR\PrRowAddedHandler;
+use Procure\Application\Event\Handler\PR\PrRowUpdatedHandler;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\Event\Ap\ApPosted;
 use Procure\Domain\Event\Ap\ApReversed;
@@ -36,6 +38,8 @@ use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowUpdated;
 use Procure\Domain\Event\Pr\PrHeaderCreated;
 use Procure\Domain\Event\Pr\PrHeaderUpdated;
+use Procure\Domain\Event\Pr\PrRowAdded;
+use Procure\Domain\Event\Pr\PrRowUpdated;
 
 /**
  *
@@ -44,6 +48,10 @@ use Procure\Domain\Event\Pr\PrHeaderUpdated;
  */
 class EventHandlerFactory
 {
+
+    public $handlers = [
+        PrRowAdded::class => []
+    ];
 
     public static function createEventHandler($eventName, EntityManager $doctrineEM = null)
     {
@@ -112,6 +120,11 @@ class EventHandlerFactory
             case PrHeaderUpdated::class:
                 $handlers[] = new PrHeaderUpdatedHandler($doctrineEM);
 
+            case PrRowAdded::class:
+                $handlers[] = new PrRowAddedHandler($doctrineEM);
+
+            case PrRowUpdated::class:
+                $handlers[] = new PrRowUpdatedHandler($doctrineEM);
                 break;
         }
 

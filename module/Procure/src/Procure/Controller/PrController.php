@@ -231,7 +231,7 @@ class PrController extends AbstractActionController
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/ap/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
+        $redirectUrl = sprintf("/procure/pr/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -332,7 +332,7 @@ class PrController extends AbstractActionController
             if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            $options = new RowUpdateOptions($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, __METHOD__);
+            $options = new RowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
 
             $cmdHandler = new UpdateRowCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
@@ -340,6 +340,7 @@ class PrController extends AbstractActionController
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
+            echo $e->getTraceAsString();
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }

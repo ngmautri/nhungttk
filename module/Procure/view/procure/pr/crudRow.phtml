@@ -19,6 +19,8 @@ $message_url = null;
 $review_url = null;
 $rowNumber = null;
 $doc_wh_id = null;
+$today = new DateTime();
+$default_edt = $today->modify("7 days")->format("Y-m-d");
 
 // var_dump($rootDto);
 if ($rootDto !== null) {
@@ -26,7 +28,7 @@ if ($rootDto !== null) {
     $target_token = $rootDto->getToken();
 
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
-    $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
+    $review_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $target_id, $target_token);
     // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
     $rowNumber = $rootDto->getTotalRows() + 1;
     $doc_wh_id = $rootDto->getWarehouse();
@@ -40,6 +42,10 @@ if ($dto !== null) {
     $wh_id = $dto->getWarehouse();
     $gl_account = $dto->getGlAccount();
     $cost_center = $dto->getCostCenter();
+
+    if ($dto->getEdt() !== null) {
+        $default_edt = $dto->getEdt();
+    }
 }
 
 if ($wh_id == null) {
@@ -292,10 +298,7 @@ echo $error_msg;
                      <label class="control-label col-sm-2 required">Expected Date:</label>
                      <div class="col-sm-3">
                         <input class="form-control input-sm" type="text" id="edt" name="edt" value="<?php
-                        if (! $dto == null) :
-                            echo $dto->getEdt(); 
-                        endif;
-
+                        echo $default_edt;
                         ?>" placeholder=" please select" />
                      </div>
                   </div>
@@ -474,8 +477,7 @@ $( "#item_name" ).focus();
        	 endif
         ?>
         
-        
- 
+  
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);

@@ -4,7 +4,7 @@ namespace Procure\Application\Service\PR;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
-use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Service\FXService;
 use Procure\Application\Service\Output\RowNumberFormatter;
 use Procure\Application\Service\Output\RowTextAndNumberFormatter;
@@ -19,13 +19,12 @@ use Procure\Application\Service\PR\Output\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\OpenOfficeBuilder;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 
@@ -38,12 +37,6 @@ use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 class PRService extends AbstractService
 {
 
-    /**
-     * '
-     *
-     * @param int $id
-     * @param string $token
-     */
     public function getDocHeaderByTokenId($id, $token)
     {
         $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
@@ -100,7 +93,7 @@ class PRService extends AbstractService
 
     public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
     {
-        $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
 
         $rootEntity = null;
         $localEntity = null;
@@ -111,11 +104,11 @@ class PRService extends AbstractService
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid(new ApDTO());
+            $rootDTO = $rootEntity->makeDTOForGrid(new PrDTO());
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 
-            if ($localEntity instanceof APRow) {
+            if ($localEntity instanceof PRRow) {
                 $localDTO = $localEntity->makeDetailsDTO();
             }
         }

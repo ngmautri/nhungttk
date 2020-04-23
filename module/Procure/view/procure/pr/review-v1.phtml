@@ -51,11 +51,11 @@ if (! $rootDTO == null) {
         $alert = "success";
     }
 
-    $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/pr/status?entity_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
     $review_url = sprintf($this->baseUrl . "/procure/pr/review?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $view_url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $view_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
 
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
     $update_header_url = sprintf($this->baseUrl . "/procure/pr/update?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
@@ -196,32 +196,6 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                      <span class="glyphicon glyphicon-picture"></span>
                      </span>
                      &nbsp;Picture
-                  </a>
-               </li>
-               <li>
-                  <a href="#logistic">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Logistic
-                  </a>
-               </li>
-               <li>
-                  <a href="#accounting">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Accounting
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
-
-                echo $status_url;
-                ?>">
-                     <span class="glyphicon glyphicon-picture"></span>
-                     </span>
-                     &nbsp;Status
                   </a>
                </li>
                <li>
@@ -903,7 +877,7 @@ $( "#vendor_name_1" ).autocomplete({
 
 echo $hoverMode;
 ?>',
-		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
+		   	pageModel: { type: "local", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
                 allowInvalid: true,
                 saveKey: $.ui.keyCode.ENTER
@@ -1034,26 +1008,13 @@ echo $hoverMode;
     };
 
     obj.colModel = [
-    	<?php
 
-    if (! $isViewing) :
-        ?>
-      	<?php
-
-        if ($canPost) :
-            ?>
              { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
         		return '<button type="button" class="edit_btn">Edit </button>';
            }
        },
-       <?php endif;
-
-        ?>
-       <?php endif;
-
-    ?>
 
 
        <?php

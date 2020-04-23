@@ -87,7 +87,7 @@ WHERE id = %s";
         if ($doctrineEntity !== null) {
             return [
                 "revisionNo" => $doctrineEntity->getRevisionNo(),
-                "docVersion" => $doctrineEntity->getDocVersion()
+                "docVersion" => $doctrineEntity->getRevisionNo() // Todo
             ];
         }
 
@@ -171,6 +171,7 @@ WHERE id = %s";
             if ($localSnapshot == null) {
                 continue;
             }
+            $totalRows ++;
             $localSnapshot->draftPoQuantity = $r["po_qty"];
             $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
 

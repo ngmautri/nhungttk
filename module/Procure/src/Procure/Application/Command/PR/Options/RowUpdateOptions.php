@@ -37,7 +37,7 @@ class RowUpdateOptions implements CommandOptions
     public function __construct($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException(sprintf("rootEntity not given! %s", __METHOD__));
+            throw new InvalidArgumentException(sprintf("rootEntity not given! %s", __FUNCTION__));
         }
 
         if ($localEntity == null) {

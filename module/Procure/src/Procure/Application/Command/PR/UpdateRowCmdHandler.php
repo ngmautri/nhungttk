@@ -10,16 +10,15 @@ use Procure\Application\Command\PR\Options\RowUpdateOptions;
 use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
-use Procure\Application\Service\AP\RowSnapshotReference;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use Procure\Domain\PurchaseRequest\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\PurchaseRequest\Validator\Row\DefaultRowValidator;
 use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -85,19 +84,13 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $editableProperties = [
                 "rowNumber",
                 "item",
-                "prRow",
-                "poRow",
                 "vendorItemCode",
                 "vendorItemName",
                 "warehouse",
                 "docQuantity",
                 "docUnit",
-                "docUnitPrice",
                 "conversionFactor",
-                "descriptionText",
-                "taxRate",
-                "glAccount",
-                "costCenter",
+                "edt",
                 "remarks"
             ];
 
@@ -136,7 +129,6 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $postingService = new PRPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatcher

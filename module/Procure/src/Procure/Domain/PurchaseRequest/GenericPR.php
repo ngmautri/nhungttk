@@ -305,8 +305,6 @@ abstract class GenericPR extends BaseDoc
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
-        } else {
-            $row->refresh();
         }
     }
 

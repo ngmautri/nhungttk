@@ -4,9 +4,9 @@ namespace Procure\Domain\PurchaseOrder\Validator;
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AbstractRow;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\RowValidatorInterface;
 
@@ -26,11 +26,11 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
     public function validate(AbstractDoc $rootEntity, AbstractRow $localEntity)
     {
         if (! $rootEntity instanceof GenericPO) {
-            throw new PoInvalidArgumentException('Root entity not given!');
+            throw new InvalidArgumentException(\sprintf('Root entity not given!%s', __METHOD__));
         }
 
         if (! $localEntity instanceof PORow) {
-            throw new PoInvalidArgumentException('PO Row not given!');
+            throw new InvalidArgumentException(\sprintf('Local entity not given!%s', __METHOD__));
         }
 
         // do verification now
@@ -79,6 +79,5 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             }
         }
     }
-  
 }
 

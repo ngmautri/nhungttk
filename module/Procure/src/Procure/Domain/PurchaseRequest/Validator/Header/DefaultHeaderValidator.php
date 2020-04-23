@@ -25,7 +25,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
     public function validate(AbstractDoc $rootEntity)
     {
         if (! $rootEntity instanceof GenericPR) {
-            throw new InvalidArgumentException('Root entity not given!');
+            throw new InvalidArgumentException(\sprintf('Root entity not given!%s', __METHOD__));
         }
 
         /**

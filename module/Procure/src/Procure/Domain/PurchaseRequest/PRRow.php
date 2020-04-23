@@ -3,7 +3,7 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Application\DTO\Ap\ApRowDTO;
+use Procure\Application\DTO\Pr\PrRowDTO;
 
 /**
  * PR Row
@@ -71,7 +71,7 @@ class PRRow extends BaseRow
      */
     public function makeDetailsDTO()
     {
-        $dto = new ApRowDTO();
+        $dto = new PrRowDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }

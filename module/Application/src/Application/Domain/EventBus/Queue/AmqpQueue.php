@@ -22,14 +22,17 @@ class AmqpQueue implements QueueInterface
     /** @var bool */
     protected $isDeclared = false;
 
+    protected $connection;
+
     /**
      * AsyncAmqpEventBusMiddleware constructor.
      *
      * @param AMQPStreamConnection $streamConnection
      * @param string $queueName
      */
-    public function __construct(AMQPStreamConnection $streamConnection, string $queueName)
+    public function __construct(AMQPStreamConnection $streamConnection, $queueName)
     {
+        $this->connection = $streamConnection;
         $this->amqpChannel = $streamConnection->channel();
         $this->queueName = $queueName;
     }
@@ -43,7 +46,7 @@ class AmqpQueue implements QueueInterface
             $this->amqpChannel->basic_ack($message->delivery_info['delivery_tag']);
         }
 
-        return ($message) ? $this->serializer->unserialize($message->body) : \NullEvent::create();
+        return ($message) ? \json_decode($message->body) : \NullEvent::create();
     }
 
     public function hasElements()
@@ -57,8 +60,38 @@ class AmqpQueue implements QueueInterface
     public function push(EventInterface $event)
     {
         $this->declareQueue();
-        $this->amqpChannel->basic_publish(new AMQPMessage($this->serializer->serialize($event), [
-            'delivery_mode' => 2
-        ]), '', $this->queueName, true);
+        /*
+         * $this->amqpChannel->basic_publish(new AMQPMessage(json_encode($event), [
+         * 'delivery_mode' => 2
+         * ]), '', $this->queueName, true);
+         */
+
+        /*
+         * $arr = array(
+         * 'a' => 1,
+         * 'b' => 2,
+         * 'c' => 3,
+         * 'd' => 4,
+         * 'e' => 5
+         * );
+         */
+        $body = json_encode($event);
+
+        $msg = new AMQPMessage($body);
+        $this->amqpChannel->basic_publish($msg, '', $this->queueName);
+
+        echo " [x] Sent 'Hello World!'\n";
+        $this->amqpChannel->close();
+        $this->connection->close();
+    }
+
+    /**
+     */
+    protected function declareQueue()
+    {
+        if (false === $this->isDeclared) {
+            $this->amqpChannel->queue_declare($this->queueName, false, false, false, false);
+            $this->isDeclared = true;
+        }
     }
 }

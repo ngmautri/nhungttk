@@ -10,7 +10,7 @@ use Application\Domain\EventBus\Event\EventInterface;
 use Application\Domain\EventBus\Handler\EventHandlerInterface;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 
-class EventFullyQualifiedClassNameStrategy implements EventHandlerMapperInterface
+class FullNameHandlerMapper implements EventHandlerMapperInterface
 {
 
     /**
@@ -49,8 +49,9 @@ class EventFullyQualifiedClassNameStrategy implements EventHandlerMapperInterfac
     /**
      *
      * {@inheritdoc}
+     * @see \Application\Domain\EventBus\Handler\Mapper\EventHandlerMapperInterface::handlerName()
      */
-    public function handlerName(EventInterface $event): array
+    public function handlerName(EventInterface $event)
     {
         $eventClass = get_class($event);
 

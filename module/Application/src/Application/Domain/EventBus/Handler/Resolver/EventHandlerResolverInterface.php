@@ -9,5 +9,5 @@ namespace Application\Domain\EventBus\Handler\Resolver;
 interface EventHandlerResolverInterface
 {
 
-    public function instantiate(string $handler);
+    public function instantiate($handler);
 }

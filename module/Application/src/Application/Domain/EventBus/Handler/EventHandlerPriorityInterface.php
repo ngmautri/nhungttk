@@ -11,7 +11,7 @@ interface EventHandlerPriorityInterface
 
     const HIGH_PRIORITY = PHP_INT_MAX;
 
-    const LOW_PRIORITY = PHP_INT_MIN;
+    const LOW_PRIORITY = - 1;
 
     public static function priority();
 }

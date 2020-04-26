@@ -25,7 +25,7 @@ class InteropContainerResolver implements EventHandlerResolverInterface
         $this->container = $container;
     }
 
-    public function instantiate(string $handler)
+    public function instantiate($handler)
     {
         if (false === $this->container->has($handler)) {
             throw new InvalidArgumentException(sprintf('Handler %s could not be found. Did you register it?', $handler));

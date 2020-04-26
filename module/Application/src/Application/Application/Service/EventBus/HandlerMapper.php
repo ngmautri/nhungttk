@@ -11,5 +11,7 @@ use Application\Service\AbstractService;
 class HandlerMapper extends AbstractService
 {
 
-    protected $mappers;
+    protected $queuedHandlerMapper;
+
+    protected $handlerMapper;
 }

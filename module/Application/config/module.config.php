@@ -1,6 +1,6 @@
 <?php
-use Application\Controller\MessageStoreController;
-use Application\Controller\MessageStoreControllerFactory;
+use Application\Application\Event\Handler\DummyEventHandler;
+use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Infrastructure\Doctrine\MessageStoreRepository;
 use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
 
@@ -304,6 +304,9 @@ return array(
             'Application\Service\PaymentTermService' => 'Application\Service\PaymentTermServiceFactory',
             'Application\Service\PmtMethodService' => 'Application\Service\PmtMethodServiceFactory',
             \Application\Application\Service\MessageStore\MessageQuery::class => \Application\Application\Service\MessageStore\MessageQueryFactory::class,
+
+            // Event Handler Register
+            DummyEventHandler::class => DummyEventHandlerFactory::class,
 
             // Report
             MessageStoreRepository::class => MessageStoreRepositoryFactory::class

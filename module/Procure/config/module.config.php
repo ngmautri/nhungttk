@@ -1,8 +1,14 @@
 <?php
+
 /**
  * Configuration file.
  * @author Ngyuyen Mau Tri
  */
+use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
+use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPostedFactory;
+use Procure\Application\Eventbus\HandlerResolver;
+use Procure\Application\Eventbus\HandlerResolverFactory;
+
 return array(
     'navigation' => array(
         'procure_navi' => array(
@@ -259,7 +265,11 @@ return array(
             'Procure\Application\Service\Search\QrSearchService' => 'Procure\Application\Service\Search\QrSearchServiceFactory',
 
             // Event Handler
-            'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory'
+            'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory',
+
+            // Event Handler Resolver
+            HandlerResolver::class => HandlerResolverFactory::class,
+            UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class
         )
     ),
 

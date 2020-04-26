@@ -9,10 +9,7 @@ class AmqpQueueTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(dirname(__FILE__)))));
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testAdapterQueue()
     {

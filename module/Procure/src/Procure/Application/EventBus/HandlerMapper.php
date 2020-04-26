@@ -1,0 +1,31 @@
+<?php
+namespace Procure\Application\Eventbus;
+
+use Application\Service\AbstractService;
+use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
+use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
+use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
+ */
+class HandlerMapper extends AbstractService
+{
+
+    protected $queuedHandlerMapper;
+
+    protected $handlerMapper;
+
+    protected function setUpMapper()
+    {
+        $handlers = [
+            UpdateIndexOnPrSubmitted::class,
+            UpdateIndexOnPoPosted::class,
+            UpdateIndexOnApPosted::class
+        ];
+
+        $this - $handlers = $handlers;
+    }
+}

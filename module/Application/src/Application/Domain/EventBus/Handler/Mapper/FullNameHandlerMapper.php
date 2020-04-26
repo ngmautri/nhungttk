@@ -1,15 +1,15 @@
 <?php
 namespace Application\Domain\EventBus\Handler\Mapper;
 
+use Application\Domain\EventBus\Event\EventInterface;
+use Application\Domain\EventBus\Handler\EventHandlerInterface;
+use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-use Application\Domain\EventBus\Event\EventInterface;
-use Application\Domain\EventBus\Handler\EventHandlerInterface;
-use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-
 class FullNameHandlerMapper implements EventHandlerMapperInterface
 {
 

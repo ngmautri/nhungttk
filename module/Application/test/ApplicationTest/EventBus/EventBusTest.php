@@ -4,12 +4,13 @@ namespace ApplicationTest\EventBus\Middleware;
 use ApplicationTest\EventBus\DummyEvent;
 use ApplicationTest\EventBus\DummyEvent2Handler;
 use ApplicationTest\EventBus\DummyEventHandler;
-use ApplicationTest\EventBus\InMemoryLogger;
 use Application\Domain\EventBus\EventBus;
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Domain\EventBus\Handler\Resolver\SimpleArrayResolver;
 use Application\Domain\EventBus\Middleware\EventBusMiddleware;
 use Application\Domain\EventBus\Middleware\LoggerEventBusMiddleware;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use PHPUnit_Framework_TestCase;
 
 class EventBusTest extends PHPUnit_Framework_TestCase
@@ -45,7 +46,16 @@ class EventBusTest extends PHPUnit_Framework_TestCase
 
     public function testItCanStackMiddleware()
     {
-        $logger = new InMemoryLogger();
+        // $logger = new InMemoryLogger();
+        $logger = new Logger("EventBus");
+
+        $path = __DIR__ . '/log/';
+        if (false === file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        $handler = new StreamHandler($path . '/test.log', Logger::DEBUG);
+        $logger->pushHandler($handler);
 
         $middleware = [
             new LoggerEventBusMiddleware($logger),
@@ -54,7 +64,6 @@ class EventBusTest extends PHPUnit_Framework_TestCase
 
         $eventBus = new EventBus($middleware);
         $eventBus->__invoke(new DummyEvent());
-        $this->assertNotEmpty($logger->logs());
-        var_dump($logger);
+        $this->assertNotEmpty($logger);
     }
 }

@@ -3,7 +3,6 @@ namespace Application\Domain\EventBus\Queue;
 
 use Application\Domain\EventBus\Event\EventInterface;
 use Application\Entity\MessageStore;
-use Application\Infrastructure\Doctrine\MessageStoreRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Ramsey\Uuid\Uuid;
@@ -33,7 +32,6 @@ class DoctrineQueue implements QueueInterface
      */
     public function pop()
     {
-        $rep = new MessageStoreRepository($this->getDoctrineEM());
         $sql = 'SELECT * FROM message_store
 WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
 
@@ -49,10 +47,6 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
             $events = [];
 
             if ($result) {
-
-                $rep = new MessageStoreRepository($this->getDoctrineEM());
-                // $rep->setSentDate($result);
-
                 foreach ($result as $r) {
                     $events[] = \unserialize($r->getMsgBody());
                 }
@@ -87,9 +81,33 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
         $this->getDoctrineEM()->flush();
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\EventBus\Queue\QueueInterface::hasElements()
+     */
     public function hasElements()
-    {}
+    {
+        $sql = sprintf('SELECT COUNT(*) AS totalCount FROM %s WHERE event_status = \'pending\';', $this->queueName);
+        $sql = \sprintf($sql, $this->queueName);
+        echo $sql;
 
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\MessageStore', 'message_store');
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+        return 0 !== (int) $result['totalCount'];
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\EventBus\Queue\QueueInterface::name()
+     */
     public function name()
     {
         return $this->queueName;

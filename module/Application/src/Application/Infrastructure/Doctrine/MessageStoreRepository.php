@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class MessageStoreRepository extends AbstractDoctrineRepository implements MessageStoreRepositoryInterface
 {
@@ -79,6 +79,23 @@ class MessageStoreRepository extends AbstractDoctrineRepository implements Messa
                 $entity->setSentOn(new \Datetime());
                 $this->getDoctrineEM()->persist($entity);
             }
+        }
+
+        $this->getDoctrineEM()->flush();
+    }
+
+    public function markAsSent($message)
+    {
+        /**
+         *
+         * @var \Application\Entity\MessageStore $entity ;
+         */
+        $entity = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\MessageStore')
+            ->find($message);
+        if ($entity !== null) {
+            $entity->setSentOn(new \Datetime());
+            $this->getDoctrineEM()->persist($entity);
         }
 
         $this->getDoctrineEM()->flush();

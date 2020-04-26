@@ -2,8 +2,8 @@
 namespace Application\Domain\EventBus\Queue;
 
 use Application\Domain\EventBus\Event\EventInterface;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
+use Application\Domain\EventBus\Event\NullEvent;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -13,52 +13,113 @@ use PhpAmqpLib\Message\AMQPMessage;
 class FileSystemQueue implements QueueInterface
 {
 
-    /** @var \PhpAmqpLib\Channel\AMQPChannel */
-    protected $amqpChannel;
+    /** @var string */
+    protected $baseDirectory;
+
+    /** @var int */
+    protected $permissions = 0740;
 
     /** @var string */
     protected $queueName;
 
-    /** @var bool */
-    protected $isDeclared = false;
-
     /**
-     * AsyncAmqpEventBusMiddleware constructor.
+     * FileSystemEventMiddleware constructor.
      *
-     * @param AMQPStreamConnection $streamConnection
+     * @param string $baseDirectory
      * @param string $queueName
      */
-    public function __construct(AMQPStreamConnection $streamConnection, string $queueName)
+    public function __construct($baseDirectory, $queueName)
     {
-        $this->amqpChannel = $streamConnection->channel();
+        $this->guard($baseDirectory);
+
+        $this->baseDirectory = $baseDirectory;
         $this->queueName = $queueName;
     }
 
-    public function pop()
+    /**
+     *
+     * @param string $directory
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function guard($directory)
     {
-        $this->declareQueue();
-        $message = $this->amqpChannel->basic_get($this->queueName);
-
-        if (! empty($message)) {
-            $this->amqpChannel->basic_ack($message->delivery_info['delivery_tag']);
+        if (false === \is_dir($directory)) {
+            throw new \InvalidArgumentException(\sprintf('The provided path %s is not a valid directory', $directory));
         }
 
-        return ($message) ? $this->serializer->unserialize($message->body) : \NullEvent::create();
+        if (false === \is_writable($directory)) {
+            throw new \InvalidArgumentException(\sprintf('The provided directory %s is not writable', $directory));
+        }
     }
 
-    public function hasElements()
-    {}
-
+    /**
+     * Returns the name of the Queue.
+     *
+     * @return string
+     */
     public function name()
     {
         return $this->queueName;
     }
 
+    /**
+     * Adds an event to the Queue.
+     *
+     * @param EventInterface $event
+     */
     public function push(EventInterface $event)
     {
-        $this->declareQueue();
-        $this->amqpChannel->basic_publish(new AMQPMessage($this->serializer->serialize($event), [
-            'delivery_mode' => 2
-        ]), '', $this->queueName, true);
+        file_put_contents($this->filePath(), \serialize($event) . PHP_EOL);
+    }
+
+    public function pop()
+    {
+        $iterator = $this->directoryIterator();
+
+        if ($this->directoryIterator()->count()) {
+            $iteratorArray = iterator_to_array($iterator, true);
+            $fileName = key($iteratorArray);
+
+            $event = file_get_contents($this->baseDirectory . DIRECTORY_SEPARATOR . $fileName);
+            $event = \unserialize($event);
+            unlink($this->baseDirectory . DIRECTORY_SEPARATOR . $fileName);
+
+            return $event;
+        }
+
+        return NullEvent::create();
+    }
+
+    /**
+     * Returns true if queue has been fully processed or not, false otherwise.
+     *
+     * @return bool
+     */
+    public function hasElements()
+    {
+        $iterator = $this->directoryIterator();
+
+        return false === empty($iterator->count());
+    }
+
+    /**
+     *
+     * @return string
+     */
+    protected function filePath()
+    {
+        return sprintf('%s/%s.%s.job.php', $this->baseDirectory, $this->queueName, Uuid::uuid4()->toString());
+    }
+
+    /**
+     *
+     * @return \GlobIterator
+     */
+    protected function directoryIterator()
+    {
+        $iterator = new \GlobIterator($this->baseDirectory . DIRECTORY_SEPARATOR . '*.job.php', \FilesystemIterator::KEY_AS_FILENAME);
+
+        return $iterator;
     }
 }

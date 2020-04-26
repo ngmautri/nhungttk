@@ -1,24 +1,24 @@
 <?php
-namespace Application\Domain\EventBus\Worker;
+namespace Application\Domain\EventBus\Queue\Worker;
 
+use Application\Domain\EventBus\Event\NullEvent;
 use Application\Domain\EventBus\Middleware\EventBusMiddleWareInterface;
 use Application\Domain\EventBus\Queue\QueueInterface;
 use Exception;
-use NullEvent;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SimplerWorker implements WorkerInterface
+class SimpleConsumeWorker implements ConsumeWorkerInterface
 {
 
     public function consume(QueueInterface $consumerQueue, QueueInterface $errorQueue, EventBusMiddleWareInterface $worker)
     {
         while ($event = $consumerQueue->pop()) {
             try {
-                if (false === $event instanceof \NullEvent) {
+                if (false === $event instanceof NullEvent) {
                     $worker($event);
                 } else {
                     break;

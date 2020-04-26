@@ -1,11 +1,10 @@
 <?php
 namespace ApplicationTest\Company;
 
-use Ramsey\Uuid\Uuid;
-use PHPUnit_Framework_TestCase;
-use Doctrine\ORM\EntityManager;
 use ApplicationTest\Bootstrap;
 use Application\Application\DTO\Company\CompanyDTOAssembler;
+use Doctrine\ORM\EntityManager;
+use PHPUnit_Framework_TestCase;
 
 class CompanyDTOTest extends PHPUnit_Framework_TestCase
 {
@@ -21,7 +20,6 @@ class CompanyDTOTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        echo $root;
         require ($root . '/Bootstrap.php');
     }
 

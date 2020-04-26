@@ -1,5 +1,5 @@
 <?php
-use Application\Domain\EventBus\Event\EventInterface;
+namespace Application\Domain\EventBus\Event;
 
 /**
  * Class NullEvent.
@@ -12,7 +12,7 @@ class NullEvent implements EventInterface
     protected function __construct()
     {}
 
-    public static function create(): NullEvent
+    public static function create()
     {
         if (null === static::$instance) {
             static::$instance = new static();

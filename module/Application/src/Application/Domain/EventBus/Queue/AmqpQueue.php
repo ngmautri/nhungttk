@@ -2,6 +2,7 @@
 namespace Application\Domain\EventBus\Queue;
 
 use Application\Domain\EventBus\Event\EventInterface;
+use Application\Domain\EventBus\Event\NullEvent;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -37,6 +38,11 @@ class AmqpQueue implements QueueInterface
         $this->queueName = $queueName;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\EventBus\Queue\QueueInterface::pop()
+     */
     public function pop()
     {
         $this->declareQueue();
@@ -46,7 +52,7 @@ class AmqpQueue implements QueueInterface
             $this->amqpChannel->basic_ack($message->delivery_info['delivery_tag']);
         }
 
-        return ($message) ? \json_decode($message->body) : \NullEvent::create();
+        return ($message) ? \unserialize($message->body) : NullEvent::create();
     }
 
     public function hasElements()
@@ -57,6 +63,11 @@ class AmqpQueue implements QueueInterface
         return $this->queueName;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\EventBus\Queue\QueueInterface::push()
+     */
     public function push(EventInterface $event)
     {
         $this->declareQueue();
@@ -75,14 +86,16 @@ class AmqpQueue implements QueueInterface
          * 'e' => 5
          * );
          */
-        $body = json_encode($event);
+        // $body = json_encode((array) $event);
+
+        $body = \serialize($event);
 
         $msg = new AMQPMessage($body);
         $this->amqpChannel->basic_publish($msg, '', $this->queueName);
 
         echo " [x] Sent 'Hello World!'\n";
-        $this->amqpChannel->close();
-        $this->connection->close();
+        // $this->amqpChannel->close();
+        // $this->connection->close();
     }
 
     /**

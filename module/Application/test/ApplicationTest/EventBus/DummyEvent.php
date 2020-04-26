@@ -11,6 +11,6 @@ class DummyEvent implements EventInterface
     public function __construct()
     {
         $d = new \DateTime();
-        $this->body = \sprintf("%s-%s", "Dummy event created on ", $d->format("Y-m-d"));
+        $this->body = \sprintf("%s-%s", "Dummy event created on ", $d->format("Y-m-d H:i:s"));
     }
 }

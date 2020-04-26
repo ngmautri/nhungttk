@@ -9,7 +9,7 @@ class DummyEvent2Handler implements EventHandlerInterface, EventHandlerPriorityI
 
     public function __invoke($event)
     {
-        echo \sprintf("\n%s involked.", __METHOD__);
+        echo \sprintf("\n\n %s running.", __METHOD__);
         echo "\n" . \get_class($event);
     }
 

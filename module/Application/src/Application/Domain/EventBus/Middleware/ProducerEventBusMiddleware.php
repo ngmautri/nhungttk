@@ -9,7 +9,7 @@ use Application\Domain\EventBus\Queue\QueueInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class LoggerEventBusMiddleware implements EventBusMiddlewareInterface
+class ProducerEventBusMiddleware implements EventBusMiddlewareInterface
 {
 
     protected $queue;

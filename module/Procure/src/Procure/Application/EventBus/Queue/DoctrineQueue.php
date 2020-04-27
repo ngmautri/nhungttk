@@ -87,6 +87,22 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
                 $triggeredBy = $event->getTrigger();
                 $params = $event->getParams();
 
+                if (isset($params['rowId'])) {
+                    $rowId = $params['rowId'];
+                }
+
+                if (isset($params['rowToken'])) {
+                    $rowToken = $params['rowToken'];
+                }
+
+                if ($rowId !== null) {
+                    $changeLog_final["rowId"] = $rowId;
+                }
+
+                if ($rowToken !== null) {
+                    $changeLog_final["rowToken"] = $rowToken;
+                }
+
                 if (isset($params['changeLog'])) {
                     $changeLog = $params['changeLog'];
 
@@ -113,32 +129,14 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
                             $changeLog1[] = $changeLog2;
                         }
                     }
-                }
 
-                if (isset($params['rowId'])) {
-                    $rowId = $params['rowId'];
+                    $changeLog_final["changeLog"] = $changeLog1;
                 }
-
-                if (isset($params['rowToken'])) {
-                    $rowToken = $params['rowToken'];
-                }
-
-                if ($rowId !== null) {
-                    $changeLog_final["rowId"] = $rowId;
-                }
-
-                if ($rowToken !== null) {
-                    $changeLog_final["rowToken"] = $rowToken;
-                }
-
-                $changeLog_final["changeLog"] = $changeLog1;
             }
 
             $message = new MessageStore();
 
-            if (! $changeLog1 == null) {
-                $message->setChangeLog(json_encode($changeLog_final));
-            }
+            $message->setChangeLog(json_encode($changeLog_final));
             $message->setTriggeredBy($triggeredBy);
             $message->setRevisionNo($docVesion);
             $message->setVersion($docVersion);

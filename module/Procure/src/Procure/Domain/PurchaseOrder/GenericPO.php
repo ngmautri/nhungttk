@@ -3,7 +3,6 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\Command\PO\Options\PoRowCreateOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\APInvoice\Factory\APFactory;
@@ -13,9 +12,8 @@ use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoAmendmentException;
-use Procure\Domain\Exception\PoRowCreateException;
-use Procure\Domain\Exception\PoRowException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
@@ -27,7 +25,7 @@ use Ramsey\Uuid\Uuid;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericPO extends GenericDoc
 {
@@ -197,7 +195,7 @@ abstract class GenericPO extends GenericDoc
      * @param SharedService $sharedService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
-     * @throws PoRowException
+     * @throws OperationFailedException
      * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
      */
     public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
@@ -226,6 +224,10 @@ abstract class GenericPO extends GenericDoc
             throw new InvalidArgumentException("postingService service not found");
         }
 
+        if ($options == null) {
+            throw new InvalidArgumentException("Option service not found");
+        }
+
         $createdDate = new \Datetime();
         $snapshot->createdOn = date_format($createdDate, 'Y-m-d H:i:s');
         $snapshot->quantity = $snapshot->docQuantity;
@@ -245,7 +247,7 @@ abstract class GenericPO extends GenericDoc
         $this->validateRow($row, $rowValidators);
 
         if ($this->hasErrors()) {
-            throw new PoRowCreateException($this->getNotification()->errorMessage());
+            throw new OperationFailedException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -257,20 +259,23 @@ abstract class GenericPO extends GenericDoc
         $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new PoRowException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
+            throw new OperationFailedException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
         }
 
-        $trigger = null;
-        if ($options instanceof PoRowCreateOptions) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $trigger = $options->getTriggeredBy();
 
         $params = [
             "rowId" => $localSnapshot->getId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $this->addEvent(new PoRowAdded($this->getId(), $trigger, $params));
+        $target = $this->makeSnapshot();
+        $entityId = $this->getId();
+        $entityToken = $this->getToken();
+        $docVersion = $this->getDocVersion();
+        $revisionNo = $this->getRevisionNo();
+        $event = new PoRowAdded($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -285,8 +290,8 @@ abstract class GenericPO extends GenericDoc
      * @param SharedService $sharedService
      * @param POPostingService $postingService
      * @throws InvalidArgumentException
-     * @throws PoRowCreateException
-     * @throws PoRowException
+     * @throws OperationFailedException
+     * @throws OperationFailedException
      * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
      */
     public function updateRowFrom(PORowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
@@ -333,7 +338,7 @@ abstract class GenericPO extends GenericDoc
         $this->validateRow($row, $rowValidators);
 
         if ($this->hasErrors()) {
-            throw new PoRowCreateException($this->getNotification()->errorMessage());
+            throw new OperationFailedException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -345,15 +350,19 @@ abstract class GenericPO extends GenericDoc
         $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new PoRowException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
+            throw new OperationFailedException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
         }
 
-        $trigger = null;
-        if ($options instanceof PoRowCreateOptions) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $trigger = $options->getTriggeredBy();
 
-        $this->addEvent(new PoRowUpdated($this->getId(), $trigger, $params));
+        $target = $this->makeSnapshot();
+        $entityId = $this->getId();
+        $entityToken = $this->getToken();
+        $docVersion = $this->getDocVersion();
+        $revisionNo = $this->getRevisionNo();
+        $event = new PoRowUpdated($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params);
+
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -482,8 +491,6 @@ abstract class GenericPO extends GenericDoc
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
-        } else {
-            $row->refresh();
         }
     }
 

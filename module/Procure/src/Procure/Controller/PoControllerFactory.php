@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Controller;
 
+use Procure\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -38,6 +39,9 @@ class PoControllerFactory implements FactoryInterface
 
         $sv = $sm->get('Procure\Application\Reporting\PO\PoReporter');
         $controller->setPoReporter($sv);
+
+        $sv = $sm->get(EventBusService::class);
+        $controller->setEventBusService($sv);
 
         $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);

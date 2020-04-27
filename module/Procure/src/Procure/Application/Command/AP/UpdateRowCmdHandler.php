@@ -148,7 +148,6 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatcher
-            // event dispatcher
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }

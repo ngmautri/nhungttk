@@ -62,6 +62,8 @@ class PoController extends AbstractActionController
 
     protected $logger;
 
+    protected $eventBusService;
+
     /**
      *
      * {@inheritdoc}
@@ -348,6 +350,7 @@ class PoController extends AbstractActionController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
+        $this->getLogger()->info(\sprintf("PO #%s is created by #%s", $dto->getId(), $u->getId()));
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -438,7 +441,7 @@ class PoController extends AbstractActionController
             $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
             $cmdHandler = new AddRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
+            $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -465,11 +468,14 @@ class PoController extends AbstractActionController
             ));
 
             $viewModel->setTemplate($viewTemplete);
+            $this->getLogger()->info(\sprintf("PO Row of %s is not created by #%s. Errors:%s", $target_id, $u->getId(), $notification->errorMessage()));
+
             return $viewModel;
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/add-row?target_id=%s&target_token=%s", $target_id, $target_token);
+        $this->getLogger()->info(\sprintf("PO Row of %s is created by #%s", $target_id, $u->getId()));
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -597,7 +603,7 @@ class PoController extends AbstractActionController
             $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmdHandler = new UpdateRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
+            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -630,6 +636,7 @@ class PoController extends AbstractActionController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $this->getLogger()->info(\sprintf("PO Row of %s is updated by #%s", $target_id, $u->getId()));
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -1472,6 +1479,8 @@ class PoController extends AbstractActionController
         ));
 
         $viewModel->setTemplate("procure/po/review-v1");
+        $this->getLogger()->info(\sprintf("PO #%s viewed by #%s", $id, $u->getId()));
+
         return $viewModel;
     }
 
@@ -1500,6 +1509,7 @@ class PoController extends AbstractActionController
         $token = $this->params()->fromQuery('entity_token');
         $file_type = $this->params()->fromQuery('file_type');
 
+        $this->getLogger()->info(\sprintf("PO #%s saved as format %s by #%s", $id, $file_type, $u->getId()));
         $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($id, $token, $file_type);
 
         if ($rootEntity == null) {
@@ -2097,5 +2107,23 @@ class PoController extends AbstractActionController
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Eventbus\EventBusService
+     */
+    public function getEventBusService()
+    {
+        return $this->eventBusService;
+    }
+
+    /**
+     *
+     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
+     */
+    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
+    {
+        $this->eventBusService = $eventBusService;
     }
 }

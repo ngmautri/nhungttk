@@ -1,79 +1,181 @@
-<?php if (count($rows)==0): ?>
-
+<?php
+if (count($rows) == 0) :
+    ?>
 <h5>no thing found!</h5>
+<?php
 
-<?php else: ?>
+else :
+    ?>
+<h4 style="color: graytext;"><?php
 
-<h4 style="color:graytext;"><?php echo $this->translate("Purchase Order");?>:</h4>
-
-
+    echo $this->translate("Purchase Order");
+    ?>:</h4>
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-		    <td><b><?php echo $this->translate("Vendor");?></b></td>
-			<td><b>Po No.</b></td>
-			<td><b><?php echo $this->translate("Ref.");?></b></td>
-			<td><b><?php echo $this->translate("Po Date");?></b></td>
-			<td><b>Unit</b></td>
-			<td><b>Q'ty</b></td>
-			<td><b>UP Price</b></td>
-			<td><b>Total</b></td>
-			<td><b>EX</b></td>
-			
-			<td><b>local UP</b></td>
-			<td><b>Local Total</b></td>
-		
-			<td><b>Currency</b></td>
-			<td><b>Status</b></td>
-	
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+   <thead>
+      <tr>
+         <td>
+            <b>#</b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Vendor");
+    ?></b>
+         </td>
+         <td>
+            <b>Po No.</b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Ref.");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Po Date");
+    ?></b>
+         </td>
+         <td>
+            <b>Unit</b>
+         </td>
+         <td>
+            <b>Q'ty</b>
+         </td>
+         <td>
+            <b>UP Price</b>
+         </td>
+         <td>
+            <b>Total</b>
+         </td>
+         <td>
+            <b>EX</b>
+         </td>
+         <td>
+            <b>local UP</b>
+         </td>
+         <td>
+            <b>Local Total</b>
+         </td>
+         <td>
+            <b>Currency</b>
+         </td>
+         <td>
+            <b>Status</b>
+         </td>
+         <td>
+            <b>Action</b>
+         </td>
+      </tr>
+   </thead>
+   <tbody>
  
 	 <?php
-	
-	$count = 0;
-	//$total_ordered = 0;
-	//$total_received = 0;
-	//$total_balance = 0;
-	foreach ( $rows as $r ) :
-		$count ++;
-		/**@var \Application\Entity\NmtProcurePoRow $a ;*/		
-		$a = $r[0];
-		
-		?>
+
+    $count = 0;
+    // $total_ordered = 0;
+    // $total_received = 0;
+    // $total_balance = 0;
+    foreach ($rows as $r) :
+        $count ++;
+        /**@var \Application\Entity\NmtProcurePoRow $a ;*/
+        $a = $r[0];
+
+        ?>
 	 <tr>
-	 <td><?php echo $count;?></td>
-	 	<td><?php if(!$a->getPo()==null): if($a->getPo()->getVendor()!==null): echo $a->getPo()->getVendor()->getVendorName();endif;endif;?> </td>
-		
-	 		<td><a href="/procure/po/show?entity_id=<?php echo $a->getPo()->getId();?>&token=<?php echo $a->getPo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPo()->getSysNumber());?></a></td>
-			<td><?php if(!$a->getPo()==null): echo $a->getPo()->getContractNo();endif;?> </td>
-			
-			<td><?php if(!$a->getPo()->getContractDate()==null): echo date_format ( $a->getPo()->getContractDate(), "d/m/y");endif;?> </td>
-			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
-		
-			<td><?php echo $a->getQuantity();?></td>
-			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
-			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),2);?></td>		
-			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>
-					<td><?php echo $a->getPo()->getExchangeRate();?></td>			
-			<td><?php echo $a->getPo()->getExchangeRate()*$a->getUnitPrice();?></td>			
-			<td><?php echo $a->getPo()->getExchangeRate()*$a->getUnitPrice()*$a->getQuantity();?></td>
-				
-			<td><?php echo $a->getCurrentState();?></td>
-			<td>
-			</td>
-			
-		</tr>
-<?php endforeach; ?>
+         <td><?php
+
+        echo $count;
+        ?></td>
+         <td><?php
+
+        if (! $a->getPo() == null) :
+            if ($a->getPo()->getVendor() !== null) :
+                echo $a->getPo()
+                    ->getVendor()
+                    ->getVendorName();endif;endif;
+
+
+        ?> </td>
+         <td>
+            <a href="/procure/po/view?entity_id=<?php
+
+        echo $a->getPo()->getId();
+        ?>&entity_token=<?php
+
+        echo $a->getPo()->getToken();
+        ?>" target="_blank"><?php
+
+        echo $this->escapeHtml($a->getPo()
+            ->getSysNumber());
+        ?></a>
+         </td>
+         <td><?php
+
+        if (! $a->getPo() == null) :
+            echo $a->getPo()->getContractNo();endif;
+
+        ?> </td>
+         <td><?php
+
+        if (! $a->getPo()->getContractDate() == null) :
+            echo date_format($a->getPo()->getContractDate(), "d/m/y");endif;
+
+        ?> </td>
+         <td><?php
+
+        echo $a->getItem()
+            ->getStandardUom()
+            ->getUomCode();
+        ?></td>
+         <td><?php
+
+        echo $a->getQuantity();
+        ?></td>
+         <td><?php
+
+        echo number_format($a->getUnitPrice(), 2);
+        ?></td>
+         <td><?php
+
+        echo number_format($a->getUnitPrice() * $a->getQuantity(), 2);
+        ?></td>
+         <td><?php
+
+        echo $a->getPo()
+            ->getCurrency()
+            ->getCurrency();
+        ?></td>
+         <td><?php
+
+        echo $a->getPo()->getExchangeRate();
+        ?></td>
+         <td><?php
+
+        echo $a->getPo()->getExchangeRate() * $a->getUnitPrice();
+        ?></td>
+         <td><?php
+
+        echo $a->getPo()->getExchangeRate() * $a->getUnitPrice() * $a->getQuantity();
+        ?></td>
+         <td><?php
+
+        echo $a->getCurrentState();
+        ?></td>
+         <td></td>
+      </tr>
+<?php
+    endforeach
+    ;
+    ?>
 
  </tbody>
 </table>
-
 <script type="text/javascript">
 </script>
+<?php
 
-<?php endif; ?>
+endif;
+?>
 	

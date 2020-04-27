@@ -71,7 +71,7 @@ if (! $headerDTO == null) {
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $update_header_url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
     $pay_url = sprintf($this->baseUrl . "/payment/outgoing/pay-po?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $gr_from_po_url = sprintf($this->baseUrl . "/procure/gr/create-from-po?source_id=%s&source_token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -374,11 +374,13 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                                     echo "selected"; endif ?>
                                 
                                 
+                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
                                 
                                    value="finalPo">Final</option>
                               </select>

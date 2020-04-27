@@ -4,11 +4,10 @@ namespace Procure\Domain\Event\Ap;
 use Application\Application\Event\AbstractEvent;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class ApPosted extends AbstractEvent{
-      
-   
+final class ApPosted extends AbstractEvent
+{
 }

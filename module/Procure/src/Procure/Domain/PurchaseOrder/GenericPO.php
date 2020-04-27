@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
@@ -262,19 +263,20 @@ abstract class GenericPO extends GenericDoc
             throw new OperationFailedException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
-
         $params = [
             "rowId" => $localSnapshot->getId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $target = $this->makeSnapshot();
-        $entityId = $this->getId();
-        $entityToken = $this->getToken();
-        $docVersion = $this->getDocVersion();
-        $revisionNo = $this->getRevisionNo();
-        $event = new PoRowAdded($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params);
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new PoRowAdded($this->makeSnapshot(), $defautParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -320,6 +322,10 @@ abstract class GenericPO extends GenericDoc
             throw new InvalidArgumentException("postingService service not found");
         }
 
+        if ($options == null) {
+            throw new InvalidArgumentException("Opttions service not found");
+        }
+
         $createdDate = new \Datetime();
         $snapshot->lastchangeOn = date_format($createdDate, 'Y-m-d H:i:s');
         $snapshot->quantity = $snapshot->docQuantity;
@@ -353,15 +359,17 @@ abstract class GenericPO extends GenericDoc
             throw new OperationFailedException(sprintf("Error occured when creating PO Row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
-
         $target = $this->makeSnapshot();
-        $entityId = $this->getId();
-        $entityToken = $this->getToken();
-        $docVersion = $this->getDocVersion();
-        $revisionNo = $this->getRevisionNo();
-        $event = new PoRowUpdated($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params);
 
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new PoRowUpdated($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;

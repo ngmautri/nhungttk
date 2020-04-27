@@ -15,39 +15,47 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
 
     protected $target;
 
+    protected $defaultParams;
+
     protected $params;
 
-    protected $trigger;
+    protected $targetId;
 
-    protected $entityId;
+    protected $targetToken;
 
-    protected $entityToken;
+    protected $targetDocVersion;
 
-    protected $docVersion;
+    protected $targetRrevisionNo;
 
-    protected $revisionNo;
+    protected $userId;
+
+    protected $triggeredBy;
+
+    public function __construct($target, DefaultParameter $defaultParams, $params)
+    {
+        $this->target = $target;
+        $this->defaultParams = $defaultParams;
+        $this->params = $params;
+    }
+
+    public function hasParam($key)
+    {
+        return \array_key_exists($key, $this->params);
+    }
+
+    public function getParam($key)
+    {
+        if ($this->hasParam($key)) {
+            return $this->params[$key];
+        }
+
+        throw new \InvalidArgumentException(sprintf('Args "%s" not found.', $key));
+    }
 
     /**
      *
-     * @return string
+     * @return mixed
      */
-    public function getTrigger()
-    {
-        return $this->trigger;
-    }
-
-    public function __construct($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params)
-    {
-        $this->target = $target;
-        $this->trigger = $trigger;
-        $this->params = $params;
-
-        $this->entityId = $entityId;
-        $this->entityToken = $entityToken;
-        $this->docVersion = $docVersion;
-        $this->revisionNo = $revisionNo;
-    }
-
     public function getTarget()
     {
         return $this->target;
@@ -55,7 +63,16 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
 
     /**
      *
-     * @return string
+     * @return \Application\Application\Event\DefaultParameter
+     */
+    public function getDefaultParams()
+    {
+        return $this->defaultParams;
+    }
+
+    /**
+     *
+     * @return mixed
      */
     public function getParams()
     {
@@ -66,35 +83,71 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
      *
      * @return mixed
      */
-    public function getEntityId()
+    public function getTargetId()
     {
-        return $this->entityId;
+        if ($this->defaultParams == null) {
+            return null;
+        }
+        return $this->defaultParams->getTargetId();
     }
 
     /**
      *
      * @return mixed
      */
-    public function getEntityToken()
+    public function getTargetToken()
     {
-        return $this->entityToken;
+        if ($this->defaultParams == null) {
+            return null;
+        }
+        return $this->defaultParams->getTargetToken();
     }
 
     /**
      *
-     * @return string
+     * @return mixed
      */
-    public function getDocVersion()
+    public function getTargetDocVersion()
     {
-        return $this->docVersion;
+        if ($this->defaultParams == null) {
+            return null;
+        }
+        return $this->defaultParams->getTargetDocVersion();
     }
 
     /**
      *
-     * @return string
+     * @return mixed
      */
-    public function getRevisionNo()
+    public function getTargetRrevisionNo()
     {
-        return $this->revisionNo;
+        if ($this->defaultParams == null) {
+            return null;
+        }
+        return $this->defaultParams->getTargetRrevisionNo();
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        if ($this->defaultParams == null) {
+            return null;
+        }
+        return $this->defaultParams->getUserId();
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTriggeredBy()
+    {
+        if ($this->defaultParams == null) {
+            return null;
+        }
+        return $this->defaultParams->getTriggeredBy();
     }
 }

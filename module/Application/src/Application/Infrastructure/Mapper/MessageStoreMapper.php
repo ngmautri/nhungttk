@@ -3,6 +3,7 @@ namespace Application\Infrastructure\Mapper;
 
 use Application\Domain\MessageStore\MessageSnapshot;
 use Application\Entity\MessageStore;
+use Doctrine\ORM\EntityManager;
 
 /**
  *
@@ -17,10 +18,11 @@ class MessageStoreMapper
      * @param MessageStore $entity
      * @return NULL|\Application\Domain\MessageStore\MessageSnapshot
      */
-    public static function createDetailSnapshot(MessageStore $entity)
+    public static function createDetailSnapshot(MessageStore $entity, EntityManager $doctrineEM)
     {
-        if ($entity == null)
+        if ($entity == null || $doctrineEM == null) {
             return null;
+        }
 
         $snapshot = new MessageSnapshot();
 
@@ -71,6 +73,14 @@ class MessageStoreMapper
         $snapshot->changeLog = $entity->getChangeLog();
         $snapshot->version = $entity->getVersion();
         $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->createdBy = $entity->getCreatedBy();
+
+        $u = $doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "id" => $entity->getCreatedBy()
+        ));
+        if ($u !== null) {
+            $snapshot->createdByName = $u->getFirstname() . " " . $u->getLastname();
+        }
 
         return $snapshot;
     }

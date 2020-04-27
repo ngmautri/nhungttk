@@ -37,30 +37,63 @@ if (count($list) > 0) {
         $table_body = $table_body . sprintf("<td>%s</td>", $item->eventName);
         $table_body = $table_body . sprintf("<td>%s</td>", $item->createdOn);
         $table_body = $table_body . sprintf("<td>%s</td>", $item->changeLog);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->createdByName);
+
         $table_body = $table_body . "</tr>";
     }
 }
 ?>
 
 
-<div id="<?php echo $message_log_div; ?>">
+<div id="<?php
 
-	<?php echo $result_msg; ?>
+echo $message_log_div;
+?>">
+
+	<?php
+
+echo $result_msg;
+?>
 	<table id="mytable26"
 		style="font-size: 9.5pt; color: graytext; font-family: Courier, monospace;"
 		class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
-				<td><b><?php echo $this->translate("#");?></b></td>
-				<td><b><?php echo $this->translate("Ver.");?></b></td>
-				<td><b><?php echo $this->translate("Rev.");?></b></td>
-				<td><b><?php echo $this->translate("Event Name");?></b></td>
-				<td style="width: 160px"><b><?php echo $this->translate("Date");?></b></td>
-				<td><b><?php echo $this->translate("Change Log");?></b></td>
+				<td><b><?php
+
+    echo $this->translate("#");
+    ?></b></td>
+				<td><b><?php
+
+    echo $this->translate("Ver.");
+    ?></b></td>
+				<td><b><?php
+
+    echo $this->translate("Rev.");
+    ?></b></td>
+				<td><b><?php
+
+    echo $this->translate("Event Name");
+    ?></b></td>
+				<td style="width: 160px"><b><?php
+
+    echo $this->translate("Date");
+    ?></b></td>
+				<td><b><?php
+
+    echo $this->translate("Change Log");
+    ?></b></td>
+    <td><b><?php
+
+    echo $this->translate("By");
+    ?></b></td>
 			</tr>
 		</thead>
 		<tbody>
-		<?php echo $table_body;?>
+		<?php
+
+echo $table_body;
+?>
 		</tbody>
 	</table>
 

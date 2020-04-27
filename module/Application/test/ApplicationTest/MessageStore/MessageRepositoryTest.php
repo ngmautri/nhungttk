@@ -9,17 +9,13 @@ class MessageRepositoryTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $rep = new MessageStoreRepository($em);
-        $results = $rep->getMessages(301, "1c014799-c3c0-44c6-aef5-a70e685f957c");
+        $results = $rep->getMessages(342, "73472fa5-80c5-4f38-8f74-ceb90e867600");
         var_dump($results);
     }
 }

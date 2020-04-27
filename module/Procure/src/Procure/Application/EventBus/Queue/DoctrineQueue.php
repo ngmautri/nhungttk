@@ -71,28 +71,26 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
             $changeLog = null;
             $changeLog1 = [];
             $changeLog_final = [];
-            $entityId = null;
-            $entityToken = null;
-            $docVersion = null;
-            $docVesion = null;
-            $triggeredBy = null;
             $rowToken = null;
             $rowId = null;
 
-            if ($event instanceof AbstractEvent) {
-                $entityId = $event->getEntityId();
-                $entityToken = $event->getEntityToken();
-                $docVersion = $event->getDocVersion();
-                $docVesion = $event->getRevisionNo();
-                $triggeredBy = $event->getTrigger();
-                $params = $event->getParams();
+            $message = new MessageStore();
 
-                if (isset($params['rowId'])) {
-                    $rowId = $params['rowId'];
+            if ($event instanceof AbstractEvent) {
+
+                $message->setTriggeredBy($event->getTriggeredBy());
+                $message->setRevisionNo($event->getTargetRrevisionNo());
+                $message->setVersion($event->getTargetDocVersion());
+                $message->setEntityId($event->getTargetId());
+                $message->setEntityToken($event->getTargetToken());
+                $message->setCreatedBy($event->getUserId());
+
+                if ($event->hasParam("rowId")) {
+                    $rowId = $event->getParam("rowId");
                 }
 
-                if (isset($params['rowToken'])) {
-                    $rowToken = $params['rowToken'];
+                if ($event->hasParam("rowToken")) {
+                    $rowToken = $event->getParam("rowToken");
                 }
 
                 if ($rowId !== null) {
@@ -103,8 +101,8 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
                     $changeLog_final["rowToken"] = $rowToken;
                 }
 
-                if (isset($params['changeLog'])) {
-                    $changeLog = $params['changeLog'];
+                if ($event->hasParam('changeLog')) {
+                    $changeLog = $event->getParam('changeLog');
 
                     if (count($changeLog) > 0) {
                         foreach ($changeLog as $k => $v) {
@@ -134,14 +132,7 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
                 }
             }
 
-            $message = new MessageStore();
-
             $message->setChangeLog(json_encode($changeLog_final));
-            $message->setTriggeredBy($triggeredBy);
-            $message->setRevisionNo($docVesion);
-            $message->setVersion($docVersion);
-            $message->setEntityId($entityId);
-            $message->setEntityToken($entityToken);
             $message->setQueueName($this->queueName);
             $message->setUuid(Uuid::uuid4());
             $message->setMsgBody(\serialize($event));

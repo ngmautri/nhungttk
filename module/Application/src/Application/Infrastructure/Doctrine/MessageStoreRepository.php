@@ -34,7 +34,7 @@ class MessageStoreRepository extends AbstractDoctrineRepository implements Messa
             /**@var \Application\Entity\MessageStore $entity ;*/
             $entity = $r;
 
-            $snapShot = MessageStoreMapper::createDetailSnapshot($entity);
+            $snapShot = MessageStoreMapper::createDetailSnapshot($entity, $this->getDoctrineEM());
 
             if ($snapShot == null) {
                 continue;

@@ -52,4 +52,6 @@ class MessageSnapshot extends AbstractEntity
     public $version;
 
     public $revisionNo;
+
+    public $createdByName;
 }

@@ -1,6 +1,9 @@
 <?php
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
+use Application\Application\Eventbus\PsrHandlerResolver;
+use Application\Application\Eventbus\PsrHandlerResolverFactory;
+use Application\Application\Logger\LoggerFactory;
 use Application\Infrastructure\Doctrine\MessageStoreRepository;
 use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
 
@@ -304,9 +307,11 @@ return array(
             'Application\Service\PaymentTermService' => 'Application\Service\PaymentTermServiceFactory',
             'Application\Service\PmtMethodService' => 'Application\Service\PmtMethodServiceFactory',
             \Application\Application\Service\MessageStore\MessageQuery::class => \Application\Application\Service\MessageStore\MessageQueryFactory::class,
+            "AppLogger" => LoggerFactory::class,
 
             // Event Handler Register
             DummyEventHandler::class => DummyEventHandlerFactory::class,
+            PsrHandlerResolver::class => PsrHandlerResolverFactory::class,
 
             // Report
             MessageStoreRepository::class => MessageStoreRepositoryFactory::class

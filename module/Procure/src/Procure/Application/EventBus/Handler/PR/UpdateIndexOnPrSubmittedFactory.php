@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Eventbus;
+namespace Procure\Application\EventBus\Handler\PR;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HandlerResolverFactory implements FactoryInterface
+class UpdateIndexOnPrSubmittedFactory implements FactoryInterface
 {
 
     /**
@@ -20,8 +20,7 @@ class HandlerResolverFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new HandlerResolver();
-        $service->setContainer($container);
+        $service = new UpdateIndexOnPrSubmitted();
         return $service;
     }
 }

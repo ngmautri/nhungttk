@@ -3,7 +3,6 @@ namespace Procure\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Procure\Controller\PrController;
 
 /**
  *
@@ -34,12 +33,15 @@ class PoControllerFactory implements FactoryInterface
         $sv = $sm->get('Procure\Service\PoSearchService');
         $controller->setPoSearchService($sv);
 
-        $sv = $sm->get('Procure\Application\Service\PO\POService' );
-		$controller->setPurchaseOrderService($sv );
-	
-		$sv = $sm->get('Procure\Application\Reporting\PO\PoReporter' );
-		$controller->setPoReporter($sv );
-		
-		return $controller;
-	}
+        $sv = $sm->get('Procure\Application\Service\PO\POService');
+        $controller->setPurchaseOrderService($sv);
+
+        $sv = $sm->get('Procure\Application\Reporting\PO\PoReporter');
+        $controller->setPoReporter($sv);
+
+        $sv = $sm->get("AppLogger");
+        $controller->setLogger($sv);
+
+        return $controller;
+    }
 }

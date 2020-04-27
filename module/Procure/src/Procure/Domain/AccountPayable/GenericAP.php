@@ -23,7 +23,7 @@ use Procure\Domain\Validator\RowValidatorCollection;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 abstract class GenericAP extends AbstractAP
 {
@@ -206,8 +206,16 @@ abstract class GenericAP extends AbstractAP
         }
 
         $trigger = $options->getTriggeredBy();
+        $target = $this->makeSnapshot();
+        $entityId = $this->getId();
+        $entityToken = $this->getToken();
+        $docVersion = $this->getDocVersion();
+        $revisionNo = $this->getRevisionNo();
+        $trigger = $options->getTriggeredBy();
+        $params = $params;
 
-        $this->addEvent(new ApRowUpdated($this->makeSnapshot(), $trigger, $params));
+        $event = new ApRowUpdated($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -315,8 +323,6 @@ abstract class GenericAP extends AbstractAP
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
-        } else {
-            $row->refresh();
         }
     }
 

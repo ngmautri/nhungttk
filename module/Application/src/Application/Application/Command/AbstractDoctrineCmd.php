@@ -1,11 +1,12 @@
 <?php
 namespace Application\Application\Command;
 
-use Application\Domain\Shared\Command\CommandInterface;
-use Doctrine\ORM\EntityManager;
-use Application\Domain\Shared\Command\CommandHandlerInterface;
+use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Domain\Shared\AbstractDTO;
+use Application\Domain\Shared\Command\CommandHandlerInterface;
+use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
+use Doctrine\ORM\EntityManager;
 
 /**
  *
@@ -31,6 +32,8 @@ abstract class AbstractDoctrineCmd implements CommandInterface
 
     protected $dto;
 
+    protected $eventBus;
+
     /**
      *
      * @param EntityManager $doctrineEM
@@ -38,7 +41,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
      * @param CommandHandlerInterface $handler
      * @throws \Exception
      */
-    public function __construct(EntityManager $doctrineEM, AbstractDTO $dto, CommandOptions $options, CommandHandlerInterface $cmdHandler)
+    public function __construct(EntityManager $doctrineEM, AbstractDTO $dto, CommandOptions $options, CommandHandlerInterface $cmdHandler, EventBusServiceInterface $eventBus = null)
     {
         if ($doctrineEM == null) {
             throw new \Exception("Entity Manager not given!");
@@ -47,6 +50,7 @@ abstract class AbstractDoctrineCmd implements CommandInterface
         $this->dto = $dto;
         $this->handler = $cmdHandler;
         $this->options = $options;
+        $this->eventBus = $eventBus;
     }
 
     /**
@@ -184,5 +188,14 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getEventBus()
+    {
+        return $this->eventBus;
     }
 }

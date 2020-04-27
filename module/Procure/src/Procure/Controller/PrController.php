@@ -9,6 +9,7 @@ use Application\Service\PdfService;
 use Doctrine\ORM\EntityManager;
 use Endroid\QrCode\QrCode;
 use MLA\Paginator;
+use Monolog\Logger;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\PR\AddRowCmdHandler;
@@ -50,6 +51,8 @@ class PrController extends AbstractActionController
     protected $attachmentService;
 
     protected $purchaseRequestService;
+
+    protected $logger;
 
     public function createAction()
     {
@@ -1719,5 +1722,23 @@ class PrController extends AbstractActionController
     public function setPurchaseRequestService(PRService $purchaseRequestService)
     {
         $this->purchaseRequestService = $purchaseRequestService;
+    }
+
+    /**
+     *
+     * @return \Monolog\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
     }
 }

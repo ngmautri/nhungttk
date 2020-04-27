@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Eventbus;
+namespace Application\Application\Eventbus;
 
 use Application\Domain\EventBus\Handler\Resolver\PsrContainerResolver;
 use Application\Service\AbstractService;
@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HandlerResolver extends AbstractService
+class PsrHandlerResolver extends AbstractService
 {
 
     protected $container;

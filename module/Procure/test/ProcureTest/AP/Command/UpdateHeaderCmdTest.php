@@ -17,11 +17,7 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
     protected $serviceManager;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(dirname(__FILE__)))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
@@ -32,18 +28,11 @@ class UpdateHeaderCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 2828;
-            $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
+            $rootEntityId = 2825;
+            $rootEntityToken = "ec82eb88-f1ad-4dfa-b4bd-cff6f76a1816";
             $version = 7;
 
             $dto = new ApDTO();
-            $dto->docCurrency = 248;
-            $dto->vendor = 229;
-            $dto->warehouse = 5;
-            $dto->grDate = "2020-04-06";
-            $dto->postingDate = "2020-04-06";
-            $dto->docDate = "2020-04-06";
-            $dto->pmtTerm = 1;
             $dto->docNumber = "SDD7";
 
             $queryRep = new APQueryRepositoryImpl($doctrineEM);

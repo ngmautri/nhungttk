@@ -36,6 +36,9 @@ class PrControllerFactory implements FactoryInterface
         $sv = $sm->get('Procure\Application\Service\PR\PRService');
         $controller->setPurchaseRequestService($sv);
 
+        $sv = $sm->get("AppLogger");
+        $controller->setLogger($sv);
+
         return $controller;
     }
 }

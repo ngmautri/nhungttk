@@ -8,6 +8,7 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Monolog\Logger;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\PO\AcceptAmendmentCmd;
 use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
@@ -58,6 +59,8 @@ class PoController extends AbstractActionController
     protected $poSearchService;
 
     protected $poReporter;
+
+    protected $logger;
 
     /**
      *
@@ -2076,5 +2079,23 @@ class PoController extends AbstractActionController
     public function setPoReporter(PoReporter $poReporter)
     {
         $this->poReporter = $poReporter;
+    }
+
+    /**
+     *
+     * @return \Monolog\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
     }
 }

@@ -6,8 +6,13 @@
  */
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPostedFactory;
-use Procure\Application\Eventbus\HandlerResolver;
-use Procure\Application\Eventbus\HandlerResolverFactory;
+use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
+use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPostedFactory;
+use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
+use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmittedFactory;
+use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\Eventbus\HandlerMapper;
+use Procure\Application\Eventbus\HandlerMapperFactory;
 
 return array(
     'navigation' => array(
@@ -268,8 +273,13 @@ return array(
             'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory',
 
             // Event Handler Resolver
-            HandlerResolver::class => HandlerResolverFactory::class,
-            UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class
+            HandlerMapper::class => HandlerMapperFactory::class,
+            EventBusService::class => \Procure\Application\Eventbus\EventBusServiceFactory::class,
+
+            // Event Handler
+            UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class,
+            UpdateIndexOnPoPosted::class => UpdateIndexOnPoPostedFactory::class,
+            UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class
         )
     ),
 

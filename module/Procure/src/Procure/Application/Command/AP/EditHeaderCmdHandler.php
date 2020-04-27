@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
@@ -20,7 +19,6 @@ use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidato
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
@@ -28,7 +26,6 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -138,8 +135,6 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
                 "changeLog" => $changeLog
             ];
 
-            // var_dump($changeLog);
-
             // do change
             $newSnapshot->lastchangeBy = $userId;
 
@@ -168,24 +163,11 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $newRootEntity = APDoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
 
             // event dispatcher
-            if (count($newRootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($newRootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($newRootEntity->getRecordedEvents());
             }
 
-            $m = sprintf("GR #%s updated", $newRootEntity->getId());
+            $m = sprintf("Doc #%s updated", $newRootEntity->getId());
 
             $notification->addSuccess($m);
 
@@ -199,10 +181,9 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! %s", $version, $currentVersion, ""));
             }
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw $e;
         }
-
-        $dto->setNotification($notification);
     }
 }

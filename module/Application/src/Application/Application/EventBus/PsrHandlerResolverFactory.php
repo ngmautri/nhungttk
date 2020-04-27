@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Eventbus;
+namespace Application\Application\Eventbus;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HandlerMapperFactory implements FactoryInterface
+class PsrHandlerResolverFactory implements FactoryInterface
 {
 
     /**
@@ -20,11 +20,8 @@ class HandlerMapperFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new HandlerMapper();
-
-        $sv = $container->get('doctrine.entitymanager.orm_default');
-        $service->setDoctrineEM($sv);
-
+        $service = new PsrHandlerResolver();
+        $service->setContainer($container);
         return $service;
     }
 }

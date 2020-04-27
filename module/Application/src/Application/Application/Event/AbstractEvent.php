@@ -23,6 +23,10 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
 
     protected $entityToken;
 
+    protected $docVersion;
+
+    protected $revisionNo;
+
     /**
      *
      * @return string
@@ -32,11 +36,16 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
         return $this->trigger;
     }
 
-    public function __construct($target, $trigger = null, $params = null)
+    public function __construct($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params)
     {
         $this->target = $target;
         $this->trigger = $trigger;
         $this->params = $params;
+
+        $this->entityId = $entityId;
+        $this->entityToken = $entityToken;
+        $this->docVersion = $docVersion;
+        $this->revisionNo = $revisionNo;
     }
 
     public function getTarget()
@@ -51,5 +60,41 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
     public function getParams()
     {
         return $this->params;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getEntityToken()
+    {
+        return $this->entityToken;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
     }
 }

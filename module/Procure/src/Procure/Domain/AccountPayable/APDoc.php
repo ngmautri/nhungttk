@@ -482,13 +482,9 @@ class APDoc extends GenericAP
         }
 
         $instance->id = $rootSnapshot->getId();
+        $trigger = $options->getTriggeredBy();
 
-        $trigger = null;
-        if ($options !== null) {
-            $trigger = $options->getTriggeredBy();
-        }
-
-        $instance->addEvent(new ApHeaderUpdated($rootSnapshot, $trigger, $params));
+        $instance->addEvent(new ApHeaderUpdated($rootSnapshot, $rootSnapshot->getId(), $rootSnapshot->getToken(), $rootSnapshot->getDocVersion(), $rootSnapshot->getRevisionNo(), $trigger, $params));
         return $instance;
     }
 

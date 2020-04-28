@@ -44,7 +44,7 @@ class QrDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print \sprintf("\n \$entity->set%s(\$snapshot->%s)", ucfirst($propertyName), $propertyName);
+            print \sprintf("\n \$entity->set%s(\$snapshot->%s);", ucfirst($propertyName), $propertyName);
         }
     }
 
@@ -61,7 +61,7 @@ class QrDTOAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print \sprintf("\n \$snapshot->set%s = \$entity->get%s()", $propertyName, ucfirst($propertyName));
+            print \sprintf("\n \$snapshot->%s = \$entity->get%s();", $propertyName, ucfirst($propertyName));
         }
     }
 

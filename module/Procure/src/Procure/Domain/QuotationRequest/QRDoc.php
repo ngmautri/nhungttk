@@ -1,8 +1,11 @@
 <?php
 namespace Procure\Domain\QuotationRequest;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Domain\Event\Qr\QrHeaderCreated;
+use Procure\Domain\Event\Qr\QrHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
@@ -107,6 +110,18 @@ class QRDoc extends GenericQR
         }
     }
 
+    /**
+     *
+     * @param QRSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\QuotationRequest\QRDoc
+     */
     public static function createFrom(QRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         $instance = new self();
@@ -121,19 +136,21 @@ class QRDoc extends GenericQR
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
 
+        $instance->clearNotification();
+
         $instance->validateHeader($headerValidators);
 
         if ($instance->hasErrors()) {
             throw new ValidationFailedException($instance->getNotification()->errorMessage());
         }
 
-        $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE);
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_QUOTE);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $instance->recordedEvents = array();
+        $instance->clearEvents();
 
         /**
          *
@@ -142,18 +159,39 @@ class QRDoc extends GenericQR
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error orcured when creating AP #%s", $instance->getId()));
+            throw new OperationFailedException(sprintf("Error orcured when creating Quote #%s", $instance->getId()));
         }
 
         $instance->id = $rootSnapshot->getId();
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
 
-        $trigger = $options->getTriggeredBy();
-        $params = [];
+        $event = new QrHeaderCreated($target, $defaultParams, $params);
 
-        $instance->addEvent();
+        $instance->addEvent($event);
         return $instance;
     }
 
+    /**
+     *
+     * @param QRSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\QuotationRequest\QRDoc
+     */
     public static function updateFrom(QRSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         $instance = new self();
@@ -189,30 +227,34 @@ class QRDoc extends GenericQR
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("%s-%s", "Error orcured when creating AP!", __FUNCTION__));
+            throw new OperationFailedException(sprintf("%s-%s", "Error orcured when creating Quotation!", __FUNCTION__));
         }
 
         $instance->id = $rootSnapshot->getId();
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
 
-        $trigger = null;
-        if ($options !== null) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $event = new QrHeaderUpdated($target, $defaultParams, $params);
 
-        $instance->addEvent();
+        $instance->addEvent($event);
         return $instance;
     }
 
     /**
-     * Call this method to get from storage
      *
      * @param QRSnapshot $snapshot
-     * @return void|\Procure\Domain\GoodsReceipt\GRDoc
+     * @return void|\Procure\Domain\QuotationRequest\QRDoc
      */
     public static function constructFromDetailsSnapshot(QRSnapshot $snapshot)
     {
         if (! $snapshot instanceof QRSnapshot) {
-            return;
+            return null;
         }
 
         if ($snapshot->uuid == null) {
@@ -224,20 +266,18 @@ class QRDoc extends GenericQR
     }
 
     /**
-     * Call this method to get from storage
      *
      * @param QRSnapshot $snapshot
-     * @return void|\Procure\Domain\GoodsReceipt\GRDoc
+     * @return NULL|\Procure\Domain\QuotationRequest\QRDoc
      */
     public static function constructFromSnapshot(QRSnapshot $snapshot)
     {
         if (! $snapshot instanceof QRSnapshot) {
-            return;
+            return null;
         }
 
         if ($snapshot->uuid == null) {
             $snapshot->uuid = Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
         }
 
         $instance = new self();
@@ -245,11 +285,6 @@ class QRDoc extends GenericQR
         return $instance;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
-     */
     protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         /**
@@ -268,6 +303,7 @@ class QRDoc extends GenericQR
 
             $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
+        $this->clearNotification();
 
         $this->validate($headerValidators, $rowValidators, true);
 
@@ -285,29 +321,7 @@ class QRDoc extends GenericQR
      */
     protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
-        /**
-         *
-         * @var QRRow $row ;
-         */
-        $postedDate = new \Datetime();
-        $this->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
-
-        foreach ($this->getDocRows() as $row) {
-
-            if ($row->getDocQuantity() == 0) {
-                continue;
-            }
-
-            $row->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
-        }
-
-        $this->validate($headerValidators, $rowValidators, true);
-
-        if ($this->hasErrors()) {
-            throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
-        }
-
-        $postingService->getCmdRepository()->post($this, false);
+        // blank
     }
 
     private function _checkInputParams(QRSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
@@ -342,94 +356,4 @@ class QRDoc extends GenericQR
 
     protected function raiseEvent()
     {}
-
-    /**
-     *
-     * @param mixed $reversalDoc
-     */
-    protected function setReversalDoc($reversalDoc)
-    {
-        $this->reversalDoc = $reversalDoc;
-    }
-
-    /**
-     *
-     * @param mixed $isReversable
-     */
-    protected function setIsReversable($isReversable)
-    {
-        $this->isReversable = $isReversable;
-    }
-
-    /**
-     *
-     * @param mixed $procureGr
-     */
-    protected function setProcureGr($procureGr)
-    {
-        $this->procureGr = $procureGr;
-    }
-
-    /**
-     *
-     * @param mixed $po
-     */
-    protected function setPo($po)
-    {
-        $this->po = $po;
-    }
-
-    /**
-     *
-     * @param mixed $inventoryGr
-     */
-    protected function setInventoryGr($inventoryGr)
-    {
-        $this->inventoryGr = $inventoryGr;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getReversalDoc()
-    {
-        return $this->reversalDoc;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getIsReversable()
-    {
-        return $this->isReversable;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getProcureGr()
-    {
-        return $this->procureGr;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPo()
-    {
-        return $this->po;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getInventoryGr()
-    {
-        return $this->inventoryGr;
-    }
 }

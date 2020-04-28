@@ -1,7 +1,7 @@
 <?php
 namespace ProcureTest\QR;
 
-use Procure\Domain\QuotationRequest\QRDoc;
+use Procure\Domain\QuotationRequest\QRSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -18,7 +18,7 @@ class QRSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         // QRSnapshotAssembler::findMissingPropsInEntity();
-        // QRSnapshotAssembler::findMissingPropsInGenericDoc();
-        QRDoc::createSnapshotProps();
+        QRSnapshotAssembler::findMissingPropsInGenericDoc();
+        // QRDoc::createSnapshotProps();
     }
 }

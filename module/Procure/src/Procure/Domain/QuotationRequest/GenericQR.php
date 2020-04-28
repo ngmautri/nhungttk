@@ -160,6 +160,21 @@ abstract class GenericQR extends AbstractAP
         return $localSnapshot;
     }
 
+    /**
+     *
+     * @param QRRowSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidOperationException
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\QuotationRequest\QRRowSnapshot
+     */
     public function updateRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
@@ -319,7 +334,7 @@ abstract class GenericQR extends AbstractAP
     public function validateRow(QRRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         if (! $row instanceof QRRow) {
-            throw new InvalidArgumentException("GR Row not given!");
+            throw new InvalidArgumentException("Quote Row not given!");
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {

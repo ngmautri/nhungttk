@@ -1,10 +1,8 @@
 <?php
 namespace Procure\Domain\QuotationRequest;
 
-use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Application\DTO\Qr\QrRowDTOAssembler;
 use Procure\Domain\GenericRow;
-use Procure\Domain\AccountPayable\APRowSnapshot;
 
 /**
  *
@@ -163,10 +161,10 @@ class QRRowSnapshotAssembler
 
     /**
      *
-     * @param APRowSnapshot $snapShot
+     * @param QRRowSnapshot $snapShot
      * @param object $dto
-     * @param int $editMode
-     * @return NULL|\Procure\Domain\GoodsReceipt\GrRowSnapshot
+     * @param string $editMode
+     * @return NULL|\Procure\Domain\QuotationRequest\QRRowSnapshot
      */
     public static function updateSnapshotFromDTO(QRRowSnapshot $snapShot, $dto, $editMode = self::EDITABLE_FIELDS)
     {
@@ -210,11 +208,6 @@ class QRRowSnapshotAssembler
             "remarks"
         );
 
-        /**
-         *
-         * @var PORowDetailsDTO $dto ;
-         */
-
         foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
@@ -246,10 +239,10 @@ class QRRowSnapshotAssembler
 
     /**
      *
-     * @param APRowSnapshot $snapShot
+     * @param QRRowSnapshot $snapShot
      * @param object $dto
      * @param array $editableProperties
-     * @return NULL|\Procure\Domain\GoodsReceipt\GrRowSnapshot
+     * @return NULL|\Procure\Domain\QuotationRequest\QRRowSnapshot
      */
     public static function updateSnapshotFieldsFromDTO(QRRowSnapshot $snapShot, $dto, $editableProperties)
     {

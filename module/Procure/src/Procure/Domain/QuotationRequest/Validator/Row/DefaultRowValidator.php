@@ -1,12 +1,12 @@
 <?php
-namespace Procure\Domain\PurchaseRequest\Validator\Row;
+namespace Procure\Domain\QuotationRequest\Validator\Row;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AbstractRow;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseRequest\GenericPR;
-use Procure\Domain\PurchaseRequest\PRRow;
+use Procure\Domain\QuotationRequest\GenericQR;
+use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\RowValidatorInterface;
 
@@ -25,12 +25,12 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
      */
     public function validate(AbstractDoc $rootEntity, AbstractRow $localEntity)
     {
-        if (! $rootEntity instanceof GenericPR) {
+        if (! $rootEntity instanceof GenericQR) {
             throw new InvalidArgumentException('Root entity not given!');
         }
 
-        if (! $localEntity instanceof PRRow) {
-            throw new InvalidArgumentException('GR Row not given!');
+        if (! $localEntity instanceof QRRow) {
+            throw new InvalidArgumentException('Quotation Row not given!');
         }
 
         Try {
@@ -65,20 +65,6 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             }
 
             // ======= EDT Date ==========
-
-            $spec = $this->sharedSpecificationFactory->getDateSpecification();
-            if (! $spec->isSatisfiedBy($localEntity->getEdt())) {
-                $localEntity->addError("EDT Date is not correct or empty");
-            } else {
-                $edt = new \DateTime($localEntity->getEdt());
-                $today = new \DateTime();
-
-                if ($edt < $today) {
-                    $localEntity->addError(\sprintf("EDT date is in the past. Today is %s", \date_format($today, "Y-m-d")));
-                } elseif ($edt < $today->modify("1 days")) {
-                    $localEntity->addError(\sprintf("EDT date is invalid! It required at least 01 days for buying!"));
-                }
-            }
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

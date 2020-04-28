@@ -1,11 +1,11 @@
 <?php
-namespace Procure\Domain\PurchaseRequest\Validator\Header;
+namespace Procure\Domain\QuotationRequest\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Application\Domain\Util\Translator;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseRequest\GenericPR;
+use Procure\Domain\QuotationRequest\GenericQR;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
 
@@ -24,7 +24,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
      */
     public function validate(AbstractDoc $rootEntity)
     {
-        if (! $rootEntity instanceof GenericPR) {
+        if (! $rootEntity instanceof GenericQR) {
             throw new InvalidArgumentException(\sprintf('Root entity not given!%s', __METHOD__));
         }
 
@@ -42,9 +42,9 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 
             $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
 
-            // ==== PR NUMBER =======
-            if ($spec->isSatisfiedBy($rootEntity->getPrNumber())) {
-                $rootEntity->addError(Translator::translate(\sprintf("PR number is required!%s", $rootEntity->getPrNumber())));
+            // ==== DOC NUMBER =======
+            if ($spec->isSatisfiedBy($rootEntity->getDocNumber())) {
+                $rootEntity->addError(Translator::translate(\sprintf("PR number is required!%s", $rootEntity->getDocNumber())));
             }
 
             $spec = $this->sharedSpecificationFactory->getDateSpecification();

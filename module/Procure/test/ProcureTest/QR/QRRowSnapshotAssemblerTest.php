@@ -1,7 +1,7 @@
 <?php
 namespace ProcureTest\QR;
 
-use Procure\Domain\QuotationRequest\QRRowSnapshotAssembler;
+use Procure\Domain\QuotationRequest\QRRow;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -13,18 +13,14 @@ class QRRowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
         // QrRowDTOAssembler::showEntityProperities();
-        echo '======\n';
-        QRRowSnapshotAssembler::findMissingPropsInEntity();
-        // QRRowSnapshotAssembler::findMissingPropertiesOfSnapshot();
-        // QRRow::createSnapshotProps();
+        // echo '======\n';
+        // QRRowSnapshotAssembler::findMissingPropsInEntity();
+        // QRRowSnapshotAssembler::findMissingPropsInGenericRow();
+        QRRow::createSnapshotProps();
     }
 }

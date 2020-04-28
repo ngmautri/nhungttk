@@ -24,7 +24,7 @@ class QrDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = QrDTOAssembler::createDTOProperities();
+            $result = QrDTOAssembler::createGetMapping();
             // var_dump($result);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

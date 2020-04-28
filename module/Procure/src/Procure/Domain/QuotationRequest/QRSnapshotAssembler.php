@@ -175,6 +175,7 @@ class QRSnapshotAssembler
 
     /**
      *
+     * @deprecated
      * @param QrDTO $dto
      * @param QRSnapshot $snapShot
      * @param string $editMode

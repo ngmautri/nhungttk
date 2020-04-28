@@ -11,6 +11,7 @@ use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
+use Application\Entity\NmtProcureQo;
 use Procure\Domain\RowSnapshot;
 
 /**
@@ -336,6 +337,50 @@ class RowMapper
 
         $snapshot->docId = $entity->getId();
         $snapshot->docToken = $entity->getToken();
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->docNumber = $entity->getDocNumber();
+
+        if ($entity->getDocCurrency() !== null) {
+            $snapshot->docCurrencyId = $entity->getDocCurrency()->getId();
+            $snapshot->docCurrencyISO = $entity->getDocCurrency()->getCurrency();
+        }
+
+        if ($entity->getLocalCurrency() !== null) {
+            $snapshot->localCurrencyId = $entity->getLocalCurrency()->getId();
+            $snapshot->localCurrencyISO = $entity->getLocalCurrency()->getCurrency();
+        }
+
+        if ($entity->getVendor() !== null) {
+            $snapshot->vendorId = $entity->getVendor()->getId();
+            $snapshot->vendorToken = $entity->getVendor()->getToken();
+
+            if ($entity->getVendor()->getCountry() !== null) {
+                $snapshot->vendorCountry = $entity->getVendor()
+                    ->getCountry()
+                    ->getCountryName();
+            }
+        }
+
+        return $snapshot;
+    }
+
+    public static function updateQuoteDetails(RowSnapshot $snapshot, NmtProcureQo $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+
+        if ($entity == null) {
+            return $snapshot;
+        }
+
+        // $snapshot->qo = $entity->getId();
+        $snapshot->vendorName = $entity->getVendorName();
+        $snapshot->docCurrencyISO = $entity->getCurrencyIso3();
+
+        $snapshot->docId = $entity->getId();
+        $snapshot->docToken = $entity->getToken();
+
         $snapshot->exchangeRate = $entity->getExchangeRate();
         $snapshot->docNumber = $entity->getDocNumber();
 

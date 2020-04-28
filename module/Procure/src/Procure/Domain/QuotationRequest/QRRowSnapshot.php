@@ -10,4 +10,15 @@ use Procure\Domain\RowSnapshot;
  */
 class QRRowSnapshot extends RowSnapshot
 {
+
+    public $qo;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getQo()
+    {
+        return $this->qo;
+    }
 }

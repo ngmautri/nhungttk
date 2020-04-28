@@ -19,8 +19,8 @@ class QRRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = QrRowDTOAssembler::findMissingProperties();
-            var_dump($result);
+            $result = QrRowDTOAssembler::createGetMapping();
+            // var_dump($result);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

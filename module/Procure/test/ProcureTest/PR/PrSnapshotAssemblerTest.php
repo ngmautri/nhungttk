@@ -12,11 +12,7 @@ class PrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     protected $serviceManager;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
@@ -24,7 +20,6 @@ class PrSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 
             PRSnapshotAssembler::findMissingPropsInEntity();
             PRSnapshotAssembler::findMissingPropsInGenericDoc();
-
             PRDoc::createSnapshotProps();
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

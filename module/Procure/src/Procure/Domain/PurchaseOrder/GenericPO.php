@@ -276,7 +276,7 @@ abstract class GenericPO extends GenericDoc
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $event = new PoRowAdded($this->makeSnapshot(), $defautParams, $params);
+        $event = new PoRowAdded($this->makeSnapshot(), $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;

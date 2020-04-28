@@ -3,23 +3,12 @@ namespace Procure\Domain\QuotationRequest;
 
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\GenericAP;
-use Procure\Domain\Event\Ap\ApHeaderCreated;
-use Procure\Domain\Event\Ap\ApHeaderUpdated;
-use Procure\Domain\Event\Ap\ApReservalCreated;
-use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\QrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
@@ -29,7 +18,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QRDoc extends GenericAP
+class QRDoc extends GenericQR
 {
 
     private static $instance = null;
@@ -48,287 +37,33 @@ class QRDoc extends GenericAP
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new APSnapshot());
+        return SnapshotAssembler::createSnapshotFrom($this, new QRSnapshot());
     }
 
     public function makeDetailsSnapshot()
     {
-        $snapshot = new APSnapshot();
+        $snapshot = new QRSnapshot();
         $snapshot = SnapshotAssembler::createSnapshotFrom($this, $snapshot);
         return $snapshot;
     }
 
     /**
      *
-     * @param APSnapshot $snapshot
+     * @param QRSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function makeFromSnapshot(APSnapshot $snapshot)
+    public static function makeFromSnapshot(QRSnapshot $snapshot)
     {
-        if (! $snapshot instanceof APSnapshot)
+        if (! $snapshot instanceof QRSnapshot)
             return;
 
         if ($snapshot->uuid == null) {
             $snapshot->uuid = Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
         }
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
-    }
-
-    /**
-     *
-     * @param PODoc $sourceObj
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @throws InvalidArgumentException
-     * @return \Procure\Domain\AccountPayable\APDoc
-     */
-    public static function createFromPo(PODoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
-    {
-        if (! $sourceObj instanceof PODoc) {
-            throw new InvalidArgumentException("PO Entity is required");
-        }
-
-        $rows = $sourceObj->getDocRows();
-
-        if ($rows == null) {
-            throw new InvalidArgumentException("PO Entity is empty!");
-        }
-
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidArgumentException("PO document is not posted!");
-        }
-
-        if ($sourceObj->getTransactionStatus() == Constants::TRANSACTION_STATUS_COMPLETED) {
-            throw new InvalidArgumentException("AP Doc is completed!");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
-        /**
-         *
-         * @var APDoc $instance
-         */
-        $instance = new self();
-        $instance = $sourceObj->convertTo($instance);
-
-        // overwrite.
-        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
-
-        $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->validateHeader($headerValidators);
-
-        foreach ($rows as $r) {
-
-            /**
-             *
-             * @var APRow $r ;
-             */
-
-            // ignore completed row;
-
-            $localEntity = APRow::createFromPoRow($r, $options);
-            // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
-            $instance->addRow($localEntity);
-
-            $instance->validateRow($localEntity, $rowValidators);
-        }
-        return $instance;
-    }
-
-    /**
-     *
-     * @param QRDoc $sourceObj
-     * @param APSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param APPostingService $postingService
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APDoc
-     */
-    public static function createAndPostReserval(QRDoc $sourceObj, APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
-    {
-        if (! $sourceObj instanceof QRDoc) {
-            throw new InvalidArgumentException("AP Entity is required");
-        }
-
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException("AP document is not posted!");
-        }
-
-        $rows = $sourceObj->getDocRows();
-
-        if ($rows == null) {
-            throw new InvalidArgumentException("AP Entity is empty!");
-        }
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
-
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Input snapshot is given!");
-        }
-
-        $reversalDate = $snapshot->getReversalDate();
-        $createdDate = new \DateTime();
-        $createdBy = $options->getUserId();
-
-        /**
-         *
-         * @var APDoc $instance
-         * @var APRow $r ;
-         */
-        $instance = new self();
-        $instance = $sourceObj->convertTo($instance);
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->markAsReversed($createdBy, $reversalDate);
-
-        // overwrite.
-        $instance->setReversalDoc($sourceObj->getId()); // Important
-        $instance->setDocType(sprintf("%s-1", "REV")); // important.
-        $instance->validateHeader($headerValidators);
-
-        // $sourceObj
-        $sourceObj->markAsReversed($createdBy, $reversalDate);
-        $sourceObj->validateHeader($headerValidators);
-
-        foreach ($rows as $r) {
-
-            // $sourceObj
-            $r->markAsReversed($createdBy, $reversalDate);
-            $sourceObj->validateRow($r, $rowValidators);
-
-            $localEntity = APRow::createRowReserval($instance, $r, $options);
-
-            $instance->addRow($localEntity);
-            $instance->validateRow($localEntity, $rowValidators);
-        }
-
-        if ($instance->hasErrors()) {
-            throw new OperationFailedException($instance->getErrorMessage());
-        }
-
-        if ($sourceObj->hasErrors()) {
-            throw new OperationFailedException($sourceObj->getErrorMessage());
-        }
-
-        $instance->clearEvents();
-        $sourceObj->clearEvents();
-
-        $snapshot = $postingService->getCmdRepository()->post($instance, true);
-        if (! $snapshot instanceof APSnapshot) {
-            throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
-        }
-
-        $instance->setId($snapshot->getId());
-        $instance->setToken($snapshot->getToken());
-
-        $postingService->getCmdRepository()->post($sourceObj, false);
-        $e1 = new ApReservalCreated($snapshot);
-        $e2 = new ApReversed($sourceObj);
-
-        $instance->addEvent($e1);
-        $instance->addEvent($e2);
-
-        $sourceObj->addEvent($e1);
-        $sourceObj->addEvent($e2);
-
-        return $instance;
-    }
-
-    /**
-     *
-     * @param APSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param APPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APSnapshot
-     */
-    public function saveFromPO(APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
-    {
-        if (! $this->getDocStatus() == ProcureDocStatus::DOC_STATUS_DRAFT) {
-            throw new InvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
-        }
-
-        if ($this->getDocRows() == null) {
-            throw new InvalidOperationException(sprintf("Documment is empty! %s", __FUNCTION__));
-        }
-
-        if (! $this->getDocType() == Constants::PROCURE_DOC_TYPE_INVOICE_PO) {
-            throw new InvalidOperationException(sprintf("Doctype is not vadid! %s", __FUNCTION__));
-        }
-
-        $this->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Comnand Options not found!");
-        }
-
-        // Entity from Snapshot
-        if ($snapshot !== null) {
-            $this->setDocCurrency($snapshot->getDocCurrency());
-            $this->setDocDate($snapshot->getDocDate());
-            $this->setDocNumber($snapshot->getDocNumber());
-            $this->setPostingDate($snapshot->getPostingDate());
-            $this->setGrDate($snapshot->getGrDate());
-            $this->setWarehouse($snapshot->getWarehouse());
-            $this->setPmtTerm($snapshot->getPmtTerm());
-            $this->setRemarks($snapshot->getRemarks());
-        }
-
-        $createdDate = new \Datetime();
-        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-
-        $this->validate($headerValidators, $rowValidators);
-        if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
-        }
-
-        $this->clearEvents();
-        $rootSnapshot = $postingService->getCmdRepository()->store($this);
-
-        if (! $rootSnapshot instanceof APSnapshot) {
-            throw new OperationFailedException(\sprintf("Errors occured when saving AP"));
-        }
-
-        return $rootSnapshot;
     }
 
     /**
@@ -372,18 +107,7 @@ class QRDoc extends GenericAP
         }
     }
 
-    /**
-     *
-     * @param APSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param APPostingService $postingService
-     * @throws InvalidArgumentException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APDoc
-     */
-    public static function createFrom(APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
+    public static function createFrom(QRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         $instance = new self();
         $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
@@ -413,7 +137,7 @@ class QRDoc extends GenericAP
 
         /**
          *
-         * @var APSnapshot $rootSnapshot
+         * @var QRSnapshot $rootSnapshot
          */
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
@@ -426,23 +150,11 @@ class QRDoc extends GenericAP
         $trigger = $options->getTriggeredBy();
         $params = [];
 
-        $instance->addEvent(new ApHeaderCreated($rootSnapshot, $trigger, $params));
+        $instance->addEvent();
         return $instance;
     }
 
-    /**
-     *
-     * @param APSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param array $params
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APDoc
-     */
-    public static function updateFrom(APSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
+    public static function updateFrom(QRSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         $instance = new self();
         $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
@@ -472,7 +184,7 @@ class QRDoc extends GenericAP
 
         /**
          *
-         * @var APSnapshot $rootSnapshot
+         * @var QRSnapshot $rootSnapshot
          */
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
@@ -487,19 +199,19 @@ class QRDoc extends GenericAP
             $trigger = $options->getTriggeredBy();
         }
 
-        $instance->addEvent(new ApHeaderUpdated($rootSnapshot, $trigger, $params));
+        $instance->addEvent();
         return $instance;
     }
 
     /**
      * Call this method to get from storage
      *
-     * @param APSnapshot $snapshot
+     * @param QRSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function constructFromDetailsSnapshot(APSnapshot $snapshot)
+    public static function constructFromDetailsSnapshot(QRSnapshot $snapshot)
     {
-        if (! $snapshot instanceof APSnapshot) {
+        if (! $snapshot instanceof QRSnapshot) {
             return;
         }
 
@@ -514,12 +226,12 @@ class QRDoc extends GenericAP
     /**
      * Call this method to get from storage
      *
-     * @param APSnapshot $snapshot
+     * @param QRSnapshot $snapshot
      * @return void|\Procure\Domain\GoodsReceipt\GRDoc
      */
-    public static function constructFromSnapshot(APSnapshot $snapshot)
+    public static function constructFromSnapshot(QRSnapshot $snapshot)
     {
-        if (! $snapshot instanceof APSnapshot) {
+        if (! $snapshot instanceof QRSnapshot) {
             return;
         }
 
@@ -538,11 +250,11 @@ class QRDoc extends GenericAP
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
      */
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         /**
          *
-         * @var APRow $row ;
+         * @var QRRow $row ;
          */
         $postedDate = new \Datetime();
 
@@ -571,11 +283,11 @@ class QRDoc extends GenericAP
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doReverse()
      */
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         /**
          *
-         * @var APRow $row ;
+         * @var QRRow $row ;
          */
         $postedDate = new \Datetime();
         $this->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
@@ -598,18 +310,10 @@ class QRDoc extends GenericAP
         $postingService->getCmdRepository()->post($this, false);
     }
 
-    /**
-     *
-     * @param APSnapshot $snapshot
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\Gr\GrInvalidArgumentException
-     */
-    private function _checkInputParams(APSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
+    private function _checkInputParams(QRSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
     {
-        if (! $snapshot instanceof APSnapshot) {
-            throw new InvalidArgumentException("APSnapshot not found!");
+        if (! $snapshot instanceof QRSnapshot) {
+            throw new InvalidArgumentException("QRSnapshot not found!");
         }
 
         if ($headerValidators == null) {
@@ -624,16 +328,16 @@ class QRDoc extends GenericAP
         }
     }
 
-    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
 
-    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
 
-    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
 
-    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
 
     protected function raiseEvent()

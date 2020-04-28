@@ -1,22 +1,20 @@
 <?php
 namespace Procure\Domain\QuotationRequest;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
-use Procure\Application\DTO\Ap\ApDetailsDTO;
-use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\APRowSnapshot;
+use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\AccountPayable\AbstractAP;
-use Procure\Domain\Event\Ap\ApPosted;
-use Procure\Domain\Event\Ap\ApReversed;
-use Procure\Domain\Event\Ap\ApRowAdded;
-use Procure\Domain\Event\Ap\ApRowUpdated;
+use Procure\Domain\Event\Qr\QrPosted;
+use Procure\Domain\Event\Qr\QrRowAdded;
+use Procure\Domain\Event\Qr\QrRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
-use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\QrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -31,27 +29,27 @@ use Procure\Domain\Validator\RowValidatorCollection;
 abstract class GenericQR extends AbstractAP
 {
 
-    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService);
 
-    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService);
 
-    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService);
 
-    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService);
 
-    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService);
 
     /**
      *
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
      * @param boolean $isPosting
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @return \Procure\Domain\AccountPayable\GenericAP
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\QuotationRequest\GenericQR
      */
     public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
     {
@@ -60,7 +58,7 @@ abstract class GenericQR extends AbstractAP
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("GR Validators not given!");
+            throw new InvalidArgumentException("QR Validators not given!");
         }
 
         // Clear Notification.
@@ -84,23 +82,24 @@ abstract class GenericQR extends AbstractAP
         return $this;
     }
 
-    public function deactivateRow(APRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function deactivateRow(QRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {}
 
     /**
      *
-     * @param APRowSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APRowSnapshot
+     * @param QRRowSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidOperationException
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\QuotationRequest\QRRowSnapshot
      */
-    public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function createRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("AP is posted! %s", $this->getId()));
@@ -122,7 +121,7 @@ abstract class GenericQR extends AbstractAP
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = APRow::makeFromSnapshot($snapshot);
+        $row = QRRow::makeFromSnapshot($snapshot);
 
         $this->validateRow($row, $rowValidators);
 
@@ -134,48 +133,41 @@ abstract class GenericQR extends AbstractAP
 
         /**
          *
-         * @var APRowSnapshot $localSnapshot
+         * @var QRRowSnapshot $localSnapshot
          */
         $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
         if ($localSnapshot == null) {
             throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
-
-        $trigger = $options->getTriggeredBy();
-
         $params = [
             "rowId" => $localSnapshot->getId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $this->addEvent(new ApRowAdded($this->makeSnapshot(), $trigger, $params));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $event = new QrRowAdded($target, $defaultParams, $params);
+
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
 
-    /**
-     *
-     * @param APRowSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param array $params
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
-     * @return \Procure\Domain\AccountPayable\APRowSnapshot
-     */
-    public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function updateRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
+            throw new InvalidOperationException(sprintf("QR is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
-            throw new InvalidArgumentException("APRowSnapshot not found");
+            throw new InvalidArgumentException("QRRowSnapshot not found");
         }
 
         if ($options == null) {
@@ -188,7 +180,7 @@ abstract class GenericQR extends AbstractAP
         $createdBy = $options->getUserId();
         $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = APRow::makeFromSnapshot($snapshot);
+        $row = QRRow::makeFromSnapshot($snapshot);
 
         $this->validateRow($row, $rowValidators);
 
@@ -200,33 +192,41 @@ abstract class GenericQR extends AbstractAP
 
         /**
          *
-         * @var APRowSnapshot $localSnapshot
+         * @var QRRowSnapshot $localSnapshot
          */
         $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
+            throw new OperationFailedException(sprintf("Error occured when creating Quotation Row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $event = new QrRowUpdated($target, $defaultParams, $params);
 
-        $this->addEvent(new ApRowUpdated($this->makeSnapshot(), $trigger, $params));
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
 
     /**
      *
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\OperationFailedException
-     * @return \Procure\Domain\AccountPayable\GenericAP
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidOperationException
+     * @throws ValidationFailedException
+     * @return \Procure\Domain\QuotationRequest\GenericQR
      */
-    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
@@ -245,22 +245,34 @@ abstract class GenericQR extends AbstractAP
         $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new ApPosted($this->makeDetailsDTO()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new QrPosted($target, $defaultParams, $params);
+
+        $this->addEvent($event);
         return $this;
     }
 
     /**
      *
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
-     * @return \Procure\Domain\AccountPayable\GenericAP
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidOperationException
+     * @throws ValidationFailedException
+     * @return \Procure\Domain\QuotationRequest\GenericQR
      */
-    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
@@ -279,7 +291,7 @@ abstract class GenericQR extends AbstractAP
         $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new ApReversed($this->makeSnapshot()));
+        $this->addEvent();
         return $this;
     }
 
@@ -299,14 +311,14 @@ abstract class GenericQR extends AbstractAP
 
     /**
      *
-     * @param APRow $row
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param QRRow $row
+     * @param RowValidatorCollection $rowValidators
      * @param boolean $isPosting
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function validateRow(APRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
+    public function validateRow(QRRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
-        if (! $row instanceof APRow) {
+        if (! $row instanceof QRRow) {
             throw new InvalidArgumentException("GR Row not given!");
         }
 
@@ -318,8 +330,6 @@ abstract class GenericQR extends AbstractAP
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
-        } else {
-            $row->refresh();
         }
     }
 
@@ -329,7 +339,7 @@ abstract class GenericQR extends AbstractAP
      */
     public function makeDetailsDTO()
     {
-        $dto = new ApDetailsDTO();
+        $dto = new QrDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }
@@ -340,7 +350,7 @@ abstract class GenericQR extends AbstractAP
      */
     public function makeHeaderDTO()
     {
-        $dto = new ApDetailsDTO();
+        $dto = new QrDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }
@@ -357,7 +367,7 @@ abstract class GenericQR extends AbstractAP
         if (count($this->docRows) > 0) {
             foreach ($this->docRows as $row) {
 
-                if ($row instanceof APRow) {
+                if ($row instanceof QRRow) {
                     $rowDTOList[] = $row->makeDetailsDTO();
                 }
             }
@@ -369,13 +379,13 @@ abstract class GenericQR extends AbstractAP
 
     /**
      *
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param QrPostingService $postingService
+     * @throws InvalidArgumentException
      */
-    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if ($headerValidators == null) {
             throw new InvalidArgumentException("HeaderValidatorCollection not found");

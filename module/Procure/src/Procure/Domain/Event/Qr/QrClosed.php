@@ -8,6 +8,6 @@ use Application\Application\Event\AbstractEvent;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QrClosed extends AbstractEvent
+final class QrClosed extends AbstractEvent
 {
 }

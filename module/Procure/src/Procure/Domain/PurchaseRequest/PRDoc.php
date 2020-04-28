@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PRDoc extends GenericPR
+final class PRDoc extends GenericPR
 {
 
     private static $instance = null;

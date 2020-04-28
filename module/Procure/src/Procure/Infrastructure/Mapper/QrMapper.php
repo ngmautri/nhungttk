@@ -383,10 +383,11 @@ class QrMapper
         return $entity;
     }
 
-    public static function createSnapshot(NmtProcureQo $entity)
+    public static function createSnapshot(EntityManager $doctrineEM, NmtProcureQo $entity)
     {
-        if ($entity == null)
+        if ($entity == null || $doctrineEM == null) {
             return null;
+        }
 
         $snapshot = new QRSnapshot();
 
@@ -530,10 +531,11 @@ class QrMapper
         return $snapshot;
     }
 
-    public static function createRowSnapshot(NmtProcureQoRow $entity)
+    public static function createRowSnapshot(EntityManager $doctrineEM, NmtProcureQoRow $entity)
     {
-        if ($entity == null)
+        if ($entity == null || $doctrineEM == null) {
             return null;
+        }
 
         $snapshot = new QRRowSnapshot();
 

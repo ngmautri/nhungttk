@@ -3,7 +3,6 @@ namespace Procure\Domain\PurchaseOrder\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\AbstractDoc;
-use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\Validator\AbstractValidator;
@@ -18,8 +17,8 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 {
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
      */
     public function validate(AbstractDoc $rootEntity)
@@ -136,15 +135,9 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                     $rootEntity->addError("User is not identified for this transaction. #" . $rootEntity->getLastchangeBy());
                 }
             }
-            
-            
-            
-        } catch (PoCreateException $e) {
+        } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }
-    
-
-  
 }
 

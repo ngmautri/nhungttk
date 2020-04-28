@@ -1,11 +1,11 @@
 <?php
-namespace ProcureTest\Ap\Rep;
+namespace ProcureTest\Qr\Rep;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
 class QueryRepTest extends PHPUnit_Framework_TestCase
@@ -14,11 +14,7 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
     protected $serviceManager;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(dirname(__FILE__)))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
@@ -26,30 +22,21 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new APQueryRepositoryImpl($doctrineEM);
+            $rep = new QRQueryRepositoryImpl($doctrineEM);
 
-            $id = 2828;
-            $token = "3c1b51e9-f6f9-4298-946f-d58b49428571";
+            $id = 341;
+            $token = "gPufszEZUo_4K20B1bdzs3eYs47TZjSr";
 
             /**
              *
              * @var APDoc $rootEntity ;
              */
-            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            var_dump($rootEntity->makeSnapshot());
+            // $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-            /*
-             * $companyId = 1;
-             * $userId = 39;
-             * $options = new PostCopyFromAPOptions($companyId, $userId, __METHOD__, $rootEntity);
-             *
-             * $dto = new GrDTO();
-             * $cmdHandler = new PostCopyFromAPCmdHandler();
-             * $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-             * $cmd = new PostCopyFromAPCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
-             * $cmd->execute();
-             * var_dump($dto->getNotification());
-             */
+            $rowId = 2102;
+            $rootEntity = $rep->getHeaderIdByRowId(2102);
+
+            var_dump($rootEntity);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

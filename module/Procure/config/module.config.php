@@ -13,6 +13,8 @@ use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmittedFactory;
 use Procure\Application\Eventbus\EventBusService;
 use Procure\Application\Eventbus\HandlerMapper;
 use Procure\Application\Eventbus\HandlerMapperFactory;
+use Procure\Application\Service\QR\QRService;
+use Procure\Application\Service\QR\QRServiceFactory;
 
 return array(
     'navigation' => array(
@@ -262,6 +264,7 @@ return array(
             'Procure\Application\Service\PO\POService' => 'Procure\Application\Service\PO\POServiceFactory',
             'Procure\Application\Service\GR\GRService' => 'Procure\Application\Service\GR\GRServiceFactory',
             'Procure\Application\Service\AP\APService' => 'Procure\Application\Service\AP\APServiceFactory',
+            QRService::class => QRServiceFactory::class,
 
             // Search Service
             'Procure\Application\Service\Search\ApSearchService' => 'Procure\Application\Service\Search\ApSearchServiceFactory',
@@ -322,6 +325,7 @@ return array(
             'Procure\Controller\ApSearch' => 'Procure\Controller\ApSearchControllerFactory',
             'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
             'Procure\Controller\Ap' => 'Procure\Controller\ApControllerFactory',
+            'Procure\Controller\Qr' => 'Procure\Controller\QrControllerFactory',
 
             // API
             'Procure\API\PrController' => 'Procure\API\PrControllerFactory'

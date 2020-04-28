@@ -7,7 +7,6 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\QuotationRequest\Repository\QrQueryRepositoryInterface;
-use Procure\Infrastructure\Doctrine\SQL\PrSQL;
 use Procure\Infrastructure\Mapper\QrMapper;
 
 /**
@@ -164,13 +163,17 @@ WHERE id = %s";
         foreach ($rows as $r) {
 
             /**@var \Application\Entity\NmtProcureQoRow $localEnityDoctrine ;*/
-            $localEnityDoctrine = $r[0];
+            $localEnityDoctrine = $r;
 
             $localSnapshot = QrMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
 
             if ($localSnapshot == null) {
                 continue;
             }
+            $netAmount = $netAmount + $localSnapshot->getNetAmount();
+            $taxAmount = $taxAmount + $localSnapshot->getTaxAmount();
+            $grossAmount = $grossAmount + $localSnapshot->getGrossAmount();
+
             $totalRows ++;
             $localEntity = QRRow::makeFromSnapshot($localSnapshot);
             $docRowsArray[] = $localEntity;
@@ -180,11 +183,10 @@ WHERE id = %s";
 
         $rootSnapshot->totalRows = $totalRows;
         $rootSnapshot->totalActiveRows = $totalActiveRows;
-        /*
-         * $rootSnapshot->netAmount = $netAmount;
-         * $rootSnapshot->taxAmount = $taxAmount;
-         * $rootSnapshot->grossAmount = $grossAmount;
-         */
+
+        $rootSnapshot->netAmount = $netAmount;
+        $rootSnapshot->taxAmount = $taxAmount;
+        $rootSnapshot->grossAmount = $grossAmount;
 
         $rootEntity = QRDoc::makeFromSnapshot($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
@@ -194,33 +196,19 @@ WHERE id = %s";
 
     private function getRowsById($id)
     {
-        $sql = "";
+        $sql = "select
+*
+from nmt_procure_qo_row
+where 1%s";
 
-        $tmp1 = sprintf(" AND nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1", $id);
-        $sql1 = sprintf(PrSQL::PR_PO_ROW, $tmp1);
-        $sql2 = sprintf(PrSQL::PR_AP_ROW, $tmp1);
-        $sql3 = sprintf(PrSQL::PR_GR_ROW, $tmp1);
-        $sql4 = sprintf(PrSQL::PR_STOCK_GR_ROW, $tmp1);
-        $sql5 = sprintf(PrSQL::ITEM_LAST_AP_ROW, $tmp1);
+        $tmp1 = sprintf(" AND nmt_procure_qo_row.qo_id=%s AND nmt_procure_qo_row.is_active=1", $id);
 
-        $sql = sprintf($sql, $sql1, $sql2, $sql3, $sql4, $sql5, $id);
+        $sql = sprintf($sql, $tmp1);
 
         // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQoRow', 'nmt_procure_qo_row');
-            $rsm->addScalarResult("po_qty", "po_qty");
-            $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
-
-            $rsm->addScalarResult("gr_qty", "gr_qty");
-            $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
-
-            $rsm->addScalarResult("ap_qty", "ap_qty");
-            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-
-            $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
-            $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
-
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

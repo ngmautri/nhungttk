@@ -85,7 +85,8 @@ class QRCmdRepositoryImpl extends AbstractDoctrineRepository implements QrCmdRep
         }
 
         $rootSnapshot->id = $entity->getId();
-        $rootSnapshot->sysNumber = $entity->getPrAutoNumber();
+        $rootSnapshot->sysNumber = $entity->getSysNumber();
+        $rootSnapshot->docNumber = $entity->getDocNumber();
         $rootSnapshot->revisionNo = $entity->getRevisionNo();
 
         return $rootSnapshot;

@@ -55,13 +55,13 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             // ==== CK Contract DATE =======
 
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
-            if (! $spec->isSatisfiedBy($rootEntity->getContractDate())) {
-                $rootEntity->addError("Contract date is not correct or empty");
+            if (! $spec->isSatisfiedBy($rootEntity->getDocDate())) {
+                $rootEntity->addError("Document date is not correct or empty");
             }
 
             // ==== CK CONTRACT NO =======
-            if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($rootEntity->getContractNo())) {
-                $rootEntity->addError("Contract number is not correct or empty");
+            if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($rootEntity->getDocNumber())) {
+                $rootEntity->addError("Document number is not correct or empty");
             }
 
             // ===== DOC CURRENCY =======
@@ -109,10 +109,10 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             // ===== PAYMENT TERM =======
             $spec = $this->sharedSpecificationFactory->getPaymentTermSpecification();
             $subject = array(
-                "paymentTermId" => $rootEntity->getPaymentTerm()
+                "paymentTermId" => $rootEntity->getPmtTerm()
             );
             if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError(sprintf("Payment term not found! #%s", $rootEntity->getPaymentTerm()));
+                $rootEntity->addError(sprintf("Payment term not found! #%s", $rootEntity->getPmtTerm()));
             }
 
             // ===== USER ID =======

@@ -2,6 +2,7 @@
 namespace Procure\Controller;
 
 use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Service\QR\QRService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -32,6 +33,9 @@ class QrControllerFactory implements FactoryInterface
 
         $sv = $sm->get(EventBusService::class);
         $controller->setEventBusService($sv);
+
+        $sv = $sm->get(QrReporter::class);
+        $controller->setQrReporter($sv);
 
         $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);

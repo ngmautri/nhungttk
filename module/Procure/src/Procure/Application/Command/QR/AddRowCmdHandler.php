@@ -10,7 +10,7 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\QR\Options\RowCreateOptions;
 use Procure\Application\DTO\Qr\QrRowDTO;
 use Procure\Application\Service\FXService;
-use Procure\Application\Service\GR\RowSnapshotReference;
+use Procure\Application\Service\QR\RowSnapshotReference;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;

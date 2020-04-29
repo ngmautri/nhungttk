@@ -1,8 +1,7 @@
 <?php
-namespace Procure\Application\Service\QR\;
+namespace Procure\Application\Service\QR;
 
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 use Procure\Domain\QuotationRequest\QRRowSnapshot;
 
 /**
@@ -21,7 +20,7 @@ class RowSnapshotReference
      */
     public static function updateReferrence(QRRowSnapshot $snapshot, EntityManager $doctrineEM)
     {
-        if (! $snapshot instanceof PRRowSnapshot || ! $doctrineEM instanceof EntityManager) {
+        if (! $snapshot instanceof QRRowSnapshot || ! $doctrineEM instanceof EntityManager) {
             return null;
         }
 

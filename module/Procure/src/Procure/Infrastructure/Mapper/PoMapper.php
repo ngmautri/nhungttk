@@ -125,6 +125,10 @@ class PoMapper
             $entity->setDocDate(new \DateTime($snapshot->docDate));
         }
 
+        // Overwrite.
+        $entity->setContractNo($snapshot->getDocNumber());
+        $entity->setContractDate($entity->getDocDate());
+
         // =================
 
         // ============================

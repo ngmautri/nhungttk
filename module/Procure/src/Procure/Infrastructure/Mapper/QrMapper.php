@@ -125,6 +125,10 @@ class QrMapper
             $entity->setInvoiceDate(new \DateTime($snapshot->invoiceDate));
         }
 
+        // Overwrite.
+        $entity->setQuotationNo($snapshot->getDocNumber());
+        $entity->setQuotationDate($entity->getDocDate());
+
         // ============================
         // REFERRENCE MAPPING
         // ============================

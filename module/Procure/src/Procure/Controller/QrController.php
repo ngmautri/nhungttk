@@ -4,6 +4,7 @@ namespace Procure\Controller;
 use Application\Notification;
 use Application\Domain\Shared\DTOFactory;
 use Doctrine\ORM\EntityManager;
+use MLA\Paginator;
 use Monolog\Logger;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
@@ -21,6 +22,7 @@ use Procure\Application\Command\QR\Options\RowUpdateOptions;
 use Procure\Application\Command\QR\Options\UpdateOptions;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Application\DTO\Qr\QrRowDTO;
+use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Service\QR\QRService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
@@ -42,6 +44,8 @@ class QrController extends AbstractActionController
     protected $eventBusService;
 
     protected $logger;
+
+    protected $qrReporter;
 
     /**
      *
@@ -80,7 +84,7 @@ class QrController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'rootDTO' => null,
+                'headerDTO' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -115,7 +119,7 @@ class QrController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'rootDTO' => $dto,
+                'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -561,7 +565,7 @@ class QrController extends AbstractActionController
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenerichCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
             $msg = sprintf("quoation #%s is posted", $entity_id);
@@ -863,7 +867,86 @@ class QrController extends AbstractActionController
      * @return \Zend\View\Helper\ViewModel
      */
     public function listAction()
-    {}
+    {
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $currentState = $this->params()->fromQuery('currentState');
+        $docStatus = $this->params()->fromQuery('docStatus');
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+
+        $is_active = (int) $this->params()->fromQuery('is_active');
+
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+
+        if ($docStatus == null) :
+            $docStatus = "posted";
+
+            if ($sort_by == null) :
+                $sort_by = "sysNumber";
+        endif;
+        endif;
+
+
+        if ($sort_by == null) :
+            $sort_by = "createdOn";
+        endif;
+
+        if ($sort == null) :
+            $sort = "DESC";
+        endif;
+
+        $current_state = null;
+        $filter_by = null;
+        $paginator = null;
+        $limit = null;
+        $offset = null;
+
+        /**
+         *
+         * @todo: CACHE
+         */
+        $total_records = $this->getQrReporter()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        $list = $this->qrReporter->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+
+        $viewModel = new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'is_active' => $is_active,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+            'docStatus' => $docStatus
+        ));
+
+        $viewModel->setTemplate("procure/qr/dto_list");
+        return $viewModel;
+    }
 
     // ==================================================
 
@@ -933,5 +1016,23 @@ class QrController extends AbstractActionController
     public function setQrService(QRService $qrService)
     {
         $this->qrService = $qrService;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Reporting\QR\QrReporter
+     */
+    public function getQrReporter()
+    {
+        return $this->qrReporter;
+    }
+
+    /**
+     *
+     * @param QrReporter $qrReporter
+     */
+    public function setQrReporter(QrReporter $qrReporter)
+    {
+        $this->qrReporter = $qrReporter;
     }
 }

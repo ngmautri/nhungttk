@@ -1,7 +1,10 @@
 <?php
 namespace Procure\Application\Service\PO;
 
+use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
+use Procure\Application\Service\FXService;
 use Procure\Application\Service\Output\RowNumberFormatter;
 use Procure\Application\Service\Output\RowTextAndNumberFormatter;
 use Procure\Application\Service\Output\SaveAsArray;
@@ -9,13 +12,19 @@ use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
 use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
+use Procure\Application\Service\PO\Output\PoSaveAsPdf;
+use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoOpenOfficeBuilder;
+use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
+use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
-use Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository;
-use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
-use Procure\Application\Service\PO\Output\PoSaveAsPdf;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
 
 /**
  * PO Service.
@@ -29,6 +38,30 @@ class POService extends AbstractService
     private $cmdRepository;
 
     private $queryRepository;
+
+    public function createFromQuotation($id, $token, CommandOptions $options)
+    {
+        $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());
+
+        $sourceEntity = $rep->getRootEntityByTokenId($id, $token);
+
+        $headerValidators = new HeaderValidatorCollection();
+
+        $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+        $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
+        $fxService = new FXService();
+        $fxService->setDoctrineEM($this->getDoctrineEM());
+
+        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
+        $headerValidators->add($validator);
+
+        $rowValidators = new RowValidatorCollection();
+        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
+        $rowValidators->add($validator);
+
+        $rootEntity = PODoc::createFromQuotation($sourceEntity, $options, $headerValidators, $rowValidators);
+        return $rootEntity;
+    }
 
     /**
      *
@@ -159,17 +192,17 @@ class POService extends AbstractService
         $this->cmdRepository = $cmdRepository;
     }
 
-   /**
-    * 
-    * @return \Procure\Infrastructure\Doctrine\POQueryRepositoryImpl
-    */
+    /**
+     *
+     * @return \Procure\Infrastructure\Doctrine\POQueryRepositoryImpl
+     */
     public function getQueryRepository()
     {
         return $this->queryRepository;
     }
 
     /**
-     * 
+     *
      * @param POQueryRepositoryImpl $queryRepository
      */
     public function setQueryRepository(POQueryRepositoryImpl $queryRepository)

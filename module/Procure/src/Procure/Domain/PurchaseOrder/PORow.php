@@ -3,9 +3,13 @@ namespace Procure\Domain\PurchaseOrder;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericRow;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\QuotationRequest\QRRow;
+use Procure\Domain\Shared\Constants;
 
 /**
  * PO Row
@@ -15,34 +19,57 @@ use Procure\Domain\GenericRow;
  */
 class PORow extends GenericRow
 {
-    
+
     private static $instance = null;
-    
-    
+
     // Specific Attributes
-    //=================================
-       
+    // =================================
     protected $draftGrQuantity;
-    
+
     protected $postedGrQuantity;
-    
+
     protected $confirmedGrBalance;
-    
+
     protected $openGrBalance;
-    
+
     protected $draftAPQuantity;
-    
+
     protected $postedAPQuantity;
-    
+
     protected $openAPQuantity;
-    
+
     protected $billedAmount;
-    
+
     protected $openAPAmount;
 
-  
     private function __construct()
     {}
+
+    public static function createFromQuoteRow(QRRow $sourceObj, CommandOptions $options)
+    {
+        if (! $sourceObj instanceof QRRow) {
+            throw new InvalidArgumentException("Quotation document is required!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        /**
+         *
+         * @var PORow $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $instance->setDocType(Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE); // important.
+                                                                          // $instance->setQ($sourceObj->getId()); // Important
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        return $instance;
+    }
 
     /**
      *
@@ -63,11 +90,11 @@ class PORow extends GenericRow
     {
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);
-        
+
         $props = $reflectionClass->getProperties();
-        
+
         foreach ($props as $property) {
-            
+
             if ($property->class == $reflectionClass->getName()) {
                 $property->setAccessible(true);
                 $propertyName = $property->getName();
@@ -75,7 +102,7 @@ class PORow extends GenericRow
             }
         }
     }
-    
+
     public static function createAllSnapshotProps()
     {
         $entity = new self();
@@ -87,8 +114,6 @@ class PORow extends GenericRow
             print "\n" . "public $" . $propertyName . ";";
         }
     }
-
-   
 
     /**
      *
@@ -159,7 +184,9 @@ class PORow extends GenericRow
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
     }
+
     /**
+     *
      * @param mixed $draftGrQuantity
      */
     protected function setDraftGrQuantity($draftGrQuantity)
@@ -168,6 +195,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $postedGrQuantity
      */
     protected function setPostedGrQuantity($postedGrQuantity)
@@ -176,6 +204,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $confirmedGrBalance
      */
     protected function setConfirmedGrBalance($confirmedGrBalance)
@@ -184,6 +213,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $openGrBalance
      */
     protected function setOpenGrBalance($openGrBalance)
@@ -192,6 +222,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $draftAPQuantity
      */
     protected function setDraftAPQuantity($draftAPQuantity)
@@ -200,6 +231,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $postedAPQuantity
      */
     protected function setPostedAPQuantity($postedAPQuantity)
@@ -208,6 +240,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $openAPQuantity
      */
     protected function setOpenAPQuantity($openAPQuantity)
@@ -216,6 +249,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $billedAmount
      */
     protected function setBilledAmount($billedAmount)
@@ -224,13 +258,16 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @param mixed $openAPAmount
      */
     protected function setOpenAPAmount($openAPAmount)
     {
         $this->openAPAmount = $openAPAmount;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getDraftGrQuantity()
@@ -239,6 +276,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedGrQuantity()
@@ -247,6 +285,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConfirmedGrBalance()
@@ -255,6 +294,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenGrBalance()
@@ -263,6 +303,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftAPQuantity()
@@ -271,6 +312,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedAPQuantity()
@@ -279,6 +321,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenAPQuantity()
@@ -287,6 +330,7 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getBilledAmount()
@@ -295,12 +339,11 @@ class PORow extends GenericRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getOpenAPAmount()
     {
         return $this->openAPAmount;
     }
-
-
 }

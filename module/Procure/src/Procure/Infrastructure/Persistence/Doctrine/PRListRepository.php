@@ -1,13 +1,11 @@
 <?php
 namespace Procure\Infrastructure\Persistence\Doctrine;
 
-
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Infrastructure\Persistence\PRListRepositoryInterface;
 use Procure\Infrastructure\Persistence\SQL\PrSQL;
-
 
 /**
  *
@@ -205,4 +203,67 @@ class PRListRepository extends AbstractDoctrineRepository implements PRListRepos
      */
     public function getPrStatus($prId, $balance, $sort_by = null, $sort = "ASC")
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\PRListRepositoryInterface::getOfItem()
+     */
+    public function getOfItem($item_id, $token)
+    {
+        $sql = PrSQL::PR_ROW_SQL;
+        $sql_tmp = ' AND nmt_procure_pr_row.item_id=' . $item_id;
+
+        $sql = sprintf($sql, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp);
+        // echo $sql;
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $rsm->addScalarResult("pr_qty", "pr_qty");
+
+            $rsm->addScalarResult("po_qty", "po_qty");
+            $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
+
+            $rsm->addScalarResult("gr_qty", "gr_qty");
+            $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
+
+            $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
+            $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
+
+            $rsm->addScalarResult("ap_qty", "ap_qty");
+            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
+
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    public function getLastCreatedPrRow($limit = 100, $offset = 0)
+    {
+        $sql_tmp = "
+SELECT
+	nmt_procure_pr_row.*
+FROM nmt_procure_pr_row
+ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
+
+        if ($offset > 0) {
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+
+        $sql = sprintf($sql_tmp, $limit);
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }

@@ -13,8 +13,12 @@ use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmittedFactory;
 use Procure\Application\Eventbus\EventBusService;
 use Procure\Application\Eventbus\HandlerMapper;
 use Procure\Application\Eventbus\HandlerMapperFactory;
+use Procure\Application\Reporting\QR\QrReporter;
+use Procure\Application\Reporting\QR\QrReporterFactory;
 use Procure\Application\Service\QR\QRService;
 use Procure\Application\Service\QR\QRServiceFactory;
+use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
 
 return array(
     'navigation' => array(
@@ -253,11 +257,13 @@ return array(
 
             'Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository' => 'Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory',
             'Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository' => 'Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory',
+            QrReportRepositoryImpl::class => QrReporterRepositoryImplFactory::class,
 
             // Reporing Service
             'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',
             'Procure\Application\Reporting\PO\PoReporter' => 'Procure\Application\Reporting\PO\PoReporterFactory',
             'Procure\Application\Reporting\AP\ApReporter' => 'Procure\Application\Reporting\AP\ApReporterFactory',
+            QrReporter::class => QrReporterFactory::class,
 
             // Appliation Service
             'Procure\Application\Service\PR\PRService' => 'Procure\Application\Service\PR\PRServiceFactory',

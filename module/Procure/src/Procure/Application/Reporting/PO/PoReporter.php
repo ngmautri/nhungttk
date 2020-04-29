@@ -9,12 +9,12 @@ use Procure\Application\Service\Output\SaveAsSupportedType;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
 use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
-use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoReportExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoReportOpenOfficeBuilder;
+use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
 
 /**
- * PR Row Service.
+ * PO Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -72,12 +72,11 @@ class PoReporter extends AbstractService
         return $factory->saveMultiplyRowsAs($results, $formatter);
     }
 
-    
     public function getAllPoRowStatusTotal($is_active = 1, $po_year, $balance = 1)
     {
         return $this->getListRespository()->getAllPoRowStatusTotal($is_active, $po_year, $balance);
     }
-    
+
     /**
      *
      * @return \Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl

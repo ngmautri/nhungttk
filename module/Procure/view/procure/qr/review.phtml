@@ -122,7 +122,7 @@ endif;
                <b><?php
 
             if (! $headerDTO == null) :
-                echo sprintf("AP #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
+                echo sprintf("Quote #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
 
             ?></b>
             </li>
@@ -369,7 +369,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
 <!-- ================ TOOL BAR ======================-->
                <div style="position: relative; float: right;">
                <?php
-            echo Toolbar::showToolbarAP($headerDTO, $action, $this);
+            echo Toolbar::showToolbarQR($headerDTO, $action, $this);
             ?>
                </div>
                <!-- ================== TOOL BAR ===================-->
@@ -1327,7 +1327,7 @@ echo $hoverMode;
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
 
-            redirectUrl="/procure/ap/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+            redirectUrl="/procure/qr/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

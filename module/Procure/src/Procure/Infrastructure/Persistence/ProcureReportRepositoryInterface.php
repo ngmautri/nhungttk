@@ -6,6 +6,8 @@ namespace Procure\Infrastructure\Persistence;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface QOListRepositoryInterface
+Interface ProcureReportRepositoryInterface
 {
+
+    public function getPriceOfItem($itemId, $itemToken);
 }

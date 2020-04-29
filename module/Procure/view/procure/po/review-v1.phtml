@@ -375,11 +375,17 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                                 
                                 
                                 
+                                
+                                
+                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
+                                
+                                
                                 
                                 
                                    value="finalPo">Final</option>
@@ -428,7 +434,7 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" placeholder="" id="contractNo" name="contractNo" value="<?php
 
-                            echo (! $headerDTO == null) ? $headerDTO->getContractNo() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getDocNumber() : "";
                             ?>">
                            </div>
                            <label class="control-label col-sm-2">Contract /PO Date:</label>
@@ -436,8 +442,7 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                               <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate"
                                  value="<?php
 
-                                if (! $headerDTO == null) :
-                                    echo ($headerDTO->getContractDate() !== null); endif;
+                                echo (! $headerDTO == null) ? $headerDTO->getDocDate() : "";
 
                                 ?>">
                            </div>

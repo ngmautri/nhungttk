@@ -3,7 +3,6 @@ namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Exception;
 
@@ -992,7 +991,8 @@ WHERE 1
 
     // ============================
     /**
-     * GR List
+     *
+     * @deprecated GR List
      */
     public function getQOList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
@@ -1097,6 +1097,7 @@ WHERE 1
 
     /**
      *
+     * @deprecated
      * @param int $item_id
      * @param string $token
      * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL

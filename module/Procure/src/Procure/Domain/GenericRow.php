@@ -2,16 +2,57 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
+use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  * Generic Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GenericRow extends AbstractRow
 {
+
+    /**
+     *
+     * @param GenericRow $targetObj
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\GenericRow
+     */
+    public function convertTo(GenericRow $targetObj)
+    {
+        if (! $targetObj instanceof GenericRow) {
+            throw new InvalidArgumentException("Convertion input invalid!");
+        }
+
+        // Converting
+        // ==========================
+        $exculdedProps = [
+            "id",
+            "uuid",
+            "token",
+            "instance",
+            "sysNumber",
+            "createdBy",
+            "lastchangeBy",
+            "docId",
+            "docToken"
+        ];
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+            $prop->setAccessible(true);
+
+            $propName = $prop->getName();
+            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
 
     /**
      *

@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\SimpleCollection;
@@ -10,13 +9,19 @@ use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\InvalidOperationException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Exception\ValidationFailedException;
+use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Shared\Constants;
+use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey;
@@ -35,6 +40,132 @@ class PODoc extends GenericPO
     private $grCollection;
 
     private $apCollection;
+
+    /**
+     *
+     * @param QRDoc $sourceObj
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function createFromQuotation(QRDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
+    {
+        if (! $sourceObj instanceof QRDoc) {
+            throw new InvalidArgumentException("Quotation Entity is required");
+        }
+
+        $rows = $sourceObj->getDocRows();
+
+        if ($rows == null) {
+            throw new InvalidArgumentException("Quote Entity is empty!");
+        }
+
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new InvalidArgumentException("Quote document is not posted!");
+        }
+
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+        /**
+         *
+         * @var PODoc $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        // overwrite.
+        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE); // important.
+
+        $createdBy = $options->getUserId();
+        $createdDate = new \DateTime();
+        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->validateHeader($headerValidators);
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var PORow $r ;
+             */
+
+            // ignore completed row;
+
+            $localEntity = PORow::createFromQuoteRow($r, $options);
+            $instance->addRow($localEntity);
+            $instance->validateRow($localEntity, $rowValidators);
+        }
+        return $instance;
+    }
+
+    /**
+     *
+     * @param POSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param RowValidatorCollection $rowValidators
+     * @param SharedService $sharedService
+     * @param POPostingService $postingService
+     * @throws InvalidOperationException
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Procure\Domain\AccountPayable\APSnapshot
+     */
+    public function saveFromQuotation(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    {
+        if (! $this->getDocStatus() == ProcureDocStatus::DOC_STATUS_DRAFT) {
+            throw new InvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
+        }
+
+        if ($this->getDocRows() == null) {
+            throw new InvalidOperationException(sprintf("Documment is empty! %s", __FUNCTION__));
+        }
+
+        if (! $this->getDocType() == Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE) {
+            throw new InvalidOperationException(sprintf("Doctype is not vadid! %s", __FUNCTION__));
+        }
+
+        $this->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
+
+        if ($rowValidators == null) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+
+        if ($options == null) {
+            throw new InvalidArgumentException("Comnand Options not found!");
+        }
+
+        // Entity from Snapshot
+        if ($snapshot !== null) {
+            $this->setDocCurrency($snapshot->getDocCurrency());
+            $this->setDocDate($snapshot->getDocDate());
+            $this->setDocNumber($snapshot->getDocNumber());
+            $this->setPostingDate($snapshot->getPostingDate());
+            $this->setWarehouse($snapshot->getWarehouse());
+            $this->setPmtTerm($snapshot->getPmtTerm());
+            $this->setRemarks($snapshot->getRemarks());
+        }
+
+        $createdDate = new \Datetime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+
+        $this->validate($headerValidators, $rowValidators);
+        if ($this->hasErrors()) {
+            throw new ValidationFailedException($this->getErrorMessage());
+        }
+
+        $this->clearEvents();
+        $rootSnapshot = $postingService->getCmdRepository()->store($this);
+
+        if (! $rootSnapshot instanceof POSnapshot) {
+            throw new OperationFailedException(\sprintf("Errors occured when saving PO"));
+        }
+
+        return $rootSnapshot;
+    }
 
     /**
      *
@@ -410,6 +541,24 @@ class PODoc extends GenericPO
         }
 
         return $instance;
+    }
+
+    private function _checkInputParams(POSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    {
+        if (! $snapshot instanceof POSnapshot) {
+            throw new InvalidArgumentException("APSnapshot not found!");
+        }
+
+        if ($headerValidators == null) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($postingService == null) {
+            throw new InvalidArgumentException("postingService service not found");
+        }
     }
 
     protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)

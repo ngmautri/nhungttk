@@ -22,6 +22,7 @@ use Procure\Domain\Service\QrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Procure\Infrastructure\Doctrine\QRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
 
 /**
@@ -122,7 +123,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
 
-            $cmdRepository = new QRQueryRepositoryImpl($cmd->getDoctrineEM());
+            $cmdRepository = new QRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new QrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 

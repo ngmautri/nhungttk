@@ -21,7 +21,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QRDoc extends GenericQR
+final class QRDoc extends GenericQR
 {
 
     private static $instance = null;

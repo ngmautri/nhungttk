@@ -1,30 +1,30 @@
 <?php
-namespace Application\Application\Service\Eventbus;
+namespace Procure\Infrastructure\Persistence\Doctrine\Factory;
 
+use Procure\Infrastructure\Persistence\Doctrine\ProcureReportRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
- * @author Nguyen Mau Tri - ngmautri@gmail.com
+ * @author Nguyen Mau Tri
  *        
  */
-class EventBusServiceFactory implements FactoryInterface
+class ProcureReporterRepositoryImplFactory implements FactoryInterface
 {
 
     /**
      *
      * {@inheritdoc}
+     *
      * @see \Zend\ServiceManager\FactoryInterface::createService()
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new EventBusService();
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
-        $service->setDoctrineEM($sv);
 
+        $service = new ProcureReportRepositoryImpl($sv);
         return $service;
     }
 }

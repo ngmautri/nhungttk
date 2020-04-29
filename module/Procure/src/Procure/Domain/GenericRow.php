@@ -84,15 +84,22 @@ class GenericRow extends AbstractRow
         $this->setIsActive(1);
         $this->setIsDraft(1);
         $this->setIsPosted(0);
-
-        $this->setRevisionNo(0);
-        $this->setDocVersion(0);
-        $this->setUuid(\Ramsey\Uuid\Uuid::uuid4()->toString());
-        $this->setToken($this->getUuid());
     }
 
-    protected function calculate()
+    public function calculate()
     {
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+        $taxAmount = $netAmount * $this->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $this->setNetAmount($netAmount);
+        $this->setTaxAmount($taxAmount);
+        $this->setGrossAmount($grosAmount);
+
         $convertedPurchaseQuantity = $this->getDocQuantity();
         $convertedPurchaseUnitPrice = $this->getDocUnitPrice();
 
@@ -131,6 +138,29 @@ class GenericRow extends AbstractRow
 
         $this->setConvertedStandardQuantity($convertedStandardQuantity);
         $this->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+
+        return $this;
+    }
+
+    /**
+     * this should be called when validated.
+     *
+     * @return \Procure\Domain\PurchaseOrder\PORow
+     */
+    public function refresh()
+    {
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+        $taxAmount = $netAmount * $this->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $this->netAmount = $netAmount;
+        $this->taxAmount = $taxAmount;
+        $this->grossAmount = $grosAmount;
+        return $this;
     }
 
     /**

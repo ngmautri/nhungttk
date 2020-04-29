@@ -8,7 +8,6 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
-use Monolog\Logger;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\PO\AcceptAmendmentCmd;
@@ -42,6 +41,7 @@ use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\PO\POService;
 use Procure\Domain\Shared\Constants;
+use Psr\Log\LoggerInterface;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -2228,7 +2228,7 @@ class PoController extends AbstractActionController
 
     /**
      *
-     * @return \Monolog\Logger
+     * @return \Psr\Log\LoggerInterface
      */
     public function getLogger()
     {
@@ -2237,9 +2237,9 @@ class PoController extends AbstractActionController
 
     /**
      *
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      */
-    public function setLogger(Logger $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }

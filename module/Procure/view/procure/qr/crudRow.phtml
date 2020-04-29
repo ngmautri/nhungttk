@@ -7,11 +7,11 @@ use Procure\Application\Helper\OptionList;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===========================================
  */
-/**@var \Procure\Application\DTO\Qr\QrDTO $rootDto ;*/
+/**@var \Procure\Application\DTO\Qr\QrDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Qr\QrRowDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-// var_dump($rootDto);
+// var_dump($headerDTO);
 
 // echo memory_get_usage();
 $message_url = null;
@@ -19,16 +19,18 @@ $review_url = null;
 $rowNumber = null;
 $doc_wh_id = null;
 
-// var_dump($rootDto);
-if ($rootDto !== null) {
-    $target_id = $rootDto->getId();
-    $target_token = $rootDto->getToken();
+// var_dump($headerDTO);
+if ($headerDTO !== null) {
+    $target_id = $headerDTO->getId();
+    $target_token = $headerDTO->getToken();
 
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
     $review_url = sprintf($this->baseUrl . "/procure/qr/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
     // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
-    $rowNumber = $rootDto->getTotalRows() + 1;
-    $doc_wh_id = $rootDto->getWarehouse();
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $rowNumber = $headerDTO->getTotalRows() + 1;
+    $doc_wh_id = $headerDTO->getWarehouse();
 }
 
 $wh_id = null;
@@ -73,60 +75,60 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
             <li>
                <b><?php
 
-            if (! $rootDto == null) :
-                echo $rootDto->getVendorName(); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->getVendorName(); endif;
 
             ?></b>
             </li>
             <li>-----</li>
             <li><?php
 
-            if (! $rootDto == null) :
-                echo $rootDto->getIncoterm() . " " . $rootDto->getIncotermPlace(); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->getIncoterm() . " " . $headerDTO->getIncotermPlace(); endif;
 
             ?> </li>
             <li>Total rows:<?php
 
-            if (! $rootDto == null) :
-                echo $rootDto->getTotalRows(); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->getTotalRows(); endif;
 
             ?></li>
             <li>Status:<?php
 
-            if (! $rootDto == null) :
-                echo $rootDto->getTransactionStatus(); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->getTransactionStatus(); endif;
 
             ?> </li>
             <li>-----</li>
             <li>Net: <?php
 
-            if (! $rootDto == null) :
-                echo number_format($rootDto->getNetAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
+            if (! $headerDTO == null) :
+                echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3(); endif;
 
             ?></li>
             <li>Tax: <?php
 
-            if (! $rootDto == null) :
-                echo number_format($rootDto->getTaxAmount(), 2); endif;
+            if (! $headerDTO == null) :
+                echo number_format($headerDTO->getTaxAmount(), 2); endif;
 
             ?></li>
             <li>Gross: <?php
 
-            if (! $rootDto == null) :
-                echo number_format($rootDto->getGrossAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
+            if (! $headerDTO == null) :
+                echo number_format($headerDTO->getGrossAmount(), 2) . " " . $headerDTO->getCurrencyIso3(); endif;
 
             ?></li>
             <li>Billed: <?php
 
-            if (! $rootDto == null) :
-                echo number_format($rootDto->getBilledAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
+            if (! $headerDTO == null) :
+                echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->getCurrencyIso3(); endif;
 
             ?></li>
             <li>-----</li>
             <li>Created by: <?php
 
-            if (! $rootDto == null) :
-                echo $rootDto->getCreatedByName(); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->getCreatedByName(); endif;
 
             ?></li>
          </ul>
@@ -151,23 +153,16 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                 echo $form_title;
                 ?></a>
                </li>
+               <li>
+                  <a href="<?php
 
-<?php
-if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
-    ?>
- 	 	<li>
-                  <a href=""<?php
-
-    echo $message_url;
-    ?>">
+                echo $log_url;
+                ?>">
                      <span class="glyphicon glyphicon-list"></span>
                      &nbsp;Log
                   </a>
                </li>
-<?php endif;
-
-?>
-				</ul>
+            </ul>
             <div id="general" style="font-size: 9pt">
                <!-- Tab1 -->
 
@@ -324,7 +319,6 @@ echo $error_msg;
                      </div>
                   </div>
                   <hr style="margin: 5pt 1pt 5pt 1pt;">
-                  
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
                      <div class="col-sm-3">
@@ -368,8 +362,8 @@ echo $error_msg;
                      <div class="col-sm-1" style="margin-left: 0px">
                         <strong><?php
 
-                        if (! $rootDto == null) :
-                            echo $rootDto->getCurrencyIso3(); endif;
+                        if (! $headerDTO == null) :
+                            echo $headerDTO->getCurrencyIso3(); endif;
 
                         ?></strong>
                      </div>
@@ -392,8 +386,8 @@ echo $error_msg;
                      <div class="col-sm-3">
                         <strong><?php
 
-                        if (! $rootDto == null) :
-                            echo $rootDto->getCurrencyIso3(); endif;
+                        if (! $headerDTO == null) :
+                            echo $headerDTO->getCurrencyIso3(); endif;
 
                         ?></strong>
                      </div>
@@ -425,8 +419,8 @@ echo $error_msg;
                      <div class="col-sm-1">
                         <strong><?php
 
-                        if (! $rootDto == null) :
-                            echo $rootDto->getCurrencyIso3(); endif;
+                        if (! $headerDTO == null) :
+                            echo $headerDTO->getCurrencyIso3(); endif;
 
                         ?></strong>
                      </div>
@@ -698,6 +692,10 @@ echo $cost_center_option;
         <?php
        	 endif
         ?>
+        
+        
+        
+        
         
         
         

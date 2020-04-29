@@ -18,14 +18,15 @@ $n = 0;
 
 $createUrl = $this->baseUrl . "/procure/qr/create";
 $filterUrl = $this->baseUrl . "/procure/qr/list";
-$result_msg = "No record found!";
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
 
 if (count($list) > 0) {
 
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
 
     foreach ($list as $rootSnapshot) {
@@ -73,33 +74,36 @@ if (count($list) > 0) {
       </li>
    </ul>
    <div id="general" style="padding: 10px 10px 1px 3px">
-      <form class="form-inline" action="<?php
+      <!-- ================ TOOL BAR ======================-->
+      <div style="position: relative; float: right;">
+         <a class="btn btn-default btn-sm" href="<?php
+        echo $createUrl;
+        ?> ">
+            <small>
+               <i class="glyphicon glyphicon-plus"> </i>
+            </small>
+            &nbsp;New Quotation
+         </a>
+      </div>
+      <!-- ================== TOOL BAR ===================-->
+      <div>
+         <form class="form-inline" action="<?php
 
-    echo $this->baseUrl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
-         <div class="form-group" style="padding-left: 8px;">
-            <input placeholder="<?php
+        echo $this->baseUrl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
+            <div class="form-group" style="padding-left: 8px;">
+               <input placeholder="<?php
 
             echo $this->translate("enter search term ...")?>" class="form-control" size="15" type="text" name="q">
-         </div>
-         <div class="form-group">
-            <button type="submit" class="btn btn-default">
-               <small>
-                  <i class="glyphicon glyphicon-search"> </i>
-               </small>
-            </button>
-         </div>
-      </form>
-      <hr>
-      <a class="btn btn-default btn-sm" href="<?php
-    echo $createUrl;
-    ?> ">
-         <small>
-            <i class="glyphicon glyphicon-plus"> </i>
-         </small>
-         &nbsp;New Contract /PO
-      </a>
-      <hr>
-      <div>
+            </div>
+            <div class="form-group">
+               <button type="submit" class="btn btn-default">
+                  <small>
+                     <i class="glyphicon glyphicon-search"> </i>
+                  </small>
+               </button>
+            </div>
+         </form>
+         <hr style="margin: 5pt 1pt 5pt 1pt;">
          <small>
             <span class="glyphicon glyphicon-filter"></span>
          </small>
@@ -140,7 +144,6 @@ if (count($list) > 0) {
 
                         echo $docStatus == 'posted' ? "selected='selected'" : "";
                         ?> value="posted">Posted</option>
-                       
                      </select>
                   </div>
                </div>
@@ -250,8 +253,7 @@ if (count($list) > 0) {
             </form>
          </div>
       </div>
-      <hr>
-
+      <hr style="margin: 1pt 1pt 5pt 1pt;">
 <?php
 echo $result_msg;
 ?>
@@ -265,7 +267,6 @@ echo $result_msg;
                <td>
                   <b>Doc.Status</b>
                </td>
-               
                <td>
                   <b>Ref.No.</b>
                </td>
@@ -278,7 +279,6 @@ echo $result_msg;
                <td>
                   <b>Doc Date</b>
                </td>
-               
                <td>
                   <b>Rows</b>
                </td>

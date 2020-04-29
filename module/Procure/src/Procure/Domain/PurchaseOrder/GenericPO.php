@@ -499,7 +499,10 @@ abstract class GenericPO extends GenericDoc
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
+            return;
         }
+
+        $row->calculate(); //
     }
 
     /**

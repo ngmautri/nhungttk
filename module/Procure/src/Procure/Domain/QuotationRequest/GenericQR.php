@@ -203,7 +203,7 @@ abstract class GenericQR extends AbstractAP
             throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
         /**
          *
@@ -345,7 +345,10 @@ abstract class GenericQR extends AbstractAP
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
+            return;
         }
+
+        $row->calculate(); //
     }
 
     /**

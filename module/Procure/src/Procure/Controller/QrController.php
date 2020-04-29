@@ -31,6 +31,7 @@ use Zend\View\Model\ViewModel;
 
 /**
  *
+ * @version 2.6
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
@@ -232,7 +233,7 @@ class QrController extends AbstractActionController
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/qr/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-        $this->getLogger()->info(\sprintf("Quotation #%s updated by %s", $dto->getId(), $u->getId()));
+        $this->getLogger()->info(\sprintf("Quotation #%s updated by %s", $entity_id, $u->getId()));
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -283,7 +284,7 @@ class QrController extends AbstractActionController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'dto' => null,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -330,23 +331,21 @@ class QrController extends AbstractActionController
                 'target_id' => $rootEntityId,
                 'target_token' => $rootEntityToken,
                 'dto' => $dto,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            $this->getLogger()->info(\sprintf("Row of Quotation #%s is not created. Error: %s", $rootEntityId, $notification->errorMessage()));
+            $this->getLogger()->info(\sprintf("Row for quotation #%s is not created. Error: %s", $rootEntityId, $notification->errorMessage()));
 
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/procure/qr/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
-
-        $this->getLogger()->info(\sprintf("Row #%s is created by %s", $rootEntityId, $u->getId()));
-
+        $this->getLogger()->info(\sprintf("Row for quotation #%s is created by %s", $rootEntityId, $u->getId()));
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -406,7 +405,7 @@ class QrController extends AbstractActionController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'version' => $rootDTO->getRevisionNo(),
-                'rootDto' => $rootDTO,
+                'headerDTO' => $rootDTO,
                 'dto' => $localDTO, // row
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -472,7 +471,7 @@ class QrController extends AbstractActionController
                 'target_token' => $target_token,
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'dto' => $dto,
-                'rootDto' => $rootDTO,
+                'headerDTO' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

@@ -81,14 +81,17 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $editableProperties = [
                 "rowNumber",
+                "prRow",
                 "item",
                 "vendorItemCode",
                 "vendorItemName",
                 "warehouse",
                 "docQuantity",
                 "docUnit",
+                "docUnitPrice",
                 "conversionFactor",
-                "edt",
+                "glAccount",
+                "costCenter",
                 "remarks"
             ];
 

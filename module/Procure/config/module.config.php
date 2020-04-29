@@ -11,13 +11,16 @@ use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPostedFactory;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmittedFactory;
 use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\Eventbus\EventBusServiceFactory;
 use Procure\Application\Eventbus\HandlerMapper;
 use Procure\Application\Eventbus\HandlerMapperFactory;
 use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Reporting\QR\QrReporterFactory;
 use Procure\Application\Service\QR\QRService;
 use Procure\Application\Service\QR\QRServiceFactory;
+use Procure\Infrastructure\Persistence\Doctrine\ProcureReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
 
 return array(
@@ -258,6 +261,7 @@ return array(
             'Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository' => 'Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory',
             'Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository' => 'Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory',
             QrReportRepositoryImpl::class => QrReporterRepositoryImplFactory::class,
+            ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
 
             // Reporing Service
             'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',
@@ -283,7 +287,7 @@ return array(
 
             // Event Handler Resolver
             HandlerMapper::class => HandlerMapperFactory::class,
-            EventBusService::class => \Procure\Application\Eventbus\EventBusServiceFactory::class,
+            EventBusService::class => EventBusServiceFactory::class,
 
             // Event Handler
             UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class,
@@ -332,6 +336,7 @@ return array(
             'Procure\Controller\ApReport' => 'Procure\Controller\ApReportControllerFactory',
             'Procure\Controller\Ap' => 'Procure\Controller\ApControllerFactory',
             'Procure\Controller\Qr' => 'Procure\Controller\QrControllerFactory',
+            'Procure\Controller\Report' => 'Procure\Controller\ReportControllerFactory',
 
             // API
             'Procure\API\PrController' => 'Procure\API\PrControllerFactory'

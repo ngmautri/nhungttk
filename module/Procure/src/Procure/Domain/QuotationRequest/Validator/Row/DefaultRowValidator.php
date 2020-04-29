@@ -63,8 +63,6 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
                 $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
             }
-
-            // ======= EDT Date ==========
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

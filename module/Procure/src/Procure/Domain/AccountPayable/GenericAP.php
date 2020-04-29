@@ -323,7 +323,10 @@ abstract class GenericAP extends AbstractAP
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
+            return;
         }
+
+        $row->calculate(); //
     }
 
     /**

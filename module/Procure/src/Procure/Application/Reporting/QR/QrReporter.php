@@ -2,6 +2,11 @@
 namespace Procure\Application\Reporting\QR;
 
 use Application\Service\AbstractService;
+use Procure\Application\Reporting\QR\Output\Header\HeaderSaveAsExcel;
+use Procure\Application\Reporting\QR\Output\Header\Spreadsheet\ExcelBuilder;
+use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
+use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
 use Procure\Infrastructure\Persistence\QrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
 
@@ -22,8 +27,46 @@ class QrReporter extends AbstractService
 
     public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
     {
+        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+        }
+
         $results = $this->getReporterRespository()->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
-        return $results;
+
+        // var_dump($results);
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($outputStrategy) {
+            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsArray();
+                break;
+            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+
+                $builder = new ExcelBuilder();
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsExcel($builder);
+                break;
+
+            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+
+            /*
+             * $builder = new PoReportOpenOfficeBuilder();
+             * $formatter = new PoRowFormatter(new RowNumberFormatter());
+             * $factory = new PoSaveAsOpenOffice($builder);
+             * break;
+             */
+
+            default:
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsArray();
+                break;
+        }
+
+        return $factory->saveMultiplyHeaderAs($results, $formatter);
     }
 
     public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)

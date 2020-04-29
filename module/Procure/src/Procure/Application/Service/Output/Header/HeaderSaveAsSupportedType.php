@@ -1,14 +1,12 @@
 <?php
-namespace Procure\Application\Reporting\PO\Output;
-
+namespace Procure\Application\Service\Output\Header;
 
 /**
- * PR Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class PoRowStatusOutputStrategy
+class HeaderSaveAsSupportedType
 {
 
     const OUTPUT_IN_ARRAY = "1";
@@ -19,7 +17,5 @@ abstract class PoRowStatusOutputStrategy
 
     const OUTPUT_IN_OPEN_OFFICE = "4";
 
-    abstract public function createOutput($result);
-
-  
+    const OUTPUT_IN_PDF = "5";
 }

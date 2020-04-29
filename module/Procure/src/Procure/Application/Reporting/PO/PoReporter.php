@@ -2,10 +2,15 @@
 namespace Procure\Application\Reporting\PO;
 
 use Application\Service\AbstractService;
+use Procure\Application\Reporting\PO\Output\Header\HeaderSaveAsExcel;
+use Procure\Application\Reporting\PO\Output\Header\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\Output\RowFormatter;
 use Procure\Application\Service\Output\RowNumberFormatter;
 use Procure\Application\Service\Output\SaveAsArray;
 use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
+use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
 use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
@@ -30,8 +35,43 @@ class PoReporter extends AbstractService
 
     public function getPoList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
     {
+        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+        }
         $results = $this->getListRespository()->getPoList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
-        return $results;
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($outputStrategy) {
+            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsArray();
+                break;
+            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+
+                $builder = new ExcelBuilder();
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsExcel($builder);
+                break;
+
+            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+
+            /*
+             * $builder = new PoReportOpenOfficeBuilder();
+             * $formatter = new PoRowFormatter(new RowNumberFormatter());
+             * $factory = new PoSaveAsOpenOffice($builder);
+             * break;
+             */
+
+            default:
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsArray();
+                break;
+        }
+
+        return $factory->saveMultiplyHeaderAs($results, $formatter);
     }
 
     public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)

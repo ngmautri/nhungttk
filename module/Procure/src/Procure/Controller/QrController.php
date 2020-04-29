@@ -872,20 +872,19 @@ class QrController extends AbstractActionController
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
+        $file_type = $this->params()->fromQuery('file_type');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
-        ;
 
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
-        ;
 
         $is_active = (int) $this->params()->fromQuery('is_active');
 
@@ -893,22 +892,22 @@ class QrController extends AbstractActionController
             $is_active = 1;
         }
 
-        if ($docStatus == null) :
+        if ($docStatus == null) {
             $docStatus = "posted";
+        }
 
-            if ($sort_by == null) :
-                $sort_by = "sysNumber";
-        endif;
-        endif;
+        if ($sort_by == null) {
+            $sort_by = "sysNumber";
+            $sort_by = "sysNumber";
+        }
 
-
-        if ($sort_by == null) :
+        if ($sort_by == null) {
             $sort_by = "createdOn";
-        endif;
+        }
 
-        if ($sort == null) :
-            $sort = "DESC";
-        endif;
+        if ($sort_by == null) {
+            $sort_by = "createdOn";
+        }
 
         $current_state = null;
         $filter_by = null;
@@ -929,7 +928,7 @@ class QrController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->qrReporter->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $list = $this->qrReporter->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset, $file_type);
 
         $viewModel = new ViewModel(array(
             'list' => $list,

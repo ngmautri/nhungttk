@@ -1,12 +1,12 @@
 <?php
 namespace Procure\Infrastructure\Persistence\Doctrine;
 
-use Procure\Infrastructure\Persistence\POListRepositoryInterface;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Doctrine\ORM\NoResultException;
-use Procure\Infrastructure\Persistence\SQL\PoSQL;
-use Procure\Infrastructure\Mapper\PoMapper;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Procure\Infrastructure\Mapper\PoMapper;
+use Procure\Infrastructure\Persistence\POListRepositoryInterface;
+use Procure\Infrastructure\Persistence\SQL\PoSQL;
 
 /**
  *
@@ -34,7 +34,7 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
             /**@var \Application\Entity\NmtProcurePo $po ;*/
             $po = $r[0];
 
-            $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->doctrineEM,$po);
+            $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->doctrineEM, $po);
 
             if ($poDetailsSnapshot == null) {
                 continue;
@@ -95,7 +95,7 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
             /**@var \Application\Entity\NmtProcurePoRow $entity ;*/
             $entity = $r[0];
 
-            $poRowDetailsSnapshot = PoMapper::createRowDetailSnapshot($entity);
+            $poRowDetailsSnapshot = PoMapper::createRowDetailSnapshot($this->getDoctrineEM(), $entity);
 
             if ($poRowDetailsSnapshot == null) {
                 continue;
@@ -291,8 +291,6 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
     public function getAllPoRowStatusTotal($is_active = 1, $po_year, $balance = 1)
     {
         $results = $this->_getAllPoRowStatus($is_active, $po_year, $balance, null, null, null, null);
-        return count($results) ;
+        return count($results);
     }
-
-    
 }

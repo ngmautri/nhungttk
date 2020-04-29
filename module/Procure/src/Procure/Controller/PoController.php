@@ -670,7 +670,7 @@ class PoController extends AbstractActionController
         $form_action = "/procure/po/update";
         $form_title = "Edit PO";
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT;
-        $viewTemplete = "procure/po/crudPO";
+        $viewTemplete = "procure/po/crudHeader";
 
         $prg = $this->prg($form_action, true);
 
@@ -694,7 +694,7 @@ class PoController extends AbstractActionController
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $token,
-                'dto' => $dto,
+                'headerDTO' => $dto,
                 'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -747,7 +747,7 @@ class PoController extends AbstractActionController
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
-                'dto' => $dto,
+                'headerDTO' => $dto,
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -1113,6 +1113,7 @@ class PoController extends AbstractActionController
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
+        $file_type = $this->params()->fromQuery('file_type');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -1154,12 +1155,16 @@ class PoController extends AbstractActionController
         $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
+        $limit = null;
+        $offset = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
         }
+
+        $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, $limit, $offset, $file_type);
 
         $viewModel = new ViewModel(array(
             'list' => $list,

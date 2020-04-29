@@ -1,5 +1,6 @@
 <?php
 use Procure\Application\Helper\FormHelper;
+use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
 use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**
@@ -19,6 +20,9 @@ $n = 0;
 $createUrl = $this->baseUrl . "/procure/qr/create";
 $filterUrl = $this->baseUrl . "/procure/qr/list";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
+$base = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
+$save_as_excel = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 
@@ -84,6 +88,14 @@ if (count($list) > 0) {
             </small>
             &nbsp;New Quotation
          </a>
+         
+          <a class="btn btn-default btn-sm" href="<?php
+
+        echo $save_as_excel;
+        ?>">
+                                       <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Excel (*.xlxs)
+                                    </a>
       </div>
       <!-- ================== TOOL BAR ===================-->
       <div>
@@ -305,7 +317,6 @@ echo $table_body;
 if (! is_null($paginator)) :
 
     // change it only
-    $base = $this->baseUrl . '/procure/qr/list?is_active=' . $is_active . '&currentState=' . $currentState . '&docStatus=' . $docStatus . '&sort_by=' . $sort_by . '&sort=' . $sort;
     $_connector_symbol = '&';
 
     $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

@@ -150,7 +150,7 @@ class HeaderMapper
         $snapshot->docCurrency = $entity->getId();
         $snapshot->currencyIso3 = $entity->getCurrency();
         $snapshot->docCurrencyId = $snapshot->docCurrency;
-        $snapshot->docCurrencyISO = $snapshot->currencyIso3;
+        $snapshot->docCurrencyISO = $snapshot->getCurrencyIso3();
 
         return $snapshot;
     }

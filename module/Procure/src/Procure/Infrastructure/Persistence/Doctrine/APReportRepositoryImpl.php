@@ -2,10 +2,10 @@
 namespace Procure\Infrastructure\Persistence\Doctrine;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
-use Procure\Infrastructure\Persistence\APReportRepositoryInterface;
-use Procure\Infrastructure\Mapper\ApMapper;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Procure\Infrastructure\Mapper\ApMapper;
+use Procure\Infrastructure\Persistence\APReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\SQL\ApSQL;
 
 /**
@@ -35,7 +35,7 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             /**@var \Application\Entity\FinVendorInvoiceRow $entity ;*/
             $entity = $r[0];
 
-            $snapShot = ApMapper::createRowDetailSnapshot($entity);
+            $snapShot = ApMapper::createRowDetailSnapshot($this->getDoctrineEM(), $entity);
 
             if ($snapShot == null) {
                 continue;
@@ -43,7 +43,7 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
 
             $snapShot->invoiceToken = $r["invoice_token"];
             $snapShot->sapNumber = $r["sap_doc"];
-            
+
             $snapShot->vendorName = $r["vendor_name"];
             $snapShot->localCurrencyId = $r["local_currency_id"];
             $snapShot->docCurrencyId = $r["doc_currency_id"];
@@ -64,7 +64,7 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             $snapShot->poNumber = $r["contract_no"];
             $snapShot->poSysNumber = $r["po_sys_number"];
             $snapShot->poDate = $r["po_date"];
-            
+
             $snapShot->itemName = $r["item_name"];
             $snapShot->itemToken = $r["item_token"];
             $snapShot->itemNumber = $r["item_sys_number"];
@@ -122,9 +122,7 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             if (count($result) == 1) {
                 return (int) $result[0]['total_rows'];
             }
-        } catch (NoResultException $e) {
-          
-        }
+        } catch (NoResultException $e) {}
         return 0;
     }
 
@@ -186,7 +184,7 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             $rsm->addScalarResult("invoice_token", "invoice_token");
 
             $rsm->addScalarResult("sap_doc", "sap_doc");
-            
+
             $rsm->addScalarResult("posting_year", "posting_year");
             $rsm->addScalarResult("posting_month", "posting_month");
             $rsm->addScalarResult("posting_date", "posting_date");
@@ -217,8 +215,7 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             $rsm->addScalarResult("contract_no", "contract_no");
             $rsm->addScalarResult("po_sys_number", "po_sys_number");
             $rsm->addScalarResult("po_date", "po_date");
-            
-            
+
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $resulst = $query->getResult();
             return $resulst;

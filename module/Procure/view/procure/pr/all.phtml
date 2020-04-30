@@ -167,9 +167,6 @@
             </form>
          </div>
       </div>
-      
-        
-      
       <div style="color: gray; font-size: 9pt; margin-top: 8px"><?php
 
     echo "Year = " . $pr_year;
@@ -200,13 +197,15 @@ if ($total_records <= 0) {
 
 
 
-      <a class="btn btn-default btn-sm"
-         href="<?php
+      <a class="btn btn-default btn-sm" href="<?php
 
-    echo $this->baseUrl?>/procure/pr/create"><small><i
-            class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Purchase Request</a>
- 
-<table id="mytable26" style="font-size: 10pt;" class="table table-bordered table-hover">
+    echo $this->baseUrl?>/procure/pr/create">
+         <small>
+            <i class="glyphicon glyphicon-plus"> </i>
+         </small>
+         &nbsp;New Purchase Request
+      </a>
+      <table id="mytable26" style="font-size: 10pt;" class="table table-bordered table-hover">
          <thead>
             <tr>
                <td>

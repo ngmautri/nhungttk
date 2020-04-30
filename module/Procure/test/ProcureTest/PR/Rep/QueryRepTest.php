@@ -13,11 +13,7 @@ class RepTest extends PHPUnit_Framework_TestCase
     protected $serviceManager;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(dirname(__FILE__)))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
@@ -34,7 +30,7 @@ class RepTest extends PHPUnit_Framework_TestCase
             $token = "kKXsCBJre__Re87TdMH6tyZH_T7FatqR";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            var_dump($rootEntity->getDocRows());
+            // var_dump($rootEntity->getDocRows());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

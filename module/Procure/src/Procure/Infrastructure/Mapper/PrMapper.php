@@ -274,9 +274,11 @@ class PrMapper
         return $entity;
     }
 
-    public static function createSnapshot(EntityManager $doctrineEM, NmtProcurePr $entity)
+    public static function createSnapshot(EntityManager $doctrineEM, NmtProcurePr $entity, $snapshot = null)
     {
-        $snapshot = new PRSnapshot();
+        if (! $snapshot instanceof PRSnapshot) {
+            $snapshot = new PRSnapshot();
+        }
 
         // =================================
         // Mapping None-Object Field
@@ -310,7 +312,7 @@ class PrMapper
         $snapshot->sysNumber = $snapshot->getPrAutoNumber();
         $snapshot->docNumber = $snapshot->getPrName();
         $snapshot->docDate = $snapshot->getSubmittedOn();
-        
+
         // ============================
         // DATE MAPPING
         // ============================

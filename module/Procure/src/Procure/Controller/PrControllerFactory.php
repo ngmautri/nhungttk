@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Controller;
 
+use Procure\Application\Reporting\PR\PrReporter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -38,6 +39,9 @@ class PrControllerFactory implements FactoryInterface
 
         $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);
+
+        $sv = $sm->get(PrReporter::class);
+        $controller->setPrReporter($sv);
 
         return $controller;
     }

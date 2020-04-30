@@ -22,6 +22,7 @@ use Procure\Application\Command\PR\Options\RowUpdateOptions;
 use Procure\Application\Command\PR\Options\UpdateOptions;
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\DTO\Pr\PrRowDTO;
+use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Service\PR\PRService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
@@ -47,6 +48,8 @@ class PrController extends AbstractActionController
     protected $pdfService;
 
     protected $prService;
+
+    protected $prReporter;
 
     protected $attachmentService;
 
@@ -850,13 +853,12 @@ class PrController extends AbstractActionController
      */
     public function listAction()
     {
-        $this->layout("layout/fluid");
-
-        $criteria = array();
-
-        // var_dump($criteria);
-
-        $sort_criteria = array();
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $currentState = $this->params()->fromQuery('currentState');
+        $docStatus = $this->params()->fromQuery('docStatus');
+        $file_type = $this->params()->fromQuery('file_type');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -872,20 +874,56 @@ class PrController extends AbstractActionController
         }
         ;
 
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findBy($criteria, $sort_criteria);
-        $total_records = count($list);
+        $is_active = (int) $this->params()->fromQuery('is_active');
+
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+
+        if ($docStatus == null) :
+            $docStatus = "posted";
+
+            if ($sort_by == null) :
+                $sort_by = "sysNumber";
+        endif;
+        endif;
+
+
+        if ($sort_by == null) :
+            $sort_by = "createdOn";
+        endif;
+
+        if ($sort == null) :
+            $sort = "DESC";
+        endif;
+
+        $total_records = $this->getPrReporter()->getListTotal($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
+        $limit = null;
+        $offset = null;
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
         }
 
-        return new ViewModel(array(
+        $list = $this->getPrReporter()->getListWithCustomDTO($is_active, $currentState, $docStatus, null, $sort_by, $sort, $limit, $offset, $file_type);
+
+        $viewModel = new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
-            'paginator' => $paginator
+            'paginator' => $paginator,
+            'is_active' => $is_active,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+            'docStatus' => $docStatus
         ));
+
+        $viewModel->setTemplate("procure/pr/dto_list");
+        return $viewModel;
     }
 
     /**
@@ -1740,5 +1778,23 @@ class PrController extends AbstractActionController
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Reporting\PR\PrReporter
+     */
+    public function getPrReporter()
+    {
+        return $this->prReporter;
+    }
+
+    /**
+     *
+     * @param PrReporter $prReporter
+     */
+    public function setPrReporter(PrReporter $prReporter)
+    {
+        $this->prReporter = $prReporter;
     }
 }

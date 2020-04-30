@@ -17,6 +17,8 @@ $table_body = "";
 $count = 0;
 $n = 0;
 
+$main_tab = $this->translate("GOODS RECEIPT LIST");
+
 $createUrl = $this->baseUrl . "/procure/gr/create";
 $filterUrl = $this->baseUrl . "/procure/gr/list";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
@@ -69,12 +71,16 @@ if (count($list) > 0) {
     }
 }
 
+$filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus, $is_active, $sort_by, $sort);
+
 // ===================================
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
       <li>
-         <a href="#general">Goods Receipt List:</a>
+          <a href="#general"><?php
+        echo $main_tab;
+        ?></a>
       </li>
    </ul>
    <div id="general" style="padding: 10px 10px 1px 3px">
@@ -266,9 +272,18 @@ if (count($list) > 0) {
                      <button type="submit" class="btn btn-default">Show</button>
                   </div>
                </div>
+             <hr style="margin: 5pt 1pt 10pt 1pt;">
+  
             </form>
          </div>
       </div>
+      
+        <div style="color: gray; font-size: 9pt; margin-top: 8px">
+      <?php
+    echo $filter_msg;
+    ?>
+       </div>
+      
       <hr style="margin: 1pt 1pt 5pt 1pt;">
 <?php
 echo $result_msg;

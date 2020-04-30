@@ -16,6 +16,7 @@ use Procure\Domain\QuotationRequest\QRSnapshot;
 $table_body = "";
 $count = 0;
 $n = 0;
+$main_tab = $this->translate("QUOTATION LIST");
 
 $createUrl = $this->baseUrl . "/procure/qr/create";
 $filterUrl = $this->baseUrl . "/procure/qr/list";
@@ -68,13 +69,16 @@ if (count($list) > 0) {
         $table_body = $table_body . "</tr>";
     }
 }
+$filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus, $is_active, $sort_by, $sort);
 
 // ===================================
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
       <li>
-         <a href="#general">Quotation List:</a>
+         <a href="#general"><?php
+        echo $main_tab;
+        ?></a>
       </li>
    </ul>
    <div id="general" style="padding: 10px 10px 1px 3px">
@@ -88,14 +92,13 @@ if (count($list) > 0) {
             </small>
             &nbsp;New Quotation
          </a>
-         
-          <a class="btn btn-default btn-sm" href="<?php
+         <a class="btn btn-default btn-sm" href="<?php
 
         echo $save_as_excel;
         ?>">
-                                       <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
-                                       &nbsp;Excel (*.xlxs)
-                                    </a>
+            <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+            &nbsp;Excel (*.xlxs)
+         </a>
       </div>
       <!-- ================== TOOL BAR ===================-->
       <div>
@@ -262,9 +265,15 @@ if (count($list) > 0) {
                      <button type="submit" class="btn btn-default">Show</button>
                   </div>
                </div>
+               <hr style="margin: 5pt 1pt 10pt 1pt;">
             </form>
          </div>
       </div>
+      <div style="color: gray; font-size: 9pt; margin-top: 8px">
+      <?php
+    echo $filter_msg;
+    ?>
+       </div>
       <hr style="margin: 1pt 1pt 5pt 1pt;">
 <?php
 echo $result_msg;

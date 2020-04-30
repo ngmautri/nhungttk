@@ -223,7 +223,6 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             $rsm->addScalarResult("vendor_id", "vendor_id");
             $rsm->addScalarResult("vendor_name", "vendor_name");
             $rsm->addScalarResult("invoice_token", "invoice_token");
-
             $rsm->addScalarResult("sap_doc", "sap_doc");
 
             $rsm->addScalarResult("posting_year", "posting_year");

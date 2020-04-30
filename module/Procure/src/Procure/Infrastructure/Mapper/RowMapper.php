@@ -305,6 +305,7 @@ class RowMapper
         if ($entity->getVendor() !== null) {
             $snapshot->vendorId = $entity->getVendor()->getId();
             $snapshot->vendorToken = $entity->getVendor()->getToken();
+            $snapshot->vendorName = $entity->getVendor()->getVendorName();
 
             if ($entity->getVendor()->getCountry() !== null) {
                 $snapshot->vendorCountry = $entity->getVendor()

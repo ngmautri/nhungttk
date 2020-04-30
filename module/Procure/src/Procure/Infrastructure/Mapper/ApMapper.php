@@ -817,7 +817,7 @@ class ApMapper
          */
 
         if ($entity->getInvoice() !== null) {
-            RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice()); // Parent Detial.
+            RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice()); // Parent Detail.
         }
 
         if ($entity->getGlAccount() !== null) {

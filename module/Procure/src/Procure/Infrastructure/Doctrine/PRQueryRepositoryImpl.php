@@ -158,6 +158,7 @@ WHERE id = %s";
 
         $totalRows = 0;
         $totalActiveRows = 0;
+        $completedRows = 0;
         $netAmount = 0;
         $taxAmount = 0;
         $grossAmount = 0;
@@ -184,6 +185,10 @@ WHERE id = %s";
             $localSnapshot->draftStockQrQuantity = $r["stock_gr_qty"];
             $localSnapshot->postedStockQrQuantity = $r["posted_stock_gr_qty"];
 
+            if ($localSnapshot->postedGrQuantity >= $localSnapshot->getDocQuantity()) {
+                $completedRows ++;
+            }
+
             $localEntity = PRRow::makeFromSnapshot($localSnapshot);
 
             $docRowsArray[] = $localEntity;
@@ -192,6 +197,7 @@ WHERE id = %s";
             // break;
         }
 
+        $rootSnapshot->completedRows = $completedRows;
         $rootSnapshot->totalRows = $totalRows;
         $rootSnapshot->totalActiveRows = $totalActiveRows;
         $rootSnapshot->netAmount = $netAmount;

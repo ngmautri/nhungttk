@@ -5,8 +5,10 @@ use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Mapper\PrMapper;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
+use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use Procure\Infrastructure\Persistence\SQL\PrSQL;
 
 /**
@@ -17,13 +19,18 @@ use Procure\Infrastructure\Persistence\SQL\PrSQL;
 class PrReportRepositoryImpl extends AbstractDoctrineRepository implements PrReportRepositoryInterface
 {
 
-    public function getListWithCustomDTO($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $dto)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\PrReportRepositoryInterface::getListWithCustomDTO()
+     */
+    public function getListWithCustomDTO(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
-        if (! $dto instanceof PrHeaderDetailDTO) {
-            return null;
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
         }
 
-        $results = $this->_getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $results = $this->_getList($filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
             return null;
@@ -89,9 +96,18 @@ WHERE 1
         }
     }
 
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\PrReportRepositoryInterface::getList()
+     */
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
-        $results = $this->_getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        $results = $this->_getList($filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
             return null;
@@ -116,13 +132,26 @@ WHERE 1
         return $resultList;
     }
 
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\PrReportRepositoryInterface::getListTotal()
+     */
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->_getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object");
+        }
+
+        return $this->_getListTotal($filter);
     }
 
-    private function _getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    private function _getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
+        if (! $filter instanceof PrReportSqlFilter) {
+            return null;
+        }
+
         $sql = "
 SELECT
     nmt_procure_pr.*,
@@ -145,28 +174,28 @@ WHERE 1
 
         $sql = \sprintf($sql, $sql1);
 
-        if ($docStatus == "all") {
-            $docStatus = null;
+        if ($filter->getDocStatus() == "all") {
+            $filter->docStatus = null;
         }
 
-        if ($is_active == 1) {
+        if ($filter->getIsActive() == 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active=  1";
-        } elseif ($is_active == - 1) {
+        } elseif ($filter->getIsActive() == - 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
 
-        /*
-         * if ($current_state != null) {
-         * $sql = $sql . " AND nmt_procure_pr.current_state = '" . $current_state . "'";
-         * }
-         */
+        if ($filter->getPrYear() > 0) {
+            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filter->getPrYear());
+        }
 
-        /*
-         * if ($docStatus != null) {
-         * $sql = $sql . " AND nmt_procure_pr.doc_status = '" . $docStatus . "'";
-         * }
-         */
         $sql = $sql . " GROUP BY nmt_procure_pr.id";
+
+        // fullfiled
+        if ($filter->getBalance() == 0) {
+            $sql = $sql . " HAVING total_row <=  gr_completed";
+        } elseif ($filter->getBalance() == 1) {
+            $sql = $sql . " HAVING total_row >  gr_completed";
+        }
 
         switch ($sort_by) {
             case "sysNumber":
@@ -177,7 +206,7 @@ WHERE 1
                 $sql = $sql . " ORDER BY nmt_procure_pr.doc_date " . $sort;
                 break;
             case "createdOn":
-                $sql = $sql . " ORDER BY nmt_procure_pr.created_on " . $sort;
+                $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on " . $sort;
                 break;
         }
 
@@ -210,21 +239,56 @@ WHERE 1
         }
     }
 
-    private function _getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    private function _getListTotal(SqlFilterInterface $filter)
     {
+        if (! $filter instanceof PrReportSqlFilter) {
+            return null;
+        }
+
         $sql = "
 SELECT
-   *
-From nmt_procure_pr
+    nmt_procure_pr.*,
+    COUNT(nmt_procure_pr_row.pr_row_id) AS total_row,
+    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0))<=0 THEN  1 ELSE 0 END) AS gr_completed,
+    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0))>0 AND (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0)) < nmt_procure_pr_row.pr_qty  THEN  1 ELSE 0 END) AS gr_partial_completed,
+    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0))<=0 THEN  1 ELSE 0 END) AS ap_completed,
+    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0))>0 AND (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0)) < nmt_procure_pr_row.pr_qty  THEN  1 ELSE 0 END) AS ap_partial_completed
+    FROM nmt_procure_pr
+LEFT JOIN
+(
+%s
+)
+AS nmt_procure_pr_row
+ON nmt_procure_pr_row.pr_id = nmt_procure_pr.id
 WHERE 1
 ";
 
-        if ($is_active == 1) {
+        $sql1 = PrSQL::PR_ROW_ALL;
+
+        $sql = \sprintf($sql, $sql1);
+
+        if ($filter->getDocStatus() == "all") {
+            $filter->docStatus = null;
+        }
+
+        if ($filter->getIsActive() == 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active=  1";
-        } elseif ($is_active == - 1) {
+        } elseif ($filter->getIsActive() == - 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
 
+        if ($filter->getPrYear() > 0) {
+            $sql = $sql . sprintf(" AND year(nmt_procure_pr.submitted_on) =%s", $filter->getPrYear());
+        }
+
+        $sql = $sql . " GROUP BY nmt_procure_pr.id";
+
+        // fullfiled
+        if ($filter->getBalance() == 0) {
+            $sql = $sql . " HAVING total_row <=  gr_completed";
+        } elseif ($filter->getBalance() == 1) {
+            $sql = $sql . " HAVING total_row >  gr_completed";
+        }
         $sql = $sql . ";";
 
         // echo $sql;
@@ -232,7 +296,14 @@ WHERE 1
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("gr_completed", "gr_completed");
+            $rsm->addScalarResult("ap_completed", "ap_completed");
+            $rsm->addScalarResult("gr_partial_completed", "gr_partial_completed");
+            $rsm->addScalarResult("ap_partial_completed", "ap_partial_completed");
+
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+
             $result = $query->getResult();
             return count($result);
         } catch (NoResultException $e) {

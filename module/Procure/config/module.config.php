@@ -46,17 +46,17 @@ return array(
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
-            
-          /*   array(
+
+            array(
                 'label' => 'PR List',
                 'route' => 'procure/default',
                 'controller' => 'pr',
-                'action' => 'all',
+                'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
-            ), */
+            ),
             
           
-            array(
+           /*  array(
                 'label' => 'All PR',
                 // 'uri' => "/procure/pr/all?pr_year=0&balance=0&is_active=1&sort_by=prNumber&sort=ASC&perPage=15",
                 'route' => 'pr_status',
@@ -102,7 +102,7 @@ return array(
                 ),
 
                 'icon' => 'glyphicon glyphicon-list'
-            ),
+            ), */
 
             array(
                 'label' => 'PR Row Report',

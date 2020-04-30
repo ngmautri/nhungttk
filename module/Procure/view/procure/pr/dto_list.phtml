@@ -1,6 +1,7 @@
 <?php
 use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
 use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
 
 /**
@@ -22,7 +23,8 @@ $main_tab = $this->translate("PR LIST");
 $createUrl = $this->baseUrl . "/procure/pr/create";
 $filterUrl = $this->baseUrl . "/procure/pr/list";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
-$base = sprintf('/procure/pr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
+$base = sprintf('/procure/pr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&yy=%s&balance=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, $yy, $balance);
+
 $save_as_excel = sprintf('/procure/pr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
 $save_as_openoffice = sprintf('/procure/pr  /list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
@@ -31,7 +33,7 @@ if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
     if ($paginator !== null) {
-        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
         $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
     }
 
@@ -80,7 +82,7 @@ if (count($list) > 0) {
 
         $progress_div = sprintf('<div class="progress" style="height: 18px; margin-bottom:2pt;">
 <div class="progress-bar %s" role="progressbar" style="width:%s%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">
- <span style="font-size: 8pt; padding: 1px 1px 1px 1px; color:%s;">%s%s</span>
+ <span style="font-size: 8pt; padding: 0px 0px 1px 1px; color:%s;">%s%s</span>
 </div>
 </div>', $progress_cls, $completion, "%", $completion, $color, $completion, "%");
 
@@ -101,7 +103,7 @@ if (count($list) > 0) {
     }
 }
 
-$filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus, $is_active, $sort_by, $sort);
+$filter_msg = sprintf("Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s", $yy, $is_active, $balance, $sort_by, $sort);
 
 // =================================== ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -162,38 +164,29 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
             echo $filterUrl;
             ?>" method="get" enctype="multipart/form-data">
                <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Current State:</label>
+                  <label class="control-label col-sm-2" for="inputTag">PR Year</label>
                   <div class="col-sm-3">
-                     <select name="currentState" class="form-control input-sm">
-                        <option value="all">All</option>
-                        <option <?php
-
-                        echo $currentState == 'draftPo' ? "selected='selected'" : "";
-                        ?> value="draftPo">Draft Invoice</option>
-                        <option <?php
-
-                        echo $currentState == 'finalPo' ? "selected='selected'" : "";
-                        ?> value="finalPo">Final PO</option>
+                     <select name="yy" class="form-control input-sm">
+                        <option value="0">All</option>
+                        <?php
+                        echo OptionList::createYearOption($yy);
+                        ?>
                      </select>
                   </div>
                </div>
                <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Doc Status:</label>
+                  <label class="control-label col-sm-2" for="inputTag">PR Row Balance</label>
                   <div class="col-sm-3">
-                     <select name="docStatus" class="form-control input-sm">
-                        <option value="all">All</option>
+                     <select name="balance" class="form-control input-sm">
+                        <option value="2">All</option>
                         <option <?php
 
-                        echo $docStatus == 'draft' ? "selected='selected'" : "";
-                        ?> value="draft">Draft</option>
+                        echo $balance == '0' ? "selected='selected'" : "";
+                        ?> value="0">Balance=0 (Fulfilled PR)</option>
                         <option <?php
 
-                        echo $docStatus == 'posted' ? "selected='selected'" : "";
-                        ?> value="posted">Posted</option>
-                        <option <?php
-
-                        echo $docStatus == 'reversed' ? "selected='selected'" : "";
-                        ?> value="reversed">Reversed</option>
+                        echo $balance == '1' ? "selected='selected'" : "";
+                        ?> value="1">Balance>0 (Pending PR)</option>
                      </select>
                   </div>
                </div>
@@ -300,8 +293,7 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
                      <button type="submit" class="btn btn-default">Show</button>
                   </div>
                </div>
-                     <hr style="margin: 5pt 1pt 10pt 1pt;">
-  
+               <hr style="margin: 5pt 1pt 10pt 1pt;">
             </form>
          </div>
       </div>
@@ -317,12 +309,12 @@ echo $result_msg;
 ?>
 
    <table id="mytable26" style="font-size: 10pt;" class="table table-bordered table-hover">
-           <thead>
+         <thead>
             <tr>
-              <td style="width:30pt;">
-                   <b>#</b>
+               <td style="width: 30pt;">
+                  <b>#</b>
                </td>
-               <td style="width:65pt;">
+               <td style="width: 40pt;">
                   <b>%</b>
                </td>
                <td>
@@ -341,10 +333,18 @@ echo $result_msg;
                   <b>Rows</b>
                </td>
                <td>
-                  <b>Completed<br>Row</b>
+                  <b>
+                     Completed
+                     <br>
+                     Row
+                  </b>
                </td>
-                <td>
-                 <b>Partial<br>Row</b>>
+               <td>
+                  <b>
+                     Partial
+                     <br>
+                     Row
+                  </b>
                </td>
                <td>
                   <b>Curr</b>

@@ -6,7 +6,7 @@
         ?></a>
    </li>
    <li>
-      <a href="/procure/pr/all/row_number=1/status=pending">
+      <a href="/procure/pr/list">
          <i class="fa fa-caret-right" aria-hidden="true"></i>
          &nbsp;&nbsp;&nbsp;PR list
       </a>

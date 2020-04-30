@@ -2,12 +2,12 @@
 namespace Procure\Application\Reporting\PR;
 
 use Application\Service\AbstractService;
-use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
 use Procure\Application\Reporting\GR\Output\Header\HeaderSaveAsExcel;
 use Procure\Application\Reporting\GR\Output\Header\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
 use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
 use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
 
 /**
@@ -25,14 +25,18 @@ class PrReporter extends AbstractService
      */
     protected $reporterRespository;
 
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
     {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
         if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
 
-        $results = $this->getReporterRespository()->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $results = $this->getReporterRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
 
         // var_dump($results);
 
@@ -69,14 +73,18 @@ class PrReporter extends AbstractService
         return $factory->saveMultiplyHeaderAs($results, $formatter);
     }
 
-    public function getListWithCustomDTO($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
+    public function getListWithCustomDTO(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
     {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
         if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
 
-        $results = $this->getReporterRespository()->getListWithCustomDTO($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset, new PrHeaderDetailDTO());
+        $results = $this->getReporterRespository()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset);
 
         $factory = null;
         $formatter = null;
@@ -111,9 +119,9 @@ class PrReporter extends AbstractService
         return $factory->saveMultiplyHeaderAs($results, $formatter);
     }
 
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        $total = $this->getReporterRespository()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $total = $this->getReporterRespository()->getListTotal($filter);
         return $total;
     }
 

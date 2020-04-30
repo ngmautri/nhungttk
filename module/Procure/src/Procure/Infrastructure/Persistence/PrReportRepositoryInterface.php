@@ -1,6 +1,8 @@
 <?php
 namespace Procure\Infrastructure\Persistence;
 
+use Procure\Infrastructure\Contract\SqlFilterInterface;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -9,11 +11,11 @@ namespace Procure\Infrastructure\Persistence;
 Interface PrReportRepositoryInterface
 {
 
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0);
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
-    public function getListWithCustomDTO($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $dto);
+    public function getListWithCustomDTO(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0);
+    public function getListTotal(SqlFilterInterface $filter);
 
     public function getOfItem($item_id, $item_token);
 }

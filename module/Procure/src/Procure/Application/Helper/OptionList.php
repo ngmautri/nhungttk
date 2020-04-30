@@ -17,6 +17,26 @@ use Application\Entity\NmtInventoryWarehouse;
 class OptionList
 {
 
+    public static function createYearOption($yy)
+    {
+        $option = "";
+        $y1 = date("Y");
+
+        for ($y = 2014; $y <= $y1; $y ++) {
+
+            if ($yy == null) {
+                $option = $option . sprintf('<option value="%s">%s</option>', $y, $y);
+            } else {
+                if ($y == $yy) {
+                    $option = $option . sprintf('<option selected value="%s">%s</option>', $y, $y);
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s</option>', $y, $y);
+                }
+            }
+        }
+        return $option;
+    }
+
     public static function createWarehouseOption($list, $id)
     {
         if ($list == null) {

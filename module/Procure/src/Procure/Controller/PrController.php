@@ -26,6 +26,7 @@ use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Service\PR\PRService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
+use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use Symfony\Component\Workflow\Exception\LogicException;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
@@ -853,12 +854,22 @@ class PrController extends AbstractActionController
      */
     public function listAction()
     {
-        $is_active = (int) $this->params()->fromQuery('is_active');
+        $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
         $file_type = $this->params()->fromQuery('file_type');
+        $prYear = $this->params()->fromQuery('yy');
+        $balance = $this->params()->fromQuery('balance');
+
+        if ($prYear == null) {
+            $prYear = date("Y");
+        }
+
+        if ($balance == null) {
+            $balance = 1;
+        }
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -874,20 +885,11 @@ class PrController extends AbstractActionController
         }
         ;
 
-        $is_active = (int) $this->params()->fromQuery('is_active');
+        $isActive = (int) $this->params()->fromQuery('is_active');
 
-        if ($is_active == null) {
-            $is_active = 1;
+        if ($isActive == null) {
+            $isActive = 1;
         }
-
-        if ($docStatus == null) :
-            $docStatus = "posted";
-
-            if ($sort_by == null) :
-                $sort_by = "sysNumber";
-        endif;
-        endif;
-
 
         if ($sort_by == null) :
             $sort_by = "createdOn";
@@ -897,7 +899,13 @@ class PrController extends AbstractActionController
             $sort = "DESC";
         endif;
 
-        $total_records = $this->getPrReporter()->getListTotal($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
+        $filter = new PrReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setPrYear($prYear);
+        $filter->setBalance($balance);
+
+        $total_records = $this->getPrReporter()->getListTotal($filter);
+
         $limit = null;
         $offset = null;
         $paginator = null;
@@ -908,18 +916,20 @@ class PrController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->getPrReporter()->getListWithCustomDTO($is_active, $currentState, $docStatus, null, $sort_by, $sort, $limit, $offset, $file_type);
+        $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset);
 
         $viewModel = new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'is_active' => $is_active,
+            'is_active' => $isActive,
             'sort_by' => $sort_by,
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState,
-            'docStatus' => $docStatus
+            'docStatus' => $docStatus,
+            'yy' => $prYear,
+            'balance' => $balance
         ));
 
         $viewModel->setTemplate("procure/pr/dto_list");

@@ -210,7 +210,7 @@ class PoController extends AbstractActionController
         $form_action = "/procure/po/create";
         $form_title = "Create PO";
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
-        $viewTemplete = "procure/po/crudPO";
+        $viewTemplete = "procure/po/crudHeader";
 
         $prg = $this->prg($form_action, true);
 
@@ -227,7 +227,7 @@ class PoController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'dto' => null,
+                'headerDTO' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -275,7 +275,7 @@ class PoController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'dto' => $dto,
+                'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

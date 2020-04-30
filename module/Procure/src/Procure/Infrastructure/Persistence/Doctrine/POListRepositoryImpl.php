@@ -121,6 +121,10 @@ class POListRepositoryImpl extends AbstractDoctrineRepository implements POListR
     {
         $sql = PoSQL::PO_LIST;
 
+        if ($docStatus == "all") {
+            $docStatus = null;
+        }
+
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_procure_po.is_active=  1";
         } elseif ($is_active == - 1) {

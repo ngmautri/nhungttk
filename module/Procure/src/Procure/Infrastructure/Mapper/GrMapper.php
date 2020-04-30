@@ -12,7 +12,7 @@ use Procure\Domain\GoodsReceipt\GRSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GrMapper
 {
@@ -468,9 +468,9 @@ class GrMapper
      * @param NmtProcureGr $entity
      * @return NULL|\Procure\Domain\GoodsReceipt\GRDetailsSnapshot
      */
-    public static function createDetailSnapshot(NmtProcureGr $entity = null)
+    public static function createDetailSnapshot(EntityManager $doctrineEM, NmtProcureGr $entity = null)
     {
-        if ($entity == null) {
+        if ($entity == null || $doctrineEM == null) {
             return null;
         }
 
@@ -629,10 +629,11 @@ class GrMapper
      * @param NmtProcureGrRow $entity
      * @return NULL|\Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot
      */
-    public static function createRowDetailSnapshot(NmtProcureGrRow $entity)
+    public static function createRowDetailSnapshot(EntityManager $doctrineEM, NmtProcureGrRow $entity)
     {
-        if ($entity == null)
+        if ($entity == null || $doctrineEM == null) {
             return null;
+        }
 
         $snapshot = new GRRowDetailsSnapshot();
 

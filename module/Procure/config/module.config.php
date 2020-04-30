@@ -14,12 +14,16 @@ use Procure\Application\Eventbus\EventBusService;
 use Procure\Application\Eventbus\EventBusServiceFactory;
 use Procure\Application\Eventbus\HandlerMapper;
 use Procure\Application\Eventbus\HandlerMapperFactory;
+use Procure\Application\Reporting\GR\GrReporter;
+use Procure\Application\Reporting\GR\GrReporterFactory;
 use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Reporting\QR\QrReporterFactory;
 use Procure\Application\Service\QR\QRService;
 use Procure\Application\Service\QR\QRServiceFactory;
+use Procure\Infrastructure\Persistence\Doctrine\GrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\ProcureReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Doctrine\Factory\GrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
 
@@ -261,6 +265,8 @@ return array(
             'Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository' => 'Procure\Infrastructure\Doctrine\Factory\POCmdRepositoryFactory',
             'Procure\Infrastructure\Doctrine\DoctrinePOQueryRepository' => 'Procure\Infrastructure\Doctrine\Factory\POQueryRepositoryFactory',
             QrReportRepositoryImpl::class => QrReporterRepositoryImplFactory::class,
+            GrReportRepositoryImpl::class => GrReporterRepositoryImplFactory::class,
+
             ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
 
             // Reporing Service
@@ -268,6 +274,7 @@ return array(
             'Procure\Application\Reporting\PO\PoReporter' => 'Procure\Application\Reporting\PO\PoReporterFactory',
             'Procure\Application\Reporting\AP\ApReporter' => 'Procure\Application\Reporting\AP\ApReporterFactory',
             QrReporter::class => QrReporterFactory::class,
+            GrReporter::class => GrReporterFactory::class,
 
             // Appliation Service
             'Procure\Application\Service\PR\PRService' => 'Procure\Application\Service\PR\PRServiceFactory',

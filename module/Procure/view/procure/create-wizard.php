@@ -1,7 +1,9 @@
 <?php
 /**@var \Procure\Application\DTO\Po\PoDTO $headerDTO ;*/
-$review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-$add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+if ($headerDTO != NULL) {
+    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+}
 
 ?>
 <div class="list-group" style="font-size: 9.5pt; margin: 20pt 2pt 5pt 5pt">

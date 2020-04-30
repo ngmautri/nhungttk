@@ -19,6 +19,47 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
     /**
      *
      * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\APReportRepositoryInterface::getList()
+     */
+    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $results = $this->_getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+
+        if (count($results) == null) {
+            return null;
+        }
+
+        $resultList = [];
+        foreach ($results as $r) {
+
+            /**@var \Application\Entity\FinVendorInvoice $doctrineRootEntity ;*/
+            $doctrineRootEntity = $r[0];
+
+            $rootSnapshot = ApMapper::createDetailSnapshot($this->doctrineEM, $doctrineRootEntity);
+
+            if ($rootSnapshot == null) {
+                continue;
+            }
+
+            $rootSnapshot->totalRows = $r["total_row"];
+            $rootSnapshot->netAmount = $r["net_amount"];
+            $rootSnapshot->taxAmount = $r["tax_amount"];
+            $rootSnapshot->grossAmount = $r["gross_amount"];
+            $rootSnapshot->discountAmount = $r["gross_discount_amount"];
+            $resultList[] = $rootSnapshot;
+        }
+
+        return $resultList;
+    }
+
+    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        return $this->_getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Procure\Infrastructure\Persistence\APReportRepositoryInterface::getAllAPRowStatus()
      */
     public function getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset)
@@ -221,6 +262,117 @@ class APReportRepositoryImpl extends AbstractDoctrineRepository implements APRep
             return $resulst;
         } catch (NoResultException $e) {
             return null;
+        }
+    }
+
+    private function _getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = ApSQL::AP_LIST;
+
+        if ($docStatus == "all") {
+            $docStatus = null;
+        }
+
+        if ($is_active == 1) {
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
+        }
+
+        if ($current_state != null) {
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $current_state . "'";
+        }
+
+        if ($docStatus != null) {
+            $sql = $sql . " AND fin_vendor_invoice.doc_status = '" . $docStatus . "'";
+        }
+
+        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
+
+        switch ($sort_by) {
+            case "sysNumber":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.sys_number " . $sort;
+                break;
+            case "docDate":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.doc_date " . $sort;
+                break;
+            case "grossAmount":
+                $sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.created_on " . $sort;
+                break;
+            case "vendorName":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
+                break;
+            case "currencyCode":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
+                break;
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("net_amount", "net_amount");
+            $rsm->addScalarResult("tax_amount", "tax_amount");
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+            $rsm->addScalarResult("gross_discount_amount", "gross_discount_amount");
+
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    private function _getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = ApSQL::AP_LIST;
+
+        if ($docStatus == "all") {
+            $docStatus = null;
+        }
+
+        if ($is_active == 1) {
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
+        }
+
+        if ($current_state != null) {
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $current_state . "'";
+        }
+
+        if ($docStatus != null) {
+            $sql = $sql . " AND fin_vendor_invoice.doc_status = '" . $docStatus . "'";
+        }
+
+        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
+
+        $sql = $sql . ";";
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return count($result);
+        } catch (NoResultException $e) {
+            return 0;
         }
     }
 }

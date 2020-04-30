@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Controller;
 
+use Procure\Application\Reporting\GR\GrReporter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -32,8 +33,10 @@ class GrControllerFactory implements FactoryInterface
 
         $sv = $sm->get('Procure\Application\Service\GR\GRService');
         $controller->setGoodsReceiptService($sv);
-		
-		
-		return $controller;
-	}
+
+        $sv = $sm->get(GrReporter::class);
+        $controller->setGrReporter($sv);
+
+        return $controller;
+    }
 }

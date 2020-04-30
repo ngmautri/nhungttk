@@ -2,6 +2,7 @@
 namespace Procure\Controller;
 
 use Procure\Application\Eventbus\EventBusService;
+use Procure\Application\Reporting\AP\ApReporter;
 use Procure\Application\Service\AP\APService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -35,6 +36,9 @@ class ApControllerFactory implements FactoryInterface
 
         $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);
+
+        $sv = $sm->get(ApReporter::class);
+        $controller->setApReporter($sv);
 
         return $controller;
     }

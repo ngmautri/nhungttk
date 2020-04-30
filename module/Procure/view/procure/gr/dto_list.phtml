@@ -1,7 +1,7 @@
 <?php
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
-use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
 
 /**
  *
@@ -9,7 +9,7 @@ use Procure\Domain\AccountPayable\APSnapshot;
  *         ===================================
  */
 
-/**@var APSnapshot $rootSnapshot ;*/
+/**@var GRSnapshot $rootSnapshot ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 // echo $total_records;
@@ -17,12 +17,12 @@ $table_body = "";
 $count = 0;
 $n = 0;
 
-$createUrl = $this->baseUrl . "/procure/ap/create";
-$filterUrl = $this->baseUrl . "/procure/ap/list";
+$createUrl = $this->baseUrl . "/procure/gr/create";
+$filterUrl = $this->baseUrl . "/procure/gr/list";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
-$base = sprintf('/procure/ap/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
-$save_as_excel = sprintf('/procure/ap/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
-$save_as_openoffice = sprintf('/procure/sp/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$base = sprintf('/procure/gr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
+$save_as_excel = sprintf('/procure/gr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('/procure/gr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 
@@ -43,13 +43,13 @@ if (count($list) > 0) {
             $count = $n;
         }
 
-        $url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
-        $title = "Show Invoice";
+        $url = sprintf($this->baseUrl . "/procure/gr/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Show Goods Receipt";
         $icon = null;
         $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon);
 
-        $url = sprintf($this->baseUrl . "/procure/ap/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
-        $title = "Edit Invoice";
+        $url = sprintf($this->baseUrl . "/procure/gr/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Edit Goods Receipt";
         $icon = 'glyphicon glyphicon-pencil';
         $editBtn = FormHelper::createButton($this->translate("Edit"), $title, $url, $icon);
 
@@ -74,7 +74,7 @@ if (count($list) > 0) {
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
       <li>
-         <a href="#general">Quotation List:</a>
+         <a href="#general">Goods Receipt List:</a>
       </li>
    </ul>
    <div id="general" style="padding: 10px 10px 1px 3px">
@@ -86,7 +86,7 @@ if (count($list) > 0) {
             <small>
                <i class="glyphicon glyphicon-plus"> </i>
             </small>
-            &nbsp;New Invoice
+            &nbsp;New Goods Receipt
          </a>
          <a class="btn btn-default btn-sm" href="<?php
 
@@ -100,7 +100,7 @@ if (count($list) > 0) {
       <div>
          <form class="form-inline" action="<?php
 
-        echo $this->baseUrl?>/procure/ap-search/do" method="get" enctype="multipart/form-data">
+        echo $this->baseUrl?>/procure/gr-search/do" method="get" enctype="multipart/form-data">
             <div class="form-group" style="padding-left: 8px;">
                <input placeholder="<?php
 
@@ -130,7 +130,7 @@ if (count($list) > 0) {
                   <label class="control-label col-sm-2" for="inputTag">Current State:</label>
                   <div class="col-sm-3">
                      <select name="currentState" class="form-control input-sm">
-                        <option value="all">All</option>
+                        <option value="">All</option>
                         <option <?php
 
                         echo $currentState == 'draftPo' ? "selected='selected'" : "";

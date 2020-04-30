@@ -6,6 +6,11 @@ use Procure\Application\Reporting\AP\Output\ApRowStatusInArray;
 use Procure\Application\Reporting\AP\Output\ApRowStatusInExcel;
 use Procure\Application\Reporting\AP\Output\ApRowStatusInOpenOffice;
 use Procure\Application\Reporting\AP\Output\ApRowStatusOutputStrategy;
+use Procure\Application\Reporting\AP\Output\Header\HeaderSaveAsExcel;
+use Procure\Application\Reporting\AP\Output\Header\Spreadsheet\ExcelBuilder;
+use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
+use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
 use Procure\Infrastructure\Persistence\Doctrine\APReportRepositoryImpl;
 
 /**
@@ -17,13 +22,58 @@ use Procure\Infrastructure\Persistence\Doctrine\APReportRepositoryImpl;
 class ApReporter extends AbstractService
 {
 
-   
     private $reporterRespository;
- 
-    public function getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset,$outputStrategy)
+
+    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
+    {
+        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+        }
+        $results = $this->getReporterRespository()->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($outputStrategy) {
+            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsArray();
+                break;
+            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+
+                $builder = new ExcelBuilder();
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsExcel($builder);
+                break;
+
+            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+
+            /*
+             * $builder = new PoReportOpenOfficeBuilder();
+             * $formatter = new PoRowFormatter(new RowNumberFormatter());
+             * $factory = new PoSaveAsOpenOffice($builder);
+             * break;
+             */
+
+            default:
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new HeaderSaveAsArray();
+                break;
+        }
+
+        return $factory->saveMultiplyHeaderAs($results, $formatter);
+    }
+
+    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        return $this->getReporterRespository()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+    }
+
+    public function getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset, $outputStrategy)
     {
         $results = $this->getReporterRespository()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset);
-        
+
         if ($results == null) {
             return null;
         }
@@ -54,8 +104,8 @@ class ApReporter extends AbstractService
     {
         return $this->getReporterRespository()->getAllAPRowStatusTotal($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset);
     }
-    
-    
+
+    // ==========================
 
     /**
      *

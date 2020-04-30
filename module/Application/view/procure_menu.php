@@ -32,17 +32,10 @@
         echo $this->translate("Quotation List");
         ?></a>
    </li>
-   
-   <li>
-      <a href="/procure/quote/list">
-         <i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;<?php
-
-        echo $this->translate("Quotation List");
-        ?></a>
-   </li>
+ 
    <li class="divider"></li>
    <li>
-      <a href="/procure/po/add">
+      <a href="/procure/po/create">
          <i class="fa fa-plus" aria-hidden="true"></i>
          &nbsp;New Contract (PO)
       </a>
@@ -55,7 +48,7 @@
    </li>
    <li class="divider"></li>
    <li>
-      <a href="/procure/gr/add">
+      <a href="/procure/gr/create">
          <i class="fa fa-plus" aria-hidden="true"></i>
          &nbsp;New Goods Receipt (GR)
          <i class="fa fa-truck" aria-hidden="true"></i>
@@ -69,14 +62,14 @@
    </li>
    <li class="divider"></li>
    <li>
-      <a href="/finance/v-invoice/add">
+      <a href="/procure/ap/create">
          <i class="fa fa-plus" aria-hidden="true"></i>
          &nbsp;&nbsp;New A/P Invoice (AP)
       </a>
    </li>
    <li>
-      <a href="/finance/v-invoice/list">
-         <i class="fa fa-list" aria-hidden="true"></i>
+      <a href="/procure/ap/list">
+        <i class="fa fa-list" aria-hidden="true"></i>
          &nbsp;A/P Invoice List
       </a>
    </li>

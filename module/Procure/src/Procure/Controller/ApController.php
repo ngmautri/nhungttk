@@ -5,7 +5,6 @@ use Application\Notification;
 use Application\Domain\Shared\DTOFactory;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
-use Monolog\Logger;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\AP\AddRowCmd;
 use Procure\Application\Command\AP\AddRowCmdHandler;
@@ -30,9 +29,11 @@ use Procure\Application\Command\AP\Options\CopyFromPOOptions;
 use Procure\Application\Command\AP\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
+use Procure\Application\Reporting\AP\ApReporter;
 use Procure\Application\Service\AP\APService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
+use Psr\Log\LoggerInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -47,6 +48,8 @@ class ApController extends AbstractActionController
     protected $doctrineEM;
 
     protected $apService;
+
+    protected $apReporter;
 
     protected $eventBusService;
 
@@ -101,7 +104,7 @@ class ApController extends AbstractActionController
                 'entity_token' => null,
                 'source_id' => $source_id,
                 'source_token' => $source_token,
-                'dto' => $dto,
+                'headerDTO' => $dto,
                 'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -158,7 +161,7 @@ class ApController extends AbstractActionController
                 'entity_token' => null,
                 'source_id' => $source_id,
                 'source_token' => $source_token,
-                'dto' => $dto,
+                'headerDTO' => $dto,
                 'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -204,7 +207,7 @@ class ApController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'dto' => null,
+                'headerDTO' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -246,7 +249,7 @@ class ApController extends AbstractActionController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'dto' => $dto,
+                'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -978,47 +981,63 @@ class ApController extends AbstractActionController
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
+        $file_type = $this->params()->fromQuery('file_type');
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
-        ;
+
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
-        ;
+
         $is_active = (int) $this->params()->fromQuery('is_active');
+
         if ($is_active == null) {
             $is_active = 1;
         }
-        if ($docStatus == null) :
+
+        if ($docStatus == null) {
             $docStatus = "posted";
-            if ($sort_by == null) :
-                $sort_by = "sysNumber";
-            endif;
-        endif;
+        }
 
+        if ($sort_by == null) {
+            $sort_by = "sysNumber";
+            $sort_by = "sysNumber";
+        }
 
-        if ($sort_by == null) :
+        if ($sort_by == null) {
             $sort_by = "createdOn";
-        endif;
+        }
 
-        if ($sort == null) :
-            $sort = "DESC";
-        endif;
+        if ($sort_by == null) {
+            $sort_by = "createdOn";
+        }
 
-        $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
-        $total_records = count($list);
+        $current_state = null;
+        $filter_by = null;
         $paginator = null;
+        $limit = null;
+        $offset = null;
+
+        /**
+         *
+         * @todo: CACHE
+         */
+        $total_records = $this->getApReporter()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $this->getPoReporter()->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
         }
+
+        $list = $this->getApReporter()->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset, $file_type);
 
         $viewModel = new ViewModel(array(
             'list' => $list,
@@ -1032,9 +1051,11 @@ class ApController extends AbstractActionController
             'docStatus' => $docStatus
         ));
 
-        $viewModel->setTemplate("procure/po/dto_list");
+        $viewModel->setTemplate("procure/ap/dto_list");
         return $viewModel;
     }
+
+    // =========================================================
 
     /**
      *
@@ -1088,7 +1109,7 @@ class ApController extends AbstractActionController
 
     /**
      *
-     * @return \Monolog\Logger
+     * @return \Psr\Log\LoggerInterface
      */
     public function getLogger()
     {
@@ -1097,10 +1118,28 @@ class ApController extends AbstractActionController
 
     /**
      *
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      */
-    public function setLogger(Logger $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Reporting\AP\ApReporter
+     */
+    public function getApReporter()
+    {
+        return $this->apReporter;
+    }
+
+    /**
+     *
+     * @param ApReporter $apReporter
+     */
+    public function setApReporter(ApReporter $apReporter)
+    {
+        $this->apReporter = $apReporter;
     }
 }

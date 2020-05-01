@@ -1,0 +1,379 @@
+;<?php
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+
+/**@var PRSnapshot $rootSnapshot ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+// echo $total_records;
+$table_body = "";
+$count = 0;
+$n = 0;
+
+$main_tab = $this->translate("PURCHASE ORDER LIST");
+
+$createUrl = $this->baseUrl . "/procure/ap/create";
+$baseUrl = "/procure/ap-report/header-status";
+
+$filterUrl = $baseUrl;
+
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
+$base = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort);
+
+$save_as_excel = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+if (count($list) > 0) {
+
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
+    }
+
+    foreach ($list as $rootSnapshot) {
+
+        $n ++;
+
+        if ($paginator !== null) {
+            $count = $paginator->minInPage - 1 + $n;
+        } else {
+            $count = $n;
+        }
+
+        $url = sprintf($this->baseUrl . "/procure/po/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Show PO";
+        $icon = null;
+        $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon);
+
+        $url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Edit PO";
+        $icon = 'glyphicon glyphicon-pencil';
+        $editBtn = FormHelper::createButton($this->translate("Edit"), $title, $url, $icon);
+
+        $table_body = $table_body . "<tr>";
+        $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocStatus());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getSysNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getVendorName());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocDate());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getTotalRows());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getGrossAmount());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getCurrencyIso3());
+        $table_body = $table_body . sprintf("<td>%s</td>", $viewBtn . ' ' . $editBtn);
+
+        $table_body = $table_body . "</tr>";
+    }
+}
+$filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus, $is_active, $sort_by, $sort);
+
+// ===================================
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+            <a href="#general"><?php
+            echo $main_tab;
+            ?></a>
+      </li>
+   </ul>
+   <div id="general" style="padding: 10px 10px 1px 3px">
+      <!-- ================ TOOL BAR ======================-->
+      <div style="position: relative; float: right;">
+         <a class="btn btn-default btn-sm" href="<?php
+        echo $createUrl;
+        ?> ">
+            <small>
+               <i class="glyphicon glyphicon-plus"> </i>
+            </small>
+            &nbsp;New PO
+         </a>
+         <a class="btn btn-default btn-sm" href="<?php
+
+        echo $save_as_excel;
+        ?>">
+            <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+            &nbsp;Excel (*.xlxs)
+         </a>
+      </div>
+      <!-- ================== TOOL BAR ===================-->
+      <div>
+         <form class="form-inline" action="<?php
+
+        echo $this->baseUrl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
+            <div class="form-group" style="padding-left: 8px;">
+               <input placeholder="<?php
+
+            echo $this->translate("enter search term ...")?>" class="form-control" size="15" type="text" name="q">
+            </div>
+            <div class="form-group">
+               <button type="submit" class="btn btn-default">
+                  <small>
+                     <i class="glyphicon glyphicon-search"> </i>
+                  </small>
+               </button>
+            </div>
+         </form>
+         <hr style="margin: 5pt 1pt 5pt 1pt;">
+         <small>
+            <span class="glyphicon glyphicon-filter"></span>
+         </small>
+         &nbsp;
+         <a href="#list_filter" class="" data-toggle="collapse">FILTER</a>
+      </div>
+      <div id="list_filter" class="collapse">
+         <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+            <form class="form-horizontal" action="<?php
+            echo $filterUrl;
+            ?>" method="get" enctype="multipart/form-data">
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Current State:</label>
+                  <div class="col-sm-3">
+                     <select name="currentState" class="form-control input-sm">
+                        <option value="">All</option>
+                        <option <?php
+
+                        echo $currentState == 'draftPo' ? "selected='selected'" : "";
+                        ?> value="draftPo">Draft Invoice</option>
+                        <option <?php
+
+                        echo $currentState == 'finalPo' ? "selected='selected'" : "";
+                        ?> value="finalPo">Final PO</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Doc Status:</label>
+                  <div class="col-sm-3">
+                     <select name="docStatus" class="form-control input-sm">
+                        <option value="all">All</option>
+                        <option <?php
+
+                        echo $docStatus == 'draft' ? "selected='selected'" : "";
+                        ?> value="draft">Draft</option>
+                        <option <?php
+
+                        echo $docStatus == 'posted' ? "selected='selected'" : "";
+                        ?> value="posted">Posted</option>
+                        
+                         <option <?php
+
+                        echo $docStatus == 'amending' ? "selected='selected'" : "";
+                        ?> value="amending">Amending</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Active Items</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="is_active">
+                        <option <?php
+
+                        echo $is_active == '2' ? "selected='selected'" : "";
+                        ?> value="2">All</option>
+                        <option <?php
+
+                        echo $is_active == '1' ? "selected='selected'" : "";
+                        ?> value="1">Active</option>
+                        <option <?php
+
+                        echo $is_active == '-1' ? "selected='selected'" : "";
+                        ?> value="-1">Inactive</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Sort by</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="sort_by">
+                        <option value="">None</option>
+                        <option <?php
+
+                        echo $sort_by == 'sysNumber' ? "selected='selected'" : "";
+                        ?> value="sysNumber">PO #</option>
+                        <option <?php
+
+                        echo $sort_by == 'invoiceDate' ? "selected='selected'" : "";
+                        ?> value="poDate">PO Date</option>
+                        <option <?php
+
+                        echo $sort_by == 'vendorName' ? "selected='selected'" : "";
+                        ?> value="vendorName">Vendor Name</option>
+                        <option <?php
+
+                        echo $sort_by == 'currencyCode' ? "selected='selected'" : "";
+                        ?> value="currencyCode">Currency</option>
+                        <option <?php
+
+                        echo $sort_by == 'createdOn' ? "selected='selected'" : "";
+                        ?> value="createdOn">Created Date</option>
+                     </select>
+                     <input <?php
+
+                    if (! $sort == null) :
+                        echo ($sort == 'ASC') ? "checked" : "";
+                    else :
+                        echo "checked";
+                    endif;
+                    ?> type="radio" name="sort"
+                        value="ASC">
+                     &nbsp;ASC&nbsp;&nbsp;
+                     <input <?php
+
+                    if (! $sort == null) :
+                        echo ($sort == 'DESC') ? "checked" : "";
+                    else :
+                        echo "";
+                    endif;
+                    ?> type="radio" name="sort" value="DESC">
+                     &nbsp;DESC&nbsp;&nbsp;
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Result per page</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="perPage">
+                        <option value="">None</option>
+                        <option <?php
+
+                        echo $per_pape == '15' ? "selected='selected'" : "";
+                        ?> value="15">15</option>
+                        <option <?php
+
+                        echo $per_pape == '20' ? "selected='selected'" : "";
+                        ?> value="20">20</option>
+                        <option <?php
+
+                        echo $per_pape == '30' ? "selected='selected'" : "";
+                        ?> value="30">30</option>
+                        <option <?php
+
+                        echo $per_pape == '50' ? "selected='selected'" : "";
+                        ?> value="50">50</option>
+                        <option <?php
+
+                        echo $per_pape == '100' ? "selected='selected'" : "";
+                        ?> value="100">100</option>
+                        <option <?php
+
+                        echo $per_pape == '200' ? "selected='selected'" : "";
+                        ?> value="200">200</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <div class="col-sm-offset-2 col-sm-10">
+                     <button type="submit" class="btn btn-default">Show</button>
+                  </div>
+               </div>
+                          <hr style="margin: 5pt 1pt 10pt 1pt;">
+  
+            </form>
+         </div>
+      </div>
+      
+        <div style="color: gray; font-size: 9pt; margin-top: 8px">
+      <?php
+    echo $filter_msg;
+    ?>
+       </div>
+      
+      <hr style="margin: 1pt 1pt 5pt 1pt;">
+<?php
+echo $result_msg;
+?>
+
+<table id="mytable26" style="font-size: 9.5pt;" class="table table-bordered table-striped table-hover">
+         <thead>
+            <tr>
+               <td>
+                  <b>#</b>
+               </td>
+               <td>
+                  <b>Doc.Status</b>
+               </td>
+               <td>
+                  <b>Ref.No.</b>
+               </td>
+               <td>
+                  <b>Vendor</b>
+               </td>
+               <td>
+                  <b>Doc No</b>
+               </td>
+               <td>
+                  <b>Doc Date</b>
+               </td>
+               <td>
+                  <b>Rows</b>
+               </td>
+               <td>
+                  <b>Gross</b>
+               </td>
+               <td>
+                  <b>Curr</b>
+               </td>
+               <td>
+                  <b>Action</b>
+               </td>
+            </tr>
+         </thead>
+         <tbody>
+		<?php
+echo $table_body;
+?>
+		</tbody>
+      </table>
+
+<?php
+// ===============================
+if (! is_null($paginator)) :
+
+    // change it only
+    $_connector_symbol = '&';
+
+    $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+    $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+    $p1 = ($paginator->page) - 1;
+    $p2 = ($paginator->page) + 1;
+
+    $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+    $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+    echo '<ul class="pagination pagination-sm">';
+
+    if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        echo '<li><a href="' . $first . '"> |< </a></li>';
+        echo '<li><a href="' . $prev . '"> < </a></li>';
+    }
+
+    for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+        $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+        if ($i == $paginator->page) {
+            echo '<li><a class="active" href="#">' . $i . '</a></li>';
+        } else {
+            echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+        }
+    }
+    if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        echo '<li><a href="' . $next . '"> > </a></li>';
+        echo '<li><a href="' . $last . '"> >| </a></li>';
+    }
+    echo '</ul>';
+endif;
+
+    // ===============================
+?>
+

@@ -12,7 +12,7 @@ use Procure\Infrastructure\Mapper\ApMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQueryRepositoryInterface
 {
@@ -84,7 +84,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
          * @var \Application\Entity\FinVendorInvoice $entity ;
          */
         $entity = $this->doctrineEM->getRepository('\Application\Entity\FinVendorInvoice')->findOneBy($criteria);
-        $snapshot = ApMapper::createDetailSnapshot($this->doctrineEM, $entity);
+        $snapshot = ApMapper::createSnapshot($this->doctrineEM, $entity);
 
         if ($snapshot == null) {
             return null;
@@ -129,7 +129,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             return null;
         }
 
-        $rootSnapshot = ApMapper::createDetailSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+        $rootSnapshot = ApMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
         if ($rootSnapshot == null) {
             return null;
         }
@@ -151,7 +151,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             /**@var \Application\Entity\FinVendorInvoiceRow $localEnityDoctrine ;*/
             $localEnityDoctrine = $r;
 
-            $localSnapshot = ApMapper::createRowDetailSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+            $localSnapshot = ApMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
 
             if ($localSnapshot == null) {
                 continue;

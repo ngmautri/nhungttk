@@ -5,15 +5,15 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
-use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
-use Procure\Infrastructure\Persistence\SQL\PrSQL;
+use Procure\Infrastructure\Persistence\Filter\ApReportSqlFilter;
+use Procure\Infrastructure\Persistence\SQL\ApSQL;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrReportHelper
+class ApReportHelper
 {
 
     /**
@@ -32,65 +32,50 @@ class PrReportHelper
             return null;
         }
 
-        if (! $filter instanceof PrReportSqlFilter) {
+        if (! $filter instanceof ApReportSqlFilter) {
             return null;
         }
 
-        $sql = "
-SELECT
-    nmt_procure_pr.*,
-    COUNT(nmt_procure_pr_row.pr_row_id) AS total_row,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0))<=0 THEN  1 ELSE 0 END) AS gr_completed,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0))>0 AND (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0)) < nmt_procure_pr_row.pr_qty  THEN  1 ELSE 0 END) AS gr_partial_completed,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0))<=0 THEN  1 ELSE 0 END) AS ap_completed,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0))>0 AND (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0)) < nmt_procure_pr_row.pr_qty  THEN  1 ELSE 0 END) AS ap_partial_completed
-    FROM nmt_procure_pr
-LEFT JOIN
-(
-%s
-)
-AS nmt_procure_pr_row
-ON nmt_procure_pr_row.pr_id = nmt_procure_pr.id
-WHERE 1
-";
-
-        $sql1 = PrSQL::PR_ROW_ALL;
-
-        $sql = \sprintf($sql, $sql1);
+        $sql = ApSQL::AP_LIST;
 
         if ($filter->getDocStatus() == "all") {
             $filter->docStatus = null;
         }
 
         if ($filter->getIsActive() == 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
         } elseif ($filter->getIsActive() == - 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filter->getPrYear());
+        if ($filter->getCurrentState() != null) {
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $filter->getCurrentState() . "'";
         }
 
-        $sql = $sql . " GROUP BY nmt_procure_pr.id";
-
-        // fullfiled
-        if ($filter->getBalance() == 0) {
-            $sql = $sql . " HAVING total_row <=  gr_completed";
-        } elseif ($filter->getBalance() == 1) {
-            $sql = $sql . " HAVING total_row >  gr_completed";
+        if ($filter->getDocStatus() != null) {
+            $sql = $sql . \sprintf(' AND fin_vendor_invoice.doc_status ="%s"', $filter->getDocStatus());
         }
+
+        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
 
         switch ($sort_by) {
             case "sysNumber":
-                $sql = $sql . " ORDER BY nmt_procure_pr.pr_auto_number " . $sort;
+                $sql = $sql . " ORDER BY fin_vendor_invoice.sys_number " . $sort;
                 break;
-
             case "docDate":
-                $sql = $sql . " ORDER BY nmt_procure_pr.doc_date " . $sort;
+                $sql = $sql . " ORDER BY fin_vendor_invoice.doc_date " . $sort;
+                break;
+            case "grossAmount":
+                $sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
                 break;
             case "createdOn":
-                $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on " . $sort;
+                $sql = $sql . " ORDER BY fin_vendor_invoice.created_on " . $sort;
+                break;
+            case "vendorName":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
+                break;
+            case "currencyCode":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
                 break;
         }
 
@@ -103,17 +88,19 @@ WHERE 1
         }
         $sql = $sql . ";";
 
-        // echo $sql;
-
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
+            $rsm->addScalarResult("active_row", "active_row");
             $rsm->addScalarResult("total_row", "total_row");
-            $rsm->addScalarResult("gr_completed", "gr_completed");
-            $rsm->addScalarResult("ap_completed", "ap_completed");
-            $rsm->addScalarResult("gr_partial_completed", "gr_partial_completed");
-            $rsm->addScalarResult("ap_partial_completed", "ap_partial_completed");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("net_amount", "net_amount");
+            $rsm->addScalarResult("tax_amount", "tax_amount");
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+            $rsm->addScalarResult("gross_discount_amount", "gross_discount_amount");
+
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
+
             $result = $query->getResult();
             return $result;
         } catch (NoResultException $e) {
@@ -133,66 +120,37 @@ WHERE 1
             return null;
         }
 
-        if (! $filter instanceof PrReportSqlFilter) {
+        if (! $filter instanceof ApReportSqlFilter) {
             return null;
         }
 
-        $sql = "
-SELECT
-    nmt_procure_pr.*,
-    COUNT(nmt_procure_pr_row.pr_row_id) AS total_row,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0))<=0 THEN  1 ELSE 0 END) AS gr_completed,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0))>0 AND (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_gr_qty, 0)) < nmt_procure_pr_row.pr_qty  THEN  1 ELSE 0 END) AS gr_partial_completed,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0))<=0 THEN  1 ELSE 0 END) AS ap_completed,
-    SUM(CASE WHEN (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0))>0 AND (nmt_procure_pr_row.pr_qty - IFNULL(nmt_procure_pr_row.posted_ap_qty, 0)) < nmt_procure_pr_row.pr_qty  THEN  1 ELSE 0 END) AS ap_partial_completed
-    FROM nmt_procure_pr
-LEFT JOIN
-(
-%s
-)
-AS nmt_procure_pr_row
-ON nmt_procure_pr_row.pr_id = nmt_procure_pr.id
-WHERE 1
-";
-
-        $sql1 = PrSQL::PR_ROW_ALL;
-
-        $sql = \sprintf($sql, $sql1);
+        $sql = ApSQL::AP_LIST;
 
         if ($filter->getDocStatus() == "all") {
             $filter->docStatus = null;
         }
 
         if ($filter->getIsActive() == 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
         } elseif ($filter->getIsActive() == - 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql = $sql . sprintf(" AND year(nmt_procure_pr.submitted_on) =%s", $filter->getPrYear());
+        if ($filter->getCurrentState() != null) {
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $filter->getCurrentState() . "'";
         }
 
-        $sql = $sql . " GROUP BY nmt_procure_pr.id";
-
-        // fullfiled
-        if ($filter->getBalance() == 0) {
-            $sql = $sql . " HAVING total_row <=  gr_completed";
-        } elseif ($filter->getBalance() == 1) {
-            $sql = $sql . " HAVING total_row >  gr_completed";
+        if ($filter->getDocStatus() != null) {
+            $sql = $sql . \sprintf(' AND fin_vendor_invoice.doc_status ="%s"', $filter->getDocStatus());
         }
+
+        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
+
         $sql = $sql . ";";
-
-        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
-            $rsm->addScalarResult("total_row", "total_row");
-            $rsm->addScalarResult("gr_completed", "gr_completed");
-            $rsm->addScalarResult("ap_completed", "ap_completed");
-            $rsm->addScalarResult("gr_partial_completed", "gr_partial_completed");
-            $rsm->addScalarResult("ap_partial_completed", "ap_partial_completed");
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
 
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
 
@@ -215,128 +173,89 @@ WHERE 1
      */
     static public function getAllRow(EntityManager $doctrineEM, SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
-        if (! $filter instanceof PrReportSqlFilter) {
+        if (! $doctrineEM instanceof EntityManager) {
             return null;
         }
 
-        $sql = PrSQL::PR_ROW_SQL;
-
-        $sql_tmp1 = '';
-        if ($filter->getIsActive() == 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
-        } elseif ($filter->getIsActive() == - 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        if (! $filter instanceof ApReportSqlFilter) {
+            return null;
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getPrYear());
+        $sql = ApSQL::ALL_AP_ROW;
+
+        $sql_tmp = '';
+
+        if ($filter->getDocYear() > 0) {
+            $sql = $sql . " AND YEAR(fin_vendor_invoice.posting_date)=" . $filter->getDocYear();
         }
 
-        if ($filter->getBalance() == 0) {
-            $sql_tmp1 = $sql_tmp1 . " HAVING nmt_procure_pr_row.quantity <=  posted_gr_qty";
-        }
-        if ($filter->getBalance() == 1) {
-            $sql_tmp1 = $sql_tmp1 . " HAVING nmt_procure_pr_row.quantity >  posted_gr_qty";
+        if ($filter->getDocMonth() > 0) {
+            $sql = $sql . " AND MONTH(fin_vendor_invoice.posting_date)=" . $filter->getDocMonth();
         }
 
         switch ($sort_by) {
-            case "itemName":
-                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
-                break;
-
-            case "prNumber":
-                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_procure_pr.pr_number " . $sort;
-                break;
-
-            case "balance":
-                $sql_tmp1 = $sql_tmp1 . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.posted_gr_qty,0) " . $sort;
+            case "vendorName":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
                 break;
         }
 
         if ($limit > 0) {
-            $sql_tmp1 = $sql_tmp1 . " LIMIT " . $limit;
+            $sql = $sql . " LIMIT " . $limit;
         }
 
         if ($offset > 0) {
-            $sql_tmp1 = $sql_tmp1 . " OFFSET " . $offset;
+            $sql = $sql . " OFFSET " . $offset;
         }
-
-        $sql = sprintf($sql, $sql_tmp1);
-        $sql = $sql . ";";
 
         // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-
-            $rsm->addScalarResult("pr_qty", "pr_qty");
-
-            $rsm->addScalarResult("po_qty", "po_qty");
-            $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
-
-            $rsm->addScalarResult("gr_qty", "gr_qty");
-            $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
-
-            $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
-            $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
-
-            $rsm->addScalarResult("ap_qty", "ap_qty");
-            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
-
-            $rsm->addScalarResult("pr_name", "pr_name");
-            $rsm->addScalarResult("pr_year", "pr_year");
-
-            $rsm->addScalarResult("item_name", "item_name");
-            $rsm->addScalarResult("vendor_name", "vendor_name");
-            $rsm->addScalarResult("unit_price", "unit_price");
-            $rsm->addScalarResult("currency_iso3", "currency_iso3");
-
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return $result;
+            $resulst = $query->getResult();
+            return $resulst;
         } catch (NoResultException $e) {
             return null;
         }
     }
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param SqlFilterInterface $filter
+     * @return NULL|number
+     */
     static public function getAllRowTotal(EntityManager $doctrineEM, SqlFilterInterface $filter)
     {
-        if (! $filter instanceof PrReportSqlFilter) {
+        if (! $doctrineEM instanceof EntityManager) {
             return null;
         }
 
-        $sql = PrSQL::PR_ROW_SQL;
-
-        $sql_tmp1 = '';
-        if ($filter->getIsActive() == 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
-        } elseif ($filter->getIsActive() == - 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        if (! $filter instanceof ApReportSqlFilter) {
+            return null;
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getPrYear());
+        $sql = ApSQL::ALL_AP_ROW;
+
+        $sql_tmp = '';
+
+        if ($filter->getDocYear() > 0) {
+            $sql = $sql . " AND YEAR(fin_vendor_invoice.posting_date)=" . $filter->getDocYear();
         }
 
-        if ($filter->getBalance() == 0) {
-            $sql_tmp1 = $sql_tmp1 . " HAVING nmt_procure_pr_row.quantity <=  posted_gr_qty";
+        if ($filter->getDocMonth() > 0) {
+            $sql = $sql . " AND MONTH(fin_vendor_invoice.posting_date)=" . $filter->getDocMonth();
         }
-        if ($filter->getBalance() == 1) {
-            $sql_tmp1 = $sql_tmp1 . " HAVING nmt_procure_pr_row.quantity >  posted_gr_qty";
-        }
-
-        $sql = sprintf($sql, $sql_tmp1);
-        $sql = $sql . ";";
 
         // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return count($result);
+            $resulst = $query->getResult();
+            return count($resulst);
         } catch (NoResultException $e) {
             return null;
         }

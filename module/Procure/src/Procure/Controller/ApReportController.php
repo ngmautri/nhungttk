@@ -1,10 +1,12 @@
 <?php
 namespace Procure\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Procure\Application\Reporting\AP\ApReporter;
-use Procure\Application\Reporting\AP\Output\ApRowStatusOutputStrategy;
 use MLA\Paginator;
+use Procure\Application\Reporting\AP\ApReporter;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Infrastructure\Persistence\Filter\ApReportSqlFilter;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -17,36 +19,118 @@ class ApReportController extends AbstractActionController
 
     protected $apReporter;
 
+    public function headerStatusAction()
+    {
+        $isActive = (int) $this->params()->fromQuery('is_active');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $currentState = $this->params()->fromQuery('currentState');
+        $docStatus = $this->params()->fromQuery('docStatus');
+        $file_type = $this->params()->fromQuery('file_type');
+        $docYear = $this->params()->fromQuery('docYear');
+        $balance = $this->params()->fromQuery('balance');
+
+        if ($docYear == null) {
+            $docYear = date("Y");
+        }
+
+        if ($docStatus == null) {
+            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+        }
+
+        if ($balance == null) {
+            $balance = 1;
+        }
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
+        $isActive = (int) $this->params()->fromQuery('is_active');
+
+        if ($isActive == null) {
+            $isActive = 1;
+        }
+
+        if ($sort_by == null) :
+            $sort_by = "createdOn";
+        endif;
+
+        if ($sort == null) :
+            $sort = "DESC";
+        endif;
+
+        $filter = new ApReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setDocYear($docYear);
+        $filter->setBalance($balance);
+        $filter->setDocStatus($docStatus);
+
+        $total_records = $this->getApReporter()->getListTotal($filter);
+
+        $limit = null;
+        $offset = null;
+        $paginator = null;
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
+
+        $viewModel = new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'is_active' => $isActive,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+            'docStatus' => $docStatus,
+            'docYear' => $docYear,
+            'balance' => $balance
+        ));
+
+        $viewModel->setTemplate("procure/ap-report/dto_list");
+        return $viewModel;
+    }
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function rowStatusAction()
     {
-        //$this->layout("layout/fluid");
-
-        $outputStrategy = (int) $this->params()->fromQuery('output');
+        // $this->layout("layout/fluid");
+        $file_type = (int) $this->params()->fromQuery('file_type');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
-        $ap_year = $this->params()->fromQuery('ap_year');
-        $ap_month = $this->params()->fromQuery('ap_month');
-        $is_active = (int) $this->params()->fromQuery('is_active');
+        $docYear = $this->params()->fromQuery('docYear');
+        $docStatus = $this->params()->fromQuery('docStatus');
+        $isActive = (int) $this->params()->fromQuery('is_active');
 
-        if ($outputStrategy == null) :
-            $outputStrategy = ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
+        if ($file_type == null) :
+            $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
          endif;
 
         if ($sort_by == null) :
             $sort_by = "itemName";
          endif;
 
-        if ($ap_year == null) :
-            $ap_year = date('Y');
-         endif;
-         
-         if ($ap_month == null) :
-         //$ap_month = date('m');
+        if ($docYear == null) :
+            $docYear = date('Y');
          endif;
 
         if ($sort == null) :
@@ -65,8 +149,6 @@ class ApReportController extends AbstractActionController
             $page = $this->params()->fromQuery('page');
         }
 
-        $vendor_id = null;
-        $item_id = null;
         $balance = null;
         $is_active = null;
 
@@ -75,32 +157,36 @@ class ApReportController extends AbstractActionController
 
         $limit = null;
         $offset = null;
-        
-        if($outputStrategy==ApRowStatusOutputStrategy::OUTPUT_IN_EXCEL ||$outputStrategy==ApRowStatusOutputStrategy::OUTPUT_IN_OPEN_OFFICE){
-            return $this->getApReporter()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset, $outputStrategy);
+
+        $filter = new ApReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setBalance($balance);
+        $filter->setDocYear($docYear);
+        $filter->setDocStatus($docStatus);
+
+        $total_records = $this->getApReporter()->getAllRowTotal($filter);
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            return $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
         }
-        
-        $total_records = $this->getApReporter()->getAllAPRowStatusTotal($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset);
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
 
             $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
             $offset = $paginator->minInPage - 1;
-
-            $result = $this->getApReporter()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset, $outputStrategy);
-        } else {
-            $result = $this->getApReporter()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset, $outputStrategy);
         }
+
+        $result = $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
 
         return new ViewModel(array(
             'sort_by' => $sort_by,
             'sort' => $sort,
             'is_active' => $is_active,
             'balance' => $balance,
-            'ap_year' => $ap_year,
-            'ap_month' => $ap_month,
-            'output' => $outputStrategy,
+            'file_type' => $file_type,
+            'docYear' => $docYear,
+            'docStatus' => $docStatus,
             'result' => $result,
             'per_pape' => $resultsPerPage,
             'paginator' => $paginator
@@ -132,22 +218,21 @@ class ApReportController extends AbstractActionController
         }
 
         if (isset($_GET['is_active'])) {
-            $is_active = (int) $_GET['is_active'];
+            $isActive = (int) $_GET['is_active'];
         } else {
-            $is_active = 1;
+            $isActive = 1;
         }
 
-        if (isset($_GET['ap_year'])) {
-            $ap_year = $_GET['ap_year'];
+        if (isset($_GET['docYear'])) {
+            $docYear = $_GET['docYear'];
         } else {
-            $ap_year = date('Y');
+            $docYear = date('Y');
         }
 
-        if (isset($_GET['ap_month'])) {
-
-            $ap_month = $_GET['ap_month'];
+        if (isset($_GET['docStatus'])) {
+            $docStatus = $_GET['docStatus'];
         } else {
-            $ap_month = date('m');
+            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
         }
 
         if (isset($_GET["pq_curpage"])) {
@@ -170,8 +255,14 @@ class ApReportController extends AbstractActionController
         $limit = null;
         $offset = null;
 
-        $outputStrategy = ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
-        $total_records = $this->getApReporter()->getAllAPRowStatusTotal($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset);
+        $filter = new ApReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setBalance($balance);
+        $filter->setDocYear($docYear);
+        $filter->setDocStatus($docStatus);
+
+        $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+        $total_records = $this->getApReporter()->getAllRowTotal($filter);
         $a_json_final = array();
 
         if ($total_records > 0) {
@@ -180,16 +271,13 @@ class ApReportController extends AbstractActionController
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
                 $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
                 $offset = $paginator->minInPage - 1;
-
-                $result = $this->getApReporter()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset, $outputStrategy);
-            } else {
-                $result = $this->getApReporter()->getAllAPRowStatus($vendor_id, $item_id, $is_active, $ap_year, $ap_month, $balance, $sort_by, $sort, $limit, $offset, $outputStrategy);
             }
-
-            $a_json_final['data'] = $result;
-            $a_json_final['totalRecords'] = $total_records;
-            $a_json_final['curPage'] = $pq_curPage;
         }
+        $result = $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+
+        $a_json_final['data'] = $result;
+        $a_json_final['totalRecords'] = $total_records;
+        $a_json_final['curPage'] = $pq_curPage;
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');

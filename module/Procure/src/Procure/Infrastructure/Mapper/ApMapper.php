@@ -4,7 +4,6 @@ namespace Procure\Infrastructure\Mapper;
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\FinVendorInvoiceRow;
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\AccountPayable\APRowDetailsSnapshot;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\AccountPayable\APSnapshot;
 
@@ -515,13 +514,15 @@ class ApMapper
      * @param \Application\Entity\FinVendorInvoice $entity
      * @return NULL|\Procure\Domain\AccountPayable\APSnapshot
      */
-    public static function createDetailSnapshot(EntityManager $doctrineEM, FinVendorInvoice $entity)
+    public static function createSnapshot(EntityManager $doctrineEM, FinVendorInvoice $entity, $snapshot = null)
     {
         if ($entity == null) {
             return null;
         }
 
-        $snapshot = new APSnapshot();
+        if ($snapshot == null) {
+            $snapshot = new APSnapshot();
+        }
 
         // =================================
         // Mapping None-Object Field
@@ -708,12 +709,14 @@ class ApMapper
      * @param \Application\Entity\FinVendorInvoiceRow $entity
      * @return NULL|\Procure\Domain\AccountPayable\APRowDetailsSnapshot
      */
-    public static function createRowDetailSnapshot(EntityManager $doctrineEM, FinVendorInvoiceRow $entity)
+    public static function createRowSnapshot(EntityManager $doctrineEM, FinVendorInvoiceRow $entity, $snapshot = null)
     {
         if ($entity == null)
             return null;
 
-        $snapshot = new APRowDetailsSnapshot();
+        if ($snapshot == null) {
+            $snapshot = new APRowSnapshot();
+        }
 
         // =================================
         // Mapping None-Object Field

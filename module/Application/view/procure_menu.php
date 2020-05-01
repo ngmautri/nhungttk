@@ -67,7 +67,7 @@
       </a>
    </li>
    <li>
-      <a href="/procure/ap/list">
+      <a href="/procure/ap-report/header-status">
          <i class="fa fa-list" aria-hidden="true"></i>
          &nbsp;A/P Invoice List
       </a>

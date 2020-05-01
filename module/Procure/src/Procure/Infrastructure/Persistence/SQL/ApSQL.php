@@ -188,4 +188,17 @@ ON fin_vendor_invoice.id = pmt_outgoing.ap_id
 
 where 1
 ";
+
+    const ALL_AP_ROW = "
+SELECT
+
+fin_vendor_invoice_row.*
+        
+FROM fin_vendor_invoice_row
+        
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+        
+WHERE 1
+";
 }

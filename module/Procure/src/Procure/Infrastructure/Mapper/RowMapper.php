@@ -327,9 +327,9 @@ class RowMapper
         }
 
         if (! $entity->getDocDate() == null) {
-            $snapshot->docDate = $entity->getSubmittedOn()->format("Y-m-d");
-            $snapshot->docYear = $entity->getSubmittedOn()->format("Y");
-            $snapshot->docMonth = $entity->getSubmittedOn()->format("m");
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
+            $snapshot->docYear = $entity->getDocDate()->format("Y");
+            $snapshot->docMonth = $entity->getDocDate()->format("m");
         }
 
         return $snapshot;

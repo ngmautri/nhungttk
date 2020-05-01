@@ -1,340 +1,292 @@
 <?php
-use Procure\Application\Reporting\AP\Output\ApRowStatusOutputStrategy;
-?>
 
-<?php
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 
-$output1 = ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
-$title1 = "Gird View";
+$toogleFileType = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+$toggleViewTitle = "Gird View";
 $icon = 'fa fa-th';
 
-if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
-    $output1 = ApRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE;
-    $title1 = "HTML View";
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+    $toggleViewTitle = "HTML View";
     $icon = 'fa fa-list';
     
 endif;
 
-$link = "/procure/ap-report/row-status?ap_year=%s&ap_month=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
-$url = $this->baseUrl . sprintf($link, $ap_year, $ap_month, $balance, $is_active, $sort_by, $sort, $output1);
+$baseUrl = "/procure/ap-report/row-status";
 
-$link1 = "/procure/ap-report/row-status-gird?ap_year=%s&ap_month=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
-$url1 = $this->baseUrl . sprintf($link1, $ap_year, $ap_month, $balance, $is_active, $sort_by, $sort,$output1);
+$link = "%s?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
+$base = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $file_type);
 
+$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $toogleFileType);
 
-$filter_url = "/procure/ap-report/row-status";
+$link1 = "/procure/ap-report/row-status-gird?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $docYear, $balance, $is_active, $sort_by, $sort);
 
+$filter_url = $baseUrl;
+$filtered1 = "Year=%s,Balance=%s, Sorted By=%s %s, Display=%s";
+$filtered = sprintf($filtered1, $docYear, $balance, $sort_by, $sort, $file_type);
 
-$filtered1 = "Year=%s,  Month=%s, Balance=%s, Sorted By=%s %s, Display=%s";
-$filtered = sprintf($filtered1, $ap_year, $ap_month, $balance, $sort_by, $sort, $output1);
+$url_excel = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
+// ===============================================================================
 ?>
-
-
 <div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;PR
-				Row</a></li>
-	</ul>
-	<div id="general" style="font-size: 9pt">
-		<div>
-			<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
-				style="font-size: 9.5pt" href="#transaction" class=""
-				data-toggle="collapse">FILTER</a>
-		</div>
+   <ul>
+      <li>
+         <a href="#general">
+            <i class="glyphicon glyphicon-shopping-cart"></i>
+            &nbsp;PR Row
+         </a>
+      </li>
+   </ul>
+   <div id="general" style="font-size: 9pt">
+      <div>
+         <small>
+            <span class="glyphicon glyphicon-filter"></span>
+         </small>
+         <a style="font-size: 9.5pt" href="#transaction" class="" data-toggle="collapse">FILTER</a>
+      </div>
+      <div id="transaction" class="collapse">
+         <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+            <form id="filter_form" class="form-horizontal" action="<?php
+            echo $filter_url;
+            ?>" method="get" enctype="multipart/form-data">
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Doc Year</label>
+                  <div class="col-sm-3">
+                     <select name="docYear" class="form-control input-sm">
+                        <option value="0">All</option>
+                        <?php
+                        echo OptionList::createYearOption($docYear);
+                        ?>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Month</label>
+                  <div class="col-sm-3">
+                     <select name="docMonth" class="form-control input-sm">
+                        <option value="all">All</option>
+                          <?php
+                        ?>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">PR Row Balance</label>
+                  <div class="col-sm-3">
+                     <select name="balance" class="form-control input-sm">
+                        <option value="2">All</option>
+                        <option <?php
 
-		<div id="transaction" class="collapse">
+                        echo $balance == '0' ? "selected='selected'" : "";
+                        ?> value="0">Balance=0 (Fulfilled Items)</option>
+                        <option <?php
 
-			<div
-				style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+                        echo $balance == '1' ? "selected='selected'" : "";
+                        ?> value="1">Balance>0 (Pending Items)</option>
+                        <option <?php
 
-				<form id="filter_form" class="form-horizontal"
-					action="<?php echo $filter_url; ?>"
-					method="get" enctype="multipart/form-data">
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag">PR Year</label>
-						<div class="col-sm-3">
-							<select name="ap_year" class="form-control input-sm">
-								<option value="0">All</option>
-								<option <?php echo $ap_year=='2016'? "selected='selected'":"";?>
-									value="2016">2016</option>
-								<option <?php echo $ap_year=='2017'? "selected='selected'":"";?>
-									value="2017">2017</option>
-								<option <?php echo $ap_year=='2018'? "selected='selected'":"";?>
-									value="2018">2018</option>
-								<option <?php echo $ap_year=='2019'? "selected='selected'":"";?>
-									value="2019">2019</option>
-								<option <?php echo $ap_year=='2020'? "selected='selected'":"";?>
-									value="2020">2020</option>
-							</select>
-						</div>
-					</div>
+                        echo $balance == '-1' ? "selected='selected'" : "";
+                        ?> value="-1">Balance<0 (Some Free Items)</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Active Items</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="is_active">
+                        <option <?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag">Month</label>
-						<div class="col-sm-3">
-							<select name="ap_month" class="form-control input-sm">
-								<option value="0">All</option>
+                        echo $is_active == '' ? "selected='selected'" : "";
+                        ?> value="">All</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='1'? "selected='selected'":"";?>
-									value="1">January</option>
+                        echo $is_active == '1' ? "selected='selected'" : "";
+                        ?> value="1">Active</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='2'? "selected='selected'":"";?>
-									value="2">Feb</option>
+                        echo $is_active == '-1' ? "selected='selected'" : "";
+                        ?> value="-1">Inactive</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Sort by</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="sort_by">
+                        <option value="">None</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='3'? "selected='selected'":"";?>
-									value="3">Mar</option>
+                        echo $sort_by == 'itemName' ? "selected='selected'" : "";
+                        ?> value="itemName">Item Name</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='4'? "selected='selected'":"";?>
-									value="4">Apr</option>
+                        echo $sort_by == 'prNumber' ? "selected='selected'" : "";
+                        ?> value="prNumber">Pr Number</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='5'? "selected='selected'":"";?>
-									value="5">May</option>
+                        echo $sort_by == 'vendorName' ? "selected='selected'" : "";
+                        ?> value="vendorName">Vendor</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='6'? "selected='selected'":"";?>
-									value="6">Jun</option>
+                        echo $sort_by == 'currency' ? "selected='selected'" : "";
+                        ?> value="currency">Currency</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='7'? "selected='selected'":"";?>
-									value="7">Jul</option>
+                        echo $sort_by == 'unitPrice' ? "selected='selected'" : "";
+                        ?> value="unitPrice">Price</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='8'? "selected='selected'":"";?>
-									value="8">Aug</option>
+                        echo $sort_by == 'balance' ? "selected='selected'" : "";
+                        ?> value="balance">Balance</option>
+                        <option <?php
 
-								<option <?php echo $ap_month=='9'? "selected='selected'":"";?>
-									value="9">Sep</option>
+                        echo $sort_by == 'prSubmitted' ? "selected='selected'" : "";
+                        ?> value="prSubmitted">Pr Date</option>
+                     </select>
+                     <input <?php
 
-								<option <?php echo $ap_month=='10'? "selected='selected'":"";?>
-									value="10">Oct</option>
-								<option <?php echo $ap_month=='11'? "selected='selected'":"";?>
-									value="11">Nov</option>
+                    if (! $sort == null) :
+                        echo ($sort == 'ASC') ? "checked" : "";
+                    else :
+                        echo "checked";
+                    endif;
+                    ?> type="radio" name="sort"
+                        value="ASC">
+                     &nbsp;ASC&nbsp;&nbsp;
+                     <input <?php
 
-								<option <?php echo $ap_month=='12'? "selected='selected'":"";?>
-									value="12">Dec</option>
+                    if (! $sort == null) :
+                        echo ($sort == 'DESC') ? "checked" : "";
+                    else :
+                        echo "";
+                    endif;
+                    ?> type="radio" name="sort" value="DESC">
+                     &nbsp;DESC&nbsp;&nbsp;
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Display</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="file_type">
+                        <option <?php
 
-							</select>
-						</div>
-					</div>
+                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY ? "selected='selected'" : "";
+                        ?> value="<?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag">PR Row
-							Balance</label>
-						<div class="col-sm-3">
-							<select name="balance" class="form-control input-sm">
-								<option value="2">All</option>
-								<option <?php echo $balance=='0'? "selected='selected'":"";?>
-									value="0">Balance=0 (Fulfilled Items)</option>
-								<option <?php echo $balance=='1'? "selected='selected'":"";?>
-									value="1">Balance>0 (Pending Items)</option>
-								<option <?php echo $balance=='-1'? "selected='selected'":"";?>
-									value="-1">Balance<0 (Some Free Items)</option>
-							</select>
-						</div>
-					</div>
+                        echo SaveAsSupportedType::OUTPUT_IN_ARRAY;
+                        ?>">Gird</option>
+                        <option <?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag">Active Items</label>
-						<div class="col-sm-3">
-							<select class="form-control input-sm" name="is_active">
-								<option <?php echo $is_active ==''? "selected='selected'":"";?>
-									value="">All</option>
-								<option <?php echo $is_active=='1'? "selected='selected'":"";?>
-									value="1">Active</option>
-								<option <?php echo $is_active=='-1'? "selected='selected'":"";?>
-									value="-1">Inactive</option>
-							</select>
-						</div>
-					</div>
+                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE ? "selected='selected'" : "";
+                        ?> value="<?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag">Sort by</label>
-						<div class="col-sm-3">
-							<select class="form-control input-sm" name="sort_by">
-								<option value="">None</option>
-								<option
-									<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
-									value="itemName">Item Name</option>
-
-								<option
-									<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
-									value="prNumber">Pr Number</option>
-								<option
-									<?php echo $sort_by=='vendorName'? "selected='selected'":"";?>
-									value="vendorName">Vendor</option>
-								<option
-									<?php echo $sort_by=='currency'? "selected='selected'":"";?>
-									value="currency">Currency</option>
-								<option
-									<?php echo $sort_by=='unitPrice'? "selected='selected'":"";?>
-									value="unitPrice">Price</option>
-								<option
-									<?php echo $sort_by=='balance'? "selected='selected'":"";?>
-									value="balance">Balance</option>
-								<option
-									<?php echo $sort_by=='prSubmitted'? "selected='selected'":"";?>
-									value="prSubmitted">Pr Date</option>
-							</select> <input
-								<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
-								type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
-								<?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?>
-								type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
-
-						</div>
-					</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag">Display</label>
-						<div class="col-sm-3">
-							<select class="form-control input-sm" name="output">
-								<option
-									<?php echo $output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY ? "selected='selected'":"";?>
-									value="<?php echo ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY; ?>">Gird</option>
-
-								<option
-									<?php echo $output==ApRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE ? "selected='selected'":"";?>
-									value="<?php echo ApRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE; ?>">HTML</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group margin-bottom">
-						<div class="col-sm-offset-2 col-sm-10">
-							<a class="btn btn-default btn-sm" href="javascript:;"
-								onClick="submitForm('filter_form');"><i class="fa fa-filter"
-								aria-hidden="true"></i>&nbsp;&nbsp;Filter...</a>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<div style="color: gray; font-size: 9pt; margin-top: 8px"><?php echo $filtered; ?>
-		</div>
-
-		<hr style="font-size: 9.5pt; margin: 3pt 1pt 5pt 1pt;">
-
-
-		<div id="transaction" class="collapse in">
-			<div id="pr_rows">
-
-				<div style="font-size: 9pt">
-
-					<div class="dropdown">
-						<button
-							style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-							title="" class="btn btn-default dropdown-toggle btn-sm"
-							type="button" id="dropdownMenu1" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="true">
-							<i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download
-							&nbsp;<span class="caret"></span>
-						</button>
-						
-						<?php
-
-    if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
-
-        ?>
-						 
-						<a
-							style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-							title="<?php echo $this->translate("Refresh");?>"
-							class="btn btn-default btn-sm" href="javascript:;"
-							onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
-							aria-hidden="true"></i>&nbsp;
-						</a> 
-						
-						<?php endif;?>
-						<a class="btn btn-default btn-sm"
-							style="color: black; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-							title="<?php echo $title1; ?>" href="<?php echo $url;?>"> <i
-							class="<?php echo $icon;?>" aria-hidden="true"></i>
-						</a>
-
-
-	<?php
-    $url_excel = $this->baseUrl . sprintf($link, $ap_year, $ap_month, $balance, $is_active, $sort_by, $sort, ApRowStatusOutputStrategy::OUTPUT_IN_EXCEL);
-    $url_oo = $this->baseUrl . sprintf($link, $ap_year, $ap_month, $balance, $is_active, $sort_by, $sort, ApRowStatusOutputStrategy::OUTPUT_IN_OPEN_OFFICE);
+                        echo SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+                        ?>">HTML</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <div class="col-sm-offset-2 col-sm-10">
+                     <a class="btn btn-default btn-sm" href="javascript:;" onClick="submitForm('filter_form');">
+                        <i class="fa fa-filter" aria-hidden="true"></i>
+                        &nbsp;&nbsp;Filter...
+                     </a>
+                  </div>
+               </div>
+               <hr style="margin: 5pt 1pt 10pt 1pt;">
+            </form>
+         </div>
+      </div>
+      <div style="color: gray; font-size: 9pt; margin-top: 8px">
+     <?php
+    echo $filtered;
     ?>
-						<ul style="font-size: 9.5pt;" class="dropdown-menu"
-							aria-labelledby="dropdownMenu1">
-
-							<li><a class="" href="<?php echo $url_excel;?>"><i
-									class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
-									(*.xlxs)</a></li>
-
-							<li><a class="" href="<?php echo $url_oo;?>"><i
-									class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;OpenOffice
-									(*.ods)</a></li>
-
-						</ul>
-					</div>
-
-				</div>
-
-			</div>
-		</div>
-
-<?php
-if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE) :
-    echo $result;
-
-    // ===============================
-    if (! is_null($paginator)) :
-
-        // change it only
-        //$link = "/procure/pr-row/status-report?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
-        $base = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $output);
-
-        $_connector_symbol = '&';
-
-        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-
-        $p1 = ($paginator->page) - 1;
-        $p2 = ($paginator->page) + 1;
-
-        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-
-        echo '<ul class="pagination pagination-sm">';
-
-        if ($paginator->page != 1 and $paginator->totalPages > 10) {
-            echo '<li><a href="' . $first . '"> |< </a></li>';
-            echo '<li><a href="' . $prev . '"> < </a></li>';
-        }
-
-        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-
-            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-
-            if ($i == $paginator->page) {
-                echo '<li><a class="active" href="#">' . $i . '</a></li>';
-            } else {
-                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-            }
-        }
-        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-            echo '<li><a href="' . $next . '"> > </a></li>';
-            echo '<li><a href="' . $last . '"> >| </a></li>';
-        }
-        echo '</ul>';
-    endif;
-    
-
-    
+	  </div>
+      <hr style="font-size: 9.5pt; margin: 3pt 1pt 5pt 1pt;">
+      <div id="transaction" class="collapse in">
+         <div id="pr_rows">
+            <div style="font-size: 9pt">
+               <div class="dropdown">
+                  <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                     <i class="fa fa-download" aria-hidden="true"></i>
+                     &nbsp;Download &nbsp;
+                     <span class="caret"></span>
+                  </button>
+	<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    ?>
+						<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="
+						<?php
+    echo $this->translate("Refresh");
+    ?>" class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();">
+                     &nbsp;
+                     <i class="fa fa-refresh" aria-hidden="true"></i>
+                     &nbsp;
+                  </a> 
+<?php 
 endif;
 
+?>
+				 <a class="btn btn-default btn-sm" style="color: black; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
+    echo $toggleViewTitle;
+    ?>" href="<?php
+    echo $toggleUrl;
+    ?>">
+                     <i class="<?php
+                    echo $icon;
+                    ?>" aria-hidden="true"></i>
+                  </a>
+                  <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                     <li>
+                        <a class="" href="<?php
+                        echo $url_excel;
+                        ?>">
+                           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                           &nbsp;&nbsp;Excel (*.xlxs)
+                        </a>
+                     </li>
+                     <li>
+                        <a class="" href="<?php
+
+                        echo $url_oo;
+                        ?>">
+                           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                           &nbsp;&nbsp;OpenOffice (*.ods)
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+
+<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
+    echo $result;
+    echo FormHelper::createPaginator($base, $paginator, "&");    
+endif;
 
 ?>
 
 
 <?php
-if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     ?>
 
-<div id="pr_row_gird" style="margin: 1px; font-size: 9pt"></div>
-
-	</div>
+<div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
+   </div>
 </div>
-
 <script>
 
     var columns = [
@@ -343,32 +295,20 @@ if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
         { title: "Vendor", dataType: "string", dataIndx: "vendorName", width: 150,editable: false },
         { title: "Vendor", dataType: "string", dataIndx: "postingDate", width: 150,editable: false },
         { title: "Ref", dataType: "string", dataIndx: "sapNumber", width: 150,editable: false },
-          
         { title: "Cur", dataType: "string", dataIndx: "docCurrencyISO", width: 10,editable: false },
-        
-        	{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+       	{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
        	{ title: "Item", dataType: "string", dataIndx: "itemName", width: 280,editable: false },
         { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false,editable: false},
         { title: "UP", dataType: "string", dataIndx: "unitPrice", width:70, align: 'right',editable: false},
         { title: "Net Amt", dataType: "string", dataIndx: "netAmount", width:70, align: 'right',editable: false},
-
-
         { title: "FX", dataType: "string", dataIndx: "exchangeRate", width:10, align: 'right',editable: false},
-        
         { title: "PR", dataType: "string", dataIndx: "prNumber", width:150, align: 'left',editable: false},
         { title: "PO", dataType: "string", dataIndx: "poNumber", width:150, align: 'left',editable: false},
-        
-                    
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
    ];
-
-    <?php
-    //$link = "/procure/pr-row/status-report-gird?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
-    //$url = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $output);
-    //$url = $this->baseUrl . sprintf($link1, $ap_year, $ap_month, $balance, $is_active, $sort_by, $sort, $output);
-    
-    ?>
-    var url = "<?php echo $url1;?>";
+    var url = "<?php
+    echo $girdUrl;
+    ?>";
     var dataModel = {
     		  dataType: "JSON",
               location: "remote",
@@ -398,7 +338,7 @@ if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
             editor: {
                 select: true
             },
- 			change: function (evt, ui) {                
+ 			change: function (evt, ui) {               
                 
                 if (ui.source == 'commit' || ui.source == 'rollback') {
                     return;
@@ -486,16 +426,15 @@ if ($output == ApRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
        		
    	};
 
-    var $grid = $("#pr_row_gird").pqGrid(obj);
+    var $grid = $("#gird_div").pqGrid(obj);
 
     $("#main_container").height() = $(window).height()-300;
 
     function refreshGird(){
-    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+    	$( "#gird_div" ).pqGrid( "refreshDataAndView" )
 	} 
     
 </script>
-
 <?php
 endif;
 

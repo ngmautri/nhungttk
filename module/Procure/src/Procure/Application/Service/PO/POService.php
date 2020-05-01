@@ -5,10 +5,10 @@ use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
 use Procure\Application\Service\FXService;
-use Procure\Application\Service\Output\RowNumberFormatter;
-use Procure\Application\Service\Output\RowTextAndNumberFormatter;
-use Procure\Application\Service\Output\SaveAsArray;
-use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\Output\DocSaveAsArray;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
+use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
 use Procure\Application\Service\PO\Output\PoRowFormatter;
 use Procure\Application\Service\PO\Output\PoSaveAsExcel;
 use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
@@ -118,7 +118,7 @@ class POService extends AbstractService
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
-                $factory = new SaveAsArray();
+                $factory = new DocSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new PoExcelBuilder();
@@ -139,12 +139,12 @@ class POService extends AbstractService
 
             default:
                 $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
-                $factory = new SaveAsArray();
+                $factory = new DocSaveAsArray();
                 break;
         }
 
         if ($factory !== null && $formatter !== null) {
-            $output = $factory->saveDocAs($po, $formatter);
+            $output = $factory->saveAs($po, $formatter);
             $po->setRowsOutput($output);
         }
 

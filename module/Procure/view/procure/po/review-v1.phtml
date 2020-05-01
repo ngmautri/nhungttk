@@ -9,7 +9,7 @@ use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Helper\Toolbar;
-use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -388,11 +388,13 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                                 
                                 
                                 
+                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
                                 
                                 
                                 

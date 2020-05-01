@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Reporting\PO;
 
+use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -29,9 +30,9 @@ class PoReporterFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
-        $sv = $container->get('Procure\Infrastructure\Persistence\Doctrine\POListRepository');
-        $service->setListRespository($sv);
-        
+        $sv = $container->get(PoReportRepositoryImpl::class);
+        $service->setReportRespository($sv);
+
         return $service;
     }
 }

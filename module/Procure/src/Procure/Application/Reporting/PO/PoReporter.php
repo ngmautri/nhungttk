@@ -2,16 +2,23 @@
 namespace Procure\Application\Reporting\PO;
 
 use Application\Service\AbstractService;
-use Procure\Application\Reporting\PO\Output\Header\HeaderSaveAsExcel;
+use Procure\Application\Reporting\PO\Output\PoRowFormatter;
+use Procure\Application\Reporting\PO\Output\SaveAsExcel;
+use Procure\Application\Reporting\PO\Output\SaveAsHTML;
+use Procure\Application\Reporting\PO\Output\SaveAsOpenOffice;
+use Procure\Application\Reporting\PO\Output\Header\HeadersSaveAsExcel;
 use Procure\Application\Reporting\PO\Output\Header\Spreadsheet\ExcelBuilder;
+use Procure\Application\Service\Output\RowsSaveAsArray;
 use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
-use Procure\Application\Service\PO\Output\PoRowFormatter;
-use Procure\Application\Service\PO\Output\PoSaveAsExcel;
-use Procure\Application\Service\PO\Output\PoSaveAsOpenOffice;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\DefaultRowFormatter;
+use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
+use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoReportExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoReportOpenOfficeBuilder;
-use Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl;
-use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
+use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
 
 /**
  * PO Row Service.
@@ -24,22 +31,27 @@ class PoReporter extends AbstractService
 
     /**
      *
-     * @var POListRepositoryImpl $prListRespository;
+     * @var PoReportRepositoryImpl $reportRespository;
      */
-    private $listRespository;
+    private $reportRespository;
 
-    public function getPoList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type)
     {
-        if ($outputStrategy == HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if ($file_type == HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
-        $results = $this->getListRespository()->getPoList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+
+        $results = $this->getReportRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
 
         $factory = null;
         $formatter = null;
 
-        switch ($outputStrategy) {
+        switch ($file_type) {
             case HeadersSaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new DefaultHeaderFormatter();
                 $factory = new HeadersSaveAsArray();
@@ -48,7 +60,7 @@ class PoReporter extends AbstractService
 
                 $builder = new ExcelBuilder();
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsExcel($builder);
+                $factory = new HeadersSaveAsExcel($builder);
                 break;
 
             case HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
@@ -69,64 +81,84 @@ class PoReporter extends AbstractService
         return $factory->saveAs($results, $formatter);
     }
 
-    public function getAllPoRowStatus($is_active = 1, $po_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        $results = $this->getListRespository()->getAllPoRowStatus($is_active, $po_year, $balance, $sort_by, $sort, $limit, $offset);
+        return $this->getReportRespository()->getListTotal($filter);
+    }
+
+    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type, $totalRecords)
+    {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+        }
+
+        $results = $this->getReportRespository()->getAllRow($filter, $sort_by, $sort, $limit, $offset);
 
         if ($results == null) {
             return null;
         }
 
-        // var_dump($results);
-
         $factory = null;
         $formatter = null;
 
-        switch ($outputStrategy) {
+        switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new PoRowFormatter(new RowFormatter());
-                $factory = new SaveAsArray();
+                $formatter = new PoRowFormatter(new DefaultRowFormatter());
+                $factory = new RowsSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new PoReportExcelBuilder();
                 $formatter = new PoRowFormatter(new RowNumberFormatter());
-                $factory = new PoSaveAsExcel($builder);
+                $factory = new SaveAsExcel($builder);
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new PoReportOpenOfficeBuilder();
                 $formatter = new PoRowFormatter(new RowNumberFormatter());
-                $factory = new PoSaveAsOpenOffice($builder);
+                $factory = new SaveAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE:
+                $formatter = new RowNumberFormatter();
+                $factory = new SaveAsHTML();
+                $factory->setOffset($offset);
+                $factory->setLimit($limit);
+                $factory->setTotalRecords($totalRecords);
                 break;
             default:
-                $formatter = new PoRowFormatter(new RowFormatter());
-                $factory = new SaveAsArray();
+                $formatter = new PoRowFormatter(new DefaultRowFormatter());
+                $factory = new RowsSaveAsArray();
                 break;
         }
 
-        return $factory->saveMultiplyRowsAs($results, $formatter);
+        return $factory->saveAs($results, $formatter);
     }
 
-    public function getAllPoRowStatusTotal($is_active = 1, $po_year, $balance = 1)
+    public function getAllRowTotal(SqlFilterInterface $filter)
     {
-        return $this->getListRespository()->getAllPoRowStatusTotal($is_active, $po_year, $balance);
-    }
-
-    /**
-     *
-     * @return \Procure\Infrastructure\Persistence\Doctrine\POListRepositoryImpl
-     */
-    public function getListRespository()
-    {
-        return $this->listRespository;
+        return $this->getReportRespository()->getAllRowTotal($filter);
     }
 
     /**
      *
-     * @param POListRepositoryImpl $listRespository
+     * @return \Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl
      */
-    public function setListRespository(POListRepositoryImpl $listRespository)
+    public function getReportRespository()
     {
-        $this->listRespository = $listRespository;
+        return $this->reportRespository;
+    }
+
+    /**
+     *
+     * @param PoReportRepositoryImpl $reportRespository
+     */
+    public function setReportRespository(PoReportRepositoryImpl $reportRespository)
+    {
+        $this->reportRespository = $reportRespository;
     }
 }

@@ -39,8 +39,8 @@ class DefaultRowFormatter extends AbstractRowFormatter
         $escaper = new Escaper();
 
         $onclick = null;
-        if ($row->getItemName() !== null) {
-            $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $row->getItemToken(), $row->getItemChecksum(), $row->getItem());
+        if ($row->itemName !== null) {
+            $item_detail = sprintf("/inventory/item/show1?token=%s&entity_id=%s", $row->getItemToken(), $row->getItem());
             $onclick = sprintf("showJqueryDialog('Detail of Item: %s','1600',$(window).height()-50,'%s','j_loaded_data', true);", $escaper->escapeJs($row->getItemName()), $item_detail);
         }
 

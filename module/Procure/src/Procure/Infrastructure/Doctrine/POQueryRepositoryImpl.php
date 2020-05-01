@@ -122,7 +122,7 @@ WHERE id = %s";
         }
 
         $po = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo')->findOneBy($criteria);
-        $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->getDoctrineEM(), $po);
+        $poDetailsSnapshot = PoMapper::createSnapshot($this->getDoctrineEM(), $po);
 
         if ($poDetailsSnapshot == null) {
             return null;
@@ -160,7 +160,7 @@ WHERE id = %s";
             ->getRepository('\Application\Entity\NmtProcurePo')
             ->findOneBy($criteria);
 
-        $poDetailsSnapshot = PoMapper::createDetailSnapshot($this->getDoctrineEM(), $po);
+        $poDetailsSnapshot = PoMapper::createSnapshot($this->getDoctrineEM(), $po);
 
         if ($poDetailsSnapshot == null) {
             return null;
@@ -194,7 +194,7 @@ WHERE id = %s";
             /**@var \Application\Entity\NmtProcurePoRow $poRowEntity ;*/
             $po_row = $r[0];
 
-            $poRowDetailSnapshot = PoMapper::createRowDetailSnapshot($this->getDoctrineEM(), $po_row);
+            $poRowDetailSnapshot = PoMapper::createRowSnapshot($this->getDoctrineEM(), $po_row);
             if ($poRowDetailSnapshot == null) {
                 continue;
             }
@@ -236,7 +236,7 @@ WHERE id = %s";
             $grossAmount = $grossAmount + $poRowDetailSnapshot->grossAmount;
             $billedAmount = $billedAmount + $poRowDetailSnapshot->billedAmount;
 
-            $poRow = PORow::makeFromDetailsSnapshot($poRowDetailSnapshot);
+            $poRow = PORow::makeFromSnapshot($poRowDetailSnapshot);
             $docRowsArray[] = $poRow;
             $rowIdArray[] = $poRow->getId();
 

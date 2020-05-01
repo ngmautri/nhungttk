@@ -453,7 +453,7 @@ class PoMapper
             return null;
         }
 
-        if ($snapshot !== null) {
+        if ($snapshot == null) {
             $snapshot = new POSnapshot();
         }
 
@@ -616,7 +616,7 @@ class PoMapper
             return null;
         }
 
-        if ($snapshot !== null) {
+        if ($snapshot == null) {
             $snapshot = new PORowSnapshot();
         }
 

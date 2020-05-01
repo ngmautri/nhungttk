@@ -19,14 +19,20 @@ class RowsSaveAsArray implements RowsSaveAsInterface
      */
     public function saveAs($rows, AbstractRowFormatter $formatter)
     {
-        if (count($rows) == 0) {
-            return null;
-        }
+        try {
 
-        $output = array();
-        foreach ($rows as $row) {
-            $output[] = $formatter->format($row);
+            if (count($rows) == 0) {
+                return null;
+            }
+
+            $output = array();
+            foreach ($rows as $row) {
+                $output[] = $formatter->format($row);
+            }
+
+            return $output;
+        } catch (\Exception $e) {
+            echo $e->getTraceAsString();
         }
-        return $output;
     }
 }

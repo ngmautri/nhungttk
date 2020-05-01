@@ -5,7 +5,8 @@ use MLA\Paginator;
 use Monolog\Logger;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
-use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Infrastructure\Persistence\Filter\PoReportSqlFilter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -29,11 +30,15 @@ class PoReportController extends AbstractActionController
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
         $file_type = $this->params()->fromQuery('file_type');
-        $prYear = $this->params()->fromQuery('yy');
+        $docYear = $this->params()->fromQuery('docYear');
         $balance = $this->params()->fromQuery('balance');
 
-        if ($prYear == null) {
-            $prYear = date("Y");
+        if ($docYear == null) {
+            $docYear = date("Y");
+        }
+
+        if ($docStatus == null) {
+            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
         }
 
         if ($balance == null) {
@@ -45,14 +50,12 @@ class PoReportController extends AbstractActionController
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
-        ;
 
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
-        ;
 
         $isActive = (int) $this->params()->fromQuery('is_active');
 
@@ -68,12 +71,13 @@ class PoReportController extends AbstractActionController
             $sort = "DESC";
         endif;
 
-        $filter = new PrReportSqlFilter();
+        $filter = new PoReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($docYear);
         $filter->setBalance($balance);
+        $filter->setDocStatus($docStatus);
 
-        $total_records = $this->getPrReporter()->getListTotal($filter);
+        $total_records = $this->getReporter()->getListTotal($filter);
 
         $limit = null;
         $offset = null;
@@ -85,7 +89,7 @@ class PoReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
 
         $viewModel = new ViewModel(array(
             'list' => $list,
@@ -97,11 +101,11 @@ class PoReportController extends AbstractActionController
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState,
             'docStatus' => $docStatus,
-            'yy' => $prYear,
+            'yy' => $docYear,
             'balance' => $balance
         ));
 
-        $viewModel->setTemplate("procure/pr/dto_list");
+        $viewModel->setTemplate("procure/po-report/dto_list");
         return $viewModel;
     }
 
@@ -117,7 +121,8 @@ class PoReportController extends AbstractActionController
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
-        $prYear = $this->params()->fromQuery('pr_year');
+        $docYear = $this->params()->fromQuery('docYear');
+        $docStatus = $this->params()->fromQuery('docStatus');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -140,11 +145,11 @@ class PoReportController extends AbstractActionController
         }
 
         if ($sort_by == null) :
-            $sort_by = "itemName";
+            //$sort_by = "itemName";
          endif;
 
-        if ($prYear == null) :
-            $prYear = date('Y');
+        if ($docYear == null) :
+            $docYear = date('Y');
          endif;
 
         if ($sort == null) :
@@ -157,12 +162,13 @@ class PoReportController extends AbstractActionController
         $limit = null;
         $offset = null;
 
-        $filter = new PrReportSqlFilter();
+        $filter = new PoReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setBalance($balance);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($docYear);
+        $filter->setDocStatus($docStatus);
 
-        $total_records = $this->getPrReporter()->getAllRowTotal($filter);
+        $total_records = $this->getReporter()->getAllRowTotal($filter);
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
@@ -170,7 +176,7 @@ class PoReportController extends AbstractActionController
             $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
             $offset = $paginator->minInPage - 1;
         }
-        $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
 
         return new ViewModel(array(
             'sort_by' => $sort_by,
@@ -178,7 +184,7 @@ class PoReportController extends AbstractActionController
             'is_active' => $isActive,
             'per_pape' => $resultsPerPage,
             'balance' => $balance,
-            'pr_year' => $prYear,
+            'docYear' => $docYear,
             'file_type' => $file_type,
             'result' => $result,
             'paginator' => $paginator
@@ -215,10 +221,16 @@ class PoReportController extends AbstractActionController
             $isActive = 1;
         }
 
-        if (isset($_GET['pr_year'])) {
-            $prYear = $_GET['pr_year'];
+        if (isset($_GET['docYear'])) {
+            $docYear = $_GET['docYear'];
         } else {
-            $prYear = date('Y');
+            $docYear = date('Y');
+        }
+
+        if (isset($_GET['docStatus'])) {
+            $docStatus = $_GET['docStatus'];
+        } else {
+            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
         }
 
         if (isset($_GET["pq_curpage"])) {
@@ -236,13 +248,14 @@ class PoReportController extends AbstractActionController
         $limit = null;
         $offset = null;
 
-        $filter = new PrReportSqlFilter();
+        $filter = new PoReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setBalance($balance);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($docYear);
+        $filter->setDocStatus($docStatus);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
-        $total_records = $this->getPrReporter()->getAllRowTotal($filter);
+        $total_records = $this->getReporter()->getAllRowTotal($filter);
         $a_json_final = array();
 
         if ($total_records > 0) {
@@ -253,7 +266,9 @@ class PoReportController extends AbstractActionController
             }
         }
 
-        $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+
+        // var_dump($result);
 
         $a_json_final['data'] = $result;
         $a_json_final['totalRecords'] = $total_records;
@@ -287,10 +302,6 @@ class PoReportController extends AbstractActionController
         $this->logger = $logger;
     }
 
-    /**
-     *
-     * @return \Procure\Application\Reporting\PO\PoReporter
-     */
     public function getReporter()
     {
         return $this->reporter;

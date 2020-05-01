@@ -49,11 +49,11 @@ class PoReportHelper
         }
 
         if ($filter->getCurrentState() != null) {
-            $sql = $sql . \sprintf(" AND nmt_procure_po.current_state =%s", $filter->getCurrentState());
+            $sql = $sql . \sprintf(" AND nmt_procure_po.current_state ='%s'", $filter->getCurrentState());
         }
 
         if ($filter->getDocStatus() != null) {
-            $sql = $sql . \sprintf(" AND nmt_procure_po.doc_status =%s", $filter->getDocStatus());
+            $sql = $sql . \sprintf(' AND nmt_procure_po.doc_status ="%s"', $filter->getDocStatus());
         }
 
         $sql = $sql . " GROUP BY nmt_procure_po.id";
@@ -138,11 +138,11 @@ class PoReportHelper
         }
 
         if ($filter->getCurrentState() != null) {
-            $sql = $sql . \sprintf(" AND nmt_procure_po.current_state =%s", $filter->getCurrentState());
+            $sql = $sql . \sprintf(" AND nmt_procure_po.current_state ='%s'", $filter->getCurrentState());
         }
 
         if ($filter->getDocStatus() != null) {
-            $sql = $sql . \sprintf(" AND nmt_procure_po.doc_status =%s", $filter->getDocStatus());
+            $sql = $sql . \sprintf(" AND nmt_procure_po.doc_status ='%s'", $filter->getDocStatus());
         }
 
         $sql = $sql . " GROUP BY nmt_procure_po.id";
@@ -215,17 +215,17 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
         $sql_tmp1 = '';
 
         if ($filter->getDocYear() > 0) {
-            $sql_tmp = $sql_tmp . \sprintf(" AND year(nmt_procure_po.contract_date)=%s", $filter->getDocYear());
+            $sql_tmp = $sql_tmp . \sprintf(" AND year(nmt_procure_po.doc_date)=%s", $filter->getDocYear());
         }
 
         if ($filter->getBalance() == 0) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) <= 0";
+            $sql_tmp1 = $sql_tmp1 . " HAVING (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) <= 0";
         }
         if ($filter->getBalance() == 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) > 0";
+            $sql_tmp1 = $sql_tmp1 . " HAVING (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) > 0";
         }
         if ($filter->getBalance() == - 1) {
-            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) < 0";
+            $sql_tmp1 = $sql_tmp1 . " HAVING (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) < 0";
         }
 
         switch ($sort_by) {
@@ -275,5 +275,79 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
     }
 
     static public function getAllRowTotal(EntityManager $doctrineEM, SqlFilterInterface $filter)
-    {}
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof PoReportSqlFilter) {
+            return null;
+        }
+
+        $sql = "
+SELECT
+nmt_procure_po_row.*,
+fin_vendor_invoice_row.*,
+nmt_procure_gr_row.draft_gr_qty,
+nmt_procure_gr_row.posted_gr_qty,
+            
+nmt_procure_gr_row.confirmed_gr_balance,
+nmt_procure_gr_row.open_gr_qty
+            
+FROM nmt_procure_po_row
+            
+LEFT JOIN nmt_procure_po
+on nmt_procure_po.id = nmt_procure_po_row.po_id
+            
+LEFT JOIN
+(%s)
+AS fin_vendor_invoice_row
+ON fin_vendor_invoice_row.po_row_id = nmt_procure_po_row.id
+            
+LEFT JOIN
+(%s)
+AS nmt_procure_gr_row
+ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
+            
+WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted'%s";
+        /**
+         *
+         * @todo To add Return and Credit Memo
+         */
+
+        $sql_tmp = '';
+        $sql_tmp1 = '';
+
+        if ($filter->getDocYear() > 0) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND year(nmt_procure_po.doc_date)=%s", $filter->getDocYear());
+        }
+
+        if ($filter->getBalance() == 0) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) <= 0";
+        }
+        if ($filter->getBalance() == 1) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) > 0";
+        }
+        if ($filter->getBalance() == - 1) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) < 0";
+        }
+
+        $sql1 = sprintf(\Procure\Infrastructure\Doctrine\SQL\PoSQL::SQL_ROW_PO_AP, $sql_tmp);
+        $sql2 = sprintf(\Procure\Infrastructure\Doctrine\SQL\PoSQL::SQL_ROW_PO_GR, $sql_tmp);
+
+        $sql = sprintf($sql, $sql1, $sql2, $sql_tmp . $sql_tmp1);
+
+        // echo $sql;
+
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
+
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            $resulst = $query->getResult();
+            return count($resulst);
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Service\PO\Output;
+namespace Procure\Application\Reporting\PO\Output;
 
 use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
@@ -48,6 +48,7 @@ class PoRowFormatter extends RowFormatterDecorator
             $row->postedGrQuantity = ($row->getPostedGrQuantity() !== null ? number_format($row->getPostedGrQuantity(), $decimalNo) : 0);
             $row->confirmedGrBalance = ($row->getConfirmedGrBalance() !== null ? number_format($row->getConfirmedGrBalance(), $decimalNo) : 0);
             $row->openGrBalance = ($row->getOpenGrBalance() !== null ? number_format($row->getOpenGrBalance(), $decimalNo) : 0);
+            $row->exchangeRate = ($row->getExchangeRate() !== null ? number_format($row->getExchangeRate(), 0) : 0);
         }
 
         return $row;

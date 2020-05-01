@@ -1,6 +1,6 @@
-<?php
+;<?php
 use Procure\Application\Helper\FormHelper;
-use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 
 /**
@@ -20,11 +20,15 @@ $n = 0;
 $main_tab = $this->translate("PURCHASE ORDER LIST");
 
 $createUrl = $this->baseUrl . "/procure/po/create";
-$filterUrl = $this->baseUrl . "/procure/po/list";
+$baseUrl = "/procure/po-report/header-status";
+
+$filterUrl = $baseUrl;
+
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
-$base = sprintf('/procure/po/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
-$save_as_excel = sprintf('/procure/po/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
-$save_as_openoffice = sprintf('/procure/po/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$base = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort);
+
+$save_as_excel = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 

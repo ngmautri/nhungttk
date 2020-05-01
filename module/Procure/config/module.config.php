@@ -23,10 +23,12 @@ use Procure\Application\Reporting\QR\QrReporterFactory;
 use Procure\Application\Service\QR\QRService;
 use Procure\Application\Service\QR\QRServiceFactory;
 use Procure\Infrastructure\Persistence\Doctrine\GrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\PrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\ProcureReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\GrReporterRepositoryImplFactory;
+use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
@@ -115,8 +117,8 @@ return array(
             array(
                 'label' => 'PO Row Report',
                 'route' => 'procure/default',
-                'controller' => 'po-row',
-                'action' => 'status-report',
+                'controller' => 'po-report',
+                'action' => 'row-status',
                 'icon' => 'glyphicon glyphicon-list'
             ),
 
@@ -271,7 +273,7 @@ return array(
             QrReportRepositoryImpl::class => QrReporterRepositoryImplFactory::class,
             GrReportRepositoryImpl::class => GrReporterRepositoryImplFactory::class,
             PrReportRepositoryImpl::class => PrReporterRepositoryImplFactory::class,
-
+            PoReportRepositoryImpl::class => PoReporterRepositoryImplFactory::class,
             ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
 
             // Reporing Service

@@ -485,9 +485,9 @@ class PODoc extends GenericPO
      * @param PODetailsSnapshot $snapshot
      * @return void|\Procure\Domain\PurchaseOrder\PODoc
      */
-    public static function makeFromDetailsSnapshot(PODetailsSnapshot $snapshot)
+    public static function makeFromDetailsSnapshot(PoSnapshot $snapshot)
     {
-        if (! $snapshot instanceof PODetailsSnapshot)
+        if (! $snapshot instanceof PoSnapshot)
             return;
 
         if ($snapshot->uuid == null) {

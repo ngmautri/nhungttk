@@ -40,7 +40,7 @@
       </a>
    </li>
    <li>
-      <a href="/procure/po/list">
+      <a href="/procure/po-report/header-status">
          <i class="fa fa-caret-right" aria-hidden="true"></i>
          &nbsp;&nbsp;&nbsp;PO /Contract list
       </a>

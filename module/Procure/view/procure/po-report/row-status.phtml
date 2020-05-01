@@ -20,20 +20,22 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     
 endif;
 
-$link = "/procure/pr-report/row-status?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
-$base = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $file_type);
+$baseUrl = "/procure/po-report/row-status";
 
-$toggleUrl = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $toogleFileType);
+$link = "%s?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
+$base = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $file_type);
 
-$link1 = "/procure/pr-report/row-status-gird?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
-$girdUrl = $this->baseUrl . sprintf($link1, $pr_year, $balance, $is_active, $sort_by, $sort);
+$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $toogleFileType);
 
-$filter_url = "/procure/pr-report/row-status";
+$link1 = "/procure/po-report/row-status-gird?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $docYear, $balance, $is_active, $sort_by, $sort);
+
+$filter_url = $baseUrl;
 $filtered1 = "Year=%s,Balance=%s, Sorted By=%s %s, Display=%s";
-$filtered = sprintf($filtered1, $pr_year, $balance, $sort_by, $sort, $file_type);
+$filtered = sprintf($filtered1, $docYear, $balance, $sort_by, $sort, $file_type);
 
-$url_excel = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
-$url_oo = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$url_excel = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 // ===============================================================================
 ?>
@@ -59,12 +61,12 @@ $url_oo = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_
             echo $filter_url;
             ?>" method="get" enctype="multipart/form-data">
                <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">PR Year</label>
+                  <label class="control-label col-sm-2" for="inputTag">Doc Year</label>
                   <div class="col-sm-3">
-                     <select name="pr_year" class="form-control input-sm">
+                     <select name="docYear" class="form-control input-sm">
                         <option value="0">All</option>
                         <?php
-                        echo OptionList::createYearOption($pr_year);
+                        echo OptionList::createYearOption($docYear);
                         ?>
                      </select>
                   </div>
@@ -72,10 +74,9 @@ $url_oo = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_
                <div class="form-group margin-bottom">
                   <label class="control-label col-sm-2" for="inputTag">Month</label>
                   <div class="col-sm-3">
-                     <select name="ap_month" class="form-control input-sm">
-                        <option value="0">All</option>
+                     <select name="docMonth" class="form-control input-sm">
+                        <option value="all">All</option>
                           <?php
-                        echo OptionList::createMonthOption($pr_year);
                         ?>
                      </select>
                   </div>

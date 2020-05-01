@@ -175,9 +175,9 @@ class PORow extends GenericRow
      *
      * @param PORowDetailsSnapshot $snapshot
      */
-    public static function makeFromDetailsSnapshot(PORowDetailsSnapshot $snapshot)
+    public static function makeFromDetailsSnapshot(PORowSnapshot $snapshot)
     {
-        if (! $snapshot instanceof PORowDetailsSnapshot)
+        if (! $snapshot instanceof PORowSnapshot)
             return;
 
         $instance = new self();

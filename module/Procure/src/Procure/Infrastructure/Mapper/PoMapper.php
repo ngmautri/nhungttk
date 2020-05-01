@@ -4,8 +4,6 @@ namespace Procure\Infrastructure\Mapper;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\PurchaseOrder\PODetailsSnapshot;
-use Procure\Domain\PurchaseOrder\PORowDetailsSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 
@@ -444,16 +442,20 @@ class PoMapper
 
     /**
      *
-     * @param object $entity
-     * @return NULL|\Procure\Domain\PurchaseOrder\PODetailsSnapshot
+     * @param EntityManager $doctrineEM
+     * @param NmtProcurePo $entity
+     * @param object $snapshot
+     * @return NULL|string|\Procure\Domain\PurchaseOrder\POSnapshot
      */
-    public static function createDetailSnapshot(EntityManager $doctrineEM, NmtProcurePo $entity = null)
+    public static function createSnapshot(EntityManager $doctrineEM, NmtProcurePo $entity = null, $snapshot = null)
     {
         if ($entity == null) {
             return null;
         }
 
-        $snapshot = new PODetailsSnapshot();
+        if ($snapshot !== null) {
+            $snapshot = new POSnapshot();
+        }
 
         // ============================
         // REFERRENCE MAPPING
@@ -603,16 +605,20 @@ class PoMapper
 
     /**
      *
+     * @param EntityManager $doctrineEM
      * @param NmtProcurePoRow $entity
-     * @return NULL|\Procure\Domain\PurchaseOrder\PORowDetailsSnapshot
+     * @param object $snapshot
+     * @return NULL|string|\Procure\Domain\PurchaseOrder\PORowSnapshot
      */
-    public static function createRowDetailSnapshot(EntityManager $doctrineEM, NmtProcurePoRow $entity)
+    public static function createRowSnapshot(EntityManager $doctrineEM, NmtProcurePoRow $entity, $snapshot = null)
     {
         if ($entity == null) {
             return null;
         }
 
-        $snapshot = new PORowDetailsSnapshot();
+        if ($snapshot !== null) {
+            $snapshot = new PORowSnapshot();
+        }
 
         // =================================
         // Mapping None-Object Field

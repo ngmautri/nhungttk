@@ -50,8 +50,8 @@ return array(
             array(
                 'label' => 'PR List',
                 'route' => 'procure/default',
-                'controller' => 'pr',
-                'action' => 'list',
+                'controller' => 'pr-report',
+                'action' => 'header-status',
                 'icon' => 'glyphicon glyphicon-list'
             ),
             
@@ -351,6 +351,7 @@ return array(
             'Procure\Controller\Qr' => 'Procure\Controller\QrControllerFactory',
             'Procure\Controller\Report' => 'Procure\Controller\ReportControllerFactory',
             'Procure\Controller\PrReport' => 'Procure\Controller\PrReportControllerFactory',
+            'Procure\Controller\PoReport' => 'Procure\Controller\PoReportControllerFactory',
 
             // API
             'Procure\API\PrController' => 'Procure\API\PrControllerFactory'

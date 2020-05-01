@@ -6,7 +6,7 @@
         ?></a>
    </li>
    <li>
-      <a href="/procure/pr/list">
+      <a href="/procure/pr-report/header-status">
          <i class="fa fa-caret-right" aria-hidden="true"></i>
          &nbsp;&nbsp;&nbsp;PR list
       </a>

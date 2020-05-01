@@ -3,7 +3,7 @@ namespace Procure\Controller;
 
 use MLA\Paginator;
 use Monolog\Logger;
-use Procure\Application\Reporting\PR\PrReporter;
+use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -14,10 +14,10 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrReportController extends AbstractActionController
+class PoReportController extends AbstractActionController
 {
 
-    protected $prReporter;
+    protected $reporter;
 
     protected $logger;
 
@@ -268,24 +268,11 @@ class PrReportController extends AbstractActionController
     // ====================================
     // Setter and Getter.
     // ====================================
-    /**
-     *
-     * @return \Procure\Application\Reporting\PR\PrReporter
-     */
-    public function getPrReporter()
-    {
-        return $this->prReporter;
-    }
 
     /**
      *
-     * @param PrReporter $prReporter
+     * @return \Monolog\Logger
      */
-    public function setPrReporter(PrReporter $prReporter)
-    {
-        $this->prReporter = $prReporter;
-    }
-
     public function getLogger()
     {
         return $this->logger;
@@ -298,5 +285,23 @@ class PrReportController extends AbstractActionController
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Reporting\PO\PoReporter
+     */
+    public function getReporter()
+    {
+        return $this->reporter;
+    }
+
+    /**
+     *
+     * @param PoReporter $reporter
+     */
+    public function setReporter(PoReporter $reporter)
+    {
+        $this->reporter = $reporter;
     }
 }

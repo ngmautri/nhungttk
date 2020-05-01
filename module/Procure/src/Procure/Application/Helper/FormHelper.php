@@ -1,6 +1,8 @@
 <?php
 namespace Procure\Application\Helper;
 
+use MLA\Paginator;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -48,5 +50,53 @@ class FormHelper
 </div>', $progress_cls, $completion, "%", $completion, $color, $completion, "%", $caption);
 
         return $progress_div;
+    }
+
+    /**
+     *
+     * @param string $base
+     * @param Paginator $paginator
+     * @param string $connector_symbol
+     */
+    public static function createPaginator($base, Paginator $paginator, $connector_symbol)
+    {
+        if (! $paginator instanceof Paginator) {
+            return;
+        }
+
+        $last = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $paginator->totalPages, $paginator->resultsPerPage);
+        $first = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, 1, $paginator->resultsPerPage);
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p1, $paginator->resultsPerPage);
+        $next = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $p2, $paginator->resultsPerPage);
+
+        $paginator_str = '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $first, "|<");
+            $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $prev, "<");
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = \sprintf("%s%spage=%s&perPage=%s", $base, $connector_symbol, $i, $paginator->resultsPerPage);
+
+            if ($i == $paginator->page) {
+                $paginator_str = $paginator_str . \sprintf('<li><a class="active" href="#">%s</a></li>', $i);
+            } else {
+                $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $url, $i);
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+
+            $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $next, ">");
+            $paginator_str = $paginator_str . \sprintf('<li><a href="%s">%s</a></li>', $last, ">|");
+        }
+        $paginator_str = $paginator_str . '</ul>';
+
+        return $paginator_str;
     }
 }

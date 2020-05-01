@@ -172,6 +172,8 @@ class PrReporter extends AbstractService
             case SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE:
                 $formatter = new RowNumberFormatter();
                 $factory = new SaveAsHTML();
+                $factory->setOffset($offset);
+                $factory->setLimit($limit);
                 break;
 
             default:

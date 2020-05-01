@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\Reporting\PR\Output;
 
-use Procure\Application\Service\Output\AbstractRowsSaveAsSpreadsheet;
+use Procure\Application\Service\Output\Contract\RowsSaveAsInterface;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
@@ -11,8 +11,48 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsHTML extends AbstractRowsSaveAsSpreadsheet
+class SaveAsHTML implements RowsSaveAsInterface
 {
+
+    private $limit;
+
+    private $offset;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     *
+     * @param mixed $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+    }
+
+    /**
+     *
+     * @param mixed $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+    }
 
     /**
      *
@@ -60,28 +100,18 @@ class SaveAsHTML extends AbstractRowsSaveAsSpreadsheet
 
             $n ++;
 
+            $row = $formatter->format($row);
+
             $bodyHtml = $bodyHtml . "<tr>\n";
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $n + $this->getOffset());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getPr()->getPrName());
-
-            if ($row->getPr()->getSubmittedOn() !== null) {
-                $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", date_format($row->getPr()->getSubmittedOn(), "d-m-Y"));
-            } else {
-                $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", "");
-            }
-            // $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $a['pr_year']);
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getItem()->getItemSku());
-
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $a['item_name']);
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getPrNumber());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getItemSKU());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getItemName());
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getQuantity());
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['po_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['posted_po_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['gr_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['posted_gr_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['stock_gr_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['posted_stock_gr_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['ap_qty'], 2));
-            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", number_format($a['posted_ap_qty'], 2));
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getPostedPoQuantity());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getPostedGrQuantity());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getPostedStockQrQuantity());
+            $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", $row->getPostedApQuantity());
             $bodyHtml = $bodyHtml . sprintf("<td>%s</td>\n", "");
 
             $bodyHtml = $bodyHtml . "</tr>";

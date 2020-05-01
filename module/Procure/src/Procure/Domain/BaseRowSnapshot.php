@@ -44,6 +44,12 @@ class BaseRowSnapshot extends AbstractDTO
 
     public $exchangeRate;
 
+    public $docDate;
+
+    public $docYear;
+
+    public $docMonth;
+
     public $docWarehouseName;
 
     public $docWarehouseCode;
@@ -129,6 +135,8 @@ class BaseRowSnapshot extends AbstractDTO
     public $glAccountType;
 
     public $costCenterName;
+
+    public $discountAmount;
 
     public $id;
 
@@ -410,6 +418,33 @@ class BaseRowSnapshot extends AbstractDTO
     public function getExchangeRate()
     {
         return $this->exchangeRate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocYear()
+    {
+        return $this->docYear;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocMonth()
+    {
+        return $this->docMonth;
     }
 
     /**
@@ -797,6 +832,15 @@ class BaseRowSnapshot extends AbstractDTO
     public function getCostCenterName()
     {
         return $this->costCenterName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
     }
 
     /**
@@ -1420,4 +1464,5 @@ class BaseRowSnapshot extends AbstractDTO
         return $this->standardConvertFactor;
     }
 }
+   
     

@@ -1,7 +1,8 @@
 <?php
 use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
-use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 
@@ -45,34 +46,13 @@ $progress_div = '';
 
 if (! $rootDTO == null) {
 
-    $progress_cls = "";
-    $color = "black";
     if ($rootDTO->getTotalRows() > 0) {
         $completion = $rootDTO->getCompletedRows() / $rootDTO->getTotalRows();
     } else {
         $completion = 0;
     }
 
-    if ($completion == 1) {
-        $progress_cls = "progress-bar-success";
-    }
-
-    if ($completion <= 0.5) {
-        $progress_cls = "progress-bar-warning";
-        $color = "black";
-    }
-
-    if ($completion < 1 && $completion > 0.5) {
-        $color = "white";
-    }
-
-    $completion = round($completion * 100, 0);
-
-    $progress_div = sprintf('<div class="progress" style="height: 20px; margin-bottom:2pt;">
-<div class="progress-bar %s" role="progressbar" style="width:%s%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">
- <span style="font-size: 9pt; padding: 0px 0px 1px 1px; color:%s;">%s%s</span>
-</div>
-</div>', $progress_cls, $completion, "%", $completion, $color, $completion, "% completed");
+    $progress_div = FormHelper::createProgressDiv($completion, 'completed.');
 
     $transactionStatus = sprintf('<span style="color:red;">%s</span>', $rootDTO->getTransactionStatus());
 

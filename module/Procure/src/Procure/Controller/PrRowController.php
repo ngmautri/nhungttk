@@ -16,7 +16,6 @@ use Procure\Service\PrSearchService;
 use Zend\Cache\Storage\StorageInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Procure\Application\Reporting\PR\PrRowStatusReporter;
-use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 
 /**
  *

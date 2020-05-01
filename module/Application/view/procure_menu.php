@@ -1,6 +1,6 @@
 <ul style="font-size: 10pt" class="dropdown-menu">
    <li>
-      <a href="/procure/pr/add">
+      <a href="/procure/pr/create">
          <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<?php
         echo $this->translate('New Purchase Request (PR)');
         ?></a>
@@ -12,7 +12,7 @@
       </a>
    </li>
    <li>
-      <a href="/procure/pr-row/status-report">
+      <a href="/procure/pr-report/row-status">
          <i class="fa fa-caret-right" aria-hidden="true"></i>
          &nbsp;&nbsp;&nbsp;PR Row Status
       </a>
@@ -32,7 +32,6 @@
         echo $this->translate("Quotation List");
         ?></a>
    </li>
- 
    <li class="divider"></li>
    <li>
       <a href="/procure/po/create">
@@ -69,7 +68,7 @@
    </li>
    <li>
       <a href="/procure/ap/list">
-        <i class="fa fa-list" aria-hidden="true"></i>
+         <i class="fa fa-list" aria-hidden="true"></i>
          &nbsp;A/P Invoice List
       </a>
    </li>

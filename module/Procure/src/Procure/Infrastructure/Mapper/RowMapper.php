@@ -208,6 +208,12 @@ class RowMapper
         $snapshot->docToken = $entity->getToken();
         $snapshot->docNumber = $entity->getDocNumber();
 
+        if (! $entity->getSubmittedOn() == null) {
+            $snapshot->docDate = $entity->getSubmittedOn()->format("Y-m-d");
+            $snapshot->docYear = $entity->getSubmittedOn()->format("Y");
+            $snapshot->docMonth = $entity->getSubmittedOn()->format("m");
+        }
+
         return $snapshot;
     }
 
@@ -263,6 +269,12 @@ class RowMapper
             }
         }
 
+        if (! $entity->getDocDate() == null) {
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
+            $snapshot->docYear = $entity->getDocDate()->format("Y");
+            $snapshot->docMonth = $entity->getDocDate()->format("m");
+        }
+
         return $snapshot;
     }
 
@@ -314,6 +326,12 @@ class RowMapper
             }
         }
 
+        if (! $entity->getDocDate() == null) {
+            $snapshot->docDate = $entity->getSubmittedOn()->format("Y-m-d");
+            $snapshot->docYear = $entity->getSubmittedOn()->format("Y");
+            $snapshot->docMonth = $entity->getSubmittedOn()->format("m");
+        }
+
         return $snapshot;
     }
 
@@ -362,6 +380,12 @@ class RowMapper
             }
         }
 
+        if (! $entity->getDocDate() == null) {
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
+            $snapshot->docYear = $entity->getDocDate()->format("Y");
+            $snapshot->docMonth = $entity->getDocDate()->format("m");
+        }
+
         return $snapshot;
     }
 
@@ -404,6 +428,12 @@ class RowMapper
                     ->getCountry()
                     ->getCountryName();
             }
+        }
+
+        if (! $entity->getDocDate() == null) {
+            $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
+            $snapshot->docYear = $entity->getDocDate()->format("Y");
+            $snapshot->docMonth = $entity->getDocDate()->format("m");
         }
 
         return $snapshot;

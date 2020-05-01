@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\Service\Output\Header;
 
-use Procure\Application\Service\Output\AbstractRowFormatter;
+use Procure\Application\Service\Output\Formatter\Header\AbstractHeaderFormatter;
 
 /**
  * Header Output Decorator
@@ -16,7 +16,7 @@ abstract class HeaderFormatterDecorator extends AbstractHeaderFormatter
 
     /**
      *
-     * @param AbstractRowFormatter $formatter
+     * @param AbstractHeaderFormatter $formatter
      */
     public function __construct(AbstractHeaderFormatter $formatter)
     {

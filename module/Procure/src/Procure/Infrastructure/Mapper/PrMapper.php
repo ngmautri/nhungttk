@@ -442,14 +442,20 @@ class PrMapper
         // REFERRENCE MAPPING
         // ============================
         /*
+         * $snapshot->pr = $entity->getPr();
+         *
          * $snapshot->createdBy = $entity->getCreatedBy();
          * $snapshot->lastchangeBy = $entity->getLastchangeBy();
-         * $snapshot->pr = $entity->getPr();
          * $snapshot->item = $entity->getItem();
          * $snapshot->project = $entity->getProject();
          * $snapshot->docUom = $entity->getDocUom();
          * $snapshot->warehouse = $entity->getWarehouse();
          */
+
+        // Parent ID.
+        if ($entity->getPr() !== null) {
+            RowMapper::updatePRHeaderDetails($snapshot, $entity->getPr());
+        }
 
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
@@ -459,10 +465,6 @@ class PrMapper
         if ($entity->getLastchangeBy() !== null) {
             $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
             $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
-        }
-
-        if ($entity->getPr() !== null) {
-            RowMapper::updatePRHeaderDetails($snapshot, $entity->getPr());
         }
 
         if ($entity->getItem() !== null) {

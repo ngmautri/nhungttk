@@ -46,6 +46,12 @@ class AbstractRow extends AbstractEntity
 
     protected $exchangeRate;
 
+    protected $docDate;
+
+    protected $docYear;
+
+    protected $docMonth;
+
     // Warehouse Details
     // ====================
     protected $docWarehouseName;
@@ -283,6 +289,60 @@ class AbstractRow extends AbstractEntity
     protected $costCenter;
 
     protected $standardConvertFactor;
+
+    /**
+     *
+     * @param mixed $docDate
+     */
+    protected function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+    }
+
+    /**
+     *
+     * @param mixed $docYear
+     */
+    protected function setDocYear($docYear)
+    {
+        $this->docYear = $docYear;
+    }
+
+    /**
+     *
+     * @param mixed $docMonth
+     */
+    protected function setDocMonth($docMonth)
+    {
+        $this->docMonth = $docMonth;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocDate()
+    {
+        return $this->docDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocYear()
+    {
+        return $this->docYear;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocMonth()
+    {
+        return $this->docMonth;
+    }
 
     /**
      *

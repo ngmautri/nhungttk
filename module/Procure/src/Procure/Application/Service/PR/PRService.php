@@ -6,10 +6,10 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Service\FXService;
-use Procure\Application\Service\Output\RowNumberFormatter;
-use Procure\Application\Service\Output\RowTextAndNumberFormatter;
-use Procure\Application\Service\Output\SaveAsArray;
-use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\Output\DocSaveAsArray;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
+use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
 use Procure\Application\Service\PR\Output\RowFormatter;
 use Procure\Application\Service\PR\Output\SaveAsExcel;
 use Procure\Application\Service\PR\Output\SaveAsOpenOffice;
@@ -58,7 +58,7 @@ class PRService extends AbstractService
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new RowFormatter(new RowTextAndNumberFormatter());
-                $factory = new SaveAsArray();
+                $factory = new DocSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
@@ -79,12 +79,12 @@ class PRService extends AbstractService
 
             default:
                 $formatter = new RowFormatter(new RowTextAndNumberFormatter());
-                $factory = new SaveAsArray();
+                $factory = new DocSaveAsArray();
                 break;
         }
 
         if ($factory !== null && $formatter !== null) {
-            $output = $factory->saveDocAs($rootEntity, $formatter);
+            $output = $factory->saveAs($rootEntity, $formatter);
             $rootEntity->setRowsOutput($output);
         }
 

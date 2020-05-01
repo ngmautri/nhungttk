@@ -28,9 +28,6 @@ class PrControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $sm->get('Application\Service\PdfService');
-        $controller->setPdfService($sv);
-
         $sv = $sm->get('Procure\Service\PrService');
         $controller->setPrService($sv);
 

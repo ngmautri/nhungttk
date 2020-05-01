@@ -2,16 +2,24 @@
 namespace Procure\Application\Reporting\PR;
 
 use Application\Service\AbstractService;
-use Procure\Application\Reporting\GR\Output\Header\HeaderSaveAsExcel;
-use Procure\Application\Reporting\GR\Output\Header\Spreadsheet\ExcelBuilder;
-use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
-use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
-use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
+use Procure\Application\Reporting\PR\Output\SaveAsExcel;
+use Procure\Application\Reporting\PR\Output\SaveAsHTML;
+use Procure\Application\Reporting\PR\Output\SaveAsOpenOffice;
+use Procure\Application\Reporting\PR\Output\Header\HeadersSaveAsExcel;
+use Procure\Application\Reporting\PR\Output\Header\Spreadsheet\ExcelBuilder;
+use Procure\Application\Reporting\PR\Output\Spreadsheet\OpenOfficeBuilder;
+use Procure\Application\Service\Output\RowsSaveAsArray;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\DefaultRowFormatter;
+use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
+use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
 
 /**
- * GR Reporter
+ * PR Reporter
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -31,7 +39,7 @@ class PrReporter extends AbstractService
             throw new \InvalidArgumentException("Invalid filter object.");
         }
 
-        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+        if ($outputStrategy == HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
@@ -44,18 +52,18 @@ class PrReporter extends AbstractService
         $formatter = null;
 
         switch ($outputStrategy) {
-            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
-            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL:
 
                 $builder = new ExcelBuilder();
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsExcel($builder);
+                $factory = new HeadersSaveAsExcel($builder);
                 break;
 
-            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
 
             /*
              * $builder = new PoReportOpenOfficeBuilder();
@@ -66,11 +74,11 @@ class PrReporter extends AbstractService
 
             default:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
         }
 
-        return $factory->saveMultiplyHeaderAs($results, $formatter);
+        return $factory->saveAs($results, $formatter);
     }
 
     public function getListWithCustomDTO(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
@@ -79,7 +87,7 @@ class PrReporter extends AbstractService
             throw new \InvalidArgumentException("Invalid filter object.");
         }
 
-        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+        if ($outputStrategy == HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
@@ -90,18 +98,18 @@ class PrReporter extends AbstractService
         $formatter = null;
 
         switch ($outputStrategy) {
-            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
-            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL:
 
                 $builder = new ExcelBuilder();
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsExcel($builder);
+                $factory = new HeadersSaveAsExcel($builder);
                 break;
 
-            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
 
             /*
              * $builder = new PoReportOpenOfficeBuilder();
@@ -112,17 +120,72 @@ class PrReporter extends AbstractService
 
             default:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
         }
 
-        return $factory->saveMultiplyHeaderAs($results, $formatter);
+        return $factory->saveAs($results, $formatter);
     }
 
     public function getListTotal(SqlFilterInterface $filter)
     {
         $total = $this->getReporterRespository()->getListTotal($filter);
         return $total;
+    }
+
+    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type)
+    {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+        }
+
+        $results = $this->getReporterRespository()->getAllRow($filter, $sort_by, $sort, $limit, $offset);
+
+        // var_dump($results);
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new DefaultRowFormatter();
+                $factory = new RowsSaveAsArray();
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new ExcelBuilder();
+                $formatter = new RowNumberFormatter();
+                $factory = new SaveAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new OpenOfficeBuilder();
+                $formatter = new RowNumberFormatter();
+                $factory = new SaveAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE:
+                $formatter = new RowNumberFormatter();
+                $factory = new SaveAsHTML();
+                break;
+
+            default:
+                $formatter = new DefaultRowFormatter();
+                $factory = new RowsSaveAsArray();
+                break;
+        }
+
+        return $factory->saveAs($results, $formatter);
+    }
+
+    public function getAllRowTotal(SqlFilterInterface $filter)
+    {
+        return $this->getReporterRespository()->getAllRowTotal($filter);
     }
 
     /**

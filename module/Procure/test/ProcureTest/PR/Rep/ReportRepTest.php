@@ -3,9 +3,9 @@ namespace ProcureTest\GR\Command;
 
 use DoctrineORMModule\Options\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Persistence\Doctrine\PrReportRepositoryImpl;
+use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use PHPUnit_Framework_TestCase;
 
 class RepTest extends PHPUnit_Framework_TestCase
@@ -24,8 +24,13 @@ class RepTest extends PHPUnit_Framework_TestCase
 
             $rep = new PrReportRepositoryImpl($doctrineEM);
 
-            $result = $rep->getListWithCustomDTO(1, null, null, null, null, null, 0, 0, new PrHeaderDetailDTO());
-            \var_dump($rep->getListTotal());
+            $filter = new PrReportSqlFilter();
+            $filter->setBalance(1);
+            $filter->setIsActive(1);
+            $filter->setPrYear(2020);
+            $result = $rep->getAllRowTotal($filter);
+
+            \var_dump($result);
             // var_dump($result[1]);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

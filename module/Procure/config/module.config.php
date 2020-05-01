@@ -107,8 +107,8 @@ return array(
             array(
                 'label' => 'PR Row Report',
                 'route' => 'procure/default',
-                'controller' => 'pr-row',
-                'action' => 'status-report',
+                'controller' => 'pr-report',
+                'action' => 'row-status',
                 'icon' => 'glyphicon glyphicon-list'
             ),
 
@@ -350,6 +350,7 @@ return array(
             'Procure\Controller\Ap' => 'Procure\Controller\ApControllerFactory',
             'Procure\Controller\Qr' => 'Procure\Controller\QrControllerFactory',
             'Procure\Controller\Report' => 'Procure\Controller\ReportControllerFactory',
+            'Procure\Controller\PrReport' => 'Procure\Controller\PrReportControllerFactory',
 
             // API
             'Procure\API\PrController' => 'Procure\API\PrControllerFactory'

@@ -37,6 +37,25 @@ class OptionList
         return $option;
     }
 
+    public static function createMonthOption($mm)
+    {
+        $option = "";
+
+        for ($m = 1; $m <= 12; $m ++) {
+
+            if ($mm == null) {
+                $option = $option . sprintf('<option value="%s">%s</option>', $m, $m);
+            } else {
+                if ($m == $mm) {
+                    $option = $option . sprintf('<option selected value="%s">%s</option>', $m, $m);
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s</option>', $m, $m);
+                }
+            }
+        }
+        return $option;
+    }
+
     public static function createWarehouseOption($list, $id)
     {
         if ($list == null) {

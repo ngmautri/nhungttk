@@ -1,12 +1,12 @@
 <?php
 namespace Procure\Application\Service\PR\Output;
 
-use Procure\Application\Service\Output\RowFormatterDecorator;
+use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
 /**
- * AP Row Output.
+ * RR Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -17,7 +17,7 @@ class RowFormatter extends RowFormatterDecorator
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\AbstractRowFormatter::format()
+     * @see \Procure\Application\Service\Output\Formatter\AbstractRowFormatter::format()
      */
     public function format(RowSnapshot $row)
     {

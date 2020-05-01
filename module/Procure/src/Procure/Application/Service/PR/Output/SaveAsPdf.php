@@ -1,8 +1,8 @@
 <?php
 namespace Procure\Application\Service\PR\Output;
 
-use Procure\Application\Service\Output\AbstractRowFormatter;
-use Procure\Application\Service\Output\AbstractSaveAsPdf;
+use Procure\Application\Service\Output\AbstractDocSaveAsPdf;
+use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
@@ -11,41 +11,15 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsPdf extends AbstractSaveAsPdf
+class SaveAsPdf extends AbstractDocSaveAsPdf
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\SaveAsInterface::saveMultiplyRowsAs()
+     * @see \Procure\Application\Service\Output\Contract\DocSaveAsInterface::saveAs()
      */
-    public function saveMultiplyRowsAs($rows, AbstractRowFormatter $formatter)
-    {
-        if ($this->getBuilder() == null) {
-            return null;
-        }
-
-        if (count($rows) == 0) {
-            return null;
-        }
-
-        // created header
-        $params = [];
-
-        $this->getBuilder()->buildHeader($params);
-
-        // created footer and export
-        $params = [];
-        $this->getBuilder()->buildFooter($params);
-    }
-
-    /**
-     * Build in Builder pattern
-     *
-     * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\SaveAsInterface::saveDocAs()
-     */
-    public function saveDocAs(GenericDoc $doc, AbstractRowFormatter $formatter)
+    public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter)
     {
         if ($this->getBuilder() == null) {
             return null;

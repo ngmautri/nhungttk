@@ -760,7 +760,7 @@ class PoMapper
 
         // $snapshot->po= $entity->getPo();
         if ($entity->getPo() !== null) {
-            RowMapper::updatePODetails($snapshot, $entity->getPo());
+            RowMapper::updatePODetails($snapshot, $entity->getPo()); // Parent ID
         }
 
         // $snapshot->item= $entity->getItem();

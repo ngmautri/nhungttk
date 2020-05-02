@@ -13,9 +13,9 @@ class PrReportSqlFilter implements SqlFilterInterface
 
     public $isActive;
 
-    public $prYear;
+    public $docYear;
 
-    public $prMonth;
+    public $docMonth;
 
     public $currentState;
 
@@ -23,58 +23,9 @@ class PrReportSqlFilter implements SqlFilterInterface
 
     public $balance;
 
-    /**
-     *
-     * @param mixed $isActive
-     */
-    public function setIsActive($isActive)
+    public function __toString()
     {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $prYear
-     */
-    public function setPrYear($prYear)
-    {
-        $this->prYear = $prYear;
-    }
-
-    /**
-     *
-     * @param mixed $prMonth
-     */
-    public function setPrMonth($prMonth)
-    {
-        $this->prMonth = $prMonth;
-    }
-
-    /**
-     *
-     * @param mixed $currentState
-     */
-    public function setCurrentState($currentState)
-    {
-        $this->currentState = $currentState;
-    }
-
-    /**
-     *
-     * @param mixed $docStatus
-     */
-    public function setDocStatus($docStatus)
-    {
-        $this->docStatus = $docStatus;
-    }
-
-    /**
-     *
-     * @param mixed $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
+        return \sprintf("PrReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
     }
 
     /**
@@ -90,18 +41,18 @@ class PrReportSqlFilter implements SqlFilterInterface
      *
      * @return mixed
      */
-    public function getPrYear()
+    public function getDocYear()
     {
-        return $this->prYear;
+        return $this->docYear;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getPrMonth()
+    public function getDocMonth()
     {
-        return $this->prMonth;
+        return $this->docMonth;
     }
 
     /**
@@ -129,5 +80,59 @@ class PrReportSqlFilter implements SqlFilterInterface
     public function getBalance()
     {
         return $this->balance;
+    }
+
+    /**
+     *
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @param mixed $docYear
+     */
+    public function setDocYear($docYear)
+    {
+        $this->docYear = $docYear;
+    }
+
+    /**
+     *
+     * @param mixed $docMonth
+     */
+    public function setDocMonth($docMonth)
+    {
+        $this->docMonth = $docMonth;
+    }
+
+    /**
+     *
+     * @param mixed $currentState
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+    }
+
+    /**
+     *
+     * @param mixed $docStatus
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+    }
+
+    /**
+     *
+     * @param mixed $balance
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
     }
 }

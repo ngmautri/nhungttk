@@ -17,6 +17,7 @@ use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
 use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 /**
  * PR Reporter
@@ -33,6 +34,26 @@ class PrReporter extends AbstractService
      */
     protected $reporterRespository;
 
+    protected $cache;
+
+    /**
+     *
+     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
+    }
+
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
     {
         if (! $filter instanceof SqlFilterInterface) {
@@ -44,7 +65,18 @@ class PrReporter extends AbstractService
             $offset = null;
         }
 
-        $results = $this->getReporterRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
+        $keyResult = \sprintf("result_%s", $filter->__toString());
+
+        if ($this->getCache()->hasItem($keyResult)) {
+            $results = $this->getCache()
+                ->getItem($keyResult)
+                ->get();
+        } else {
+            $results = $this->getReporterRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
+            $resultCache = $this->getCache()->getItem($keyResult);
+            $resultCache->set($results);
+            $this->getCache()->save($resultCache);
+        }
 
         // var_dump($results);
 
@@ -187,7 +219,19 @@ class PrReporter extends AbstractService
 
     public function getAllRowTotal(SqlFilterInterface $filter)
     {
-        return $this->getReporterRespository()->getAllRowTotal($filter);
+        $key = \sprintf("total_all_row_%s", $filter->__toString());
+
+        if ($this->getCache()->hasItem($key)) {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        } else {
+            $total = $this->getReporterRespository()->getAllRowTotal($filter);
+            $resultCache = $this->getCache()->getItem($key);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        }
+        return $total;
     }
 
     /**

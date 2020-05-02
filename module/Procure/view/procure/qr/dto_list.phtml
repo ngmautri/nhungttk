@@ -1,6 +1,6 @@
 <?php
 use Procure\Application\Helper\FormHelper;
-use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
 use Procure\Domain\QuotationRequest\QRSnapshot;
 
 /**
@@ -22,8 +22,8 @@ $createUrl = $this->baseUrl . "/procure/qr/create";
 $filterUrl = $this->baseUrl . "/procure/qr/list";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
 $base = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
-$save_as_excel = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
-$save_as_openoffice = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$save_as_excel = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('/procure/qr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 
@@ -323,44 +323,7 @@ echo $table_body;
 
 <?php
 // ===============================
-if (! is_null($paginator)) :
-
-    // change it only
-    $_connector_symbol = '&';
-
-    $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-    $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-
-    $p1 = ($paginator->page) - 1;
-    $p2 = ($paginator->page) + 1;
-
-    $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-    $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-
-    echo '<ul class="pagination pagination-sm">';
-
-    if ($paginator->page != 1 and $paginator->totalPages > 10) {
-        echo '<li><a href="' . $first . '"> |< </a></li>';
-        echo '<li><a href="' . $prev . '"> < </a></li>';
-    }
-
-    for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-
-        $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-
-        if ($i == $paginator->page) {
-            echo '<li><a class="active" href="#">' . $i . '</a></li>';
-        } else {
-            echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-        }
-    }
-    if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-        echo '<li><a href="' . $next . '"> > </a></li>';
-        echo '<li><a href="' . $last . '"> >| </a></li>';
-    }
-    echo '</ul>';
-endif;
-
-    // ===============================
+echo FormHelper::createPaginator($base, $paginator, "&");
+// ===============================
 ?>
 

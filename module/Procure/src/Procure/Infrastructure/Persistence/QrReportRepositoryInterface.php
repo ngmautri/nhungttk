@@ -1,7 +1,10 @@
 <?php
 namespace Procure\Infrastructure\Persistence;
 
+use Procure\Infrastructure\Contract\SqlFilterInterface;
+
 /**
+ * Quotation Report
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -9,9 +12,13 @@ namespace Procure\Infrastructure\Persistence;
 Interface QrReportRepositoryInterface
 {
 
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0);
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0);
+    public function getListTotal(SqlFilterInterface $filter);
 
     public function getOfItem($item_id, $item_token);
+
+    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
+
+    public function getAllRowTotal(SqlFilterInterface $filter);
 }

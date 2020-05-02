@@ -27,6 +27,9 @@ class PrReportControllerFactory implements FactoryInterface
         $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);
 
+        $sv = $sm->get("AppCache");
+        $controller->setCache($sv);
+
         $sv = $sm->get(PrReporter::class);
         $controller->setPrReporter($sv);
 

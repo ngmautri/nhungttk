@@ -6,6 +6,7 @@ use Monolog\Logger;
 use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -20,6 +21,8 @@ class PrReportController extends AbstractActionController
     protected $prReporter;
 
     protected $logger;
+
+    protected $cache;
 
     public function headerStatusAction()
     {
@@ -70,10 +73,25 @@ class PrReportController extends AbstractActionController
 
         $filter = new PrReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($prYear);
         $filter->setBalance($balance);
 
-        $total_records = $this->getPrReporter()->getListTotal($filter);
+        $total_records = null;
+
+        $key = \sprintf("total_%s", $filter->__toString());
+        $total = $this->getCache()->getItem($key);
+        if (! $total->isHit()) {
+
+            $total_records = $this->getPrReporter()->getAllRowTotal($filter);
+            $total->set($total_records);
+            $this->getCache()->save($total);
+        }
+
+        if ($this->getCache()->hasItem($key)) {
+            $total_records = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
 
         $limit = null;
         $offset = null;
@@ -156,11 +174,12 @@ class PrReportController extends AbstractActionController
 
         $limit = null;
         $offset = null;
+        $total_records = null;
 
         $filter = new PrReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setBalance($balance);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($prYear);
 
         $total_records = $this->getPrReporter()->getAllRowTotal($filter);
 
@@ -170,6 +189,7 @@ class PrReportController extends AbstractActionController
             $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
             $offset = $paginator->minInPage - 1;
         }
+
         $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
 
         return new ViewModel(array(
@@ -239,10 +259,12 @@ class PrReportController extends AbstractActionController
         $filter = new PrReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setBalance($balance);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($prYear);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+
         $total_records = $this->getPrReporter()->getAllRowTotal($filter);
+
         $a_json_final = array();
 
         if ($total_records > 0) {
@@ -298,5 +320,23 @@ class PrReportController extends AbstractActionController
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
     }
 }

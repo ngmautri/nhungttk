@@ -48,7 +48,7 @@ class ExcelBuilder extends AbstractBuilder
 
         // Redirect output to a client's web browser (Excel2007)
 
-        $filename_tmp = sprintf("purchase_request_%s.xlsx", $docNumber);
+        $filename_tmp = sprintf("quotation_%s.xlsx", $docNumber);
         $filename = sprintf('Content-Disposition: attachment;filename="%s"', $filename_tmp);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header($filename);

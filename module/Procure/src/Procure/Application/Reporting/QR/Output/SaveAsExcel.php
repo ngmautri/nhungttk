@@ -1,10 +1,9 @@
 <?php
-namespace Procure\Application\Service\QR\Output;
+namespace Procure\Application\Reporting\QR\Output;
 
 use Application\Domain\Util\ExcelColumnMap;
-use Procure\Application\Service\Output\AbstractDocSaveAsSpreadsheet;
+use Procure\Application\Service\Output\AbstractRowsSaveAsSpreadsheet;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
-use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
 /**
@@ -13,42 +12,32 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
+class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\Contract\DocSaveAsInterface::saveAs()
+     * @see \Procure\Application\Service\Output\Contract\RowsSaveAsInterface::saveAs()
      */
-    public function saveAs(GenericDoc $doc, AbstractRowFormatter $formatter)
+    public function saveAs($rows, AbstractRowFormatter $formatter)
     {
         if ($this->getBuilder() == null) {
             return null;
         }
 
-        if (! $doc instanceof GenericDoc) {
-            throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
+        if (count($rows) == 0) {
+            return null;
         }
 
-        if (count($doc->getDocRows()) == null) {
-            return;
-        }
+        // created header
+        $params = [];
 
-        // Set Header
-
-        $params = [
-            "docNumber" => $doc->getSysNumber()
-        ];
         $this->getBuilder()->buildHeader($params);
-
         $objPHPExcel = $this->getBuilder()->getPhpSpreadsheet();
 
-        $header = 7;
+        $header = 3;
         $i = 0;
-
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("E2", "QUOTATION");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("A6", $doc->getVendorName());
 
         $cols = ExcelColumnMap::COLS;
 
@@ -75,21 +64,22 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
             $n ++;
         }
 
-        foreach ($doc->getDocRows() as $r) {
+        foreach ($rows as $row) {
+
+            $formatter->format($row);
 
             /**
              *
              * @var PRRowSnapshot $row ;
              */
-            $row = $formatter->format($r->makeSnapshot());
 
             $i ++;
             $l = $header + $i;
 
             $columnValues = array(
                 $i,
-                $row->getVendorName(),
-                $row->getDocNumber(),
+                $row->vendorName,
+                $row->docNumber,
                 $row->itemSKU,
                 $row->itemName,
                 $row->vendorItemName,
@@ -112,10 +102,8 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
             }
         }
 
-        $params = [
-            "docNumber" => $doc->getSysNumber()
-        ];
         // created footer and export
+        $params = [];
         $this->getBuilder()->buildFooter($params);
     }
 }

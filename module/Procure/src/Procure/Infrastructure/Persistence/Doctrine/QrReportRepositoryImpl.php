@@ -4,9 +4,10 @@ namespace Procure\Infrastructure\Persistence\Doctrine;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Mapper\QrMapper;
 use Procure\Infrastructure\Persistence\QrReportRepositoryInterface;
-use Procure\Infrastructure\Persistence\SQL\QrReportSQL;
+use Procure\Infrastructure\Persistence\Helper\QrReportHelper;
 
 /**
  *
@@ -60,9 +61,9 @@ WHERE 1
      * {@inheritdoc}
      * @see \Procure\Infrastructure\Persistence\QrReportRepositoryInterface::getList()
      */
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
-        $results = $this->_getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $results = QrReportHelper::getList($this->doctrineEM, $filter, $sort_by, $sort, $limit, $offset);
 
         if (count($results) == null) {
             return null;
@@ -85,10 +86,6 @@ WHERE 1
             $rootSnapshot->taxAmount = $r["tax_amount"];
             $rootSnapshot->grossAmount = $r["gross_amount"];
             $rootSnapshot->discountAmount = $r["gross_discount_amount"];
-
-            // $rootSnapshot->discountAmount = $r["draft_gr_qty"];
-            // $rootSnapshot->completedRows = $r["draft_gr_qty"];
-
             $resultList[] = $rootSnapshot;
         }
 
@@ -100,118 +97,14 @@ WHERE 1
      * {@inheritdoc}
      * @see \Procure\Infrastructure\Persistence\QrReportRepositoryInterface::getListTotal()
      */
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->_getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        return QrReportHelper::getListTotal($this->doctrineEM, $filter);
     }
 
-    private function _getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
-    {
-        $sql = QrReportSQL::QR_LIST;
+    public function getAllRowTotal(SqlFilterInterface $filter)
+    {}
 
-        if ($docStatus == "all") {
-            $docStatus = null;
-        }
-
-        if ($is_active == 1) {
-            $sql = $sql . " AND nmt_procure_qo.is_active=  1";
-        } elseif ($is_active == - 1) {
-            $sql = $sql . " AND nmt_procure_qo.is_active = 0";
-        }
-
-        if ($current_state != null) {
-            $sql = $sql . " AND nmt_procure_qo.current_state = '" . $current_state . "'";
-        }
-
-        if ($docStatus != null) {
-            $sql = $sql . " AND nmt_procure_qo.doc_status = '" . $docStatus . "'";
-        }
-
-        $sql = $sql . " GROUP BY nmt_procure_qo.id";
-
-        switch ($sort_by) {
-            case "sysNumber":
-                $sql = $sql . " ORDER BY nmt_procure_qo.sys_number " . $sort;
-                break;
-
-            case "docDate":
-                $sql = $sql . " ORDER BY nmt_procure_qo.doc_date " . $sort;
-                break;
-            case "grossAmount":
-                $sql = $sql . " ORDER BY SUM(CASE WHEN nmt_procure_qo_row.is_active =1 THEN (nmt_procure_qo_row.gross_amount) ELSE 0 END) " . $sort;
-                break;
-            case "createdOn":
-                $sql = $sql . " ORDER BY nmt_procure_qo.created_on " . $sort;
-                break;
-            case "vendorName":
-                $sql = $sql . " ORDER BY nmt_procure_qo.vendor_name " . $sort;
-                break;
-            case "currencyCode":
-                $sql = $sql . " ORDER BY nmt_procure_qo.currency_iso3 " . $sort;
-                break;
-        }
-
-        if ($limit > 0) {
-            $sql = $sql . " LIMIT " . $limit;
-        }
-
-        if ($offset > 0) {
-            $sql = $sql . " OFFSET " . $offset;
-        }
-        $sql = $sql . ";";
-
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQo', 'nmt_procure_qo');
-            $rsm->addScalarResult("active_row", "active_row");
-            $rsm->addScalarResult("total_row", "total_row");
-            $rsm->addScalarResult("max_row_number", "max_row_number");
-            $rsm->addScalarResult("net_amount", "net_amount");
-            $rsm->addScalarResult("tax_amount", "tax_amount");
-            $rsm->addScalarResult("gross_amount", "gross_amount");
-            $rsm->addScalarResult("gross_discount_amount", "gross_discount_amount");
-
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-
-            $result = $query->getResult();
-            return $result;
-        } catch (NoResultException $e) {
-            return null;
-        }
-    }
-
-    private function _getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
-    {
-        $sql = QrReportSQL::QR_LIST;
-
-        if ($docStatus == "all") {
-            $docStatus = null;
-        }
-
-        if ($is_active == 1) {
-            $sql = $sql . " AND nmt_procure_qo.is_active=  1";
-        } elseif ($is_active == - 1) {
-            $sql = $sql . " AND nmt_procure_qo.is_active = 0";
-        }
-
-        if ($current_state != null) {
-            $sql = $sql . " AND nmt_procure_qo.current_state = '" . $current_state . "'";
-        }
-
-        if ($docStatus != null) {
-            $sql = $sql . " AND nmt_procure_qo.doc_status = '" . $docStatus . "'";
-        }
-
-        $sql = $sql . " GROUP BY nmt_procure_qo.id";
-
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQo', 'nmt_procure_qo');
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return count($result);
-        } catch (NoResultException $e) {
-            return 0;
-        }
-    }
+    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
 }

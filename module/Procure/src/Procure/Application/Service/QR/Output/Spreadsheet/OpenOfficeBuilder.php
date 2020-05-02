@@ -48,7 +48,7 @@ class OpenOfficeBuilder extends AbstractBuilder
 
         // Redirect output to a client's web browser (Excel2007)
 
-        $filename_tmp = sprintf("purchase_request_%s.ods", $docNumber);
+        $filename_tmp = sprintf("quotation_%s.ods", $docNumber);
         $filename = sprintf('Content-Disposition: attachment;filename="%s"', $filename_tmp);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header($filename);

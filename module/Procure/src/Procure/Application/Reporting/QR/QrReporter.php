@@ -2,11 +2,12 @@
 namespace Procure\Application\Reporting\QR;
 
 use Application\Service\AbstractService;
-use Procure\Application\Reporting\QR\Output\Header\HeaderSaveAsExcel;
 use Procure\Application\Reporting\QR\Output\Header\Spreadsheet\ExcelBuilder;
-use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
-use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
-use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
+use Procure\Application\Service\QR\Output\SaveAsExcel;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\QrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\Doctrine\QrReportRepositoryImpl;
 
@@ -25,33 +26,37 @@ class QrReporter extends AbstractService
      */
     protected $reporterRespository;
 
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type)
     {
-        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if ($file_type == HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
 
-        $results = $this->getReporterRespository()->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $results = $this->getReporterRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
 
         // var_dump($results);
 
         $factory = null;
         $formatter = null;
 
-        switch ($outputStrategy) {
-            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+        switch ($file_type) {
+            case HeadersSaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
-            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL:
 
                 $builder = new ExcelBuilder();
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsExcel($builder);
+                $factory = new SaveAsExcel($builder);
                 break;
 
-            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
 
             /*
              * $builder = new PoReportOpenOfficeBuilder();
@@ -62,16 +67,16 @@ class QrReporter extends AbstractService
 
             default:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
         }
 
-        return $factory->saveMultiplyHeaderAs($results, $formatter);
+        return $factory->saveAs($results, $formatter);
     }
 
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->getReporterRespository()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        return $this->getReporterRespository()->getListTotal($filter);
     }
 
     /**

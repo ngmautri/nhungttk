@@ -17,9 +17,9 @@ use Zend\Cache\Storage\StorageInterface;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Exception;
-use Zend\Session\Container;
 use Ramsey;
 
 /**
@@ -442,6 +442,7 @@ class ItemController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -852,6 +853,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     * * @deprecated
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
@@ -1610,6 +1612,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     * * @deprecated
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
@@ -1736,6 +1739,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     * * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -2160,6 +2164,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     * * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -2192,6 +2197,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     * * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -2314,6 +2320,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     * * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */

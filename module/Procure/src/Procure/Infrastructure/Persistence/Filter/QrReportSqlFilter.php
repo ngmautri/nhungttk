@@ -8,7 +8,7 @@ use Procure\Infrastructure\Contract\SqlFilterInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoReportSqlFilter implements SqlFilterInterface
+class QrReportSqlFilter implements SqlFilterInterface
 {
 
     public $isActive;
@@ -25,7 +25,7 @@ class PoReportSqlFilter implements SqlFilterInterface
 
     public function __toString()
     {
-        return \sprintf("PoReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
+        return \sprintf("QrReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
     }
 
     /**

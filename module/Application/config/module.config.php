@@ -1,4 +1,5 @@
 <?php
+use Application\Application\Cache\CacheFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Application\Eventbus\PsrHandlerResolver;
@@ -308,6 +309,7 @@ return array(
             'Application\Service\PmtMethodService' => 'Application\Service\PmtMethodServiceFactory',
             \Application\Application\Service\MessageStore\MessageQuery::class => \Application\Application\Service\MessageStore\MessageQueryFactory::class,
             "AppLogger" => LoggerFactory::class,
+            "AppCache" => CacheFactory::class,
 
             // Event Handler Register
             DummyEventHandler::class => DummyEventHandlerFactory::class,

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Service\QR\Output;
+namespace Procure\Application\Reporting\QR\Output;
 
 /**
  *

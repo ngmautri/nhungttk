@@ -26,6 +26,7 @@ use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Service\QR\QRService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
+use Procure\Infrastructure\Persistence\Filter\QrReportSqlFilter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -886,10 +887,10 @@ class QrController extends AbstractActionController
             $page = $this->params()->fromQuery('page');
         }
 
-        $is_active = (int) $this->params()->fromQuery('is_active');
+        $isActive = (int) $this->params()->fromQuery('is_active');
 
-        if ($is_active == null) {
-            $is_active = 1;
+        if ($isActive == null) {
+            $isActive = 1;
         }
 
         if ($docStatus == null) {
@@ -909,17 +910,19 @@ class QrController extends AbstractActionController
             $sort_by = "createdOn";
         }
 
-        $current_state = null;
-        $filter_by = null;
         $paginator = null;
         $limit = null;
         $offset = null;
+
+        $filter = new QrReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setDocStatus($docStatus);
 
         /**
          *
          * @todo: CACHE
          */
-        $total_records = $this->getQrReporter()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $total_records = $this->getQrReporter()->getListTotal($filter);
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
@@ -928,7 +931,7 @@ class QrController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->qrReporter->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset, $file_type);
+        $list = $this->qrReporter->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
 
         $viewModel = new ViewModel(array(
             'list' => $list,

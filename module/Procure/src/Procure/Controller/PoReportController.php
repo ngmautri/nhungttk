@@ -7,6 +7,7 @@ use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Infrastructure\Persistence\Filter\PoReportSqlFilter;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -21,6 +22,26 @@ class PoReportController extends AbstractActionController
     protected $reporter;
 
     protected $logger;
+
+    protected $cache;
+
+    /**
+     *
+     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
+    }
 
     public function headerStatusAction()
     {
@@ -161,6 +182,7 @@ class PoReportController extends AbstractActionController
 
         $limit = null;
         $offset = null;
+        $total_records = null;
 
         $filter = new PoReportSqlFilter();
         $filter->setIsActive($isActive);
@@ -168,7 +190,20 @@ class PoReportController extends AbstractActionController
         $filter->setDocYear($docYear);
         $filter->setDocStatus($docStatus);
 
-        $total_records = $this->getReporter()->getAllRowTotal($filter);
+        $key = \sprintf("total_%s", $filter->__toString());
+        $total = $this->getCache()->getItem($key);
+        if (! $total->isHit()) {
+
+            $total_records = $this->getReporter()->getAllRowTotal($filter);
+            $total->set($total_records);
+            $this->getCache()->save($total);
+        }
+
+        if ($this->getCache()->hasItem($key)) {
+            $total_records = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
@@ -255,7 +290,22 @@ class PoReportController extends AbstractActionController
         $filter->setDocStatus($docStatus);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
-        $total_records = $this->getReporter()->getAllRowTotal($filter);
+
+        $key = \sprintf("total_%s", $filter->__toString());
+        $total = $this->getCache()->getItem($key);
+        if (! $total->isHit()) {
+
+            $total_records = $this->getReporter()->getAllRowTotal($filter);
+            $total->set($total_records);
+            $this->getCache()->save($total);
+        }
+
+        if ($this->getCache()->hasItem($key)) {
+            $total_records = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
         $a_json_final = array();
 
         if ($total_records > 0) {

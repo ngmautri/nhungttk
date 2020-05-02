@@ -23,6 +23,11 @@ class ApReportSqlFilter implements SqlFilterInterface
 
     public $balance;
 
+    public function __toString()
+    {
+        return \sprintf("ApReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
+    }
+
     /**
      *
      * @return mixed

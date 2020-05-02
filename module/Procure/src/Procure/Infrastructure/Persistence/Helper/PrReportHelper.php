@@ -68,8 +68,8 @@ WHERE 1
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filter->getPrYear());
+        if ($filter->getDocYear() > 0) {
+            $sql = $sql . \sprintf(" AND year(nmt_procure_pr.submitted_on) = %s", $filter->getDocYear());
         }
 
         $sql = $sql . " GROUP BY nmt_procure_pr.id";
@@ -169,8 +169,8 @@ WHERE 1
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql = $sql . sprintf(" AND year(nmt_procure_pr.submitted_on) =%s", $filter->getPrYear());
+        if ($filter->getDocYear() > 0) {
+            $sql = $sql . sprintf(" AND year(nmt_procure_pr.submitted_on) =%s", $filter->getDocYear());
         }
 
         $sql = $sql . " GROUP BY nmt_procure_pr.id";
@@ -228,8 +228,8 @@ WHERE 1
             $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getPrYear());
+        if ($filter->getDocYear() > 0) {
+            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
         }
 
         if ($filter->getBalance() == 0) {
@@ -315,8 +315,8 @@ WHERE 1
             $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
 
-        if ($filter->getPrYear() > 0) {
-            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getPrYear());
+        if ($filter->getDocYear() > 0) {
+            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
         }
 
         if ($filter->getBalance() == 0) {

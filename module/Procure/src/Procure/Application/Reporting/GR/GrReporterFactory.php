@@ -33,6 +33,9 @@ class GrReporterFactory implements FactoryInterface
         $sv = $container->get(GrReportRepositoryImpl::class);
         $service->setReporterRespository($sv);
 
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+
         return $service;
     }
 }

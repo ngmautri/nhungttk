@@ -61,7 +61,6 @@ class GRDoc extends GenericGR
 
         if ($snapshot->uuid == null) {
             $snapshot->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-            $snapshot->token = $snapshot->uuid;
         }
 
         $instance = new self();

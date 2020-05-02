@@ -2,11 +2,13 @@
 namespace Procure\Application\Reporting\GR;
 
 use Application\Service\AbstractService;
-use Procure\Application\Reporting\GR\Output\Header\HeaderSaveAsExcel;
+use Procure\Application\Reporting\GR\Output\SaveAsExcel;
+use Procure\Application\Reporting\GR\Output\SaveAsOpenOffice;
 use Procure\Application\Reporting\GR\Output\Header\Spreadsheet\ExcelBuilder;
-use Procure\Application\Service\Output\Header\DefaultHeaderFormatter;
-use Procure\Application\Service\Output\Header\HeaderSaveAsArray;
-use Procure\Application\Service\Output\Header\HeaderSaveAsSupportedType;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
+use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\GrReportRepositoryInterface;
 
 /**
@@ -24,53 +26,62 @@ class GrReporter extends AbstractService
      */
     protected $reporterRespository;
 
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0, $outputStrategy = null)
+    public function getList($filter, $sort_by, $sort, $limit, $offset, $file_type)
     {
-        if ($outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL || $outputStrategy == HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+        if ($file_type == HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
             $limit = null;
             $offset = null;
         }
 
-        $results = $this->getReporterRespository()->getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
-
-        // var_dump($results);
+        $results = $this->getReporterRespository()->getList($filter, $sort_by, $sort, $limit, $offset);
 
         $factory = null;
         $formatter = null;
 
-        switch ($outputStrategy) {
-            case HeaderSaveAsSupportedType::OUTPUT_IN_ARRAY:
+        switch ($file_type) {
+            case HeadersSaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
-            case HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL:
 
                 $builder = new ExcelBuilder();
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsExcel($builder);
+                $factory = new SaveAsExcel($builder);
                 break;
 
-            case HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+            case HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
 
-            /*
-             * $builder = new PoReportOpenOfficeBuilder();
-             * $formatter = new PoRowFormatter(new RowNumberFormatter());
-             * $factory = new PoSaveAsOpenOffice($builder);
-             * break;
-             */
+                $builder = new ExcelBuilder();
+                $formatter = new DefaultHeaderFormatter();
+                $factory = new SaveAsOpenOffice($builder);
+                break;
 
             default:
                 $formatter = new DefaultHeaderFormatter();
-                $factory = new HeaderSaveAsArray();
+                $factory = new HeadersSaveAsArray();
                 break;
         }
 
-        return $factory->saveMultiplyHeaderAs($results, $formatter);
+        return $factory->saveAs($results, $formatter);
     }
 
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->getReporterRespository()->getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        $key = \sprintf("total_list_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReporterRespository()->getListTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
     }
 
     /**

@@ -60,7 +60,7 @@ WHERE id = %s";
             ->getRepository('\Application\Entity\NmtProcureGr')
             ->findOneBy($criteria);
 
-        $rootSnapshot = GrMapper::createDetailSnapshot($rootEntityDoctrine);
+        $rootSnapshot = GrMapper::createDetailSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
         if ($rootSnapshot == null) {
             return null;
         }
@@ -85,7 +85,7 @@ WHERE id = %s";
             /**@var \Application\Entity\NmtProcureGrRow $localEnityDoctrine ;*/
             $localEnityDoctrine = $r[0];
 
-            $localSnapshot = GrMapper::createRowDetailSnapshot($localEnityDoctrine);
+            $localSnapshot = GrMapper::createRowDetailSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
 
             if ($localSnapshot == null) {
                 continue;

@@ -2,8 +2,8 @@
 namespace Procure\Application\Reporting\GR\Output\Header;
 
 use Application\Domain\Util\ExcelColumnMap;
-use Procure\Application\Service\Output\Header\AbstractHeaderFormatter;
-use Procure\Application\Service\Output\Header\AbstractHeaderSaveAsSpreadsheet;
+use Procure\Application\Service\Output\Formatter\Header\AbstractHeaderFormatter;
+use Procure\Application\Service\Output\Header\AbstractHeadersSaveAsSpreadsheet;
 use Procure\Domain\DocSnapshot;
 
 /**
@@ -12,15 +12,15 @@ use Procure\Domain\DocSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HeaderSaveAsExcel extends AbstractHeaderSaveAsSpreadsheet
+class HeadersSaveAsExcel extends AbstractHeadersSaveAsSpreadsheet
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\Header\HeaderSaveAsInterface::saveMultiplyHeaderAs()
+     * @see \Procure\Application\Service\Output\Contract\HeadersSaveAsInterface::saveAs()
      */
-    public function saveMultiplyHeaderAs($headers, AbstractHeaderFormatter $formatter)
+    public function saveAs($headers, AbstractHeaderFormatter $formatter)
     {
         if ($this->getBuilder() == null) {
             return null;

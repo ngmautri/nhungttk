@@ -34,6 +34,9 @@ class GrControllerFactory implements FactoryInterface
         $sv = $sm->get('Procure\Application\Service\GR\GRService');
         $controller->setGoodsReceiptService($sv);
 
+        $sv = $sm->get("AppLogger");
+        $controller->setLogger($sv);
+
         $sv = $sm->get(GrReporter::class);
         $controller->setGrReporter($sv);
 

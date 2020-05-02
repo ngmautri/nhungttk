@@ -11,19 +11,18 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\GR\Options\GrCreateOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 
 /**
  *
@@ -98,13 +97,13 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            
+
             $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            
+
             $validator = new GrPostingValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);
-            
+
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
@@ -118,27 +117,14 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $notification->addSuccess($m);
 
             // event dispatcher
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
 
-            $notification->addError($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

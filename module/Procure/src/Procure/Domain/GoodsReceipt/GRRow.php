@@ -4,7 +4,7 @@ namespace Procure\Domain\GoodsReceipt;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Application\DTO\Gr\GrRowDetailsDTO;
+use Procure\Application\DTO\Gr\GrRowDTO;
 use Procure\Domain\GenericRow;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -87,6 +87,17 @@ class GRRow extends GenericRow
 
     /**
      *
+     * @return NULL|object
+     */
+    public function makeDetailsDTO()
+    {
+        $dto = new GrRowDTO();
+        $dto = DTOFactory::createDTOFrom($this, $dto);
+        return $dto;
+    }
+
+    /**
+     *
      * @param GRRowSnapshot $snapshot
      * @return NULL|\Procure\Domain\GoodsReceipt\GRRow
      */
@@ -110,17 +121,6 @@ class GRRow extends GenericRow
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new GRRowSnapshot());
-    }
-
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeDetailsDTO()
-    {
-        $dto = new GrRowDetailsDTO();
-        $dto = DTOFactory::createDTOFrom($this, $dto);
-        return $dto;
     }
 
     /**

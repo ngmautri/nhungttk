@@ -8,6 +8,7 @@ use Procure\Application\Command\GR\Options\GrRowCreateOptions;
 use Procure\Application\Command\GR\Options\GrRowUpdateOptions;
 use Procure\Application\DTO\Gr\GrDetailsDTO;
 use Procure\Domain\Event\Gr\GrPosted;
+use Procure\Domain\Event\Gr\GrReversed;
 use Procure\Domain\Event\Gr\GrRowAdded;
 use Procure\Domain\Event\Gr\GrRowUpdated;
 use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
@@ -21,7 +22,6 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
-use Procure\Domain\Event\Gr\GrReversed;
 
 /**
  *
@@ -266,9 +266,9 @@ abstract class GenericGR extends AbstractGR
         $this->addEvent(new GrPosted($this->makeSnapshot()));
         return $this;
     }
-    
+
     /**
-     * 
+     *
      * @param \Application\Domain\Shared\Command\CommandOptions $options
      * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
      * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
@@ -283,20 +283,20 @@ abstract class GenericGR extends AbstractGR
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
             throw new GrInvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
-        
+
         $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
-        
+
         $this->validate($headerValidators, $rowValidators);
         if ($this->hasErrors()) {
             throw new GrPostingException($this->getErrorMessage());
         }
-        
+
         $this->clearEvents();
-        
+
         $this->preReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        
+
         $this->addEvent(new GrReversed($this->makeSnapshot()));
         return $this;
     }
@@ -376,7 +376,7 @@ abstract class GenericGR extends AbstractGR
             foreach ($this->docRows as $row) {
 
                 if ($row instanceof GRRow) {
-                    $rowDTOList[] = $row->makeDTOForGrid();
+                    $rowDTOList[] = $row->makeDetailsDTO();
                 }
             }
         }

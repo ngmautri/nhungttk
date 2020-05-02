@@ -176,7 +176,7 @@ class PrReporter extends AbstractService
 
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new NullRowFormatter();
+                $formatter = new RowNumberFormatter();
                 $factory = new RowsSaveAsArray();
                 break;
 
@@ -200,7 +200,7 @@ class PrReporter extends AbstractService
                 break;
 
             default:
-                $formatter = new NullRowFormatter();
+                $formatter = new RowNumberFormatter();
                 $factory = new RowsSaveAsArray();
                 break;
         }

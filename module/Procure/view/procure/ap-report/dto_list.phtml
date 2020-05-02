@@ -1,7 +1,9 @@
 ;<?php
 use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  *
@@ -49,12 +51,12 @@ if (count($list) > 0) {
             $count = $n;
         }
 
-        $url = sprintf($this->baseUrl . "/procure/po/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $url = sprintf($this->baseUrl . "/procure/ap/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
         $title = "Show PO";
         $icon = null;
         $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon);
 
-        $url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $url = sprintf($this->baseUrl . "/procure/ap/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
         $title = "Edit PO";
         $icon = 'glyphicon glyphicon-pencil';
         $editBtn = FormHelper::createButton($this->translate("Edit"), $title, $url, $icon);
@@ -109,7 +111,7 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
       <div>
          <form class="form-inline" action="<?php
 
-        echo $this->baseUrl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
+        echo $this->baseUrl?>/procure/ap-search/do" method="get" enctype="multipart/form-data">
             <div class="form-group" style="padding-left: 8px;">
                <input placeholder="<?php
 
@@ -151,6 +153,18 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
                      </select>
                   </div>
                </div>
+               
+                <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">PR Year</label>
+                  <div class="col-sm-3">
+                     <select name="docYear" class="form-control input-sm">
+                        <option value="all">All</option>
+                        <?php
+                        echo OptionList::createYearOption($docYear);
+                        ?>
+                     </select>
+                  </div>
+               </div>
                <div class="form-group margin-bottom">
                   <label class="control-label col-sm-2" for="inputTag">Doc Status:</label>
                   <div class="col-sm-3">
@@ -167,8 +181,8 @@ $filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus
                         
                          <option <?php
 
-                        echo $docStatus == 'amending' ? "selected='selected'" : "";
-                        ?> value="amending">Amending</option>
+                        echo $docStatus == ProcureDocStatus::DOC_STATUS_REVERSED ? "selected='selected'" : "";
+                        ?> value="reversed">Reversed</option>
                      </select>
                   </div>
                </div>

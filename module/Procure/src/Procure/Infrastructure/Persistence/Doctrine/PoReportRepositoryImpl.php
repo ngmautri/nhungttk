@@ -168,4 +168,10 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
 
         return $resultList;
     }
+
+    public function getRawList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
+
+    public function getAllRawRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
 }

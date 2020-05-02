@@ -1,9 +1,9 @@
 <?php
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
-use Zend\Cache\Storage\StorageInterface;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
+use Zend\Mvc\Controller\AbstractActionController;
 
 // use Zend\Cache\Storage\Adapter\Filesystem;
 
@@ -18,6 +18,25 @@ class CacheController extends AbstractActionController
     protected $doctrineEM;
 
     protected $cacheService;
+
+    protected $cache;
+
+    /**
+     * * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
+    }
 
     /*
      * Defaul Action
@@ -44,19 +63,20 @@ class CacheController extends AbstractActionController
          */
     }
 
-    /**
-     *
-     * @return the $doctrineEM
-     */
+    public function clearAction()
+    {
+        $this->getCache()->clear();
+
+        $this->flashMessenger()->addMessage("Cache was cleared!");
+
+        return $this->redirect()->toUrl("/");
+    }
+
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
     }
 
-    /**
-     *
-     * @param field_type $doctrineEM
-     */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
@@ -75,7 +95,7 @@ class CacheController extends AbstractActionController
      *
      * @param mixed $cacheService
      */
-    public function setCacheService(StorageInterface $cacheService)
+    public function setCacheService(\Zend\Cache\Storage\StorageInterface $cacheService)
     {
         $this->cacheService = $cacheService;
     }

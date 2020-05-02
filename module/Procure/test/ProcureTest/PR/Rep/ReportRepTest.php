@@ -40,8 +40,8 @@ class RepTest extends PHPUnit_Framework_TestCase
             $offset = null;
             $stopWatch->start("test");
             // $result = $rep->getAllRowTotal($filter);
-            $result1 = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
-            // $result1 = $report->getAllRow($filter, $sort_by, $sort, $limit, $offset, null);
+            // $result1 = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
+            $result1 = $report->getAllRow($filter, $sort_by, $sort, $limit, $offset, null);
             // $results = PrReportHelper::getAllRow($doctrineEM, $filter, $sort_by, $sort, $limit, $offset);
 
             // $total = PrReportHelper::getAllRowTotal($doctrineEM, $filter);

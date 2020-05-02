@@ -23,7 +23,7 @@ $filterUrl = $this->baseUrl . "/procure/ap/list";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
 $base = sprintf('/procure/ap/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s', $is_active, $currentState, $docStatus, $sort_by, $sort);
 $save_as_excel = sprintf('/procure/ap/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_EXCEL);
-$save_as_openoffice = sprintf('/procure/sp/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$save_as_openoffice = sprintf('/procure/ap/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeaderSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 

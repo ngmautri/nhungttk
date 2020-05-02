@@ -4,6 +4,7 @@ namespace Procure\Infrastructure\Persistence\Doctrine;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Mapper\GrMapper;
 use Procure\Infrastructure\Persistence\GrReportRepositoryInterface;
 use Procure\Infrastructure\Persistence\SQL\GrReportSQL;
@@ -60,10 +61,9 @@ WHERE 1
      * {@inheritdoc}
      * @see \Procure\Infrastructure\Persistence\GrReportRepositoryInterface::getList()
      */
-    public function getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
-        $results = $this->_getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
-
+        // $results = $this->_getList($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
         if (count($results) == null) {
             return null;
         }
@@ -96,9 +96,9 @@ WHERE 1
      * {@inheritdoc}
      * @see \Procure\Infrastructure\Persistence\GrReportRepositoryInterface::getListTotal()
      */
-    public function getListTotal($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->_getListTotal($is_active, $current_state, $docStatus, $filter_by, $sort_by, $sort, $limit, $offset);
+        return;
     }
 
     private function _getList($is_active = 1, $current_state = null, $docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
@@ -218,4 +218,16 @@ WHERE 1
             return 0;
         }
     }
+
+    public function getAllRowTotal(SqlFilterInterface $filter)
+    {}
+
+    public function getRawList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
+
+    public function getAllRawRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
+
+    public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
 }

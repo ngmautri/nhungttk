@@ -30,6 +30,9 @@ class CacheControllerFactory implements FactoryInterface
         $sv = $container->get('FileSystemCache');
         $controller->setCacheService($sv);
 
+        $sv = $container->get("AppCache");
+        $controller->setCache($sv);
+
         return $controller;
     }
 }

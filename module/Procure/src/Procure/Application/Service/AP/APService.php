@@ -13,10 +13,10 @@ use Procure\Application\Service\AP\Output\ApSaveAsPdf;
 use Procure\Application\Service\AP\Output\Pdf\ApPdfBuilder;
 use Procure\Application\Service\AP\Output\Spreadsheet\ApExcelBuilder;
 use Procure\Application\Service\AP\Output\Spreadsheet\ApOpenOfficeBuilder;
-use Procure\Application\Service\Output\RowNumberFormatter;
-use Procure\Application\Service\Output\RowTextAndNumberFormatter;
-use Procure\Application\Service\Output\SaveAsArray;
-use Procure\Application\Service\Output\SaveAsSupportedType;
+use Procure\Application\Service\Output\DocSaveAsArray;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
+use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
@@ -31,7 +31,7 @@ use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
  * AP Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APService extends AbstractService
 {
@@ -70,7 +70,7 @@ class APService extends AbstractService
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new ApRowFormatter(new RowTextAndNumberFormatter());
-                $factory = new SaveAsArray();
+                $factory = new DocSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ApExcelBuilder();
@@ -91,12 +91,12 @@ class APService extends AbstractService
 
             default:
                 $formatter = new ApRowFormatter(new RowTextAndNumberFormatter());
-                $factory = new SaveAsArray();
+                $factory = new DocSaveAsArray();
                 break;
         }
 
         if ($factory !== null && $formatter !== null) {
-            $output = $factory->saveDocAs($rootEntity, $formatter);
+            $output = $factory->saveAs($rootEntity, $formatter);
             $rootEntity->setRowsOutput($output);
         }
 

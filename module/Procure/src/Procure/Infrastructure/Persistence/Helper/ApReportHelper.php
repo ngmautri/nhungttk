@@ -42,6 +42,10 @@ class ApReportHelper
             $filter->docStatus = null;
         }
 
+        if ($filter->getDocYear() == "all") {
+            $filter->docYear = null;
+        }
+
         if ($filter->getIsActive() == 1) {
             $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
         } elseif ($filter->getIsActive() == - 1) {
@@ -54,6 +58,10 @@ class ApReportHelper
 
         if ($filter->getDocStatus() != null) {
             $sql = $sql . \sprintf(' AND fin_vendor_invoice.doc_status ="%s"', $filter->getDocStatus());
+        }
+
+        if ($filter->getDocYear() != null) {
+            $sql = $sql . \sprintf(' AND year(fin_vendor_invoice.doc_date) = %s', $filter->getDocYear());
         }
 
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";
@@ -87,7 +95,7 @@ class ApReportHelper
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
@@ -130,6 +138,10 @@ class ApReportHelper
             $filter->docStatus = null;
         }
 
+        if ($filter->getDocYear() == "all") {
+            $filter->docYear = null;
+        }
+
         if ($filter->getIsActive() == 1) {
             $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
         } elseif ($filter->getIsActive() == - 1) {
@@ -142,6 +154,10 @@ class ApReportHelper
 
         if ($filter->getDocStatus() != null) {
             $sql = $sql . \sprintf(' AND fin_vendor_invoice.doc_status ="%s"', $filter->getDocStatus());
+        }
+
+        if ($filter->getDocYear() != null) {
+            $sql = $sql . \sprintf(' AND year(fin_vendor_invoice.doc_date) = %s', $filter->getDocYear());
         }
 
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";

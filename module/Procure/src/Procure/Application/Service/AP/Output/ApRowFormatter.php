@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\Service\AP\Output;
 
-use Procure\Application\Service\Output\RowFormatterDecorator;
+use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 
@@ -9,7 +9,7 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
  * AP Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApRowFormatter extends RowFormatterDecorator
 {

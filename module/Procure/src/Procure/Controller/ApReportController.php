@@ -138,7 +138,7 @@ class ApReportController extends AbstractActionController
          endif;
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 30;
+            $resultsPerPage = 15;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }

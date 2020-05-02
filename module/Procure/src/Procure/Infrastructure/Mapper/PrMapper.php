@@ -375,14 +375,253 @@ class PrMapper
         return $snapshot;
     }
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param NmtProcurePrRow $entity
+     * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
     public static function createRowSnapshot(EntityManager $doctrineEM, NmtProcurePrRow $entity)
     {
+        if ($entity == null || $doctrineEM == null) {
+            return null;
+        }
         $snapshot = new PRRowSnapshot();
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+        $snapshot->id = $entity->getId();
+        $snapshot->rowNumber = $entity->getRowNumber();
+        $snapshot->rowIdentifer = $entity->getRowIdentifer();
+        $snapshot->token = $entity->getToken();
+        $snapshot->checksum = $entity->getChecksum();
+        $snapshot->priority = $entity->getPriority();
+        $snapshot->rowName = $entity->getRowName();
+        $snapshot->rowDescription = $entity->getRowDescription();
+        $snapshot->rowCode = $entity->getRowCode();
+        $snapshot->rowUnit = $entity->getRowUnit();
+        $snapshot->conversionFactor = $entity->getConversionFactor();
+        $snapshot->conversionText = $entity->getConversionText();
+        $snapshot->quantity = $entity->getQuantity();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->faRemarks = $entity->getFaRemarks();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
+        $snapshot->convertedStandardQuantiy = $entity->getConvertedStandardQuantiy();
+        $snapshot->docQuantity = $entity->getDocQuantity();
+        $snapshot->docUnit = $entity->getDocUnit();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
+        $snapshot->vendorItemName = $entity->getVendorItemName();
+        $snapshot->vendorItemCode = $entity->getVendorItemCode();
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        /*
+         * $snapshot->createdOn = $entity->getCreatedOn();
+         * $snapshot->lastchangeOn = $entity->getLastchangeOn();
+         * $snapshot->edt = $entity->getEdt();
+         */
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getEdt() == null) {
+            $snapshot->edt = $entity->getEdt()->format("Y-m-d");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+        /*
+         * $snapshot->pr = $entity->getPr();
+         *
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->lastchangeBy = $entity->getLastchangeBy();
+         * $snapshot->item = $entity->getItem();
+         * $snapshot->project = $entity->getProject();
+         * $snapshot->docUom = $entity->getDocUom();
+         * $snapshot->warehouse = $entity->getWarehouse();
+         */
+
+        // Parent ID.
+        if ($entity->getPr() !== null) {
+            RowMapper::updatePRHeaderDetails($snapshot, $entity->getPr());
+        }
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+            $snapshot->createdByName = sprintf("%s %s", $entity->getCreatedBy()->getFirstname(), $entity->getCreatedBy()->getFirstname());
+        }
+
+        if ($entity->getLastchangeBy() !== null) {
+            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
+            $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
+        }
+
+        if ($entity->getItem() !== null) {
+            RowMapper::updateItemDetails($snapshot, $entity->getItem());
+        }
+
+        if ($entity->getProject() !== null) {
+            $snapshot->project = $entity->getProject()->getId();
+        }
+
+        if ($entity->getDocUom() !== null) {
+            $snapshot->docUom = $entity->getDocUom()->getId();
+        }
+
+        if ($entity->getWarehouse() !== null) {
+            RowMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
+        }
+
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param NmtProcurePrRow $entity
+     * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
+    public static function convertToRowSnapshot(NmtProcurePrRow $entity)
+    {
+        if ($entity == null) {
+            return null;
+        }
+        $snapshot = new PRRowSnapshot();
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+        $snapshot->id = $entity->getId();
+        $snapshot->rowNumber = $entity->getRowNumber();
+        $snapshot->rowIdentifer = $entity->getRowIdentifer();
+        $snapshot->token = $entity->getToken();
+        $snapshot->checksum = $entity->getChecksum();
+        $snapshot->priority = $entity->getPriority();
+        $snapshot->rowName = $entity->getRowName();
+        $snapshot->rowDescription = $entity->getRowDescription();
+        $snapshot->rowCode = $entity->getRowCode();
+        $snapshot->rowUnit = $entity->getRowUnit();
+        $snapshot->conversionFactor = $entity->getConversionFactor();
+        $snapshot->conversionText = $entity->getConversionText();
+        $snapshot->quantity = $entity->getQuantity();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->faRemarks = $entity->getFaRemarks();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
+        $snapshot->convertedStandardQuantiy = $entity->getConvertedStandardQuantiy();
+        $snapshot->docQuantity = $entity->getDocQuantity();
+        $snapshot->docUnit = $entity->getDocUnit();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
+        $snapshot->vendorItemName = $entity->getVendorItemName();
+        $snapshot->vendorItemCode = $entity->getVendorItemCode();
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        /*
+         * $snapshot->createdOn = $entity->getCreatedOn();
+         * $snapshot->lastchangeOn = $entity->getLastchangeOn();
+         * $snapshot->edt = $entity->getEdt();
+         */
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getEdt() == null) {
+            $snapshot->edt = $entity->getEdt()->format("Y-m-d");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+        /*
+         * $snapshot->pr = $entity->getPr();
+         *
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->lastchangeBy = $entity->getLastchangeBy();
+         * $snapshot->item = $entity->getItem();
+         * $snapshot->project = $entity->getProject();
+         * $snapshot->docUom = $entity->getDocUom();
+         * $snapshot->warehouse = $entity->getWarehouse();
+         */
+
+        // Parent ID.
+        if ($entity->getPr() !== null) {
+            RowMapper::updatePRHeaderDetails($snapshot, $entity->getPr());
+        }
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+            $snapshot->createdByName = sprintf("%s %s", $entity->getCreatedBy()->getFirstname(), $entity->getCreatedBy()->getFirstname());
+        }
+
+        if ($entity->getLastchangeBy() !== null) {
+            $snapshot->lastchangeBy = $entity->getLastchangeBy()->getId();
+            $snapshot->lastChangeByName = sprintf("%s %s", $entity->getLastchangeBy()->getFirstname(), $entity->getLastchangeBy()->getFirstname());
+        }
+
+        if ($entity->getItem() !== null) {
+            RowMapper::updateItemDetails($snapshot, $entity->getItem());
+        }
+
+        if ($entity->getProject() !== null) {
+            $snapshot->project = $entity->getProject()->getId();
+        }
+
+        if ($entity->getDocUom() !== null) {
+            $snapshot->docUom = $entity->getDocUom()->getId();
+        }
+
+        if ($entity->getWarehouse() !== null) {
+            RowMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
+        }
+
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param NmtProcurePrRow $entity
+     * @param PRRowSnapshot $snapshot
+     * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
+     */
+    private function _convertRow(NmtProcurePrRow $entity, PRRowSnapshot $snapshot)
+    {
 
         // =================================
         // Mapping None-Object Field
         // =================================
-
         $snapshot->id = $entity->getId();
         $snapshot->rowNumber = $entity->getRowNumber();
         $snapshot->rowIdentifer = $entity->getRowIdentifer();

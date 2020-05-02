@@ -174,12 +174,13 @@ WHERE 1
 
             /**@var \Application\Entity\NmtProcurePrRow $po ;*/
             $doctrineRootEntity = $r[0];
-
             $localSnapshot = PrMapper::createRowSnapshot($this->doctrineEM, $doctrineRootEntity);
 
             if ($localSnapshot == null) {
                 continue;
             }
+
+            // $localSnapshot = new PRRowSnapshot();
 
             $localSnapshot->draftPoQuantity = $r["po_qty"];
             $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
@@ -196,5 +197,25 @@ WHERE 1
         }
 
         return $resultList;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\PrReportRepositoryInterface::getRawList()
+     */
+    public function getRawList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        return PrReportHelper::getList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Infrastructure\Persistence\PrReportRepositoryInterface::getAllRawRow()
+     */
+    public function getAllRawRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        return PrReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
     }
 }

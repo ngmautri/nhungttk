@@ -11,13 +11,12 @@ use Procure\Application\Reporting\PR\Output\Spreadsheet\OpenOfficeBuilder;
 use Procure\Application\Service\Output\RowsSaveAsArray;
 use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
-use Procure\Application\Service\Output\Formatter\DefaultRowFormatter;
+use Procure\Application\Service\Output\Formatter\NullRowFormatter;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\Header\DefaultHeaderFormatter;
 use Procure\Application\Service\Output\Header\HeadersSaveAsArray;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 /**
  * PR Reporter
@@ -33,26 +32,6 @@ class PrReporter extends AbstractService
      * @var PrReportRepositoryInterface $reporterRespository;
      */
     protected $reporterRespository;
-
-    protected $cache;
-
-    /**
-     *
-     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     *
-     * @param AbstractAdapter $cache
-     */
-    public function setCache(AbstractAdapter $cache)
-    {
-        $this->cache = $cache;
-    }
 
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $outputStrategy = null)
     {
@@ -161,7 +140,19 @@ class PrReporter extends AbstractService
 
     public function getListTotal(SqlFilterInterface $filter)
     {
-        $total = $this->getReporterRespository()->getListTotal($filter);
+        $key = \sprintf("total_list_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReporterRespository()->getListTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
         return $total;
     }
 
@@ -185,19 +176,19 @@ class PrReporter extends AbstractService
 
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new DefaultRowFormatter();
+                $formatter = new NullRowFormatter();
                 $factory = new RowsSaveAsArray();
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
-                $formatter = new RowNumberFormatter();
+                $formatter = new NullRowFormatter();
                 $factory = new SaveAsExcel($builder);
                 break;
 
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
                 $builder = new OpenOfficeBuilder();
-                $formatter = new RowNumberFormatter();
+                $formatter = new NullRowFormatter();
                 $factory = new SaveAsOpenOffice($builder);
                 break;
 
@@ -209,7 +200,7 @@ class PrReporter extends AbstractService
                 break;
 
             default:
-                $formatter = new DefaultRowFormatter();
+                $formatter = new NullRowFormatter();
                 $factory = new RowsSaveAsArray();
                 break;
         }
@@ -219,18 +210,19 @@ class PrReporter extends AbstractService
 
     public function getAllRowTotal(SqlFilterInterface $filter)
     {
-        $key = \sprintf("total_all_row_%s", $filter->__toString());
+        $key = \sprintf("total_rows_%s", $filter->__toString());
 
-        if ($this->getCache()->hasItem($key)) {
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReporterRespository()->getAllRowTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
             $total = $this->getCache()
                 ->getItem($key)
                 ->get();
-        } else {
-            $total = $this->getReporterRespository()->getAllRowTotal($filter);
-            $resultCache = $this->getCache()->getItem($key);
-            $resultCache->set($total);
-            $this->getCache()->save($resultCache);
         }
+
         return $total;
     }
 

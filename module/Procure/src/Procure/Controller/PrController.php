@@ -826,7 +826,7 @@ class PrController extends AbstractActionController
 
         $filter = new PrReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setPrYear($prYear);
+        $filter->setDocYear($prYear);
         $filter->setBalance($balance);
 
         $total_records = $this->getPrReporter()->getListTotal($filter);

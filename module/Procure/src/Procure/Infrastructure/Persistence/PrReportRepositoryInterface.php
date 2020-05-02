@@ -11,6 +11,8 @@ use Procure\Infrastructure\Contract\SqlFilterInterface;
 Interface PrReportRepositoryInterface
 {
 
+    public function getRawList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
+
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
     public function getListWithCustomDTO(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
@@ -20,6 +22,8 @@ Interface PrReportRepositoryInterface
     public function getOfItem($item_id, $item_token);
 
     public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
+
+    public function getAllRawRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
     public function getAllRowTotal(SqlFilterInterface $filter);
 

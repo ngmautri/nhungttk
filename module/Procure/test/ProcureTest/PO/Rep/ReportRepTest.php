@@ -7,6 +7,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Filter\PoReportSqlFilter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Stopwatch\Stopwatch;
 use PHPUnit_Framework_TestCase;
 
 class RepTest extends PHPUnit_Framework_TestCase
@@ -23,6 +24,7 @@ class RepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
+            $stopWatch = new Stopwatch();
             $rep = new PoReportRepositoryImpl($doctrineEM);
             $sort_by = Null;
             $sort = null;
@@ -32,7 +34,11 @@ class RepTest extends PHPUnit_Framework_TestCase
             $filter->setBalance(1);
             $filter->setIsActive(1);
             $filter->setDocYear(2020);
+
+            $stopWatch->start("test");
             $result = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
+            $timer = $stopWatch->stop("test");
+            echo $timer;
             $key = "result_" . $filter->__toString();
 
             // $path = "C:\NMT\nmt-workspace\mla-2.6.8\data\cache";
@@ -52,7 +58,7 @@ class RepTest extends PHPUnit_Framework_TestCase
                 $total = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
             }
 
-            \var_dump($total);
+            // \var_dump($total);
 
             // var_dump($result[0]);
         } catch (InvalidArgumentException $e) {

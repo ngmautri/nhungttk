@@ -83,7 +83,19 @@ class PoReporter extends AbstractService
 
     public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->getReportRespository()->getListTotal($filter);
+        $key = \sprintf("total_list_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReportRespository()->getListTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+        return $total;
     }
 
     public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type, $totalRecords)
@@ -141,7 +153,20 @@ class PoReporter extends AbstractService
 
     public function getAllRowTotal(SqlFilterInterface $filter)
     {
-        return $this->getReportRespository()->getAllRowTotal($filter);
+        $key = \sprintf("total_rows_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReportRespository()->getAllRowTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
     }
 
     /**

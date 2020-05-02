@@ -1,10 +1,11 @@
 <?php
 namespace Application\Service;
 
+use Application\Domain\Shared\AggregateRoot;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
-use Application\Domain\Shared\AggregateRoot;
 
 /**
  * All Service shall extend this.
@@ -22,6 +23,26 @@ abstract class AbstractService implements EventManagerAwareInterface
     protected $eventManager;
 
     protected $jeService;
+
+    protected $cache;
+
+    /**
+     *
+     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
+    }
 
     protected function triggerEvent(AggregateRoot $rootEntity)
     {

@@ -31,7 +31,9 @@ class ApReporterFactory implements FactoryInterface
 
         $sv = $container->get('Procure\Infrastructure\Persistence\Doctrine\APRepoterRepositoryImpl');
         $service->setReporterRespository($sv);
-        
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+
         return $service;
     }
 }

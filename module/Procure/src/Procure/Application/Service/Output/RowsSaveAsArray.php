@@ -3,6 +3,7 @@ namespace Procure\Application\Service\Output;
 
 use Procure\Application\Service\Output\Contract\RowsSaveAsInterface;
 use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
+use Procure\Application\Service\Output\Formatter\NullRowFormatter;
 
 /**
  *
@@ -20,6 +21,10 @@ class RowsSaveAsArray implements RowsSaveAsInterface
     public function saveAs($rows, AbstractRowFormatter $formatter)
     {
         try {
+
+            if ($formatter instanceof NullRowFormatter) {
+                return $rows;
+            }
 
             if (count($rows) == 0) {
                 return null;

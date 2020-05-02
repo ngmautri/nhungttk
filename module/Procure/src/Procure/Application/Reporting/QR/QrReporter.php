@@ -76,7 +76,20 @@ class QrReporter extends AbstractService
 
     public function getListTotal(SqlFilterInterface $filter)
     {
-        return $this->getReporterRespository()->getListTotal($filter);
+        $key = \sprintf("total_list_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReporterRespository()->getListTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
     }
 
     /**

@@ -33,6 +33,9 @@ class PoReporterFactory implements FactoryInterface
         $sv = $container->get(PoReportRepositoryImpl::class);
         $service->setReportRespository($sv);
 
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+
         return $service;
     }
 }

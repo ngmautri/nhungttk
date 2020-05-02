@@ -30,6 +30,9 @@ class QrReporterFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+
         $sv = $container->get(QrReportRepositoryImpl::class);
         $service->setReporterRespository($sv);
 

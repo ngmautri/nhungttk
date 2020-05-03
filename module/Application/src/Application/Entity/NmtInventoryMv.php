@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryMv
  *
- * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK7_idx", columns={"target_warehouse"}), @ORM\Index(name="nmt_inventory_mv_FK8_idx", columns={"source_location"}), @ORM\Index(name="nmt_inventory_mv_FK9_idx", columns={"tartget_location"}), @ORM\Index(name="nmt_inventory_mv_FK10_idx", columns={"company_id"})})
+ * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK7_idx", columns={"target_warehouse"}), @ORM\Index(name="nmt_inventory_mv_FK8_idx", columns={"source_location"}), @ORM\Index(name="nmt_inventory_mv_FK9_idx", columns={"tartget_location"}), @ORM\Index(name="nmt_inventory_mv_FK10_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_mv_FK11_idx", columns={"vendor_id"})})
  * @ORM\Entity
  */
 class NmtInventoryMv
@@ -330,6 +330,27 @@ class NmtInventoryMv
     private $docNumber;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="pmt_term", type="integer", nullable=true)
+     */
+    private $pmtTerm;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_rate", type="decimal", precision=14, scale=5, nullable=true)
+     */
+    private $discountRate;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -348,6 +369,16 @@ class NmtInventoryMv
      * })
      */
     private $company;
+
+    /**
+     * @var \Application\Entity\NmtBpVendor
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
+     * })
+     */
+    private $vendor;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -1498,6 +1529,78 @@ class NmtInventoryMv
     }
 
     /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
+     * Set pmtTerm
+     *
+     * @param integer $pmtTerm
+     *
+     * @return NmtInventoryMv
+     */
+    public function setPmtTerm($pmtTerm)
+    {
+        $this->pmtTerm = $pmtTerm;
+
+        return $this;
+    }
+
+    /**
+     * Get pmtTerm
+     *
+     * @return integer
+     */
+    public function getPmtTerm()
+    {
+        return $this->pmtTerm;
+    }
+
+    /**
+     * Set discountRate
+     *
+     * @param string $discountRate
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+
+        return $this;
+    }
+
+    /**
+     * Get discountRate
+     *
+     * @return string
+     */
+    public function getDiscountRate()
+    {
+        return $this->discountRate;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1543,6 +1646,30 @@ class NmtInventoryMv
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set vendor
+     *
+     * @param \Application\Entity\NmtBpVendor $vendor
+     *
+     * @return NmtInventoryMv
+     */
+    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
+    {
+        $this->vendor = $vendor;
+
+        return $this;
+    }
+
+    /**
+     * Get vendor
+     *
+     * @return \Application\Entity\NmtBpVendor
+     */
+    public function getVendor()
+    {
+        return $this->vendor;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"}), @ORM\Index(name="nmt_inventory_trx_FK20_idx", columns={"gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK21_idx", columns={"movement_id"}), @ORM\Index(name="nmt_inventory_trx_FK22_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK23_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK24_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK25_idx", columns={"project_id"}), @ORM\Index(name="nmt_inventory_trx_FK26_idx", columns={"cost_center_id"}), @ORM\Index(name="nmt_inventory_trx_FK27_idx", columns={"doc_uom"}), @ORM\Index(name="nmt_inventory_trx_FK28_idx", columns={"posting_period_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK29_idx", columns={"wh_location"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"}), @ORM\Index(name="nmt_inventory_trx_FK20_idx", columns={"gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK21_idx", columns={"movement_id"}), @ORM\Index(name="nmt_inventory_trx_FK22_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK23_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK24_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK25_idx", columns={"project_id"}), @ORM\Index(name="nmt_inventory_trx_FK26_idx", columns={"cost_center_id"}), @ORM\Index(name="nmt_inventory_trx_FK27_idx", columns={"doc_uom"}), @ORM\Index(name="nmt_inventory_trx_FK28_idx", columns={"posting_period_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK29_idx", columns={"wh_location"}), @ORM\Index(name="nmt_inventory_trx_FK30_idx", columns={"warehouse_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -442,6 +442,139 @@ class NmtInventoryTrx
     private $mvUuid;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="standard_convert_factor", type="integer", nullable=true)
+     */
+    private $standardConvertFactor;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="gl_account", type="integer", nullable=true)
+     */
+    private $glAccount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local_gross_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localGrossAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local_net_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localNetAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
+     */
+    private $uuid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_version", type="integer", nullable=true)
+     */
+    private $docVersion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="vendor_item_name", type="string", length=45, nullable=true)
+     */
+    private $vendorItemName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="row_identifier", type="string", length=45, nullable=true)
+     */
+    private $rowIdentifier;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_rate", type="decimal", precision=4, scale=3, nullable=true)
+     */
+    private $discountRate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="discount_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $discountAmount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
+     */
+    private $lastchangeOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="unit", type="string", length=45, nullable=true)
+     */
+    private $unit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="gross_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $grossAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="net_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $netAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="convert_factor_puchase", type="decimal", precision=10, scale=4, nullable=true)
+     */
+    private $convertFactorPuchase;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedPurchaseUnitPrice;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastchange_by", type="integer", nullable=true)
+     */
+    private $lastchangeBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="invoice_id", type="integer", nullable=true)
+     */
+    private $invoiceId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -660,6 +793,16 @@ class NmtInventoryTrx
      * })
      */
     private $whLocation;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $warehouse;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -2164,6 +2307,438 @@ class NmtInventoryTrx
     }
 
     /**
+     * Set standardConvertFactor
+     *
+     * @param integer $standardConvertFactor
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get standardConvertFactor
+     *
+     * @return integer
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
+    }
+
+    /**
+     * Set glAccount
+     *
+     * @param integer $glAccount
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setGlAccount($glAccount)
+    {
+        $this->glAccount = $glAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount
+     *
+     * @return integer
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
+    }
+
+    /**
+     * Set localGrossAmount
+     *
+     * @param string $localGrossAmount
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setLocalGrossAmount($localGrossAmount)
+    {
+        $this->localGrossAmount = $localGrossAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get localGrossAmount
+     *
+     * @return string
+     */
+    public function getLocalGrossAmount()
+    {
+        return $this->localGrossAmount;
+    }
+
+    /**
+     * Set localNetAmount
+     *
+     * @param string $localNetAmount
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setLocalNetAmount($localNetAmount)
+    {
+        $this->localNetAmount = $localNetAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get localNetAmount
+     *
+     * @return string
+     */
+    public function getLocalNetAmount()
+    {
+        return $this->localNetAmount;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set docVersion
+     *
+     * @param integer $docVersion
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get docVersion
+     *
+     * @return integer
+     */
+    public function getDocVersion()
+    {
+        return $this->docVersion;
+    }
+
+    /**
+     * Set vendorItemName
+     *
+     * @param string $vendorItemName
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setVendorItemName($vendorItemName)
+    {
+        $this->vendorItemName = $vendorItemName;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorItemName
+     *
+     * @return string
+     */
+    public function getVendorItemName()
+    {
+        return $this->vendorItemName;
+    }
+
+    /**
+     * Set rowIdentifier
+     *
+     * @param string $rowIdentifier
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setRowIdentifier($rowIdentifier)
+    {
+        $this->rowIdentifier = $rowIdentifier;
+
+        return $this;
+    }
+
+    /**
+     * Get rowIdentifier
+     *
+     * @return string
+     */
+    public function getRowIdentifier()
+    {
+        return $this->rowIdentifier;
+    }
+
+    /**
+     * Set discountRate
+     *
+     * @param string $discountRate
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+
+        return $this;
+    }
+
+    /**
+     * Get discountRate
+     *
+     * @return string
+     */
+    public function getDiscountRate()
+    {
+        return $this->discountRate;
+    }
+
+    /**
+     * Set discountAmount
+     *
+     * @param string $discountAmount
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setDiscountAmount($discountAmount)
+    {
+        $this->discountAmount = $discountAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get discountAmount
+     *
+     * @return string
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set unit
+     *
+     * @param string $unit
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * Get unit
+     *
+     * @return string
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * Set grossAmount
+     *
+     * @param string $grossAmount
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setGrossAmount($grossAmount)
+    {
+        $this->grossAmount = $grossAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get grossAmount
+     *
+     * @return string
+     */
+    public function getGrossAmount()
+    {
+        return $this->grossAmount;
+    }
+
+    /**
+     * Set netAmount
+     *
+     * @param string $netAmount
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setNetAmount($netAmount)
+    {
+        $this->netAmount = $netAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get netAmount
+     *
+     * @return string
+     */
+    public function getNetAmount()
+    {
+        return $this->netAmount;
+    }
+
+    /**
+     * Set convertFactorPuchase
+     *
+     * @param string $convertFactorPuchase
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertFactorPuchase($convertFactorPuchase)
+    {
+        $this->convertFactorPuchase = $convertFactorPuchase;
+
+        return $this;
+    }
+
+    /**
+     * Get convertFactorPuchase
+     *
+     * @return string
+     */
+    public function getConvertFactorPuchase()
+    {
+        return $this->convertFactorPuchase;
+    }
+
+    /**
+     * Set convertedPurchaseUnitPrice
+     *
+     * @param string $convertedPurchaseUnitPrice
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice)
+    {
+        $this->convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedPurchaseUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedPurchaseUnitPrice()
+    {
+        return $this->convertedPurchaseUnitPrice;
+    }
+
+    /**
+     * Set lastchangeBy
+     *
+     * @param integer $lastchangeBy
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setLastchangeBy($lastchangeBy)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeBy
+     *
+     * @return integer
+     */
+    public function getLastchangeBy()
+    {
+        return $this->lastchangeBy;
+    }
+
+    /**
+     * Set invoiceId
+     *
+     * @param integer $invoiceId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setInvoiceId($invoiceId)
+    {
+        $this->invoiceId = $invoiceId;
+
+        return $this;
+    }
+
+    /**
+     * Get invoiceId
+     *
+     * @return integer
+     */
+    public function getInvoiceId()
+    {
+        return $this->invoiceId;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -2185,30 +2760,6 @@ class NmtInventoryTrx
     public function getCreatedBy()
     {
         return $this->createdBy;
-    }
-
-    /**
-     * Set lastChangeBy
-     *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
-     *
-     * @return NmtInventoryTrx
-     */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
     }
 
     /**
@@ -2689,6 +3240,30 @@ class NmtInventoryTrx
     public function getWhLocation()
     {
         return $this->whLocation;
+    }
+
+    /**
+     * Set warehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
+    {
+        $this->warehouse = $warehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get warehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
     }
 
     /**

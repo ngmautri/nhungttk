@@ -16,7 +16,6 @@ use Procure\Application\Service\QR\Output\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\QR\Output\Spreadsheet\OpenOfficeBuilder;
 use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\QuotationRequest\QRRow;
-use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
 
 /**
@@ -36,7 +35,7 @@ class QRService extends AbstractService
 
     public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
     {
-        $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
         if (! $rootEntity instanceof QRDoc) {

@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\AccountPayable;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
@@ -8,7 +9,6 @@ use Procure\Application\DTO\Ap\ApDetailsDTO;
 use Procure\Domain\Event\Ap\ApPosted;
 use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
-use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -139,14 +139,23 @@ abstract class GenericAP extends AbstractAP
             throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
-
         $params = [
             "rowId" => $localSnapshot->getId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $this->addEvent(new ApRowAdded($this->makeSnapshot(), $trigger, $params));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new ApRowAdded($target, $defaultParams, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -205,16 +214,21 @@ abstract class GenericAP extends AbstractAP
             throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
         $target = $this->makeSnapshot();
-        $entityId = $this->getId();
-        $entityToken = $this->getToken();
-        $docVersion = $this->getDocVersion();
-        $revisionNo = $this->getRevisionNo();
-        $trigger = $options->getTriggeredBy();
-        $params = $params;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
 
-        $event = new ApRowUpdated($target, $entityId, $entityToken, $docVersion, $revisionNo, $trigger, $params);
+        $params = [
+            "rowId" => $localSnapshot->getId(),
+            "rowToken" => $localSnapshot->getToken()
+        ];
+
+        $event = new ApRowAdded($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
@@ -250,7 +264,20 @@ abstract class GenericAP extends AbstractAP
         $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new ApPosted($this->makeDetailsDTO()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $params = [];
+
+        $event = new ApPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
+
         return $this;
     }
 
@@ -284,7 +311,18 @@ abstract class GenericAP extends AbstractAP
         $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new ApReversed($this->makeSnapshot()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $params = [];
+        $event = new ApReversed($target, $defaultParams, $params);
+        $this->addEvent($event);
         return $this;
     }
 

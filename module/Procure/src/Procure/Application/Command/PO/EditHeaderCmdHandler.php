@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -24,12 +23,11 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class EditHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -55,7 +53,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
          * @var PODoc $rootEntity ;
          * @var POSnapshot $rootSnapshot ;
          * @var PoUpdateOptions $options ;
-         *
+         *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -130,23 +128,12 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $newRootEntity = PODoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
 
-            // event dispatc
-            if (count($newRootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($newRootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($newRootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("PO #%s updated", $newRootEntity->getId());
 

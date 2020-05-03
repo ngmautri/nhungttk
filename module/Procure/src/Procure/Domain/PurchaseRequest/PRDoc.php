@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Event\Pr\PrHeaderCreated;
@@ -157,10 +158,19 @@ final class PRDoc extends GenericPR
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = $options->getTriggeredBy();
-        $params = [];
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
 
-        $instance->addEvent(new PrHeaderCreated($rootSnapshot, $trigger, $params));
+        $event = new PrHeaderCreated($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
         return $instance;
     }
 
@@ -200,9 +210,19 @@ final class PRDoc extends GenericPR
         }
 
         $instance->id = $rootSnapshot->getId();
-        $trigger = $options->getTriggeredBy();
 
-        $instance->addEvent(new PrHeaderUpdated($rootSnapshot, $trigger, $params));
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new PrHeaderUpdated($target, $defaultParams, $params);
+        $instance->addEvent($event);
         return $instance;
     }
 

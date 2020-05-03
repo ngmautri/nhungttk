@@ -10,8 +10,8 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\GR\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
+use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Exception\Gr\GrCreateException;
 use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
@@ -25,9 +25,6 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 
 /**
  *
@@ -127,13 +124,13 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
             $rowValidators->add($validator);
 
-            $validator = new PoRowValidator($sharedSpecsFactory, $fxService,$procureSpecsFactory);
+            $validator = new PoRowValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
             $rowValidators->add($validator);
-    
+
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
-             
-            $rootEntity->saveFromPO($snapshot, $options , $headerValidators, $rowValidators, $sharedService, $postingService);
+
+            $rootEntity->saveFromPO($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             $dto->id = $rootEntity->getId();
             $dto->token = $rootEntity->getToken();
@@ -141,28 +138,16 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] GR # %s saved", $dto->getId());
             $notification->addSuccess($m);
 
-            // event dispatcher
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
             echo $e->getTraceAsString();
             $notification->addError($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

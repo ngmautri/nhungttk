@@ -132,11 +132,12 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            // event dispatcher
+            // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("PR #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
 

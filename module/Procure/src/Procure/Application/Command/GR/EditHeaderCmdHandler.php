@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\GrUpdateOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\Exception\Gr\GrUpdateException;
@@ -25,7 +24,6 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -153,24 +151,12 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $newRootEntity = GRDoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
 
-            // event dispatcher
-            if (count($newRootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($newRootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
-
+            // ================
             $m = sprintf("GR #%s updated", $newRootEntity->getId());
 
             $notification->addSuccess($m);

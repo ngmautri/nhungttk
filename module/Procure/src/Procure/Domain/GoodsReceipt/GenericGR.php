@@ -1,11 +1,10 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
-use Procure\Application\Command\GR\Options\GrRowCreateOptions;
-use Procure\Application\Command\GR\Options\GrRowUpdateOptions;
 use Procure\Application\DTO\Gr\GrDetailsDTO;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Gr\GrReversed;
@@ -149,17 +148,21 @@ abstract class GenericGR extends AbstractGR
             throw new GrRowCreateException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
-        $trigger = null;
-        if ($options instanceof GrRowCreateOptions) {
-            $trigger = $options->getTriggeredBy();
-        }
-
         $params = [
             "rowId" => $localSnapshot->getId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $this->addEvent(new GrRowAdded($this->getId(), $trigger, $params));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new GrRowAdded($target, $defaultParams, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -223,12 +226,16 @@ abstract class GenericGR extends AbstractGR
             throw new GrRowUpdateException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
         }
 
-        $trigger = null;
-        if ($options instanceof GrRowUpdateOptions) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this());
+        $defaultParams->setUserId($options->getUserId());
 
-        $this->addEvent(new GrRowUpdated($this->getId(), $trigger, $params));
+        $event = new GrRowUpdated($target, $defaultParams, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -263,7 +270,18 @@ abstract class GenericGR extends AbstractGR
         $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new GrPosted($this->makeSnapshot()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this());
+        $defaultParams->setUserId($options->getUserId());
+        $params = [];
+
+        $event = new GrPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
+
         return $this;
     }
 
@@ -297,7 +315,16 @@ abstract class GenericGR extends AbstractGR
         $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new GrReversed($this->makeSnapshot()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this());
+        $defaultParams->setUserId($options->getUserId());
+        $params = [];
+        $event = new GrReversed($target, $defaultParams, $params);
+        $this->addEvent($event);
         return $this;
     }
 

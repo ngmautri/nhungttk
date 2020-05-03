@@ -9,7 +9,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApReverseOptions;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
@@ -29,7 +28,6 @@ use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -115,23 +113,12 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            // event dispatc
-            if (count($reversalEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($reversalEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("AP #%s reversed with #%s", $rootEntity->getId(), $reversalEntity->getId());
             $notification->addSuccess($m);

@@ -1,12 +1,11 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\SimpleCollection;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\Command\PO\Options\PoPostOptions;
-use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -389,14 +388,18 @@ class PODoc extends GenericPO
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = null;
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
         $params = null;
-        if ($options instanceof PoCreateOptions) {
-            $trigger = $options->getTriggeredBy();
-            $params = [];
-        }
 
-        $instance->addEvent(new PoHeaderCreated($rootSnapshot, $trigger, $params));
+        $event = new PoHeaderCreated($target, $defaultParams, $params);
+        $instance->addEvent($event);
         return $instance;
     }
 
@@ -460,12 +463,19 @@ class PODoc extends GenericPO
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = null;
-        if ($options instanceof PoUpdateOptions) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
 
-        $instance->addEvent(new PoHeaderUpdated($rootSnapshot, $trigger, $params));
+        $event = new PoHeaderUpdated($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
         return $instance;
     }
 

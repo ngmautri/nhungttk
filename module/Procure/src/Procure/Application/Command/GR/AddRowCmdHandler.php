@@ -9,7 +9,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\GrRowCreateOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Service\GR\RowSnapshotReference;
 use Procure\Domain\Exception\Gr\GrRowCreateException;
@@ -18,14 +17,13 @@ use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 
 /**
  *
@@ -89,10 +87,9 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $rowValidators = new RowValidatorCollection();
             $validator = new DefaultRowValidator($sharedSpecificationFactory, $fxService);
             $rowValidators->add($validator);
-            
+
             $validator = new GLAccountValidator($sharedSpecificationFactory, $fxService);
             $rowValidators->add($validator);
-            
 
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
@@ -100,22 +97,11 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
             // event dispatch
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("[OK] Row # %s created", $localSnapshot->getId());
             $notification->addSuccess($m);

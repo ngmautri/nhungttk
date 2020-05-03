@@ -128,11 +128,12 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $newRootEntity = QRDoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
 
-            // event dispatcher
+            // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
-                $cmd->getEventBus()->dispatch($newRootEntity->getRecordedEvents());
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
             $m = sprintf("GR #%s updated", $newRootEntity->getId());
 
             $notification->addSuccess($m);

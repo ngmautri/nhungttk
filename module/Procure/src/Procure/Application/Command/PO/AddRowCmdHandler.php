@@ -91,10 +91,12 @@ class AddRowCmdHandler extends AbstractCommandHandler
 
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            // event dispatcher
+            // event dispatch
+            // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("[OK] PO Row # %s created", $localSnapshot->getId());
             $notification->addSuccess($m);

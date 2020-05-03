@@ -6,7 +6,6 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Domain\GenericDoc;
-use Procure\Domain\APInvoice\Factory\APFactory;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
@@ -114,10 +113,19 @@ abstract class GenericPO extends GenericDoc
         }
 
         $this->id = $rootSnapshot->getId();
-        $trigger = $options->getTriggeredBy();
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
         $params = null;
 
-        $this->addEvent(new PoAmendmentEnabled($rootSnapshot, $trigger, $params));
+        $event = new PoAmendmentEnabled($target, $defaultParams, $params);
+        $this->addEvent($event);
         return $this;
     }
 
@@ -180,10 +188,20 @@ abstract class GenericPO extends GenericDoc
         }
 
         $this->id = $rootSnapshot->getId();
-        $trigger = $options->getTriggeredBy();
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
         $params = null;
 
-        $this->addEvent(new PoAmendmentAccepted($rootSnapshot, $trigger, $params));
+        $event = new PoAmendmentAccepted($target, $defaultParams, $params);
+        $this->addEvent($event);
+
         return $this;
     }
 
@@ -421,7 +439,18 @@ abstract class GenericPO extends GenericDoc
         $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new PoPosted($this->makeSnapshot()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new PoPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
         return $this;
     }
 
@@ -556,11 +585,6 @@ abstract class GenericPO extends GenericDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
-    }
-
-    public function makeAPInvoice()
-    {
-        return APFactory::createAPInvoiceFromPO($this);
     }
 
     /**

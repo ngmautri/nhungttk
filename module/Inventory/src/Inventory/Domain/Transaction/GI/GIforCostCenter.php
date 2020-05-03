@@ -14,12 +14,7 @@ use Inventory\Domain\Transaction\Contracts\TrxType;
 class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\Contracts\GoodsIssueInterface::specify()
-     */
-    public function specify()
+    public function __construct()
     {
         $this->movementType = TrxType::GI_FOR_COST_CENTER;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_OUT;

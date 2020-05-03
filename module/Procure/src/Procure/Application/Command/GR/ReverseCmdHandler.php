@@ -8,10 +8,8 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\GrPostOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\APInvoice\Validator\Row\PoRowValidator;
 use Procure\Domain\Exception\Gr\GrPostingException;
 use Procure\Domain\Exception\Gr\GrVersionChangedException;
 use Procure\Domain\GoodsReceipt\GRDoc;
@@ -21,13 +19,13 @@ use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
 use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
+use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -97,10 +95,10 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
-            $validator = new PoRowValidator($sharedSpecFactory, $fxService,$procureSpecsFactory);
+            $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
             $rowValidators->add($validator);
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            //$rowValidators->add($validator);
+            // $rowValidators->add($validator);
 
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
@@ -108,23 +106,12 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $rootEntity->reverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            // event dispatc
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("GR #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
@@ -144,5 +131,5 @@ class ReverseCmdHandler extends AbstractCommandHandler
         }
 
         $dto->setNotification($notification);
-     }
+    }
 }

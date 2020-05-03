@@ -116,11 +116,13 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] GR # %s created", $dto->getId());
             $notification->addSuccess($m);
 
-            // event dispatcher
+            // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
+
             $dto->setNotification($notification);
         } catch (\Exception $e) {
 

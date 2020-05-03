@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
@@ -27,7 +26,6 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -107,24 +105,12 @@ class PostCopyFromAPReservalCmdHandler extends AbstractCommandHandler
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
             $rootEntity = GRDoc::postCopyFromAPRerveral($sourceObj, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
-
-            // event dispatc
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("GR #%s copied from AP Reversal #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
             $notification->addSuccess($m);

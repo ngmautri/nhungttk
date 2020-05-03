@@ -95,12 +95,12 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            // event dispatcher
+            // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
-
+            // ================
             $m = sprintf("QR #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 

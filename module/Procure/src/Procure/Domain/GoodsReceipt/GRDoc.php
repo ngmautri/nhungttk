@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APDoc;
@@ -264,7 +265,19 @@ class GRDoc extends GenericGR
         if (! $snapshot instanceof GRSnapshot) {
             throw new OperationFailedException(sprintf("Error orcured when creating GR #%s", $instance->getId()));
         }
-        $instance->addEvent(new GrPosted($snapshot));
+
+        $target = $snapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($snapshot->getId());
+        $defaultParams->setTargetToken($snapshot->getToken());
+        $defaultParams->setTargetDocVersion($snapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($snapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+        $event = new GrPosted($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
         return $instance;
@@ -343,7 +356,19 @@ class GRDoc extends GenericGR
         if (! $snapshot instanceof GRSnapshot) {
             throw new OperationFailedException(sprintf("Error orcured when copy GR from AP #%s", $sourceObj->getId()));
         }
-        $instance->addEvent(new GrReversed($snapshot));
+
+        $target = $snapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($snapshot->getId());
+        $defaultParams->setTargetToken($snapshot->getToken());
+        $defaultParams->setTargetDocVersion($snapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($snapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+        $event = new GrReversed($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
         return $instance;
@@ -499,14 +524,19 @@ class GRDoc extends GenericGR
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = null;
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
         $params = null;
-        if ($options !== null) {
-            $trigger = $options->getTriggeredBy();
-            $params = [];
-        }
 
-        $instance->addEvent(new GrHeaderCreated($rootSnapshot, $trigger, $params));
+        $event = new GrHeaderCreated($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
         return $instance;
     }
 
@@ -556,12 +586,19 @@ class GRDoc extends GenericGR
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = null;
-        if ($options !== null) {
-            $trigger = $options->getTriggeredBy();
-        }
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
 
-        $instance->addEvent(new GrHeaderUpdated($rootSnapshot, $trigger, $params));
+        $event = new GrHeaderUpdated($target, $defaultParams, $params);
+
+        $instance->addEvent($event);
         return $instance;
     }
 

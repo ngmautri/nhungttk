@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\AccountPayable;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Event\Ap\ApHeaderCreated;
@@ -252,8 +253,28 @@ class APDoc extends GenericAP
         $instance->setToken($snapshot->getToken());
 
         $postingService->getCmdRepository()->post($sourceObj, false);
-        $e1 = new ApReservalCreated($snapshot);
-        $e2 = new ApReversed($sourceObj);
+
+        $target = $snapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($snapshot->getId());
+        $defaultParams->setTargetToken($snapshot->getToken());
+        $defaultParams->setTargetDocVersion($snapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($snapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+        $e1 = new ApReservalCreated($target, $defaultParams, $params);
+
+        $target = $sourceObj;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($sourceObj->getId());
+        $defaultParams->setTargetToken($sourceObj->getToken());
+        $defaultParams->setTargetDocVersion($sourceObj->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($sourceObj->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+        $e2 = new ApReversed($target, $defaultParams, $params);
 
         $instance->addEvent($e1);
         $instance->addEvent($e2);
@@ -424,10 +445,18 @@ class APDoc extends GenericAP
 
         $instance->id = $rootSnapshot->getId();
 
-        $trigger = $options->getTriggeredBy();
-        $params = [];
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
 
-        $instance->addEvent(new ApHeaderCreated($rootSnapshot, $trigger, $params));
+        $event = new ApHeaderCreated($target, $defaultParams, $params);
+        $instance->addEvent($event);
         return $instance;
     }
 
@@ -482,9 +511,20 @@ class APDoc extends GenericAP
         }
 
         $instance->id = $rootSnapshot->getId();
-        $trigger = $options->getTriggeredBy();
 
-        $instance->addEvent(new ApHeaderUpdated($rootSnapshot, $rootSnapshot->getId(), $rootSnapshot->getToken(), $rootSnapshot->getDocVersion(), $rootSnapshot->getRevisionNo(), $trigger, $params));
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new ApHeaderUpdated($target, $defaultParams, $params);
+        $instance->addEvent($event);
+
         return $instance;
     }
 

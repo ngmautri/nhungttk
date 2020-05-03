@@ -258,7 +258,7 @@ class PoController extends AbstractActionController
 
             $cmdHandler = new CreateHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -341,7 +341,7 @@ class PoController extends AbstractActionController
                 'target_token' => $target_token,
 
                 'dto' => null,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -397,7 +397,7 @@ class PoController extends AbstractActionController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'dto' => $dto,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -636,7 +636,7 @@ class PoController extends AbstractActionController
             $dto = new PoDTO();
             $cmdHandler = new EnableAmendmentCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
+            $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
 
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
@@ -731,7 +731,7 @@ class PoController extends AbstractActionController
 
             $cmdHandler = new EditHeaderCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
+            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -852,7 +852,7 @@ class PoController extends AbstractActionController
             $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
 
             $notification = $dto->getNotification();
@@ -1084,7 +1084,7 @@ class PoController extends AbstractActionController
 
             $cmdHandler = new AcceptAmendmentCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
 
             $msg = sprintf("Ammendment of PO #%s is posted", $entity_id);

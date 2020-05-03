@@ -11,7 +11,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoCreateException;
@@ -22,12 +21,11 @@ use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -110,23 +108,13 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] PO # %s created", $dto->getId());
             $notification->addSuccess($m);
 
-            // event dispatcher
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
+
             $dto->setNotification($notification);
         } catch (\Exception $e) {
 

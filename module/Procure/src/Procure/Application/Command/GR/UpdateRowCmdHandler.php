@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\GrRowUpdateOptions;
 use Procure\Application\DTO\Gr\GrRowDTO;
-use Procure\Application\Event\Handler\EventHandlerFactory;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoRowUpdateException;
 use Procure\Domain\Exception\PoVersionChangedException;
@@ -25,7 +24,6 @@ use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -81,7 +79,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $editableProperties = [                
+            $editableProperties = [
                 "remarks",
                 "rowNumber",
                 "item",
@@ -137,40 +135,28 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-            // event dispatcher
-            if (count($rootEntity->getRecordedEvents() > 0)) {
-
-                $dispatcher = new EventDispatcher();
-
-                foreach ($rootEntity->getRecordedEvents() as $event) {
-
-                    $subcribers = EventHandlerFactory::createEventHandler(get_class($event), $cmd->getDoctrineEM());
-
-                    if (count($subcribers) > 0) {
-                        foreach ($subcribers as $subcriber) {
-                            $dispatcher->addSubscriber($subcriber);
-                        }
-                    }
-                    $dispatcher->dispatch(get_class($event), $event);
-                }
+            // event dispatch
+            // ================
+            if ($cmd->getEventBus() !== null) {
+                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
 
             $notification->addSuccess($m);
 
-            $queryRep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());            
+            $queryRep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
             // revision numner hasnt been increased.
-            $currentVersion = $queryRep->getVersion($rootEntity->getId())-1;
-            if($version != $currentVersion){
-                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion ));
+            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
+            if ($version != $currentVersion) {
+                throw new PoVersionChangedException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-            
-         } catch (\Exception $e) {
-            
+        } catch (\Exception $e) {
+
             $notification->addError($e->getMessage());
         }
-        
+
         $dto->setNotification($notification);
     }
 }

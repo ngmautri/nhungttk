@@ -8,6 +8,4 @@ namespace Inventory\Domain\Transaction\Contracts;
  */
 Interface GoodsIssueInterface
 {
-
-    public function specify();
 }

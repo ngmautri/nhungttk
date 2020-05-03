@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\PurchaseRequest;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
@@ -139,14 +140,22 @@ abstract class GenericPR extends BaseDoc
             throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
-
         $params = [
             "rowId" => $localSnapshot->getId(),
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $this->addEvent(new PrRowAdded($this->makeSnapshot(), $trigger, $params));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $event = new PrRowAdded($target, $defaultParams, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -206,9 +215,17 @@ abstract class GenericPR extends BaseDoc
             throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
         }
 
-        $trigger = $options->getTriggeredBy();
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
 
-        $this->addEvent(new PrRowUpdated($this->makeSnapshot(), $trigger, $params));
+        $event = new PrRowUpdated($target, $defaultParams, $params);
+        $this->addEvent($event);
 
         return $localSnapshot;
     }
@@ -243,7 +260,20 @@ abstract class GenericPR extends BaseDoc
         $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new PrPosted($this->makeDetailsDTO()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $params = null;
+
+        $event = new PrPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
+
         return $this;
     }
 
@@ -266,7 +296,20 @@ abstract class GenericPR extends BaseDoc
         $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
         $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
 
-        $this->addEvent(new PrPosted($this->makeSnapshot()));
+        $target = $this->makeSnapshot();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+
+        $params = null;
+
+        $event = new PrPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
+
         return $this;
     }
 

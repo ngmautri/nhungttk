@@ -11,7 +11,7 @@ use Inventory\Application\DTO\Transaction\TrxRowDTO;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-final class TrxRow extends BaseRow
+class TrxRow extends BaseRow
 {
 
     private static $instance = null;

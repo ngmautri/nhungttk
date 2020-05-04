@@ -6,6 +6,8 @@
  */
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPostedFactory;
+use Procure\Application\EventBus\Handler\GR\GrOnApPostedHandler;
+use Procure\Application\EventBus\Handler\GR\GrOnApPostedHandlerFactory;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPostedFactory;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
@@ -307,7 +309,8 @@ return array(
             // Event Handler
             UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class,
             UpdateIndexOnPoPosted::class => UpdateIndexOnPoPostedFactory::class,
-            UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class
+            UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class,
+            GrOnApPostedHandler::class => GrOnApPostedHandlerFactory::class
         )
     ),
 

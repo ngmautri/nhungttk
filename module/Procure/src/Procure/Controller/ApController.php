@@ -685,7 +685,7 @@ class ApController extends AbstractActionController
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
             $msg = sprintf("AP #%s is posted", $entity_id);

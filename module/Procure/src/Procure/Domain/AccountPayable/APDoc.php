@@ -333,6 +333,7 @@ class APDoc extends GenericAP
             $this->setWarehouse($snapshot->getWarehouse());
             $this->setPmtTerm($snapshot->getPmtTerm());
             $this->setRemarks($snapshot->getRemarks());
+            $this->setCompany($options->getCompanyId());
         }
 
         $createdDate = new \Datetime();

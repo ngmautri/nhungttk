@@ -6,7 +6,7 @@ namespace Inventory\Infrastructure\Persistence;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface ItemReportingRepositoryInterface
+Interface ItemReportRepositoryInterface
 {
 
     public function get($id, $token);

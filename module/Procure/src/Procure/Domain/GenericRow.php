@@ -93,7 +93,7 @@ class GenericRow extends AbstractRow
         }
 
         $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
-        $taxAmount = $netAmount * $this->getTaxRate();
+        $taxAmount = $netAmount * $this->getTaxRate() / 100;
         $grosAmount = $netAmount + $taxAmount;
 
         $this->setNetAmount($netAmount);

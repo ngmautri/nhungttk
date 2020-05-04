@@ -19,6 +19,6 @@ class ItemReportSqlFilter implements SqlFilterInterface
 
     public function __toString()
     {
-        return \sprintf("ApReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive);
+        return \sprintf("ItemReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive);
     }
 }

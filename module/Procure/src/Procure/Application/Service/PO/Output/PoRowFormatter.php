@@ -40,6 +40,9 @@ class PoRowFormatter extends RowFormatterDecorator
 
         // then decorate
         if ($row instanceof PORowSnapshot) {
+            if ($row->transactionStatus == "uncompleted") {
+                $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-danger"><strong>.</strong></span> %s', $row->transactionStatus);
+            }
             $row->billedAmount = ($row->getBilledAmount() !== null ? number_format($row->getBilledAmount(), $decimalNo) : 0);
             $row->draftAPQuantity = ($row->getDraftAPQuantity() !== null ? number_format($row->getDraftAPQuantity(), $decimalNo) : 0);
             $row->openAPAmount = ($row->getOpenAPAmount() !== null ? number_format($row->getOpenAPAmount(), $decimalNo) : 0);

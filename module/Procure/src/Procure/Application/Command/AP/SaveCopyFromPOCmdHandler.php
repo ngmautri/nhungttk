@@ -108,7 +108,8 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
                 "grDate",
                 "warehouse",
                 "pmtTerm",
-                "remarks"
+                "remarks",
+                "company"
             ];
 
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);

@@ -272,8 +272,7 @@ abstract class GenericAP extends AbstractAP
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-
-        $params = [];
+        $params = null;
 
         $event = new ApPosted($target, $defaultParams, $params);
         $this->addEvent($event);

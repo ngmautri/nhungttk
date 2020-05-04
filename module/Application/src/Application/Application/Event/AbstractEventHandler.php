@@ -1,8 +1,8 @@
 <?php
 namespace Application\Application\Event;
 
-use Doctrine\ORM\EntityManager;
 use Application\Domain\Shared\Event\EventHandlerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  *

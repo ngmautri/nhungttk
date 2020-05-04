@@ -4,7 +4,6 @@ namespace Procure\Application\EventBus\Handler\AP;
 use Application\Domain\EventBus\Handler\EventHandlerInterface;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Procure\Domain\Event\Ap\ApPosted;
-use Procure\Domain\Event\Po\PoPosted;
 
 /**
  *
@@ -16,7 +15,7 @@ class UpdateIndexOnApPosted implements EventHandlerInterface, EventHandlerPriori
 
     /**
      *
-     * @param PoPosted $event
+     * @param ApPosted $event
      */
     public function __invoke(ApPosted $event)
     {

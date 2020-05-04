@@ -4,6 +4,7 @@ namespace Procure\Application\Eventbus;
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
+use Procure\Application\EventBus\Handler\GR\GrOnApPostedHandler;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
 
@@ -24,7 +25,8 @@ class HandlerMapper extends AbstractService
         $handlers = [
             UpdateIndexOnPrSubmitted::class,
             UpdateIndexOnPoPosted::class,
-            UpdateIndexOnApPosted::class
+            UpdateIndexOnApPosted::class,
+            GrOnApPostedHandler::class
         ];
 
         $this->handlers = $handlers;

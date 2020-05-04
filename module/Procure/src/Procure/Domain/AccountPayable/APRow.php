@@ -123,7 +123,6 @@ class APRow extends GenericRow
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
-
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
         $instance->setPoRow($sourceObj->getId()); // Important
 

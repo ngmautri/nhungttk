@@ -119,7 +119,7 @@ class PostCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
 
-            $m = sprintf("GR #%s posted", $rootEntity->getId());
+            $m = sprintf("AP #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
             $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());

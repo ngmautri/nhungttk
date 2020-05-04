@@ -20,7 +20,6 @@ use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
 use Procure\Application\Command\PO\EnableAmendmentCmd;
 use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
-use Procure\Application\Command\PO\PostCmd;
 use Procure\Application\Command\PO\PostCmdHandler;
 use Procure\Application\Command\PO\SaveCopyFromQuoteCmdHandler;
 use Procure\Application\Command\PO\UpdateRowCmd;
@@ -852,7 +851,7 @@ class PoController extends AbstractActionController
             $options = new PoPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
 
             $notification = $dto->getNotification();

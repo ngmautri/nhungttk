@@ -4,9 +4,6 @@ namespace Inventory\Infrastructure\Persistence\Helper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Infrastructure\Contract\SqlFilterInterface;
-use Procure\Infrastructure\Persistence\Filter\ApReportSqlFilter;
-use Procure\Infrastructure\Persistence\SQL\ApSQL;
 
 /**
  *
@@ -16,92 +13,132 @@ use Procure\Infrastructure\Persistence\SQL\ApSQL;
 class ItemReportHelper
 {
 
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @param SqlFilterInterface $filter
-     * @param string $sort_by
-     * @param string $sort
-     * @param int $limit
-     * @param int $offset
-     * @return NULL|array|mixed|\Doctrine\DBAL\Driver\Statement|NULL
-     */
-    static public function getList(EntityManager $doctrineEM, SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    static public function getItem(EntityManager $doctrineEM, $item_id, $item_token)
     {
-        if (! $doctrineEM instanceof EntityManager) {
-            return null;
-        }
+        // PICTURE
+        $join1_tmp = "
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN nmt_inventory_item_picture.is_active =1 THEN (nmt_inventory_item_picture.id) ELSE NULL END) AS total_picture
+FROM nmt_inventory_item
+LEFT JOIN nmt_inventory_item_picture
+ON nmt_inventory_item_picture.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
+)
+AS nmt_inventory_item_picture
+ON nmt_inventory_item.id=nmt_inventory_item_picture.item_id ";
+        $join1 = sprintf($join1_tmp, $item_id, $item_token);
 
-        if (! $filter instanceof ApReportSqlFilter) {
-            return null;
-        }
+        // Attachment
+        $join2_tmp = "
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN nmt_application_attachment.is_active =1 THEN (nmt_application_attachment.id) ELSE NULL END) AS total_attachment
+FROM nmt_inventory_item
+LEFT JOIN nmt_application_attachment
+ON nmt_application_attachment.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
+)
+AS nmt_application_attachment
+ON nmt_inventory_item.id=nmt_application_attachment.item_id ";
+        $join2 = sprintf($join2_tmp, $item_id, $item_token);
 
-        $sql = ApSQL::AP_LIST;
+        // PR_ROW
+        $join3_tmp = "
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) AS total_pr_row
+FROM nmt_inventory_item
+LEFT JOIN nmt_procure_pr_row
+ON nmt_procure_pr_row.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
+)
+AS nmt_procure_pr_row
+ON nmt_inventory_item.id=nmt_procure_pr_row.item_id ";
+        $join3 = sprintf($join3_tmp, $item_id, $item_token);
 
-        if ($filter->getDocStatus() == "all") {
-            $filter->docStatus = null;
-        }
+        // AP ROW
+        $join4_tmp = "
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.id) ELSE NULL END) AS total_ap_row
+FROM nmt_inventory_item
+LEFT JOIN fin_vendor_invoice_row
+ON fin_vendor_invoice_row.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
+)
+AS fin_vendor_invoice_row
+ON nmt_inventory_item.id=fin_vendor_invoice_row.item_id ";
+        $join4 = sprintf($join4_tmp, $item_id, $item_token);
 
-        if ($filter->getIsActive() == 1) {
-            $sql = $sql . " AND fin_vendor_invoice.is_active = 1";
-        } elseif ($filter->getIsActive() == - 1) {
-            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
-        }
+        // PO_ROW
+        $join5_tmp = "
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN nmt_procure_po_row.is_active =1 THEN (nmt_procure_po_row.id) ELSE NULL END) AS total_po_row
+FROM nmt_inventory_item
+LEFT JOIN nmt_procure_po_row
+ON nmt_procure_po_row.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
+)
+AS nmt_procure_po_row
+ON nmt_inventory_item.id=nmt_procure_po_row.item_id ";
 
-        if ($filter->getCurrentState() != null) {
-            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $filter->getCurrentState() . "'";
-        }
+        $join5 = sprintf($join5_tmp, $item_id, $item_token);
 
-        if ($filter->getDocStatus() != null) {
-            $sql = $sql . \sprintf(' AND fin_vendor_invoice.doc_status ="%s"', $filter->getDocStatus());
-        }
+        // PO_ROW
+        $join6_tmp = "
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN nmt_procure_qo_row.is_active =1 THEN (nmt_procure_qo_row.id) ELSE NULL END) AS total_qo_row
+FROM nmt_inventory_item
+LEFT JOIN nmt_procure_qo_row
+ON nmt_procure_qo_row.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s
+)
+AS nmt_procure_qo_row
+ON nmt_inventory_item.id=nmt_procure_qo_row.item_id ";
 
-        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
+        $join6 = sprintf($join6_tmp, $item_id);
 
-        switch ($sort_by) {
-            case "sysNumber":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.sys_number " . $sort;
-                break;
-            case "docDate":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.doc_date " . $sort;
-                break;
-            case "grossAmount":
-                $sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
-                break;
-            case "createdOn":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.created_on " . $sort;
-                break;
-            case "vendorName":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
-                break;
-            case "currencyCode":
-                $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
-                break;
-        }
+        $sql = "
+SELECT
+	nmt_inventory_item.*,
+	nmt_application_attachment.total_attachment,
+	nmt_procure_pr_row.total_pr_row,
+	nmt_procure_po_row.total_po_row,
+	nmt_procure_qo_row.total_qo_row,
+	fin_vendor_invoice_row.total_ap_row,
+            
+	nmt_inventory_item_picture.total_picture
+FROM nmt_inventory_item";
 
-        if ($limit > 0) {
-            $sql = $sql . " LIMIT " . $limit;
-        }
-
-        if ($offset > 0) {
-            $sql = $sql . " OFFSET " . $offset;
-        }
-        $sql = $sql . ";";
-
+        $sql = $sql . $join1 . $join2 . $join3 . $join4 . $join5 . $join6;
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
-            $rsm->addScalarResult("active_row", "active_row");
-            $rsm->addScalarResult("total_row", "total_row");
-            $rsm->addScalarResult("max_row_number", "max_row_number");
-            $rsm->addScalarResult("net_amount", "net_amount");
-            $rsm->addScalarResult("tax_amount", "tax_amount");
-            $rsm->addScalarResult("gross_amount", "gross_amount");
-            $rsm->addScalarResult("gross_discount_amount", "gross_discount_amount");
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("total_pr_row", "total_pr_row");
+            $rsm->addScalarResult("total_picture", "total_picture");
+            $rsm->addScalarResult("total_attachment", "total_attachment");
+            $rsm->addScalarResult("total_po_row", "total_po_row");
+            $rsm->addScalarResult("total_ap_row", "total_ap_row");
+            $rsm->addScalarResult("total_qo_row", "total_qo_row");
 
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
-
-            $result = $query->getResult();
+            $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
             return null;

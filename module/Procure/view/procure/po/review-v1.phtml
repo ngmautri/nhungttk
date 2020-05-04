@@ -131,11 +131,10 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 <div id="wrapper" class="toggled">
    <!-- Sidebar -->
    <div id="sidebar-wrapper" style="font-size: 9.5pt;">
-      <a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt" class="btn btn-default btn-sm" href="/procure/po/list">
+      <a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt" class="btn btn-default btn-sm" href="/procure/po-report/header-status">
          <small>
             <i class="fa fa-chevron-left" aria-hidden="true"></i>
          </small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
-
         echo $this->translate("PO List");
         ?></a>
 
@@ -385,19 +384,11 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                                 
                                 
                                 
-                                
-                                
-                                
-                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
                                 
                                 
                                 
@@ -1241,7 +1232,8 @@ echo $hoverMode;
 
 		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-
+       { title: "Balance GR ", dataType: "string", dataIndx: "confirmedGrBalance", align: 'left',minWidth: 150,editable: false},
+  
       ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);

@@ -203,7 +203,7 @@ WHERE id = %s";
              *
              * @todo
              */
-            if ($r['open_gr_qty'] <= 0 and $r['open_ap_qty'] <= 0) {
+            if ($r['confirmed_ap_balance'] <= 0 and $r['confirmed_gr_balance'] <= 0) {
                 $poRowDetailSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
                 $completedRows ++;
             } else {
@@ -226,6 +226,7 @@ WHERE id = %s";
             $poRowDetailSnapshot->draftAPQuantity = $r["draft_ap_qty"];
             $poRowDetailSnapshot->postedAPQuantity = $r["posted_ap_qty"];
             $poRowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
+
             $poRowDetailSnapshot->billedAmount = $r["billed_amount"];
             $poRowDetailSnapshot->openAPAmount = $poRowDetailSnapshot->netAmount - $poRowDetailSnapshot->billedAmount;
 

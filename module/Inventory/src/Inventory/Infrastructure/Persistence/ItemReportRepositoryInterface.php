@@ -1,6 +1,8 @@
 <?php
 namespace Inventory\Infrastructure\Persistence;
 
+use Inventory\Infrastructure\Contract\SqlFilterInterface;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -8,6 +10,10 @@ namespace Inventory\Infrastructure\Persistence;
  */
 Interface ItemReportRepositoryInterface
 {
+
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
+
+    public function getListTotal(SqlFilterInterface $filter);
 
     public function get($id, $token);
 

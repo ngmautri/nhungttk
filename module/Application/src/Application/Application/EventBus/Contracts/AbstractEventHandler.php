@@ -1,6 +1,7 @@
 <?php
-namespace Application\Application\EventBus\Contract;
+namespace Application\Application\EventBus\Contracts;
 
+use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Domain\EventBus\Handler\EventHandlerInterface;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Doctrine\ORM\EntityManager;
@@ -20,28 +21,11 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
     /**
      *
      * @param EntityManager $doctrineEM
+     * @param EventBusServiceInterface $eventBusService
      */
-    public function __construct(EntityManager $doctrineEM, $eventBusService)
+    public function __construct(EntityManager $doctrineEM, EventBusServiceInterface $eventBusService)
     {
         $this->doctrineEM = $doctrineEM;
-        $this->eventBusService = $eventBusService;
-    }
-
-    /**
-     *
-     * @return \Procure\Application\Eventbus\EventBusService
-     */
-    public function getEventBusService()
-    {
-        return $this->eventBusService;
-    }
-
-    /**
-     *
-     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
-     */
-    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
-    {
         $this->eventBusService = $eventBusService;
     }
 
@@ -56,10 +40,10 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
 
     /**
      *
-     * @param EntityManager $doctrineEM
+     * @return \Application\Domain\EventBus\EventBusServiceInterface
      */
-    public function setDoctrineEM(EntityManager $doctrineEM)
+    public function getEventBusService()
     {
-        $this->doctrineEM = $doctrineEM;
+        return $this->eventBusService;
     }
 }

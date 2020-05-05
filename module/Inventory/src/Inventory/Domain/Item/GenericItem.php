@@ -10,7 +10,7 @@ use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericItem extends AbstractItem
+abstract class GenericItem extends BaseItem
 {
 
     /**

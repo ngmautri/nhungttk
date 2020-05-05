@@ -478,7 +478,7 @@ class PoController extends AbstractActionController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'version' => $rootDTO->getRevisionNo(),
-                'rootDto' => $rootDTO,
+                'headerDTO' => $rootDTO,
                 'dto' => $localDTO, // row
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -560,7 +560,7 @@ class PoController extends AbstractActionController
                 'target_token' => $target_token,
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'dto' => $dto,
-                'rootDto' => $rootDTO,
+                'headerDTO' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

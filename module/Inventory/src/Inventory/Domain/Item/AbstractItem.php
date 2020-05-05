@@ -13,6 +13,10 @@ use Inventory\Application\DTO\Item\ItemAssembler;
 abstract class AbstractItem extends AbstractEntity implements AggregateRootInterface
 {
 
+    // Addtional Attributes
+    protected $standardUnitName;
+
+    // Original Attributes
     protected $id;
 
     protected $warehouseId;

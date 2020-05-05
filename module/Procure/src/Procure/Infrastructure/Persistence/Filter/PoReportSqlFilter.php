@@ -23,9 +23,29 @@ class PoReportSqlFilter implements SqlFilterInterface
 
     public $balance;
 
+    public $vendorId;
+
     public function __toString()
     {
-        return \sprintf("PoReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
+        return \sprintf("PoReportSqlFilter_%s_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance, $this->vendorId);
+    }
+
+    /**
+     *
+     * @param mixed $vendorId
+     */
+    public function setVendorId($vendorId)
+    {
+        $this->vendorId = $vendorId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
     }
 
     /**

@@ -9,8 +9,6 @@ namespace Inventory\Infrastructure\Persistence;
 Interface ItemReportingRepositoryInterface
 {
 
-    public function get($id, $token);
-
     public function getAllItemWithSerial($itemId = null);
 
     public function getMostOrderItems($limit = 50, $offset = 0);

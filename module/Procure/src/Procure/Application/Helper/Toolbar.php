@@ -101,7 +101,7 @@ class Toolbar
                 break;
 
             case ProcureDocStatus::DOC_STATUS_POSTED:
-                $toolbar = \sprintf("%s %s %s %s", $enableAmendmentBtn, $payBtn, $goodsReceiptBtn, $invoiceBtn);
+                $toolbar = \sprintf("%s %s %s %s", $enableAmendmentBtn, $goodsReceiptBtn, $invoiceBtn, $payBtn);
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
                 }

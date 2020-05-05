@@ -130,6 +130,107 @@ class PoReportController extends AbstractActionController
         return $viewModel;
     }
 
+    public function getOfVendorAction()
+    {
+        // ===============================
+        $request = $this->getRequest();
+
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $this->layout("layout/user/ajax");
+
+        $isActive = (int) $this->params()->fromQuery('is_active');
+        $vendorId = (int) $this->params()->fromQuery('vendorId');
+
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $currentState = $this->params()->fromQuery('currentState');
+        $docStatus = $this->params()->fromQuery('docStatus');
+        $file_type = $this->params()->fromQuery('file_type');
+        $docYear = $this->params()->fromQuery('docYear');
+        $balance = $this->params()->fromQuery('balance');
+
+        if ($docYear == null) {
+            $docYear = date("Y");
+        }
+
+        if ($docStatus == null) {
+            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+        }
+
+        if ($balance == null) {
+            $balance = 1;
+        }
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
+        $isActive = (int) $this->params()->fromQuery('is_active');
+
+        if ($isActive == null) {
+            $isActive = 1;
+        }
+
+        if ($sort_by == null) :
+            $sort_by = "createdOn";
+        endif;
+
+        if ($sort == null) :
+            $sort = "DESC";
+        endif;
+
+        $filter = new PoReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setDocYear($docYear);
+        $filter->setBalance($balance);
+        $filter->setDocStatus($docStatus);
+        $filter->setVendorId($vendorId);
+
+        $total_records = $this->getReporter()->getListTotal($filter);
+
+        $limit = null;
+        $offset = null;
+        $paginator = null;
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
+
+        $viewModel = new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'is_active' => $isActive,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+            'docStatus' => $docStatus,
+            'yy' => $docYear,
+            'balance' => $balance,
+            'isAjaxRequest' => true,
+            'action' => "getOfVendorAction"
+        ));
+
+        $viewModel->setTemplate("procure/po-report/dto_list");
+        return $viewModel;
+    }
+
     /**
      *
      * @return \Zend\View\Model\ViewModel

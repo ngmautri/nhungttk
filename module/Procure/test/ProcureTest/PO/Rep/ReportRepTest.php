@@ -28,19 +28,23 @@ class RepTest extends PHPUnit_Framework_TestCase
             $rep = new PoReportRepositoryImpl($doctrineEM);
             $sort_by = Null;
             $sort = null;
-            $limit = null;
-            $offset = null;
+            $limit = 0;
+            $offset = 0;
             $filter = new PoReportSqlFilter();
             $filter->setBalance(1);
             $filter->setIsActive(1);
-            $filter->setDocYear(2020);
+
+            $filter->setVendorId(133);
 
             $stopWatch->start("test");
-            $result = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
+            $result = $rep->getList($filter, $sort_by, $sort, $limit, $offset);
+
+            var_dump($result);
+
             $timer = $stopWatch->stop("test");
             echo $timer;
             $key = "result_" . $filter->__toString();
-
+            echo $key;
             // $path = "C:\NMT\nmt-workspace\mla-2.6.8\data\cache";
             $path = __DIR__ . "./cache";
             $cachePool = new FilesystemAdapter('app', 10, $path);

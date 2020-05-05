@@ -9,6 +9,7 @@ use Procure\Application\DTO\Ap\ApDetailsDTO;
 use Procure\Domain\Event\Ap\ApPosted;
 use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
+use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -228,7 +229,7 @@ abstract class GenericAP extends AbstractAP
             "rowToken" => $localSnapshot->getToken()
         ];
 
-        $event = new ApRowAdded($target, $defaultParams, $params);
+        $event = new ApRowUpdated($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;

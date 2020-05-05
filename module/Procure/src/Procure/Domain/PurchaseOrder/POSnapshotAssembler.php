@@ -224,6 +224,7 @@ class POSnapshotAssembler
             "docStatus",
             "workflowStatus",
             "transactionStatus",
+            "paymentStatus",
             "paymentStatus"
         );
 
@@ -237,7 +238,8 @@ class POSnapshotAssembler
             "incoterm",
             "incotermPlace",
             "paymentTerm",
-            "remarks"
+            "remarks",
+            "pmtTerm"
         );
 
         // $snapShot->getPay;

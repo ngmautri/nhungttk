@@ -4,6 +4,7 @@ namespace Inventory\Infrastructure\Persistence\Helper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Inventory\Infrastructure\Contract\SqlFilterInterface;
 
 /**
  *
@@ -143,5 +144,73 @@ FROM nmt_inventory_item";
         } catch (NoResultException $e) {
             return null;
         }
+    }
+
+    static public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        $sql = "SELECT * FROM nmt_inventory_item";
+
+        // when paginator needed
+        if ($limit > 0) {
+            $sql1 = "SELECT id from nmt_inventory_item";
+
+            $sql1 = $sql1 . " WHERE 1";
+
+            if ($filter == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
+                $sql1 = $sql1 . sprintf(" AND nmt_inventory_item.item_type ='%s'", $item_type);
+            }
+
+            if ($is_active == 1) {
+                $sql1 = $sql1 . " AND nmt_inventory_item.is_active = 1";
+            } elseif ($is_active == - 1) {
+                $sql1 = $sql1 . " AND nmt_inventory_item.is_active = 0";
+            }
+
+            if ($is_fixed_asset == 1) {
+                $sql1 = $sql1 . " AND nmt_inventory_item.is_fixed_asset = 1";
+            } elseif ($is_fixed_asset == - 1) {
+                $sql1 = $sql1 . " AND nmt_inventory_item.is_fixed_asset = 0";
+            }
+
+            if ($sort_by == "itemName") {
+                $sql1 = $sql1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
+            } elseif ($sort_by == "createdOn") {
+                $sql1 = $sql1 . " ORDER BY nmt_inventory_item.created_on " . $sort;
+            }
+
+            $sql1 = $sql1 . " LIMIT " . $limit;
+
+            $sql1 = $sql1 . " OFFSET " . $offset;
+
+            $sql = $sql . " INNER JOIN (" . $sql1 . ") as t1 on t1.id = nmt_inventory_item.id";
+        } else {
+
+            $sql = $sql . " WHERE 1";
+
+            if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
+                $sql = $sql . sprintf(" AND nmt_inventory_item.item_type ='%s'", $item_type);
+            }
+
+            if ($is_active == 1) {
+                $sql = $sql . " AND nmt_inventory_item.is_active = 1";
+            } elseif ($is_active == - 1) {
+                $sql = $sql . " AND nmt_inventory_item.is_active = 0";
+            }
+
+            if ($is_fixed_asset == 1) {
+                $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 1";
+            } elseif ($is_fixed_asset == - 1) {
+                $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 0";
+            }
+
+            if ($sort_by == "itemName") {
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+            } elseif ($sort_by == "createdOn") {
+                $sql = $sql . " ORDER BY nmt_inventory_item.created_on " . $sort;
+            }
+        }
+        $stmt = $this->doctrineEM->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }

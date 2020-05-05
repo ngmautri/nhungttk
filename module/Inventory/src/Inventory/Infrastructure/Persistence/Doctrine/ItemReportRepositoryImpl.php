@@ -2,6 +2,7 @@
 namespace Inventory\Infrastructure\Persistence\Doctrine;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
+use Inventory\Infrastructure\Contract\SqlFilterInterface;
 use Inventory\Infrastructure\Persistence\ItemReportRepositoryInterface;
 use Inventory\Infrastructure\Persistence\Helper\ItemReportHelper;
 
@@ -40,5 +41,11 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
     {}
 
     public function getLastCreatedPrRow($limit = 100, $offset = 0)
+    {}
+
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {}
+
+    public function getListTotal(SqlFilterInterface $filter)
     {}
 }

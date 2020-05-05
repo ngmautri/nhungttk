@@ -52,6 +52,10 @@ class PoReportHelper
             $sql = $sql . \sprintf(" AND nmt_procure_po.current_state ='%s'", $filter->getCurrentState());
         }
 
+        if ($filter->getVendorId() != null) {
+            $sql = $sql . \sprintf(' AND nmt_procure_po.vendor_id = %s', $filter->getVendorId());
+        }
+
         if ($filter->getDocStatus() != null) {
             $sql = $sql . \sprintf(' AND nmt_procure_po.doc_status ="%s"', $filter->getDocStatus());
         }
@@ -89,6 +93,7 @@ class PoReportHelper
         }
         $sql = $sql . ";";
 
+        //
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePo', 'nmt_procure_po');

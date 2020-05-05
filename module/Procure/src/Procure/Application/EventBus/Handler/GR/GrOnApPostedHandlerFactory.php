@@ -21,13 +21,11 @@ class GrOnApPostedHandlerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new GrOnApPostedHandler();
 
-        $sv = $container->get('doctrine.entitymanager.orm_default');
-        $service->setDoctrineEM($sv);
+        $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
 
-        $sv = $container->get(EventBusService::class);
-        $service->setEventBusService($sv);
+        $eventBusService = $container->get(EventBusService::class);
+        $service = new GrOnApPostedHandler($doctrineEM, $eventBusService);
 
         return $service;
     }

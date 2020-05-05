@@ -2,6 +2,8 @@
 namespace Inventory\Domain\Item;
 
 use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Application\DTO\Item\ItemDTOAssembler;
+use Procure\Domain\GenericDoc;
 
 /**
  *
@@ -11,143 +13,95 @@ use Inventory\Application\DTO\Item\ItemDTO;
 class ItemSnapshotAssembler
 {
 
+    const EXCLUDED_FIELDS = 1;
+
+    const EDITABLE_FIELDS = 2;
+
     /**
      *
-     * @return ItemSnapshot;
+     * @return array;
      */
-    public static function createFromSnapshotCode()
+    public static function findMissingPropertiesOfSnapshot()
     {
-        $itemSnapshot = new ItemSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $missingProperties = array();
+        $entity = new GenericDoc();
+        $dto = new ItemSnapshot();
+
+        $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$itemSnapshot->" . $propertyName . ";";
-        }
-    }
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
 
-    /**
-     *
-     * @param array $data
-     * @return \Inventory\Domain\Item\ItemSnapshot
-     */
-    public static function createSnapshotFromArray($data)
-    {
-        if ($data == null)
-            return null;
-
-        $snapShot = new ItemSnapshot();
-
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property)) {
-
-                if ($value == null || $value == "") {
-                    $snapShot->$property = null;
-                } else {
-                    $snapShot->$property = $value;
-                }
+                $missingProperties[] = $propertyName;
             }
         }
-        return $snapShot;
+        return $missingProperties;
     }
 
-    /**
-     *
-     * @param \Inventory\Domain\Item\ItemSnapshot $snapShot
-     * @param array $data
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
-     */
-    public static function updateSnapshotFromArray($snapShot, $data)
+    public static function findMissingPropsInEntity()
     {
-        if ($data == null || ! $snapShot instanceof ItemSnapshot)
-            return null;
+        $missingProperties = array();
+        $baseObj = new BaseItem();
 
-        $excludedProperties = array(
-            "id",
-            "uuid"
-        );
+        $reflectionClass = new \ReflectionClass($baseObj);
+        $baseProps = $reflectionClass->getProperties();
 
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property) && ! in_array($property, $excludedProperties)) {
-                $snapShot->$property = $value;
+        $entity = ItemDTOAssembler::getEntity();
+
+        foreach ($baseProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($entity, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
             }
         }
-        return $snapShot;
+        return $missingProperties;
     }
 
     /**
      *
-     * @param ItemDTO $dto
-     * @return \Inventory\Domain\Item\ItemSnapshot
+     * @return array;
      */
-    public static function createSnapshotFromDTO($dto)
+    public static function findMissingPropsInBaseItem()
     {
-        if (! $dto instanceof ItemDTO)
-            return null;
+        $missingProperties = array();
 
-        $snapShot = new ItemSnapshot();
+        $entityProps = ItemDTOAssembler::createDTOProperities();
+        $dto = new BaseItem();
 
-        $refl = new \ReflectionObject($dto);
-        $props = $refl->getProperties();
-
-        foreach ($props as $prop) {
-            try {
-
-                $prop->setAccessible(true);
-                $propertyName = $prop->getName();
-                if (property_exists($snapShot, $propertyName)) {
-                    $snapShot->$propertyName = $prop->getValue($dto);
-                }
-            } catch (\Exception $e) {}
+        foreach ($entityProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
         }
-        return $snapShot;
+        return $missingProperties;
     }
 
     /**
      *
-     * @param \Inventory\Domain\Item\ItemSnapshot $snapShot
+     * @param ItemSnapshot $snapShot
      * @param ItemDTO $dto
+     * @param array $editableProperties
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function updateSnapshotFromDTO($snapShot, $dto)
+    public static function updateSnapshotFieldsFromDTO(ItemSnapshot $snapShot, ItemDTO $dto, $editableProperties)
     {
-        if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
+        if ($dto == null || ! $snapShot instanceof ItemSnapshot || $editableProperties == null)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+        $props = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
-        $excludedProperties = array(
-            "id",
-            "uuid",
-            "token",
-            "checksum",
-            "createdBy",
-            "createdOn",
-            "lastChangeOn",
-            "lastChangeBy",
-            "sysNumber",
-            "company",
-            "itemType",
-            "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
-        );
-
-        // $dto->isSparepart;
-
-        foreach ($itemProperites as $property) {
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
 
                 if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                     $snapShot->$propertyName = null;
@@ -160,36 +114,17 @@ class ItemSnapshotAssembler
     }
 
     /**
-     *
-     * @param GenericItem $item
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     * generete fields.
      */
-    public static function createSnapshotFrom($item)
+    public static function createProperities()
     {
-        if (! $item instanceof GenericItem) {
-            return null;
-        }
-
-        $snapShot = new ItemSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($item);
+        $entity = new ItemSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
-
         foreach ($itemProperites as $property) {
-
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($item) == null || $property->getValue($item) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($item);
-                }
-            }
+            print "\n" . "protected $" . $propertyName . ";";
         }
-
-        return $snapShot;
     }
 }

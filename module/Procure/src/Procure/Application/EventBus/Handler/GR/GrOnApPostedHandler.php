@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\EventBus\Handler\GR;
 
-use Application\Application\EventBus\Contract\AbstractEventHandler;
+use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\GR\PostCopyFromAPCmdHandler;
 use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;

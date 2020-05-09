@@ -130,6 +130,10 @@ class PoReportController extends AbstractActionController
         return $viewModel;
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function getOfVendorAction()
     {
         // ===============================
@@ -399,7 +403,7 @@ class PoReportController extends AbstractActionController
         }
         $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'sort_by' => $sort_by,
             'sort' => $sort,
             'is_active' => $isActive,
@@ -408,8 +412,12 @@ class PoReportController extends AbstractActionController
             'docYear' => $docYear,
             'file_type' => $file_type,
             'result' => $result,
-            'paginator' => $paginator
+            'paginator' => $paginator,
+            'vendorId' => $vendorId
         ));
+
+        $viewModel->setTemplate("procure/po-report/vendor-row-status");
+        return $viewModel;
     }
 
     /**

@@ -44,7 +44,7 @@ class RowFormatter extends RowFormatterDecorator
         if ($row instanceof PRRowSnapshot) {
 
             if ($row->transactionStatus == "uncompleted") {
-                $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-warning"><strong>.</strong></span> %s', $row->transactionStatus);
+                $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-warning">.</span><span style="font-weight: normal;"> %s</span>', $row->transactionStatus);
             } elseif ($row->transactionStatus == "completed") {
                 $row->transactionStatus = \sprintf('&nbsp;<span style="color:graytext;">%s</span> ', "Done");
             }

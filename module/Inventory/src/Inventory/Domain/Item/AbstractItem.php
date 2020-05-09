@@ -3,6 +3,7 @@ namespace Inventory\Domain\Item;
 
 use Application\Domain\Shared\AbstractEntity;
 use Application\Domain\Shared\AggregateRootInterface;
+use Application\Domain\Shared\SnapshotAssembler;
 use Inventory\Application\DTO\Item\ItemAssembler;
 
 /**
@@ -281,7 +282,8 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
      */
     public function createSnapshot()
     {
-        $itemSnapshot = ItemSnapshotAssembler::createSnapshotFrom($this);
+        // $itemSnapshot = ItemSnapshotAssembler::createSnapshotFrom($this);
+        $itemSnapshot = SnapshotAssembler::createSnapshotFrom($this, new ItemSnapshot());
         return $itemSnapshot;
     }
 

@@ -127,4 +127,53 @@ class ItemSnapshotAssembler
             print "\n" . "protected $" . $propertyName . ";";
         }
     }
+
+    public static function updateSnapshotFromDTO($snapShot, $dto)
+    {
+        if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
+            return null;
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $itemProperites = $reflectionClass->getProperties();
+
+        /**
+         * Fields, that are update automatically
+         *
+         * @var array $excludedProperties
+         */
+        $excludedProperties = array(
+            "id",
+            "uuid",
+            "token",
+            "checksum",
+            "createdBy",
+            "createdOn",
+            "lastChangeOn",
+            "lastChangeBy",
+            "sysNumber",
+            "company",
+            "itemType",
+            "revisionNo",
+            "isStocked",
+            "isFixedAsset",
+            "isSparepart",
+            "itemTypeId"
+        );
+
+        // $dto->isSparepart;
+
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
+            }
+        }
+        return $snapShot;
+    }
 }

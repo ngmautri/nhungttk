@@ -224,10 +224,10 @@ class PoReportController extends AbstractActionController
             'yy' => $docYear,
             'balance' => $balance,
             'isAjaxRequest' => true,
-            'action' => "getOfVendorAction"
+            'vendorId' => $vendorId
         ));
 
-        $viewModel->setTemplate("procure/po-report/dto_list");
+        $viewModel->setTemplate("procure/po-report/dto_list_ajax");
         return $viewModel;
     }
 
@@ -305,6 +305,91 @@ class PoReportController extends AbstractActionController
                 ->getItem($key)
                 ->get();
         }
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+        $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+
+        return new ViewModel(array(
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'is_active' => $isActive,
+            'per_pape' => $resultsPerPage,
+            'balance' => $balance,
+            'docYear' => $docYear,
+            'file_type' => $file_type,
+            'result' => $result,
+            'paginator' => $paginator
+        ));
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function vendorRowStatusAction()
+    {
+        $this->layout("layout/user/ajax");
+
+        $vendorId = (int) $this->params()->fromQuery('vendorId');
+
+        // $this->layout("layout/fluid");
+        $isActive = (int) $this->params()->fromQuery('is_active');
+        $file_type = (int) $this->params()->fromQuery('file_type');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $balance = $this->params()->fromQuery('balance');
+        $docYear = $this->params()->fromQuery('docYear');
+        $docStatus = $this->params()->fromQuery('docStatus');
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
+        if ($file_type == null) :
+            $file_type = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+        endif;
+
+        if ($balance == null) {
+            $balance = 1;
+        }
+
+        if ($sort_by == null) :
+        //$sort_by = "itemName";
+        endif;
+
+        if ($docYear == null) :
+            $docYear = date('Y');
+        endif;
+
+        if ($sort == null) :
+            $sort = "ASC";
+        endif;
+
+        $paginator = null;
+        $result = null;
+
+        $limit = null;
+        $offset = null;
+        $total_records = null;
+
+        $filter = new PoReportSqlFilter();
+        $filter->setVendorId($vendorId);
+        $filter->setBalance(1);
+
+        $total_records = $this->getReporter()->getAllRowTotal($filter);
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);

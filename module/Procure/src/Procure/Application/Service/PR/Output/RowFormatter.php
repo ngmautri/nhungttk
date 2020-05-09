@@ -43,6 +43,12 @@ class RowFormatter extends RowFormatterDecorator
         // then decorate
         if ($row instanceof PRRowSnapshot) {
 
+            if ($row->transactionStatus == "uncompleted") {
+                $row->transactionStatus = \sprintf('&nbsp;<span  class="label label-warning"><strong>.</strong></span> %s', $row->transactionStatus);
+            } elseif ($row->transactionStatus == "completed") {
+                $row->transactionStatus = \sprintf('&nbsp;<span style="color:graytext;">%s</span> ', "Done");
+            }
+
             $row->postedPoQuantity = ($row->getPostedPoQuantity() > 0 ? number_format($row->getPostedPoQuantity(), 0) : $zero);
             $row->postedGrQuantity = ($row->getPostedGrQuantity() > 0 ? number_format($row->getPostedGrQuantity(), 0) : $zero);
             $row->postedStockQrQuantity = ($row->getPostedStockQrQuantity() > 0 ? number_format($row->getPostedStockQrQuantity(), 0) : $zero);

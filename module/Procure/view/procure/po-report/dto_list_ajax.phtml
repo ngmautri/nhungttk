@@ -1,0 +1,164 @@
+<?php
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+
+/**@var PRSnapshot $rootSnapshot ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+// echo $total_records;
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+
+$table_body = "";
+$count = 0;
+$n = 0;
+
+$main_tab = $this->translate("PURCHASE ORDER LIST");
+
+$createUrl = $this->baseUrl . "/procure/po/create";
+$baseUrl = "/procure/po-report/get-of-vendor";
+
+$filterUrl = $baseUrl;
+
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
+$base = sprintf('%s?vendorId=%s', $baseUrl, $vendorId);
+
+$save_as_excel = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+$save_as_openoffice = sprintf('%s?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $baseUrl, $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+if (count($list) > 0) {
+
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $tmp = sprintf('Recored %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
+    }
+
+    foreach ($list as $rootSnapshot) {
+
+        $n ++;
+
+        if ($paginator !== null) {
+            $count = $paginator->minInPage - 1 + $n;
+        } else {
+            $count = $n;
+        }
+
+        $url = sprintf($this->baseUrl . "/procure/po/view?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Show PO";
+        $icon = null;
+        $viewBtn = FormHelper::createButton($this->translate("View"), $title, $url, $icon);
+
+        $url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $rootSnapshot->getId(), $rootSnapshot->getToken());
+        $title = "Edit PO";
+        $icon = 'glyphicon glyphicon-pencil';
+        $editBtn = FormHelper::createButton($this->translate("Edit"), $title, $url, $icon);
+
+        if ($rootSnapshot->getTotalRows() > 0) {
+            $completion = $rootSnapshot->getCompletedGRRows() / $rootSnapshot->getTotalRows();
+        } else {
+            $completion = 0;
+        }
+        $progress_div = FormHelper::createProgressDiv($completion, null);
+
+        if ($rootSnapshot->getTotalRows() > 0) {
+            $completion1 = $rootSnapshot->getCompletedAPRows() / $rootSnapshot->getTotalRows();
+        } else {
+            $completion1 = 0;
+        }
+        $progress_div1 = FormHelper::createProgressDiv($completion1, null);
+
+        $table_body = $table_body . "<tr>";
+        $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", $progress_div);
+        $table_body = $table_body . sprintf("<td>%s</td>", $progress_div1);
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocStatus());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getSysNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getVendorName());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getDocDate());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getTotalRows());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getGrossAmount());
+        $table_body = $table_body . sprintf("<td>%s</td>", $rootSnapshot->getCurrencyIso3());
+        $table_body = $table_body . sprintf("<td>%s</td>", $viewBtn . ' ' . $editBtn);
+
+        $table_body = $table_body . "</tr>";
+    }
+}
+$filter_msg = sprintf("Status=%s | Active=%s | Sorted by = %s - %s.", $docStatus, $is_active, $sort_by, $sort);
+
+// ===================================
+?>
+
+
+
+<div id="result_div">
+
+
+
+<?php
+echo $result_msg;
+?>
+
+<table id="mytable26" style="font-size: 9.5pt;" class="table table-bordered table-striped table-hover">
+      <thead>
+         <tr>
+            <td>
+               <b>#</b>
+            </td>
+            <td style="width: 30pt; font-size: 8pt">
+               <b>GR %</b>
+            </td>
+            </td>
+            <td style="width: 30pt; font-size: 8pt">
+               <b>AP %</b>
+            </td>
+            <td>
+               <b>Doc.Status</b>
+            </td>
+            <td>
+               <b>Ref.No.</b>
+            </td>
+            <td>
+               <b>Vendor</b>
+            </td>
+            <td>
+               <b>Doc No</b>
+            </td>
+            <td>
+               <b>Doc Date</b>
+            </td>
+            <td>
+               <b>Rows</b>
+            </td>
+            <td>
+               <b>Gross</b>
+            </td>
+            <td>
+               <b>Curr</b>
+            </td>
+            <td>
+               <b>Action</b>
+            </td>
+         </tr>
+      </thead>
+      <tbody>
+		<?php
+echo $table_body;
+?>
+		</tbody>
+   </table>
+
+
+
+<?php
+// ===============================
+echo FormHelper::createPaginatorAjax($base, $paginator, "&", "result_div");
+// =================================
+?>
+</div>

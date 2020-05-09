@@ -3,18 +3,18 @@ namespace Inventory\Application\Service\Item;
 
 use Application\Notification;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Service\AbstractService;
 use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Application\Event\Handler\ItemCreatedEventHandler;
-use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
+use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\Event\Listener\ItemLoggingListener;
 use Inventory\Domain\Event\ItemCreatedEvent;
 use Inventory\Domain\Event\ItemUpdatedEvent;
 use Inventory\Domain\Item\GenericItem;
+use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  *
@@ -62,7 +62,8 @@ class ItemCRUDService extends AbstractService
 
         $dto->company = $companyId;
         $dto->createdBy = $userId;
-        $snapshot = ItemSnapshotAssembler::createSnapshotFromDTO($dto);
+        // $snapshot = SnapshotAssembler::createSnapshotFromDTO($dto);
+        $snapshot = SnapshotAssembler::createSnapShotFromDTO($dto, new ItemDTO());
 
         $item = ItemFactory::createItem($snapshot->itemTypeId);
         $item->makeFromSnapshot($snapshot);

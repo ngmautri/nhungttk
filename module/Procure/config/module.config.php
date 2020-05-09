@@ -47,7 +47,7 @@ return array(
                 'label' => 'Add New PR',
                 'route' => 'procure/default',
                 'controller' => 'pr',
-                'action' => 'add',
+                'action' => 'create',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
 

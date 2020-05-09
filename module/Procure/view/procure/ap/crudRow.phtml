@@ -54,11 +54,9 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 // echo memory_get_usage();
 // =====================================================
 ?>
-
 <div id="wrapper" class="toggled">
-
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+   <!-- Sidebar -->
+   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
 
     	<?php
     $current_step = "STEP2";
@@ -66,111 +64,112 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     ?>
 
       					<hr>
-        <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
+      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
 
-        echo $this->translate('Summary:');
-        ?></span>
+    echo $this->translate('Summary:');
+    ?></span>
+      <div class="alert alert-info" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
+            <li>
+               <b><?php
 
-        <div class="alert alert-info" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-            <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-                <li><b><?php
+            if (! $rootDto == null) :
+                echo $rootDto->getVendorName(); endif;
 
-                if (! $rootDto == null) :
-                    echo $rootDto->getVendorName(); endif;
+            ?></b>
+            </li>
+            <li>-----</li>
+            <li><?php
 
-                ?></b></li>
-                <li>-----</li>
+            if (! $rootDto == null) :
+                echo $rootDto->getIncoterm() . " " . $rootDto->getIncotermPlace(); endif;
 
-                <li><?php
+            ?> </li>
+            <li>Total rows:<?php
 
-                if (! $rootDto == null) :
-                    echo $rootDto->getIncoterm() . " " . $rootDto->getIncotermPlace(); endif;
+            if (! $rootDto == null) :
+                echo $rootDto->getTotalRows(); endif;
 
-                ?> </li>
+            ?></li>
+            <li>Status:<?php
 
-                <li>Total rows:<?php
+            if (! $rootDto == null) :
+                echo $rootDto->getTransactionStatus(); endif;
 
-                if (! $rootDto == null) :
-                    echo $rootDto->getTotalRows(); endif;
+            ?> </li>
+            <li>-----</li>
+            <li>Net: <?php
 
-                ?></li>
-                <li>Status:<?php
+            if (! $rootDto == null) :
+                echo number_format($rootDto->getNetAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
 
-                if (! $rootDto == null) :
-                    echo $rootDto->getTransactionStatus(); endif;
+            ?></li>
+            <li>Tax: <?php
 
-                ?> </li>
+            if (! $rootDto == null) :
+                echo number_format($rootDto->getTaxAmount(), 2); endif;
 
-                <li>-----</li>
+            ?></li>
+            <li>Gross: <?php
 
-                <li>Net: <?php
+            if (! $rootDto == null) :
+                echo number_format($rootDto->getGrossAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
 
-                if (! $rootDto == null) :
-                    echo number_format($rootDto->getNetAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
+            ?></li>
+            <li>Billed: <?php
 
-                ?></li>
-                <li>Tax: <?php
+            if (! $rootDto == null) :
+                echo number_format($rootDto->getBilledAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
 
-                if (! $rootDto == null) :
-                    echo number_format($rootDto->getTaxAmount(), 2); endif;
+            ?></li>
+            <li>-----</li>
+            <li>Created by: <?php
 
-                ?></li>
-                <li>Gross: <?php
+            if (! $rootDto == null) :
+                echo $rootDto->getCreatedByName(); endif;
 
-                if (! $rootDto == null) :
-                    echo number_format($rootDto->getGrossAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
+            ?></li>
+         </ul>
+      </div>
+   </div>
+   <!-- /#sidebar-wrapper -->
+   <!-- Page Content -->
+   <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+      <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+         <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+            <span title="Hide Menu">
+               <i class="fa fa-chevron-left" aria-hidden="true"></i>
+               Menu
+               <span>
+         
+         </a>
+         <div id="tabs" style="font-size: 10pt">
+            <ul>
+               <li>
+                  <a href="#general"><?php
 
-                ?></li>
-                <li>Billed: <?php
-
-                if (! $rootDto == null) :
-                    echo number_format($rootDto->getBilledAmount(), 2) . " " . $rootDto->getCurrencyIso3(); endif;
-
-                ?></li>
-                <li>-----</li>
-
-                <li>Created by: <?php
-
-                if (! $rootDto == null) :
-                    echo $rootDto->getCreatedByName(); endif;
-
-                ?></li>
-
-            </ul>
-        </div>
-
-
-    </div>
-    <!-- /#sidebar-wrapper -->
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-        <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-            <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span title="Hide Menu"><i class="fa fa-chevron-left"
-                    aria-hidden="true"></i> Menu <span></a>
-
-
-            <div id="tabs" style="font-size: 10pt">
-                <ul>
-                    <li><a href="#general"><?php
-
-                    echo $form_title;
-                    ?></a></li>
+                echo $form_title;
+                ?></a>
+               </li>
 
 <?php
 if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
     ?>
- 	 	<li><a href=""<?php
+ 	 	<li>
+                  <a href=""<?php
 
     echo $message_url;
-    ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+    ?>">
+                     <span class="glyphicon glyphicon-list"></span>
+                     &nbsp;Log
+                  </a>
+               </li>
 <?php endif;
 
 ?>
 				</ul>
-
-                <div id="general" style="font-size: 9pt">
-                    <!-- Tab1 -->
+            <div id="general" style="font-size: 9pt">
+               <!-- Tab1 -->
 
 <?php
 // ================================
@@ -182,448 +181,406 @@ echo $error_msg;
 
     echo $form_action;
     ?>" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="redirectUrl" value="<?php
 
-                        <input type="hidden" name="redirectUrl" value="<?php
+                echo $redirectUrl?>" />
+                  <input type="hidden" id="target_id" name="target_id" value="<?php
 
-                        echo $redirectUrl?>" /> <input type="hidden" id="target_id" name="target_id" value="<?php
+                echo $target_id;
+                ?>" />
+                  <input type="hidden" id="target_token" name="target_token" value="<?php
 
-                        echo $target_id;
-                        ?>" /> <input type="hidden" id="target_token" name="target_token" value="<?php
+                echo $target_token;
+                ?>" />
+                  <input type="hidden" name="version" value="<?php
 
-                        echo $target_token;
-                        ?>" /> <input type="hidden" name="version" value="<?php
+                echo $version;
+                ?>" />
+                  <input type="hidden" id="entity_id" name="entity_id" value="<?php
 
-                        echo $version;
-                        ?>" /> <input type="hidden" id="entity_id" name="entity_id" value="<?php
+                echo $entity_id;
+                ?>" />
+                  <input type="hidden" id="entity_token" name="entity_token" value="<?php
 
-                        echo $entity_id;
-                        ?>" /> <input type="hidden" id="entity_token" name="entity_token" value="<?php
+                echo $entity_token;
+                ?>" />
+                  <div class="form-group margin-bottom">
+                     <label class="control-label col-sm-2">Row Number: </label>
+                     <div class="col-sm-1">
+                        <input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber" value="<?php
 
-                        echo $entity_token;
-                        ?>" />
+                        echo $rowNumber;
+                        ?>">
+                     </div>
+                     <div class="col-sm-2">
+                        <input
+                           <?php
 
-                        <div class="form-group margin-bottom">
-                            <label class="control-label col-sm-2">Row Number: </label>
-                            <div class="col-sm-1">
-                                <input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber"
-                                    value="<?php
-
-                                    echo $rowNumber;
-                                    ?>">
-                            </div>
-
-                            <div class="col-sm-2">
-                                <input
-                                    <?php
-
-                                    if (! $dto == null) :
-                                        echo ($dto->getIsActive() == "1") ? "checked" : "";
-                                    else :
-                                        echo "checked";
-                                    endif;
-                                    ?>
-                                    type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
-                            </div>
-                        </div>
-
-                        <div class="form-group margin-bottom">
-                            <label class="control-label col-sm-2">PR Item: </label>
-                            <div class="col-sm-3">
-                                <input tabindex="1" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
-                                    value="<?php
-                                    if (! $dto == null) :
-                                        if ($dto->getPrRow() !== null) :
-                                            echo $dto->getPrRow(); endif;endif;
-
-
-                                    ?>"> <input type="hidden" id="pr_row_id" placeholder="" name="prRow" value="">
-
-                                <div id="pr_row_url" style="display: none;"></div>
-
-                            </div>
-
-                            <div class="col-sm-1">
-
-                                <span title="<?php
-
-                                echo $this->translate("Line Detail");
-                                ?>" id="pr_row_detail"
-                                    style="display: none;"> &nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;" onclick="showSelectedPrRow();"><i style="color: navy"
-                                        class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
-                                </span>
-                            </div>
-
-                            <div class="col-sm-1">
-
-                                <a tabindex="100" style="color: #0080ff;" href="javascript:;"
-                                    onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-                                    class="glyphicon glyphicon-folder-open"></i>
-                                </a>
-                            </div>
-
-                            <div class="col-sm-1">
-                                <a tabindex="" target="_blank" style="font-size: 9pt;" href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
-                            </div>
-                        </div>
-
-                        <div class="form-group margin-bottom">
-                            <label class="control-label col-sm-2">PO Item: </label>
-                            <div class="col-sm-3">
-                                <input tabindex="1" class="form-control input-sm" type="text" id="po_item_name" placeholder="Select PO item" name="po_item_name"
-                                    value="<?php
-                                    if (! $dto == null) :
-                                        echo $dto->getPoRow();endif;
-
-                                    ?>"> <input type="hidden" id="po_row_id" placeholder="" name="poRow"
-                                    value="<?php
-                                    if (! $dto == null) :
-                                        echo $dto->getPoRow();endif;
-
-                                    ?>">
-                                <div id="po_row_url" style="display: none;"></div>
-                            </div>
-
-                            <div class="col-sm-1">
-                                <span title="<?php
-                                echo $this->translate("Line Detail");
-                                ?>" id="pr_row_detail" style="display: none;"> &nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;" onclick="showSelectedPoRow();"><i style="color: navy"
-                                        class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
-                                </span>
-                            </div>
-
-                            <div class="col-sm-1">
-
-                                <a tabindex="100" style="color: #0080ff;" href="javascript:;"
-                                    onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-                                    class="glyphicon glyphicon-folder-open"></i>
-                                </a>
-                            </div>
-
-                            <div class="col-sm-1">
-                                <a tabindex="" target="_blank" style="font-size: 9pt;" href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
-                            </div>
-                        </div>
+                        if (! $dto == null) :
+                            echo ($dto->getIsActive() == "1") ? "checked" : "";
+                        else :
+                            echo "checked";
+                        endif;
+                        ?>
+                           type="checkbox" name="isActive" value="1">
+                        &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom">
+                     <label class="control-label col-sm-2">PR Item: </label>
+                     <div class="col-sm-3">
+                        <input tabindex="1" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
+                           value="<?php
+                        if (! $dto == null) :
+                            if ($dto->getPrRow() !== null) :
+                                echo $dto->getPrRow(); endif;endif;
 
 
-                        <div class="form-group margin-bottom  required">
-                            <label class="control-label col-sm-2">Item: </label>
-                            <div class="col-sm-3">
-                                <input tabindex="2" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="itemName"
-                                    value="<?php
+                        ?>">
+                        <input type="hidden" id="pr_row_id" placeholder="" name="prRow" value="">
+                        <div id="pr_row_url" style="display: none;"></div>
+                     </div>
+                     <div class="col-sm-1">
+                        <span title="<?php
 
-                                    if (! $dto == null) :
-                                        echo $dto->getItemName();endif;
+                        echo $this->translate("Line Detail");
+                        ?>" id="pr_row_detail" style="display: none;">
+                           &nbsp;&nbsp;
+                           <a style="color: #0080ff;" href="javascript:;" onclick="showSelectedPrRow();">
+                              <i style="color: navy" class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                           </a>
+                        </span>
+                     </div>
+                     <div class="col-sm-1">
+                        <a tabindex="100" style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">
+                           Select&nbsp;&nbsp;
+                           <i class="glyphicon glyphicon-folder-open"></i>
+                        </a>
+                     </div>
+                     <div class="col-sm-1">
+                        <a tabindex="" target="_blank" style="font-size: 9pt;" href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a>
+                        <small>
+                           <i class="glyphicon glyphicon-new-window"></i>
+                        </small>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom">
+                     <label class="control-label col-sm-2">PO Item: </label>
+                     <div class="col-sm-3">
+                        <input tabindex="1" class="form-control input-sm" type="text" id="po_item_name" placeholder="Select PO item" name="po_item_name"
+                           value="<?php
+                        if (! $dto == null) :
+                            echo $dto->getPoRow();endif;
 
-                                    ?>"> <input type="hidden" id="item_id" placeholder="" name="item"
-                                    value="<?php
+                        ?>">
+                        <input type="hidden" id="po_row_id" placeholder="" name="poRow" value="<?php
+                        if (! $dto == null) :
+                            echo $dto->getPoRow();endif;
 
-                                    if (! $dto == null) :
-                                        echo $dto->getItem(); endif;
+                        ?>">
+                        <div id="po_row_url" style="display: none;"></div>
+                     </div>
+                     <div class="col-sm-1">
+                        <span title="<?php
+                        echo $this->translate("Line Detail");
+                        ?>" id="pr_row_detail" style="display: none;">
+                           &nbsp;&nbsp;
+                           <a style="color: #0080ff;" href="javascript:;" onclick="showSelectedPoRow();">
+                              <i style="color: navy" class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                           </a>
+                        </span>
+                     </div>
+                     <div class="col-sm-1">
+                        <a tabindex="100" style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">
+                           Select&nbsp;&nbsp;
+                           <i class="glyphicon glyphicon-folder-open"></i>
+                        </a>
+                     </div>
+                     <div class="col-sm-1">
+                        <a tabindex="" target="_blank" style="font-size: 9pt;" href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a>
+                        <small>
+                           <i class="glyphicon glyphicon-new-window"></i>
+                        </small>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom  required">
+                     <label class="control-label col-sm-2">Item: </label>
+                     <div class="col-sm-3">
+                        <input tabindex="2" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="itemName"
+                           value="<?php
 
-                                    ?>">
+                        if (! $dto == null) :
+                            echo $dto->getItemName();endif;
 
-                                <div id="item_url" style="display: none;"></div>
+                        ?>">
+                        <input type="hidden" id="item_id" placeholder="" name="item" value="<?php
 
+                        if (! $dto == null) :
+                            echo $dto->getItem(); endif;
 
-                            </div>
+                        ?>">
+                        <div id="item_url" style="display: none;"></div>
+                     </div>
+                     <div class="col-sm-1" style="margin: 0px">
+                        <span title="<?php
 
+                        echo $this->translate("Item Detail");
+                        ?>" id="item_detail" style="display: none;">
+                           &nbsp;&nbsp;
+                           <a style="color: #0080ff;" href="javascript:;" onclick="showSelectedItem();">
+                              <i style="color: navy" class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                           </a>
+                           <br>
+                        </span>
+                     </div>
+                     <div class="col-sm-1" style="margin: 0px">
+                        <a style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select Item','1350',$(window).height()-50, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">
+                           Select&nbsp;&nbsp;
+                           <i class="glyphicon glyphicon-folder-open"></i>
+                        </a>
+                     </div>
+                     <div class="col-sm-1">
+                        <a target="_blank" style="font-size: 9pt;" href="/inventory/item/list">Item List&nbsp;&nbsp;</a>
+                        <small>
+                           <i class="glyphicon glyphicon-new-window"></i>
+                        </small>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom">
+                     <label class="control-label col-sm-2" for="inputTag">Vendor Item Name:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="3" class="form-control input-sm" type="text" id="vendorItemName" name="vendorItemName" value="<?php
 
-                            <div class="col-sm-1" style="margin: 0px">
-                                <span title="<?php
+                        echo (! $dto == null) ? $dto->getVendorItemName() : "";
+                        ?>">
+                     </div>
+                     <label class="control-label col-sm-2" for="inputTag">Vendor Item Code:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="3" class="form-control input-sm" type="text" id="vendor_item_code" name="vendorItemCode" value="<?php
 
-                                echo $this->translate("Item Detail");
-                                ?>" id="item_detail" style="display: none;"> &nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;" onclick="showSelectedItem();"><i style="color: navy"
-                                        class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a> <br>
-                                </span>
-                            </div>
-                            <div class="col-sm-1" style="margin: 0px">
-                                <a style="color: #0080ff;" href="javascript:;"
-                                    onclick="showJqueryDialog('Select Item','1350',$(window).height()-50, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-                                    class="glyphicon glyphicon-folder-open"></i>
-                                </a>
-
-                            </div>
-                            <div class="col-sm-1">
-                                <a target="_blank" style="font-size: 9pt;" href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
-                            </div>
-                        </div>
-                        <div class="form-group margin-bottom">
-                            <label class="control-label col-sm-2" for="inputTag">Vendor Item Name:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="3" class="form-control input-sm" type="text" id="vendorItemName" name="vendorItemName"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getVendorItemName() : "";
-                                    ?>">
-                            </div>
-
-                            <label class="control-label col-sm-2" for="inputTag">Vendor Item Code:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="3" class="form-control input-sm" type="text" id="vendor_item_code" name="vendorItemCode"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getVendorItemCode() : "";
-                                    ?>">
-                            </div>
-                        </div>
-                        <hr style="margin: 5pt 1pt 5pt 1pt;">
-
-                        <div class="form-group margin-bottom required">
-
-                            <label class="control-label col-sm-2"><?php
-                            echo $this->translate("Target Warehouse");
-                            ?>:</label>
-                            <div class="col-sm-3">
-                                <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm">
-                                    <option value=""><?php
-                                    echo $this->translate("...");
-                                    ?></option>
+                        echo (! $dto == null) ? $dto->getVendorItemCode() : "";
+                        ?>">
+                     </div>
+                  </div>
+                  <hr style="margin: 5pt 1pt 5pt 1pt;">
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2"><?php
+                    echo $this->translate("Target Warehouse");
+                    ?>:</label>
+                     <div class="col-sm-3">
+                        <select tabindex="9" name="warehouse" id="target_wh_id" class="form-control input-sm">
+                           <option value=""><?php
+                        echo $this->translate("...");
+                        ?></option>
 <?php
 // ================
 echo $wh_option;
 // ================
 ?>
                                         </select>
-                            </div>
-                        </div>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
 
+                        echo (! $dto == null) ? $dto->getDocQuantity() : "";
+                        ?>">
+                     </div>
+                     <div class="col-sm-3">
+                        <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Unit:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit" value="<?php
 
-                        <div class="form-group margin-bottom required">
-                            <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity"
-                                    value="<?php
+                        echo (! $dto == null) ? $dto->getDocUnit() : "each";
+                        ?>">
+                     </div>
+                     <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
+                     <div class="col-sm-1">
+                        <input tabindex="6" class="form-control input-sm" type="text" name="conversionFactor" value="<?php
 
-                                    echo (! $dto == null) ? $dto->getDocQuantity() : "";
-                                    ?>">
-                            </div>
-                            <div class="col-sm-3">
-                                <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
-                            </div>
+                        echo (! $dto == null) ? $dto->getConversionFactor() : "1";
+                        ?>">
+                     </div>
+                     <div class="col-sm-3">
+                        <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
+                     </div>
+                  </div>
+                  <hr style="margin: 5pt 1pt 5pt 1pt;">
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="7" class="form-control input-sm" type="text" id="docUnitPrice" name="docUnitPrice" value="<?php
 
-                        </div>
-                        <div class="form-group margin-bottom required">
-                            <label class="control-label col-sm-2" for="inputTag">Unit:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit"
-                                    value="<?php
+                        echo (! $dto == null) ? $dto->getDocUnitPrice() : "";
+                        ?>">
+                     </div>
+                     <div class="col-sm-1" style="margin-left: 0px">
+                        <strong><?php
 
-                                    echo (! $dto == null) ? $dto->getDocUnit() : "each";
-                                    ?>">
-                            </div>
-                            <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
-                            <div class="col-sm-1">
-                                <input tabindex="6" class="form-control input-sm" type="text" name="conversionFactor"
-                                    value="<?php
+                        if (! $rootDto == null) :
+                            echo $rootDto->getCurrencyIso3(); endif;
 
-                                    echo (! $dto == null) ? $dto->getConversionFactor() : "1";
-                                    ?>">
+                        ?></strong>
+                     </div>
+                     <label class="control-label col-sm-1" for="inputTag">Exw Price (info):</label>
+                     <div class="col-sm-3">
+                        <input tabindex="8" class="form-control input-sm" type="text" id="exw_unit_price" name="exwUnitPrice" value="<?php
 
-                            </div>
+                        echo (! $dto == null) ? $dto->getExwUnitPrice() : "";
+                        ?>">
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Net Amount:</label>
+                     <div class="col-sm-3">
+                        <input readonly class="form-control input-sm" type="text" id="net_amount" name="netAmount" value="<?php
 
-                            <div class="col-sm-3">
-                                <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
-                            </div>
+                        echo (! $dto == null) ? $dto->getNetAmount() : "";
+                        ?>">
+                     </div>
+                     <div class="col-sm-3">
+                        <strong><?php
 
-                        </div>
+                        if (! $rootDto == null) :
+                            echo $rootDto->getCurrencyIso3(); endif;
 
+                        ?></strong>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Tax Rate:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="9" class="form-control input-sm" type="text" id="tax_rate" name="taxRate" value="<?php
 
-                        <hr style="margin: 5pt 1pt 5pt 1pt;">
+                        echo (! $dto == null) ? $dto->getTaxRate() : "0";
+                        ?>">
+                     </div>
+                     <label class="control-label col-sm-2" for="inputTag">Tax Amount:</label>
+                     <div class="col-sm-3">
+                        <input readonly class="form-control input-sm" type="text" id="tax_amount" name="taxAmount" value="<?php
 
-                        <div class="form-group margin-bottom required">
-                            <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="7" class="form-control input-sm" type="text" id="unit_price" name="docUnitPrice"
-                                    value="<?php
+                        echo (! $dto == null) ? $dto->getTaxAmount() : "";
+                        ?>">
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Gross Amount:</label>
+                     <div class="col-sm-3">
+                        <input readonly class="form-control input-sm" type="text" id="gross_amount" name="grossAmount" value="<?php
 
-                                    echo (! $dto == null) ? $dto->getDocUnitPrice() : "";
-                                    ?>">
-                            </div>
-                            <div class="col-sm-1" style="margin-left: 0px">
-                                <strong><?php
+                        echo (! $dto == null) ? $dto->getGrossAmount() : "";
+                        ?>">
+                     </div>
+                     <div class="col-sm-1">
+                        <strong><?php
 
-                                if (! $rootDto == null) :
-                                    echo $rootDto->getCurrencyIso3(); endif;
+                        if (! $rootDto == null) :
+                            echo $rootDto->getCurrencyIso3(); endif;
 
-                                ?></strong>
-                            </div>
+                        ?></strong>
+                     </div>
+                     <label class="control-label col-sm-1" for="inputTag">Total Exw (info):</label>
+                     <div class="col-sm-3">
+                        <input readonly tabindex="10" class="form-control input-sm" type="text" id="total_exw_price" name="totalExwPrice" value="<?php
 
-                            <label class="control-label col-sm-1" for="inputTag">Exw Price (info):</label>
-                            <div class="col-sm-3">
-                                <input tabindex="8" class="form-control input-sm" type="text" id="exw_unit_price" name="exwUnitPrice"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getExwUnitPrice() : "";
-                                    ?>">
-
-                            </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                            <label class="control-label col-sm-2" for="inputTag">Net Amount:</label>
-                            <div class="col-sm-3">
-                                <input readonly class="form-control input-sm" type="text" id="net_amount" name="netAmount"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getNetAmount() : "";
-                                    ?>">
-
-                            </div>
-                            <div class="col-sm-3">
-                                <strong><?php
-
-                                if (! $rootDto == null) :
-                                    echo $rootDto->getCurrencyIso3(); endif;
-
-                                ?></strong>
-                            </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                            <label class="control-label col-sm-2" for="inputTag">Tax Rate:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="9" class="form-control input-sm" type="text" id="tax_rate" name="taxRate"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getTaxRate() : "0";
-                                    ?>">
-                            </div>
-                            <label class="control-label col-sm-2" for="inputTag">Tax Amount:</label>
-                            <div class="col-sm-3">
-                                <input readonly class="form-control input-sm" type="text" id="tax_amount" name="taxAmount"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getTaxAmount() : "";
-                                    ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group margin-bottom required">
-                            <label class="control-label col-sm-2" for="inputTag">Gross Amount:</label>
-                            <div class="col-sm-3">
-                                <input readonly class="form-control input-sm" type="text" id="gross_amount" name="grossAmount"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getGrossAmount() : "";
-                                    ?>">
-
-                            </div>
-                            <div class="col-sm-1">
-                                <strong><?php
-
-                                if (! $rootDto == null) :
-                                    echo $rootDto->getCurrencyIso3(); endif;
-
-                                ?></strong>
-                            </div>
-
-                            <label class="control-label col-sm-1" for="inputTag">Total Exw (info):</label>
-                            <div class="col-sm-3">
-                                <input readonly tabindex="10" class="form-control input-sm" type="text" id="total_exw_price" name="totalExwPrice"
-                                    value="<?php
-
-                                    echo (! $dto == null) ? $dto->getTotalExwPrice() : "";
-                                    ?>">
-
-                            </div>
-                        </div>
-
-
-                        <div class="form-group margin-bottom required">
-
-                            <label class="control-label col-sm-2"><?php
-                            echo $this->translate("GL Account");
-                            ?>:</label>
-                            <div class="col-sm-3">
-                                <select tabindex="9" name="glAccount" id="glAccount" class="form-control input-sm">
-                                    <option value=""><?php
-                                    echo $this->translate("Select GL Account");
-                                    ?></option><?php
-                                    echo $this->translate("...");
-                                    ?></option>
+                        echo (! $dto == null) ? $dto->getTotalExwPrice() : "";
+                        ?>">
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2"><?php
+                    echo $this->translate("GL Account");
+                    ?>:</label>
+                     <div class="col-sm-3">
+                        <select tabindex="9" name="glAccount" id="glAccount" class="form-control input-sm">
+                           <option value=""><?php
+                        echo $this->translate("Select GL Account");
+                        ?></option><?php
+                        echo $this->translate("...");
+                        ?></option>
 <?php
 // ================
 echo $gl_option;
 // ================
 ?>
                                         </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group margin-bottom required">
-
-                            <label class="control-label col-sm-2"><?php
-                            echo $this->translate("Cost Center");
-                            ?>:</label>
-                            <div class="col-sm-3">
-                                <select tabindex="9" name="costCenter" id="costCenter" class="form-control input-sm">
-                                   <option value=""><?php
-                                echo $this->translate("Select Cost Center");
-                                ?></option>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2"><?php
+                    echo $this->translate("Cost Center");
+                    ?>:</label>
+                     <div class="col-sm-3">
+                        <select tabindex="9" name="costCenter" id="costCenter" class="form-control input-sm">
+                           <option value=""><?php
+                        echo $this->translate("Select Cost Center");
+                        ?></option>
 <?php
 // ================
 echo $cost_center_option;
 // ================
 ?>
                                         </select>
-                            </div>
-                        </div>
-                        <hr style="margin: 5pt 1pt 5pt 1pt;">
+                     </div>
+                  </div>
+                  <hr style="margin: 5pt 1pt 5pt 1pt;">
+                  <div class="form-group margin-bottom">
+                     <label class="control-label col-sm-2">Remark:</label>
+                     <div class="col-sm-3">
+                        <input tabindex="11" class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
 
-                        <div class="form-group margin-bottom">
-                            <label class="control-label col-sm-2">Remark:</label>
-                            <div class="col-sm-3">
-                                <input tabindex="11" class="form-control input-sm" type="text" placeholder="" name="remarks"
-                                    value="<?php
+                        echo (! $dto == null) ? $dto->getRemarks() : "";
+                        ?>">
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom">
+                     <label class="control-label col-sm-2">Description:</label>
+                     <div class="col-sm-4">
+                        <textarea class="form-control input-sm" type="text" rows="6" placeholder="" name="descriptionText" style="font-size: 9pt;"><?php
 
-                                    echo (! $dto == null) ? $dto->getRemarks() : "";
-                                    ?>">
-                            </div>
-                        </div>
+                        echo (! $dto == null) ? $dto->getDescriptionText() : "";
+                        ?></textarea>
+                     </div>
+                  </div>
+                  <hr style="margin: 5pt 1pt 5pt 1pt">
+                  <div class="form-group margin-bottom" style="margin-top: 10pt">
+                     <label class="control-label col-sm-2" for="inputTag"></label>
+                     <div class="col-sm-3">
+                        <a tabindex="11" class="btn btn-default btn-sm" onclick="submitForm('New_Invoice_Row');" href="javascript:;">
+                           <small>
+                              <i class="glyphicon glyphicon-floppy-disk"></i>
+                           </small>&nbsp;<?php
 
-                        <div class="form-group margin-bottom">
-                            <label class="control-label col-sm-2">Description:</label>
-                            <div class="col-sm-4">
-                                <textarea class="form-control input-sm" type="text" rows="6" placeholder="" name="descriptionText" style="font-size: 9pt;"><?php
+                        echo $this->translate("Save");
+                        ?></a>
+                        <a tabindex="12" class="btn btn-default btn-sm" href="<?php
 
-                                echo (! $dto == null) ? $dto->getDescriptionText() : "";
-                                ?></textarea>
-                            </div>
-                        </div>
-                        <hr style="margin: 5pt 1pt 5pt 1pt">
+                        echo $review_url;
+                        ?>">
+                           <small>
+                              <i class="glyphicon glyphicon-remove"></i>
+                           </small>&nbsp;<?php
 
-
-                        <div class="form-group margin-bottom" style="margin-top: 10pt">
-                            <label class="control-label col-sm-2" for="inputTag"></label>
-                            <div class="col-sm-3">
-                                <a tabindex="11" class="btn btn-default btn-sm" onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php
-
-                                echo $this->translate("Save");
-                                ?></a> <a tabindex="12" class="btn btn-default btn-sm" href="<?php
-
-                                echo $review_url;
-                                ?>"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;<?php
-
-                                echo $this->translate("Cancel");
-                                ?></a>
-
-                            </div>
-
-
-                            <div class="col-sm-3"></div>
-                        </div>
-                    </form>
-
-
-                </div>
-
-                <!-- end tab -->
+                        echo $this->translate("Cancel");
+                        ?></a>
+                     </div>
+                     <div class="col-sm-3"></div>
+                  </div>
+               </form>
             </div>
-        </div>
-    </div>
-    <!-- /#page-content-wrapper -->
-
+            <!-- end tab -->
+         </div>
+      </div>
+   </div>
+   <!-- /#page-content-wrapper -->
 </div>
 <!-- /#wrapper -->
-
 <script type="text/javascript">
 
         $('#unit_price').bind('change', function() {
@@ -734,30 +691,72 @@ echo $cost_center_option;
         	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
         });
 
-    	$( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
-        $( function() {
-             $( "#vendor_name" ).autocomplete({
-              source: "/bp/vendor-search/auto-complete",
-              minLength: 3,
-              select: function( event, ui ) {
-            	  $( "#vendor_id" ).val(ui.item.id);
-                //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
-            	  //alert($( "#vendor_id" ).val());
+    	// search po item
+        $( "#po_item_name" ).autocomplete({
+            source: "/procure/po-search/auto-complete?vendor_id=<?php
 
-            	 	$('#global-notice').show();
-            		$('#global-notice').html('"' + ui.item.value + '" selected');
-            		$('#global-notice').fadeOut(5000);
-            		//$("#jquery_dialog").dialog("close");
-              }
-              })
-              .autocomplete( "instance" )._renderItem = function( ul, item ) {
-              return $( "<li>" )
-                .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
-                .appendTo( ul );
-            };
-              ;
-         } );
+            echo $rootDto->getVendor();
+            ?>",
+            minLength: 2,
+            select: function( event, ui ) {
+
+        	   	$( "#gl_account_id" ).val("");
+          	   	$( "#cost_center_id").val("");
+          	 	$( "#docUnitPrice").val("");
+                
+         
+                
+                $( "#po_row_id" ).val(ui.item.po_row_id);
+                $( "#quantity" ).val(ui.item.row_quantity);
+                $( "#docUnitPrice" ).val(ui.item.row_unit_price);
+                
+                $( "#item_id" ).val(ui.item.item_id);
+                $( "#item_name" ).val(ui.item.item_name);
+
+                
+
+                $('#item_url').text('/inventory/item/show1?tab_idx=11&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
+                $('#po_row_url').text('/procure/po-row/show1?entity_id='+ui.item.po_row_id+'&token='+ui.item.token);
+
+                $('#rowUnit').val(ui.item.row_unit);
+                $('#po_row_uom').text(ui.item.row_unit +' = ' + ui.item.row_conversion_factor);
+                 	 
+                
+                 //alert(ui.item.item_id);
+                $('#global-notice').show();
+                $('#global-notice').html('"' + ui.item.item_name + '" selected');
+                $('#global-notice').fadeOut(5000);
+            	$('#item_detail').show();
+             	$('#pr_row_detail').show();
+                
+             	$( "#quantity" ).focus();
+
+
+             	// update GL account and cost center
+             	if(ui.item.inventory_account_id !==null){
+                 	// update GL account and cost center
+             	   	$( "#glAccount" ).val(ui.item.inventory_account_id);
+              	}
+
+             // update GL account and cost center
+             	if(ui.item.cost_center_id !==null){
+                 	// update GL account and cost center
+             	   	$( "#costCenter").val(ui.item.cost_center_id);
+              	}		
+            }
+            })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+            
+            
+            
+        .append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>"  + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + 
+                      "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>"+ item.vendor_name +'<br>' + item.po_number + " | " + item.row_identifer_keyword  + " | " + item.manufacturer_code_key +"<span></div>" )
+      
+     //         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
+              .appendTo( ul );
+            };	
 
         function showSelectedItem(){
     		var url= $('#item_url').text();
@@ -799,20 +798,19 @@ echo $cost_center_option;
         
         
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+  
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);

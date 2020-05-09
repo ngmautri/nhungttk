@@ -85,15 +85,16 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
-                "prNumber",
-                "submittedOn",
-                "keywords",
-                "warehouse",
-                "department",
-                "remarks"
+                "docNumber",
+                "docDate",
+                "vendor",
+                "docCurrency",
+                "remarks",
+                "incoterm",
+                "incotermPlace",
+                "pmtTerm",
+                "warehouse"
             ];
-
-            // $snapshot->keywords;
 
             $newSnapshot = QRSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
             $changeLog = $snapshot->compare($newSnapshot);

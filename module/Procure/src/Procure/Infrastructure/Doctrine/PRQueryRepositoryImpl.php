@@ -7,6 +7,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface;
+use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Doctrine\SQL\PrSQL;
 use Procure\Infrastructure\Mapper\PrMapper;
 
@@ -173,6 +174,8 @@ WHERE id = %s";
                 continue;
             }
             $totalRows ++;
+            $localSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
+
             $localSnapshot->draftPoQuantity = $r["po_qty"];
             $localSnapshot->postedPoQuantity = $r["posted_po_qty"];
 
@@ -187,6 +190,7 @@ WHERE id = %s";
 
             if ($localSnapshot->postedGrQuantity >= $localSnapshot->getDocQuantity()) {
                 $completedRows ++;
+                $localSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
             }
 
             $localEntity = PRRow::makeFromSnapshot($localSnapshot);

@@ -6,7 +6,6 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Domain\GenericRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\Shared\Constants;
@@ -17,30 +16,10 @@ use Procure\Domain\Shared\Constants;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PORow extends GenericRow
+class PORow extends BaseRow
 {
 
     private static $instance = null;
-
-    // Specific Attributes
-    // =================================
-    protected $draftGrQuantity;
-
-    protected $postedGrQuantity;
-
-    protected $confirmedGrBalance;
-
-    protected $openGrBalance;
-
-    protected $draftAPQuantity;
-
-    protected $postedAPQuantity;
-
-    protected $openAPQuantity;
-
-    protected $billedAmount;
-
-    protected $openAPAmount;
 
     private function __construct()
     {}
@@ -88,14 +67,15 @@ class PORow extends GenericRow
      */
     public static function createSnapshotProps()
     {
+        $baseClass = "Procure\Domain\PurchaseOrder\BaseRow";
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);
 
         $props = $reflectionClass->getProperties();
 
         foreach ($props as $property) {
-
-            if ($property->class == $reflectionClass->getName()) {
+            // echo $property->class . "\n";
+            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
                 $property->setAccessible(true);
                 $propertyName = $property->getName();
                 print "\n" . "public $" . $propertyName . ";";

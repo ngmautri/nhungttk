@@ -5,7 +5,6 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
-use Procure\Domain\GenericDoc;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
@@ -27,7 +26,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericPO extends GenericDoc
+abstract class GenericPO extends BaseDoc
 {
 
     abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService);

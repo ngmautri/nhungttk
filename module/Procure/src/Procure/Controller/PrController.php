@@ -55,6 +55,8 @@ class PrController extends AbstractActionController
 
     protected $logger;
 
+    protected $eventBusService;
+
     /**
      *
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -112,7 +114,7 @@ class PrController extends AbstractActionController
 
             $cmdHandler = new CreateHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (OperationFailedException $e) {
@@ -209,7 +211,7 @@ class PrController extends AbstractActionController
 
             $cmdHandler = new EditHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -313,7 +315,7 @@ class PrController extends AbstractActionController
             $options = new RowCreateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
             $cmdHander = new AddRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHander);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -449,11 +451,11 @@ class PrController extends AbstractActionController
 
             $cmdHandler = new UpdateRowCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
-            echo $e->getTraceAsString();
+            // echo $e->getTraceAsString();
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
@@ -571,6 +573,7 @@ class PrController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function reviewAction()
@@ -1270,7 +1273,7 @@ class PrController extends AbstractActionController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'rootDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -1746,5 +1749,23 @@ class PrController extends AbstractActionController
     public function setPrReporter(PrReporter $prReporter)
     {
         $this->prReporter = $prReporter;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Eventbus\EventBusService
+     */
+    public function getEventBusService()
+    {
+        return $this->eventBusService;
+    }
+
+    /**
+     *
+     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
+     */
+    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
+    {
+        $this->eventBusService = $eventBusService;
     }
 }

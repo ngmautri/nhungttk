@@ -45,7 +45,7 @@ class FormHelper
 
         $progress_div = sprintf('<div class="progress" style="height: 18px; margin-bottom:2pt;">
 <div class="progress-bar %s" role="progressbar" style="width:%s%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">
- <span style="font-size: 8pt; padding: 0px 0px 1px 1px; color:%s;">%s%s %s</span>
+ <span style="font-size:7.5pt; padding: 0px 0px 1px 1px; color:%s;">%s%s %s</span>
 </div>
 </div>', $progress_cls, $completion, "%", $completion, $color, $completion, "%", $caption);
 

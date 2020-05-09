@@ -58,6 +58,10 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     // Doc Details
     // =========================
+    protected $completedAPRows;
+
+    protected $completedGRRows;
+
     protected $paymentTermName;
 
     protected $paymentTermCode;
@@ -231,6 +235,42 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     protected $docNumber;
 
     protected $docDate;
+
+    /**
+     *
+     * @param mixed $completedAPRows
+     */
+    protected function setCompletedAPRows($completedAPRows)
+    {
+        $this->completedAPRows = $completedAPRows;
+    }
+
+    /**
+     *
+     * @param mixed $completedGRRows
+     */
+    protected function setCompletedGRRows($completedGRRows)
+    {
+        $this->completedGRRows = $completedGRRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompletedAPRows()
+    {
+        return $this->completedAPRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompletedGRRows()
+    {
+        return $this->completedGRRows;
+    }
 
     /**
      *

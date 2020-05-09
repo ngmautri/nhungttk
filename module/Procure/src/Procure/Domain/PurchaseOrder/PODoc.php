@@ -243,14 +243,15 @@ class PODoc extends GenericPO
 
     public static function createSnapshotProps()
     {
+        $baseClass = "Procure\Domain\PurchaseOrder\BaseDoc";
         $entity = new self();
         $reflectionClass = new \ReflectionClass($entity);
 
         $props = $reflectionClass->getProperties();
 
         foreach ($props as $property) {
-
-            if ($property->class == $reflectionClass->getName()) {
+            // echo $property->class . "\n";
+            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
                 $property->setAccessible(true);
                 $propertyName = $property->getName();
                 print "\n" . "public $" . $propertyName . ";";

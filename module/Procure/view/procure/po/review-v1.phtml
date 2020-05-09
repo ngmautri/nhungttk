@@ -79,6 +79,7 @@ if (! $headerDTO == null) {
 
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $other_po_url = sprintf($this->baseUrl . "/procure/po-report/get-of-vendor?vendorId=%s", $headerDTO->getVendor());
+    $other_po__row_url = sprintf($this->baseUrl . "/procure/po-report/vendor-row-status?vendorId=%s", $headerDTO->getVendor());
 
     $update_header_url = sprintf($this->baseUrl . "/procure/po/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
@@ -334,6 +335,16 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                      &nbsp;Other PO
                   </a>
                </li>
+               
+                 <li>
+                  <a href="<?php
+
+                echo $other_po__row_url;
+                ?>">
+                     <span class="glyphicon glyphicon-list"></span>
+                     &nbsp;Other Po Row
+                  </a>
+               </li>
             </ul>
             <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
                <!-- Tab1 -->
@@ -404,11 +415,15 @@ echo Toolbar::showToolbarPO($headerDTO, $action, $this);
                                 
                                 
                                 
+                                
+                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
+                                
                                 
                                 
                                 

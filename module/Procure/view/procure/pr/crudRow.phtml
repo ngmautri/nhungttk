@@ -387,8 +387,6 @@ $( "#item_name" ).focus();
             select: function( event, ui ) {
 
               // set pr row empty
-              $( "#pr_row_id" ).val("");
-              $( "#pr_item_name" ).val("");
               $( "#item_id" ).val(ui.item.id);
 
               $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
@@ -411,8 +409,11 @@ $( "#item_name" ).focus();
         		  serial_no = " : " + item.item_serial;
         	  }
 
+        	  var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
+                  
+
              return $( "<li>" )
-               .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+               .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><table><tr><td>"+img+"</td><td><span style='padding-left:5px; font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='padding-left:5px; color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></td></tr></table></div>" )
                .appendTo( ul );
            };
       
@@ -476,6 +477,8 @@ $( "#item_name" ).focus();
         <?php
        	 endif
         ?>
+        
+        
         
   
     function selectItem(id, token,target, name, target_name, context = null){

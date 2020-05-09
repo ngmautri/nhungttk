@@ -3,6 +3,7 @@ namespace Procure\Infrastructure\Persistence\Doctrine;
 
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Contract\SqlFilterInterface;
 use Procure\Infrastructure\Mapper\PoMapper;
 use Procure\Infrastructure\Persistence\PrReportRepositoryInterface;
@@ -81,6 +82,9 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
         }
 
         $resultList = [];
+        $rootSnapshot = 0;
+        $completedRows = 0;
+
         foreach ($results as $r) {
 
             /**@var \Application\Entity\NmtProcurePo $po ;*/
@@ -92,8 +96,18 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
                 continue;
             }
 
+            if ($r['total_row'] <= $r['ap_completed']) {
+                $rootSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
+                $completedRows ++;
+            } else {
+                $completed = false;
+                $rootSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
+            }
+
+            $rootSnapshot->completedGRRows = $r['gr_completed'];
+            $rootSnapshot->completedAPRows = $r['ap_completed'];
+            $rootSnapshot->completedRows = $r['gr_completed'];
             $rootSnapshot->totalRows = $r["total_row"];
-            $rootSnapshot->totalActiveRows = $r["active_row"];
             $rootSnapshot->netAmount = $r["net_amount"];
             $rootSnapshot->taxAmount = $r["tax_amount"];
             $rootSnapshot->grossAmount = $r["gross_amount"];
@@ -115,7 +129,12 @@ class PoReportRepositoryImpl extends AbstractDoctrineRepository implements PrRep
             throw new \InvalidArgumentException("Invalid filter object");
         }
 
-        return PoReportHelper::getListTotal($this->getDoctrineEM(), $filter);
+        $sort_by = null;
+        $sort = null;
+        $limit = null;
+        $offset = null;
+        $result = PoReportHelper::getList($this->doctrineEM, $filter, $sort_by, $sort, $limit, $offset);
+        return count($result);
     }
 
     public function getAllRowTotal(SqlFilterInterface $filter)

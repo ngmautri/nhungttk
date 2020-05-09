@@ -36,7 +36,31 @@ class PoReportHelper
             return null;
         }
 
-        $sql = PoSQL::PO_LIST;
+        $sql = "
+SELECT
+    nmt_procure_po.*,
+    COUNT(nmt_procure_po_row.po_row_id) AS total_row,
+    SUM(nmt_procure_po_row.net_amount) AS net_amount,
+    SUM(nmt_procure_po_row.tax_amount) AS tax_amount,
+    SUM(nmt_procure_po_row.gross_amount) AS gross_amount,
+    SUM(nmt_procure_po_row.billed_amount) AS billed_amount,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_gr_qty, 0))<=0 THEN  1 ELSE 0 END) AS gr_completed,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_gr_qty, 0))>0 AND (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_gr_qty, 0)) < nmt_procure_po_row.po_qty  THEN  1 ELSE 0 END) AS gr_partial_completed,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_ap_qty, 0))<=0 THEN  1 ELSE 0 END) AS ap_completed,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_ap_qty, 0))>0 AND (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_ap_qty, 0)) < nmt_procure_po_row.po_qty  THEN  1 ELSE 0 END) AS ap_partial_completed
+    FROM nmt_procure_po
+LEFT JOIN
+(
+%s
+)
+AS nmt_procure_po_row
+ON nmt_procure_po_row.po_id = nmt_procure_po.id
+WHERE 1
+";
+
+        $sql1 = PoSQL::PO_ROW_ALL;
+
+        $sql = \sprintf($sql, $sql1);
 
         if ($filter->getDocStatus() == "all") {
             $filter->docStatus = null;
@@ -91,19 +115,20 @@ class PoReportHelper
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
+
         $sql = $sql . ";";
 
         //
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePo', 'nmt_procure_po');
-            $rsm->addScalarResult("active_row", "active_row");
             $rsm->addScalarResult("total_row", "total_row");
-            $rsm->addScalarResult("max_row_number", "max_row_number");
             $rsm->addScalarResult("net_amount", "net_amount");
             $rsm->addScalarResult("tax_amount", "tax_amount");
             $rsm->addScalarResult("gross_amount", "gross_amount");
             $rsm->addScalarResult("billed_amount", "billed_amount");
+            $rsm->addScalarResult("ap_completed", "ap_completed");
+            $rsm->addScalarResult("gr_completed", "gr_completed");
 
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
 
@@ -130,7 +155,28 @@ class PoReportHelper
             return null;
         }
 
-        $sql = PoSQL::PO_LIST;
+        $sql = "
+SELECT
+    nmt_procure_po.*,
+    COUNT(nmt_procure_po_row.po_row_id) AS total_row,
+    SUM(nmt_procure_po_row.po_row_id) AS billed_amount,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_gr_qty, 0))<=0 THEN  1 ELSE 0 END) AS gr_completed,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_gr_qty, 0))>0 AND (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_gr_qty, 0)) < nmt_procure_po_row.po_qty  THEN  1 ELSE 0 END) AS gr_partial_completed,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_ap_qty, 0))<=0 THEN  1 ELSE 0 END) AS ap_completed,
+    SUM(CASE WHEN (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_ap_qty, 0))>0 AND (nmt_procure_po_row.po_qty - IFNULL(nmt_procure_po_row.posted_ap_qty, 0)) < nmt_procure_po_row.po_qty  THEN  1 ELSE 0 END) AS ap_partial_completed
+    FROM nmt_procure_po
+LEFT JOIN
+(
+%s
+)
+AS nmt_procure_po_row
+ON nmt_procure_po_row.po_id = nmt_procure_po.id
+WHERE 1
+";
+
+        $sql1 = PoSQL::PO_ROW_ALL;
+
+        $sql = \sprintf($sql, $sql1);
 
         if ($filter->getDocStatus() == "all") {
             $filter->docStatus = null;
@@ -223,9 +269,14 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
             $sql_tmp = $sql_tmp . \sprintf(" AND year(nmt_procure_po.doc_date)=%s", $filter->getDocYear());
         }
 
+        if ($filter->getVendorId() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(' AND nmt_procure_po.vendor_id = %s', $filter->getVendorId());
+        }
+
         if ($filter->getBalance() == 0) {
             $sql_tmp1 = $sql_tmp1 . " HAVING (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) <= 0";
         }
+
         if ($filter->getBalance() == 1) {
             $sql_tmp1 = $sql_tmp1 . " HAVING (nmt_procure_po_row.quantity -  IFNULL(fin_vendor_invoice_row.posted_ap_qty,0)) > 0";
         }
@@ -325,6 +376,10 @@ WHERE 1 AND nmt_procure_po_row.is_active=1 AND nmt_procure_po.doc_status='posted
 
         if ($filter->getDocYear() > 0) {
             $sql_tmp = $sql_tmp . \sprintf(" AND year(nmt_procure_po.doc_date)=%s", $filter->getDocYear());
+        }
+
+        if ($filter->getVendorId() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(' AND nmt_procure_po.vendor_id = %s', $filter->getVendorId());
         }
 
         if ($filter->getBalance() == 0) {

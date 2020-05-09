@@ -11,11 +11,11 @@ use Procure\Domain\Shared\ProcureDocStatus;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
-/**@var \Procure\Application\DTO\Pr\PrDTO $rootDTO ;*/
+/**@var \Procure\Application\DTO\Pr\PrDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Pr\PrRowDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-// var_dump($rootDTO);
+// var_dump($headerDTO);
 // echo memory_get_usage();
 
 $add_row_url = null;
@@ -44,44 +44,44 @@ $currencyId = null;
 $incotermId = null;
 $progress_div = '';
 
-if (! $rootDTO == null) {
+if (! $headerDTO == null) {
 
-    if ($rootDTO->getTotalRows() > 0) {
-        $completion = $rootDTO->getCompletedRows() / $rootDTO->getTotalRows();
+    if ($headerDTO->getTotalRows() > 0) {
+        $completion = $headerDTO->getCompletedRows() / $headerDTO->getTotalRows();
     } else {
         $completion = 0;
     }
 
     $progress_div = FormHelper::createProgressDiv($completion, 'completed.');
 
-    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $rootDTO->getTransactionStatus());
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
 
-    if ($rootDTO->getTransactionStatus() == "completed") {
-        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $rootDTO->getTransactionStatus());
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
         $alert = "success";
     }
 
-    $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $status_url = sprintf($this->baseUrl . "/procure/pr/status?entity_id=%s&token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/pr/review?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $view_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/pr/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/pr/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $view_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $update_header_url = sprintf($this->baseUrl . "/procure/pr/update?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $update_header_url = sprintf($this->baseUrl . "/procure/pr/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    $add_row_url = sprintf($this->baseUrl . "/procure/pr/add-row?target_id=%s&target_token=%s", $rootDTO->getId(), $rootDTO->getToken());
+    $add_row_url = sprintf($this->baseUrl . "/procure/pr/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
-    $save_as_pdf = sprintf($this->baseUrl . "/procure/pr/print?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $rootDTO->getId(), $rootDTO->getToken());
-    $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $rootDTO->getId(), $rootDTO->getToken());
-    $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $rootDTO->getId(), $rootDTO->getToken());
+    $save_as_pdf = sprintf($this->baseUrl . "/procure/pr/print?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($rootDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
-    switch ($rootDTO->getDocStatus()) {
+    switch ($headerDTO->getDocStatus()) {
         case ProcureDocStatus::DOC_STATUS_DRAFT:
             $isDraft = true;
             $canPost = true;
@@ -91,10 +91,10 @@ if (! $rootDTO == null) {
             break;
     }
 
-    $wh_id = $rootDTO->getWarehouse();
-    $pmtTermId = $rootDTO->getPmtTerm();
-    $currencyId = $rootDTO->getDocCurrency();
-    $incotermId = $rootDTO->getIncoterm();
+    $wh_id = $headerDTO->getWarehouse();
+    $pmtTermId = $headerDTO->getPmtTerm();
+    $currencyId = $headerDTO->getDocCurrency();
+    $incotermId = $headerDTO->getIncoterm();
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -132,22 +132,24 @@ endif;
             <li>
                <b><?php
 
-            if (! $rootDTO == null) :
-                echo sprintf("PR #%s (Version #%s)", $rootDTO->getSysNumber(), $rootDTO->getRevisionNo()); endif;
+            if (! $headerDTO == null) :
+                echo sprintf("PR #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
 
             ?></b>
-               <span style="color: fuchsia;">0sffff</span>
+               <span style="color: black;"><br><?php
+            echo ($headerDTO !== null) ? $headerDTO->getDocNumber() : "";
+            ?></span>
             </li>
             <li>-----</li>
             <li>Status: <?php
 
-            if (! $rootDTO == null) :
-                echo $rootDTO->getDocStatus(); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->getDocStatus(); endif;
 
             ?> </li>
             <li>Total rows: <?php
 
-            echo ($rootDTO->totalRows);
+            echo ($headerDTO->totalRows);
             ?></li>
             <li>Status: <?php
 
@@ -156,7 +158,7 @@ endif;
             <li>-----</li>
             <li>Created by: <?php
 
-            echo $rootDTO->getCreatedByName();
+            echo $headerDTO->getCreatedByName();
             echo $progress_div?></li>
          </ul>
       </div>
@@ -174,7 +176,25 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 	<?php endif;
 
 ?>
-	</div>
+
+
+ <div class="container_dropzone">
+         <input style="display: none;" type="file" name="pictures[]" id="file">
+         <!-- Drag and Drop container-->
+         <div class="upload-area" id="uploadfile">
+            <h4>
+               <i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i>
+               <br>
+               <br>
+               Drag and Drop file here
+            </h4>
+         </div>
+         <div id="selected_file"></div>
+         <a id="uploadBtn" class="btn btn-default btn-sm" style="color: black; margin-top: 4pt; margin-left: 10pt; display: none;" href="javascript:;" onclick="doUploading();">
+            <i class="fa fa-upload" aria-hidden="true">&nbsp;&nbsp;Upload</i>
+         </a>
+      </div>
+   </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
    <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
@@ -248,10 +268,10 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
     ?>" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="entity_id" value="<?php
 
-    echo (! $rootDTO == null) ? $rootDTO->getId() : "";
+    echo (! $headerDTO == null) ? $headerDTO->getId() : "";
     ?>" />
                   <input type="hidden" name="entity_token" value="<?php
-    echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
+    echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
     ?>" />
                   <input type="hidden" name="version" value="<?php
     echo $version;
@@ -281,7 +301,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                            <div class="col-sm-8">
                               <input class="form-control input-sm" type="text" placeholder="" name="reversalReason" value="<?php
 
-    echo (! $rootDTO == null) ? '[Reversal] ' . $rootDTO->getRemarks() : "";
+    echo (! $headerDTO == null) ? '[Reversal] ' . $headerDTO->getRemarks() : "";
     ?>">
                            </div>
                         </div>
@@ -316,7 +336,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
 <!-- ================ TOOL BAR ======================-->
                <div style="position: relative; float: right;">
                <?php
-            // echo Toolbar::showToolbarAP($rootDTO, $action, $this);
+            // echo Toolbar::showToolbarAP($headerDTO, $action, $this);
             ?>
                </div>
                <!-- ================== TOOL BAR ===================-->
@@ -350,7 +370,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                            <label class="control-label col-sm-2">PR number:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" placeholder="" id="submittedOn" name="submittedOn" value="<?php
-                            echo (! $rootDTO == null) ? $rootDTO->getPrName() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getPrName() : "";
                             ?>">
                            </div>
                         </div>
@@ -358,8 +378,8 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                            <label class="control-label col-sm-2 required">PR Date:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" id="docDate" name="docDate" value="<?php
-                            if (! $rootDTO == null) :
-                                echo $rootDTO->getSubmittedOn(); endif;
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getSubmittedOn(); endif;
 
                             ?>"
                                  placeholder=" please select" />
@@ -369,7 +389,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                            <label class="control-label col-sm-2">Keywords.:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" placeholder="" id="" keywords"" name="keywords" value="<?php
-                            echo (! $rootDTO == null) ? $rootDTO->getKeywords() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getKeywords() : "";
                             ?>">
                            </div>
                         </div>
@@ -411,7 +431,7 @@ echo $department_option;
                            <label class="control-label col-sm-2">Description</label>
                            <div class="col-sm-8">
                               <input class="form-control input-sm" type="text" id="remarks" placeholder="" name="remarks" value="<?php
-                            echo (! $rootDTO == null) ? $rootDTO->getRemarks() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getRemarks() : "";
                             ?>">
                            </div>
                         </div>
@@ -469,37 +489,37 @@ echo $department_option;
                             ?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
                                  onclick="showJqueryDialog('Contract /PO: <?php
 
-                                echo $rootDTO->getSysNumber() . ' - ' . $rootDTO->getContractNo();
+                                echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
                                 ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php
 
-                                echo $rootDTO->getToken()?>&entity_id=<?php
+                                echo $headerDTO->getToken()?>&entity_id=<?php
 
-                                echo $rootDTO->getId()?>','j_loaded_data',true);">
+                                echo $headerDTO->getId()?>','j_loaded_data',true);">
                                  <i class="fa fa-window-maximize" aria-hidden="true"></i>
                               </a>
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               <span>
                                  <strong>PO#: <?php
 
-                                echo (! $rootDTO == null) ? $rootDTO->getSysNumber() : "";
+                                echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
                                 ?> // </strong>
                               </span>
                               <span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
 						Net amount: <?php
 
-    echo number_format($rootDTO->getNetAmount(), 2) . " " . $rootDTO->getCurrencyIso3();
+    echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3();
     ?>
                         &nbsp;|&nbsp;Tax amount: <?php
 
-                        echo number_format($rootDTO->getTaxAmount(), 2);
+                        echo number_format($headerDTO->getTaxAmount(), 2);
                         ?>
                         &nbsp;|&nbsp;Gross amount: <?php
 
-                        echo "<b>" . number_format($rootDTO->getGrossAmount(), 2) . "</b> " . $rootDTO->getCurrencyIso3();
+                        echo "<b>" . number_format($headerDTO->getGrossAmount(), 2) . "</b> " . $headerDTO->getCurrencyIso3();
                         ?>
                         &nbsp;|&nbsp;Total rows:<?php
 
-                        echo ($rootDTO->getTotalActiveRows());
+                        echo ($headerDTO->getTotalActiveRows());
                         ?>
 					</span>
                               <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -681,11 +701,11 @@ function doPosting1() {
 
 	var url="/procure/ap/review";
 	var entity_id="<?php
-echo (! $rootDTO == null) ? $rootDTO->getId() : "";
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
 ?>";
 	var entity_token="<?php
 
-echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
 ?>";
 	var version="<?php
 echo $version;
@@ -719,11 +739,11 @@ function doAmendment() {
 	var url="/procure/po/enable-amendment";
 	var entity_id="<?php
 
-echo (! $rootDTO == null) ? $rootDTO->getId() : "";
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
 ?>";
 	var entity_token="<?php
 
-echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
 ?>";
 	var version="<?php
 
@@ -752,11 +772,11 @@ function doPostAmendment() {
 	var url="/procure/po/review-amendment";
 	var entity_id="<?php
 
-echo (! $rootDTO == null) ? $rootDTO->getId() : "";
+echo (! $headerDTO == null) ? $headerDTO->getId() : "";
 ?>";
 	var entity_token="<?php
 
-echo (! $rootDTO == null) ? $rootDTO->getToken() : "";
+echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
 ?>";
 	var version="<?php
 
@@ -1032,7 +1052,9 @@ echo $hoverMode;
 
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
    	   { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
-       { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
+            { title: "Status", dataType: "string", dataIndx: "transactionStatus", align: 'left',minWidth: 150,editable: true},
+
+   	       { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
   		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
        { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
@@ -1040,7 +1062,7 @@ echo $hoverMode;
 
       	<?php
 
-    if ($rootDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         <?php
@@ -1097,4 +1119,236 @@ echo $hoverMode;
     function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
     }
+
+
+    //==================
+
+
+    var dataArray = [];
+    var maxFiles = 2;
+
+
+    // Drag enter
+    $('.upload-area').on('dragenter', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $("h4").addClass('cat_drag_over');
+            
+        //$("h4").text("Drop");
+    });
+
+    // Drag enter
+    $('.upload-area').on('dragleave', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $("h4").removeClass('cat_drag_over');
+            
+        //$("h4").text("Drop");
+    });
+
+    // Drag over
+    $('.upload-area').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $("h4").addClass('cat_drag_over');
+        //$("h4").text("Drop");
+    });
+
+    // Drop
+    $('.upload-area').on('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        //$("h4").text("Uploaded");
+        $("h4").removeClass('cat_drag_over');
+        
+
+        var file = e.originalEvent.dataTransfer.files;
+        var fd = new FormData();
+
+        fd.append('attachments', file[0]);         
+        fd.append('target_id', <?php
+        echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+        ?>);
+        fd.append('token', '<?php
+        echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+        ?>');
+        fd.append('redirectUrl',null);
+        fd.append('documentSubject','na');
+        fd.append('validTo','');
+        fd.append('validFrom','');
+        fd.append('isActive',1);
+        fd.append('markedForDeletion',0);
+        fd.append('filePassword','');
+        fd.append('visibility',1);
+        fd.append('remarks','');
+
+        $('#file')[0] = file[0];
+        //alert(file[0].size + file[0].type);
+
+        dataArray.push(file[0]);
+
+        if(dataArray.length>maxFiles){
+     	   alert("Max file " +  maxFiles);
+     	   return;
+        }
+
+        if(dataArray.length == 0){
+     	   return;
+        }
+        
+        var i;
+        var selected_file="";
+        
+        selected_file= "<ul>";
+        for (i = 0; i < dataArray.length; i++) {
+     	   selected_file = selected_file + "<li>"+ dataArray[i].name +"; "+dataArray[i].size + "</li>";
+        } 
+
+        selected_file= selected_file+"</ul>";
+
+        $('#selected_file').html(selected_file);
+        $('#uploadBtn').show();
+           
+        //uploadData(fd);
+    });
+
+    // Open file selector on div click
+    $("#uploadfile").click(function(){
+        $("#file").click();
+    });
+
+    // file selected
+    $("#file").change(function(){
+        var fd = new FormData();
+
+        var files = $('#file')[0].files[0];
+
+        fd.append('attachments',files);
+        fd.append('target_id', <?php
+
+        echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+        ?>);
+        fd.append('checksum','na');
+        fd.append('token', '<?php
+
+        echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+        ?>');       
+        fd.append('subject','na');
+        fd.append('entity_id','na');
+        fd.append('entity_token','na');
+  
+
+        //uploadData(fd);
+    });
+
+
+ //Sending AJAX request and upload file
+ function uploadData(formdata){
+ 	
+    $.ajax({
+        url: '/procure/pr-attachment/upload1',
+        type: 'POST',
+        data: formdata,
+        contentType: false,
+        processData: false,
+        dataType: 'json',       
+        success: function( jqXHR, textStatus ){
+     	   //alert("ok");
+            //alert(response);
+     	   location.reload();
+        },
+    }).fail(function(  jqXHR, textStatus ) {
+ 	    
+ 		
+ 		 alert('false');
+
+ 		   });
+ }
+
+ //Sending AJAX request and upload file
+ function doUploading(){
+
+ 	 if(dataArray.length == 0){
+ 		alert("No File");
+ 	  	return;
+ 	 }    
+
+ 	 $("#b_modal_no_header").modal(); 
+
+ 	 //alert(dataArray.length);
+ 	 
+     var fd = new FormData();
+     fd.append('attachments',dataArray[0]);
+     fd.append('target_id', <?php
+
+    echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+    ?>);
+     fd.append('checksum','na');
+     fd.append('token', '<?php
+
+    echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+    ?>');       
+     fd.append('documentSubject','na');
+     fd.append('entity_id','na');
+     fd.append('entity_token','na');
+     fd.append('validFrom','');
+     fd.append('validTo','');
+     fd.append('redirectUrl',null);
+     fd.append('isActive',1);
+     fd.append('remarks','');
+     fd.append('markedForDeletion',0);
+     fd.append('visibility',1);
+     fd.append('filePassword','');
+         
+             
+    $.ajax({
+        url: '/procure/pr-attachment/upload1',
+        type: 'POST',
+        data: fd,
+        contentType: false,
+        processData: false,
+        dataType: 'json',       
+        success: function( jqXHR, textStatus ){
+     	   //alert("ok");
+            //alert(response);
+     	   location.reload();
+        },
+    }).fail(function(  jqXHR, textStatus ) {
+ 	    
+ 		
+ 		 alert(jqXHR.responseText  + textStatus);
+
+ 		   });
+ }
+
+ //Added thumbnail
+ function addThumbnail(data){
+    $("#uploadfile h1").remove(); 
+    var len = $("#uploadfile div.thumbnail").length;
+
+    var num = Number(len);
+    num = num + 1;
+
+    var name = data.name;
+    var size = convertSize(data.size);
+    var src = data.src;
+
+    // Creating an thumbnail
+    $("#uploadfile").append('<div id="thumbnail_'+num+'" class="thumbnail"></div>');
+    $("#thumbnail_"+num).append('<img src="'+src+'" width="100%" height="78%">');
+    $("#thumbnail_"+num).append('<span class="size">'+size+'<span>');
+
+ }
+
+ //Bytes conversion
+ function convertSize(size) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (size == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(size) / Math.log(1024)));
+    return Math.round(size / Math.pow(1024, i), 2) + ' ' + sizes[i];
+ }
+         
+
+    
 </script>

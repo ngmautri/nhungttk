@@ -104,6 +104,32 @@ class AbstractRow extends AbstractEntity
 
     protected $itemMonitorMethod;
 
+    protected $itemModel;
+
+    protected $itemSerial;
+
+    protected $itemDefaultManufacturer;
+
+    protected $itemManufacturerModel;
+
+    protected $itemManufacturerSerial;
+
+    protected $itemManufacturerCode;
+
+    protected $itemKeywords;
+
+    protected $itemAssetLabel;
+
+    protected $itemAssetLabel1;
+
+    // Item Group Detail
+    // ========================
+    protected $itemInventoryGL;
+
+    protected $itemCogsGL;
+
+    protected $itemCostCenter;
+
     // PR Details
     // ====================
     protected $pr;

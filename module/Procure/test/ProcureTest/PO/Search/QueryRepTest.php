@@ -5,7 +5,9 @@ use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Application\Service\Search\ZendSearch\PO\PoSearchIndexImpl;
 use Procure\Application\Service\Search\ZendSearch\PO\PoSearchQueryImpl;
+use Procure\Application\Service\Search\ZendSearch\PO\Filter\PoQueryFilter;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
@@ -29,16 +31,28 @@ class RepTest extends PHPUnit_Framework_TestCase
             $token = "b9753d8b-3c23-48d2-a9bb-990f41f1fe7b";
 
             $rootEntity = $rep->getPODetailsById($id, $token);
+            // var_dump($rootEntity->makeSnapshot());
 
             $indexer = new PoSearchIndexImpl();
-            $r = $indexer->createDoc($rootEntity->makeSnapshot());
-            $r1 = $indexer->optimizeIndex();
-            var_dump($r1);
+            // $r = $indexer->createDoc($rootEntity->makeSnapshot());
+            // $r1 = $indexer->optimizeIndex();
+            // var_dump($r1);
 
             $searcher = new PoSearchQueryImpl();
-            // $hits = $searcher->search("tbc*", 5);
+            $queryFilter = new PoQueryFilter();
+            $queryFilter->setDocStatus("posted");
+            $hits = $searcher->search("025", $queryFilter);
 
-            // var_dump($hits->getQuery());
+            $results = [];
+            foreach ($hits as $hit) {
+                $results[] = PORowSnapshotAssembler::createFromQueryHit($hit);
+            }
+
+            var_dump($results);
+
+            // $string = "22-4-00078";
+            // $result = preg_replace('/[0-]/', '', \substr($string, - 5)); // Replace all 'abc' with 'def'
+            // echo $result;
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

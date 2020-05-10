@@ -137,6 +137,33 @@ class RowMapper
         $snapshot->itemChecksum = $entity->getChecksum();
         $snapshot->itemVersion = $entity->getRevisionNo();
         $snapshot->itemMonitorMethod = $entity->getMonitoredBy();
+        $snapshot->itemAssetLabel = $entity->getAssetLabel();
+        $snapshot->itemAssetLabel1 = preg_replace('/[0-]/', '', \substr($snapshot->itemAssetLabel, - 5));
+        $snapshot->itemManufacturerCode = $entity->getManufacturerCode();
+        $snapshot->itemManufacturerModel = $entity->getManufacturerModel();
+        $snapshot->itemManufacturerSerial = $entity->getManufacturerSerial();
+        $snapshot->itemDefaultManufacturer = $entity->getManufacturer();
+
+        if ($entity->getItemGroup() != null) {
+
+            if ($entity->getItemGroup()->getInventoryAccount() != null) {
+                $snapshot->itemInventoryGL = $entity->getItemGroup()
+                    ->getInventoryAccount()
+                    ->getId();
+            }
+
+            if ($entity->getItemGroup()->getCogsAccount() != null) {
+                $snapshot->itemCogsGL = $entity->getItemGroup()
+                    ->getCogsAccount()
+                    ->getId();
+            }
+
+            if ($entity->getItemGroup()->getCostCenter() != null) {
+                $snapshot->itemCostCenter = $entity->getItemGroup()
+                    ->getCostCenter()
+                    ->getId();
+            }
+        }
 
         if ($entity->getStandardUom() != null) {
             $snapshot->itemStandardUnit = $entity->getStandardUom()->getId();

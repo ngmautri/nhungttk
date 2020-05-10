@@ -1,11 +1,9 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Procure\Application\DTO\Po\PORowDTO;
-use Zend\Form\Annotation\Object;
+use Procure\Application\DTO\Po\PORowDTOAssembler;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\GenericRow;
-use Procure\Application\DTO\Po\PORowDTOAssembler;
 
 /**
  *
@@ -18,8 +16,7 @@ class PORowSnapshotAssembler
     const EXCLUDED_FIELDS = 1;
 
     const EDITABLE_FIELDS = 2;
-    
-    
+
     /**
      *
      * @return array;
@@ -29,7 +26,7 @@ class PORowSnapshotAssembler
         $missingProperties = array();
         $entity = new GenericRow();
         $dto = new PORowSnapshot();
-        
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -37,13 +34,13 @@ class PORowSnapshotAssembler
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
                 echo (sprintf("\n protected $%s;", $propertyName));
-                
+
                 $missingProperties[] = $propertyName;
             }
         }
         return $missingProperties;
     }
-    
+
     /**
      *
      * @return array;
@@ -51,10 +48,10 @@ class PORowSnapshotAssembler
     public static function findMissingPropertiesOfEntity()
     {
         $missingProperties = array();
-        
+
         $entityProps = PORowDTOAssembler::createDTOProperities();
         $dto = new GenericRow();
-        
+
         foreach ($entityProps as $property) {
             $propertyName = $property->getName();
             if (! property_exists($dto, $propertyName)) {
@@ -64,7 +61,6 @@ class PORowSnapshotAssembler
         }
         return $missingProperties;
     }
-    
 
     /**
      * generete fields.
@@ -79,6 +75,40 @@ class PORowSnapshotAssembler
             $propertyName = $property->getName();
             print "\n" . "protected $" . $propertyName . ";";
         }
+    }
+
+    public static function createIndexDoc()
+    {
+        $entity = new PORowSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            $v = \sprintf("\$row->get%s()", ucfirst($propertyName));
+
+            print \sprintf("\n\$doc->addField(Field::text('%s', %s));", $propertyName, $v);
+        }
+    }
+
+    public static function createFromQueryHit($hit)
+    {
+        if ($hit == null) {
+            return;
+        }
+
+        $snapshort = new PORowSnapshot();
+        $reflectionClass = new \ReflectionClass($snapshort);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if ($hit->__isset($propertyName)) {
+                $snapshort->$propertyName = $hit->$propertyName;
+            }
+        }
+        return $snapshort;
     }
 
     public static function createFromDetailsSnapshotCode()
@@ -251,9 +281,8 @@ class PORowSnapshotAssembler
                 } else {
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
-                    }
-           }
-            return $snapShot;
+            }
+        }
+        return $snapShot;
     }
-    
 }

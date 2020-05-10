@@ -1,6 +1,8 @@
 <?php
 namespace Procure\Domain\Service\Search;
 
+use Application\Application\Service\Search\Contracts\QueryFilterInterface;
+
 /**
  * Purchase Order Search
  *
@@ -10,5 +12,5 @@ namespace Procure\Domain\Service\Search;
 Interface PoSearchQueryInterface
 {
 
-    public function search($q);
+    public function search($q, QueryFilterInterface $filter = null);
 }

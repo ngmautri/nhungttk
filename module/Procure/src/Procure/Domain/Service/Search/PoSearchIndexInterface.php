@@ -12,13 +12,9 @@ use Procure\Domain\DocSnapshot;
 Interface PoSearchIndexInterface
 {
 
-    public function createIndex();
+    public function createDoc(DocSnapshot $doc);
 
     public function optimizeIndex();
 
-    public function createDoc(DocSnapshot $doc);
-
-    public function updateDoc(DocSnapshot $doc);
-
-    public function updateIndex($entityId, $isNew = true, $optimized = false);
+    public function createIndex($rows);
 }

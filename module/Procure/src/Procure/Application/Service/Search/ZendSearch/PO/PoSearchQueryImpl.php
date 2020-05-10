@@ -1,8 +1,10 @@
 <?php
 namespace Procure\Application\Service\Search\ZendSearch\PO;
 
+use Application\Application\Service\Search\Contracts\QueryFilterInterface;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
+use Procure\Application\Service\Search\ZendSearch\PO\Filter\PoQueryFilter;
 use Procure\Domain\Service\Search\PoSearchQueryInterface;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Index\Term;
@@ -23,7 +25,7 @@ class PoSearchQueryImpl extends AbstractService implements PoSearchQueryInterfac
      * {@inheritdoc}
      * @see \Procure\Domain\Service\Search\PoSearchQueryInterface::search()
      */
-    public function search($q, $vendor_id = null)
+    public function search($q, QueryFilterInterface $filter = null)
     {
         try {
 
@@ -74,17 +76,22 @@ class PoSearchQueryImpl extends AbstractService implements PoSearchQueryInterfac
                 }
             }
 
-            if ($vendor_id !== null) {
-                $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term('vendor_id_key_' . $vendor_id, 'vendor_id_key'));
-                $final_query->addSubquery($subquery, true);
+            if ($filter instanceof PoQueryFilter) {
+
+                if ($filter->getVendorId() > 0) {
+                    $v = \sprintf('vendor_id_key_%s', $filter->getVendorId());
+                    $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term($v, 'vendor_id_key'));
+                    $final_query->addSubquery($subquery, true);
+                }
+                if ($filter->getDocStatus() != null) {
+                    $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term($filter->getDocStatus(), 'po_doc_status'));
+                    $final_query->addSubquery($subquery, true);
+                }
             }
 
-            $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term(\Application\Model\Constants::DOC_STATUS_POSTED, 'po_doc_status'));
-            $final_query->addSubquery($subquery, true);
-
             $hits = $index->find($final_query);
-
             $queryString = $final_query->__toString();
+
             $message = \sprintf("%s result(s) found for query:<b>%s</b>", count($hits), $q);
         } catch (\Exception $e) {
             $message = sprintf("Failed: <b>%s</b>", $e->getMessage());

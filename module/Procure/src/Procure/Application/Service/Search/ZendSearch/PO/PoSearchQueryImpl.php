@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Service\Search\ZendSearch\PO;
 
+use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
 use Procure\Domain\Service\Search\PoSearchQueryInterface;
 use ZendSearch\Lucene\Lucene;
@@ -25,6 +26,11 @@ class PoSearchQueryImpl extends AbstractService implements PoSearchQueryInterfac
     public function search($q, $vendor_id = null)
     {
         try {
+
+            $message = null;
+            $hits = null;
+            $query = $q;
+            $queryString = null;
 
             $index = Lucene::open(getcwd() . PoSearch::INDEX_PATH);
 
@@ -69,34 +75,21 @@ class PoSearchQueryImpl extends AbstractService implements PoSearchQueryInterfac
             }
 
             if ($vendor_id !== null) {
-                /*
-                 * $subquery = new MultiTerm();
-                 * $subquery->addTerm(new Term($vendor_id, 'vendor_id'));
-                 */
-                $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term('vendor_id_keyword=' . $vendor_id, 'vendor_id_keyword'));
+                $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term('vendor_id_key_' . $vendor_id, 'vendor_id_key'));
                 $final_query->addSubquery($subquery, true);
             }
 
             $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term(\Application\Model\Constants::DOC_STATUS_POSTED, 'po_doc_status'));
             $final_query->addSubquery($subquery, true);
 
-            // var_dump ( $final_query );
-            // echo $final_query->__toString();
-
             $hits = $index->find($final_query);
 
-            $result = [
-                "message" => count($hits) . " result(s) found for query: <b>" . $q . "</b>",
-                "hits" => $hits
-            ];
-
-            return $result;
+            $queryString = $final_query->__toString();
+            $message = \sprintf("%s result(s) found for query:<b>%s</b>", count($hits), $q);
         } catch (\Exception $e) {
-            $result = [
-                "message" => 'Query: <b>' . $q . '</b> sent , but exception catched: <b>' . $e->getMessage() . "</b>\n",
-                "hits" => null
-            ];
-            return $result;
+            $message = sprintf("Failed: <b>%s</b>", $e->getMessage());
         }
+
+        return new SearchResult($query, $queryString, $message, $hits);
     }
 }

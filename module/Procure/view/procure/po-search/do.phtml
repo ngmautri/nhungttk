@@ -2,12 +2,12 @@
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
       <li>
-         <a href="#general">Search Result</a>
+         <a href="#general">search result</a>
       </li>
    </ul>
    <div id="general">
       <form class="form-inline" action="<?php
-    echo $this->baseUrl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
+    echo $this->baseurl?>/procure/po-search/do" method="get" enctype="multipart/form-data">
          <div class="form-group" style="padding-left: 8px;">
             <input placeholder="<?php
 
@@ -39,34 +39,34 @@ if (! $hits == null) :
                   <b>#</b>
                </td>
                <td>
-                  <b>Doc ID</b>
+                  <b>doc id</b>
                </td>
                <td>
                   <b>#</b>
                </td>
                <td>
-                  <b>Vendor ID</b>
+                  <b>vendor id</b>
                </td>
                <td>
-                  <b>Po#</b>
+                  <b>po#</b>
                </td>
                <td>
                   <b>po</b>
                </td>
                <td>
-                  <b>Item ID</b>
+                  <b>item id</b>
                </td>
                <td>
-                  <b>Item SKU</b>
+                  <b>item sku</b>
                </td>
                <td>
-                  <b>Item</b>
+                  <b>item</b>
                </td>
                <td>
-                  <b>Row Name</b>
+                  <b>row name</b>
                </td>
                <td>
-                  <b>Code</b>
+                  <b>code</b>
                </td>
                <td>
                   <b>quantity</b>
@@ -75,18 +75,18 @@ if (! $hits == null) :
                   <b>
                      po
                      <br>
-                     Unit
+                     unit
                   </b>
                </td>
                <td>
                   <b>
-                     Conversion
+                     conversion
                      <br>
-                     Factor
+                     factor
                   </b>
                </td>
                <td>
-                  <b>Action</b>
+                  <b>action</b>
                </td>
             </tr>
          </thead>
@@ -106,7 +106,7 @@ if (! $hits == null) :
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->id);
+        echo $this->escapehtml($hit->id);
         ?></span>
                </td>
                <td>
@@ -118,19 +118,19 @@ if (! $hits == null) :
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->vendor_id);
+        echo $this->escapehtml($hit->vendor_id);
         ?></span>
                </td>
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->po_row_id);
+        echo $this->escapehtml($hit->po_row_id);
         ?></span>
                </td>
                <td>
                   <a style="color: navy;" href="<?php
 
-        echo $this->baseUrl?>/procure/po/view?entity_token=<?php
+        echo $this->baseurl?>/procure/po/view?entity_token=<?php
 
         echo $hit->po_token;
         ?>&entity_id=<?php
@@ -139,13 +139,13 @@ if (! $hits == null) :
         ?>">
                <?php
 
-        echo $this->escapeHtml($hit->po_number);
+        echo $this->escapehtml($hit->po_number);
         ?></a>
                </td>
                <td>
                   <a style="color: navy;" href="<?php
 
-        echo $this->baseUrl?>/procure/po/show?token=<?php
+        echo $this->baseurl?>/procure/po/show?token=<?php
 
         echo $hit->po_token;
         ?>&entity_id=<?php
@@ -154,98 +154,65 @@ if (! $hits == null) :
         ?>">
 					<?php
 
-        echo $this->escapeHtml($hit->po_number);
+        echo $this->escapehtml($hit->po_number);
         ?></a>
                </td>
                <td>
                   <span id="">
                      <a style="color: navy;" target="_blank" href="<?php
 
-        echo $this->baseUrl?>/inventory/item/show?token=<?php
+        echo $this->baseurl?>/inventory/item/show?token=<?php
 
         echo $hit->item_token;
         ?>&entity_id=<?php
 
         echo $hit->item_id;
-        ?>&checksum=<?php
-
-        echo $hit->item_checksum;
-        ?>"><?php
-
-        echo $this->escapeHtml($hit->item_sys_number);
         ?></a>
                   </span>
                </td>
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->item_sku_key);
+        echo $this->escapehtml($hit->item_sku_key);
         ?></span>
                </td>
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->item_name);
+        echo $this->escapehtml($hit->item_name);
         ?></span>
                </td>
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->row_name);
+        echo $this->escapehtml($hit->row_name);
+        ?></span>
+               </td>
+               <td>
+                  <span id=""></span>
+               </td>
+               <td>
+                  <span id=""><?php
+
+        echo $this->escapehtml($hit->row_quantity);
         ?></span>
                </td>
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->manufacturer_code);
+        echo $this->escapehtml($hit->row_unit);
         ?></span>
                </td>
                <td>
                   <span id=""><?php
 
-        echo $this->escapeHtml($hit->row_quantity);
+        echo $this->escapehtml($hit->row_conversion_factor);
         ?></span>
                </td>
                <td>
-                  <span id=""><?php
-
-        echo $this->escapeHtml($hit->row_unit);
-        ?></span>
-               </td>
-               <td>
-                  <span id=""><?php
-
-        echo $this->escapeHtml($hit->row_conversion_factor);
-        ?></span>
-               </td>
-               <td>
-                  <a href="<?php
-
-        echo $this->baseUrl?>/poocure/po-row/show?token=<?php
-
-        echo $hit->token;
-        ?>&entity_id=<?php
-
-        echo $hit->po_row_id;
-        ?>">Show</a>
-                  <a href="<?php
-
-        echo $this->baseUrl?>/poocure/po-row/edit?token=<?php
-
-        echo $hit->token;
-        ?>&entity_id=<?php
-
-        echo $hit->po_row_id;
-        ?>">Edit</a>
-                  <a href="<?php
-
-        echo $this->baseUrl?>/inventory/item-transaction/gr?token=<?php
-
-        echo $hit->token;
-        ?>&po_row_id=<?php
-
-        echo $hit->po_row_id;
-        ?>">Receive</a>
+                 
+                
+                
                </td>
             </tr>
 <?php

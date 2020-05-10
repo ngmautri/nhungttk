@@ -4,10 +4,10 @@ namespace ProcureTest\PO\Search;
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Application\Service\Search\ZendSearch\PO\PoSearchIndexImpl;
+use Procure\Application\Service\Search\ZendSearch\PO\PoSearchQueryImpl;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\Service\Search\ZendSearch\PO\PoSearchQueryImpl;
 
 class RepTest extends PHPUnit_Framework_TestCase
 {
@@ -31,13 +31,14 @@ class RepTest extends PHPUnit_Framework_TestCase
             $rootEntity = $rep->getPODetailsById($id, $token);
 
             $indexer = new PoSearchIndexImpl();
-            // $r = $indexer->createDoc($rootEntity->makeSnapshot());
-            // var_dump($r);
+            $r = $indexer->createDoc($rootEntity->makeSnapshot());
+            $r1 = $indexer->optimizeIndex();
+            var_dump($r1);
 
             $searcher = new PoSearchQueryImpl();
-            $hits = $searcher->search("knife*");
+            // $hits = $searcher->search("tbc*", 5);
 
-            var_dump($hits);
+            // var_dump($hits->getQuery());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

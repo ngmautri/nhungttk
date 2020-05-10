@@ -1,16 +1,18 @@
 <?php
 namespace Procure\Application\EventBus\Handler\PO;
 
-use Application\Domain\EventBus\Handler\EventHandlerInterface;
+use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
+use Procure\Application\Service\Search\ZendSearch\PO\PoSearchIndexImpl;
 use Procure\Domain\Event\Po\PoPosted;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateIndexOnPoPosted implements EventHandlerInterface, EventHandlerPriorityInterface
+class UpdateIndexOnPoPosted extends AbstractEventHandler
 {
 
     /**
@@ -19,9 +21,12 @@ class UpdateIndexOnPoPosted implements EventHandlerInterface, EventHandlerPriori
      */
     public function __invoke(PoPosted $event)
     {
-        echo "\n RUNNING";
-        echo \sprintf("\n%s involked.", __METHOD__);
-        echo "\n" . \get_class($event);
+        if (! $event->getTarget() instanceof POSnapshot) {
+            return;
+        }
+
+        $indexer = new PoSearchIndexImpl();
+        $indexer->createDoc($event->getTarget());
     }
 
     public static function priority()

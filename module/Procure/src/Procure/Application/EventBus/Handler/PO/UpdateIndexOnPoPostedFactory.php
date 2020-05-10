@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\EventBus\Handler\PO;
 
+use Procure\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -20,7 +21,9 @@ class UpdateIndexOnPoPostedFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new UpdateIndexOnPoPosted();
-        return $service;
+
+        $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
+        $eventBusService = $container->get(EventBusService::class);
+        return new UpdateIndexOnPoPosted($doctrineEM, $eventBusService);
     }
 }

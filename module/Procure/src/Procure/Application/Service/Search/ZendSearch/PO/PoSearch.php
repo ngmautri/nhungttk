@@ -9,5 +9,5 @@ namespace Procure\Application\Service\Search\ZendSearch\PO;
 final class PoSearch
 {
 
-    const INDEX_PATH = "/data/procure/indexes/po_index";
+    const INDEX_PATH = "/data/procure/indexes/po";
 }

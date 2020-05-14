@@ -10,25 +10,53 @@ use Procure\Domain\RowSnapshot;
  */
 class PRRowSnapshot extends RowSnapshot
 {
+
     public $draftPoQuantity;
+
     public $postedPoQuantity;
+
     public $draftGrQuantity;
+
     public $postedGrQuantity;
+
     public $draftApQuantity;
+
     public $postedApQuantity;
+
     public $draftStockQrQuantity;
+
     public $postedStockQrQuantity;
+
+    public $lastVendorId;
+
+    public $lastVendorName;
+
+    public $lastUnitPrice;
+
+    public $lastCurrency;
+
     public $checksum;
+
     public $priority;
+
     public $rowName;
+
     public $rowDescription;
+
     public $rowCode;
+
     public $rowUnit;
+
     public $conversionText;
+
     public $edt;
+
     public $convertedStandardQuantiy;
+
     public $project;
+
     /**
+     *
      * @return mixed
      */
     public function getDraftPoQuantity()
@@ -37,6 +65,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedPoQuantity()
@@ -45,6 +74,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftGrQuantity()
@@ -53,6 +83,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedGrQuantity()
@@ -61,6 +92,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftApQuantity()
@@ -69,6 +101,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedApQuantity()
@@ -77,6 +110,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getDraftStockQrQuantity()
@@ -85,6 +119,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPostedStockQrQuantity()
@@ -93,6 +128,43 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
+     * @return mixed
+     */
+    public function getLastVendorId()
+    {
+        return $this->lastVendorId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastVendorName()
+    {
+        return $this->lastVendorName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastUnitPrice()
+    {
+        return $this->lastUnitPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastCurrency()
+    {
+        return $this->lastCurrency;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getChecksum()
@@ -101,6 +173,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getPriority()
@@ -109,6 +182,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowName()
@@ -117,6 +191,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowDescription()
@@ -125,6 +200,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowCode()
@@ -133,6 +209,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getRowUnit()
@@ -141,6 +218,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConversionText()
@@ -149,6 +227,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getEdt()
@@ -157,6 +236,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getConvertedStandardQuantiy()
@@ -165,6 +245,7 @@ class PRRowSnapshot extends RowSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getProject()
@@ -172,4 +253,201 @@ class PRRowSnapshot extends RowSnapshot
         return $this->project;
     }
 
+    /**
+     *
+     * @param mixed $draftPoQuantity
+     */
+    public function setDraftPoQuantity($draftPoQuantity)
+    {
+        $this->draftPoQuantity = $draftPoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedPoQuantity
+     */
+    public function setPostedPoQuantity($postedPoQuantity)
+    {
+        $this->postedPoQuantity = $postedPoQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $draftGrQuantity
+     */
+    public function setDraftGrQuantity($draftGrQuantity)
+    {
+        $this->draftGrQuantity = $draftGrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedGrQuantity
+     */
+    public function setPostedGrQuantity($postedGrQuantity)
+    {
+        $this->postedGrQuantity = $postedGrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $draftApQuantity
+     */
+    public function setDraftApQuantity($draftApQuantity)
+    {
+        $this->draftApQuantity = $draftApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedApQuantity
+     */
+    public function setPostedApQuantity($postedApQuantity)
+    {
+        $this->postedApQuantity = $postedApQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $draftStockQrQuantity
+     */
+    public function setDraftStockQrQuantity($draftStockQrQuantity)
+    {
+        $this->draftStockQrQuantity = $draftStockQrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $postedStockQrQuantity
+     */
+    public function setPostedStockQrQuantity($postedStockQrQuantity)
+    {
+        $this->postedStockQrQuantity = $postedStockQrQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $lastVendorId
+     */
+    public function setLastVendorId($lastVendorId)
+    {
+        $this->lastVendorId = $lastVendorId;
+    }
+
+    /**
+     *
+     * @param mixed $lastVendorName
+     */
+    public function setLastVendorName($lastVendorName)
+    {
+        $this->lastVendorName = $lastVendorName;
+    }
+
+    /**
+     *
+     * @param mixed $lastUnitPrice
+     */
+    public function setLastUnitPrice($lastUnitPrice)
+    {
+        $this->lastUnitPrice = $lastUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastCurrency
+     */
+    public function setLastCurrency($lastCurrency)
+    {
+        $this->lastCurrency = $lastCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $checksum
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+    }
+
+    /**
+     *
+     * @param mixed $priority
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+    }
+
+    /**
+     *
+     * @param mixed $rowName
+     */
+    public function setRowName($rowName)
+    {
+        $this->rowName = $rowName;
+    }
+
+    /**
+     *
+     * @param mixed $rowDescription
+     */
+    public function setRowDescription($rowDescription)
+    {
+        $this->rowDescription = $rowDescription;
+    }
+
+    /**
+     *
+     * @param mixed $rowCode
+     */
+    public function setRowCode($rowCode)
+    {
+        $this->rowCode = $rowCode;
+    }
+
+    /**
+     *
+     * @param mixed $rowUnit
+     */
+    public function setRowUnit($rowUnit)
+    {
+        $this->rowUnit = $rowUnit;
+    }
+
+    /**
+     *
+     * @param mixed $conversionText
+     */
+    public function setConversionText($conversionText)
+    {
+        $this->conversionText = $conversionText;
+    }
+
+    /**
+     *
+     * @param mixed $edt
+     */
+    public function setEdt($edt)
+    {
+        $this->edt = $edt;
+    }
+
+    /**
+     *
+     * @param mixed $convertedStandardQuantiy
+     */
+    public function setConvertedStandardQuantiy($convertedStandardQuantiy)
+    {
+        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
+    }
+
+    /**
+     *
+     * @param mixed $project
+     */
+    public function setProject($project)
+    {
+        $this->project = $project;
+    }
 }

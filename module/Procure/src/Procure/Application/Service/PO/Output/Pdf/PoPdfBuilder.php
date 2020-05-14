@@ -25,21 +25,20 @@ class PoPdfBuilder extends AbstractBuilder
         if (isset($params["details"])) {
             $detail = $params["details"];
         }
-        
+
         /**
-         * 
+         *
          * @var PODoc $doc ;
          */
         $doc = "";
         if (isset($params["doc"])) {
             $doc = $params["doc"];
         }
-        
+
         $detail1 = sprintf("%s.<br>", $doc->getVendorName());
-        $detail1 = $detail1.sprintf("Incoterm: %s %s.<br>", $doc->getIncotermCode(), $doc->getIncotermPlace());
-        
+        $detail1 = $detail1 . sprintf("Incoterm: %s %s.<br>", $doc->getIncotermCode(), $doc->getIncotermPlace());
+
         $pdf->writeHTML($detail1, true, false, false, false, '');
-        
 
         // output the HTML content
         $pdf->SetFont('helvetica', '', 10);
@@ -49,8 +48,8 @@ class PoPdfBuilder extends AbstractBuilder
         // $pdf->Image($pr_code, 170 , 5, 20, '', 'PNG', '', 'T', false, 100, '', false, false, 0, false, false, false);
 
         // QRCODE,H : QR-CODE Best error correction
-        //$pdf->write2DBarcode('/procure/pr/show?token=pGtKSwxXug_iF6E_1yXJnRGoao_Rw_ks&entity_id=310&checksum=405ea7dc6c17c272a184328a90015240', 'QRCODE,M', 20, 20, 20, 20, $style, 'N');
-        //$pdf->Text(170, 20, '');
+        // $pdf->write2DBarcode('/procure/pr/show?token=pGtKSwxXug_iF6E_1yXJnRGoao_Rw_ks&entity_id=310&checksum=405ea7dc6c17c272a184328a90015240', 'QRCODE,M', 20, 20, 20, 20, $style, 'N');
+        // $pdf->Text(170, 20, '');
     }
 
     /**
@@ -82,9 +81,6 @@ class PoPdfBuilder extends AbstractBuilder
     public function buildHeader($params = null)
     {
         $pdf = $this->getPdf();
-        
-        
-       
 
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
@@ -97,7 +93,7 @@ class PoPdfBuilder extends AbstractBuilder
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(20, 33, 15);
+        $pdf->SetMargins(18, 33, 0, false);
         $pdf->SetHeaderMargin(9);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 

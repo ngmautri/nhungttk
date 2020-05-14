@@ -34,6 +34,86 @@ class PRRow extends BaseRow
 
     protected $postedStockQrQuantity;
 
+    protected $lastVendorId;
+
+    protected $lastVendorName;
+
+    protected $lastUnitPrice;
+
+    protected $lastCurrency;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastVendorId()
+    {
+        return $this->lastVendorId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastVendorName()
+    {
+        return $this->lastVendorName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastUnitPrice()
+    {
+        return $this->lastUnitPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastCurrency()
+    {
+        return $this->lastCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $lastVendorId
+     */
+    public function setLastVendorId($lastVendorId)
+    {
+        $this->lastVendorId = $lastVendorId;
+    }
+
+    /**
+     *
+     * @param mixed $lastVendorName
+     */
+    public function setLastVendorName($lastVendorName)
+    {
+        $this->lastVendorName = $lastVendorName;
+    }
+
+    /**
+     *
+     * @param mixed $lastUnitPrice
+     */
+    public function setLastUnitPrice($lastUnitPrice)
+    {
+        $this->lastUnitPrice = $lastUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $lastCurrency
+     */
+    public function setLastCurrency($lastCurrency)
+    {
+        $this->lastCurrency = $lastCurrency;
+    }
+
     // ===================
     private function __construct()
     {}

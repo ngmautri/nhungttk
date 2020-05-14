@@ -188,6 +188,10 @@ WHERE id = %s";
             $localSnapshot->draftStockQrQuantity = $r["stock_gr_qty"];
             $localSnapshot->postedStockQrQuantity = $r["posted_stock_gr_qty"];
 
+            $localSnapshot->setLastVendorName($r["vendor_name"]);
+            $localSnapshot->setLastUnitPrice($r["last_unit_price"]);
+            $localSnapshot->setLastCurrency($r["last_currency_iso3"]);
+
             if ($localSnapshot->postedGrQuantity >= $localSnapshot->getDocQuantity()) {
                 $completedRows ++;
                 $localSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_COMPLETED;
@@ -233,8 +237,8 @@ SELECT
     IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty,
         
     last_ap.vendor_name as vendor_name,
-    last_ap.unit_price as unit_price,
-    last_ap.currency_iso3 as currency_iso3        
+    last_ap.unit_price as last_unit_price,
+    last_ap.currency_iso3 as last_currency_iso3        
 FROM nmt_procure_pr_row
         
 LEFT JOIN nmt_procure_pr
@@ -278,7 +282,7 @@ LEFT JOIN
 as last_ap
 on last_ap.item_id = nmt_procure_pr_row.item_id
 
-WHERE nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1 order by row_number
+WHERE nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1 order by nmt_inventory_item.item_name
 ";
 
         $tmp1 = sprintf(" AND nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1", $id);
@@ -305,6 +309,10 @@ WHERE nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1 order by ro
 
             $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
             $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
+
+            $rsm->addScalarResult("vendor_name", "vendor_name");
+            $rsm->addScalarResult("last_unit_price", "last_unit_price");
+            $rsm->addScalarResult("last_currency_iso3", "last_currency_iso3");
 
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();

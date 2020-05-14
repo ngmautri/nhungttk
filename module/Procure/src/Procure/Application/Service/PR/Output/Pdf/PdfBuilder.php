@@ -22,8 +22,13 @@ class PdfBuilder extends AbstractBuilder
         $pdf = $this->getPdf();
 
         $detail = "";
+        $header = "";
         if (isset($params["details"])) {
             $detail = $params["details"];
+        }
+
+        if (isset($params["header"])) {
+            $header = $params["header"];
         }
 
         /**
@@ -35,13 +40,12 @@ class PdfBuilder extends AbstractBuilder
             $doc = $params["doc"];
         }
 
-        $detail1 = sprintf("%s.<br>", $doc->getVendorName());
-        $pdf->writeHTML($detail1, true, false, false, false, '');
+        $pdf->writeHTML($header, true, false, false, false, '');
 
         // output the HTML content
-        $pdf->SetFont('helvetica', '', 10);
+        // $pdf->SetFont('helvetica', '', 10);
         $pdf->writeHTML($detail, true, false, false, false, '');
-        $pdf->SetFont('helvetica', '', 9);
+        // $pdf->SetFont('helvetica', '', 9);
 
         // $pdf->Image($pr_code, 170 , 5, 20, '', 'PNG', '', 'T', false, 100, '', false, false, 0, false, false, false);
 
@@ -83,7 +87,7 @@ class PdfBuilder extends AbstractBuilder
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Nguyen Mau Tri - MLA ');
-        $pdf->SetTitle('Purchase Order ' . "");
+        $pdf->SetTitle('Purchase Request ' . "");
         $pdf->SetSubject('PO');
         $pdf->SetKeywords('MLA, po, example, test, guide');
 
@@ -91,12 +95,21 @@ class PdfBuilder extends AbstractBuilder
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(20, 33, 15);
-        $pdf->SetHeaderMargin(9);
+        /*
+         * $pdf->SetMargins(18, 15, 0, TRUE);
+         * $pdf->SetHeaderMargin(12);
+         * $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+         */
+        // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+
+        $pdf->SetMargins(18, 30, 0);
+        // $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetHeaderMargin(15);
+
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);

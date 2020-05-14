@@ -103,12 +103,13 @@ class APRow extends GenericRow
 
     /**
      *
-     * @param \Procure\Domain\PurchaseOrder\PORow $sourceObj
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @param APDoc $rootDoc
+     * @param PORow $sourceObj
+     * @param CommandOptions $options
+     * @throws InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\APRow
      */
-    public static function createFromPoRow(PORow $sourceObj, CommandOptions $options)
+    public static function createFromPoRow(APDoc $rootDoc, PORow $sourceObj, CommandOptions $options)
     {
         if (! $sourceObj instanceof PORow) {
             throw new InvalidArgumentException("PO document is required!");
@@ -125,6 +126,10 @@ class APRow extends GenericRow
         $instance = $sourceObj->convertTo($instance);
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
         $instance->setPoRow($sourceObj->getId()); // Important
+
+        $instance->glAccount = $sourceObj->getItemInventoryGL();
+        $instance->costCenter = $sourceObj->getItemCostCenter();
+        $instance->setWarehouse($rootDoc->getWarehouse());
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

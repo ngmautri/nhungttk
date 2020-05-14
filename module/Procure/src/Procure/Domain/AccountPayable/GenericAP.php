@@ -224,11 +224,6 @@ abstract class GenericAP extends AbstractAP
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $params = [
-            "rowId" => $localSnapshot->getId(),
-            "rowToken" => $localSnapshot->getToken()
-        ];
-
         $event = new ApRowUpdated($target, $defaultParams, $params);
         $this->addEvent($event);
 
@@ -273,8 +268,9 @@ abstract class GenericAP extends AbstractAP
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
+        $params = [
+            "message" => \sprintf("AP %s posted successfully!", $this->getId())
+        ];
         $event = new ApPosted($target, $defaultParams, $params);
         $this->addEvent($event);
 
@@ -320,7 +316,10 @@ abstract class GenericAP extends AbstractAP
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
 
-        $params = [];
+        $params = [
+            "message" => \sprintf("AP %s reversed successfully!", $this->getId())
+        ];
+
         $event = new ApReversed($target, $defaultParams, $params);
         $this->addEvent($event);
         return $this;

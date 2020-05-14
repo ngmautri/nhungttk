@@ -43,6 +43,7 @@ use Procure\Domain\Shared\Constants;
 use Psr\Log\LoggerInterface;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -606,10 +607,14 @@ class PoController extends AbstractActionController
             // probably this is the first time the form was loaded
         }
 
+        $response = $this->getResponse();
+        $redirectUrl = null;
+        $msg = null;
+
+        // POSTING
+        // ======================
         try {
 
-            $msg = null;
-            // POSTING
             $data = $prg;
 
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -624,8 +629,7 @@ class PoController extends AbstractActionController
             $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
 
             if ($rootEntity == null) {
-                $redirectUrl = sprintf("/procure/po/review1t?entity_id=%s&token=%s", $entity_id, $entity_token);
-                $response = $this->getResponse();
+                $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&token=%s", $entity_id, $entity_token);
                 $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
                 $response->setContent(json_encode($redirectUrl));
                 return $response;
@@ -640,16 +644,19 @@ class PoController extends AbstractActionController
 
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $this->flashMessenger()->addMessage($msg);
+
+            $this->getLogger()->info($msg);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         }
 
-        $this->flashMessenger()->addMessage($msg);
-
-        $response = $this->getResponse();
+        $result = [];
+        $result['url'] = $redirectUrl;
+        $result['message'] = $msg;
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($redirectUrl));
+        $response->setContent(json_encode($result));
         return $response;
     }
 
@@ -771,9 +778,7 @@ class PoController extends AbstractActionController
      * @return \Zend\View\Model\ViewModel
      */
     public function review1Action()
-
     {
-        $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
@@ -790,6 +795,8 @@ class PoController extends AbstractActionController
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
+
+            $this->layout("Procure/layout-fullscreen");
 
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
@@ -825,6 +832,8 @@ class PoController extends AbstractActionController
         // POSTING
         // ====================================
 
+        $response = $this->getResponse();
+
         try {
             $notification = new Notification();
 
@@ -857,43 +866,55 @@ class PoController extends AbstractActionController
             $notification = $dto->getNotification();
             $msg = sprintf("PO #%s is posted", $entity_id);
             $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+
+            $this->getLogger()->info($msg);
         } catch (\Exception $e) {
-            $msg = sprintf("%s", $msg = sprintf("PO #%s is posted", $entity_id));
+            $msg = $e->getMessage();
             $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-            $notification->addError($e->getMessage());
         }
 
-        /*
-         * if ($notification->hasErrors()) {
-         * $viewModel = new ViewModel(array(
-         * 'errors' => $notification->getErrors(),
-         * 'redirectUrl' => null,
-         * 'entity_id' => $entity_id,
-         * 'entity_token' => $entity_token,
-         * 'rootEntity' => $rootEntity,
-         * 'rowOutput' => $rootEntity->getRowsOutput(),
-         * 'headerDTO' => $rootEntity->makeDTOForGrid(),
-         * 'nmtPlugin' => $nmtPlugin,
-         * 'form_action' => $form_action,
-         * 'form_title' => $form_title,
-         * 'version' => $version,
-         * 'action' => $action
-         * ));
-         *
-         * $viewModel->setTemplate($viewTemplete);
-         * return $viewModel;
-         * }
-         * $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-         * $this->flashMessenger()->addMessage($notification->successMessage(false));
-         * $this->flashMessenger()->addMessage($redirectUrl);
-         * return $this->redirect()->toUrl($redirectUrl);
-         */
-
+        $this->layout("layout/user/ajax");
         $this->flashMessenger()->addMessage($msg);
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($redirectUrl));
-        return $response;
+
+        $result = array();
+        $result['redirectUrl'] = $redirectUrl;
+        $result['resultMsg'] = $msg;
+
+        $json_result = json_encode($result, JSON_UNESCAPED_SLASHES);
+        $json_errors = '';
+        switch (json_last_error()) {
+            case JSON_ERROR_NONE:
+                $json_errors = ' - No errors';
+                break;
+            case JSON_ERROR_DEPTH:
+                $json_errors = ' - Maximum stack depth exceeded';
+                break;
+            case JSON_ERROR_STATE_MISMATCH:
+                $json_errors = ' - Underflow or the modes mismatch';
+                break;
+            case JSON_ERROR_CTRL_CHAR:
+                $json_errors = ' - Unexpected control character found';
+                break;
+            case JSON_ERROR_SYNTAX:
+                $json_errors = ' - Syntax error, malformed JSON';
+                break;
+            case JSON_ERROR_UTF8:
+                $json_errors = ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+                break;
+            default:
+                $json_errors = ' - Unknown error';
+                break;
+        }
+
+        $this->getLogger()->error($json_errors);
+
+        $viewTemplete = "procure/blank";
+        $model = new JsonModel(array(
+            'redirectUrl' => $redirectUrl,
+            'msg' => $msg
+        ));
+        $model->setTemplate($viewTemplete);
+        return $model;
     }
 
     /**
@@ -954,6 +975,7 @@ class PoController extends AbstractActionController
     public function saveAsAction()
     {
         $this->layout("Procure/layout-fullscreen");
+
         /*
          * if ($request->getHeader('Referer') == null) {
          * return $this->redirect()->toRoute('not_found');
@@ -1001,8 +1023,9 @@ class PoController extends AbstractActionController
      * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
      */
     public function reviewAmendmentAction()
-
     {
+        $response = $this->getResponse();
+
         $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -1051,10 +1074,13 @@ class PoController extends AbstractActionController
             return $viewModel;
         }
 
+        // POSTING
+        // ======================
+
+        $notification = new Notification();
         try {
 
             $msg = null;
-            // POSTING
             $data = $prg;
 
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -1072,7 +1098,6 @@ class PoController extends AbstractActionController
                 $msg = sprintf("PO #%s not found", $entity_id);
 
                 $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&token=%s", $entity_id, $entity_token);
-                $response = $this->getResponse();
                 $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
                 $response->setContent(json_encode($redirectUrl));
                 return $response;
@@ -1086,19 +1111,36 @@ class PoController extends AbstractActionController
             $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
 
-            $msg = sprintf("Ammendment of PO #%s is posted", $entity_id);
-            $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $this->getLogger()->info(\sprintf("PO amendment #%s accepted by #%s", $entity_id, $u->getId()));
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $notification->addError($msg);
         }
 
-        $this->flashMessenger()->addMessage($msg);
+        if ($notification->hasErrors()) {
 
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($redirectUrl));
-        return $response;
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        $this->flashMessenger()->addMessage($notification->successMessage(true));
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**

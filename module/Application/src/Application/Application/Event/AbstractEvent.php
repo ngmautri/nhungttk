@@ -40,6 +40,9 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
 
     public function hasParam($key)
     {
+        if ($this->params == null) {
+            return false;
+        }
         return \array_key_exists($key, $this->params);
     }
 
@@ -49,7 +52,7 @@ abstract class AbstractEvent extends Event implements IEvent, EventInterface
             return $this->params[$key];
         }
 
-        throw new \InvalidArgumentException(sprintf('Args "%s" not found.', $key));
+        return null;
     }
 
     /**

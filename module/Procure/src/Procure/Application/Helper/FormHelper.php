@@ -58,7 +58,7 @@ class FormHelper
      * @param Paginator $paginator
      * @param string $connector_symbol
      */
-    public static function createPaginator($base, Paginator $paginator, $connector_symbol)
+    public static function createPaginator($base, Paginator $paginator = null, $connector_symbol)
     {
         if (! $paginator instanceof Paginator) {
             return;

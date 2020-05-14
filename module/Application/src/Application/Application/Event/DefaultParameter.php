@@ -21,6 +21,26 @@ class DefaultParameter
 
     protected $triggeredBy;
 
+    protected $messages;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     *
+     * @param mixed $messages
+     */
+    public function setMessages($messages)
+    {
+        $this->messages = $messages;
+    }
+
     /**
      *
      * @return mixed

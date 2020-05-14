@@ -136,7 +136,7 @@ class APDoc extends GenericAP
 
             // ignore completed row;
 
-            $localEntity = APRow::createFromPoRow($r, $options);
+            $localEntity = APRow::createFromPoRow($instance, $r, $options);
             // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($localEntity);
 
@@ -350,6 +350,19 @@ class APDoc extends GenericAP
         if (! $rootSnapshot instanceof APSnapshot) {
             throw new OperationFailedException(\sprintf("Errors occured when saving AP"));
         }
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new ApHeaderCreated($target, $defaultParams, $params);
+        $instance->addEvent($event);
 
         return $rootSnapshot;
     }

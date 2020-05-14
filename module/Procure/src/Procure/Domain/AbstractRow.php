@@ -318,6 +318,114 @@ class AbstractRow extends AbstractEntity
 
     /**
      *
+     * @return mixed
+     */
+    public function getItemModel()
+    {
+        return $this->itemModel;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemSerial()
+    {
+        return $this->itemSerial;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemDefaultManufacturer()
+    {
+        return $this->itemDefaultManufacturer;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemManufacturerModel()
+    {
+        return $this->itemManufacturerModel;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemManufacturerSerial()
+    {
+        return $this->itemManufacturerSerial;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemManufacturerCode()
+    {
+        return $this->itemManufacturerCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemKeywords()
+    {
+        return $this->itemKeywords;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemAssetLabel()
+    {
+        return $this->itemAssetLabel;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemAssetLabel1()
+    {
+        return $this->itemAssetLabel1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemInventoryGL()
+    {
+        return $this->itemInventoryGL;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemCogsGL()
+    {
+        return $this->itemCogsGL;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemCostCenter()
+    {
+        return $this->itemCostCenter;
+    }
+
+    /**
+     *
      * @param mixed $docDate
      */
     protected function setDocDate($docDate)

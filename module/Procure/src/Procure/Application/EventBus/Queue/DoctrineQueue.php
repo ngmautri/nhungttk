@@ -73,6 +73,7 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
             $changeLog_final = [];
             $rowToken = null;
             $rowId = null;
+            $msg = null;
 
             $message = new MessageStore();
 
@@ -84,6 +85,10 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
                 $message->setEntityId($event->getTargetId());
                 $message->setEntityToken($event->getTargetToken());
                 $message->setCreatedBy($event->getUserId());
+
+                if ($event->hasParam("message")) {
+                    $msg = $event->getParam("message");
+                }
 
                 if ($event->hasParam("rowId")) {
                     $rowId = $event->getParam("rowId");
@@ -99,6 +104,10 @@ WHERE message_store.sent_on IS NULL and message_store.queue_name="%s"';
 
                 if ($rowToken !== null) {
                     $changeLog_final["rowToken"] = $rowToken;
+                }
+
+                if ($msg !== null) {
+                    $changeLog_final["message"] = $msg;
                 }
 
                 if ($event->hasParam('changeLog')) {

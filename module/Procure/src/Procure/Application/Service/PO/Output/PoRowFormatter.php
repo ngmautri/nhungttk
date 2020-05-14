@@ -33,7 +33,7 @@ class PoRowFormatter extends RowFormatterDecorator
         );
 
         if (in_array($row->getDocCurrencyISO(), $curency)) {
-            $decimalNo = 2;
+            $decimalNo = 4;
         }
 
         $row = $this->formatter->format($row);

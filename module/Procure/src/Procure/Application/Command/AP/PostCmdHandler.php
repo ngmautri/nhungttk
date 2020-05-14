@@ -131,10 +131,10 @@ class PostCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
+
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

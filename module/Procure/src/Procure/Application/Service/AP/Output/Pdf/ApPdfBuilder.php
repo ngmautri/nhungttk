@@ -7,7 +7,7 @@ use Procure\Domain\AccountPayable\APDoc;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class ApPdfBuilder extends AbstractBuilder
 {
@@ -93,7 +93,7 @@ class ApPdfBuilder extends AbstractBuilder
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(20, 33, 15);
+        $pdf->SetMargins(18, 33, 0, false);
         $pdf->SetHeaderMargin(9);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 

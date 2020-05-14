@@ -85,27 +85,36 @@ class ApController extends AbstractActionController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
 
-            $source_id = (int) $this->params()->fromQuery('source_id');
-            $source_token = $this->params()->fromQuery('source_token');
+            $errors = null;
+            $dto = null;
+            $version = null;
 
-            $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
-            $rootEntity = $this->getApService()->createFromPO($source_id, $source_token, $options);
+            try {
+                $source_id = (int) $this->params()->fromQuery('source_id');
+                $source_token = $this->params()->fromQuery('source_token');
 
-            if ($rootEntity == null) {
-                return $this->redirect()->toRoute('not_found');
+                $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+                $rootEntity = $this->getApService()->createFromPO($source_id, $source_token, $options);
+
+                if ($rootEntity == null) {
+                    return $this->redirect()->toRoute('not_found');
+                }
+
+                $dto = $rootEntity->makeDetailsDTO();
+                $version = $dto->getRevisionNo();
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
             }
 
-            $dto = $rootEntity->makeDetailsDTO();
-
             $viewModel = new ViewModel(array(
-                'errors' => null,
+                'errors' => $errors,
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'entity_token' => null,
                 'source_id' => $source_id,
                 'source_token' => $source_token,
                 'headerDTO' => $dto,
-                'version' => $dto->getRevisionNo(),
+                'version' => $version,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

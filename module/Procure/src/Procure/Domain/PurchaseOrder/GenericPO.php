@@ -5,6 +5,7 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\Event\Po\PoRowAdded;
@@ -196,6 +197,9 @@ abstract class GenericPO extends BaseDoc
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
         $params = null;
+
+        $event = new PoAmendmentAccepted($target, $defaultParams, $params);
+        $this->addEvent($event);
 
         $event = new PoPosted($target, $defaultParams, $params);
         $this->addEvent($event);

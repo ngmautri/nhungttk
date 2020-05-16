@@ -12,9 +12,30 @@ use Procure\Domain\DocSnapshot;
 Interface PrSearchIndexInterface
 {
 
+    /**
+     * create new index.
+     * it should run in background
+     *
+     * @param array $rows
+     */
+    public function createIndex($rows);
+
+    /**
+     * indexing new dow
+     *
+     * @param DocSnapshot $doc
+     */
     public function createDoc(DocSnapshot $doc);
 
-    public function optimizeIndex();
+    /**
+     *
+     * @param array $rows
+     */
+    public function updateIndexRow($rows);
 
-    public function createIndex($rows);
+    /**
+     * Optimize index.
+     * it should run in background
+     */
+    public function optimizeIndex();
 }

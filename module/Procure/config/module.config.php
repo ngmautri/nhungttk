@@ -34,6 +34,10 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImplFactory;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImplFactory;
 
 return array(
     'navigation' => array(
@@ -298,6 +302,10 @@ return array(
             'Procure\Application\Service\Search\PoSearchService' => 'Procure\Application\Service\Search\PoSearchServiceFactory',
             'Procure\Application\Service\Search\PrSearchService' => 'Procure\Application\Service\Search\PrSearchServiceFactory',
             'Procure\Application\Service\Search\QrSearchService' => 'Procure\Application\Service\Search\QrSearchServiceFactory',
+
+            // new
+            PrSearchIndexImpl::class => PrSearchIndexImplFactory::class,
+            PrSearchQueryImpl::class => PrSearchQueryImplFactory::class,
 
             // Event Handler
             'Procure\Application\Event\Handler\PoHeaderCreatedEventHandler' => 'Procure\Application\Event\Handler\PoHeaderCreatedEventHandlerFactory',

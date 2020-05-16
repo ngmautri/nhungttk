@@ -5,6 +5,8 @@ use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Domain\EventBus\Handler\EventHandlerInterface;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 /**
  *
@@ -17,6 +19,10 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
     protected $doctrineEM;
 
     protected $eventBusService;
+
+    protected $logger;
+
+    protected $cache;
 
     /**
      *
@@ -45,5 +51,33 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
     public function getEventBusService()
     {
         return $this->eventBusService;
+    }
+
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }

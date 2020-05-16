@@ -31,8 +31,9 @@ class RepTest extends PHPUnit_Framework_TestCase
             $stopWatch = new Stopwatch();
 
             $filter = new PrReportSqlFilter();
-            $filter->setBalance(- 1);
-            $filter->setIsActive(null);
+            $filter->setBalance(1);
+            $filter->setIsActive(1);
+            $filter->setItemId(3514);
 
             $sort_by = Null;
             $sort = null;
@@ -51,18 +52,20 @@ class RepTest extends PHPUnit_Framework_TestCase
 
             $key = \sprintf("test_total_rows_%s", $filter->__toString());
 
-            $resultCache = $cache->getItem($key);
-            if (! $resultCache->isHit()) {
-                $total = PrReportHelper::getAllRowTotal($doctrineEM, $filter);
-                $resultCache->set($total);
-                $cache->save($resultCache);
-            } else {
-                $total = $cache->getItem($key)->get();
-                echo \sprintf('\n cached: %s \n', $total);
-            }
+            /*
+             * $resultCache = $cache->getItem($key);
+             * if (! $resultCache->isHit()) {
+             * $total = PrReportHelper::getAllRowTotal($doctrineEM, $filter);
+             * $resultCache->set($total);
+             * $cache->save($resultCache);
+             * } else {
+             * $total = $cache->getItem($key)->get();
+             * echo \sprintf('\n cached: %s \n', $total);
+             * }
+             */
 
             // \var_dump($result);
-            // var_dump($result[1]);
+            var_dump($result1);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\EventBus\Handler\PR;
 
+use Procure\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -20,7 +21,17 @@ class UpdateIndexOnPrSubmittedFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new UpdateIndexOnPrSubmitted();
+
+        $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
+        $eventBusService = $container->get(EventBusService::class);
+        $service = new UpdateIndexOnPrSubmitted($doctrineEM, $eventBusService);
+
+        $sv = $container->get("AppLogger");
+        $service->setLogger($sv);
+
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+
         return $service;
     }
 }

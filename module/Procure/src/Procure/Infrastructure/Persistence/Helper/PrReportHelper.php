@@ -232,6 +232,10 @@ WHERE 1
             $sql_tmp1 = $sql_tmp1 . \sprintf(" AND year(nmt_procure_pr.created_on) =%s", $filter->getDocYear());
         }
 
+        if ($filter->getItemId() > 0) {
+            $sql_tmp1 = $sql_tmp1 . \sprintf(" AND nmt_inventory_item.id  =%s", $filter->getItemId());
+        }
+
         if ($filter->getBalance() == 0) {
             $sql_tmp1 = $sql_tmp1 . " HAVING nmt_procure_pr_row.quantity <=  posted_gr_qty";
         }

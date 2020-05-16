@@ -17,6 +17,32 @@ class PRRowSnapshotAssembler
 
     const EDITABLE_FIELDS = 2;
 
+    public static function createFromQueryHit($hit)
+    {
+        if ($hit == null) {
+            return;
+        }
+
+        $snapshort = new PRRowSnapshot();
+        $reflectionClass = new \ReflectionClass($snapshort);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if ($hit->__isset($propertyName)) {
+                $snapshort->$propertyName = $hit->$propertyName;
+            }
+        }
+
+        $snapshort->id = $hit->rowId; // important
+        if ($hit->__isset("itemId")) {
+            $snapshort->item = $hit->itemId; // important
+        }
+
+        return $snapshort;
+    }
+
     /**
      *
      * @return array;

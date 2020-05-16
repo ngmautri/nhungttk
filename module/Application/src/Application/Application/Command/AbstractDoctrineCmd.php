@@ -7,6 +7,8 @@ use Application\Domain\Shared\Command\CommandHandlerInterface;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 /**
  *
@@ -33,6 +35,10 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     protected $dto;
 
     protected $eventBus;
+
+    protected $logger;
+
+    protected $cache;
 
     /**
      *
@@ -197,5 +203,41 @@ abstract class AbstractDoctrineCmd implements CommandInterface
     public function getEventBus()
     {
         return $this->eventBus;
+    }
+
+    /**
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     *
+     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     *
+     * @param AbstractAdapter $cache
+     */
+    public function setCache(AbstractAdapter $cache)
+    {
+        $this->cache = $cache;
     }
 }

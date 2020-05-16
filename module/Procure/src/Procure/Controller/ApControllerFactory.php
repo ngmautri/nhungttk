@@ -25,6 +25,7 @@ class ApControllerFactory implements FactoryInterface
     {
         $sm = $serviceLocator->getServiceLocator();
         $controller = new APController();
+
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 

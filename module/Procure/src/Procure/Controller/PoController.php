@@ -2,11 +2,11 @@
 namespace Procure\Controller;
 
 use Application\Notification;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Controller\Plugin\NmtPlugin;
 use Application\Domain\Shared\DTOFactory;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcureQo;
-use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
@@ -40,9 +40,7 @@ use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\PO\POService;
 use Procure\Domain\Shared\Constants;
-use Psr\Log\LoggerInterface;
 use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -51,7 +49,7 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoController extends AbstractActionController
+class PoController extends AbstractGenericController
 {
 
     protected $doctrineEM;
@@ -2182,26 +2180,6 @@ class PoController extends AbstractActionController
 
     /**
      *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \PM\Controller\IndexController
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
      * @return \Procure\Service\PoService
      */
     public function getPoService()
@@ -2270,41 +2248,5 @@ class PoController extends AbstractActionController
     public function setPoReporter(PoReporter $poReporter)
     {
         $this->poReporter = $poReporter;
-    }
-
-    /**
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *
-     * @return \Procure\Application\Eventbus\EventBusService
-     */
-    public function getEventBusService()
-    {
-        return $this->eventBusService;
-    }
-
-    /**
-     *
-     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
-     */
-    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
-    {
-        $this->eventBusService = $eventBusService;
     }
 }

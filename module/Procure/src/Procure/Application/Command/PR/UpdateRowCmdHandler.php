@@ -9,6 +9,7 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PR\Options\RowUpdateOptions;
 use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Application\Service\FXService;
+use Procure\Application\Service\PR\PRService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -136,6 +137,12 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             }
             // ================
 
+            if ($cmd->getCache() !== null) {
+                $key = \sprintf(PRService::PR_KEY_CACHE, $rootEntity->getId());
+                $cmd->getCache()->deleteItem($key);
+                $cmd->getLogger()->info(\sprintf("%s deleted from cache!", $key));
+            }
+
             $m = sprintf("PR #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
 
             $notification->addSuccess($m);
@@ -146,7 +153,6 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-
             $dto->setNotification($notification);
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());

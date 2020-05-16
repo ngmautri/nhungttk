@@ -108,6 +108,11 @@ class PORowSnapshotAssembler
                 $snapshort->$propertyName = $hit->$propertyName;
             }
         }
+
+        $snapshort->id = $hit->rowId; // important
+        if ($hit->__isset("itemId")) {
+            $snapshort->item = $hit->itemId; // important
+        }
         return $snapshort;
     }
 

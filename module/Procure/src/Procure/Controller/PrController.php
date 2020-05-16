@@ -2,20 +2,21 @@
 namespace Procure\Controller;
 
 use Application\Notification;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\DTOFactory;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
-use Doctrine\ORM\EntityManager;
 use Endroid\QrCode\QrCode;
 use MLA\Paginator;
-use Monolog\Logger;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\PR\AddRowCmdHandler;
 use Procure\Application\Command\PR\CreateHeaderCmdHandler;
 use Procure\Application\Command\PR\EditHeaderCmdHandler;
+use Procure\Application\Command\PR\PostCmdHandler;
 use Procure\Application\Command\PR\UpdateRowCmdHandler;
 use Procure\Application\Command\PR\Options\CreateOptions;
+use Procure\Application\Command\PR\Options\PostOptions;
 use Procure\Application\Command\PR\Options\RowCreateOptions;
 use Procure\Application\Command\PR\Options\RowUpdateOptions;
 use Procure\Application\Command\PR\Options\UpdateOptions;
@@ -30,7 +31,6 @@ use Symfony\Component\Workflow\Exception\LogicException;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
 use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -38,12 +38,10 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrController extends AbstractActionController
+class PrController extends AbstractGenericController
 {
 
     const QR_CODE_PATH = "/data/procure/qr_code/pr/";
-
-    protected $doctrineEM;
 
     protected $prService;
 
@@ -52,10 +50,6 @@ class PrController extends AbstractActionController
     protected $attachmentService;
 
     protected $purchaseRequestService;
-
-    protected $logger;
-
-    protected $eventBusService;
 
     /**
      *
@@ -269,7 +263,7 @@ class PrController extends AbstractActionController
             // probably this is the first time the form was loaded
             $target_id = (int) $this->params()->fromQuery('target_id');
             $target_token = $this->params()->fromQuery('target_token');
-            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($target_id, $target_token);
+            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenIdFromDB($target_id, $target_token);
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
@@ -306,7 +300,7 @@ class PrController extends AbstractActionController
             $rootEntityId = $data['target_id'];
             $rootEntityToken = $data['target_token'];
             $version = $data['version'];
-            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($rootEntityId, $rootEntityToken);
+            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenIdFromDB($rootEntityId, $rootEntityToken);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -452,6 +446,9 @@ class PrController extends AbstractActionController
             $cmdHandler = new UpdateRowCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
             $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setCache($this->getCache());
+            $cmd->setLogger($this->getLogger());
+
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -562,7 +559,7 @@ class PrController extends AbstractActionController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin
@@ -573,81 +570,124 @@ class PrController extends AbstractActionController
 
     /**
      *
-     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function reviewAction()
     {
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
         $this->layout("Procure/layout-fullscreen");
 
-        // $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/pr/review";
+        $form_title = "Review PR";
+        $action = Constants::FORM_ACTION_REVIEW;
+        $viewTemplete = "procure/pr/review-v1";
 
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+        $prg = $this->prg($form_action, true);
 
-        $id = (int) $this->params()->fromQuery('entity_id');
-        // $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
 
-        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
-        $pr = $res->getPrNew($id, $token);
+            $this->layout("Procure/layout-fullscreen");
 
-        if ($pr == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
 
-        $entity = null;
-        if ($pr[0] instanceof NmtProcurePr) {
-            $entity = $pr[0];
-        }
+            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($entity_id, $entity_token);
 
-        if ($entity instanceof \Application\Entity\NmtProcurePr) {
-
-            try {
-                /** @var \Symfony\Component\Workflow\Workflow $wf */
-                // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
-
-                // var_dump($wf->getEnabledTransitions($entity));
-
-                // $wf->apply($entity, "recall");
-                // $dumper = new GraphvizDumper();
-                // echo $dumper->dump($wf->getDefinition());
-
-                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
-                $wf_plugin = $this->WfPlugin();
-
-                /** @var \Workflow\Service\WorkflowService $wfService */
-                $wfService = $wf_plugin->getWorkflowSerive();
-
-                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
-                $wf_factory = $wfService->getWorkFlowFactory($entity);
-
-            /** @var \Symfony\Component\Workflow\Workflow  $wf */
-                // $wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
-                // $wf->apply($entity,"send");
-            } catch (LogicException $e) {
-                // echo $e->getMessage();
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
             }
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
+            // echo memory_get_usage();
+            // var_dump($po->makeDTOForGrid());
+            // echo memory_get_usage();
+
+            $viewModel = new ViewModel(array(
                 'errors' => null,
-                'total_row' => $pr['total_row'],
-                'max_row_number' => $pr['max_row_number'],
-                'active_row' => $pr['active_row'],
-                'total_attachment' => $pr['total_attachment'],
-                'total_picture' => $pr['total_picture']
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
             ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
         }
+
+        // POSTING
+        // ====================================
+
+        $notification = new Notification();
+        try {
+
+            $msg = null;
+            $data = $prg;
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            $userId = $u->getId();
+
+            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $dto = new PrDTO();
+            $cmdHandler = new PostCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setCache($this->getCache());
+            $cmd->setLogger($this->getLogger());
+            $cmd->execute();
+            $this->getLogger()->info(\sprintf("PR #%s posted by #%s", $entity_id, $u->getId()));
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $notification->addError($msg);
+        }
+
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = sprintf("/procure/pr/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        $this->flashMessenger()->addMessage($notification->successMessage(true));
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
@@ -1161,6 +1201,8 @@ class PrController extends AbstractActionController
      */
     public function showAction()
     {
+        \trigger_error(\sprintf("@deprecated"));
+
         $request = $this->getRequest();
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -1248,7 +1290,6 @@ class PrController extends AbstractActionController
             return $this->redirect()->toRoute('not_found');
         }
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         /**@var \Application\Entity\MlaUsers $u ;*/
 
         $nmtPlugin = $this->Nmtplugin();
@@ -1661,26 +1702,6 @@ class PrController extends AbstractActionController
 
     /**
      *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \PM\Controller\IndexController
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
      * @return \Procure\Service\PrService
      */
     public function getPrService()
@@ -1717,24 +1738,6 @@ class PrController extends AbstractActionController
 
     /**
      *
-     * @return \Monolog\Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *
      * @return \Procure\Application\Reporting\PR\PrReporter
      */
     public function getPrReporter()
@@ -1749,23 +1752,5 @@ class PrController extends AbstractActionController
     public function setPrReporter(PrReporter $prReporter)
     {
         $this->prReporter = $prReporter;
-    }
-
-    /**
-     *
-     * @return \Procure\Application\Eventbus\EventBusService
-     */
-    public function getEventBusService()
-    {
-        return $this->eventBusService;
-    }
-
-    /**
-     *
-     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
-     */
-    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
-    {
-        $this->eventBusService = $eventBusService;
     }
 }

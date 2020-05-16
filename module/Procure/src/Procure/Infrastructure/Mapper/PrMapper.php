@@ -368,7 +368,7 @@ class PrMapper
             HeaderMapper::updateCompanyDetails($snapshot, $entity->getCompany());
         }
 
-        if ($entity->getCompany() !== null) {
+        if ($entity->getWarehouse() !== null) {
             HeaderMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
         }
 

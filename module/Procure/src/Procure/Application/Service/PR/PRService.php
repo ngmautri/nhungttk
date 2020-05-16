@@ -29,7 +29,7 @@ use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 
 /**
- * AP Service.
+ * PR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -37,29 +37,66 @@ use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 class PRService extends AbstractService
 {
 
+    const PR_KEY_CACHE = "pr_%s";
+
     public function getDocHeaderByTokenId($id, $token)
     {
         $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
     }
 
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param string $outputStrategy
+     * @return NULL|\Procure\Domain\PurchaseRequest\PRDoc
+     */
     public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
     {
-        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
-        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+        $key = \sprintf(self::PR_KEY_CACHE, $id);
 
-        if (! $rootEntity instanceof PRDoc) {
-            return null;
+        $resultCache = $this->getCache()->getItem($key);
+
+        /**
+         *
+         * @var PRDoc $rootEntity ;
+         */
+        $rootEntity = null;
+        if ($resultCache->isHit()) {
+
+            $cachedRootEntity = $this->getCache()
+                ->getItem($key)
+                ->get();
+            $rootEntity = \unserialize($cachedRootEntity);
+            $this->getLogger()->info(\sprintf("PR#%s (%s) got from cache!", $id, $key));
+        } else {
+
+            // Not in Cache.
+            $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+
+            if (! $rootEntity instanceof PRDoc) {
+                return null;
+            }
+
+            // always save array.
+            $formatter = new RowFormatter(new RowTextAndNumberFormatter());
+            $factory = new DocSaveAsArray();
+
+            $output = $factory->saveAs($rootEntity, $formatter);
+            $rootEntity->setRowsOutput($output);
+            $resultCache->set(\serialize($rootEntity));
+            $this->getCache()->save($resultCache);
+            $this->getLogger()->info(\sprintf("PR#%s (%s) saved into cache!", $id, $key));
         }
+
+        // FOR PDF and Excel.
 
         $factory = null;
         $formatter = null;
 
         switch ($outputStrategy) {
-            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new RowFormatter(new RowTextAndNumberFormatter());
-                $factory = new DocSaveAsArray();
-                break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
                 $formatter = new RowFormatter(new RowNumberFormatter());
@@ -76,8 +113,51 @@ class PRService extends AbstractService
                 $formatter = new RowFormatter(new RowNumberFormatter());
                 $factory = new SaveAsPdf($builder);
                 break;
+        }
 
+        if ($factory !== null && $formatter !== null) {
+            $output = $factory->saveAs($rootEntity, $formatter);
+            $rootEntity->setRowsOutput($output);
+        }
+
+        return $rootEntity;
+    }
+
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
+    {
+
+        // Not in Cache.
+        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+
+        if (! $rootEntity instanceof PRDoc) {
+            return null;
+        }
+
+        // FOR PDF and Excel.
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($outputStrategy) {
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new ExcelBuilder();
+                $formatter = new RowFormatter(new RowNumberFormatter());
+                $factory = new SaveAsExcel($builder);
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new OpenOfficeBuilder();
+                $formatter = new RowFormatter(new RowNumberFormatter());
+                $factory = new SaveAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_PDF:
+                $builder = new PdfBuilder();
+                $formatter = new RowFormatter(new RowNumberFormatter());
+                $factory = new SaveAsPdf($builder);
+                break;
             default:
+                // always save array.
                 $formatter = new RowFormatter(new RowTextAndNumberFormatter());
                 $factory = new DocSaveAsArray();
                 break;

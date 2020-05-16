@@ -143,6 +143,8 @@ class RowMapper
         $snapshot->itemManufacturerModel = $entity->getManufacturerModel();
         $snapshot->itemManufacturerSerial = $entity->getManufacturerSerial();
         $snapshot->itemDefaultManufacturer = $entity->getManufacturer();
+        $snapshot->itemKeywords = $entity->getKeywords();
+        $snapshot->itemSysNumber = $entity->getSysNumber();
 
         if ($entity->getItemGroup() != null) {
 
@@ -228,6 +230,7 @@ class RowMapper
 
         $snapshot->pr = $entity->getId();
         $snapshot->prSysNumber = $entity->getPrAutoNumber();
+        $snapshot->docSysNumber = $entity->getPrAutoNumber();
         $snapshot->prNumber = $entity->getPrNumber();
         $snapshot->prToken = $entity->getToken();
         $snapshot->prChecksum = $entity->getChecksum();

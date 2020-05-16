@@ -3,12 +3,10 @@ namespace ProcureTest\PO\Search;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
-use Procure\Application\Service\Search\ZendSearch\PO\PoSearchIndexImpl;
-use Procure\Application\Service\Search\ZendSearch\PO\PoSearchQueryImpl;
-use Procure\Application\Service\Search\ZendSearch\PO\Filter\PoQueryFilter;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
+use Procure\Application\Service\Search\ZendSearch\PR\Filter\PrQueryFilter;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use PHPUnit_Framework_TestCase;
 
 class RepTest extends PHPUnit_Framework_TestCase
@@ -25,34 +23,34 @@ class RepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new POQueryRepositoryImpl($doctrineEM);
+            $searcher = new PrSearchQueryImpl();
+            $queryFilter = new PrQueryFilter();
+            // $queryFilter->setDocStatus("posted");
+            $results = $searcher->search("paint", $queryFilter);
 
-            $id = 363;
-            $token = "b9753d8b-3c23-48d2-a9bb-990f41f1fe7b";
+            $results_array = [];
 
-            $rootEntity = $rep->getPODetailsById($id, $token);
-            // var_dump($rootEntity->makeSnapshot());
+            $results_array['message'] = $results->getMessage();
+            $results_array['total_hits'] = $results->getTotalHits();
 
-            $indexer = new PoSearchIndexImpl();
-            // $r = $indexer->createDoc($rootEntity->makeSnapshot());
-            // $r1 = $indexer->optimizeIndex();
-            // var_dump($r1);
+            $hits_array = [];
+            $n = 0;
+            foreach ($results->getHits() as $hit) {
+                $n ++;
+                $item_thumbnail = '/images/no-pic1.jpg';
+                if ($hit->itemId != null) {
+                    $item_thumbnail = "test";
+                }
+                $hits_array["item_thumbnail"] = $item_thumbnail;
 
-            $searcher = new PoSearchQueryImpl();
-            $queryFilter = new PoQueryFilter();
-            $queryFilter->setDocStatus("posted");
-            $hits = $searcher->search("025", $queryFilter);
-
-            $results = [];
-            foreach ($hits as $hit) {
-                $results[] = PORowSnapshotAssembler::createFromQueryHit($hit);
+                $hits_array["n"] = $n;
+                $hits_array["value"] = \sprintf('%s | %s', $hit->docNumber, $hit->itemName);
+                $hits_array["hit"] = PRRowSnapshotAssembler::createFromQueryHit($hit);
             }
 
-            var_dump($results);
+            $results_array['hits'] = $hits_array;
 
-            // $string = "22-4-00078";
-            // $result = preg_replace('/[0-]/', '', \substr($string, - 5)); // Replace all 'abc' with 'def'
-            // echo $result;
+            var_dump(\json_encode($results_array));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

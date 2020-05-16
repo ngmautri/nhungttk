@@ -2,6 +2,7 @@
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
+use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -136,9 +137,10 @@ endif;
                 echo sprintf("PR #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
 
             ?></b>
-               <span style="color: black;"><br><?php
-            echo ($headerDTO !== null) ? $headerDTO->getDocNumber() : "";
-            ?></span>
+               <span style="color: black;">
+                  <br><?php
+                echo ($headerDTO !== null) ? $headerDTO->getDocNumber() : "";
+                ?></span>
             </li>
             <li>-----</li>
             <li>Status: <?php
@@ -335,9 +337,9 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
 
 <!-- ================ TOOL BAR ======================-->
                <div style="position: relative; float: right;">
-               <?php
-            // echo Toolbar::showToolbarAP($headerDTO, $action, $this);
-            ?>
+           <?php
+        echo Toolbar::showToolbarPR($headerDTO, $action, $this);
+        ?>
                </div>
                <!-- ================== TOOL BAR ===================-->
                <FORM id="HEADER_FORM" class="form-horizontal" action="<?php
@@ -522,16 +524,34 @@ echo $department_option;
                         echo ($headerDTO->getTotalActiveRows());
                         ?>
 					</span>
-                              <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                              <ul style="font-size: 9pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                  <li>
                                     <a target="_blank" class="" href="<?php
 
                                     echo $save_as_pdf;
                                     ?>">
-                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
-                                       &nbsp;Pdf (*.pdf)
+                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf) default
                                     </a>
                                  </li>
+                                    <li class="divider"></li>
+                             
+                                 <li class="dropdown-submenu">
+                                    <a class="test" tabindex="-1" href="#">
+                                    <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf) Detail&nbsp; &nbsp; &nbsp; &nbsp; 
+                                       <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                    </a>
+                                    <ul style="font-size: 9pt;" class="dropdown-menu">
+                                       <li>
+                                          <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with price <i class="fa fa-lock" aria-hidden="true"></i></a>
+                                       </li>
+                                          <li class="divider"></li>
+                            
+                                       <li>
+                                           <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with picture</a>
+                                      </li>
+                                    </ul>
+                                 </li>
+                                 <li class="divider"></li>
                                  <li>
                                     <a class="" href="<?php
 
@@ -541,6 +561,7 @@ echo $department_option;
                                        &nbsp;Excel (*.xlxs)
                                     </a>
                                  </li>
+                                 <li class="divider"></li>
                                  <li>
                                     <a class="" href="<?php
 
@@ -1085,7 +1106,8 @@ echo $hoverMode;
        { title: "Target WH", dataType: "string", dataIndx: "warehouseCode", width:50,editable: false },
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
       { title: "PR", dataType: "string", dataIndx: "lastApVendor", width:120,editable: false },
-      
+      { title: "PR", dataType: "string", dataIndx: "edt", width:120,editable: false },
+           
       ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);

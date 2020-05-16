@@ -23,9 +23,29 @@ class PrReportSqlFilter implements SqlFilterInterface
 
     public $balance;
 
+    public $itemId;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     *
+     * @param mixed $itemId
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+    }
+
     public function __toString()
     {
-        return \sprintf("PrReportSqlFilter_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance);
+        return \sprintf("PrReportSqlFilter_%s_%s_%s_%s_%s_%s", $this->isActive, $this->docYear, $this->docMonth, $this->docStatus, $this->balance, $this->itemId);
     }
 
     /**

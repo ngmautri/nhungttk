@@ -1,5 +1,6 @@
 <?php
 use Application\Application\Cache\CacheFactory;
+use Application\Application\Cache\RedisCacheFactory;
 use Application\Application\Event\Handler\DummyEventHandler;
 use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Application\Eventbus\PsrHandlerResolver;
@@ -310,6 +311,7 @@ return array(
             \Application\Application\Service\MessageStore\MessageQuery::class => \Application\Application\Service\MessageStore\MessageQueryFactory::class,
             "AppLogger" => LoggerFactory::class,
             "AppCache" => CacheFactory::class,
+            "RedisCache" => RedisCacheFactory::class,
 
             // Event Handler Register
             DummyEventHandler::class => DummyEventHandlerFactory::class,

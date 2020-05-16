@@ -9,7 +9,6 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PR\Options\PostOptions;
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\Service\FXService;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -40,7 +39,7 @@ class PostCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
         /**
@@ -75,7 +74,6 @@ class PostCmdHandler extends AbstractCommandHandler
             $notification = new Notification();
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
@@ -113,10 +111,10 @@ class PostCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
+
+            $dto->setNotification($notification);
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());
         }
-
-        $dto->setNotification($notification);
     }
 }

@@ -56,7 +56,7 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
 
         $localSnapshot->id = $rowEntityDoctrine->getId();
         $localSnapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
-        $localSnapshot->docVersion = $rowEntityDoctrine->getDocVersion();
+        // $localSnapshot->docVersion = $rowEntityDoctrine->getDocVersion();
         $localSnapshot->revisionNo = $rowEntityDoctrine->getRevisionNo();
 
         return $localSnapshot;
@@ -73,9 +73,9 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
 
         $isFlush = true;
         $increaseVersion = true;
-        
+
         /**
-         * 
+         *
          * @var \Application\Entity\NmtProcurePr $entity
          */
         $entity = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
@@ -180,8 +180,8 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         $this->doctrineEM->flush();
 
         $rootSnapshot->id = $rootEntityDoctrine->getId();
-        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
-        $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
+        // $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
+        $rootSnapshot->sysNumber = $rootEntityDoctrine->getPrAutoNumber();
         $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
         return $rootSnapshot;
     }
@@ -226,7 +226,7 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         $entity = PrMapper::mapSnapshotEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
 
         if ($generateSysNumber) {
-            $entity->setSysNumber($this->generateSysNumber($entity));
+            $entity->setPrAutoNumber($this->generateSysNumber($entity));
         }
 
         if ($increaseVersion) {
@@ -300,7 +300,7 @@ class PRCmdRepositoryImpl extends AbstractDoctrineRepository implements PrCmdRep
         $rowEntityDoctrine = PrMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
         if ($n > 0) {
-            $rowEntityDoctrine->setRowIdentifer(sprintf("%s-%s", $rootEntityDoctrine->getSysNumber(), $n));
+            $rowEntityDoctrine->setRowIdentifer(sprintf("%s-%s", $rootEntityDoctrine->getPrAutoNumber(), $n));
         }
 
         $this->doctrineEM->persist($rowEntityDoctrine);

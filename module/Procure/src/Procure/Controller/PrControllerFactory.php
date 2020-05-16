@@ -29,20 +29,25 @@ class PrControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
+        $sv = $sm->get("AppCache");
+        $controller->setCache($sv);
+
+        $sv = $sm->get("AppLogger");
+        $controller->setLogger($sv);
+
+        // =========================
+
+        $sv = $sm->get(EventBusService::class);
+        $controller->setEventBusService($sv);
+
         $sv = $sm->get('Procure\Service\PrService');
         $controller->setPrService($sv);
 
         $sv = $sm->get('Procure\Application\Service\PR\PRService');
         $controller->setPurchaseRequestService($sv);
 
-        $sv = $sm->get("AppLogger");
-        $controller->setLogger($sv);
-
         $sv = $sm->get(PrReporter::class);
         $controller->setPrReporter($sv);
-
-        $sv = $sm->get(EventBusService::class);
-        $controller->setEventBusService($sv);
 
         return $controller;
     }

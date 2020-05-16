@@ -31,12 +31,14 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
             $limit = null;
             $offset = null;
             $filter = new PrReportSqlFilter();
+            $filter->setBalance(- 1); // all.
             $filter->setIsActive(1);
             $stopWatch->start("test");
             $results = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
 
             $indexer = new PrSearchIndexImpl();
-            // $r = $indexer->createIndex($results);
+            $r = $indexer->createIndex($results);
+            var_dump($r);
             $r = $indexer->optimizeIndex();
             var_dump($r);
 

@@ -3,6 +3,7 @@ namespace Application\Service;
 
 use Application\Domain\Shared\AggregateRoot;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -26,6 +27,8 @@ abstract class AbstractService implements EventManagerAwareInterface
 
     protected $cache;
 
+    protected $logger;
+
     /**
      *
      * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
@@ -44,6 +47,11 @@ abstract class AbstractService implements EventManagerAwareInterface
         $this->cache = $cache;
     }
 
+    /**
+     *
+     * @deprecated
+     * @param AggregateRoot $rootEntity
+     */
     protected function triggerEvent(AggregateRoot $rootEntity)
     {
         if (! $rootEntity instanceof AggregateRoot) {
@@ -146,5 +154,23 @@ abstract class AbstractService implements EventManagerAwareInterface
     public function setControllerPlugin(\Application\Controller\Plugin\NmtPlugin $controllerPlugin)
     {
         $this->controllerPlugin = $controllerPlugin;
+    }
+
+    /**
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }

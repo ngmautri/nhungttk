@@ -7,9 +7,9 @@ use Procure\Application\Service\Search\ZendSearch\PO\PoSearch;
 use Procure\Domain\BaseRowSnapshot;
 use Procure\Domain\DocSnapshot;
 use Procure\Domain\GenericRow;
-use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseRequest\PRRow;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Domain\Service\Search\PrSearchIndexInterface;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Lucene;
@@ -26,6 +26,46 @@ use RuntimeException;
  */
 class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterface
 {
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\Service\Search\PrSearchIndexInterface::updateIndexRow()
+     */
+    public function updateIndexRow($rows)
+    {
+        $indexResult = new IndexingResult();
+        $indexResult->setIsSuccess(false);
+
+        try {
+
+            if (count($rows) == 0) {
+                throw new \InvalidArgumentException("No input not given");
+            }
+
+            // take long time
+            set_time_limit(1500);
+
+            $index = $this->getIndexer();
+            Analyzer::setDefault(new CaseInsensitive());
+
+            foreach ($rows as $row) {
+                $this->_createIndexFromRowSnapshot($index, $row, FALSE);
+            }
+
+            $message = \sprintf('Index has been updated successfully! %s', count($rows));
+
+            $indexResult = new IndexingResult();
+            $this->_updateIndexingResult($index, $indexResult);
+            $indexResult->setMessage($message);
+            $indexResult->setIsSuccess(TRUE);
+        } catch (Exception $e) {
+            $message = \sprintf('Failed! %s - %s', $e->getTraceAsString(), " No info!");
+            $indexResult->setMessage($message);
+        }
+
+        return $indexResult;
+    }
 
     /**
      *
@@ -106,7 +146,7 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
             $indexResult = new IndexingResult();
             $indexResult->setIsSuccess(False);
 
-            if (! $doc instanceof POSnapshot) {
+            if (! $doc instanceof PRSnapshot) {
                 throw new \InvalidArgumentException("PoSnapshot not given");
             }
 
@@ -123,7 +163,12 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
             Analyzer::setDefault(new CaseInsensitive());
 
             foreach ($rows as $row) {
-                $this->_createDoc($index, $row);
+
+                if (! $row instanceof PRRow) {
+                    return;
+                }
+
+                $this->_createIndexFromRowSnapshot($index, $row->makeSnapshot());
             }
 
             $message = \sprintf('Document has been added successfully! %s', $doc->getId());
@@ -132,7 +177,9 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
             $this->_updateIndexingResult($index, $indexResult);
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(True);
+            // $this->getLogger()->info($message);
         } catch (Exception $e) {
+            $this->getLogger()->error($e->getTraceAsString());
             $message = \sprintf('Failed! %s', $e->getMessage());
             $indexResult->setMessage($message);
         }
@@ -220,23 +267,26 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
      * @param BaseRowSnapshot $row
      * @throws \InvalidArgumentException
      */
-    private function _createIndexFromRowSnapshot(\ZendSearch\Lucene\SearchIndexInterface $index, BaseRowSnapshot $row)
+    private function _createIndexFromRowSnapshot(\ZendSearch\Lucene\SearchIndexInterface $index, BaseRowSnapshot $row, $isNew = TRUE)
     {
         $doc = new Document();
 
         if (! $row instanceof PRRowSnapshot) {
-            throw new \InvalidArgumentException("PRRowSnapshot empty");
+            throw new \InvalidArgumentException("PRRowSnapshot not given!");
         }
 
-        $ck_query = \sprintf('pr_doc_row_key:%s', \sprintf('%s_%s', $row->getDocId(), $row->getId()));
+        // Deleting old document when updating.
+        if (! $isNew) {
+            $ck_query = \sprintf('pr_doc_row_key:%s', \sprintf('%s_%s', $row->getDocId(), $row->getId()));
 
-        $ck_hits = $index->find($ck_query);
-        echo (count($ck_hits));
+            $ck_hits = $index->find($ck_query);
+            echo (count($ck_hits));
 
-        if (count($ck_hits) > 0) {
+            if (count($ck_hits) > 0) {
 
-            foreach ($ck_hits as $hit) {
-                $index->delete($hit->id);
+                foreach ($ck_hits as $hit) {
+                    $index->delete($hit->id);
+                }
             }
         }
 
@@ -297,7 +347,6 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
          * $doc->addField(Field::text('discountAmount', $row->getDiscountAmount()));
          * $doc->addField(Field::text('id', $row->getId()));
          * $doc->addField(Field::UnIndexed('rowNumber', $row->getRowNumber()));
-         *
          * $doc->addField(Field::text('conversionFactor', $row->getConversionFactor()));
          * $doc->addField(Field::text('converstionText', $row->getConverstionText()));
          * $doc->addField(Field::text('taxRate', $row->getTaxRate()));
@@ -352,6 +401,7 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
 
         $doc->addField(Field::Keyword('pr_doc_row_key', \sprintf('%s_%s', $row->getDocId(), $row->getId())));
 
+        $doc->addField(Field::UnIndexed('isActive', $row->getIsActive()));
         $doc->addField(Field::UnIndexed('companyId', $row->getCompanyId()));
         $doc->addField(Field::UnIndexed('companyToken', $row->getCompanyToken()));
 
@@ -364,6 +414,10 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::UnIndexed('docToken', $row->getDocToken()));
         $doc->addField(Field::UnIndexed('docId', $row->getDocId()));
 
+        $doc->addField(Field::UnIndexed('rowToken', $row->getToken()));
+        $doc->addField(Field::UnIndexed('rowId', $row->getId()));
+
+        $doc->addField(Field::UnIndexed('itemId', $row->getItem()));
         $doc->addField(Field::UnIndexed('itemToken', $row->getItemToken()));
         $doc->addField(Field::text('itemName', $row->getItemName()));
 
@@ -380,6 +434,7 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::UnIndexed('itemVersion', $row->getItemVersion()));
         $doc->addField(Field::UnIndexed('isInventoryItem', $row->getIsInventoryItem()));
         $doc->addField(Field::UnIndexed('isFixedAsset', $row->getIsFixedAsset()));
+
         $doc->addField(Field::text('itemModel', $row->getItemModel()));
         $doc->addField(Field::text('itemSerial', $row->getItemSerial()));
         $doc->addField(Field::text('itemDefaultManufacturer', $row->getItemDefaultManufacturer()));
@@ -387,6 +442,7 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::text('itemManufacturerSerial', $row->getItemManufacturerSerial()));
         $doc->addField(Field::text('itemManufacturerCode', $row->getItemManufacturerCode()));
         $doc->addField(Field::text('itemKeywords', $row->getItemKeywords()));
+
         $doc->addField(Field::keyword('itemAssetLabel', $row->getItemAssetLabel()));
         $doc->addField(Field::keyword('itemAssetLabel1', $row->getItemAssetLabel1()));
 
@@ -415,6 +471,8 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $output = iconv("UTF-8", "ASCII//IGNORE", $row->getDescriptionText());
         $doc->addField(Field::text('descriptionText', $output));
         $doc->addField(Field::text('vendorItemName', $row->getVendorItemName()));
+        $doc->addField(Field::text('rowName', $row->getRowName()));
+        $doc->addField(Field::text('rowCode', $row->getRowCode()));
 
         $index->addDocument($doc);
     }

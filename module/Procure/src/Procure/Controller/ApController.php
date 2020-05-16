@@ -2,8 +2,8 @@
 namespace Procure\Controller;
 
 use Application\Notification;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\DTOFactory;
-use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\AP\AddRowCmd;
@@ -33,8 +33,6 @@ use Procure\Application\Reporting\AP\ApReporter;
 use Procure\Application\Service\AP\APService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
-use Psr\Log\LoggerInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -42,18 +40,12 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApController extends AbstractActionController
+class ApController extends AbstractGenericController
 {
-
-    protected $doctrineEM;
 
     protected $apService;
 
     protected $apReporter;
-
-    protected $eventBusService;
-
-    protected $logger;
 
     /**
      *
@@ -1068,20 +1060,6 @@ class ApController extends AbstractActionController
 
     /**
      *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-    }
-
-    /**
-     *
      * @return \Procure\Application\Service\AP\APService
      */
     public function getApService()
@@ -1096,42 +1074,6 @@ class ApController extends AbstractActionController
     public function setApService(APService $apService)
     {
         $this->apService = $apService;
-    }
-
-    /**
-     *
-     * @return \Procure\Application\Eventbus\EventBusService
-     */
-    public function getEventBusService()
-    {
-        return $this->eventBusService;
-    }
-
-    /**
-     *
-     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
-     */
-    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
-    {
-        $this->eventBusService = $eventBusService;
-    }
-
-    /**
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**

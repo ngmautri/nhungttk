@@ -3,6 +3,7 @@ namespace Procure\Application\Helper;
 
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -146,6 +147,38 @@ class Toolbar
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
                 }
+                break;
+        }
+
+        return $toolbar;
+    }
+
+    public static function showToolbarPR(PrDTO $headerDTO, $action, $view)
+    {
+        $toolbar = "";
+
+        $review_url = sprintf("/procure/pr/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $reviewBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $review_url, $view->translate("Review & Post"));
+
+        $postBtn = sprintf(' <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;">
+<i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;%s</a>', $view->translate("Post"));
+
+        switch ($headerDTO->getDocStatus()) {
+
+            case ProcureDocStatus::DOC_STATUS_DRAFT:
+
+                if ($action == Constants::FORM_ACTION_SHOW) {
+                    $toolbar = $reviewBtn;
+                }
+
+                if ($action == Constants::FORM_ACTION_REVIEW) {
+                    $toolbar = $postBtn;
+                }
+                break;
+
+            case ProcureDocStatus::DOC_STATUS_POSTED:
+                break;
+            case ProcureDocStatus::DOC_STATUS_AMENDING:
                 break;
         }
 

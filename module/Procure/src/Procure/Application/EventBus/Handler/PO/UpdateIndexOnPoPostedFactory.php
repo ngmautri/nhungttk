@@ -24,6 +24,13 @@ class UpdateIndexOnPoPostedFactory implements FactoryInterface
 
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
-        return new UpdateIndexOnPoPosted($doctrineEM, $eventBusService);
+        $service = new UpdateIndexOnPoPosted($doctrineEM, $eventBusService);
+
+        $sv = $container->get("AppLogger");
+        $service->setLogger($sv);
+
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+        return $service;
     }
 }

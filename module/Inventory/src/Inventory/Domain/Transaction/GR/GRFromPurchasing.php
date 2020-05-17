@@ -1,8 +1,12 @@
 <?php
 namespace Inventory\Domain\Transaction\GR;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Contracts\PostingServiceInterface;
+use Inventory\Domain\Event\Transaction\TrxPosted;
+use Inventory\Domain\Exception\OperationFailedException;
+use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\GoodsReceipt;
 use Inventory\Domain\Transaction\TrxRow;
@@ -13,6 +17,7 @@ use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
 
@@ -28,6 +33,87 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
     {
         $this->movementType = TransactionType::GR_FROM_PURCHASING;
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
+    }
+
+    public static function postCopyFromProcureGR(GRDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService)
+    {
+        if (! $sourceObj instanceof GRDoc) {
+            throw new InvalidArgumentException("GRDoc Entity is required");
+        }
+
+        $rows = $sourceObj->getDocRows();
+
+        if ($rows == null) {
+            throw new InvalidArgumentException("GRDoc Entity is empty!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+            throw new InvalidArgumentException("AP document is not posted yet!");
+        }
+
+        /**
+         *
+         * @var \Inventory\Domain\Transaction\GR\GRFromPurchasing $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $createdBy = $options->getUserId();
+        $createdDate = new \DateTime();
+        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        // overwrite.
+        // $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
+        $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var GRRow $r ;
+             */
+
+            $grRow = GRFromPurchasingRow::createFromPurchaseGrRow($instance, $r, $options);
+            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $instance->addRow($grRow);
+        }
+
+        $instance->validate($headerValidators, $rowValidators);
+
+        if ($instance->hasErrors()) {
+            throw new ValidationFailedException($instance->getErrorMessage());
+        }
+
+        $instance->clearEvents();
+
+        $snapshot = $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->post($instance, true);
+
+        if (! $snapshot instanceof TrxSnapshot) {
+            throw new OperationFailedException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
+        }
+
+        $instance->setId($snapshot->getId());
+        $instance->setToken($snapshot->getToken());
+
+        $target = $snapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($snapshot->getId());
+        $defaultParams->setTargetToken($snapshot->getToken());
+        $defaultParams->setTargetDocVersion($snapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($snapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new TrxPosted($target, $defaultParams, $params);
+
+        $instance->addEvent($event);
+        return $instance;
     }
 
     /**

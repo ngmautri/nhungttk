@@ -2,15 +2,14 @@
 namespace ProcureTest\GR\Command;
 
 use Doctrine\ORM\EntityManager;
+use Inventory\Application\Command\GenericCmd;
 use ProcureTest\Bootstrap;
-use Procure\Application\Command\TransactionalCmdHandlerDecoratorTest;
-use Procure\Application\Command\GR\PostCmd;
+use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\GR\PostCmdHandler;
 use Procure\Application\Command\GR\Options\GrPostOptions;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 
 class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 {
@@ -46,7 +45,7 @@ class SaveFromPOCmdTest extends PHPUnit_Framework_TestCase
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             var_dump($dto->getErrors());
 

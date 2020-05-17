@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\Eventbus;
+namespace Inventory\Application\EventBus\Handler\Item;
 
-use Application\Application\Eventbus\PsrHandlerResolver;
+use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class EventBusServiceFactory implements FactoryInterface
+class CreateTrxOnProcureGRPosted implements FactoryInterface
 {
 
     /**
@@ -21,19 +21,17 @@ class EventBusServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new EventBusService();
 
-        $sv = $container->get('doctrine.entitymanager.orm_default');
-        $service->setDoctrineEM($sv);
+        $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
+        $eventBusService = $container->get(EventBusService::class);
 
-        $sv = $container->get(PsrHandlerResolver::class);
-        $service->setResolver($sv);
-
-        $sv = $container->get(HandlerMapper::class);
-        $service->setMapper($sv);
+        $service = new CreateFiFoLayerOnTrxPosted($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);
+
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
 
         return $service;
     }

@@ -7,6 +7,7 @@ use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
+use Inventory\Infrastructure\Mapper\TrxMapper;
 use Procure\Domain\BaseRowSnapshot;
 use Procure\Infrastructure\Mapper\QrMapper;
 use InvalidArgumentException;
@@ -205,7 +206,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
 
         /**
          *
-         * @var \Application\Entity\NmtProcureQo $entity ;
+         * @var \Application\Entity\NmtInventoryMv $entity ;
          *     
          */
         if ($rootSnapshot->getId() > 0) {
@@ -224,7 +225,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         }
 
         // Populate with data
-        $entity = QrMapper::mapSnapshotEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
+        $entity = TrxMapper::mapSnapshotEntity($this->getDoctrineEM(), $rootSnapshot, $entity);
 
         if ($generateSysNumber) {
             $entity->setSysNumber($this->generateSysNumber($entity));

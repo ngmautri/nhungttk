@@ -4,6 +4,13 @@
  * @author Nguyen Mau Tri
  *
  */
+use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPosted;
+use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPostedFactory;
+use Inventory\Application\Eventbus\EventBusService;
+use Inventory\Application\Eventbus\EventBusServiceFactory;
+use Inventory\Application\Eventbus\HandlerMapper;
+use Inventory\Application\Eventbus\HandlerMapperFactory;
+
 return array(
     'navigation' => array(
         'inventory_navi' => array(
@@ -237,7 +244,14 @@ return array(
             'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory',
 
             // Repository Service
-            'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory'
+            'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
+
+            // Event Handler Resolver
+            HandlerMapper::class => HandlerMapperFactory::class,
+            EventBusService::class => EventBusServiceFactory::class,
+
+            // Event Handler
+            CreateFiFoLayerOnTrxPosted::class => CreateFiFoLayerOnTrxPostedFactory::class
         )
     ),
 

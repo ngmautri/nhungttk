@@ -3,9 +3,7 @@ namespace Inventory\Application\Eventbus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
-use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
-use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
-use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
+use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPosted;
 
 /**
  *
@@ -22,9 +20,7 @@ class HandlerMapper extends AbstractService
     protected function setUpMapper()
     {
         $handlers = [
-            UpdateIndexOnPrSubmitted::class,
-            UpdateIndexOnPoPosted::class,
-            UpdateIndexOnApPosted::class
+            CreateFiFoLayerOnTrxPosted::class
         ];
 
         $this->handlers = $handlers;

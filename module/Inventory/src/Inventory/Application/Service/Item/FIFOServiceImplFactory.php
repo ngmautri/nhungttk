@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\EventBus\Handler\AP;
+namespace Inventory\Application\Service\Item;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateIndexOnApPostedFactory implements FactoryInterface
+class FIFOServiceImplFactory implements FactoryInterface
 {
 
     /**
@@ -20,7 +20,15 @@ class UpdateIndexOnApPostedFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $service = new UpdateIndexOnApPosted();
+
+        $service = new FIFOService();
+
+        $sv = $container->get('ControllerPluginManager');
+        $service->setControllerPlugin($sv->get('NmtPlugin'));
+
+        $sv = $container->get('doctrine.entitymanager.orm_default');
+        $service->setDoctrineEM($sv);
+
         return $service;
     }
 }

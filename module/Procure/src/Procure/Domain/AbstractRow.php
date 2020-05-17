@@ -122,6 +122,8 @@ class AbstractRow extends AbstractEntity
 
     protected $itemAssetLabel1;
 
+    protected $itemDescription;
+
     // Item Group Detail
     // ========================
     protected $itemInventoryGL;
@@ -159,6 +161,10 @@ class AbstractRow extends AbstractEntity
     protected $projectToken;
 
     protected $projectName;
+
+    protected $prDepartment;
+
+    protected $prDepartmentName;
 
     // Row Details
     // ====================
@@ -315,6 +321,168 @@ class AbstractRow extends AbstractEntity
     protected $costCenter;
 
     protected $standardConvertFactor;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrDepartment()
+    {
+        return $this->prDepartment;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrDepartmentName()
+    {
+        return $this->prDepartmentName;
+    }
+
+    /**
+     *
+     * @param mixed $prDepartment
+     */
+    public function setPrDepartment($prDepartment)
+    {
+        $this->prDepartment = $prDepartment;
+    }
+
+    /**
+     *
+     * @param mixed $prDepartmentName
+     */
+    public function setPrDepartmentName($prDepartmentName)
+    {
+        $this->prDepartmentName = $prDepartmentName;
+    }
+
+    /**
+     *
+     * @param mixed $itemModel
+     */
+    protected function setItemModel($itemModel)
+    {
+        $this->itemModel = $itemModel;
+    }
+
+    /**
+     *
+     * @param mixed $itemSerial
+     */
+    protected function setItemSerial($itemSerial)
+    {
+        $this->itemSerial = $itemSerial;
+    }
+
+    /**
+     *
+     * @param mixed $itemDefaultManufacturer
+     */
+    protected function setItemDefaultManufacturer($itemDefaultManufacturer)
+    {
+        $this->itemDefaultManufacturer = $itemDefaultManufacturer;
+    }
+
+    /**
+     *
+     * @param mixed $itemManufacturerModel
+     */
+    protected function setItemManufacturerModel($itemManufacturerModel)
+    {
+        $this->itemManufacturerModel = $itemManufacturerModel;
+    }
+
+    /**
+     *
+     * @param mixed $itemManufacturerSerial
+     */
+    protected function setItemManufacturerSerial($itemManufacturerSerial)
+    {
+        $this->itemManufacturerSerial = $itemManufacturerSerial;
+    }
+
+    /**
+     *
+     * @param mixed $itemManufacturerCode
+     */
+    protected function setItemManufacturerCode($itemManufacturerCode)
+    {
+        $this->itemManufacturerCode = $itemManufacturerCode;
+    }
+
+    /**
+     *
+     * @param mixed $itemKeywords
+     */
+    protected function setItemKeywords($itemKeywords)
+    {
+        $this->itemKeywords = $itemKeywords;
+    }
+
+    /**
+     *
+     * @param mixed $itemAssetLabel
+     */
+    protected function setItemAssetLabel($itemAssetLabel)
+    {
+        $this->itemAssetLabel = $itemAssetLabel;
+    }
+
+    /**
+     *
+     * @param mixed $itemAssetLabel1
+     */
+    protected function setItemAssetLabel1($itemAssetLabel1)
+    {
+        $this->itemAssetLabel1 = $itemAssetLabel1;
+    }
+
+    /**
+     *
+     * @param mixed $itemDescription
+     */
+    protected function setItemDescription($itemDescription)
+    {
+        $this->itemDescription = $itemDescription;
+    }
+
+    /**
+     *
+     * @param mixed $itemInventoryGL
+     */
+    protected function setItemInventoryGL($itemInventoryGL)
+    {
+        $this->itemInventoryGL = $itemInventoryGL;
+    }
+
+    /**
+     *
+     * @param mixed $itemCogsGL
+     */
+    protected function setItemCogsGL($itemCogsGL)
+    {
+        $this->itemCogsGL = $itemCogsGL;
+    }
+
+    /**
+     *
+     * @param mixed $itemCostCenter
+     */
+    protected function setItemCostCenter($itemCostCenter)
+    {
+        $this->itemCostCenter = $itemCostCenter;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemDescription()
+    {
+        return $this->itemDescription;
+    }
 
     /**
      *

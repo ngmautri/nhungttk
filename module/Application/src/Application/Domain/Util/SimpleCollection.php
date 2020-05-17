@@ -19,6 +19,17 @@ class SimpleCollection
         $this->items[$e] = $e;
     }
 
+    public function addChild($e, $child)
+    {
+        if ($this->has($e)) {
+            $this->items[$e][] = array(
+                $child
+            );
+        } else {
+            $this->items[$e][][] = $child;
+        }
+    }
+
     /**
      *
      * @param mixed $e

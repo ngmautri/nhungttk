@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Transaction\GR;
 
 use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
 use Procure\Domain\GoodsReceipt\GRRow;
 use InvalidArgumentException;
@@ -14,7 +15,15 @@ use InvalidArgumentException;
 class GRFromPurchasingRow extends TrxRow
 {
 
-    public static function createFromPurchaseGrRow(GRRow $sourceObj, CommandOptions $options)
+    /**
+     *
+     * @param GenericTrx $rootEntity
+     * @param GRRow $sourceObj
+     * @param CommandOptions $options
+     * @throws InvalidArgumentException
+     * @return \Inventory\Domain\Transaction\GR\GRFromPurchasingRow
+     */
+    public static function createFromPurchaseGrRow(GenericTrx $rootEntity, GRRow $sourceObj, CommandOptions $options)
     {
         if (! $sourceObj instanceof GRRow) {
             throw new InvalidArgumentException("PO document is required!");
@@ -28,6 +37,7 @@ class GRFromPurchasingRow extends TrxRow
          * @var GRFromPurchasingRow $instance ;
          */
         $instance = new self();
+
         $instance = $sourceObj->convertTo($instance);
 
         // $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.

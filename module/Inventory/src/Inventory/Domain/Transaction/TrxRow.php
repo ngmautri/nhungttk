@@ -20,8 +20,6 @@ class TrxRow extends BaseRow
     // ====================
 
     // ===================
-    private function __construct()
-    {}
 
     /**
      *

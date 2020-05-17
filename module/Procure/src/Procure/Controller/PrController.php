@@ -597,7 +597,7 @@ class PrController extends AbstractGenericController
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
 
-            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenIdFromDB($entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -643,7 +643,7 @@ class PrController extends AbstractGenericController
             $version = $data['version'];
             $userId = $u->getId();
 
-            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenIdFromDB($entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');

@@ -35,7 +35,7 @@ class HeaderValidatorCollection implements HeaderValidatorInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface::validate()
+     * @see \Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface::validate()
      */
     public function validate(AbstractTrx $rootEntity)
     {

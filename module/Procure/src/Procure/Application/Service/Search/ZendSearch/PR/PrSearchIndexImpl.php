@@ -3,7 +3,6 @@ namespace Procure\Application\Service\Search\ZendSearch\PR;
 
 use Application\Application\Service\Search\Contracts\IndexingResult;
 use Application\Service\AbstractService;
-use Procure\Application\Service\Search\ZendSearch\PO\PoSearch;
 use Procure\Domain\BaseRowSnapshot;
 use Procure\Domain\DocSnapshot;
 use Procure\Domain\GenericRow;
@@ -197,12 +196,13 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
             $indexResult->setFileList($index->getDirectory()
                 ->fileList());
         }
-        $indexResult->setIndexDirectory(PoSearch::INDEX_PATH);
+        $indexResult->setIndexDirectory(PrSearch::INDEX_PATH);
         return $indexResult;
     }
 
     /**
      *
+     * @deprecated
      * @param \ZendSearch\Lucene\SearchIndexInterface $index
      * @param GenericRow $row
      * @throws \InvalidArgumentException
@@ -442,6 +442,9 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::text('itemManufacturerSerial', $row->getItemManufacturerSerial()));
         $doc->addField(Field::text('itemManufacturerCode', $row->getItemManufacturerCode()));
         $doc->addField(Field::text('itemKeywords', $row->getItemKeywords()));
+
+        $output = iconv("UTF-8", "ASCII//IGNORE", $row->getItemDescription());
+        $doc->addField(Field::text('itemDescription', $output));
 
         $doc->addField(Field::keyword('itemAssetLabel', $row->getItemAssetLabel()));
         $doc->addField(Field::keyword('itemAssetLabel1', $row->getItemAssetLabel1()));

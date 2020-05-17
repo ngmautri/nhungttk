@@ -3,6 +3,7 @@ namespace Procure\Domain;
 
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use InvalidArgumentException;
 
 /**
  * Row Snapshot
@@ -12,6 +13,42 @@ use Ramsey\Uuid\Uuid;
  */
 class RowSnapshot extends BaseRowSnapshot
 {
+
+    public function convertTo(RowSnapshot $targetObj)
+    {
+        if (! $targetObj instanceof RowSnapshot) {
+            throw new InvalidArgumentException("Convertion input invalid!");
+        }
+
+        // Converting
+        // ==========================
+        $exculdedProps = [
+            "id",
+            "uuid",
+            "token",
+            "instance",
+            "sysNumber",
+            "createdBy",
+            "lastchangeBy",
+            "docId",
+            "docToken",
+            "revisionNo",
+            "docVersion"
+        ];
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+            $prop->setAccessible(true);
+
+            $propName = $prop->getName();
+            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
 
     /**
      *

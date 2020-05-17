@@ -145,6 +145,7 @@ class RowMapper
         $snapshot->itemDefaultManufacturer = $entity->getManufacturer();
         $snapshot->itemKeywords = $entity->getKeywords();
         $snapshot->itemSysNumber = $entity->getSysNumber();
+        $snapshot->itemDescription = $entity->getItemDescription();
 
         if ($entity->getItemGroup() != null) {
 
@@ -213,6 +214,15 @@ class RowMapper
             $snapshot->prNumber = $entity->getPr()->getPrNumber();
             $snapshot->prToken = $entity->getPr()->getToken();
             $snapshot->prChecksum = $entity->getPr()->getChecksum();
+
+            if ($entity->getPr()->getDepartment() !== null) {
+                $snapshot->prDepartment = $entity->getPr()
+                    ->getDepartment()
+                    ->getNodeId();
+                $snapshot->prDepartmentName = $entity->getPr()
+                    ->getDepartment()
+                    ->getNodeName();
+            }
         }
 
         return $snapshot;

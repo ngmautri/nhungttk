@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Transaction\Contracts;
 
 /**
+ * Goods Movement Type (GM, WT)
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

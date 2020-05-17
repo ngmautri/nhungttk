@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Infrastructure\Doctrine;
 
+use Application\Domain\Util\SimpleCollection;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
@@ -80,6 +81,9 @@ WHERE id = %s";
         $taxAmount = 0;
         $billedAmount = 0;
         $grossAmount = 0;
+        $targetWhList = new SimpleCollection();
+        $targetDepartmentList = new SimpleCollection();
+
         foreach ($rows as $r) {
 
             /**@var \Application\Entity\NmtProcureGrRow $localEnityDoctrine ;*/
@@ -89,6 +93,14 @@ WHERE id = %s";
 
             if ($localSnapshot == null) {
                 continue;
+            }
+
+            if ($localSnapshot->getWarehouse() !== null) {
+                $targetWhList->add($localSnapshot->getWarehouse());
+            }
+
+            if ($localSnapshot->getPrDepartmentName() !== null) {
+                $targetDepartmentList->add($localSnapshot->getPrDepartmentName());
             }
 
             /**
@@ -130,6 +142,8 @@ WHERE id = %s";
             $rootSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
         }
 
+        $rootSnapshot->targetDepartmentList = $targetDepartmentList;
+        $rootSnapshot->targetWhList = $targetWhList;
         $rootSnapshot->totalRows = $totalRows;
         $rootSnapshot->totalActiveRows = $totalActiveRows;
         $rootSnapshot->netAmount = $netAmount;

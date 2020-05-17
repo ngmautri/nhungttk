@@ -4,6 +4,7 @@ namespace Procure\Domain\GoodsReceipt;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
+use Application\Domain\Util\SimpleCollection;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
@@ -35,7 +36,108 @@ class GRDoc extends GenericGR
     private static $instance = null;
 
     // Specific Attribute
+    // ===================
     protected $reversalDoc;
+
+    protected $targetWhList;
+
+    protected $targetDepartmentList;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTargetDepartmentList()
+    {
+        return $this->targetDepartmentList;
+    }
+
+    // Specific Attribute
+    // ===================
+
+    /**
+     *
+     * @param \Procure\Domain\GoodsReceipt\GRDoc $instance
+     */
+    protected static function setInstance($instance)
+    {
+        GRDoc::$instance = $instance;
+    }
+
+    /**
+     *
+     * @param mixed $reversalDoc
+     */
+    protected function setReversalDoc($reversalDoc)
+    {
+        $this->reversalDoc = $reversalDoc;
+    }
+
+    /**
+     *
+     * @param mixed $targetWhList
+     */
+    protected function setTargetWhList($targetWhList)
+    {
+        $this->targetWhList = $targetWhList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getReversalDoc()
+    {
+        return $this->reversalDoc;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTargetWhList()
+    {
+        return $this->targetWhList;
+    }
+
+    // =====================
+    public function slipByWarehouse()
+    {
+        $results = [];
+
+        if ($this->getTargetWhList() == null) {
+            return null;
+        }
+        if (count($this->getTargetWhList() > 1)) {
+            foreach ($this->getTargetWhList() as $wh) {
+                $doc = new self();
+            }
+        }
+    }
+
+    public function slipByDepartment()
+    {
+        $results = new SimpleCollection();
+
+        if ($this->getTargetDepartmentList() == null) {
+            return null;
+        }
+
+        foreach ($this->getDocRows() as $row) {
+            /**
+             *
+             * @var GRRow $row ;
+             */
+            $dept = $row->getPrDepartment();
+
+            if ($dept == null) {
+                $dept = - 1;
+            }
+            $results->addChild($dept, $row);
+        }
+
+        return $results;
+    }
 
     private function __construct()
     {}

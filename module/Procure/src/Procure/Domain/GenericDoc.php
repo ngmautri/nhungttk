@@ -5,14 +5,59 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GenericDoc extends AbstractDoc
 {
+
+    /**
+     *
+     * @param AbstractDoc $targetObj
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\AbstractDoc
+     */
+    public function convertTo(AbstractDoc $targetObj)
+    {
+        if (! $targetObj instanceof AbstractDoc) {
+            throw new InvalidArgumentException("Convertion input invalid!");
+        }
+
+        // Converting
+        // ==========================
+        $exculdedProps = [
+            "id",
+            "uuid",
+            "token",
+            "docRows",
+            "rowIdArray",
+            "instance",
+            "sysNumber",
+            "createdBy",
+            "lastchangeBy",
+            "docNumber",
+            "docDate",
+            "reversalDoc"
+        ];
+
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+            $prop->setAccessible(true);
+
+            $propName = $prop->getName();
+            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
 
     protected function refresh()
     {}

@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Domain\Service;
 
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
-use Inventory\Domain\Warehouse\Transaction\TransactionRow;
+use Inventory\Domain\Transaction\GenericTrx;
+use Inventory\Domain\Transaction\TrxRow;
 
 /**
  *
@@ -14,35 +14,34 @@ Interface FIFOServiceInterface
 
     /**
      *
-     * @param GenericTransaction $trx
-     * @param TransactionRow $itemId
-     * @param string $issuedQuantity
+     * @param GenericTrx $trx
+     * @param TrxRow $row
      */
-    public function calculateCOGS($trx, $row);
+    public function calculateCOGS(GenericTrx $trx, TrxRow $row);
 
     /**
      *
-     * @param GenericTransaction $trx
-     * @param TransactionRow $row
+     * @param GenericTrx $trx
+     * @param TrxRow $row
      */
-    public function createLayer(GenericTransaction $trx, TransactionRow $row);
+    public function createLayer(GenericTrx $trx, TrxRow $row);
 
     /**
      *
-     * @param GenericTransaction $trx
+     * @param GenericTrx $trx
      */
-    public function createLayersFor(GenericTransaction $trx);
+    public function createLayersFor(GenericTrx $trx);
 
     /**
      *
-     * @param GenericTransaction $trx
-     * @param TransactionRow $row
+     * @param GenericTrx $trx
+     * @param TrxRow $row
      */
-    public function closeLayers(GenericTransaction $trx, TransactionRow $row);
+    public function closeLayers(GenericTrx $trx, TrxRow $row);
 
     /**
      *
-     * @param GenericTransaction $trx
+     * @param GenericTrx $trx
      */
-    public function closeLayersOf(GenericTransaction $trx);
+    public function closeLayersOf(GenericTrx $trx);
 }

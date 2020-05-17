@@ -114,6 +114,8 @@ class BaseRowSnapshot extends AbstractDTO
 
     public $itemAssetLabel1;
 
+    public $itemDescription;
+
     public $itemInventoryGL;
 
     public $itemCogsGL;
@@ -147,6 +149,10 @@ class BaseRowSnapshot extends AbstractDTO
     public $projectToken;
 
     public $projectName;
+
+    public $prDepartment;
+
+    public $prDepartmentName;
 
     public $createdByName;
 
@@ -763,6 +769,15 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
+    public function getItemDescription()
+    {
+        return $this->itemDescription;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getItemInventoryGL()
     {
         return $this->itemInventoryGL;
@@ -910,6 +925,24 @@ class BaseRowSnapshot extends AbstractDTO
     public function getProjectName()
     {
         return $this->projectName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrDepartment()
+    {
+        return $this->prDepartment;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrDepartmentName()
+    {
+        return $this->prDepartmentName;
     }
 
     /**

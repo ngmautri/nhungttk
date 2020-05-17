@@ -70,7 +70,7 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
             $row->convertedStandardUnitPrice = number_format($row->convertedStandardUnitPrice, $decimalNo);
         }
 
-        $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr, $row->prChecksum);
+        $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);
 
         if ($row->prNumber !== null) {
             $row->prNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->prNumber, $link);

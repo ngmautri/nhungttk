@@ -156,18 +156,16 @@ if (count($errors) > 0) {
 
 // ============================
 ?>
-
 <div id="wrapper" class="toggled">
+   <!-- Sidebar -->
+   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+      <a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt" class="btn btn-default btn-sm" href="/procure/po/list">
+         <small>
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+         </small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-
-		<a style="font-size: 9pt; margin: 10pt 2pt 5pt 20pt"
-			class="btn btn-default btn-sm" href="/procure/po/list"> <small><i
-				class="fa fa-chevron-left" aria-hidden="true"></i></small>&nbsp;&nbsp;&nbsp;&nbsp;<?php
-
-    echo $this->translate("PO List");
-    ?></a>
+        echo $this->translate("PO List");
+        ?></a>
 
 <?php
 if ($action == Constants::FORM_ACTION_REVIEW) :
@@ -178,96 +176,92 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 ?>
   					
   		<hr>
-		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
+      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
 
-echo $this->translate('Summary:');
-?></span>
+    echo $this->translate('Summary:');
+    ?></span>
+      <div class="alert alert-<?php
 
-		<div class="alert alert-<?php
+    echo $alert;
+    ?>" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
+            <li>
+               <b><?php
 
-echo $alert;
-?>" role="alert"
-			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-				<li><b><?php
+            if (! $headerDTO == null) :
+                echo sprintf("PO #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()); endif;
 
-    if (! $headerDTO == null) :
-        echo sprintf("PO #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()); endif;
+            ?></b>
+            </li>
+            <li>-----</li>
+            <li>
+               <b><?php
 
-    ?></b></li>
-				<li>-----</li>
+            if (! $headerDTO == null) :
+                echo $headerDTO->vendorName; endif;
 
-				<li><b><?php
+            ?></b>
+            </li>
+            <li>
+               <i><?php
 
-    if (! $headerDTO == null) :
-        echo $headerDTO->vendorName; endif;
+            if (! $headerDTO == null) :
+                echo sprintf("%s %s", $headerDTO->getVendorAddress(), $headerDTO->getVendorCountry()); endif;
 
-    ?></b></li>
-				<li><i><?php
+            ?></i>
+            </li>
+            <li>-----</li>
+            <li><?php
 
-    if (! $headerDTO == null) :
-        echo sprintf("%s %s", $headerDTO->getVendorAddress(), $headerDTO->getVendorCountry()); endif;
+            if (! $headerDTO == null) :
+                echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;
 
-    ?></i></li>
+            ?> </li>
+            <li>Status: <?php
 
-				<li>-----</li>
+            if (! $headerDTO == null) :
+                echo $headerDTO->getDocStatus(); endif;
 
-				<li><?php
+            ?> </li>
+            <li>Total rows: <?php
 
-    if (! $headerDTO == null) :
-        echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;
+            echo ($headerDTO->totalRows);
+            ?></li>
+            <li>Status: <?php
 
-    ?> </li>
-				<li>Status: <?php
+            echo $transactionStatus;
+            ?> </li>
+            <li>-----</li>
+            <li>Net: <?php
 
-    if (! $headerDTO == null) :
-        echo $headerDTO->getDocStatus(); endif;
+            echo number_format($headerDTO->netAmount, 2) . " " . $headerDTO->currencyIso3;
+            ?></li>
+            <li>Tax: <?php
 
-    ?> </li>
-				<li>Total rows: <?php
+            echo number_format($headerDTO->taxAmount, 2);
+            ?></li>
+            <li>Gross: <?php
 
-    echo ($headerDTO->totalRows);
-    ?></li>
-				<li>Status: <?php
+            echo number_format($headerDTO->grossAmount, 2) . " " . $headerDTO->currencyIso3;
+            ?></li>
+            <li>Billed: <?php
 
-    echo $transactionStatus;
-    ?> </li>
+            echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->currencyIso3;
+            ?></li>
+            <li>-----</li>
+            <li>Created by: <?php
 
-				<li>-----</li>
-
-				<li>Net: <?php
-
-    echo number_format($headerDTO->netAmount, 2) . " " . $headerDTO->currencyIso3;
-    ?></li>
-				<li>Tax: <?php
-
-    echo number_format($headerDTO->taxAmount, 2);
-    ?></li>
-				<li>Gross: <?php
-
-    echo number_format($headerDTO->grossAmount, 2) . " " . $headerDTO->currencyIso3;
-    ?></li>
-				<li>Billed: <?php
-
-    echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->currencyIso3;
-    ?></li>
-				<li>-----</li>
-
-				<li>Created by: <?php
-
-    echo $headerDTO->getCreatedByName();
-    ?></li>
-
-			</ul>
-		</div>
+            echo $headerDTO->getCreatedByName();
+            ?></li>
+         </ul>
+      </div>
 		
 	<?php
 
 if ($action == Constants::FORM_ACTION_REVIEW) :
     ?>
-		<div class="alert alert-warning" role="alert"
-			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
-			<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+		<div class="alert alert-warning" role="alert" style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt; color: graytext;">
+         <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
 			<?php
 
     echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');
@@ -277,57 +271,87 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 
 ?>
 	</div>
-	<!-- /#sidebar-wrapper -->
+   <!-- /#sidebar-wrapper -->
+   <!-- Page Content -->
+   <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+      <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+         <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+            <span title="Hide Menu">
+               <i class="fa fa-chevron-left" aria-hidden="true"></i>
+               Menu
+               <span>
+         
+         </a>
+         <div id="tabs" style="font-size: 9.5pt">
+            <ul>
+               <li>
+                  <a href="#general">
+                     <small>
+                        <i class="fa fa-calculator" aria-hidden="true"></i>
+                     </small>&nbsp;<?php
 
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
+                    echo $form_title;
+                    ?></a>
+               </li>
+               <li>
+                  <a href="<?php
 
+                echo $picture_url;
+                ?>">
+                     <span class="glyphicon glyphicon-picture"></span>
+                     </span>
+                     &nbsp;Picture
+                  </a>
+               </li>
+               <li>
+                  <a href="#logistic">
+                     <small>
+                        <i class="fa fa-calculator" aria-hidden="true"></i>
+                     </small>
+                     &nbsp;Logistic
+                  </a>
+               </li>
+               <li>
+                  <a href="#accounting">
+                     <small>
+                        <i class="fa fa-calculator" aria-hidden="true"></i>
+                     </small>
+                     &nbsp;Accounting
+                  </a>
+               </li>
+               <li>
+                  <a href="<?php
 
-			<div id="tabs" style="font-size: 9.5pt">
-				<ul>
-					<li><a href="#general"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;<?php
+                echo $status_url;
+                ?>">
+                     <span class="glyphicon glyphicon-picture"></span>
+                     </span>
+                     &nbsp;Status
+                  </a>
+               </li>
+               <li>
+                  <a href="<?php
 
-        echo $form_title;
-        ?></a></li>
-					<li><a href="<?php
+                echo $attachment_url;
+                ?>">
+                     <small>
+                        <span class="glyphicon glyphicon-paperclip"></span>
+                     </small>
+                     &nbsp;Attachment
+                  </a>
+               </li>
+               <li>
+                  <a href="<?php
 
-    echo $picture_url;
-    ?>"><span
-							class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-					<li><a href="#logistic"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
-					<li><a href="#accounting"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
-					<li><a href="<?php
-
-    echo $status_url;
-    ?>"> <span
-							class="glyphicon glyphicon-picture"></span> </span>&nbsp;Status
-					</a></li>
-					<li><a href="<?php
-
-    echo $attachment_url;
-    ?>"> <small><span
-								class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
-					</a></li>
-					<li><a href="<?php
-
-    echo $log_url;
-    ?>"><span
-							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
-				</ul>
-
-
-				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
-					<!-- Tab1 -->
+                echo $log_url;
+                ?>">
+                     <span class="glyphicon glyphicon-list"></span>
+                     &nbsp;Log
+                  </a>
+               </li>
+            </ul>
+            <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+               <!-- Tab1 -->
 	
 	
 <?php
@@ -336,32 +360,26 @@ echo $error_msg;
 // ===============================
 ?>
 	
- 			<form id="Posting_Form" class="form-horizontal"
-						action="<?php
+ 			<form id="Posting_Form" class="form-horizontal" action="<?php
 
     echo $form_action;
-    ?>" method="post"
-						enctype="multipart/form-data">
-						<input type="hidden" name="redirectUrl"
-							value="<?php
+    ?>" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="redirectUrl" value="<?php
 
-    echo $redirectUrl?>" /> <input type="hidden"
-							name="entity_id"
-							value="<?php
+                echo $redirectUrl?>" />
+                  <input type="hidden" name="entity_id" value="<?php
 
-    echo (! $headerDTO == null) ? $headerDTO->getId() : "";
-    ?>" />
-						<input type="hidden" name="entity_token"
-							value="<?php
+                echo (! $headerDTO == null) ? $headerDTO->getId() : "";
+                ?>" />
+                  <input type="hidden" name="entity_token" value="<?php
 
-    echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-    ?>" />
-						<input type="hidden" name="version" value="<?php
+                echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
+                ?>" />
+                  <input type="hidden" name="version" value="<?php
 
-    echo $version;
-    ?>" />
-
-						<div style="position: relative; float: right;">
+                echo $version;
+                ?>" />
+                  <div style="position: relative; float: right;">
 					
 				<?php
 
@@ -372,9 +390,8 @@ echo $error_msg;
 
         if ($canPost) :
             ?>
-						 <a class="btn btn-primary btn-sm" style="color: white"
-								onclick="confirmPost();" href="javascript:;"><i
-								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
+						 <a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
 
             echo $this->translate('Post');
             ?></a>
@@ -389,11 +406,8 @@ echo $error_msg;
 						 <a title="<?php
 
             echo $this->translate('P/O Amendment');
-            ?>"
-								class="btn btn-default btn-sm"
-								style="color: navy; font-weight: bold;"
-								onclick="confirmPostAmendment();" href="javascript:;"><i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
+            ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;" onclick="confirmPostAmendment();" href="javascript:;">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
 
             echo $this->translate('Post Amendment');
             ?></a>
@@ -412,12 +426,11 @@ if ($isViewing) :
 <a class="btn btn-default btn-sm" href="<?php
 
         echo $review_url;
-        ?>"
-								title="<?php
+        ?>" title="<?php
 
         echo $this->translate('Review PO');
-        ?>"> <i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php
+        ?>">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php
 
         echo $this->translate("Review");
         ?>
@@ -434,11 +447,8 @@ if ($isViewing) :
 						 <a title="<?php
 
         echo $this->translate('P/O Amendment');
-        ?>"
-								class="btn btn-default btn-sm"
-								style="color: navy; font-weight: bold;"
-								onclick="confirmAmendment();" href="javascript:;"><i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
+        ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;" onclick="confirmAmendment();" href="javascript:;">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
 
         echo $this->translate('Amendment');
         ?></a>
@@ -454,34 +464,33 @@ if ($isViewing) :
 							<a title="<?php
 
         echo $this->translate("Pay P/O");
-        ?>"
-								class="btn btn-default btn-sm" href="<?php
+        ?>" class="btn btn-default btn-sm" href="<?php
 
         echo $pay_url;
-        ?>"><i
-								class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay</a> <a
-								title="<?php
+        ?>">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        &nbsp;&nbsp;Pay
+                     </a>
+                     <a title="<?php
 
         echo $this->translate("Create Good Receipt from this P/O");
-        ?>"
-								class="btn btn-default btn-sm"
-								href="<?php
+        ?>" class="btn btn-default btn-sm" href="<?php
 
         echo $gr_from_po_url;
-        ?>"> <i class="fa fa-plus"
-								aria-hidden="true"></i>&nbsp;&nbsp;Goods Receipt
-							</a> <a
-								title="<?php
+        ?>">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        &nbsp;&nbsp;Goods Receipt
+                     </a>
+                     <a title="<?php
 
         echo $this->translate("Create A/P Invoice from this P/O");
-        ?>"
-								class="btn btn-default btn-sm"
-								href="<?php
+        ?>" class="btn btn-default btn-sm" href="<?php
 
         echo $ap_from_po_url;
-        ?>"> <i class="fa fa-plus"
-								aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice
-							</a>      	
+        ?>">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        &nbsp;&nbsp;A/P Invoice
+                     </a>      	
 					<?php endif;
 
     ?>
@@ -491,16 +500,14 @@ if ($isViewing) :
 
     if ($isAmending) :
         ?>					
-							<a class="btn btn-default btn-sm"
-								href="<?php
+							<a class="btn btn-default btn-sm" href="<?php
 
         echo $review_amendment_url;
-        ?>"
-								title="<?php
+        ?>" title="<?php
 
         echo $this->translate('Review PO Amendment');
-        ?>"> <i
-								class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php
+        ?>">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php
 
         echo $this->translate("Review Amendment");
         ?>
@@ -514,282 +521,235 @@ if ($isViewing) :
 ?>
 							
 						</div>
+                  <fieldset>
+                     <legend style="font-size: 9.5pt; color: gray;">
+                        <small>
+                           <span class="glyphicon glyphicon-triangle-right"></span>
+                        </small>
+                        &nbsp;
+                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php
 
-						<fieldset>
-							<legend style="font-size: 9.5pt; color: gray;">
-								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php
+                        echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
+                        ?> <?php
 
-        echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
-        ?> <?php
+                        echo (! $headerDTO == null) ? $headerDTO->getInvoiceNo() : "";
+                        ?>)</a>
+                     </legend>
+                     <div id="invoice_header" class="collapse">
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Current State:</label>
+                           <div class="col-sm-3">
+                              <select name="currentState" class="form-control input-sm">
+                                 <option value="">Please Select</option>
+                                 <option <?php
 
-        echo (! $headerDTO == null) ? $headerDTO->getInvoiceNo() : "";
-        ?>)</a>
-							</legend>
-							<div id="invoice_header" class="collapse">
+                                if ($headerDTO->getCurrentState() == "draftPo") :
+                                    echo "selected"; endif ?>
+                                
+                                
+                                
+                                
+                                
+                                
+                                 value="draftPo">Draft</option>
+                                 <option <?php
 
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2">Current State:</label>
-									<div class="col-sm-3">
-										<select name="currentState" class="form-control input-sm">
-											<option value="">Please Select</option>
-											<option
-												<?php
+                                if ($headerDTO->getCurrentState() == "finalPo") :
+                                    echo "selected"; endif ?>
+                                
+                                
+                                
+                                
+                                
+                                
+                                 value="finalPo">Final</option>
+                              </select>
+                           </div>
+                           <div class="col-sm-3">
+                              <input <?php
 
-            if ($headerDTO->getCurrentState() == "draftPo") :
-                echo "selected"; endif ?>
-            
-            
-            
-												value="draftPo">Draft</option>
-											<option
-												<?php
+                            if (! $headerDTO == null) :
+                                echo ($headerDTO->getIsActive() == "1") ? "checked" : "";
+                            else :
+                                echo "checked";
+                            endif;
+                            ?> type="checkbox" name="isActive" value="1">
+                              &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2 ">Vendor:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm input-sm" type="text" id="vendor_name_1" placeholder="Enter term to search vendor" name="vendor_name" value="<?php
 
-            if ($headerDTO->getCurrentState() == "finalPo") :
-                echo "selected"; endif ?>
-            
-            
-            
-												value="finalPo">Final</option>
-										</select>
-									</div>
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getVendorName();endif;
 
-									<div class="col-sm-3">
-										<input
-											<?php
+                            ?>">
+                              <input type="hidden" id="vendor_id" placeholder="" name="vendor_id" value="<?php
 
-        if (! $headerDTO == null) :
-            echo ($headerDTO->getIsActive() == "1") ? "checked" : "";
-        else :
-            echo "checked";
-        endif;
-        ?>
-											type="checkbox" name="isActive" value="1">&nbsp;Is
-										Active&nbsp;&nbsp;&nbsp;&nbsp;
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getVendor();endif;
 
-									</div>
+                            ?>">
+                           </div>
+                           <div class="col-sm-3">
+                              <a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a>
+                              <small>
+                                 <i class="glyphicon glyphicon-new-window"></i>
+                              </small>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Contract /PO:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="contractNo" name="contractNo" value="<?php
 
-								</div>
+                            echo (! $headerDTO == null) ? $headerDTO->getContractNo() : "";
+                            ?>">
+                           </div>
+                           <label class="control-label col-sm-2">Contract /PO Date:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate" value="<?php
 
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2 ">Vendor:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm input-sm" type="text"
-											id="vendor_name_1" placeholder="Enter term to search vendor"
-											name="vendor_name"
-											value="<?php
+                            if (! $headerDTO == null) :
+                                echo ($headerDTO->getContractDate() !== null); endif;
 
-        if (! $headerDTO == null) :
-            echo $headerDTO->getVendorName();endif;
-
-        ?>">
-
-										<input type="hidden" id="vendor_id" placeholder=""
-											name="vendor_id"
-											value="<?php
-
-        if (! $headerDTO == null) :
-            echo $headerDTO->getVendor();endif;
-
-        ?>">
-									</div>
-									<div class="col-sm-3">
-
-										<a target="blank" style="font-size: 9pt;"
-											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
-											class="glyphicon glyphicon-new-window"></i></small>
-									</div>
-								</div>
-
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2">Contract /PO:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="contractNo" name="contractNo"
-											value="<?php
-
-        echo (! $headerDTO == null) ? $headerDTO->getContractNo() : "";
-        ?>">
-									</div>
-									<label class="control-label col-sm-2">Contract /PO Date:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="contractDate" name="contractDate"
-											value="<?php
-
-        if (! $headerDTO == null) :
-            echo ($headerDTO->getContractDate() !== null); endif;
-
-        ?>">
-									</div>
-								</div>
-
-								<div class="form-group margin-bottom required">
-
-									<label class="control-label col-sm-2">Currency:</label>
-									<div class="col-sm-3">
-										<select name="currency_id" class="form-control input-sm">
-											<option value="">Select Currency</option>
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2">Currency:</label>
+                           <div class="col-sm-3">
+                              <select name="currency_id" class="form-control input-sm">
+                                 <option value="">Select Currency</option>
    	    									<?php
 
                 echo $currency_option;
                 ?>
    										</select>
-									</div>
+                           </div>
+                           <label class="control-label col-sm-2">Exchange Rate:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="exchangeRate" name="exchangeRate" value="<?php
 
-									<label class="control-label col-sm-2">Exchange Rate:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="exchangeRate" name="exchangeRate"
-											value="<?php
+                            echo (! $headerDTO == null) ? $headerDTO->getExchangeRate() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom required">
+                           <label class="control-label col-sm-2"><?php
 
-        echo (! $headerDTO == null) ? $headerDTO->getExchangeRate() : "";
-        ?>">
-									</div>
-								</div>
-
-								<div class="form-group margin-bottom required">
-
-									<label class="control-label col-sm-2"><?php
-
-        echo $this->translate("Incoterm");
-        ?>:</label>
-									<div class="col-sm-3">
-										<select name="incoterm_id" class="form-control input-sm">
-											<option value="">Select Incoterm</option>
+                        echo $this->translate("Incoterm");
+                        ?>:</label>
+                           <div class="col-sm-3">
+                              <select name="incoterm_id" class="form-control input-sm">
+                                 <option value="">Select Incoterm</option>
    	    									<?php
 
                 echo $incoterm_option;
                 ?>
    										</select>
-									</div>
+                           </div>
+                           <label class="control-label col-sm-2"><?php
 
-									<label class="control-label col-sm-2"><?php
+                        echo $this->translate("Incoterm Place");
+                        ?>:</label>
+                           <div class="col-sm-3">
+                              <input class="form-control input-sm" type="text" placeholder="" id="incotermPlace" name="incotermPlace" value="<?php
 
-        echo $this->translate("Incoterm Place");
-        ?>:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="incotermPlace" name="incotermPlace"
-											value="<?php
+                            echo (! $headerDTO == null) ? $headerDTO->getIncotermPlace() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2"><?php
 
-        echo (! $headerDTO == null) ? $headerDTO->getIncotermPlace() : "";
-        ?>">
-									</div>
+                        echo $this->translate("Payment Term");
+                        ?>:</label>
+                           <div class="col-sm-5">
+                              <input class="form-control input-sm" type="text" placeholder="" id="paymentTerm" name="paymentTerm" value="<?php
 
-								</div>
+                            echo (! $headerDTO == null) ? $headerDTO->getPaymentTerm() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2">Description</label>
+                           <div class="col-sm-8">
+                              <input class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
 
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2"><?php
+                            echo (! $headerDTO == null) ? $headerDTO->getRemarks() : "";
+                            ?>">
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2"></label>
+                           <div class="col-sm-8">
+                              <a title="<?php
 
-        echo $this->translate("Payment Term");
-        ?>:</label>
-									<div class="col-sm-5">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="paymentTerm" name="paymentTerm"
-											value="<?php
+                            echo $this->translate('Update document hearder');
+                            ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;" href="<?php
 
-        echo (! $headerDTO == null) ? $headerDTO->getPaymentTerm() : "";
-        ?>">
-									</div>
-								</div>
+                            echo $update_header_url;
+                            ?>">
+                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
 
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2">Description</label>
-									<div class="col-sm-8">
-										<input class="form-control input-sm" type="text"
-											placeholder="" name="remarks"
-											value="<?php
+                                echo $this->translate('Edit');
+                                ?></a>
+                              <hr>
+                           </div>
+                        </div>
+                     </div>
+                  </fieldset>
+               </form>
+               <form action="">
+                  <fieldset>
+                     <legend style="font-size: 9pt; color: gray;">
+                        <small>
+                           <span class="glyphicon glyphicon-triangle-right"></span>
+                        </small>
+                        &nbsp;
+                        <a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+                     </legend>
+                     <div id="rows" class="collapse in">
+                        <div style="font-size: 9pt">
+                           <div class="dropdown">
+                              <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                 <i class="fa fa-download" aria-hidden="true"></i>
+                                 &nbsp;&nbsp;
+                                 <span class="caret"></span>
+                              </button>
+                              <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
 
-        echo (! $headerDTO == null) ? $headerDTO->getRemarks() : "";
-        ?>">
-									</div>
-								</div>
+                            echo $this->translate("Refresh");
+                            ?>" class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();">
+                                 &nbsp;
+                                 <i class="fa fa-refresh" aria-hidden="true"></i>
+                                 &nbsp;
+                              </a>
+                              <a <?php
 
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2"></label>
-									<div class="col-sm-8">
-										<a
-											title="<?php
+                            echo $this->translate("Full Screen");
+                            ?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+                                 onclick="showJqueryDialog('Contract /PO: <?php
 
-        echo $this->translate('Update document hearder');
-        ?>"
-											class="btn btn-default btn-sm"
-											style="color: navy; font-weight: bold;"
-											href="<?php
+                                echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
+                                ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php
 
-        echo $update_header_url;
-        ?>"><i
-											class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
+                                echo $headerDTO->getToken()?>&entity_id=<?php
 
-        echo $this->translate('Edit');
-        ?></a>
-										<hr>
-									</div>
-								</div>
-							</div>
+                                echo $headerDTO->getId()?>','j_loaded_data',true);">
+                                 <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                              </a>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <span>
+                                 <strong>PO#: <?php
 
-
-
-
-						</fieldset>
-
-
-
-					</form>
-
-
-					<form action="">
-						<fieldset>
-							<legend style="font-size: 9pt; color: gray;">
-								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
-							</legend>
-							<div id="rows" class="collapse in">
-
-								<div style="font-size: 9pt">
-
-									<div class="dropdown">
-										<button
-											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-											title="" class="btn btn-default dropdown-toggle btn-sm"
-											type="button" id="dropdownMenu1" data-toggle="dropdown"
-											aria-haspopup="true" aria-expanded="true">
-											<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span
-												class="caret"></span>
-										</button>
-										<a
-											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-											title="<?php
-
-        echo $this->translate("Refresh");
-        ?>"
-											class="btn btn-default btn-sm" href="javascript:;"
-											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
-											aria-hidden="true"></i>&nbsp;
-										</a> <a <?php
-
-        echo $this->translate("Full Screen");
-        ?>
-											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
-											class="btn btn-default btn-sm" href="javascript:;"
-											onclick="showJqueryDialog('Contract /PO: <?php
-
-        echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
-        ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php
-
-        echo $headerDTO->getToken()?>&entity_id=<?php
-
-        echo $headerDTO->getId()?>','j_loaded_data',true);"><i
-											class="fa fa-window-maximize" aria-hidden="true"></i></a>
-
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php
-
-        echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
-        ?> // </strong></span>
-
-										<span class=""
-											style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
+                                echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
+                                ?> // </strong>
+                              </span>
+                              <span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
 						Net amount: <?php
 
     echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3();
@@ -807,198 +767,199 @@ if ($isViewing) :
                         echo ($headerDTO->getTotalActiveRows());
                         ?>
 					</span>
+                              <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                 <li>
+                                    <a target="_blank" class="" href="<?php
 
+                                    echo $save_as_pdf;
+                                    ?>">
+                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Pdf (*.pdf)
+                                    </a>
+                                 </li>
+                                       <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a class="test" tabindex="-1" href="#">
+                                    <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf) by department. &nbsp; &nbsp; &nbsp; &nbsp; 
+                                       <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                    </a>
+                                    <ul style="font-size: 9pt;" class="dropdown-menu">
+                                       <li>
+                                          <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with price <i class="fa fa-lock" aria-hidden="true"></i></a>
+                                       </li>
+                                          <li class="divider"></li>
+                            
+                                       <li>
+                                           <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with picture</a>
+                                      </li>
+                                    </ul>
+                                 </li>
+                                 
+                                              <li class="divider"></li>
+                         
+                                 <li>
+                                    <a class="" href="<?php
 
-										<ul style="font-size: 9.5pt;" class="dropdown-menu"
-											aria-labelledby="dropdownMenu1">
-											
-											<li><a target="_blank" class="" href="<?php
+                                    echo $save_as_excel;
+                                    ?>">
+                                       <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Excel (*.xlxs)
+                                    </a>
+                                 </li>
+                                       <li class="divider"></li>
+                          
+                                 <li>
+                                    <a class="" href="<?php
 
-        echo $save_as_pdf;
-        ?>"> <i
-													class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
-													&nbsp;Pdf (*.pdf)
-											</a></li>
-											<li><a class="" href="<?php
-
-        echo $save_as_excel;
-        ?>"> <i
-													class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
-													&nbsp;Excel (*.xlxs)
-											</a></li>
-											<li><a class="" href="<?php
-
-        echo $save_as_openoffice;
-        ?>"> <i
-													class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
-													&nbsp;Open Office (*.ods)
-											</a></li>
-										</ul>
-									</div>
-
-								</div>
-								<div id="pr_row_gird" style="font-size: 8pt;"></div>
-						
-						</fieldset>
-					</form>
-				</div>
-
-				<div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
-				<div id="accounting" style="font-size: 9pt">Payment Term, Payment
-					method etc.</div>
-
-				<!-- end tab -->
-			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
-
+                                    echo $save_as_openoffice;
+                                    ?>">
+                                       <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Open Office (*.ods)
+                                    </a>
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                        <div id="pr_row_gird" style="font-size: 8pt;"></div>
+                  
+                  </fieldset>
+               </form>
+            </div>
+            <div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
+            <div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
+            <!-- end tab -->
+         </div>
+      </div>
+   </div>
+   <!-- /#page-content-wrapper -->
 </div>
 <!-- /#wrapper -->
-
-
 <!-- Modal -->
 <div class="modal" id="confirm_modal_sm" role="dialog">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
 
-    echo $this->translate('PO will be posted!');
-    ?></h5>
+            echo $this->translate('PO will be posted!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
 
-				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php
-
-    echo $this->translate('Document can\'t be changed anymore when posted!');
-    ?>
+            echo $this->translate('Document can\'t be changed anymore when posted!');
+            ?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
-				</div>
-				<p><?php
+            </div>
+            <p><?php
 
-    echo $this->translate('Do you want to continue?');
-    ?></p>
-			</div>
-			<div class="modal-footer">
-				<button onclick="doPosting();" type="button"
-					class="btn btn-primary btn-sm">YES</button>
-				<button type="button" class="btn btn-default btn-sm"
-					data-dismiss="modal">Cancel</button>
-			</div>
-		</div>
-	</div>
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doPosting();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
 </div>
-
 <!-- Modal -->
 <div class="modal" id="amendment_confirm_modal_sm" role="dialog">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
 
-    echo $this->translate('PO will be enabled for ammendment!');
-    ?></h5>
+            echo $this->translate('PO will be enabled for ammendment!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
 
-				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php
-
-    echo $this->translate('Document can\'t be changed anymore when posted!');
-    ?>
+            echo $this->translate('Document can\'t be changed anymore when posted!');
+            ?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
-				</div>
-				<p><?php
+            </div>
+            <p><?php
 
-    echo $this->translate('Do you want to continue?');
-    ?></p>
-			</div>
-			<div class="modal-footer">
-				<button onclick="doAmendment();" type="button"
-					class="btn btn-primary btn-sm">YES</button>
-				<button type="button" class="btn btn-default btn-sm"
-					data-dismiss="modal">Cancel</button>
-			</div>
-		</div>
-	</div>
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doAmendment();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
 </div>
-
 <!-- Modal -->
 <div class="modal" id="post_amendment_confirm_modal_sm" role="dialog">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
 
-    echo $this->translate('PO amendment will be posted!');
-    ?></h5>
+            echo $this->translate('PO amendment will be posted!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
 
-				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php
-
-    echo $this->translate('Document can\'t be changed anymore when posted!');
-    ?>
+            echo $this->translate('Document can\'t be changed anymore when posted!');
+            ?>
 				</div>
-				<p><?php
+            <p><?php
 
-    echo $this->translate('Do you want to continue?');
-    ?></p>
-			</div>
-			<div class="modal-footer">
-				<button onclick="doPostAmendment();" type="button"
-					class="btn btn-primary btn-sm">YES</button>
-				<button type="button" class="btn btn-default btn-sm"
-					data-dismiss="modal">Cancel</button>
-			</div>
-		</div>
-	</div>
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doPostAmendment();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
 </div>
-
 <!-- Modal -->
 <div class="modal" id="update_header_confirm_modal_sm" role="dialog">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php
+   <div class="modal-dialog modal-md">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+         </div>
+         <div class="modal-body" id="b_modal_sm_body">
+            <h5>#<?php
 
-    echo $this->translate('Document header amendment will be posted!');
-    ?></h5>
+            echo $this->translate('Document header amendment will be posted!');
+            ?></h5>
+            <div class="alert alert-warning">
+               <strong>[Info]</strong> <?php
 
-				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php
-
-    echo $this->translate('Document can\'t be changed anymore when posted!');
-    ?>
+            echo $this->translate('Document can\'t be changed anymore when posted!');
+            ?>
 				</div>
-				<p><?php
+            <p><?php
 
-    echo $this->translate('Do you want to continue?');
-    ?></p>
-			</div>
-			<div class="modal-footer">
-				<button onclick="doPostAmendment();" type="button"
-					class="btn btn-primary btn-sm">YES</button>
-				<button type="button" class="btn btn-default btn-sm"
-					data-dismiss="modal">Cancel</button>
-			</div>
-		</div>
-	</div>
+            echo $this->translate('Do you want to continue?');
+            ?></p>
+         </div>
+         <div class="modal-footer">
+            <button onclick="doPostAmendment();" type="button" class="btn btn-primary btn-sm">YES</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
 </div>
-
 <script>
 
 var data = <?php
@@ -1390,13 +1351,13 @@ echo $hoverMode;
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
    	   { title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
 	
-       { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
+       { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:120,editable: false},
        
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
   		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
        { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
-       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+       { title: "Code", dataType: "interger", dataIndx: "vendorItemCode", width:100,editable: false },
        
       	<?php
 
@@ -1433,8 +1394,12 @@ echo $hoverMode;
         
  
 		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
+		{ title: "Dept", dataType: "string", dataIndx: "prDepartmentName", width:120,editable: false },
+		{ title: "WH", dataType: "string", dataIndx: "warehouse", width:120,editable: false },
+			      
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-              
+	    { title: "S", dataType: "string", dataIndx: "isInventoryItem", align: 'left',minWidth: 15,editable: false},
+	               
       ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);

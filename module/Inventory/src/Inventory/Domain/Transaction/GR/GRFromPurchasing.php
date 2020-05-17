@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Transaction\GR;
 
 use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\GoodsReceipt;
 use Inventory\Domain\Transaction\TrxRow;
@@ -12,7 +13,6 @@ use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
 
@@ -38,11 +38,11 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
      * @param HeaderValidatorCollection $headerValidators
      * @param RowValidatorCollection $rowValidators
      * @param SharedService $sharedService
-     * @param APPostingService $postingService
+     * @param PostingServiceInterface $postingService
      * @throws InvalidArgumentException
      * @return \Inventory\Domain\Transaction\GR\GRFromPurchasing
      */
-    public function createFromProcureGR(GRDoc $sourceObj, TrxSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function createFromProcureGR(GRDoc $sourceObj, TrxSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
     {
         if (! $sourceObj instanceof GRDoc) {
             throw new InvalidArgumentException("GR Entity is required");
@@ -79,9 +79,12 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
              * @var TrxRow $r ;
              */
 
-            // ignore completed row;
+            // ignore none-inventory item;
+            if (! $r->getIsInventoryItem()) {
+                continue;
+            }
 
-            $localEntity = GRFromPurchasingRow::createFromPurchaseGrRow($r, $options);
+            $localEntity = GRFromPurchasingRow::createFromPurchaseGrRow($this, $r, $options);
             $this->addRow($localEntity);
             $this->validateRow($localEntity, $rowValidators);
         }

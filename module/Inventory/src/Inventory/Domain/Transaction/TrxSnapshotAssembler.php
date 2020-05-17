@@ -89,7 +89,7 @@ class TrxSnapshotAssembler
      * @param TrxSnapshot $snapShot
      * @param QrDTO $dto
      * @param array $editableProperties
-     * @return NULL|\Procure\Domain\GoodsReceipt\TrxSnapshot
+     * @return NULL|\Inventory\Domain\Transaction\TrxSnapshot
      */
     public static function updateSnapshotFieldsFromDTO(TrxSnapshot $snapShot, QrDTO $dto, $editableProperties)
     {

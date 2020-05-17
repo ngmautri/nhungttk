@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Transaction\Contracts;
 
 /**
+ * Movement Flow
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

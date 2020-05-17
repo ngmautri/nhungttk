@@ -37,7 +37,9 @@ class GenericRow extends AbstractRow
             "createdBy",
             "lastchangeBy",
             "docId",
-            "docToken"
+            "docToken",
+            "revisionNo",
+            "docVersion"
         ];
         $sourceObj = $this;
         $reflectionClass = new \ReflectionClass(get_class($sourceObj));

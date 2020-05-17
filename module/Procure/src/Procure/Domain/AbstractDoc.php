@@ -518,49 +518,6 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     /**
      *
-     * @param AbstractDoc $targetObj
-     * @throws InvalidArgumentException
-     * @return \Procure\Domain\AbstractDoc
-     */
-    public function convertTo(AbstractDoc $targetObj)
-    {
-        if (! $targetObj instanceof AbstractDoc) {
-            throw new InvalidArgumentException("Convertion input invalid!");
-        }
-
-        // Converting
-        // ==========================
-        $exculdedProps = [
-            "id",
-            "uuid",
-            "token",
-            "docRows",
-            "rowIdArray",
-            "instance",
-            "sysNumber",
-            "createdBy",
-            "lastchangeBy",
-            "docNumber",
-            "docDate"
-        ];
-
-        $sourceObj = $this;
-        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $prop) {
-            $prop->setAccessible(true);
-
-            $propName = $prop->getName();
-            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
-                $targetObj->$propName = $prop->getValue($sourceObj);
-            }
-        }
-        return $targetObj;
-    }
-
-    /**
-     *
      * @return mixed
      */
     public function getPaymentTermName()

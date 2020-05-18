@@ -2,7 +2,7 @@
 namespace Inventory\Domain\Transaction;
 
 use Application\Domain\Shared\Constants;
-use Procure\Domain\AbstractDoc;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 
@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractTrx extends AbstractDoc
+abstract class AbstractTrx extends GenericDoc
 {
 
     protected function initDoc($createdBy, $createdDate)

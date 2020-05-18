@@ -362,7 +362,7 @@ class APDoc extends GenericAP
         $params = null;
 
         $event = new ApHeaderCreated($target, $defaultParams, $params);
-        $instance->addEvent($event);
+        $this->addEvent($event);
 
         return $rootSnapshot;
     }

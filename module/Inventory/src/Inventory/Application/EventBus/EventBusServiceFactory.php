@@ -21,6 +21,7 @@ class EventBusServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
+
         $service = new EventBusService();
 
         $sv = $container->get('doctrine.entitymanager.orm_default');

@@ -19,7 +19,7 @@ class TrxRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = TrxRowDTOAssembler::createDTOProperities();
+            $result = TrxRowDTOAssembler::createStoreMapping();
             var_dump($result);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

@@ -6,6 +6,8 @@
  */
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPosted;
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPostedFactory;
+use Inventory\Application\EventBus\Handler\Transaction\CreateTrxOnProcureGRPosted;
+use Inventory\Application\EventBus\Handler\Transaction\CreateTrxOnProcureGRPostedFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
@@ -247,11 +249,12 @@ return array(
             'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
 
             // Event Handler Resolver
-            HandlerMapper::class => HandlerMapperFactory::class,
             EventBusService::class => EventBusServiceFactory::class,
+            HandlerMapper::class => HandlerMapperFactory::class,
 
             // Event Handler
-            CreateFiFoLayerOnTrxPosted::class => CreateFiFoLayerOnTrxPostedFactory::class
+            CreateFiFoLayerOnTrxPosted::class => CreateFiFoLayerOnTrxPostedFactory::class,
+            CreateTrxOnProcureGRPosted::class => CreateTrxOnProcureGRPostedFactory::class
         )
     ),
 

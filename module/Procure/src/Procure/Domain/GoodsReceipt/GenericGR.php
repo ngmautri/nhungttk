@@ -275,7 +275,7 @@ abstract class GenericGR extends AbstractGR
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());
         $defaultParams->setTargetDocVersion($this->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($this());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setUserId($options->getUserId());
         $params = [];
 

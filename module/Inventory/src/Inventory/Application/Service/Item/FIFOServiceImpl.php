@@ -238,7 +238,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
             throw new InvalidArgumentException("GenericTrx not found");
         }
 
-        $rows = $trx->getRows();
+        $rows = $trx->getDocRows();
 
         if (count($rows) == 0) {
             throw new InvalidArgumentException("GenericTrx have no lines");
@@ -287,11 +287,16 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
             $fifoLayer->setSourceId($row->getId());
             $fifoLayer->setSourceToken($row->getToken());
 
-            $fifoLayer->setPostingDate($trx->getPostingDate());
-            $fifoLayer->setCreatedOn($row->getCreatedOn());
+            if ($trx->getPostingDate()) {
+                $fifoLayer->setPostingDate(new \DateTime($trx->getPostingDate()));
+            }
+
+            if ($trx->getCreatedOn()) {
+                $fifoLayer->setCreatedOn(new \DateTime($trx->getCreatedOn()));
+            }
 
             $fifoLayer->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
-            $fifoLayer->setRemarks("Opening Balance");
+            $fifoLayer->setRemarks(\sprintf("WH-GR from PO-GR %s", $trx->getDocNumber()));
 
             $this->getDoctrineEM()->persist($fifoLayer);
         }

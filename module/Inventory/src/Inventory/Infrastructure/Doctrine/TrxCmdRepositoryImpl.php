@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
-use Application\Entity\NmtProcureQo;
+use Application\Entity\NmtInventoryMv;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
@@ -9,7 +9,6 @@ use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Infrastructure\Mapper\TrxMapper;
 use Procure\Domain\BaseRowSnapshot;
-use Procure\Infrastructure\Mapper\QrMapper;
 use InvalidArgumentException;
 
 /**
@@ -260,8 +259,8 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      */
     private function _storeRow($rootEntityDoctrine, BaseRowSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {
-        if (! $rootEntityDoctrine instanceof NmtProcureQo) {
-            throw new InvalidArgumentException("Doctrine root entity not given!");
+        if (! $rootEntityDoctrine instanceof NmtInventoryMv) {
+            throw new InvalidArgumentException("Doctrine root (NmtInventoryMventity not given!");
         }
 
         if ($localSnapshot == null) {
@@ -270,7 +269,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
 
         /**
          *
-         * @var \Application\Entity\NmtProcureQoRow $rowEntityDoctrine ;
+         * @var \Application\Entity\NmtInventoryTrx $rowEntityDoctrine ;
          */
 
         if ($localSnapshot->getId() > 0) {
@@ -282,11 +281,11 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
             }
 
             // update
-            if ($rowEntityDoctrine->getQo() == null) {
+            if ($rowEntityDoctrine->getMovement() == null) {
                 throw new InvalidArgumentException("Doctrine row entity is not valid");
             }
             // update
-            if (! $rowEntityDoctrine->getQo()->getId() == $rootEntityDoctrine->getId()) {
+            if (! $rowEntityDoctrine->getMovement()->getId() == $rootEntityDoctrine->getId()) {
                 throw new InvalidArgumentException(sprintf("Doctrine row entity is corrupted! %s <> %s ", $rowEntityDoctrine->getQo()->getId(), $rootEntityDoctrine->getId()));
             }
         } else {
@@ -297,13 +296,13 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
              *
              * @todo: To update.
              */
-            $rowEntityDoctrine->setQo($rootEntityDoctrine);
+            $rowEntityDoctrine->setMovement($rootEntityDoctrine);
         }
 
-        $rowEntityDoctrine = QrMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
+        $rowEntityDoctrine = TrxMapper::mapRowSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
 
         if ($n > 0) {
-            $rowEntityDoctrine->setRowIdentifer(sprintf("%s-%s", $rootEntityDoctrine->getSysNumber(), $n));
+            $rowEntityDoctrine->setSysNumber(sprintf("%s-%s", $rootEntityDoctrine->getSysNumber(), $n));
         }
 
         $this->doctrineEM->persist($rowEntityDoctrine);
@@ -324,7 +323,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      *
      * @param GenericTrx $rootEntity
      * @throws InvalidArgumentException
-     * @return \Procure\Domain\QuotationRequest\TrxSnapshot
+     * @return \Inventory\Domain\Transaction\TrxSnapshot
      */
     private function _getRootSnapshot(GenericTrx $rootEntity)
     {
@@ -338,7 +337,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
          * @var TrxSnapshot $rootSnapshot ;
          */
         $rootSnapshot = $rootEntity->makeSnapshot();
-        if ($rootSnapshot == null) {
+        if (! $rootSnapshot instanceof TrxSnapshot) {
             throw new InvalidArgumentException("Root snapshot not created!");
         }
 
@@ -349,7 +348,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      *
      * @param BaseRow $localEntity
      * @throws InvalidArgumentException
-     * @return \Procure\Domain\QuotationRequest\BaseRowSnapshot
+     * @return \Procure\Domain\BaseRowSnapshot
      */
     private function _getLocalSnapshot(BaseRow $localEntity)
     {

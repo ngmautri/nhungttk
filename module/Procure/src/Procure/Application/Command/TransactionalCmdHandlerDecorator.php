@@ -35,12 +35,8 @@ class TransactionalCmdHandlerDecorator extends AbstractCommandHandlerDecorator
 
             $this->handler->run($cmd);
 
-            // throw new \Exception(sprintf("Testing only %s...", "haha"));
-
             $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
-
-            $cmd->getDto()->addError($e->getMessage() . " catched at TransactionalCmdHandlerDecorator");
             $cmd->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();

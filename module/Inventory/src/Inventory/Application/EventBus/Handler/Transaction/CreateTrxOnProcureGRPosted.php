@@ -1,10 +1,10 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item;
+namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Command\Transaction\PostCopyFromProcureGRCmdHandler;
-use Inventory\Application\Command\Transaction\Options\CopyFromGROptions;
+use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Procure\Application\Command\GenericCmd;
 use Procure\Domain\Event\Gr\GrPosted;
@@ -36,11 +36,13 @@ class CreateTrxOnProcureGRPosted extends AbstractEventHandler
 
         $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-        $options = new CopyFromGROptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
+        $options = new PostCopyFromProcureGROptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $event->getTarget());
         $dto = new TrxDTO();
         $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
         $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
         $cmd->execute();
+        $this->getLogger()->info(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
+            ->getId()));
     }
 
     public static function priority()

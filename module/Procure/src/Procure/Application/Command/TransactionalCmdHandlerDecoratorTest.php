@@ -36,7 +36,7 @@ class TransactionalCmdHandlerDecoratorTest extends AbstractCommandHandlerDecorat
 
             // throw new \Exception(sprintf("Testing only %s...", "haha"));
 
-            //$cmd->getDoctrineEM()->commit(); // now commit
+            // $cmd->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
 
             $cmd->getDto()->addError($e->getMessage());

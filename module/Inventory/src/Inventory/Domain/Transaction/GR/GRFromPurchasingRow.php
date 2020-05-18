@@ -4,6 +4,7 @@ namespace Inventory\Domain\Transaction\GR;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
+use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 use Procure\Domain\GoodsReceipt\GRRow;
 use InvalidArgumentException;
 
@@ -42,6 +43,8 @@ class GRFromPurchasingRow extends TrxRow
 
         // $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
         $instance->setGrRow($sourceObj->getId()); // Important
+        $instance->setFlow(TransactionFlow::WH_TRANSACTION_IN);
+        $instance->setWh($instance->getWarehouse());
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

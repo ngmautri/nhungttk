@@ -8,10 +8,10 @@ use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
+use Procure\Application\Command\AP\SaveCopyFromPOCmd;
 use Procure\Application\Command\GR\AddRowCmdHandler;
 use Procure\Application\Command\GR\CreateHeaderCmdHandler;
 use Procure\Application\Command\GR\EditHeaderCmdHandler;
-use Procure\Application\Command\GR\SaveCopyFromPOCmd;
 use Procure\Application\Command\GR\SaveCopyFromPOCmdHandler;
 use Procure\Application\Command\GR\UpdateRowCmdHandler;
 use Procure\Application\Command\GR\Options\CopyFromPOOptions;
@@ -68,7 +68,7 @@ class GrController extends AbstractActionController
         ));
         $nmtPlugin = $this->Nmtplugin();
 
-        $form_action = "/procure/qr/create";
+        $form_action = "/procure/gr/create";
         $form_title = "Create Goods Receipt:";
         $action = Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/gr/crudHeader";
@@ -128,7 +128,7 @@ class GrController extends AbstractActionController
                 'action' => $action
             ));
             $viewModel->setTemplate($viewTemplete);
-            $this->getLogger()->info(\sprintf("Quotation not created. Error:%s", $notification->errorMessage()));
+            $this->getLogger()->info(\sprintf("Good Receipt not created. Error:%s", $notification->errorMessage()));
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));

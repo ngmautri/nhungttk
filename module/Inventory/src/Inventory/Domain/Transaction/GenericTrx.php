@@ -4,6 +4,7 @@ namespace Inventory\Domain\Transaction;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Inventory\Application\DTO\Transaction\TrxDTO;
@@ -169,6 +170,11 @@ abstract class GenericTrx extends BaseDoc
         $this->addEvent(new TrxRowAdded($event));
 
         return $localSnapshot;
+    }
+
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new TrxSnapshot());
     }
 
     /**

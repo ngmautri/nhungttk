@@ -7,6 +7,7 @@ use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\CopyFromGROptions;
+use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
@@ -19,6 +20,8 @@ use Inventory\Domain\Transaction\Validator\Row\WarehouseValidator;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Procure\Application\Service\FXService;
 use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use InvalidArgumentException;
 
 /**
@@ -50,13 +53,13 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof CopyFromGROptions) {
+        if (! $options instanceof PostCopyFromProcureGROptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
         $sourceObj = $options->getSourceObj();
 
-        if (! $sourceObj instanceof GRDoc) {
+        if (! $sourceObj instanceof GRSnapshot) {
             throw new InvalidArgumentException(sprintf("Source object not given! %s", "PO-GR Document required"));
         }
 
@@ -85,6 +88,12 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
             $rowValidators = new RowValidatorCollection();
             $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
             $rowValidators->add($validator);
+
+            $id = $sourceObj->getId();
+            $token = $sourceObj->getToken();
+
+            $rep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
+            $sourceObj = $rep->getRootEntityByTokenId($id, $token);
 
             $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $headerValidators, $rowValidators, $sharedService);
 

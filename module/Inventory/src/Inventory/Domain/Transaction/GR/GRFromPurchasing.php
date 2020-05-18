@@ -100,7 +100,7 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
 
-        $target = $snapshot;
+        $target = $instance;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($snapshot->getId());
         $defaultParams->setTargetToken($snapshot->getToken());

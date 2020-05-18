@@ -8,9 +8,8 @@ use Application\Domain\EventBus\Middleware\EventBusMiddleware;
 use Application\Domain\EventBus\Middleware\LoggerEventBusMiddleware;
 use Application\Domain\EventBus\Middleware\ProducerEventBusMiddleware;
 use Doctrine\ORM\EntityManager;
+use Inventory\Application\EventBus\Queue\DoctrineQueue;
 use Monolog\Logger;
-use Procure\Application\EventBus\Queue\DoctrineQueue;
-use Procure\Application\Eventbus\HandlerMapper;
 
 /**
  *

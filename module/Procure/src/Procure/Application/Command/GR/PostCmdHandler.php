@@ -129,8 +129,7 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-
-            $notification->addError($e->getMessage());
+            throw $e;
         }
     }
 }

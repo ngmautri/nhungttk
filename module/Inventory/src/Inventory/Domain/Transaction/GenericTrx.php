@@ -8,7 +8,6 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Inventory\Application\DTO\Transaction\TrxDTO;
-use Inventory\Domain\Contracts\PostingServiceInterface;
 use Inventory\Domain\Event\Transaction\TrxPosted;
 use Inventory\Domain\Event\Transaction\TrxReversed;
 use Inventory\Domain\Event\Transaction\TrxRowAdded;
@@ -17,6 +16,7 @@ use Inventory\Domain\Exception\InvalidOperationException;
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
+use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
@@ -53,7 +53,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function validate(TrxValidationServiceInterface $validationService, $isPosting = false)
     {
-        if (! $validationService == null) {
+        if ($validationService == null) {
             throw new InvalidArgumentException("Validation service not given!");
         }
 

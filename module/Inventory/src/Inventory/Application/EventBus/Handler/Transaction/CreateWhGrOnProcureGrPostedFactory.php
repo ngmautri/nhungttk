@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateWhGROnProcureGRPostedFactory implements FactoryInterface
+class CreateWhGrOnProcureGrPostedFactory implements FactoryInterface
 {
 
     /**
@@ -25,7 +25,7 @@ class CreateWhGROnProcureGRPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CreateWhGROnProcureGRPosted($doctrineEM, $eventBusService);
+        $service = new CreateWhGrOnProcureGrPosted($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

@@ -4,7 +4,7 @@ namespace Inventory\Application\EventBus\Handler\Item;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
-use Inventory\Domain\Event\Transaction\TrxPosted;
+use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
 use Inventory\Domain\Transaction\GenericTrx;
 
 /**
@@ -12,14 +12,14 @@ use Inventory\Domain\Transaction\GenericTrx;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateFiFoLayerOnTrxPosted extends AbstractEventHandler
+class CreateFiFoLayerOnWhGrPosted extends AbstractEventHandler
 {
 
     /**
      *
-     * @param TrxPosted $event
+     * @param WhGrPosted $event
      */
-    public function __invoke(TrxPosted $event)
+    public function __invoke(WhGrPosted $event)
     {
         if (! $event->getTarget() instanceof GenericTrx) {
             Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service!");
@@ -29,7 +29,7 @@ class CreateFiFoLayerOnTrxPosted extends AbstractEventHandler
         $fifoService->setDoctrineEM($this->getDoctrineEM());
         $fifoService->createLayersFor($event->getTarget());
 
-        $this->getLogger()->info(\sprintf("FIFO Layer for Trx #%s created!", $event->getTarget()
+        $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
             ->getId()));
     }
 
@@ -40,6 +40,6 @@ class CreateFiFoLayerOnTrxPosted extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return TrxPosted::class;
+        return WhGrPosted::class;
     }
 }

@@ -4,7 +4,6 @@ namespace Inventory\Application\Eventbus;
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
 use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
-use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPosted;
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
 
 /**
@@ -22,7 +21,6 @@ class HandlerMapper extends AbstractService
     protected function setUpMapper()
     {
         $handlers = [
-            CreateFiFoLayerOnTrxPosted::class,
             CalculateCostOnWhGiPosted::class,
             CreateFiFoLayerOnWhGrPosted::class
         ];

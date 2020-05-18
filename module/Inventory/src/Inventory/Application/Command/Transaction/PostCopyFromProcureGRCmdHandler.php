@@ -11,6 +11,7 @@ use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptio
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
+use Inventory\Domain\Service\TrxValidationService;
 use Inventory\Domain\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
@@ -89,13 +90,15 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
             $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
             $rowValidators->add($validator);
 
+            $validationService = new TrxValidationService($headerValidators, $rowValidators);
+
             $id = $sourceObj->getId();
             $token = $sourceObj->getToken();
 
             $rep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
             $sourceObj = $rep->getRootEntityByTokenId($id, $token);
 
-            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $headerValidators, $rowValidators, $sharedService);
+            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $validationService, $sharedService);
 
             // event dispatch
             // ================

@@ -16,7 +16,7 @@ use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateTrxOnProcureGRPosted extends AbstractEventHandler
+class CreateWhGrOnProcureGrPosted extends AbstractEventHandler
 {
 
     /**

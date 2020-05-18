@@ -3,11 +3,13 @@ namespace Inventory\Domain\Transaction\GR;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Contracts\PostingServiceInterface;
 use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
+use Inventory\Domain\Event\Transaction\GR\WhGrReversed;
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
+use Inventory\Domain\Service\Contracts\PostingServiceInterface;
+use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\GoodsReceipt;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\TrxSnapshot;
@@ -35,7 +37,7 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
         $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
     }
 
-    public static function postCopyFromProcureGR(GRDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService)
+    public static function postCopyFromProcureGR(GRDoc $sourceObj, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if (! $sourceObj instanceof GRDoc) {
             throw new InvalidArgumentException("GRDoc Entity is required");
@@ -52,6 +54,18 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
             throw new InvalidArgumentException("AP document is not posted yet!");
+        }
+
+        if ($validationService == null) {
+            throw new InvalidArgumentException("Validation service not given!");
+        }
+
+        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
+        }
+
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
         }
 
         /**
@@ -81,7 +95,7 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
             $instance->addRow($grRow);
         }
 
-        $instance->validate($headerValidators, $rowValidators);
+        $instance->validate($validationService);
 
         if ($instance->hasErrors()) {
             throw new ValidationFailedException($instance->getErrorMessage());
@@ -111,6 +125,110 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
         $params = null;
 
         $event = new WhGrPosted($target, $defaultParams, $params);
+
+        $instance->addEvent($event);
+        return $instance;
+    }
+
+    /**
+     *
+     * @param GRDoc $sourceObj
+     * @param CommandOptions $options
+     * @param TrxValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Inventory\Domain\Transaction\GR\GRFromPurchasing
+     */
+    public static function postCopyFromProcureGrReversal(GRDoc $sourceObj, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {
+        if (! $sourceObj instanceof GRDoc) {
+            throw new InvalidArgumentException("GRDoc Entity is required");
+        }
+
+        $rows = $sourceObj->getDocRows();
+
+        if ($rows == null) {
+            throw new InvalidArgumentException("GRDoc Entity is empty!");
+        }
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_REVERSED) {
+            throw new InvalidArgumentException("GR document is not reversed yet!");
+        }
+
+        if ($validationService == null) {
+            throw new InvalidArgumentException("Validation service not given!");
+        }
+
+        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
+        }
+
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
+        }
+
+        /**
+         *
+         * @var \Inventory\Domain\Transaction\GR\GRFromPurchasing $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+
+        $createdBy = $options->getUserId();
+        $createdDate = new \DateTime();
+        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        // overwrite.
+        // $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
+        $instance->markAsReversed($createdBy, $sourceObj->getPostingDate());
+        $instance->setRemarks($instance->getRemarks() . \sprintf(' /PO-GR %s', $sourceObj->getId()));
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var GRRow $r ;
+             */
+
+            $grRow = GRFromPurchasingRow::createFromPurchaseGrRowReversal($instance, $r, $options);
+            $grRow->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $instance->addRow($grRow);
+        }
+
+        $instance->validate($validationService);
+
+        if ($instance->hasErrors()) {
+            throw new ValidationFailedException($instance->getErrorMessage());
+        }
+
+        $instance->clearEvents();
+
+        $snapshot = $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->post($instance, true);
+
+        if (! $snapshot instanceof TrxSnapshot) {
+            throw new OperationFailedException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
+        }
+
+        $instance->setId($snapshot->getId());
+        $instance->setToken($snapshot->getToken());
+
+        $target = $instance;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($snapshot->getId());
+        $defaultParams->setTargetToken($snapshot->getToken());
+        $defaultParams->setTargetDocVersion($snapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($snapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new WhGrReversed($target, $defaultParams, $params);
 
         $instance->addEvent($event);
         return $instance;

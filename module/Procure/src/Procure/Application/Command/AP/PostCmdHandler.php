@@ -118,6 +118,7 @@ class PostCmdHandler extends AbstractCommandHandler
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
+            // ================
 
             $m = sprintf("AP #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);

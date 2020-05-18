@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Transaction;
+namespace Inventory\Application\EventBus\Handler\Item;
 
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateTrxOnProcureGRPostedFactory implements FactoryInterface
+class CreateFiFoLayerOnWhGrPostedFactory implements FactoryInterface
 {
 
     /**
@@ -25,7 +25,7 @@ class CreateTrxOnProcureGRPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CreateTrxOnProcureGRPosted($doctrineEM, $eventBusService);
+        $service = new CreateFiFoLayerOnWhGrPosted($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

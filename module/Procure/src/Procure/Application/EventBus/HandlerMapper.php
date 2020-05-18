@@ -3,7 +3,7 @@ namespace Procure\Application\Eventbus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
-use Inventory\Application\EventBus\Handler\Transaction\CreateTrxOnProcureGRPosted;
+use Inventory\Application\EventBus\Handler\Transaction\CreateWhGrOnProcureGrPosted;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\GR\GrOnApPostedHandler;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
@@ -28,7 +28,7 @@ class HandlerMapper extends AbstractService
             UpdateIndexOnPoPosted::class,
             UpdateIndexOnApPosted::class,
             GrOnApPostedHandler::class,
-            CreateTrxOnProcureGRPosted::class
+            CreateWhGrOnProcureGrPosted::class
         ];
 
         $this->handlers = $handlers;

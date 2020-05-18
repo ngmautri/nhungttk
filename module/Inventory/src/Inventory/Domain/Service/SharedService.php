@@ -2,8 +2,8 @@
 namespace Inventory\Domain\Service;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Inventory\Domain\Contracts\PostingServiceInterface;
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Procure\Domain\Service\FXServiceInterface;
 
 /**
@@ -69,7 +69,7 @@ class SharedService
 
     /**
      *
-     * @return \Inventory\Domain\Contracts\PostingServiceInterface
+     * @return \Inventory\Domain\Service\Contracts\PostingServiceInterface
      */
     public function getPostingService()
     {

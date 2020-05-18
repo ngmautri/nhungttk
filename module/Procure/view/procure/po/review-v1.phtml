@@ -407,11 +407,35 @@
                                 
                                 
                                 
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
                                 
                                 
                                 
@@ -872,25 +896,31 @@
     echo (! $headerDTO == null) ? $headerDTO->getId() : "";
     ?>";
     	var entity_token="<?php
-
     echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
     ?>";
     	var version="<?php
 
     echo $version;
     ?>";
+	
+	    $.ajax({
+               type: "POST",
+               data: {entity_id: entity_id, entity_token:entity_token,version: version},
+               url: url,
+               success: function(data){
+
+        	  /*  var out = '';
+                   for (var i in data) {
+                       out += i + ": " + data[i] + "\n";
+                   }
+                    alert(out);   */                       
+        	       window.location.href= data.redirectUrl;
+        	       
+               }
+         });
+	    
     
     
-    	$.post(url, {
-    		entity_id 	: entity_id,
-    		entity_token: entity_token,
-    		version: version
-    	}, function(data, status, dataType) {
-    	    //alert( "success" );		
-            window.location.href= data.url;
-       	}).fail(function(data, status, dataType){
-             alert(data.responseText);            
-            });
     }
     
     

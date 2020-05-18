@@ -355,6 +355,8 @@ class GRDoc extends GenericGR
             $instance->addRow($grRow);
         }
 
+        $instance->setRemarks(\sprintf("Auto. generated from AP %s", $sourceObj->getId()));
+
         $instance->validate($headerValidators, $rowValidators);
 
         if ($instance->hasErrors()) {

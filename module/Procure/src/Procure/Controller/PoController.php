@@ -18,7 +18,6 @@ use Procure\Application\Command\PO\CreateHeaderCmd;
 use Procure\Application\Command\PO\CreateHeaderCmdHandler;
 use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
-use Procure\Application\Command\PO\EnableAmendmentCmd;
 use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
 use Procure\Application\Command\PO\PostCmdHandler;
 use Procure\Application\Command\PO\SaveCopyFromQuoteCmdHandler;
@@ -533,6 +532,8 @@ class PoController extends AbstractGenericController
             }
 
             if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+                $this->flashMessenger()->addMessage($redirectUrl);
+
                 return $this->redirect()->toRoute('not_found');
             }
 
@@ -590,46 +591,37 @@ class PoController extends AbstractGenericController
         /**@var \Application\Entity\MlaUsers $u ;*/
 
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/po/enable-amendment";
-        $form_title = "Create PO";
-        $action = Constants::FORM_ACTION_EDIT;
-        $viewTemplete = "procure/po/review-v1";
-
-        $prg = $this->prg($form_action, true);
-
-        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-            // returned a response to redirect us
-            return $prg;
-        } elseif ($prg === false) {
-            // this wasn't a POST request, but there were no params in the flash messenger
-            // probably this is the first time the form was loaded
-        }
-
-        $response = $this->getResponse();
-        $redirectUrl = null;
-        $msg = null;
 
         // POSTING
         // ======================
-        try {
 
-            $data = $prg;
+        $notification = new Notification();
+
+        try {
 
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 'email' => $this->identity()
             ));
 
-            $entity_id = $data['entity_id'];
-            $entity_token = $data['entity_token'];
-            $version = $data['version'];
             $userId = $u->getId();
 
+            $entity_token = $_POST["entity_token"];
+            $entity_id = $_POST["entity_id"];
+            $version = $_POST["version"];
+
             $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
 
             if ($rootEntity == null) {
-                $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&token=%s", $entity_id, $entity_token);
+                $msg = sprintf("PO #%s is not found!", $entity_id);
+                $this->flashMessenger()->addMessage($redirectUrl);
+
+                $data = array();
+                $data['message'] = $msg;
+                $data['redirectUrl'] = $redirectUrl;
+                $response = $this->getResponse();
                 $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-                $response->setContent(json_encode($redirectUrl));
+                $response->setContent(json_encode($data));
                 return $response;
             }
 
@@ -637,24 +629,24 @@ class PoController extends AbstractGenericController
             $dto = new PoDTO();
             $cmdHandler = new EnableAmendmentCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new EnableAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
 
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-            $this->flashMessenger()->addMessage($msg);
-
             $this->getLogger()->info($msg);
         } catch (\Exception $e) {
-            $msg = $e->getMessage();
+            $msg = \sprintf("Error:%s ", $e->getMessage());
             $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $notification->addError($msg);
         }
-
-        $result = [];
-        $result['url'] = $redirectUrl;
-        $result['message'] = $msg;
+        $this->flashMessenger()->addMessage($msg);
+        $data = array();
+        $data['message'] = $msg;
+        $data['redirectUrl'] = $redirectUrl;
+        $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($result));
+        $response->setContent(json_encode($data));
         return $response;
     }
 

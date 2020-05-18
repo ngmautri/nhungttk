@@ -15,7 +15,7 @@ class NullRowValidator extends AbstractValidator implements RowValidatorInterfac
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\Transaction\Validator\Contracts\RowValidatorInterface::validate()
+     * @see \Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface::validate()
      */
     public function validate(AbstractTrx $rootEntity, BaseRow $localEntity)
     {

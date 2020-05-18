@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Domain\Service;
 
-use Inventory\Domain\Contracts\PostingServiceInterface;
+use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Procure\Domain\Exception\InvalidArgumentException;
 

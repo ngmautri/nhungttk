@@ -4,7 +4,7 @@ namespace Inventory\Domain\Transaction\GR;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Contracts\PostingServiceInterface;
-use Inventory\Domain\Event\Transaction\TrxPosted;
+use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
@@ -110,7 +110,7 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
         $defaultParams->setUserId($options->getUserId());
         $params = null;
 
-        $event = new TrxPosted($target, $defaultParams, $params);
+        $event = new WhGrPosted($target, $defaultParams, $params);
 
         $instance->addEvent($event);
         return $instance;

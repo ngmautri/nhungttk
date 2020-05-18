@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Service;
+namespace Inventory\Domain\Service\Contracts;
 
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;

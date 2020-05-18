@@ -2,6 +2,7 @@
 namespace Application\Domain\Shared;
 
 use Application\Notification;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -14,6 +15,26 @@ abstract class AbstractEntity
     private $notification;
 
     private $recordedEvents;
+
+    private $logger;
+
+    /**
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     protected function translate($text)
     {

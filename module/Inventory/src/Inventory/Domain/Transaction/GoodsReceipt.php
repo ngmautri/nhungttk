@@ -2,10 +2,8 @@
 namespace Inventory\Domain\Transaction;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
+use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 
 /**
  *
@@ -21,21 +19,21 @@ class GoodsReceipt extends GenericTrx
     // ==========================
     private static $instance = null;
 
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    protected function doReverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    protected function preReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 }

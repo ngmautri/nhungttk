@@ -4,8 +4,12 @@
  * @author Nguyen Mau Tri
  *
  */
+use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
+use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPostedFactory;
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPosted;
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnTrxPostedFactory;
+use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
+use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPostedFactory;
 use Inventory\Application\EventBus\Handler\Transaction\CreateTrxOnProcureGRPosted;
 use Inventory\Application\EventBus\Handler\Transaction\CreateTrxOnProcureGRPostedFactory;
 use Inventory\Application\Eventbus\EventBusService;
@@ -254,7 +258,9 @@ return array(
 
             // Event Handler
             CreateFiFoLayerOnTrxPosted::class => CreateFiFoLayerOnTrxPostedFactory::class,
-            CreateTrxOnProcureGRPosted::class => CreateTrxOnProcureGRPostedFactory::class
+            CreateTrxOnProcureGRPosted::class => CreateTrxOnProcureGRPostedFactory::class,
+            CalculateCostOnWhGiPosted::class => CalculateCostOnWhGiPostedFactory::class,
+            CreateFiFoLayerOnWhGrPosted::class => CreateFiFoLayerOnWhGrPostedFactory::class
         )
     ),
 

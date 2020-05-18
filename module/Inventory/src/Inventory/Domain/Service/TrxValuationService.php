@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Service;
 
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Service\Contracts\FIFOServiceInterface;
 
 /**
  * Transaction Domain Service
@@ -25,7 +26,7 @@ class TrxValuationService
 
     /**
      *
-     * @return \Inventory\Domain\Service\FIFOServiceInterface
+     * @return \Inventory\Domain\Service\Contracts\FIFOServiceInterface
      */
     public function getFifoService()
     {

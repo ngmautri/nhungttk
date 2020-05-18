@@ -4,7 +4,7 @@ namespace Inventory\Application\Service\Item;
 use Application\Service\AbstractService;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Inventory\Domain\Exception\InvalidArgumentException;
-use Inventory\Domain\Service\FIFOServiceInterface;
+use Inventory\Domain\Service\Contracts\FIFOServiceInterface;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
 use Ramsey;
@@ -20,7 +20,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOServiceInterface::calculateCOGS()
+     * @see \Inventory\Domain\Service\Contracts\FIFOServiceInterface::calculateCOGS()
      */
     public function calculateCOGS(GenericTrx $trx, TrxRow $row)
     {
@@ -140,7 +140,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOServiceInterface::createLayer()
+     * @see \Inventory\Domain\Service\Contracts\FIFOServiceInterface::createLayer()
      */
     public function createLayer(GenericTrx $trx, TrxRow $row)
     {
@@ -205,7 +205,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOServiceInterface::closeLayers()
+     * @see \Inventory\Domain\Service\Contracts\FIFOServiceInterface::closeLayers()
      */
     public function closeLayers(GenericTrx $trx, TrxRow $row)
     {
@@ -230,7 +230,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOServiceInterface::createLayersFor()
+     * @see \Inventory\Domain\Service\Contracts\FIFOServiceInterface::createLayersFor()
      */
     public function createLayersFor(GenericTrx $trx)
     {
@@ -307,7 +307,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Service\FIFOServiceInterface::closeLayersOf()
+     * @see \Inventory\Domain\Service\Contracts\FIFOServiceInterface::closeLayersOf()
      */
     public function closeLayersOf(GenericTrx $trx)
     {

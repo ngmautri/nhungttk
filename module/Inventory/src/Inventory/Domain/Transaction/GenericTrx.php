@@ -17,6 +17,7 @@ use Inventory\Domain\Exception\InvalidOperationException;
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
+use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -30,17 +31,17 @@ use InvalidArgumentException;
 abstract class GenericTrx extends BaseDoc
 {
 
-    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService);
+    abstract protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService);
+    abstract protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService);
+    abstract protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService);
+    abstract protected function preReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService);
+    abstract protected function doReverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService);
+    abstract protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
     /**
      *
@@ -50,20 +51,24 @@ abstract class GenericTrx extends BaseDoc
      * @throws InvalidArgumentException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
-    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
+    public function validate(TrxValidationServiceInterface $validationService, $isPosting = false)
     {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
+        if (! $validationService == null) {
+            throw new InvalidArgumentException("Validation service not given!");
         }
 
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
+        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
+        }
+
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
         }
 
         // Clear Notification.
         $this->clearNotification();
 
-        $this->validateHeader($headerValidators, $isPosting);
+        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
 
         if ($this->hasErrors()) {
             return $this;
@@ -75,7 +80,7 @@ abstract class GenericTrx extends BaseDoc
         }
 
         foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $rowValidators, $isPosting);
+            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
         }
 
         return $this;
@@ -90,7 +95,7 @@ abstract class GenericTrx extends BaseDoc
      * @param SharedService $sharedService
      * @param PostingServiceInterface $postingService
      */
-    public function deactivateRow(TrxRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    public function deactivateRow(TrxRow $row, CommandOptions $options, TrxValidationServiceInterface $validationSerive, SharedService $sharedService)
     {}
 
     /**
@@ -107,7 +112,7 @@ abstract class GenericTrx extends BaseDoc
      * @throws OperationFailedException
      * @return \Inventory\Domain\Transaction\TrxRowSnapshot
      */
-    public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
@@ -121,7 +126,11 @@ abstract class GenericTrx extends BaseDoc
             throw new InvalidArgumentException("Options not found");
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
+
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Row Validators not given!");
+        }
 
         $snapshot->docType = $this->docType;
 
@@ -131,7 +140,7 @@ abstract class GenericTrx extends BaseDoc
 
         $row = TrxRow::makeFromSnapshot($snapshot);
 
-        $this->validateRow($row, $rowValidators);
+        $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getNotification()->errorMessage());
@@ -143,7 +152,9 @@ abstract class GenericTrx extends BaseDoc
          *
          * @var TrxRowSnapshot $localSnapshot
          */
-        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
+        $localSnapshot = $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->storeRow($this, $row);
 
         if ($localSnapshot == null) {
             throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
@@ -163,10 +174,7 @@ abstract class GenericTrx extends BaseDoc
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
         $event = new TrxRowAdded($target, $defaultParams, $params);
-
         $this->addEvent(new TrxRowAdded($event));
 
         return $localSnapshot;
@@ -192,7 +200,7 @@ abstract class GenericTrx extends BaseDoc
      * @throws OperationFailedException
      * @return \Inventory\Domain\Transaction\TrxRowSnapshot
      */
-    public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("Trx is posted! %s", $this->getId()));
@@ -206,7 +214,11 @@ abstract class GenericTrx extends BaseDoc
             throw new InvalidArgumentException("Options not found");
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
+
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Row Validators not given!");
+        }
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -214,7 +226,7 @@ abstract class GenericTrx extends BaseDoc
 
         $row = TrxRow::makeFromSnapshot($snapshot);
 
-        $this->validateRow($row, $rowValidators);
+        $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getNotification()->errorMessage());
@@ -226,7 +238,9 @@ abstract class GenericTrx extends BaseDoc
          *
          * @var TrxRowSnapshot $localSnapshot
          */
-        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
+        $localSnapshot = $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->storeRow($this, $row);
 
         if ($localSnapshot == null) {
             throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
@@ -261,24 +275,28 @@ abstract class GenericTrx extends BaseDoc
      * @throws ValidationFailedException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
-    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    public function post(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
 
-        $this->validate($headerValidators, $rowValidators);
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Row Validators not given!");
+        }
+
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
 
-        $this->prePost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->prePost($options, $validationService, $sharedService);
+        $this->doPost($options, $validationService, $sharedService);
+        $this->afterPost($options, $validationService, $sharedService);
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -307,24 +325,29 @@ abstract class GenericTrx extends BaseDoc
      * @throws ValidationFailedException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
-    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    public function reverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
 
-        $this->validate($headerValidators, $rowValidators);
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Row Validators not given!");
+        }
+
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
 
-        $this->preReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->preReserve($options, $validationService, $sharedService);
+        $this->doReverse($options, $validationService, $sharedService);
+        $this->afterReserve($options, $validationService, $sharedService);
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -429,28 +452,22 @@ abstract class GenericTrx extends BaseDoc
 
     /**
      *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
+     * @param TrxValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @param PostingServiceInterface $postingService
      * @throws InvalidArgumentException
      */
-    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
+    private function _checkParams(TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        if ($validationService == null) {
+            throw new InvalidArgumentException('Validation service not found!');
         }
 
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
         }
 
         if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException('SharedService service not found');
         }
     }
 }

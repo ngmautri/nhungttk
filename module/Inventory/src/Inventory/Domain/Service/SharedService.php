@@ -21,6 +21,8 @@ class SharedService
 
     protected $postingService;
 
+    protected $valuationService;
+
     /**
      *
      * @param AbstractSpecificationFactory $sharedSpecificationFactory
@@ -72,5 +74,23 @@ class SharedService
     public function getPostingService()
     {
         return $this->postingService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\Service\TrxValuationService
+     */
+    public function getValuationService()
+    {
+        return $this->valuationService;
+    }
+
+    /**
+     *
+     * @param TrxValuationService $valuationService
+     */
+    public function setValuationService(TrxValuationService $valuationService)
+    {
+        $this->valuationService = $valuationService;
     }
 }

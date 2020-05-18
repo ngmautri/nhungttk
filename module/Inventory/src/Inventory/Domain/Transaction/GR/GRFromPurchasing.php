@@ -68,7 +68,7 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
         // overwrite.
         // $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
-
+        $instance->setRemarks($instance->getRemarks() . \sprintf(' /PO-GR %s', $sourceObj->getId()));
         foreach ($rows as $r) {
 
             /**

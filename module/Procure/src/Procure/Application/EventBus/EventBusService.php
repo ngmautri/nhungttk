@@ -6,6 +6,7 @@ use Application\Domain\EventBus\EventBus;
 use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Domain\EventBus\Middleware\EventBusMiddleware;
 use Application\Domain\EventBus\Middleware\LoggerEventBusMiddleware;
+use Application\Domain\EventBus\Middleware\LoggerProducerEventBusMiddleware;
 use Application\Domain\EventBus\Middleware\ProducerEventBusMiddleware;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
@@ -66,7 +67,7 @@ class EventBusService implements EventBusServiceInterface
         $queue = new DoctrineQueue($this->getDoctrineEM(), $this->queueName);
 
         $middleware = [
-            new LoggerEventBusMiddleware($this->logger),
+            new LoggerProducerEventBusMiddleware($this->logger, \get_class($queue)),
             new ProducerEventBusMiddleware($queue)
         ];
         return new EventBus($middleware);

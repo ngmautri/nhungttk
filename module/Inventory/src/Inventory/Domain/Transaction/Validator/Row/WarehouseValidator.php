@@ -44,7 +44,7 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
              */
 
             // ===== WAREHOUSE =======
-            if (! $localEntity->getIsInventoryItem()) {
+            if (! $localEntity->getIsInventoryItem() && $localEntity->getIsFixedAsset() == 1) {
                 $localEntity->addError(\sprintf("Item is not kept stocked! %s", $localEntity->getItemName()));
             }
 

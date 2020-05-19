@@ -53,6 +53,17 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
             }
 
             // ===== USER ID =======
+            $spec = $this->sharedSpecificationFactory->getDepartmentSpecification();
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "departmentId" => $rootEntity->getDepartment()
+            );
+
+            if (! $spec->isSatisfiedBy($subject)) {
+                $rootEntity->addError("Department is not correct or empty");
+            }
+
+            // ===== USER ID =======
             $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),

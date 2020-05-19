@@ -28,11 +28,7 @@ class CreateWhGrOnProcureGrPosted extends AbstractEventHandler
     {
         try {
 
-            throw new \RuntimeException(\sprintf("Tesing.. %s", __METHOD__));
-
-            echo "\n RUNNING";
-            echo \sprintf("\n%s involked.", __METHOD__);
-            echo "\n" . \get_class($event);
+            // throw new \RuntimeException(\sprintf("Tesing.. %s", __METHOD__));
 
             if (! $event->getTarget() instanceof GRSnapshot) {
                 Throw new \InvalidArgumentException("GRSnapshot not give for creating WH Trx");

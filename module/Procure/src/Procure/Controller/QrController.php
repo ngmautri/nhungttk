@@ -2,10 +2,9 @@
 namespace Procure\Controller;
 
 use Application\Notification;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\DTOFactory;
-use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
-use Monolog\Logger;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\QR\AddRowCmdHandler;
@@ -27,7 +26,7 @@ use Procure\Application\Service\QR\QRService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Persistence\Filter\QrReportSqlFilter;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Escaper\Escaper;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -36,16 +35,10 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QrController extends AbstractActionController
+class QrController extends AbstractGenericController
 {
 
-    protected $doctrineEM;
-
     protected $qrService;
-
-    protected $eventBusService;
-
-    protected $logger;
 
     protected $qrReporter;
 
@@ -487,6 +480,70 @@ class QrController extends AbstractActionController
         $redirectUrl = sprintf("/procure/qr/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
         $this->getLogger()->error(\sprintf("Row #%s is updated by %s.", $target_id, $u->getId()));
         return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function updateRowAjaxAction()
+    {
+        $a_json_final = array();
+        $escaper = new Escaper();
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+        $userId = $u->getId();
+
+        /*
+         * $pq_curPage = $_GET ["pq_curpage"];
+         * $pq_rPP = $_GET ["pq_rpp"];
+         */
+        $sent_list = json_decode($_POST['sent_list'], true);
+        // echo json_encode($sent_list);
+
+        $to_update = $sent_list['addList'];
+
+        foreach ($to_update as $a) {
+
+            $entity_id = $a['id'];
+            $entity_token = $a['token'];
+            $target_id = $a['docId'];
+            $target_token = $target_id = $a['docToken'];
+            $version = $target_id = $a['docVersion'];
+            $result = $this->getQrService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+            $rootEntity = null;
+            $localEntity = null;
+            $rootDTO = null;
+            $localDTO = null;
+
+            if (isset($result["rootEntity"])) {
+                $rootEntity = $result["rootEntity"];
+            }
+            if (isset($result["localEntity"])) {
+                $localEntity = $result["localEntity"];
+            }
+            if (isset($result["rootDTO"])) {
+                $rootDTO = $result["rootDTO"];
+            }
+            if (isset($result["localDTO"])) {
+                $localDTO = $result["localDTO"];
+            }
+            if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $dto = new QrRowDTO();
+            $dto->rowNumber = $a['rowNumber'];
+
+            $options = new RowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new UpdateRowCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->execute();
+        }
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($sent_list));
+        return $response;
     }
 
     /*
@@ -950,56 +1007,6 @@ class QrController extends AbstractActionController
     }
 
     // ==================================================
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-    }
-
-    /**
-     *
-     * @return \Procure\Application\Eventbus\EventBusService
-     */
-    public function getEventBusService()
-    {
-        return $this->eventBusService;
-    }
-
-    /**
-     *
-     * @param \Procure\Application\Eventbus\EventBusService $eventBusService
-     */
-    public function setEventBusService(\Procure\Application\Eventbus\EventBusService $eventBusService)
-    {
-        $this->eventBusService = $eventBusService;
-    }
-
-    /**
-     *
-     * @return \Monolog\Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
 
     /**
      *

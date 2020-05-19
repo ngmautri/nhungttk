@@ -2,7 +2,6 @@
 namespace Application\Domain\EventBus\Middleware;
 
 use Application\Domain\EventBus\Event\EventInterface;
-use Application\Domain\EventBus\Exception\NoHandlerException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -10,18 +9,17 @@ use Psr\Log\LoggerInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class LoggerEventBusMiddleware implements EventBusMiddlewareInterface
+class LoggerProducerEventBusMiddleware implements EventBusMiddlewareInterface
 {
 
     protected $logger;
 
-    /**
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
+    protected $queueClass;
+
+    public function __construct(LoggerInterface $logger, $queueClass)
     {
         $this->logger = $logger;
+        $this->queueClass = $queueClass;
     }
 
     /**
@@ -37,8 +35,6 @@ class LoggerEventBusMiddleware implements EventBusMiddlewareInterface
                 $next($event);
                 $this->postEventLog($event);
             }
-        } catch (NoHandlerException $e) {
-            $this->logException($e);
         } catch (\Exception $e) {
             $this->logException($e);
             throw $e;
@@ -51,7 +47,7 @@ class LoggerEventBusMiddleware implements EventBusMiddlewareInterface
      */
     protected function preEventLog(EventInterface $event)
     {
-        $this->logger->info(sprintf('Starting %s handling.', get_class($event)));
+        $this->logger->info(sprintf('Pushing %s to %s.', get_class($event), $this->queueClass));
     }
 
     /**
@@ -60,7 +56,7 @@ class LoggerEventBusMiddleware implements EventBusMiddlewareInterface
      */
     protected function postEventLog(EventInterface $event)
     {
-        $this->logger->info(sprintf('%s was handled successfully.', get_class($event)));
+        $this->logger->info(sprintf('%s was pushed to %s successfully.', get_class($event), $this->queueClass));
     }
 
     /**

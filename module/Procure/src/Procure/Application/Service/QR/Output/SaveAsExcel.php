@@ -54,6 +54,7 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
+            "Row Number",
             "Vendor",
             "PO#",
             "Item",
@@ -88,6 +89,7 @@ class SaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
+                $row->getRowNumber(),
                 $row->getVendorName(),
                 $row->getDocNumber(),
                 $row->itemSKU,

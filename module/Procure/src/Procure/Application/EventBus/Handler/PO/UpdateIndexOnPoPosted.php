@@ -27,6 +27,9 @@ class UpdateIndexOnPoPosted extends AbstractEventHandler
 
         $indexer = new PoSearchIndexImpl();
         $indexer->createDoc($event->getTarget());
+
+        $this->getLogger()->info(\sprintf("Search index created on %s, #%s ", \get_class($event), $event->getTarget()
+            ->getId()));
     }
 
     public static function priority()

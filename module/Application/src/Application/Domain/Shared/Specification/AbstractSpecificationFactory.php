@@ -51,5 +51,7 @@ abstract class AbstractSpecificationFactory
 
     abstract function getPaymentTermSpecification();
 
+    abstract function getDepartmentSpecification();
+
     abstract function getGLAccountExitsSpecification();
 }

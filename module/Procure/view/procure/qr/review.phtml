@@ -717,6 +717,8 @@ echo $paymentTerm_option;
                            </div>
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
+                        
+                         <div id="test_div" style="font-size: 8pt;"></div>
                   
                   </fieldset>
                </form>
@@ -1183,7 +1185,7 @@ echo $hoverMode;
                 //alert(sent_list);
 
                   $.ajax({
-                      url: '/procure/po/update-row',
+                      url: '/procure/qr/update-row-ajax',
                       data: {
                           sent_list: sent_list
                       },
@@ -1195,11 +1197,24 @@ echo $hoverMode;
 
 
                           //$("#global-notice").text("Updating...").show();
-                          //alert(updateList[0].item_name  +  updateList[0].row_id);
+                          alert(sent_list);
                       },
                       success: function (changes) {
                           //commit the changes.
 
+                              var out = '';
+                              for (var i in changes) {
+                                  out += i + ": " + changes[i] + "\n";
+                              }
+                              alert(out);
+                              
+                              var out = '';
+                              for (var i in changes.addList[0]) {
+                                  out += i + ": " + changes.addList[0][i] + "\n<br>";
+                              }
+                         	$('#test_div').html(out);
+                         	 
+                 
                       	  if(changes.status == <?php
 
                         echo Constants::AJAX_FAILED;
@@ -1212,6 +1227,10 @@ echo $hoverMode;
                           /* grid.commit({ type: 'add', rows: changes.addList });
                           grid.commit({ type: 'update', rows: changes.updateList });
                           grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                      },
+
+                      always  : function( jqXHR, textStatus ) {
+                	    alert( "Request failed: " + textStatus );
                       },
                       complete: function () {
                           //$(".saving", $grid).hide();
@@ -1258,18 +1277,12 @@ echo $hoverMode;
 
        <?php
     // $rowDTO->convertedStandardQuantity; ?>
-
-       { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
-   	   { title: "GL", dataType: "string", dataIndx: "glAccountNumber", width:50,editable: false },
-       { title: "CC", dataType: "string", dataIndx: "costCenterName", width:85,editable: false },
-
        { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
-
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
-  		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+       { title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
        { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
-       { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
-       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+       { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: true },
+       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: true },
 
       	<?php
 

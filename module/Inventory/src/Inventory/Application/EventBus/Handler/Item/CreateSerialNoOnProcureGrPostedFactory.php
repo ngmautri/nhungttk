@@ -1,7 +1,7 @@
 <?php
-namespace Procure\Application\EventBus\Handler\AP;
+namespace Inventory\Application\EventBus\Handler\Item;
 
-use Procure\Application\Eventbus\EventBusService;
+use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateIndexOnApPostedFactory implements FactoryInterface
+class CreateSerialNoOnProcureGrPostedFactory implements FactoryInterface
 {
 
     /**
@@ -25,7 +25,7 @@ class UpdateIndexOnApPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new UpdateIndexOnApPosted($doctrineEM, $eventBusService);
+        $service = new CreateSerialNoOnProcureGrPosted($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

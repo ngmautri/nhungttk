@@ -2,6 +2,7 @@
 namespace Application\Domain\EventBus\Handler\Mapper;
 
 use Application\Domain\EventBus\Event\EventInterface;
+use Application\Domain\EventBus\Exception\NoHandlerException;
 use Application\Domain\EventBus\Handler\EventHandlerInterface;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 
@@ -56,7 +57,7 @@ class FullNameHandlerMapper implements EventHandlerMapperInterface
         $eventClass = get_class($event);
 
         if (empty($this->listeners[$eventClass])) {
-            throw new \RuntimeException(sprintf('Event %s has no EventHandler defined.', $eventClass));
+            throw new NoHandlerException(sprintf('Event %s has no EventHandler defined.', $eventClass));
         }
 
         ksort($this->listeners[$eventClass], SORT_NUMERIC);

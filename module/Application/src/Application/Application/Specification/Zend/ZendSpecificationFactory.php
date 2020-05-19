@@ -1,10 +1,10 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
+use Application\Domain\Exception\InvalidArgumentException;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Doctrine\ORM\EntityManager;
 use User\Infrastructure\Persistence\DoctrineUserRepository;
-use Application\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -25,7 +25,7 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
      */
     public function __construct(EntityManager $doctrineEM)
     {
-        if (!$doctrineEM instanceof EntityManager) {
+        if (! $doctrineEM instanceof EntityManager) {
             throw new InvalidArgumentException(sprintf("Entity Doctrine manager not found! %s", __METHOD__));
         }
         $this->doctrineEM = $doctrineEM;
@@ -277,5 +277,10 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     public function getGLAccountExitsSpecification()
     {
         return new GLAccountExitsSpecification($this->doctrineEM);
+    }
+
+    public function getDepartmentSpecification()
+    {
+        return new DepartmentExitsSpecification($this->doctrineEM);
     }
 }

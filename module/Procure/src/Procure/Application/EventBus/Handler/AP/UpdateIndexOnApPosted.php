@@ -1,7 +1,7 @@
 <?php
 namespace Procure\Application\EventBus\Handler\AP;
 
-use Application\Domain\EventBus\Handler\EventHandlerInterface;
+use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Procure\Domain\Event\Ap\ApPosted;
 
@@ -10,7 +10,7 @@ use Procure\Domain\Event\Ap\ApPosted;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateIndexOnApPosted implements EventHandlerInterface, EventHandlerPriorityInterface
+class UpdateIndexOnApPosted extends AbstractEventHandler
 {
 
     /**
@@ -22,6 +22,9 @@ class UpdateIndexOnApPosted implements EventHandlerInterface, EventHandlerPriori
         echo "\n RUNNING";
         echo \sprintf("\n%s involked.", __METHOD__);
         echo "\n" . \get_class($event);
+
+        $this->getLogger()->info(\sprintf("Search index created on %s, #%s ", \get_class($event), $event->getTarget()
+            ->getId()));
     }
 
     public static function priority()

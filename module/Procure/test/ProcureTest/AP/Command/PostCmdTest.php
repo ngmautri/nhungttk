@@ -3,11 +3,12 @@ namespace ProcureTest\GR\Command;
 
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
+use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
-use Procure\Application\Command\AP\PostCmd;
 use Procure\Application\Command\AP\PostCmdHandler;
 use Procure\Application\Command\AP\Options\ApPostOptions;
 use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Eventbus\EventBusService;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
@@ -17,24 +18,21 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
     protected $serviceManager;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(dirname(__FILE__)))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
         try {
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+            $eventBusService = Bootstrap::getServiceManager()->get(EventBusService::class);
 
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 2828;
-            $rootEntityToken = "3c1b51e9-f6f9-4298-946f-d58b49428571";
-            $version = 13;
+            $rootEntityId = 2875;
+            $rootEntityToken = "3b46358b-64ee-469c-bb59-42a3fe6fc1e5";
+            $version = 6;
 
             $rep = new APQueryRepositoryImpl($doctrineEM);
             $rootEntity = $rep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
@@ -44,10 +42,10 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator, $eventBusService);
             $cmd->execute();
             var_dump($dto->getErrors());
-            var_dump($rootEntity);
+            // var_dump($rootEntity);
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

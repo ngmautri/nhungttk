@@ -26,23 +26,34 @@ class CreateWhGrOnProcureGrPosted extends AbstractEventHandler
      */
     public function __invoke(GrPosted $event)
     {
-        if (! $event->getTarget() instanceof GRSnapshot) {
-            Throw new \InvalidArgumentException("GRSnapshot not give for creating WH Trx");
+        try {
+
+            throw new \RuntimeException(\sprintf("Tesing.. %s", __METHOD__));
+
+            echo "\n RUNNING";
+            echo \sprintf("\n%s involked.", __METHOD__);
+            echo "\n" . \get_class($event);
+
+            if (! $event->getTarget() instanceof GRSnapshot) {
+                Throw new \InvalidArgumentException("GRSnapshot not give for creating WH Trx");
+            }
+
+            $rootSnapshot = $event->getTarget();
+            $id = $rootSnapshot->getId();
+            $token = $rootSnapshot->getToken();
+
+            $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
+            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
+            $options = new PostCopyFromProcureGROptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $event->getTarget());
+            $dto = new TrxDTO();
+            $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
+            $cmd->execute();
+            $this->getLogger()->info(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
+                ->getId()));
+        } catch (\Exception $e) {
+            throw new \RuntimeException(sprintf("%s", $e->getMessage()));
         }
-
-        $rootSnapshot = $event->getTarget();
-        $id = $rootSnapshot->getId();
-        $token = $rootSnapshot->getToken();
-
-        $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
-        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-        $options = new PostCopyFromProcureGROptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $event->getTarget());
-        $dto = new TrxDTO();
-        $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
-        $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
-        $cmd->execute();
-        $this->getLogger()->info(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
-            ->getId()));
     }
 
     public static function priority()

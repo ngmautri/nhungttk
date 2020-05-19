@@ -38,6 +38,7 @@ class LoggerEventBusMiddleware implements EventBusMiddlewareInterface
             }
         } catch (\Exception $e) {
             $this->logException($e);
+            throw $e;
         }
     }
 

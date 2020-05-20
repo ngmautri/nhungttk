@@ -19,8 +19,13 @@ class CalculateCostOnWhGiPosted extends AbstractEventHandler
      */
     public function __invoke(WhGiPosted $event)
     {
-        $this->getLogger()->info(\sprintf("COGS for WH-GI #%s caculated!", $event->getTarget()
-            ->getId()));
+        try {
+
+            $this->getLogger()->info(\sprintf("COGS for WH-GI #%s caculated!", $event->getTarget()
+                ->getId()));
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     public static function priority()

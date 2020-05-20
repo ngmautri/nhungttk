@@ -48,7 +48,9 @@ class CreateWhGrOnProcureGrPosted extends AbstractEventHandler
             $this->getLogger()->info(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf("%s", $e->getMessage()));
+
+            // There might be nothing to receive in stock, so do not throw exception, just log it.
+            $this->logException($e);
         }
     }
 

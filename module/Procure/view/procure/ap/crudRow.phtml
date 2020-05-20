@@ -582,9 +582,24 @@ echo $cost_center_option;
 <!-- /#wrapper -->
 <script type="text/javascript">
 
-        $('#unit_price').bind('change', function() {
-        	$('#exw_unit_price').val($('#unit_price').val());
-        });
+    
+    $('#quantity').bind('change', function() {
+       	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
+       	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+
+    });
+
+    $('#docUnitPrice').bind('change', function() {
+    	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
+    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+       	$('#exw_unit_price').val($('#docUnitPrice').val());
+        
+    });
+
+    $('#tax_rate').bind('change', function() {
+    	$('#tax_amount').val($('#net_amount').val() * $('#tax_rate').val()/100);
+    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+    });
 
 
     	$("#Create_Inv_Form :input").attr("disabled", "disabled");
@@ -597,9 +612,12 @@ echo $cost_center_option;
             source: "/procure/pr-search/auto-complete",
             minLength: 2,
             select: function( event, ui ) {
-
+   
+               	$( "#gl_account_id" ).val("");
+  	       	    $( "#cost_center_id").val("");
+  	 	
+         
         	      $( "#pr_row_id" ).val(ui.item.hit.id);
-
                   $( "#quantity" ).val(ui.item.hit.quantity);
                   
                   $( "#item_id" ).val(ui.item.hit.item);  
@@ -615,13 +633,23 @@ echo $cost_center_option;
                    	$('#pr_row_detail').show();
                    	$( "#quantity" ).focus();
 
-               	var url = '/procure/pr-row/get-row?id='+ui.item.hit.id;
+               	  var url = '/procure/pr-row/get-row?id='+ui.item.hit.id;
        		  		$.get(url, {   	}, function(data, status) {
                   		//alert(data.pr_convert_factor);
                   		$('#purchase_uom_convert_factor').text('Ordered: '+ data.pr_qty + ' '+ data.pr_uom + ' = ' + data.pr_converted_standard_qty +  ' '+ data.item_standard_uom);
                    		$('#rowUnit').val(data.pr_uom);
                    	});
-                  
+
+       		     	$( "#glAccount" ).val("");
+      	       	    $( "#costCenter").val("");
+      	 	
+
+       		  	// update GL account and cost center
+       		                   	// update GL account and cost center
+       		             	   	$( "#costCenter").val(ui.item.hit.itemCostCenter);
+       		             	    $( "#glAccount").val(ui.item.hit.itemCogsGL);
+       		             	    $( "#glAccount").val(ui.item.hit.itemInventoryGL);
+       		      
 
                }
             })
@@ -641,57 +669,45 @@ echo $cost_center_option;
 
 
 
-        // if select item, then delete all pr item
-        $( "#item_name" ).autocomplete({
-            source: "/inventory/item-search/auto-complete",
-            minLength: 2,
-            select: function( event, ui ) {
+          // if select item, then delete all pr item
+          $( "#item_name" ).autocomplete({
+              source: "/inventory/item-search/auto-complete",
+              minLength: 2,
+              select: function( event, ui ) {
 
-              // set pr row empty
-              $( "#pr_row_id" ).val("");
-              $( "#pr_item_name" ).val("");
-              $( "#item_id" ).val(ui.item.id);
+                // set pr row empty
+                $( "#item_id" ).val(ui.item.id);
 
-              $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
+                $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
 
 
-          	 	$('#global-notice').show();
-          		$('#global-notice').html('"' + ui.item.value + '" selected');
-          		$('#global-notice').fadeOut(5000);
-          		//$("#jquery_dialog").dialog("close");
+            	 	$('#global-notice').show();
+            		$('#global-notice').html('"' + ui.item.value + '" selected');
+            		$('#global-notice').fadeOut(5000);
+            		//$("#jquery_dialog").dialog("close");
 
-           	  	$('#item_detail').show();
-            	$( "#quantity" ).focus();
+             	  	$('#item_detail').show();
+               	$( "#quantity" ).focus();
 
-            }
+             	$( "#glAccount" ).val("");
+  	       	    $( "#costCenter").val("");
+  	 	              }
 
-          })
-          .autocomplete( "instance" )._renderItem = function( ul, item ) {
-        	  var serial_no = "";
-        	  if(item.item_serial!=""){
-        		  serial_no = " : " + item.item_serial;
-        	  }
+            })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+          	  var serial_no = "";
+          	  if(item.item_serial!=""){
+          		  serial_no = " : " + item.item_serial;
+          	  }
 
-             return $( "<li>" )
-               .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-               .appendTo( ul );
-           };
+          	  var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
+                    
 
-        $('#quantity').bind('change', function() {
-           	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
-           	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
-
-        });
-
-        $('#unit_price').bind('change', function() {
-        	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
-        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
-        });
-
-        $('#tax_rate').bind('change', function() {
-        	$('#tax_amount').val($('#net_amount').val() * $('#tax_rate').val()/100);
-        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
-        });
+               return $( "<li>" )
+                 .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><table><tr><td>"+img+"</td><td><span style='padding-left:5px; font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='padding-left:5px; color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></td></tr></table></div>" )
+                 .appendTo( ul );
+             };
+      
 
 
     	// search po item
@@ -812,9 +828,6 @@ echo $cost_center_option;
         
         
         
-        
-        
-  
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);

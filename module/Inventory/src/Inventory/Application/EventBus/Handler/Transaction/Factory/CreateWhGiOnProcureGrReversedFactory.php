@@ -1,6 +1,7 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item;
+namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
+use Inventory\Application\EventBus\Handler\Transaction\CreateWhGiOnProcureGrReversed;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -10,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CalculateCostOnWhGiPostedFactory implements FactoryInterface
+class CreateWhGiOnProcureGrReversedFactory implements FactoryInterface
 {
 
     /**
@@ -25,7 +26,7 @@ class CalculateCostOnWhGiPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CalculateCostOnWhGiPosted($doctrineEM, $eventBusService);
+        $service = new CreateWhGiOnProcureGrReversed($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

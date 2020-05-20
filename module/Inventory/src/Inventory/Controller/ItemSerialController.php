@@ -1,12 +1,11 @@
 <?php
 namespace Inventory\Controller;
 
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtInventorySerial;
-use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
 use MLA\Paginator;
 use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 
@@ -15,7 +14,7 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSerialController extends AbstractActionController
+class ItemSerialController extends AbstractGenericController
 {
 
     protected $doctrineEM;
@@ -637,18 +636,16 @@ class ItemSerialController extends AbstractActionController
         // accepted only ajax request
 
         if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
 
         $this->layout("layout/user/ajax");
 
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
-        $checksum = $this->params()->fromQuery('checksum');
 
         $criteria = array(
             'id' => $target_id,
-            // 'checksum' => $checksum,
             'token' => $token
         );
 
@@ -664,6 +661,18 @@ class ItemSerialController extends AbstractActionController
 
         $sort_criteria = array();
 
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
@@ -672,7 +681,8 @@ class ItemSerialController extends AbstractActionController
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'target' => $target
+            'target_id' => $target_id,
+            'token' => $token
         ));
     }
 
@@ -706,26 +716,6 @@ class ItemSerialController extends AbstractActionController
         return new ViewModel(array(
             'total_records' => $total_records
         ));
-    }
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Inventory\Controller\ItemSerialController
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
     }
 
     /**

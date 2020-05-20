@@ -1,155 +1,109 @@
-
-
-
-<a class="btn btn-default btn-sm"
-	href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
-		class="glyphicon glyphicon-plus"> </i></small>&nbsp;Receive</a>
-<a class="btn btn-default btn-sm"
-	href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gi?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
-		class="glyphicon glyphicon-minus"> </i></small>&nbsp;Issue</a>
-<a class="btn btn-default btn-sm"
-	href="<?php echo $this->baseUrl ?>/inventory/item-transaction/transfer?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
-		class="glyphicon glyphicon-refresh"> </i></small>&nbsp;Transfer</a>
-
-<hr>
 <?php
+use Procure\Application\Helper\FormHelper;
 
-if ($total_records <= 0) {
+$base = sprintf("inventory/item-serial/list1?token=%s&target_id=%s", $token, $target_id);
+$table_body = '';
+$message_log_div = "message_log_div1";
+$result_msg = "No record found!";
+$count = 0;
+$n = 0;
 
-    echo 'No record found!';
-} else {
+if (count($list) > 0) {
 
-    if (! is_null($paginator)) {
-        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
-    } else {
-        echo $total_records . ' records found!';
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $result_msg = sprintf("Recored %s to %s | %s records found!", $paginator->minInPage, $paginator->maxInPage, $total_records);
     }
 
-    ?>
-
-<table id="mytable26" style="font-size: 9pt; color: graytext;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Ref</b></td>
-	
-			<td><b>BarCode</b></td>
-			<td><b>BarCode1</b></td>
-
-			<td><b>Flow</b></td>
-			<td><b>Unit Price</b></td>
-			<td><b>Currency</b></td>
-
-			<td><b>Mfg </b></td>
-			<td><b>Mfg Serial</b></td>
-			<td><b>Mfg Warranty</b></td>
-			<td><b>Mfg Warranty End</b></td>
-			<td><b>Remarks</b></td>
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
-
-	<tbody>
- 
-	 <?php
-
-    $count = 0;
-    foreach ($list as $a) :
+    foreach ($list as $a) {
 
         /**@var \Application\Entity\NmtInventoryItemSerial $a ; */
         $count ++;
-        ?>
-	 <tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			
-			<td><?php  if($a->getApRow()!==null): echo $a->getApRow()->getInvoice()->getSysNumber(); endif;?></td>
-		
-			<td><!-- <img alt="" height=""
-				src="/inventory/item/barcode?barcode=<?php echo (!$a == null)? $a->getSysNumber():"";?>"> -->
-			</td>
-			<td>	<?php echo $a->getSerialNumber();?></td>
-			<td></td>
-			<td><?php  if($a->getApRow()!==null): echo number_format($a->getApRow()->getUnitPrice(),2); endif;?></td>
-			<td></td>
+        $n ++;
 
-			<td>
-			<?php echo $a->getMfgName();?>
-			</td>
+        if ($paginator !== null) {
+            $count = $paginator->minInPage - 1 + $n;
+        } else {
+            $count = $n;
+        }
+        $format = '<a class="" style="color:black;padding:1pt 2pt 2pt 2pt;" href="/inventory/item-serial/edit?token=%s&entity_id=%s">Edit</a>';
+        $edit = sprintf($format, $a->getToken(), $a->getId());
 
+        $format = '<a class="" style="color:black;padding:1pt 2pt 2pt 2pt;" href="/inventory/item-serial-attachment/upload-pictures?token=%s&target_id=%s">Upload</a>';
+        $upload = sprintf($format, $a->getToken(), $a->getId());
 
-			<td><?php echo $this->escapeHtml($a->getMfgSerialNumber());?></td>
+        $apNo = null;
+        if ($a->getApRow() !== null) {
+            $apNo = $a->getApRow()
+                ->getInvoice()
+                ->getSysNumber();
+        }
+        $table_body = $table_body . "<tr>";
+        $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", $apNo);
+        $table_body = $table_body . sprintf("<td>%s</td>", $a->getSysNumber());
+        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgDate() != null ? date_format($a->getMfgDate(), "Y-M-d") : "");
+        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgWarrantyStart() !== null ? date_format($a->getMfgWarrantyStart(), "Y-M-d") : "");
+        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgWarrantyEnd() !== null ? date_format($a->getMfgWarrantyEnd(), "Y-M-d") : "");
+        $table_body = $table_body . sprintf("<td>%s</td>", $a->getMfgDate() !== null ? date_format($a->getMfgDate(), "Y-M-d") : "");
+        $table_body = $table_body . sprintf("<td>%s</td>", $edit . $upload);
+        $table_body = $table_body . "</tr>";
+    }
+}
 
-			<td>
-	 	<?php if(!$a == null): if ($a->getMfgDate() !== null): echo date_format($a->getMfgDate(),"Y-m-d"); endif; endif;?></td>
+?>
 
-			</td>
-			<td>
-		 	<?php if(!$a == null): if ($a->getMfgWarrantyEnd() !== null): echo date_format($a->getMfgWarrantyEnd(),"Y-m-d"); endif; endif;?></td>
+<div id="<?php
+echo $message_log_div;
+?>">
 
-			</td>
-			<td>
-			<?php echo $a->getRemarks();?>
-			</td>
-			<td><a class="" style="color:black;padding:1pt 2pt 2pt 2pt;"
-				href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate('Edit');?></a>
-
-<a class="" style="color:black;padding:1pt 2pt 1pt 2pt;"
-				href="<?php echo $this->baseUrl ?>/inventory/item-serial-attachment/upload-pictures?token=<?php echo $a->getToken();?>&target_id=<?php echo $a->getId();?>"><?php echo $this->translate('Upload');?></a>
-		
-			
-		
-		</td>
-		</tr>
-<?php endforeach; ?>
+   <?php
+echo $result_msg;
+?>
+<table id="mytable26" style="font-size: 9pt; color: graytext;" class="table table-bordered table-hover">
+   <thead>
+      <tr>
+         <td>
+            <b>#</b>
+         </td>
+         <td>
+            <b>Ref</b>
+         </td>
+         <td>
+            <b>BarCode</b>
+         </td>
+         <td>
+            <b>BarCode1</b>
+         </td>
+         <td>
+            <b>Flow</b>
+         </td>
+          <td>
+            <b>Flow</b>
+         </td>   
+          <td>
+            <b>Flow</b>
+         </td>   
+          <td>
+            <b>Flow</b>
+         </td>         
+      </tr>
+   </thead>
+   <tbody>
+ 
+	<?php
+echo $table_body;
+?>
 
  </tbody>
 </table>
 
 <?php
-
-    // ===============================
-    if (! is_null($paginator)) :
-    
-        // change it only
-        $base = $this->baseUrl . '/inventory/item/list?is_active=' . $is_active . '&item_type=' . $item_type . '&sort_by=' . $sort_by . '&sort=' . $sort . '&is_fixed_asset=' . $is_fixed_asset;
-        $_connector_symbol = '&';
-
-        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-
-        $p1 = ($paginator->page) - 1;
-        $p2 = ($paginator->page) + 1;
-
-        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-
-        echo '<ul class="pagination pagination-sm">';
-
-        if ($paginator->page != 1 and $paginator->totalPages > 10) {
-            echo '<li><a href="' . $first . '"> |< </a></li>';
-            echo '<li><a href="' . $prev . '"> < </a></li>';
-        }
-
-        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-
-            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-
-            if ($i == $paginator->page) {
-                echo '<li><a class="active" href="#">' . $i . '</a></li>';
-            } else {
-                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-            }
-        }
-        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-            echo '<li><a href="' . $next . '"> > </a></li>';
-            echo '<li><a href="' . $last . '"> >| </a></li>';
-        }
-        echo '</ul>';
-endif;
-
-}
+// ===============================
+echo FormHelper::createPaginatorAjax($base, $paginator, "&", $message_log_div);
 // ===============================
 ?>
 
-
+</div>
 

@@ -266,6 +266,16 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
                 $fifoLayer->setItem($obj);
             }
 
+            if ($row->getWarehouse() > 0) {
+
+                /**
+                 *
+                 * @var \Application\Entity\NmtInventoryWarehouse $obj ;
+                 */
+                $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($row->getItem());
+                $fifoLayer->setWarehouse($obj);
+            }
+
             if ($row->getCreatedBy() > 0) {
 
                 /**

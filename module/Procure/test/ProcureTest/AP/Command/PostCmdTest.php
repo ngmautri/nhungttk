@@ -30,9 +30,13 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 2875;
-            $rootEntityToken = "3b46358b-64ee-469c-bb59-42a3fe6fc1e5";
-            $version = 6;
+            // $rootEntityId = 2875;
+            // $rootEntityToken = "3b46358b-64ee-469c-bb59-42a3fe6fc1e5";
+            // $version = 9;
+
+            $rootEntityId = 2825;
+            $rootEntityToken = "ec82eb88-f1ad-4dfa-b4bd-cff6f76a1816";
+            $version = 12;
 
             $rep = new APQueryRepositoryImpl($doctrineEM);
             $rootEntity = $rep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);

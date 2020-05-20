@@ -21,16 +21,20 @@ class CreateFiFoLayerOnWhGrPosted extends AbstractEventHandler
      */
     public function __invoke(WhGrPosted $event)
     {
-        if (! $event->getTarget() instanceof GenericTrx) {
-            Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service!");
+        try {
+            if (! $event->getTarget() instanceof GenericTrx) {
+                Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service!");
+            }
+
+            $fifoService = new FIFOServiceImpl();
+            $fifoService->setDoctrineEM($this->getDoctrineEM());
+            $fifoService->createLayersFor($event->getTarget());
+
+            $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
+                ->getId()));
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        $fifoService = new FIFOServiceImpl();
-        $fifoService->setDoctrineEM($this->getDoctrineEM());
-        $fifoService->createLayersFor($event->getTarget());
-
-        $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
-            ->getId()));
     }
 
     public static function priority()

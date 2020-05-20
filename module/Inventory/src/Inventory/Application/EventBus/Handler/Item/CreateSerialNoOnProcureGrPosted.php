@@ -21,16 +21,21 @@ class CreateSerialNoOnProcureGrPosted extends AbstractEventHandler
      */
     public function __invoke(GrPosted $event)
     {
-        if (! $event->getTarget() instanceof GRSnapshot) {
-            Throw new \InvalidArgumentException("GRSnapshot not give for Serial No");
+        try {
+
+            if (! $event->getTarget() instanceof GRSnapshot) {
+                Throw new \InvalidArgumentException("GRSnapshot not give for Serial No");
+            }
+
+            $sv = new SerialNoServiceImpl();
+            $sv->setDoctrineEM($this->getDoctrineEM());
+            $sv->createSerialNoFor($event->getTarget());
+
+            $this->getLogger()->info(\sprintf("Serial No for PO-GR#%s handled and created, if any!", $event->getTarget()
+                ->getId()));
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        $sv = new SerialNoServiceImpl();
-        $sv->setDoctrineEM($this->getDoctrineEM());
-        $sv->createSerialNoFor($event->getTarget());
-
-        $this->getLogger()->info(\sprintf("Serial No for WH-GR #%s created!", $event->getTarget()
-            ->getId()));
     }
 
     public static function priority()

@@ -1,6 +1,7 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item;
+namespace Inventory\Application\EventBus\Handler\Item\Factory;
 
+use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

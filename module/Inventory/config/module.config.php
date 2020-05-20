@@ -5,11 +5,13 @@
  *
  */
 use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
-use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPostedFactory;
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
-use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPostedFactory;
+use Inventory\Application\EventBus\Handler\Item\CreateSerialNoOnProcureGrPosted;
+use Inventory\Application\EventBus\Handler\Item\Factory\CalculateCostOnWhGiPostedFactory;
+use Inventory\Application\EventBus\Handler\Item\Factory\CreateFiFoLayerOnWhGrPostedFactory;
+use Inventory\Application\EventBus\Handler\Item\Factory\CreateSerialNoOnProcureGrPostedFactory;
 use Inventory\Application\EventBus\Handler\Transaction\CreateWhGrOnProcureGrPosted;
-use Inventory\Application\EventBus\Handler\Transaction\CreateWhGrOnProcureGrPostedFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\CreateWhGrOnProcureGrPostedFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
@@ -257,7 +259,8 @@ return array(
             // Event Handler
             CalculateCostOnWhGiPosted::class => CalculateCostOnWhGiPostedFactory::class,
             CreateFiFoLayerOnWhGrPosted::class => CreateFiFoLayerOnWhGrPostedFactory::class,
-            CreateWhGrOnProcureGrPosted::class => CreateWhGrOnProcureGrPostedFactory::class
+            CreateWhGrOnProcureGrPosted::class => CreateWhGrOnProcureGrPostedFactory::class,
+            CreateSerialNoOnProcureGrPosted::class => CreateSerialNoOnProcureGrPostedFactory::class
         )
     ),
 

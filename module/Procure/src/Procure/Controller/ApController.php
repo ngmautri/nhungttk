@@ -690,7 +690,9 @@ class ApController extends AbstractGenericController
             $cmd->execute();
             $notification = $dto->getNotification();
             $msg = sprintf("AP #%s is posted", $entity_id);
-            $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            // $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $redirectUrl = "/procure/ap-report/header-status";
+            http: // localhost:81/procure/ap-report/header-status
         } catch (\Exception $e) {
             $msg = sprintf("%s", $e->getMessage());
             $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);

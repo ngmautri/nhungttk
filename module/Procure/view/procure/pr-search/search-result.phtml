@@ -24,18 +24,26 @@ if ($results !== null) {
         foreach ($hits as $hit) {
 
             $url = $nmtPlugin->getItemPic($hit->itemId);
-
             $img = sprintf('<img id="%s" style="cursor: pointer;" 
 title="click for more detail!" onclick="" class="img-rounded" width="80" height="80" src="%s" />', $hit->itemId, $url);
+
+            $format = '<a style ="color:navy;" href="/procure/pr/view?entity_id=%s&entity_token=%s">%s</a>';
+            $docUrl = sprintf($format, $hit->docId, $hit->docToken, $hit->docNumber);
+
+            $format = '<a style ="color:navy;" href="/inventory/item/show?token=%s&entity_id=%s&">%s</a>';
+            $itemUrl = sprintf($format, $hit->itemToken, $hit->itemId, $hit->itemSysNumber);
+            $itemNameUrl = sprintf($format, $hit->itemToken, $hit->itemId, $hit->itemName);
 
             $count ++;
             $table_body = $table_body . "<tr>";
             $table_body = $table_body . sprintf("<td>%s</td>", $count);
-            $table_body = $table_body . sprintf("<td>%s</td>", $hit->docNumber);
-            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemSysNumber);
-
+            $table_body = $table_body . sprintf("<td>%s</td>", $docUrl);
+            $table_body = $table_body . sprintf("<td>%s</td>", $itemUrl);
             $table_body = $table_body . sprintf("<td>%s</td>", $img);
-            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemName);
+            $table_body = $table_body . sprintf("<td>%s</td>", $itemNameUrl);
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemSKU);
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemManufacturerCode);
+
             $table_body = $table_body . sprintf("<td>%s</td>", $hit->itemKeywords);
             $table_body = $table_body . sprintf("<td>%s</td>", $hit->rowName);
 
@@ -67,6 +75,27 @@ echo $message;
                </td>
                <td>
                   <b>Item ID</b>
+               </td>
+               
+               <td>
+                  <b>Img.</b>
+               </td>
+               
+                 <td>
+                  <b>Item Name.</b>
+               </td>
+               
+               <td>
+                  <b>Item Name.</b>
+               </td>
+               <td>
+                  <b>SKU</b>
+               </td>
+               <td>
+                  <b>SN</b>
+               </td>
+                <td>
+                  <b>Item Tags.</b>
                </td>
             </tr>
          </thead>

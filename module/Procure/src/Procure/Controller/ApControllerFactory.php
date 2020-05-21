@@ -35,7 +35,7 @@ class ApControllerFactory implements FactoryInterface
         $sv = $sm->get(EventBusService::class);
         $controller->setEventBusService($sv);
 
-        $sv = $sm->get("AppLogger");
+        $sv = $sm->get("ProcureLogger");
         $controller->setLogger($sv);
 
         $sv = $sm->get(ApReporter::class);

@@ -32,7 +32,7 @@ class PrControllerFactory implements FactoryInterface
         $sv = $sm->get("AppCache");
         $controller->setCache($sv);
 
-        $sv = $sm->get("AppLogger");
+        $sv = $sm->get("ProcureLogger");
         $controller->setLogger($sv);
 
         // =========================

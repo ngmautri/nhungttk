@@ -37,7 +37,7 @@ class QrControllerFactory implements FactoryInterface
         $sv = $sm->get(QrReporter::class);
         $controller->setQrReporter($sv);
 
-        $sv = $sm->get("AppLogger");
+        $sv = $sm->get("ProcureLogger");
         $controller->setLogger($sv);
 
         return $controller;

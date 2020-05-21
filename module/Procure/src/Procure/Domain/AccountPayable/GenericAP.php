@@ -153,7 +153,6 @@ abstract class GenericAP extends AbstractAP
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $params = null;
 
         $event = new ApRowAdded($target, $defaultParams, $params);
         $this->addEvent($event);
@@ -358,12 +357,12 @@ abstract class GenericAP extends AbstractAP
 
         $rowValidators->validate($this, $row);
 
+        $row->calculate(); // important
+
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());
             return;
         }
-
-        $row->calculate(); //
     }
 
     /**

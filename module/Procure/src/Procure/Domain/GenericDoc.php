@@ -12,8 +12,92 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GenericDoc extends AbstractDoc
+class GenericDoc extends BaseDoc
 {
+
+    /**
+     *
+     * @param int $id
+     * @return NULL|\Procure\Domain\AbstractRow
+     */
+    public function getRowbyId($id)
+    {
+        if ($id == null || $this->getDocRows() == null) {
+            return null;
+        }
+        $rows = $this->getDocRows();
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var AbstractRow $r ;
+             */
+            if ($r->getId() == $id) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return NULL|\Procure\Domain\AbstractRow
+     */
+    public function getRowbyTokenId($id, $token)
+    {
+        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
+            return null;
+        }
+
+        $rows = $this->getDocRows();
+
+        foreach ($rows as $r) {
+
+            /**
+             *
+             * @var AbstractRow $r ;
+             */
+
+            if ($r->getId() == $id && $r->getToken() == $token) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param AbstractRow $row
+     * @throws InvalidArgumentException
+     */
+    public function addRow(AbstractRow $row)
+    {
+        if (! $row instanceof AbstractRow) {
+            throw new InvalidArgumentException("input not invalid! AbstractRow");
+        }
+        $rows = $this->getDocRows();
+        $rows[] = $row;
+        $this->docRows = $rows;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return boolean
+     */
+    public function hasRowId($id)
+    {
+        if ($this->getRowIdArray() == null) {
+            return false;
+        }
+
+        return in_array($id, $this->getRowIdArray());
+    }
 
     /**
      *

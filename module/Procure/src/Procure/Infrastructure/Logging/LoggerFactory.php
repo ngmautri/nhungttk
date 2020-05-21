@@ -1,5 +1,5 @@
 <?php
-namespace Application\Application\Logger;
+namespace Procure\Infrastructure\Logging;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -21,10 +21,10 @@ class LoggerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $logger = new Logger("App");
+        $logger = new Logger("ProcureLog");
 
         $path = './data/log';
-        $filename = \sprintf("app_log_%s_%s_W%s.log", date('F'), date('Y'), date('W'));
+        $filename = \sprintf("procure_log_%s_%s_W%s.log", date('F'), date('Y'), date('W'));
 
         if (false === file_exists($path)) {
             mkdir($path, 0777, true);

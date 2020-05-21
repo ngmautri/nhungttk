@@ -24,6 +24,13 @@ use Procure\Application\Reporting\QR\QrReporter;
 use Procure\Application\Reporting\QR\QrReporterFactory;
 use Procure\Application\Service\QR\QRService;
 use Procure\Application\Service\QR\QRServiceFactory;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImplFactory;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
+use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImplFactory;
+use Procure\Infrastructure\Cache\CacheFactory;
+use Procure\Infrastructure\Cache\RedisCacheFactory;
+use Procure\Infrastructure\Logging\LoggerFactory;
 use Procure\Infrastructure\Persistence\Doctrine\GrReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\PoReportRepositoryImpl;
 use Procure\Infrastructure\Persistence\Doctrine\PrReportRepositoryImpl;
@@ -34,10 +41,6 @@ use Procure\Infrastructure\Persistence\Doctrine\Factory\PoReporterRepositoryImpl
 use Procure\Infrastructure\Persistence\Doctrine\Factory\PrReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\ProcureReporterRepositoryImplFactory;
 use Procure\Infrastructure\Persistence\Doctrine\Factory\QrReporterRepositoryImplFactory;
-use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
-use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImplFactory;
-use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
-use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImplFactory;
 
 return array(
     'navigation' => array(
@@ -318,7 +321,11 @@ return array(
             UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class,
             UpdateIndexOnPoPosted::class => UpdateIndexOnPoPostedFactory::class,
             UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class,
-            GrOnApPostedHandler::class => GrOnApPostedHandlerFactory::class
+            GrOnApPostedHandler::class => GrOnApPostedHandlerFactory::class,
+
+            "ProcureLogger" => LoggerFactory::class,
+            "ProcureCache" => CacheFactory::class,
+            "ProcureRedisCache" => RedisCacheFactory::class
         )
     ),
 

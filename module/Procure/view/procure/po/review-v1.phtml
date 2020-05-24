@@ -419,11 +419,33 @@
                                 
                                 
                                 
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
                                 
                                 
                                 
@@ -1283,14 +1305,14 @@
 
         if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
             ?>
-            { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
-            { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
-            <?php
+            { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
+            { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
+                        <?php
 
         else :
             ?>
             { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
-            { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
+            { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
            	<?php
 
         endif;

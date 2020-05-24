@@ -3,13 +3,14 @@ namespace Procure\Domain\Service;
 
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\QuotationRequest\Repository\QrCmdRepositoryInterface;
+use Procure\Domain\Service\Contracts\PostingServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QrPostingService
+class QrPostingService implements PostingServiceInterface
 {
 
     protected $cmdRepository;

@@ -3,13 +3,14 @@ namespace Procure\Domain\Service;
 
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
+use Procure\Domain\Service\Contracts\PostingServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PRPostingService
+class PRPostingService implements PostingServiceInterface
 {
 
     protected $cmdRepository;
@@ -24,7 +25,8 @@ class PRPostingService
 
     /**
      *
-     * @return \Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface
+     * {@inheritdoc}
+     * @see \Procure\Domain\Service\Contracts\PostingServiceInterface::getCmdRepository()
      */
     public function getCmdRepository()
     {

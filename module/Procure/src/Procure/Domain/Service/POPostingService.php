@@ -3,6 +3,7 @@ namespace Procure\Domain\Service;
 
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
+use Procure\Domain\Service\Contracts\PostingServiceInterface;
 
 /**
  * Transaction Domain Service
@@ -10,11 +11,10 @@ use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class POPostingService
+class POPostingService implements PostingServiceInterface
 {
 
     protected $cmdRepository;
-    
 
     public function __construct(POCmdRepositoryInterface $cmdRepository)
     {

@@ -1,13 +1,14 @@
 <?php
-namespace Procure\Domain\Service;
+namespace Procure\Domain\Service\Contracts;
 
 /**
- * Converstion Factor
+ * Exchange Rate Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface ConvertFactorServiceInterface
+Interface FXServiceInterface
 {
+
     public function checkAndReturnFX($sourceCurrencyId, $targetCurrencyId, $fxRate);
 }

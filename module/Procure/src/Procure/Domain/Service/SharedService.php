@@ -3,6 +3,7 @@ namespace Procure\Domain\Service;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Service\Contracts\FXServiceInterface;
 
 /**
  * PO Domain Service
@@ -48,7 +49,7 @@ class SharedService
 
     /**
      *
-     * @return \Procure\Domain\Service\FXServiceInterface
+     * @return \Procure\Domain\Service\Contracts\FXServiceInterface
      */
     public function getFxService()
     {

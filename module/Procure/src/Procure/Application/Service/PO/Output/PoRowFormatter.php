@@ -45,6 +45,10 @@ class PoRowFormatter extends RowFormatterDecorator
             } elseif ($row->transactionStatus == "completed") {
                 $row->transactionStatus = \sprintf('&nbsp;<span style="color: graytext;">%s</span>', "Done");
             }
+
+            // $row->docUnitPrice = ($row->getDocUnitPrice() !== null ? number_format($row->getDocUnitPrice(), $decimalNo) : 0);
+            // $row->unitPrice = ($row->getUnitPrice() !== null ? number_format($row->getUnitPrice(), $decimalNo) : 0);
+
             $row->billedAmount = ($row->getBilledAmount() !== null ? number_format($row->getBilledAmount(), $decimalNo) : 0);
             $row->draftAPQuantity = ($row->getDraftAPQuantity() !== null ? number_format($row->getDraftAPQuantity(), $decimalNo) : 0);
             $row->openAPAmount = ($row->getOpenAPAmount() !== null ? number_format($row->getOpenAPAmount(), $decimalNo) : 0);

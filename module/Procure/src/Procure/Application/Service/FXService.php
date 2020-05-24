@@ -1,10 +1,10 @@
 <?php
 namespace Procure\Application\Service;
 
-use Application\Service\AbstractService;
-use Procure\Domain\Service\FXServiceInterface;
-use Application\Infrastructure\AggregateRepository\DoctrinePostingPeriodQueyrRepository;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Infrastructure\AggregateRepository\DoctrinePostingPeriodQueyrRepository;
+use Application\Service\AbstractService;
+use Procure\Domain\Service\Contracts\FXServiceInterface;
 
 /**
  *
@@ -17,7 +17,7 @@ class FXService extends AbstractService implements FXServiceInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\Service\FXServiceInterface::setExchangeRate()
+     * @see \Procure\Domain\Service\Contracts\FXServiceInterface::checkAndReturnFX()
      */
     public function checkAndReturnFX($sourceCurrencyId, $targetCurrencyId, $fxRate)
     {
@@ -35,11 +35,10 @@ class FXService extends AbstractService implements FXServiceInterface
         $postingPeriodRep = new DoctrinePostingPeriodQueyrRepository($this->getDoctrineEM());
         $systemRate = $postingPeriodRep->getLatestFX($sourceCurrencyId, $targetCurrencyId);
 
-        
         if (! $spec->isSatisfiedBy($fxRate) and $systemRate == null) {
-            throw new \Exception(sprintf("Exchange rate not valid (%s/%s)", $fxRate, $systemRate));            
+            throw new \Exception(sprintf("Exchange rate not valid (%s/%s)", $fxRate, $systemRate));
         }
-        
+
         if (! $spec->isSatisfiedBy($fxRate) and $systemRate !== null) {
             return $systemRate;
         }

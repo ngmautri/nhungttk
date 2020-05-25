@@ -3,7 +3,7 @@ namespace Procure\Domain\Validator;
 
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AbstractRow;
-use Procure\Domain\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  *
@@ -20,7 +20,7 @@ class RowValidatorCollection implements RowValidatorInterface
     private $validators;
 
     /**
-     * 
+     *
      * @param RowValidatorInterface $validator
      * @throws InvalidArgumentException
      */
@@ -32,7 +32,7 @@ class RowValidatorCollection implements RowValidatorInterface
 
         $this->validators[] = $validator;
     }
-  
+
     /**
      *
      * {@inheritdoc}

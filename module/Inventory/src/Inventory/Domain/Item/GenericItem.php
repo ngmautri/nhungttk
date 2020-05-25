@@ -2,8 +2,11 @@
 namespace Inventory\Domain\Item;
 
 use Application\Notification;
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
+use Inventory\Domain\Validator\Item\ItemValidatorCollection;
+use InvalidArgumentException;
 
 /**
  *
@@ -12,6 +15,24 @@ use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
  */
 abstract class GenericItem extends BaseItem
 {
+
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new ItemSnapshot());
+    }
+
+    /**
+     *
+     * @param ItemValidatorCollection $validators
+     * @throws InvalidArgumentException
+     */
+    public function validate(ItemValidatorCollection $validators)
+    {
+        if (! $validators instanceof ItemValidatorCollection) {
+            throw new InvalidArgumentException("Validators not given!");
+        }
+        $validators->validate($this);
+    }
 
     /**
      *
@@ -46,7 +67,7 @@ abstract class GenericItem extends BaseItem
      *
      * @param Notification $notification
      */
-    public function validate(Notification $notification = null)
+    public function validate1(Notification $notification = null)
     {
         if ($notification == null)
             $notification = new Notification();

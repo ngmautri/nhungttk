@@ -5,6 +5,8 @@ use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
 use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
 use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
+use Inventory\Application\EventBus\Handler\Item\CreateIndexOnItemCreated;
+use Inventory\Application\EventBus\Handler\Item\UpdateIndexOnItemUpdated;
 
 /**
  *
@@ -22,7 +24,9 @@ class HandlerMapper extends AbstractService
     {
         $handlers = [
             CalculateCostOnWhGiPosted::class,
-            CreateFiFoLayerOnWhGrPosted::class
+            CreateFiFoLayerOnWhGrPosted::class,
+            CreateIndexOnItemCreated::class,
+            UpdateIndexOnItemUpdated::class
         ];
 
         $this->handlers = $handlers;

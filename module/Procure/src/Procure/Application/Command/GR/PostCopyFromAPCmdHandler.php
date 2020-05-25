@@ -22,6 +22,7 @@ use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\ValidationServiceImp;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
@@ -95,8 +96,11 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
+            $sharedService->setPostingService($postingService);
 
-            $rootEntity = GRDoc::postCopyFromAP($sourceObj, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $validationService = new ValidationServiceImp($headerValidators, $rowValidators);
+
+            $rootEntity = GRDoc::postCopyFromAP($sourceObj, $options, $validationService, $sharedService);
 
             // event dispatch
             // ================
@@ -108,6 +112,8 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
             $m = sprintf("GR #%s copied from AP #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
             $notification->addSuccess($m);
             $dto->setNotification($notification);
+
+            // logging
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());
         }

@@ -348,7 +348,7 @@ abstract class GenericAP extends AbstractAP
     public function validateRow(APRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         if (! $row instanceof APRow) {
-            throw new InvalidArgumentException("GR Row not given!");
+            throw new InvalidArgumentException("AP Row not given!");
         }
 
         if (! $rowValidators instanceof RowValidatorCollection) {

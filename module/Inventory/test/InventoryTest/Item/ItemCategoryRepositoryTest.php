@@ -1,9 +1,10 @@
 <?php
 namespace InventoryTest\Item;
 
+use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
-use PHPUnit_Framework_TestCase;
 use Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl;
+use PHPUnit_Framework_TestCase;
 
 /**
  *
@@ -13,20 +14,8 @@ use Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl;
 class ItemCategoryRepositoryTest extends PHPUnit_Framework_TestCase
 {
 
-    protected $serviceManager;
-
-    /**
-     *
-     * @var EntityManager $em;
-     */
-    protected $em;
-
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {

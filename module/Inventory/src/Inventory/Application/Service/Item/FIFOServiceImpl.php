@@ -306,7 +306,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
             }
 
             $fifoLayer->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
-            $fifoLayer->setRemarks(\sprintf("WH-GR from PO-GR %s", $trx->getDocNumber()));
+            $fifoLayer->setRemarks(\sprintf("WH-GR from PO-GR %s", $trx->getSysNumber()));
 
             $this->getDoctrineEM()->persist($fifoLayer);
         }

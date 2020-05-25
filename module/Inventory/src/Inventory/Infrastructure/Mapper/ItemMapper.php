@@ -2,6 +2,7 @@
 namespace Inventory\Infrastructure\Mapper;
 
 use Application\Entity\NmtInventoryItem;
+use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Item\ItemSnapshot;
 
 /**
@@ -11,6 +12,284 @@ use Inventory\Domain\Item\ItemSnapshot;
  */
 class ItemMapper
 {
+
+    public static function mapSnapshotEntity(EntityManager $doctrineEM, ItemSnapshot $snapshot, NmtInventoryItem $entity)
+    {
+        if ($snapshot == null || $entity == null || $doctrineEM == null) {
+            return null;
+        }
+
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+
+        // $entity->setId($snapshot->id);
+        $entity->setWarehouseId($snapshot->warehouseId);
+        $entity->setItemSku($snapshot->itemSku);
+        $entity->setItemName($snapshot->itemName);
+        $entity->setItemNameForeign($snapshot->itemNameForeign);
+        $entity->setItemDescription($snapshot->itemDescription);
+        $entity->setItemType($snapshot->itemType);
+        $entity->setItemCategory($snapshot->itemCategory);
+        $entity->setKeywords($snapshot->keywords);
+        $entity->setIsActive($snapshot->isActive);
+        $entity->setIsStocked($snapshot->isStocked);
+        $entity->setIsSaleItem($snapshot->isSaleItem);
+        $entity->setIsPurchased($snapshot->isPurchased);
+        $entity->setIsFixedAsset($snapshot->isFixedAsset);
+        $entity->setIsSparepart($snapshot->isSparepart);
+        $entity->setUom($snapshot->uom);
+        $entity->setBarcode($snapshot->barcode);
+        $entity->setBarcode39($snapshot->barcode39);
+        $entity->setBarcode128($snapshot->barcode128);
+        $entity->setStatus($snapshot->status);
+        $entity->setManufacturer($snapshot->manufacturer);
+        $entity->setManufacturerCode($snapshot->manufacturerCode);
+        $entity->setManufacturerCatalog($snapshot->manufacturerCatalog);
+        $entity->setManufacturerModel($snapshot->manufacturerModel);
+        $entity->setManufacturerSerial($snapshot->manufacturerSerial);
+        $entity->setOrigin($snapshot->origin);
+        $entity->setSerialNumber($snapshot->serialNumber);
+        $entity->setLastPurchasePrice($snapshot->lastPurchasePrice);
+        $entity->setLastPurchaseCurrency($snapshot->lastPurchaseCurrency);
+        $entity->setLeadTime($snapshot->leadTime);
+        $entity->setLocation($snapshot->location);
+        $entity->setItemInternalLabel($snapshot->itemInternalLabel);
+        $entity->setAssetLabel($snapshot->assetLabel);
+        $entity->setSparepartLabel($snapshot->sparepartLabel);
+        $entity->setRemarks($snapshot->remarks);
+        $entity->setLocalAvailabiliy($snapshot->localAvailabiliy);
+        $entity->setToken($snapshot->token);
+        $entity->setChecksum($snapshot->checksum);
+        $entity->setCurrentState($snapshot->currentState);
+        $entity->setDocNumber($snapshot->docNumber);
+        $entity->setMonitoredBy($snapshot->monitoredBy);
+        $entity->setSysNumber($snapshot->sysNumber);
+        $entity->setRemarksText($snapshot->remarksText);
+        $entity->setRevisionNo($snapshot->revisionNo);
+        $entity->setItemSku1($snapshot->itemSku1);
+        $entity->setItemSku2($snapshot->itemSku2);
+        $entity->setAssetGroup($snapshot->assetGroup);
+        $entity->setAssetClass($snapshot->assetClass);
+        $entity->setStockUomConvertFactor($snapshot->stockUomConvertFactor);
+        $entity->setPurchaseUomConvertFactor($snapshot->purchaseUomConvertFactor);
+        $entity->setSalesUomConvertFactor($snapshot->salesUomConvertFactor);
+        $entity->setCapacity($snapshot->capacity);
+        $entity->setAvgUnitPrice($snapshot->avgUnitPrice);
+        $entity->setStandardPrice($snapshot->standardPrice);
+        $entity->setUuid($snapshot->uuid);
+        $entity->setItemTypeId($snapshot->itemTypeId);
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+
+        /*
+         * $entity->setCreatedOn($snapshot->createdOn);
+         * $entity->setLastPurchaseDate($snapshot->lastPurchaseDate);
+         * $entity->setValidFromDate($snapshot->validFromDate);
+         * $entity->setValidToDate($snapshot->validToDate);
+         * $entity->setLastChangeOn($snapshot->lastChangeOn);
+         */
+
+        if ($snapshot->createdOn !== null) {
+            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
+        }
+
+        if ($snapshot->lastPurchaseDate !== null) {
+            $entity->setLastPurchaseDate(new \DateTime($snapshot->lastPurchaseDate));
+        }
+
+        if ($snapshot->validFromDate !== null) {
+            $entity->setValidFromDate(new \DateTime($snapshot->validFromDate));
+        }
+
+        if ($snapshot->validToDate !== null) {
+            $entity->setValidToDate(new \DateTime($snapshot->validToDate));
+        }
+
+        if ($snapshot->lastChangeOn !== null) {
+            $entity->setLastChangeOn(new \DateTime($snapshot->lastChangeOn));
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+
+        // $entity->setCreatedBy($snapshot->createdBy);
+        // $entity->setItemGroup($snapshot->itemGroup);
+        // $entity->setStockUom($snapshot->stockUom);
+        // $entity->setCogsAccount($snapshot->cogsAccount);
+        // $entity->setPurchaseUom($snapshot->purchaseUom);
+        // $entity->setSalesUom($snapshot->salesUom);
+        // $entity->setInventoryAccount($snapshot->inventoryAccount);
+        // $entity->setExpenseAccount($snapshot->expenseAccount);
+        // $entity->setRevenueAccount($snapshot->revenueAccount);
+        // $entity->setDefaultWarehouse($snapshot->defaultWarehouse);
+        // $entity->setLastChangeBy($snapshot->lastChangeBy);
+        // $entity->setStandardUom($snapshot->standardUom);
+        // $entity->setCompany($snapshot->company);
+        // $entity->setLastPrRow($snapshot->lastPrRow);
+        // $entity->setLastPoRow($snapshot->lastPoRow);
+        // $entity->setLastApInvoiceRow($snapshot->lastApInvoiceRow);
+        // $entity->setLastTrxRow($snapshot->lastTrxRow);
+        // $entity->setLastPurchasing($snapshot->lastPurchasing);
+
+        if ($snapshot->createdBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
+            $entity->setCreatedBy($obj);
+        }
+
+        if ($snapshot->itemGroup > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItemGroup $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($snapshot->itemGroup);
+            $entity->setItemGroup($obj);
+        }
+
+        if ($snapshot->stockUom > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationUom $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->stockUom);
+            $entity->setStockUom($obj);
+        }
+
+        if ($snapshot->cogsAccount > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinAccount $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinAccount')->find($snapshot->cogsAccount);
+            $entity->setCogsAccount($obj);
+        }
+
+        if ($snapshot->purchaseUom > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationUom $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->purchaseUom);
+            $entity->setPurchaseUom($obj);
+        }
+
+        if ($snapshot->salesUom > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationUom $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->salesUom);
+            $entity->setSalesUom($obj);
+        }
+
+        if ($snapshot->inventoryAccount > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinAccount $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinAccount')->find($snapshot->inventoryAccount);
+            $entity->setInventoryAccount($obj);
+        }
+
+        if ($snapshot->expenseAccount > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinAccount $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinAccount')->find($snapshot->expenseAccount);
+            $entity->setExpenseAccount($obj);
+        }
+
+        if ($snapshot->revenueAccount > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinAccount $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinAccount')->find($snapshot->revenueAccount);
+            $entity->setRevenueAccount($obj);
+        }
+
+        if ($snapshot->defaultWarehouse > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouse $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($snapshot->defaultWarehouse);
+            $entity->setDefaultWarehouse($obj);
+        }
+
+        if ($snapshot->lastChangeBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastChangeBy);
+            $entity->setLastChangeBy($obj);
+        }
+
+        if ($snapshot->standardUom > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationUom $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationUom')->find($snapshot->standardUom);
+            $entity->setStandardUom($obj);
+        }
+
+        if ($snapshot->company > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationCompany $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCompany')->find($snapshot->company);
+            $entity->setCompany($obj);
+        }
+
+        if ($snapshot->lastPrRow > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePrRow $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($snapshot->lastPrRow);
+            $entity->setLastPrRow($obj);
+        }
+
+        if ($snapshot->lastPoRow > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtProcurePoRow $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($snapshot->lastPoRow);
+            $entity->setLastPoRow($obj);
+        }
+
+        if ($snapshot->lastApInvoiceRow > 0) {
+            /**
+             *
+             * @var \Application\Entity\FinVendorInvoiceRow $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->find($snapshot->lastApInvoiceRow);
+            $entity->setLastApInvoiceRow($obj);
+        }
+
+        if ($snapshot->lastTrxRow > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryTrx $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->find($snapshot->lastTrxRow);
+            $entity->setLastTrxRow($obj);
+        }
+
+        return $entity;
+    }
 
     /**
      *
@@ -28,22 +307,23 @@ class ItemMapper
 
         // Mapping Reference
         // =====================
-        $snapshot->createdBy = $entity->getCreatedBy();
+
+        // $snapshot->createdBy = $entity->getCreatedBy();
         if ($entity->getCreatedBy() !== null) {
             $snapshot->createdBy = $entity->getCreatedBy()->getId();
         }
 
-        $snapshot->itemGroup = $entity->getItemGroup();
+        // $snapshot->itemGroup = $entity->getItemGroup();
         if ($entity->getItemGroup() !== null) {
             $snapshot->itemGroup = $entity->getItemGroup()->getId();
         }
 
-        $snapshot->stockUom = $entity->getItemGroup();
+        // $snapshot->stockUom = $entity->getItemGroup();
         if ($entity->getItemGroup() !== null) {
             $snapshot->stockUom = $entity->getItemGroup()->getId();
         }
 
-        $snapshot->cogsAccount = $entity->getCogsAccount();
+        // $snapshot->cogsAccount = $entity->getCogsAccount();
         if ($entity->getCogsAccount() !== null) {
             $snapshot->cogsAccount = $entity->getCogsAccount()->getId();
         }
@@ -53,12 +333,12 @@ class ItemMapper
             $snapshot->purchaseUom = $entity->getPurchaseUom()->getId();
         }
 
-        $snapshot->salesUom = $entity->getSalesUom();
+        // $snapshot->salesUom = $entity->getSalesUom();
         if ($entity->getSalesUom() !== null) {
             $snapshot->salesUom = $entity->getSalesUom()->getId();
         }
 
-        $snapshot->inventoryAccount = $entity->getInventoryAccount();
+        // $snapshot->inventoryAccount = $entity->getInventoryAccount();
         if ($entity->getInventoryAccount() !== null) {
             $snapshot->inventoryAccount = $entity->getInventoryAccount()->getId();
         }
@@ -73,27 +353,27 @@ class ItemMapper
             $snapshot->getRevenueAccount = $entity->getRevenueAccount()->getId();
         }
 
-        $snapshot->defaultWarehouse = $entity->getDefaultWarehouse();
+        // $snapshot->defaultWarehouse = $entity->getDefaultWarehouse();
         if ($entity->getDefaultWarehouse() !== null) {
             $snapshot->defaultWarehouse = $entity->getDefaultWarehouse()->getId();
         }
 
-        $snapshot->lastChangeBy = $entity->getLastChangeBy();
+        // $snapshot->lastChangeBy = $entity->getLastChangeBy();
         if ($entity->getLastChangeBy() !== null) {
             $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
         }
 
-        $snapshot->standardUom = $entity->getStandardUom();
+        // $snapshot->standardUom = $entity->getStandardUom();
         if ($entity->getStandardUom() !== null) {
             $snapshot->standardUom = $entity->getStandardUom()->getId();
         }
 
-        $snapshot->company = $entity->getCompany();
+        // ->company = $entity->getCompany();
         if ($entity->getCompany() !== null) {
             $snapshot->company = $entity->getCompany()->getId();
         }
 
-        $snapshot->lastPrRow = $entity->getLastPrRow();
+        // $snapshot->lastPrRow = $entity->getLastPrRow();
         if ($entity->getLastPrRow() !== null) {
             $snapshot->lastPrRow = $entity->getLastPrRow()->getId();
         }
@@ -103,12 +383,12 @@ class ItemMapper
             $snapshot->lastPoRow = $entity->getLastPoRow()->getId();
         }
 
-        $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow();
+        // $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow();
         if ($entity->getLastApInvoiceRow() !== null) {
             $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow()->getId();
         }
 
-        $snapshot->lastTrxRow = $entity->getLastTrxRow();
+        // $snapshot->lastTrxRow = $entity->getLastTrxRow();
         if ($entity->getLastTrxRow() !== null) {
             $snapshot->invoice = $entity->getLastTrxRow()->getId();
         }

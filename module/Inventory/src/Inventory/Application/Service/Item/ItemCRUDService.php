@@ -71,7 +71,7 @@ class ItemCRUDService extends AbstractService
         $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $item->setSharedSpecificationFactory($sharedSpecificationFactory);
 
-        $notification = $item->validate($notification);
+        $notification = $item->validate1($notification);
 
         if ($notification->hasErrors()) {
             return $notification;
@@ -191,7 +191,7 @@ class ItemCRUDService extends AbstractService
             $newItem->setSharedSpecificationFactory($sharedSpecificationFactory);
 
             // Validate
-            $notification = $newItem->validate($notification);
+            $notification = $newItem->validate1($notification);
 
             if ($notification->hasErrors()) {
                 return $notification;

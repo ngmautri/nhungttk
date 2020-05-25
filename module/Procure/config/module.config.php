@@ -6,8 +6,10 @@
  */
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPostedFactory;
-use Procure\Application\EventBus\Handler\GR\GrOnApPostedHandler;
-use Procure\Application\EventBus\Handler\GR\GrOnApPostedHandlerFactory;
+use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
+use Procure\Application\EventBus\Handler\GR\CreateGrReversalOnApReversed;
+use Procure\Application\EventBus\Handler\GR\Factory\CreateGrOnApPostedFactory;
+use Procure\Application\EventBus\Handler\GR\Factory\CreateGrReversalOnApReversedFactory;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPostedFactory;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
@@ -321,8 +323,10 @@ return array(
             UpdateIndexOnApPosted::class => UpdateIndexOnApPostedFactory::class,
             UpdateIndexOnPoPosted::class => UpdateIndexOnPoPostedFactory::class,
             UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class,
-            GrOnApPostedHandler::class => GrOnApPostedHandlerFactory::class,
+            CreateGrOnApPosted::class => CreateGrOnApPostedFactory::class,
+            CreateGrReversalOnApReversed::class => CreateGrReversalOnApReversedFactory::class,
 
+            // Logger
             "ProcureLogger" => LoggerFactory::class,
             "ProcureCache" => CacheFactory::class,
             "ProcureRedisCache" => RedisCacheFactory::class

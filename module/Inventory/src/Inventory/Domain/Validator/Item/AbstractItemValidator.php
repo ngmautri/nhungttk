@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Validator;
+namespace Inventory\Domain\Validator\Item;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
 use Inventory\Domain\Exception\InvalidArgumentException;

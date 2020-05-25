@@ -18,4 +18,25 @@ final class ItemType
     const SERVICE_ITEM_TYPE = "3";
 
     const FIXED_ASSET_ITEM_TYPE = "4";
+
+    public static function getSupportedType()
+    {
+        $r = [];
+        $r[] = self::INVENTORY_ITEM_TYPE;
+        $r[] = self::NONE_INVENTORY_ITEM_TYPE;
+        $r[] = self::SERVICE_ITEM_TYPE;
+        $r[] = self::FIXED_ASSET_ITEM_TYPE;
+        return $r;
+    }
+
+    public static function isSupported($typeId)
+
+    {
+        $r = [];
+        $r[] = self::INVENTORY_ITEM_TYPE;
+        $r[] = self::NONE_INVENTORY_ITEM_TYPE;
+        $r[] = self::SERVICE_ITEM_TYPE;
+        $r[] = self::FIXED_ASSET_ITEM_TYPE;
+        return $r;
+    }
 }

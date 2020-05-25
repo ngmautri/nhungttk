@@ -23,6 +23,7 @@ use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\WarehouseValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\ValidationServiceImp;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
@@ -103,8 +104,11 @@ class PostCopyFromAPReservalCmdHandler extends AbstractCommandHandler
             $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new GrPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
+            $sharedService->setPostingService($postingService);
 
-            $rootEntity = GRDoc::postCopyFromAPRerveral($sourceObj, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $validationService = new ValidationServiceImp($headerValidators, $rowValidators);
+            $rootEntity = GRDoc::postCopyFromAPRerveral($sourceObj, $options, $validationService, $sharedService);
+
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
@@ -113,6 +117,7 @@ class PostCopyFromAPReservalCmdHandler extends AbstractCommandHandler
             // ================
 
             $m = sprintf("GR #%s copied from AP Reversal #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
+
             $notification->addSuccess($m);
             $dto->setNotification($notification);
         } catch (\Exception $e) {

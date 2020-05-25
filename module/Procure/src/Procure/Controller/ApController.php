@@ -4,20 +4,15 @@ namespace Procure\Controller;
 use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\DTOFactory;
+use Inventory\Application\Command\GenericCmd;
 use MLA\Paginator;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
-use Procure\Application\Command\AP\AddRowCmd;
 use Procure\Application\Command\AP\AddRowCmdHandler;
-use Procure\Application\Command\AP\CreateHeaderCmd;
 use Procure\Application\Command\AP\CreateHeaderCmdHandler;
-use Procure\Application\Command\AP\EditHeaderCmd;
 use Procure\Application\Command\AP\EditHeaderCmdHandler;
-use Procure\Application\Command\AP\PostCmd;
 use Procure\Application\Command\AP\PostCmdHandler;
 use Procure\Application\Command\AP\ReverseCmdHandler;
-use Procure\Application\Command\AP\SaveCopyFromPOCmd;
 use Procure\Application\Command\AP\SaveCopyFromPOCmdHandler;
-use Procure\Application\Command\AP\UpdateRowCmd;
 use Procure\Application\Command\AP\UpdateRowCmdHandler;
 use Procure\Application\Command\AP\Options\ApCreateOptions;
 use Procure\Application\Command\AP\Options\ApPostOptions;
@@ -145,7 +140,8 @@ class ApController extends AbstractGenericController
             $options = new SaveCopyFromPOOptions($companyId, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new SaveCopyFromPOCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
             $cmd->execute();
 
             $notification = $dto->getNotification();
@@ -235,7 +231,8 @@ class ApController extends AbstractGenericController
 
             $cmdHandler = new CreateHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (OperationFailedException $e) {
@@ -343,7 +340,8 @@ class ApController extends AbstractGenericController
 
             $cmdHander = new AddRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHander);
-            $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -484,7 +482,9 @@ class ApController extends AbstractGenericController
 
             $cmdHandler = new UpdateRowCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -585,7 +585,9 @@ class ApController extends AbstractGenericController
 
             $cmdHandler = new EditHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -686,7 +688,9 @@ class ApController extends AbstractGenericController
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
             $cmd->execute();
             $notification = $dto->getNotification();
             $msg = sprintf("AP #%s is posted", $entity_id);
@@ -794,7 +798,9 @@ class ApController extends AbstractGenericController
 
             $cmdHandler = new ReverseCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new PostCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
             $cmd->execute();
             $notification = $dto->getNotification();
             $msg = sprintf("AP #%s is reversed", $entity_id);

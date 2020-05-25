@@ -1,19 +1,16 @@
 <?php
 namespace Inventory\Domain\Item\Repository;
 
+use Inventory\Domain\Contracts\Repository\CmdRepositoryInterface;
+use Inventory\Domain\Item\GenericItem;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface ItemQueryRepositoryInterface
+Interface ItemCmdRepositoryInterface extends CmdRepositoryInterface
 {
 
-    public function findAll();
-
-    public function getById($id);
-
-    public function getByUUID($uuid);
-
-    public function generateSysNumber($obj);
+    public function store(GenericItem $rootEntity, $generateSysNumber = True);
 }

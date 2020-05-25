@@ -3,7 +3,7 @@ namespace Inventory\Domain\Transaction\Validator\Contracts;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
 use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Service\FXServiceInterface;
+use Procure\Domain\Service\Contracts\FXServiceInterface;
 
 /**
  *
@@ -33,7 +33,7 @@ abstract class AbstractValidator
 
     /**
      *
-     * @return \Procure\Domain\Service\FXServiceInterface
+     * @return \Procure\Domain\Service\Contracts\FXServiceInterface
      */
     public function getFxService()
     {

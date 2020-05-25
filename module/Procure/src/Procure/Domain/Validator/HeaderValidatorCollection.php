@@ -2,7 +2,7 @@
 namespace Procure\Domain\Validator;
 
 use Procure\Domain\AbstractDoc;
-use Procure\Domain\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  *

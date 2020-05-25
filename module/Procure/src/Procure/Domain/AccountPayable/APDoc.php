@@ -15,6 +15,7 @@ use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -159,48 +160,21 @@ class APDoc extends GenericAP
      * @throws OperationFailedException
      * @return \Procure\Domain\AccountPayable\APDoc
      */
-    public static function createAndPostReserval(APDoc $sourceObj, APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public static function createAndPostReserval(APDoc $sourceObj, APSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if (! $sourceObj instanceof APDoc) {
-            throw new InvalidArgumentException("AP Entity is required");
+            throw new InvalidArgumentException("AP Doc is required");
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException("AP document is not posted!");
+            throw new InvalidOperationException("AP document is not posted yet!");
         }
 
         $rows = $sourceObj->getDocRows();
 
-        if ($rows == null) {
-            throw new InvalidArgumentException("AP Entity is empty!");
+        if (empty($rows)) {
+            throw new InvalidArgumentException("AP Doc is empty!");
         }
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
-
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Input snapshot is given!");
-        }
-
-        $reversalDate = $snapshot->getReversalDate();
-        $createdDate = new \DateTime();
-        $createdBy = $options->getUserId();
 
         /**
          *
@@ -208,6 +182,23 @@ class APDoc extends GenericAP
          * @var APRow $r ;
          */
         $instance = new self();
+
+        // check params
+        $instance->_checkParams($snapshot, $validationService, $sharedService);
+
+        // also row validation needed.
+        if ($validationService->getRowValidators() == null) {
+            throw new InvalidArgumentException("Rows validators not found");
+        }
+
+        if ($options == null) {
+            throw new InvalidArgumentException("No Options is found");
+        }
+
+        $reversalDate = $snapshot->getReversalDate();
+        $createdDate = new \DateTime();
+        $createdBy = $options->getUserId();
+
         $instance = $sourceObj->convertTo($instance);
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->markAsReversed($createdBy, $reversalDate);
@@ -215,22 +206,23 @@ class APDoc extends GenericAP
         // overwrite.
         $instance->setReversalDoc($sourceObj->getId()); // Important
         $instance->setDocType(sprintf("%s-1", "REV")); // important.
-        $instance->validateHeader($headerValidators);
+
+        $instance->validateHeader($validationService->getHeaderValidators());
 
         // $sourceObj
         $sourceObj->markAsReversed($createdBy, $reversalDate);
-        $sourceObj->validateHeader($headerValidators);
+        $sourceObj->validateHeader($validationService->getHeaderValidators());
 
         foreach ($rows as $r) {
 
             // $sourceObj
             $r->markAsReversed($createdBy, $reversalDate);
-            $sourceObj->validateRow($r, $rowValidators);
+            $sourceObj->validateRow($r, $validationService->getRowValidators());
 
             $localEntity = APRow::createRowReserval($instance, $r, $options);
 
             $instance->addRow($localEntity);
-            $instance->validateRow($localEntity, $rowValidators);
+            $instance->validateRow($localEntity, $validationService->getRowValidators());
         }
 
         if ($instance->hasErrors()) {
@@ -244,7 +236,11 @@ class APDoc extends GenericAP
         $instance->clearEvents();
         $sourceObj->clearEvents();
 
-        $snapshot = $postingService->getCmdRepository()->post($instance, true);
+        // Post new object
+        $snapshot = $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->post($instance, true);
+
         if (! $snapshot instanceof APSnapshot) {
             throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
         }
@@ -252,7 +248,10 @@ class APDoc extends GenericAP
         $instance->setId($snapshot->getId());
         $instance->setToken($snapshot->getToken());
 
-        $postingService->getCmdRepository()->post($sourceObj, false);
+        // Post source object
+        $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->post($sourceObj, false);
 
         $target = $snapshot;
         $defaultParams = new DefaultParameter();
@@ -672,6 +671,31 @@ class APDoc extends GenericAP
 
         if ($postingService == null) {
             throw new InvalidArgumentException("postingService service not found");
+        }
+    }
+
+    /**
+     *
+     * @param APSnapshot $snapshot
+     * @param ValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
+     */
+    private function _checkParams(APSnapshot $snapshot, ValidationServiceInterface $validationService, SharedService $sharedService)
+    {
+        if (! $snapshot instanceof APSnapshot) {
+            throw new InvalidArgumentException("APSnapshot not found!");
+        }
+
+        if ($validationService == null) {
+            throw new InvalidArgumentException("Validation service not found!");
+        }
+
+        if (empty($validationService->getHeaderValidators())) {
+            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        }
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
         }
     }
 

@@ -27,7 +27,7 @@ class CreateWhGiOnProcureGrReversed extends AbstractEventHandler
     public function __invoke(GrPosted $event)
     {
         if (! $event->getTarget() instanceof GRSnapshot) {
-            Throw new \InvalidArgumentException("GRSnapshot not give for creating WH Trx");
+            Throw new \InvalidArgumentException("GRSnapshot not given for creating WH Trx");
         }
 
         $rootSnapshot = $event->getTarget();

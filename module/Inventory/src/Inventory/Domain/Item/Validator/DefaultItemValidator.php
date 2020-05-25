@@ -2,10 +2,10 @@
 namespace Inventory\Domain\Item\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Item\AbstractItem;
-use Inventory\Domain\Validator\AbstractItemValidator;
-use Inventory\Domain\Validator\ItemValidatorInterface;
+use Inventory\Domain\Validator\Item\AbstractItemValidator;
+use Inventory\Domain\Validator\Item\ItemValidatorInterface;
+use InvalidArgumentException;
 
 /**
  *
@@ -18,7 +18,7 @@ class DefaultItemValidator extends AbstractItemValidator implements ItemValidato
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Validator\ItemValidatorInterface::validate()
+     * @see \Inventory\Domain\Validator\Item\ItemValidatorInterface::validate()
      */
     public function validate(AbstractItem $rootEntity)
     {
@@ -60,21 +60,18 @@ class DefaultItemValidator extends AbstractItemValidator implements ItemValidato
             }
 
             $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
-            if ($spec->isSatisfiedBy($this->getItemName())) {
+            if ($spec->isSatisfiedBy($rootEntity->getItemName())) {
                 $rootEntity->addError("Item name is null or empty. It is required for any item.");
             } else {
-                
-                if (preg_match('/[$^]/', $this->getItemName()) == 1) {
+
+                if (preg_match('/[$^]/', $rootEntity->getItemName()) == 1) {
                     $err = "Item name contains invalid character (e.g. $)";
                     $rootEntity->addError($err);
                 }
             }
-              
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }
-    
-    
 }
 

@@ -2,9 +2,9 @@
 namespace Procure\Domain\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
+use Procure\Domain\Service\Contracts\FXServiceInterface;
 use Procure\Domain\Shared\Specification\AbstractSpecificationFactory as ProcureSpecsFactory;
-use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Service\FXServiceInterface;
+use InvalidArgumentException;
 
 /**
  *
@@ -22,19 +22,20 @@ abstract class AbstractValidator
 
     /**
      *
-     * @param SharedSpecsFactory $sharedSpecificationFactory
-     * @param ProcureSpecsFactory $procureSpecificationFactory
+     * @param SharedSpecsFactory $sharedSpecsFactory
      * @param FXServiceInterface $fxService
-     * @throws PoInvalidArgumentException
+     * @param ProcureSpecsFactory $procureSpecsFactory
+     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(SharedSpecsFactory $sharedSpecsFactory, FXServiceInterface $fxService, ProcureSpecsFactory $procureSpecsFactory = null)
     {
         if (! $sharedSpecsFactory instanceof SharedSpecsFactory) {
-            throw new PoInvalidArgumentException("Shared Specification is required");
+            throw new \InvalidArgumentException("Shared Specification is required");
         }
 
         if (! $fxService instanceof FXServiceInterface) {
-            throw new PoInvalidArgumentException("FX service is required");
+            throw new InvalidArgumentException("FX service is required");
         }
 
         $this->sharedSpecificationFactory = $sharedSpecsFactory;

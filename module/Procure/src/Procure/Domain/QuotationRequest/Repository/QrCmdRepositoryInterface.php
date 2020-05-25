@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain\QuotationRequest\Repository;
 
+use Procure\Domain\Contracts\Repository\CmdRepositoryInterface;
 use Procure\Domain\QuotationRequest\GenericQR;
 use Procure\Domain\QuotationRequest\QRRow;
 
@@ -9,7 +10,7 @@ use Procure\Domain\QuotationRequest\QRRow;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Interface QrCmdRepositoryInterface
+Interface QrCmdRepositoryInterface extends CmdRepositoryInterface
 {
 
     /**

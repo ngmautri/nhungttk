@@ -1,8 +1,8 @@
 <?php
-namespace Inventory\Domain\Validator;
+namespace Inventory\Domain\Validator\Item;
 
 use Inventory\Domain\Item\AbstractItem;
-use Procure\Domain\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  *
@@ -30,7 +30,7 @@ class ItemValidatorCollection implements ItemValidatorInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Validator\ItemValidatorInterface::validate()
+     * @see \Inventory\Domain\Validator\Item\ItemValidatorInterface::validate()
      */
     public function validate(AbstractItem $rootEntity)
     {

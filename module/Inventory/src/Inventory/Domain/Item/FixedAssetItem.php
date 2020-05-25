@@ -11,6 +11,15 @@ use Application\Notification;
 class FixedAssetItem extends GenericItem
 {
 
+    public function __construct()
+    {
+        $this->setItemType("ITEM");
+        $this->setItemTypeId(ItemType::FIXED_ASSET_ITEM_TYPE);
+        $this->setIsFixedAsset(1);
+        $this->setIsStocked(0);
+        $this->setIsSparepart(0);
+    }
+
     /**
      *
      * {@inheritdoc}

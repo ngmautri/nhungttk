@@ -170,6 +170,7 @@ class APRow extends GenericRow
         $createdBy = $options->getUserId();
         $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
         $instance->setDocType($rootEntity->getDocType()); // important.
         $instance->setReversalDoc($sourceObj->getId()); // Important
         $instance->setInvoice($rootEntity->getId());

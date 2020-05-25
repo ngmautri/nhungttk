@@ -28,7 +28,7 @@ class CreateFiFoLayerOnWhGrPosted extends AbstractEventHandler
 
             $fifoService = new FIFOServiceImpl();
             $fifoService->setDoctrineEM($this->getDoctrineEM());
-            $fifoService->createLayersFor($event->getTarget());
+            $fifoService->closeLayersOf($event->getTarget());
 
             $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
                 ->getId()));

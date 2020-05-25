@@ -13,6 +13,15 @@ use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
 class InventoryItem extends GenericItem
 {
 
+    public function __construct()
+    {
+        $this->setItemType("ITEM");
+        $this->setItemTypeId(ItemType::INVENTORY_ITEM_TYPE);
+        $this->setIsStocked(1);
+        $this->setIsFixedAsset(0);
+        $this->setIsSparepart(1);
+    }
+
     public function specificValidation(Notification $notification = null)
     {
         if ($notification == null)

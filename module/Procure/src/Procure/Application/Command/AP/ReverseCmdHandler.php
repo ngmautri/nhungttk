@@ -24,6 +24,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\ValidationServiceImp;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
@@ -81,11 +82,13 @@ class ReverseCmdHandler extends AbstractCommandHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, $snapshot);
 
             $notification = new Notification();
+
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
+            // Validation Service
             $headerValidators = new HeaderValidatorCollection();
 
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
@@ -107,11 +110,15 @@ class ReverseCmdHandler extends AbstractCommandHandler
             $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
             $rowValidators->add($validator);
 
+            $validationService = new ValidationServiceImp($headerValidators, $rowValidators);
+
+            // Shared Service
             $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new APPostingService($cmdRepository);
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
+            $sharedService->setPostingService($postingService);
 
-            $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $validationService, $sharedService);
 
             // event dispatch
             // ================

@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Infrastructure\Persistence\Filter;
 
-use Inventory\Infrastructure\Contract\SqlFilterInterface;
+use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 
 /**
  *

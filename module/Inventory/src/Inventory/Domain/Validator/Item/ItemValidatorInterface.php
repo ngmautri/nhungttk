@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Validator;
+namespace Inventory\Domain\Validator\Item;
 
 use Inventory\Domain\Item\AbstractItem;
 use Procure\Domain\AbstractDoc;
@@ -11,8 +11,9 @@ use Procure\Domain\AbstractDoc;
  */
 interface ItemValidatorInterface
 {
+
     /**
-     * 
+     *
      * @param AbstractDoc $rootEntity
      */
     public function validate(AbstractItem $rootEntity);

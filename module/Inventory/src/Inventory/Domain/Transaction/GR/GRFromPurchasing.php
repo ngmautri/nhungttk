@@ -53,7 +53,7 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidArgumentException("AP document is not posted yet!");
+            throw new InvalidArgumentException("GR document is not posted yet!");
         }
 
         if ($validationService == null) {

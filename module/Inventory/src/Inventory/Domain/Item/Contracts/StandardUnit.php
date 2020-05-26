@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Contracts\;
+namespace Inventory\Domain\Item\Contracts;
 
 /**
  *

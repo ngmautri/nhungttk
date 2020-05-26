@@ -3,7 +3,6 @@ namespace Inventory\Application\EventBus\Handler\Item;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Application\Service\Item\SerialNoServiceImpl;
 use Inventory\Domain\Event\Item\ItemCreated;
 use Inventory\Domain\Event\Item\ItemUpdated;
 use Inventory\Domain\Item\ItemSnapshot;
@@ -27,14 +26,10 @@ class UpdateIndexOnItemUpdated extends AbstractEventHandler
         try {
 
             if (! $event->getTarget() instanceof ItemSnapshot) {
-                Throw new \InvalidArgumentException("GRSnapshot not give for Serial No");
+                Throw new \InvalidArgumentException("ItemSnapshot not given for updating index.");
             }
-
-            $sv = new SerialNoServiceImpl();
-            $sv->setDoctrineEM($this->getDoctrineEM());
-            $sv->createSerialNoFor($event->getTarget());
-
-            $this->getLogger()->info(\sprintf("Serial No for PO-GR#%s handled and created, if any!", $event->getTarget()
+            $format = "Index for  item #%s updated!";
+            $this->getLogger()->info(\sprintf($format, $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;

@@ -1,7 +1,7 @@
 <?php
 namespace InventoryTest\Item;
 
-use Inventory\Domain\Item\ItemSnapshotAssembler;
+use Inventory\Domain\Item\BaseItem;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -15,8 +15,10 @@ class ItemSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = ItemSnapshotAssembler::findMissingPropsInEntity();
-            var_dump($result);
+            // $result = ItemSnapshotAssembler::findMissingPropsInBaseItem();
+            BaseItem::createSnapshotProps();
+            // var_dump($result);
+            // ItemSnapshotAssembler::createIndexDoc();
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

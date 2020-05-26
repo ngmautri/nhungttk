@@ -140,4 +140,13 @@ class DoctrineItemQueryRepository extends AbstractDoctrineRepository implements 
 
         return $itemSnapshot;
     }
+
+    public function getVersion($id, $token = null)
+    {}
+
+    public function getVersionArray($id, $token = null)
+    {}
+
+    public function getRootEntityByTokenId($id, $token = null)
+    {}
 }

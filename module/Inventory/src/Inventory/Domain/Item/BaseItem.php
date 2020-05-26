@@ -9,6 +9,44 @@ namespace Inventory\Domain\Item;
 class BaseItem extends AbstractItem
 {
 
+    // addtional serial number.
+    // =======================================
+    protected $assetLabel1;
+
+    // addtional serial number.
+    // =======================================
+    protected $serialNo;
+
+    protected $serialNo1;
+
+    protected $serialNo2;
+
+    protected $serialMfgNumber;
+
+    protected $serialMfgDate;
+
+    protected $serialWarrantyStartDate;
+
+    protected $serialWarrantyEndDate;
+
+    protected $serialMfgName;
+
+    protected $serialMfgName1;
+
+    protected $serialMfgModel;
+
+    protected $serialMfgModel1;
+
+    protected $serialERPNumber;
+
+    protected $serialERPNumber1;
+
+    protected $serialLotNumber;
+
+    protected $serialId;
+
+    protected $serialSystemNo;
+
     // addtional attribute.
     // =======================================
     protected $pictureList;
@@ -31,10 +69,331 @@ class BaseItem extends AbstractItem
 
     protected $onHandValue;
 
-    // =======================================
-
-    // Addtional
     protected $standardUnitName;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAssetLabel1()
+    {
+        return $this->assetLabel1;
+    }
+
+    /**
+     *
+     * @param mixed $assetLabel1
+     */
+    public function setAssetLabel1($assetLabel1)
+    {
+        $this->assetLabel1 = $assetLabel1;
+    }
+
+    public static function createSnapshotProps()
+    {
+        $baseClass = "Inventory\Domain\Item\BaseItem";
+        $entity = new self();
+        $reflectionClass = new \ReflectionClass($entity);
+
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            // echo $property->class . "\n";
+            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
+                $property->setAccessible(true);
+                $propertyName = $property->getName();
+                print "\n" . "public $" . $propertyName . ";";
+            }
+        }
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialNo()
+    {
+        return $this->serialNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialNo1()
+    {
+        return $this->serialNo1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialNo2()
+    {
+        return $this->serialNo2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialMfgNumber()
+    {
+        return $this->serialMfgNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialMfgDate()
+    {
+        return $this->serialMfgDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialWarrantyStartDate()
+    {
+        return $this->serialWarrantyStartDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialWarrantyEndDate()
+    {
+        return $this->serialWarrantyEndDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialMfgName()
+    {
+        return $this->serialMfgName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialMfgName1()
+    {
+        return $this->serialMfgName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialMfgModel()
+    {
+        return $this->serialMfgModel;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialMfgModel1()
+    {
+        return $this->serialMfgModel1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialERPNumber()
+    {
+        return $this->serialERPNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialERPNumber1()
+    {
+        return $this->serialERPNumber1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialLotNumber()
+    {
+        return $this->serialLotNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialId()
+    {
+        return $this->serialId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSerialSystemNo()
+    {
+        return $this->serialSystemNo;
+    }
+
+    /**
+     *
+     * @param mixed $serialNo
+     */
+    public function setSerialNo($serialNo)
+    {
+        $this->serialNo = $serialNo;
+    }
+
+    /**
+     *
+     * @param mixed $serialNo1
+     */
+    public function setSerialNo1($serialNo1)
+    {
+        $this->serialNo1 = $serialNo1;
+    }
+
+    /**
+     *
+     * @param mixed $serialNo2
+     */
+    public function setSerialNo2($serialNo2)
+    {
+        $this->serialNo2 = $serialNo2;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgNumber
+     */
+    public function setSerialMfgNumber($serialMfgNumber)
+    {
+        $this->serialMfgNumber = $serialMfgNumber;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgDate
+     */
+    public function setSerialMfgDate($serialMfgDate)
+    {
+        $this->serialMfgDate = $serialMfgDate;
+    }
+
+    /**
+     *
+     * @param mixed $serialWarrantyStartDate
+     */
+    public function setSerialWarrantyStartDate($serialWarrantyStartDate)
+    {
+        $this->serialWarrantyStartDate = $serialWarrantyStartDate;
+    }
+
+    /**
+     *
+     * @param mixed $serialWarrantyEndDate
+     */
+    public function setSerialWarrantyEndDate($serialWarrantyEndDate)
+    {
+        $this->serialWarrantyEndDate = $serialWarrantyEndDate;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgName
+     */
+    public function setSerialMfgName($serialMfgName)
+    {
+        $this->serialMfgName = $serialMfgName;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgName1
+     */
+    public function setSerialMfgName1($serialMfgName1)
+    {
+        $this->serialMfgName1 = $serialMfgName1;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgModel
+     */
+    public function setSerialMfgModel($serialMfgModel)
+    {
+        $this->serialMfgModel = $serialMfgModel;
+    }
+
+    /**
+     *
+     * @param mixed $serialMfgModel1
+     */
+    public function setSerialMfgModel1($serialMfgModel1)
+    {
+        $this->serialMfgModel1 = $serialMfgModel1;
+    }
+
+    /**
+     *
+     * @param mixed $serialERPNumber
+     */
+    public function setSerialERPNumber($serialERPNumber)
+    {
+        $this->serialERPNumber = $serialERPNumber;
+    }
+
+    /**
+     *
+     * @param mixed $serialERPNumber1
+     */
+    public function setSerialERPNumber1($serialERPNumber1)
+    {
+        $this->serialERPNumber1 = $serialERPNumber1;
+    }
+
+    /**
+     *
+     * @param mixed $serialLotNumber
+     */
+    public function setSerialLotNumber($serialLotNumber)
+    {
+        $this->serialLotNumber = $serialLotNumber;
+    }
+
+    /**
+     *
+     * @param mixed $serialId
+     */
+    public function setSerialId($serialId)
+    {
+        $this->serialId = $serialId;
+    }
+
+    /**
+     *
+     * @param mixed $serialSystemNo
+     */
+    public function setSerialSystemNo($serialSystemNo)
+    {
+        $this->serialSystemNo = $serialSystemNo;
+    }
 
     /**
      *

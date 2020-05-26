@@ -17,6 +17,48 @@ class ItemSnapshotAssembler
 
     const EDITABLE_FIELDS = 2;
 
+    const AUTO_GENERATED_FIELDS = [
+        "id",
+        "isStocked",
+        "isFixedAsset",
+        "isSparepart",
+        "createdOn",
+        "lastPurchasePrice",
+        "lastPurchaseCurrency",
+        "lastPurchaseDate",
+        "lastChangeOn",
+        "token",
+        "checksum",
+        "sysNumber",
+        "revisionNo",
+        "avgUnitPrice",
+        "uuid",
+        "createdBy",
+        "lastChangeBy",
+        "company",
+        "lastPrRow",
+        "lastPoRow",
+        "lastApInvoiceRow",
+        "lastTrxRow",
+        "lastPurchasing",
+        "itemType"
+    ];
+
+    public static function createIndexDoc()
+    {
+        $entity = new ItemSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            $v = \sprintf("\$snapshot->get%s()", ucfirst($propertyName));
+
+            print \sprintf("\n\$doc->addField(Field::text('%s', %s));", $propertyName, $v);
+        }
+    }
+
     /**
      *
      * @return array;
@@ -114,6 +156,41 @@ class ItemSnapshotAssembler
     }
 
     /**
+     *
+     * @param ItemSnapshot $snapShot
+     * @param ItemDTO $dto
+     * @param array $excludedProperties
+     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     */
+    public static function updateSnapshotFromDTOExcludeFields(ItemSnapshot $snapShot, ItemDTO $dto, $excludedProperties)
+    {
+        if ($dto == null || ! $snapShot instanceof ItemSnapshot || $excludedProperties == null)
+            return null;
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (in_array($propertyName, self::AUTO_GENERATED_FIELDS)) {
+                continue;
+            }
+
+            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
+            }
+        }
+        return $snapShot;
+    }
+
+    /**
      * generete fields.
      */
     public static function createProperities()
@@ -134,38 +211,12 @@ class ItemSnapshotAssembler
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+        $props = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
-        $excludedProperties = array(
-            "id",
-            "uuid",
-            "token",
-            "checksum",
-            "createdBy",
-            "createdOn",
-            "lastChangeOn",
-            "lastChangeBy",
-            "sysNumber",
-            "company",
-            "itemType",
-            "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
-        );
-
-        // $dto->isSparepart;
-
-        foreach ($itemProperites as $property) {
+        foreach ($props as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, self::AUTO_GENERATED_FIELDS)) {
 
                 if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
                     $snapShot->$propertyName = null;

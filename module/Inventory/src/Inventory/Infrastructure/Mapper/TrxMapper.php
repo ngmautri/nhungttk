@@ -31,7 +31,7 @@ class TrxMapper
         // =================================
         // Mapping None-Object Field
         // =================================
-
+        - 
         // $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
         $entity->setCurrencyIso3($snapshot->currencyIso3);

@@ -71,7 +71,9 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-        return $entity;
+
+        $rootSnapshot->id = $entity->getId();
+        return $rootSnapshot;
     }
 
     /**

@@ -4,18 +4,20 @@ namespace Inventory\Application\Command\Item;
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Inventory\Application\Command\Item\Options\CreateItemOptions;
+use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Domain\Exception\OperationFailedException;
+use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Domain\Service\ItemPostingService;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Infrastructure\Doctrine\ItemCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use Procure\Application\Service\FXService;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use InvalidArgumentException;
 
 /**
@@ -40,13 +42,19 @@ class UpdateCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var ItemDTO $dto ;
-         * @var CreateItemOptions $options ;
-         *     
+         * @var UpdateItemOptions $options ;
+         * @var GenericItem $rootEntity ;
          */
-        $options = $cmd->getOptions();
-        $dto = $cmd->getDto();
 
-        if (! $options instanceof CreateItemOptions) {
+        $dto = $cmd->getDto();
+        $options = $cmd->getOptions();
+
+        $rootEntity = $options->getRootEntity();
+        $rootEntityId = $options->getRootEntityId();
+        $version = $options->getVersion();
+        $userId = $options->getUserId();
+
+        if (! $options instanceof UpdateItemOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
@@ -54,32 +62,67 @@ class UpdateCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new ItemSnapshot());
+            /**
+             *
+             * @var ItemSnapshot $snapshot ;
+             * @var ItemSnapshot $newSnapshot ;
+             */
+            $snapshot = $rootEntity->makeSnapshot();
+            $newSnapshot = clone ($snapshot);
+
+            // not allow to change item type in this command.
+            $excludedProperties = [
+                "itemTypeId"
+            ];
+
+            $newSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTOExcludeFields($newSnapshot, $dto, $excludedProperties);
+            $changeLog = $snapshot->compare($newSnapshot);
+
+            if ($changeLog == null) {
+                $notification->addError("Nothing change on Item #" . $rootEntityId);
+                $dto->setNotification($notification);
+                return;
+            }
+
+            $params = [
+                "changeLog" => $changeLog
+            ];
+
+            \var_dump($changeLog);
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-
             $cmdRepository = new ItemCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new ItemPostingService($cmdRepository);
-
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
 
-            $rootEntity = ItemFactory::createFrom($snapshot, $options, $sharedService);
+            $newRootEntity = ItemFactory::updateFrom($newSnapshot, $options, $params, $sharedService);
+
+            // No Check Version when Posting when posting.
+            $queryRep = new ItemQueryRepositoryImpl($cmd->getDoctrineEM());
+
+            // time to check version - concurency
+            $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
+
+            // revision numner has been increased.
+            if ($version != $currentVersion) {
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! %s", $version, $currentVersion, ""));
+            }
 
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
-                $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
+                $cmd->getEventBus()->dispatch($newRootEntity->getRecordedEvents());
             }
             // ================
 
-            $m = sprintf("Item Created!", $rootEntity->getId());
+            $m = sprintf("Item updated!", $newRootEntity->getId());
             $notification->addSuccess($m);
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

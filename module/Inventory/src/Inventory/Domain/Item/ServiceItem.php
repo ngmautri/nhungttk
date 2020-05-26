@@ -18,6 +18,7 @@ class ServiceItem extends GenericItem
         $this->setIsFixedAsset(0);
         $this->setIsStocked(0);
         $this->setIsSparepart(0);
+        $this->setMonitoredBy(null); // ignore monitoring smethod.
     }
 
     /**

@@ -26,6 +26,44 @@ use RuntimeException;
 class ItemFactory
 {
 
+    public static function contructFromDB($snapshot)
+    {
+        if (! $snapshot instanceof ItemSnapshot) {
+            throw new InvalidArgumentException("ItemSnapshot not found!");
+        }
+
+        $itemTypeId = $snapshot->getItemTypeId();
+
+        if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
+            throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
+        }
+
+        switch ($itemTypeId) {
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+                $instance = new InventoryItem();
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $instance = new NoneInventoryItem();
+                break;
+
+            case ItemType::SERVICE_ITEM_TYPE:
+                $instance = new ServiceItem();
+                break;
+
+            case ItemType::FIXED_ASSET_ITEM_TYPE:
+                $instance = new FixedAssetItem();
+                break;
+            default:
+                $instance = new InventoryItem();
+                break;
+        }
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
     /**
      *
      * @param int $itemTypeId
@@ -132,7 +170,7 @@ class ItemFactory
          */
         $rootSnapshot = $sharedService->getPostingService()
             ->getCmdRepository()
-            ->store($item, false);
+            ->store($item, true);
 
         if ($rootSnapshot == null) {
             throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $item->getId()));
@@ -162,18 +200,23 @@ class ItemFactory
      * @throws RuntimeException
      * @return \Inventory\Domain\Item\GenericItem
      */
-    public static function updateFrom(ItemSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public static function updateFrom(ItemSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         if (! $snapshot instanceof ItemSnapshot) {
             throw new InvalidArgumentException("ItemSnapshot not found!");
+        }
+
+        $itemTypeId = $snapshot->getItemTypeId();
+
+        if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
+            throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
         }
 
         if ($sharedService == null) {
             throw new InvalidArgumentException("SharedService service not found");
         }
 
-        $itemTypeId = $snapshot->getItemType();
-
+        $item = null;
         switch ($itemTypeId) {
 
             case ItemType::INVENTORY_ITEM_TYPE:
@@ -198,15 +241,15 @@ class ItemFactory
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-
-        $item->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $item->setLastchangeBy($createdBy);
+        $snapshot->updateDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         /**
          *
          * @var GenericItem $item
          */
-        $item = SnapshotAssembler::makeFromSnapshot($item, $snapshot);
+        SnapshotAssembler::makeFromSnapshot($item, $snapshot);
+
+        $item->specifyItem();
 
         $validators = ValidatorFactory::create($itemTypeId, $sharedService);
         $item->validate($validators);
@@ -229,8 +272,6 @@ class ItemFactory
             throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $item->getId()));
         }
 
-        $item->id = $rootSnapshot->getId();
-
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($rootSnapshot->getId());
@@ -238,7 +279,6 @@ class ItemFactory
         $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $params = null;
 
         $event = new ItemUpdated($target, $defaultParams, $params);
         $item->addEvent($event);

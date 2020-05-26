@@ -15,7 +15,7 @@ class ItemDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = ItemDTOAssembler::createStoreMapping();
+            $result = ItemDTOAssembler::createGetMapping();
             var_dump($result);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

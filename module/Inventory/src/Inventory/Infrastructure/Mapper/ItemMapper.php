@@ -297,138 +297,19 @@ class ItemMapper
      * @param ItemSnapshot $snapshot
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function createSnapshot(NmtInventoryItem $entity, ItemSnapshot $snapshot)
+    public static function createSnapshot(NmtInventoryItem $entity, ItemSnapshot $snapshot = null)
     {
-        if ($entity == null)
+        if ($entity == null) {
             return null;
-
-        if ($snapshot == null)
-            return null;
-
-        // Mapping Reference
-        // =====================
-
-        // $snapshot->createdBy = $entity->getCreatedBy();
-        if ($entity->getCreatedBy() !== null) {
-            $snapshot->createdBy = $entity->getCreatedBy()->getId();
         }
 
-        // $snapshot->itemGroup = $entity->getItemGroup();
-        if ($entity->getItemGroup() !== null) {
-            $snapshot->itemGroup = $entity->getItemGroup()->getId();
+        if ($snapshot == null) {
+            $snapshot = new ItemSnapshot();
         }
 
-        // $snapshot->stockUom = $entity->getItemGroup();
-        if ($entity->getItemGroup() !== null) {
-            $snapshot->stockUom = $entity->getItemGroup()->getId();
-        }
-
-        // $snapshot->cogsAccount = $entity->getCogsAccount();
-        if ($entity->getCogsAccount() !== null) {
-            $snapshot->cogsAccount = $entity->getCogsAccount()->getId();
-        }
-
-        $snapshot->purchaseUom = $entity->getPurchaseUom();
-        if ($entity->getPurchaseUom() !== null) {
-            $snapshot->purchaseUom = $entity->getPurchaseUom()->getId();
-        }
-
-        // $snapshot->salesUom = $entity->getSalesUom();
-        if ($entity->getSalesUom() !== null) {
-            $snapshot->salesUom = $entity->getSalesUom()->getId();
-        }
-
-        // $snapshot->inventoryAccount = $entity->getInventoryAccount();
-        if ($entity->getInventoryAccount() !== null) {
-            $snapshot->inventoryAccount = $entity->getInventoryAccount()->getId();
-        }
-
-        $snapshot->expenseAccount = $entity->getExpenseAccount();
-        if ($entity->getExpenseAccount() !== null) {
-            $snapshot->expenseAccount = $entity->getExpenseAccount()->getId();
-        }
-
-        $snapshot->revenueAccount = $entity->getRevenueAccount();
-        if ($entity->getRevenueAccount() !== null) {
-            $snapshot->getRevenueAccount = $entity->getRevenueAccount()->getId();
-        }
-
-        // $snapshot->defaultWarehouse = $entity->getDefaultWarehouse();
-        if ($entity->getDefaultWarehouse() !== null) {
-            $snapshot->defaultWarehouse = $entity->getDefaultWarehouse()->getId();
-        }
-
-        // $snapshot->lastChangeBy = $entity->getLastChangeBy();
-        if ($entity->getLastChangeBy() !== null) {
-            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
-        }
-
-        // $snapshot->standardUom = $entity->getStandardUom();
-        if ($entity->getStandardUom() !== null) {
-            $snapshot->standardUom = $entity->getStandardUom()->getId();
-        }
-
-        // ->company = $entity->getCompany();
-        if ($entity->getCompany() !== null) {
-            $snapshot->company = $entity->getCompany()->getId();
-        }
-
-        // $snapshot->lastPrRow = $entity->getLastPrRow();
-        if ($entity->getLastPrRow() !== null) {
-            $snapshot->lastPrRow = $entity->getLastPrRow()->getId();
-        }
-
-        $snapshot->lastPoRow = $entity->getLastPoRow();
-        if ($entity->getLastPoRow() !== null) {
-            $snapshot->lastPoRow = $entity->getLastPoRow()->getId();
-        }
-
-        // $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow();
-        if ($entity->getLastApInvoiceRow() !== null) {
-            $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow()->getId();
-        }
-
-        // $snapshot->lastTrxRow = $entity->getLastTrxRow();
-        if ($entity->getLastTrxRow() !== null) {
-            $snapshot->invoice = $entity->getLastTrxRow()->getId();
-        }
-
-        $snapshot->lastPurchasing = $entity->getLastPurchasing();
-        if ($entity->getLastPurchasing() !== null) {
-            $snapshot->lastPurchasing = $entity->getLastPurchasing()->getId();
-        }
-
-        // Mapping Date
-        // =====================
-        $snapshot->createdOn = $entity->getCreatedOn();
-        if (! $entity->getCreatedOn() == null) {
-            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
-        }
-
-        $snapshot->validFromDate = $entity->getValidFromDate();
-        if (! $entity->getValidFromDate() == null) {
-            $snapshot->validFromDate = $entity->getValidFromDate()->format("Y-m-d");
-        }
-
-        $snapshot->validToDate = $entity->getValidToDate();
-        if (! $entity->getValidToDate() == null) {
-            $snapshot->validToDate = $entity->getValidToDate()->format("Y-m-d");
-        }
-
-        $snapshot->lastPurchaseDate = $entity->getLastPurchaseDate();
-        if (! $entity->getLastPurchaseDate() == null) {
-            $snapshot->lastPurchaseDate = $entity->getLastPurchaseDate()->format("Y-m-d");
-        }
-
-        $snapshot->lastChangeOn = $entity->getLastChangeOn();
-
-        if (! $entity->getLastChangeOn() == null) {
-            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d");
-        }
-
+        // =================================
         // Mapping None-Object Field
-        // =====================
-
+        // =================================
         $snapshot->id = $entity->getId();
         $snapshot->warehouseId = $entity->getWarehouseId();
         $snapshot->itemSku = $entity->getItemSku();
@@ -458,6 +339,7 @@ class ItemMapper
         $snapshot->serialNumber = $entity->getSerialNumber();
         $snapshot->lastPurchasePrice = $entity->getLastPurchasePrice();
         $snapshot->lastPurchaseCurrency = $entity->getLastPurchaseCurrency();
+        $snapshot->lastPurchaseDate = $entity->getLastPurchaseDate();
         $snapshot->leadTime = $entity->getLeadTime();
         $snapshot->location = $entity->getLocation();
         $snapshot->itemInternalLabel = $entity->getItemInternalLabel();
@@ -485,6 +367,131 @@ class ItemMapper
         $snapshot->standardPrice = $entity->getStandardPrice();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->itemTypeId = $entity->getItemTypeId();
+
+        // modification
+        $snapshot->assetLabel1 = preg_replace('/[0-]/', '', \substr($snapshot->assetLabel, - 5));
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+
+        // $snapshot->createdOn = $entity->getCreatedOn();
+        // $snapshot->lastChangeOn = $entity->getLastChangeOn();
+        // $snapshot->validFromDate = $entity->getValidFromDate();
+        // $snapshot->validToDate = $entity->getValidToDate();
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getValidFromDate() == null) {
+            $snapshot->validFromDate = $entity->getValidFromDate()->format("Y-m-d");
+        }
+
+        if (! $entity->getValidToDate() == null) {
+            $snapshot->validToDate = $entity->getValidToDate()->format("Y-m-d");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+
+        /*
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->itemGroup = $entity->getItemGroup();
+         * $snapshot->stockUom = $entity->getStockUom();
+         * $snapshot->cogsAccount = $entity->getCogsAccount();
+         * $snapshot->purchaseUom = $entity->getPurchaseUom();
+         * $snapshot->salesUom = $entity->getSalesUom();
+         * $snapshot->inventoryAccount = $entity->getInventoryAccount();
+         * $snapshot->expenseAccount = $entity->getExpenseAccount();
+         * $snapshot->revenueAccount = $entity->getRevenueAccount();
+         * $snapshot->defaultWarehouse = $entity->getDefaultWarehouse();
+         * $snapshot->lastChangeBy = $entity->getLastChangeBy();
+         * $snapshot->standardUom = $entity->getStandardUom();
+         * $snapshot->company = $entity->getCompany();
+         * $snapshot->lastPrRow = $entity->getLastPrRow();
+         * $snapshot->lastPoRow = $entity->getLastPoRow();
+         * $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow();
+         * $snapshot->lastTrxRow = $entity->getLastTrxRow();
+         * $snapshot->lastPurchasing = $entity->getLastPurchasing();
+         */
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+
+        if ($entity->getItemGroup() !== null) {
+            $snapshot->itemGroup = $entity->getItemGroup()->getId();
+        }
+
+        if ($entity->getStockUom() !== null) {
+            $snapshot->stockUom = $entity->getStockUom()->getId();
+        }
+
+        if ($entity->getCogsAccount() !== null) {
+            $snapshot->cogsAccount = $entity->getCogsAccount()->getId();
+        }
+
+        if ($entity->getPurchaseUom() !== null) {
+            $snapshot->purchaseUom = $entity->getPurchaseUom()->getId();
+        }
+
+        if ($entity->getSalesUom() !== null) {
+            $snapshot->salesUom = $entity->getSalesUom()->getId();
+        }
+
+        if ($entity->getInventoryAccount() !== null) {
+            $snapshot->inventoryAccount = $entity->getInventoryAccount()->getId();
+        }
+
+        if ($entity->getExpenseAccount() !== null) {
+            $snapshot->expenseAccount = $entity->getExpenseAccount()->getId();
+        }
+
+        if ($entity->getRevenueAccount() !== null) {
+            $snapshot->getRevenueAccount = $entity->getRevenueAccount()->getId();
+        }
+
+        if ($entity->getDefaultWarehouse() !== null) {
+            $snapshot->defaultWarehouse = $entity->getDefaultWarehouse()->getId();
+        }
+
+        if ($entity->getLastChangeBy() !== null) {
+            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+
+        if ($entity->getStandardUom() !== null) {
+            $snapshot->standardUom = $entity->getStandardUom()->getId();
+        }
+
+        if ($entity->getCompany() !== null) {
+            $snapshot->company = $entity->getCompany()->getId();
+        }
+
+        if ($entity->getLastPrRow() !== null) {
+            $snapshot->lastPrRow = $entity->getLastPrRow()->getId();
+        }
+
+        if ($entity->getLastPoRow() !== null) {
+            $snapshot->lastPoRow = $entity->getLastPoRow()->getId();
+        }
+
+        if ($entity->getLastApInvoiceRow() !== null) {
+            $snapshot->lastApInvoiceRow = $entity->getLastApInvoiceRow()->getId();
+        }
+
+        if ($entity->getLastTrxRow() !== null) {
+            $snapshot->lastTrxRow = $entity->getLastTrxRow()->getId();
+        }
+
+        if ($entity->getLastPurchasing() !== null) {
+            $snapshot->lastPurchasing = $entity->getLastPurchasing()->getId();
+        }
 
         return $snapshot;
     }

@@ -11,11 +11,9 @@ use Inventory\Domain\Contracts\Repository\QueryRepositoryInterface;
 Interface ItemQueryRepositoryInterface extends QueryRepositoryInterface
 {
 
-    public function findAll();
+    public function getVersion($id, $token = null);
 
-    public function getById($id);
+    public function getVersionArray($id, $token = null);
 
-    public function getByUUID($uuid);
-
-    public function generateSysNumber($obj);
+    public function getRootEntityByTokenId($id, $token = null);
 }

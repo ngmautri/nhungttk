@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSnapshot extends BaseItemSnapshot
+class ItemSnapshot extends GenericItemSnapshot
 {
 
     public function initDoc($createdBy, $createdDate)
@@ -20,5 +20,11 @@ class ItemSnapshot extends BaseItemSnapshot
         $this->setRevisionNo(0);
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
+    }
+
+    public function updateDoc($createdBy, $createdDate)
+    {
+        $this->setLastChangeOn($createdDate);
+        $this->setLastChangeBy($createdBy);
     }
 }

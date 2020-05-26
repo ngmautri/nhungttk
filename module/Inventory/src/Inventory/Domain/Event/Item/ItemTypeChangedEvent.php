@@ -1,8 +1,7 @@
 <?php
 namespace Inventory\Domain\Event\Item;
 
-use Symfony\Component\Workflow\Event\Event;
-use Inventory\Domain\Item\AbstractItem;
+use Application\Application\Event\AbstractEvent;
 use Inventory\Domain\Item\GenericItem;
 
 /**
@@ -10,7 +9,7 @@ use Inventory\Domain\Item\GenericItem;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemTypeChangedEvent extends Event
+class ItemTypeChangedEvent extends AbstractEvent
 {
 
     const EVENT_NAME = "item.type.changed";

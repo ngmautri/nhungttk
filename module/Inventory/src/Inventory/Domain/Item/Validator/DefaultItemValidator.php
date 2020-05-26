@@ -3,6 +3,8 @@ namespace Inventory\Domain\Item\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Inventory\Domain\Item\AbstractItem;
+use Inventory\Domain\Item\Contracts\ItemType;
+use Inventory\Domain\Item\Contracts\MonitorMethod;
 use Inventory\Domain\Validator\Item\AbstractItemValidator;
 use Inventory\Domain\Validator\Item\ItemValidatorInterface;
 use InvalidArgumentException;
@@ -67,6 +69,15 @@ class DefaultItemValidator extends AbstractItemValidator implements ItemValidato
                 if (preg_match('/[$^]/', $rootEntity->getItemName()) == 1) {
                     $err = "Item name contains invalid character (e.g. $)";
                     $rootEntity->addError($err);
+                }
+            }
+
+            // Monitor method is not for service item.
+
+            if ($rootEntity->getMonitoredBy() !== null && $rootEntity->getItemTypeId() !== ItemType::SERVICE_ITEM_TYPE) {
+                if (! \in_array($rootEntity->getMonitoredBy(), MonitorMethod::getSupportedMethod())) {
+                    $format = "Monitor method not supported! #%s";
+                    $rootEntity->addError(\sprintf($format, $rootEntity->getMonitoredBy()));
                 }
             }
         } catch (\Exception $e) {

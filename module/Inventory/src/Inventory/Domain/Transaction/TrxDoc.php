@@ -5,8 +5,8 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\SharedService;
+use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Event\Qr\QrHeaderCreated;
@@ -14,6 +14,7 @@ use Procure\Domain\Event\Qr\QrHeaderUpdated;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\QrPostingService;
+use Procure\Domain\Service\Contracts\PostingServiceInterface;
 use Ramsey\Uuid\Uuid;
 use InvalidArgumentException;
 
@@ -225,4 +226,16 @@ class TrxDoc extends GenericTrx
             throw new InvalidArgumentException("postingService service not found");
         }
     }
+
+    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function preReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
 }

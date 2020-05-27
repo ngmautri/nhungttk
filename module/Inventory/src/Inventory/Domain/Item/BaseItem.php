@@ -49,6 +49,16 @@ class BaseItem extends AbstractItem
 
     // addtional attribute.
     // =======================================
+    protected $qoList;
+
+    protected $procureGrList;
+
+    protected $batchNoList;
+
+    protected $fifoLayerConsumeList;
+
+    protected $stockGrList;
+
     protected $pictureList;
 
     protected $attachmentList;
@@ -70,6 +80,51 @@ class BaseItem extends AbstractItem
     protected $onHandValue;
 
     protected $standardUnitName;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getQoList()
+    {
+        return $this->qoList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getProcureGrList()
+    {
+        return $this->procureGrList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBatchNoList()
+    {
+        return $this->batchNoList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFifoLayerConsumeList()
+    {
+        return $this->fifoLayerConsumeList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockGrList()
+    {
+        return $this->stockGrList;
+    }
 
     /**
      *

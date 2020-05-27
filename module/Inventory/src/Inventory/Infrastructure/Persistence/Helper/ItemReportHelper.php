@@ -4,7 +4,9 @@ namespace Inventory\Infrastructure\Persistence\Helper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Inventory\Infrastructure\Contract\SqlFilterInterface;
+use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
+use Inventory\Infrastructure\Persistence\Filter\ItemSerialSqlFilter;
+use Inventory\Infrastructure\Persistence\SQL\ItemReportSQL;
 
 /**
  *
@@ -212,5 +214,54 @@ FROM nmt_inventory_item";
         $stmt = $this->doctrineEM->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param SqlFilterInterface $filter
+     * @param string $sort_by
+     * @param string $sort
+     * @param int $limit
+     * @param int $offset
+     * @return NULL|array|mixed|\Doctrine\DBAL\Driver\Statement|NULL
+     */
+    static public function getItemListWithSerialNumber(EntityManager $doctrineEM, SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof ItemSerialSqlFilter) {
+            return null;
+        }
+
+        $sql = ItemReportSQL::ITEM_LIST_WITH_SN;
+
+        $sql = $sql . ' AND nmt_inventory_item.is_active=1';
+
+        if ($filter->getItemId() > 0) {
+            $format = ' AND nmt_inventory_item.id=%s';
+            $sql = $sql . \sprintf($format, $filter->getItemId());
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("serial_id", "serial_id");
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
     }
 }

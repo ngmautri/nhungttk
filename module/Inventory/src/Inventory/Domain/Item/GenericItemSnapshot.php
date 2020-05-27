@@ -43,6 +43,16 @@ class GenericItemSnapshot extends BaseItemSnapshot
 
     public $serialSystemNo;
 
+    public $qoList;
+
+    public $procureGrList;
+
+    public $batchNoList;
+
+    public $fifoLayerConsumeList;
+
+    public $stockGrList;
+
     public $pictureList;
 
     public $attachmentList;
@@ -64,6 +74,51 @@ class GenericItemSnapshot extends BaseItemSnapshot
     public $onHandValue;
 
     public $standardUnitName;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getQoList()
+    {
+        return $this->qoList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getProcureGrList()
+    {
+        return $this->procureGrList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBatchNoList()
+    {
+        return $this->batchNoList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFifoLayerConsumeList()
+    {
+        return $this->fifoLayerConsumeList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockGrList()
+    {
+        return $this->stockGrList;
+    }
 
     /**
      *

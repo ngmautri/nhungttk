@@ -210,4 +210,31 @@ AS item_price_tbl
 ORDER BY item_price_tbl.lc_unit_price ASC
         
 ';
+
+    const ITEM_LIST_WITH_SN = "
+SELECT
+    nmt_inventory_item.*
+    FROM nmt_inventory_item
+    Where 1
+";
+
+    const ITEM_LIST_WITH_SN1 = "
+SELECT
+    nmt_inventory_item.*,
+    nmt_inventory_item_serial.id AS serial_id,
+    nmt_inventory_item_serial.serial_number as serial_no,
+    nmt_inventory_item_serial.serial_number_1 as serial_no1,
+    nmt_inventory_item_serial.serial_number_2 as serial_no2,
+    nmt_inventory_item_serial.mfg_name,
+    nmt_inventory_item_serial.mfg_description,
+    nmt_inventory_item_serial.remarks as serial_remarks,
+    nmt_inventory_item_serial.mfg_serial_number,
+    nmt_inventory_item_serial.mfg_model,
+    nmt_inventory_item_serial.mfg_model1,
+    nmt_inventory_item_serial.mfg_model2
+    FROM nmt_inventory_item
+    INNER JOIN nmt_inventory_item_serial
+    ON nmt_inventory_item_serial.item_id = nmt_inventory_item.id
+    Where 1
+";
 }

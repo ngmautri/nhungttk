@@ -1606,7 +1606,7 @@ class ItemController extends AbstractActionController
         // echo Uuid::uuid4();
 
         if ($layout == "grid") {
-            $viewModel->setTemplate("inventory/item/list-gird2");
+            $viewModel->setTemplate("inventory/item/list-gird3");
         }
         return $viewModel;
     }

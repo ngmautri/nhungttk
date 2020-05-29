@@ -44,6 +44,29 @@ class ItemSnapshotAssembler
         "itemType"
     ];
 
+    public static function createFromQueryHit($hit)
+    {
+        if ($hit == null) {
+            return;
+        }
+
+        $snapshort = new ItemSnapshot();
+        $reflectionClass = new \ReflectionClass($snapshort);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if ($hit->__isset($propertyName)) {
+                $snapshort->$propertyName = $hit->$propertyName;
+            }
+        }
+
+        $snapshort->id = $hit->item_id; // important
+
+        return $snapshort;
+    }
+
     public static function createIndexDoc()
     {
         $entity = new ItemSnapshot();

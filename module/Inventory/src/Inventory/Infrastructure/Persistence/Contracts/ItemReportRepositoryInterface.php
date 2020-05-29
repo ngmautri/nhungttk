@@ -9,6 +9,8 @@ namespace Inventory\Infrastructure\Persistence\Contracts;
 Interface ItemReportRepositoryInterface
 {
 
+    public function getItemList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
+
     public function getAllItemWithSerial($itemId = null);
 
     public function getMostOrderItems($limit = 50, $offset = 0);

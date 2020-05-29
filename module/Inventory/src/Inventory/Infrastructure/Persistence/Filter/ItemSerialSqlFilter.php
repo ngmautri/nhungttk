@@ -13,6 +13,46 @@ class ItemSerialSqlFilter implements SqlFilterInterface
 
     public $itemId;
 
+    public $isActive;
+
+    public $itemType;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemType()
+    {
+        return $this->itemType;
+    }
+
+    /**
+     *
+     * @param mixed $itemType
+     */
+    public function setItemType($itemType)
+    {
+        $this->itemType = $itemType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     *
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
     /**
      *
      * @return mixed

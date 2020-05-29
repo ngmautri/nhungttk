@@ -20,6 +20,10 @@ use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
 use Inventory\Application\Eventbus\HandlerMapperFactory;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplFactory;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImplFactory;
 
 return array(
     'navigation' => array(
@@ -255,6 +259,10 @@ return array(
 
             // Repository Service
             'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
+
+            // Search Handler
+            ItemSearchIndexImpl::class => ItemSearchIndexImplFactory::class,
+            ItemSearchQueryImpl::class => ItemSearchQueryImplFactory::class,
 
             // Event Handler Resolver
             EventBusService::class => EventBusServiceFactory::class,

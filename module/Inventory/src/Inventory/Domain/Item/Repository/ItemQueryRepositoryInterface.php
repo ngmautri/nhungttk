@@ -15,5 +15,5 @@ Interface ItemQueryRepositoryInterface extends QueryRepositoryInterface
 
     public function getVersionArray($id, $token = null);
 
-    public function getRootEntityByTokenId($id, $token = null);
+    public function getRootEntityByTokenId($id, $token);
 }

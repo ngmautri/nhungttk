@@ -64,7 +64,7 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
         return null;
     }
 
-    public function getRootEntityByTokenId($id, $token = null)
+    public function getRootEntityByTokenId($id, $token)
     {
         if ($id == null || $token == null) {
             return null;
@@ -83,7 +83,7 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
             return null;
         }
 
-        $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine);
+        $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
         if ($rootSnapshot == null) {
             return null;
         }

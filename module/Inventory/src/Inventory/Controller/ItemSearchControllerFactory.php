@@ -1,9 +1,9 @@
 <?php
 namespace Inventory\Controller;
 
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Inventory\Controller\ItemSearchController;
 
 /**
  *
@@ -28,9 +28,11 @@ class ItemSearchControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        // Vendor Search Service
         $sv = $sm->get('Inventory\Service\ItemSearchService');
         $controller->setItemSearchService($sv);
+
+        $sv = $sm->get(ItemSearchQueryImpl::class);
+        $controller->setItemQueryService($sv);
 
         return $controller;
     }

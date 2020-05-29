@@ -4,7 +4,9 @@ namespace Inventory\Infrastructure\Persistence\Helper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
+use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\ItemSerialSqlFilter;
 use Inventory\Infrastructure\Persistence\SQL\ItemReportSQL;
 
@@ -238,7 +240,7 @@ FROM nmt_inventory_item";
 
         $sql = ItemReportSQL::ITEM_LIST_WITH_SN;
 
-        $sql = $sql . ' AND nmt_inventory_item.is_active=1';
+        // $sql = $sql . ' AND nmt_inventory_item.is_active=1';
 
         if ($filter->getItemId() > 0) {
             $format = ' AND nmt_inventory_item.id=%s';
@@ -256,7 +258,85 @@ FROM nmt_inventory_item";
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
-            $rsm->addScalarResult("serial_id", "serial_id");
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param SqlFilterInterface $filter
+     * @param string $sort_by
+     * @param string $sort
+     * @param int $limit
+     * @param int $offset
+     * @return NULL|array|mixed|\Doctrine\DBAL\Driver\Statement|NULL
+     */
+    static public function getItemList(EntityManager $doctrineEM, SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof ItemReportSqlFilter) {
+            return null;
+        }
+
+        $sql = "SELECT * FROM nmt_inventory_item WHERE 1";
+
+        if ($filter->getIsActive() == 1) {
+            $format = ' AND nmt_inventory_item.is_active= 1';
+            $sql = $sql . \sprintf($format, $filter->getIsActive());
+        } elseif ($filter->getIsActive() == 0) {
+            $format = ' AND nmt_inventory_item.is_active= 0';
+            $sql = $sql . \sprintf($format, $filter->getIsActive());
+        }
+
+        $format = ' AND nmt_inventory_item.item_type_id= %s';
+
+        switch ($filter->getItemType()) {
+            case ItemType::FIXED_ASSET_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::FIXED_ASSET_ITEM_TYPE);
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::NONE_INVENTORY_ITEM_TYPE);
+                break;
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::INVENTORY_ITEM_TYPE);
+                break;
+
+            case ItemType::SERVICE_ITEM_TYPE:
+                $sql = $sql . \sprintf($format, ItemType::SERVICE_ITEM_TYPE);
+                break;
+        }
+
+        switch ($sort_by) {
+            case "itemName":
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY nmt_inventory_item.created_on " . $sort;
+                break;
+        }
+
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
             $query = $doctrineEM->createNativeQuery($sql, $rsm);
 
             return $query->getResult();

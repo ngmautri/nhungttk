@@ -2,7 +2,9 @@
 namespace Inventory\Application\Service\Search\ZendSearch\Item;
 
 use Application\Application\Service\Search\Contracts\IndexingResult;
+use Application\Entity\NmtInventoryItemSerial;
 use Application\Service\AbstractService;
+use Doctrine\Common\Collections\Collection;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Service\Search\ItemSearchIndexInterface;
 use ZendSearch\Lucene\Document;
@@ -29,6 +31,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
     public function createIndex($rows)
     {
         $indexResult = new IndexingResult();
+        $currentSnapshot = null;
 
         try {
 
@@ -39,24 +42,31 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             // take long time
             set_time_limit(3500);
 
-            $index = Lucene::create(getcwd() . SearchIndexer::INDEX_PATH);
+            $indexer = Lucene::create(getcwd() . SearchIndexer::INDEX_PATH);
+
             Analyzer::setDefault(new CaseInsensitive());
 
-            foreach ($rows as $row) {
-                $this->_createIndexFromRowSnapshot($index, $row);
+            foreach ($rows as $snapshot) {
+                $currentSnapshot = $snapshot;
+                $this->_createNewIndexFromSnapshot($indexer, $snapshot);
             }
 
             $message = \sprintf('Index has been created successfully! %s', count($rows));
 
             $indexResult = new IndexingResult();
-            $this->_updateIndexingResult($index, $indexResult);
+            $this->_updateIndexingResult($indexer, $indexResult);
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(True);
         } catch (Exception $e) {
 
             echo $e->getTraceAsString();
 
-            $message = \sprintf('Failed! %s - %s', $e->getMessage(), $row->getId());
+            $m = '??';
+            if ($currentSnapshot !== null) {
+                $m = $currentSnapshot->getId();
+            }
+
+            $message = \sprintf('Failed! %s - %s', $e->getMessage(), $m);
 
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(False);
@@ -96,28 +106,28 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
      * {@inheritdoc}
      * @see \Inventory\Domain\Service\Search\ItemSearchIndexInterface::createDoc()
      */
-    public function createDoc(ItemSnapshot $doc)
+    public function createDoc(ItemSnapshot $snapshot)
     {
         try {
 
             $indexResult = new IndexingResult();
 
-            if (! $doc instanceof ItemSnapshot) {
+            if (! $snapshot instanceof ItemSnapshot) {
                 throw new \InvalidArgumentException("ItemSnapshot not given");
             }
 
             // take long time
             set_time_limit(1500);
 
-            $index = $this->getIndexer();
+            $indexer = $this->getIndexer();
             Analyzer::setDefault(new CaseInsensitive());
 
-            $this->_createDoc($index, $doc);
+            $this->_updateIndexFromSnapshot($indexer, $$snapshot);
 
-            $message = \sprintf('Document has been added successfully! %s', $doc->getId());
+            $message = \sprintf('Document has been added successfully! %s', $snapshot->getId());
 
             $indexResult = new IndexingResult();
-            $this->_updateIndexingResult($index, $indexResult);
+            $this->_updateIndexingResult($indexer, $indexResult);
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(True);
         } catch (Exception $e) {
@@ -135,14 +145,14 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
      * @param IndexingResult $indexResult
      * @return \Application\Application\Service\Search\Contracts\IndexingResult
      */
-    private function _updateIndexingResult(\ZendSearch\Lucene\SearchIndexInterface $index, IndexingResult $indexResult)
+    private function _updateIndexingResult(\ZendSearch\Lucene\SearchIndexInterface $indexer, IndexingResult $indexResult)
     {
-        $indexResult->setDocsCount($index->numDocs());
-        $indexResult->setIndexSize($index->count());
-        $indexResult->setIndexVesion($index->getFormatVersion());
+        $indexResult->setDocsCount($indexer->numDocs());
+        $indexResult->setIndexSize($indexer->count());
+        $indexResult->setIndexVesion($indexer->getFormatVersion());
 
-        if ($index->getDirectory() !== null) {
-            $indexResult->setFileList($index->getDirectory()
+        if ($indexer->getDirectory() !== null) {
+            $indexResult->setFileList($indexer->getDirectory()
                 ->fileList());
         }
         $indexResult->setIndexDirectory(SearchIndexer::INDEX_PATH);
@@ -151,56 +161,141 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
 
     /**
      *
-     * @param \ZendSearch\Lucene\SearchIndexInterface $index
+     * @param \ZendSearch\Lucene\SearchIndexInterface $indexer
      * @param ItemSnapshot $snapshot
      * @throws \InvalidArgumentException
      */
-    private function _createIndexFromSnapshot(\ZendSearch\Lucene\SearchIndexInterface $index, ItemSnapshot $snapshot)
+    private function _createNewIndexFromSnapshot(\ZendSearch\Lucene\SearchIndexInterface $indexer, ItemSnapshot $snapshot)
     {
-        $doc = new Document();
-
         if (! $snapshot instanceof ItemSnapshot) {
             throw new \InvalidArgumentException("ItemSnapshot empty");
         }
 
-        $ck_query = \sprintf('item_id:%s', \sprintf('%s', $snapshot->getId()));
+        $snList = $snapshot->getSerialNoList();
 
-        $ck_hits = $index->find($ck_query);
-        echo (count($ck_hits));
+        if (! $snList instanceof Collection) {
+            return;
+        }
+
+        if ($snList->count() == 0) {
+            $doc = $this->__createDoc($snapshot);
+            $indexer->addDocument($doc);
+            return;
+        }
+        // add doc with serial numeber
+        foreach ($snList as $sn) {
+            $doc = $this->__createDoc($snapshot, $sn);
+            $indexer->addDocument($doc);
+        }
+    }
+
+    /**
+     *
+     * @param \ZendSearch\Lucene\SearchIndexInterface $indexer
+     * @param ItemSnapshot $snapshot
+     * @throws \InvalidArgumentException
+     */
+    private function _updateIndexFromSnapshot(\ZendSearch\Lucene\SearchIndexInterface $indexer, ItemSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof ItemSnapshot) {
+            throw new \InvalidArgumentException("ItemSnapshot empty");
+        }
+
+        $k = SearchIndexer::ITEM_KEY;
+        $v = \sprintf(SearchIndexer::ITEM_KEY_FORMAT, $snapshot->getId());
+
+        $ck_query = \sprintf('%s:%s', $k, $v);
+
+        $ck_hits = $indexer->find($ck_query);
 
         if (count($ck_hits) > 0) {
-
             foreach ($ck_hits as $hit) {
-                $index->delete($hit->id);
+                $indexer->delete($hit->id);
             }
         }
 
-        $doc->addField(Field::UnIndexed('itemId', $snapshot->getId()));
+        $this->_createNewIndexFromSnapshot($indexer, $snapshot);
+    }
 
-        $format = \sprintf(SearchIndexer::FIXED_ASSET_VALUE);
-        $doc->addField(Field::keyword(SearchIndexer::FIXED_ASSET_KEY, \sprintf($format, $snapshot->getIsFixedAsset())));
+    /**
+     *
+     * @param ItemSnapshot $snapshot
+     * @param NmtInventoryItemSerial $sn
+     * @return \ZendSearch\Lucene\Document
+     */
+    private function __createDoc(ItemSnapshot $snapshot, NmtInventoryItemSerial $sn = null)
+    {
+        $doc = new Document();
 
-        $format = \sprintf(SearchIndexer::STOCKED_ITEM_VALUE);
-        $doc->addField(Field::keyword(SearchIndexer::STOCKED_ITEM_KEY, \sprintf($format, $snapshot->getIsSparepart())));
+        // KEY
+
+        $k = SearchIndexer::ITEM_KEY;
+        $v = \sprintf(SearchIndexer::ITEM_KEY_FORMAT, $snapshot->getId());
+        $doc->addField(Field::keyword($k, $v));
+
+        $k = SearchIndexer::FIXED_ASSET_KEY;
+        $v = \sprintf(SearchIndexer::FIXED_ASSET_VALUE, $snapshot->getIsFixedAsset());
+        $doc->addField(Field::keyword($k, $v));
+
+        $k = SearchIndexer::STOCKED_ITEM_KEY;
+        $v = \sprintf(SearchIndexer::STOCKED_ITEM_VALUE, $snapshot->getIsStocked());
+        $doc->addField(Field::keyword($k, $v));
 
         // Serial
-        $doc->addField(Field::text('serialNo', $snapshot->getSerialNo()));
-        $doc->addField(Field::text('serialNo1', $snapshot->getSerialNo1()));
-        $doc->addField(Field::text('serialNo2', $snapshot->getSerialNo2()));
-        $doc->addField(Field::text('serialMfgNumber', $snapshot->getSerialMfgNumber()));
-        $doc->addField(Field::text('serialMfgName', $snapshot->getSerialMfgName()));
-        $doc->addField(Field::text('serialMfgName1', $snapshot->getSerialMfgName1()));
-        $doc->addField(Field::text('serialMfgModel', $snapshot->getSerialMfgModel()));
-        $doc->addField(Field::text('serialMfgModel1', $snapshot->getSerialMfgModel1()));
-        $doc->addField(Field::text('serialERPNumber', $snapshot->getSerialERPNumber()));
-        $doc->addField(Field::text('serialERPNumber1', $snapshot->getSerialERPNumber1()));
-        $doc->addField(Field::text('serialLotNumber', $snapshot->getSerialLotNumber()));
-        $doc->addField(Field::UnIndexed('serialId', $snapshot->getSerialId()));
+        if ($sn !== null) {
+            $doc->addField(Field::text('serialNo', $sn->getSerialNumber()));
 
-        $doc->addField(Field::keyword('serialSystemNo', $snapshot->getSerialSystemNo()));
-        $doc->addField(Field::keyword('itemSku', $snapshot->getItemSku()));
-        $doc->addField(Field::keyword('itemSku1', $snapshot->getItemSku1()));
-        $doc->addField(Field::keyword('itemSku2', $snapshot->getItemSku2()));
+            $v = preg_replace('/[-]/', '', \substr($sn->getSerialNumber(), - 5));
+            echo $v . "\n====";
+            $doc->addField(Field::text('serialNo1', $v * 1));
+
+            $doc->addField(Field::text('serialNo2', $sn->getSerialNumber2()));
+            $doc->addField(Field::text('serialMfgNumber', $sn->getMfgSerialNumber()));
+            $doc->addField(Field::text('serialMfgName', $sn->getMfgName()));
+            $doc->addField(Field::text('serialMfgModel', $sn->getMfgModel()));
+            $doc->addField(Field::text('serialMfgModel1', $sn->getMfgModel1()));
+            $doc->addField(Field::text('serialERPNumber', $sn->getErpAssetNumber()));
+            $doc->addField(Field::text('serialLotNumber', $sn->getLotNumber()));
+            $doc->addField(Field::UnIndexed('serialId', $sn->getId()));
+            $doc->addField(Field::keyword('serialSystemNo', $sn->getSysNumber()));
+            $doc->addField(Field::text('mfg_description', $sn->getRemarks()));
+        } else {
+
+            $doc->addField(Field::UnIndexed('serialNo', null));
+            $doc->addField(Field::UnIndexed('serialNo1', null));
+            $doc->addField(Field::UnIndexed('serialNo2', null));
+            $doc->addField(Field::UnIndexed('serialMfgNumber', null));
+            $doc->addField(Field::UnIndexed('serialMfgName', null));
+            $doc->addField(Field::UnIndexed('serialMfgModel', null));
+            $doc->addField(Field::UnIndexed('serialMfgModel1', null));
+            $doc->addField(Field::UnIndexed('serialERPNumber', null));
+            $doc->addField(Field::UnIndexed('serialLotNumber', null));
+            $doc->addField(Field::UnIndexed('serialId', null));
+            $doc->addField(Field::UnIndexed('serialSystemNo', null));
+            $doc->addField(Field::UnIndexed('mfg_description', null));
+        }
+
+        // Serial END
+        // ==========================
+        $doc->addField(Field::UnIndexed('item_id', $snapshot->getId()));
+        $doc->addField(Field::UnIndexed('token', $snapshot->getToken()));
+
+        $doc->addField(Field::keyword('itemSku_key', $snapshot->getItemSku()));
+        $doc->addField(Field::keyword('itemSku1_key', $snapshot->getItemSku1()));
+        $doc->addField(Field::keyword('itemSku2_key', $snapshot->getItemSku2()));
+
+        $doc->addField(Field::text('itemSku', $snapshot->getItemSku()));
+        $doc->addField(Field::text('itemSku1', $snapshot->getItemSku1()));
+        $doc->addField(Field::text('itemSku2', $snapshot->getItemSku2()));
+
+        // \substr($snapshot->getItemSku(), 0, strpos($snapshot->getItemSku(), "-") + 1);
+        $doc->addField(Field::keyword('itemSku_pre', \substr($snapshot->getItemSku(), 0, strpos($snapshot->getItemSku(), "-") + 1)));
+        $doc->addField(Field::keyword('itemSku1_pre', \substr($snapshot->getItemSku1(), 0, strpos($snapshot->getItemSku1(), "-") + 1)));
+        $doc->addField(Field::keyword('itemSku2_pre', \substr($snapshot->getItemSku2(), 0, strpos($snapshot->getItemSku2(), "-") + 1)));
+
+        $doc->addField(Field::keyword('itemSku_1', preg_replace('/[()]/', '', $snapshot->getItemSku())));
+        $doc->addField(Field::keyword('itemSku1_1', preg_replace('/[()]/', '', $snapshot->getItemSku1())));
+        $doc->addField(Field::keyword('itemSku2_1', preg_replace('/[()]/', '', $snapshot->getItemSku2())));
 
         $doc->addField(Field::text('itemName', $snapshot->getItemName()));
         // $doc->addField(Field::text('itemNameForeign', $snapshot->getItemNameForeign()));
@@ -245,9 +340,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
          * $doc->addField(Field::text('standardUnitName', $snapshot->getStandardUnitName()));
          * $doc->addField(Field::text('id', $snapshot->getId()));
          * $doc->addField(Field::text('warehouseId', $snapshot->getWarehouseId()));
-         *
          * $doc->addField(Field::text('isActive', $snapshot->getIsActive()));
-         *
          * $doc->addField(Field::text('isStocked', $snapshot->getIsStocked()));
          * $doc->addField(Field::text('isSaleItem', $snapshot->getIsSaleItem()));
          * $doc->addField(Field::text('isPurchased', $snapshot->getIsPurchased()));
@@ -303,8 +396,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
          * $doc->addField(Field::text('itemTypeId', $snapshot->getItemTypeId()));
          *
          */
-
-        $index->addDocument($doc);
+        return $doc;
     }
 
     /**
@@ -318,6 +410,18 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             $indexer = Lucene::open(getcwd() . SearchIndexer::INDEX_PATH);
         } catch (RuntimeException $e) {
             $indexer = Lucene::create(getcwd() . SearchIndexer::INDEX_PATH);
+        }
+
+        return $indexer;
+    }
+
+    private function getItemSerialIndexer()
+    {
+        $indexer = null;
+        try {
+            $indexer = Lucene::open(getcwd() . SearchIndexer::ITEM_SERIAL_INDEX_PATH);
+        } catch (RuntimeException $e) {
+            $indexer = Lucene::create(getcwd() . SearchIndexer::ITEM_SERIAL_INDEX_PATH);
         }
 
         return $indexer;

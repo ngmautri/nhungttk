@@ -183,13 +183,33 @@ class ApController extends AbstractGenericController
     public function createAction()
     {
         $this->layout("Procure/layout-fullscreen");
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ; *
+         * @var \Application\Entity\MlaUsers $u ;
+         * @var ApDTO $dto ;
+         */
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        if ($u == null) {
+            return $this->redirect()->toRoute('access_denied    ');
+        }
+
         $nmtPlugin = $this->Nmtplugin();
 
         $form_action = "/procure/ap/create";
         $form_title = "Create Invoice:";
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/ap/crudHeader";
+
+        $userId = $u->getId();
+        $companyId = $u->getCompany()->getId();
+        $localCurrencyId = $u->getCompany()
+            ->getDefaultCurrency()
+            ->getId();
 
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -208,25 +228,15 @@ class ApController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
         try {
             $data = $prg;
-            /**
-             *
-             * @var \Application\Entity\MlaUsers $u ;
-             * @var ApDTO $dto ;
-             */
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
             $dto = DTOFactory::createDTOFromArray($data, new ApDTO());
-            $userId = $u->getId();
-            $companyId = $u->getCompany()->getId();
-
             $options = new ApCreateOptions($companyId, $userId, __METHOD__);
 
             $cmdHandler = new CreateHeaderCmdHandler();
@@ -251,7 +261,8 @@ class ApController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

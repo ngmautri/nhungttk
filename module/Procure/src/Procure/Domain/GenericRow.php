@@ -102,7 +102,7 @@ class GenericRow extends BaseRow
             // $this->convertedDocQuantity = $this->getDocQuantity() * $this->getConversionFactor();
             // $this->convertedDocUnitPrice = $this->getDocUnitPrice() / $this->getConvertedDocQuantity();
 
-            // actuall converted doc quantity /price.
+            // actuallly converted doc quantity /price.
             $this->quantity = $this->getDocQuantity() * $this->getConversionFactor();
             $this->unitPrice = $this->getDocUnitPrice() / $this->quantity;
 
@@ -138,8 +138,8 @@ class GenericRow extends BaseRow
             // $entity->setQuantity($convertedPurchaseQuantity);
             // $entity->setUnitPrice($convertedPurchaseUnitPrice);
 
-            $convertedStandardQuantity = $this->getDocQuantity();
-            $convertedStandardUnitPrice = $this->getDocUnitPrice();
+            $convertedStandardQuantity = $this->getQuantity();
+            $convertedStandardUnitPrice = $this->getUnitPrice();
 
             if ($this->getItem() > 0) {
                 $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;

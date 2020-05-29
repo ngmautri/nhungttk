@@ -1,9 +1,12 @@
 <!-- 
  <ul class="nav nav-pills">
-	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">Item List</a></li>
+	<li><a href="<?php
+echo $this->baseUrl?>/inventory/item/list">Item List</a></li>
 </ul>
  
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
+ <form class="form-inline" action="<?php
+
+echo $this->baseUrl?>/inventory/search/item"	method="get" enctype="multipart/form-data">
   <div class="form-group">
     	<input class="form-control" size="28" type="text" name = "q" class="">
   </div>
@@ -13,33 +16,40 @@
   
 </form>
  -->
-
 <div id="tabs" style="font-size: 9.5pt">
-
-	<ul>
-		<li><a href="#general">Search Result</a></li>
-	</ul>
-	<div id="general">
+   <ul>
+      <li>
+         <a href="#general">Search Result</a>
+      </li>
+   </ul>
+   <div id="general">
 
 <?php
 echo '<span>';
 echo $message;
-echo '</span>';?>
-	<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 1pt 5pt; margin: 1pt 5pt 1pt 10pt" title="List View" href="<?php echo $this->baseUrl ?>/inventory/search/item?layout=list&q=<?php echo $q;?>">
-	<i class="fa fa-list" aria-hidden="true"></i></a>
-
-
-
-
-<?php 
-if (! $hits == null) :
+echo '</span>';
 ?>
+	<a class="btn btn-default btn-sm" style="color: black; padding: 1pt 5pt 1pt 5pt; margin: 1pt 5pt 1pt 10pt" title="List View" href="<?php
+
+echo $this->baseUrl?>/inventory/search/item?layout=list&q=<?php
+
+echo $q;
+?>">
+         <i class="fa fa-list" aria-hidden="true"></i>
+      </a>
+
+
+
+
+<?php
+if (! $hits == null) :
+    ?>
 
 
 
 
 <hr style="margin: 5pt 1pt 5pt 1pt;">
-		<div class="container-fluid">
+      <div class="container-fluid">
 
 
 <?php
@@ -47,108 +57,229 @@ if (! $hits == null) :
 
     $count = 0;
     foreach ($hits as $hit) :
-   
+
         $url = $nmtPlugin->getItemPic($hit->item_id);
 
         // echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-        
+
         if ($count == 0 || $count % $lineBreak == 0) {
             echo '<div class="row" style="height-min:130px; border:1px;">';
         }
-        
 
         ?>
 		
 		
 		 <div class="col-xs-6 col-md-3	">
+            <table style="">
+               <tr style="padding: 1pt 2pt 10pt 1pt;">
+                  <td>
+                     <div style="position: relative; float: right;">
+                        <!-- <span class="badge badge-primary"><?php
 
+        echo $count;
+        ?></span> -->
+                        <!--  <img id="item_<?php
 
-			<table style="">
-				<tr style="padding: 1pt 2pt 10pt 1pt;">
-					<td>
-
-
-						<div style="position: relative; float: right;">
-							<!-- <span class="badge badge-primary"><?php echo $count;?></span> -->
-
-							<!--  <img id="item_<?php echo $this->escapeHtml($a['id']);?>"
+        echo $this->escapeHtml($a['id']);
+        ?>"
 									style="cursor: pointer;" title="click for more detail!"
 									onclick="" class="img-rounded" width="120" height="120"
-									src="/inventory/item/get-picture1?&item_id=<?php echo $a['id'];?>" />-->
+									src="/inventory/item/get-picture1?&item_id=<?php
 
-						
- <a
-							target="_blank" style="color: black;"
-							href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token ;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
-							<img id="item_<?php echo $this->escapeHtml($hit->item_id);?>"
-								style="cursor: pointer;" title="click for more detail!"
-								onclick="" class="img-rounded" width="130" height="130"
-								src="<?php echo $url; ?>" />
-						</a>
+        echo $a['id'];
+        ?>" />-->
+                        <a target="_blank" style="color: black;" href="<?php
 
-						</div>
-					</td>
+        echo $this->baseUrl?>/inventory/item/show?token=<?php
 
-					<td style="padding: 1pt 1pt 1pt 10pt;"><span
-						style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;"> <a
-							target="_blank" style="color: black;"
-							href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token ;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
-						<?php echo ucwords(substr($this->escapeHtml($hit->item_name),0,100));?></a>
-					</span> 
-					<span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;"> 
-					<br><?php echo $this->escapeHtml($hit->item_sku);?>
-					<?php if (isset($hit->item_sku1)): if($hit->item_sku1!=null): echo '<br>' . $this->escapeHtml($hit->item_sku1); endif;endif; ?>
-					<?php if($hit->serial_number_key!=null): echo '<br>' . $this->escapeHtml($hit->serial_number_key); endif; ?>
-					<?php if($hit->manufacturer_code!=null): echo '<br>' . $this->escapeHtml($hit->manufacturer_code); endif; ?>
-					<?php if($hit->manufacturer_serial!=null): echo '<br>' . $this->escapeHtml($hit->manufacturer_serial); endif; ?>
-					<?php if($hit->manufacturer_model!=null): echo '<br>' . $this->escapeHtml($hit->manufacturer_model); endif; ?>
+        echo $hit->token;
+        ?>&entity_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">
+                           <img id="item_<?php
+
+        echo $this->escapeHtml($hit->item_id);
+        ?>" style="cursor: pointer;" title="click for more detail!" onclick="" class="img-rounded" width="130" height="130" src="<?php
+
+        echo $url;
+        ?>" />
+                        </a>
+                     </div>
+                  </td>
+                  <td style="padding: 1pt 1pt 1pt 10pt;">
+                     <span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">
+                        <a target="_blank" style="color: black;" href="<?php
+
+        echo $this->baseUrl?>/inventory/item/show?token=<?php
+
+        echo $hit->token;
+        ?>&entity_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">
+						<?php
+
+        echo ucwords(substr($this->escapeHtml($hit->item_name), 0, 100));
+        ?></a>
+                     </span>
+                     <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">
+                        <br><?php
+
+        echo $this->escapeHtml($hit->item_sku);
+        ?>
+					<?php
+
+        if (isset($hit->item_sku1)) :
+            if ($hit->item_sku1 != null) :
+                echo '<br>' . $this->escapeHtml($hit->item_sku1); endif;endif;
+
+
+        ?>
+					<?php
+
+        if ($hit->serial_number_key != null) :
+            echo '<br>' . $this->escapeHtml($hit->serial_number_key); endif;
+
+        ?>
+					<?php
+
+        if ($hit->manufacturer_code != null) :
+            echo '<br>' . $this->escapeHtml($hit->manufacturer_code); endif;
+
+        ?>
+					<?php
+
+        if ($hit->manufacturer_serial != null) :
+            echo '<br>' . $this->escapeHtml($hit->manufacturer_serial); endif;
+
+        ?>
+					<?php
+
+        if ($hit->manufacturer_model != null) :
+            echo '<br>' . $this->escapeHtml($hit->manufacturer_model); endif;
+
+        ?>
 					</span>
-					
-					<div style="margin: 2px; font-size: 9pt">
+                     <div style="margin: 2px; font-size: 9pt">
+                        <div class="dropdown">
+                           <button style="color: black; padding: 2pt 2pt 2pt 2pt; color: navy; font-site: 8.5pt" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                              <i class="fa fa-bars" aria-hidden="true"></i>
+                              &nbsp;Action&nbsp;
+                              <span class="caret"></span>
+                           </button>
+                           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                              <li>
+                                 <a href="javascript:;"
+                                    onclick="showJqueryDialog('<?php
 
-					<div class="dropdown">
-						<button  style="color:black; padding:2pt 2pt 2pt 2pt; color: navy; font-site:8.5pt" class="btn btn-default dropdown-toggle btn-sm"
-							type="button" id="dropdownMenu1" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="true">
-							<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;Action&nbsp;<span
-								class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-						
-						<li><a href="javascript:;" onclick = "showJqueryDialog('<?php echo $hit->item_name. ' - '. $hit->item_sku ; ?>','1550',$(window).height()-50,'/inventory/item/show1?token=<?php echo $hit->token?>&entity_id=<?php echo $hit->item_id ?>&checksum=<?php echo $hit->checksum ?>','j_loaded_data',true);"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>
+        echo $hit->item_name . ' - ' . $hit->item_sku;
+        ?>','1550',$(window).height()-50,'/inventory/item/show1?token=<?php
 
-</li>
-										
-							<li><a
-								href="<?php echo $this->baseUrl ?>/inventory/item/update?token=<?php echo $hit->token ;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>"><small><i
-										class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a
-								href="<?php echo $this->baseUrl ?>/inventory/item/clone?token=<?php echo $hit->token ;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
-									<small><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;</small>&nbsp;Clone
-							</a></li>
+        echo $hit->token?>&entity_id=<?php
 
-							<li><a
-								href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $hit->token ;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
-									<small><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</small>&nbsp;Upload
-									Picture
-							</a></li>
-							<li><a
-								href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo $hit->token ;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>"><small><i
-										class="glyphicon glyphicon-plus"></i></small>&nbsp;New
-									Attachment</a></li>
-						</ul>
-					</div>
+        echo $hit->item_id?>&checksum=<?php
 
-				</div>
-				
-					</td>
-				<tr>
-			
-			</table>
+        echo $hit->checksum?>','j_loaded_data',true);">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                    &nbsp;Quick Show
+                                 </a>
+                              </li>
+                              <li>
+                                 <a href="<?php
 
+        echo $this->baseUrl?>/inventory/item/update?token=<?php
 
-		</div>
+        echo $hit->token;
+        ?>&entity_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">
+                                    <small>
+                                       <i class="glyphicon glyphicon-pencil"></i>
+                                    </small>
+                                    &nbsp;Edit
+                                 </a>
+                              </li>
+                              <li role="separator" class="divider"></li>
+                              <li>
+                                 <a href="<?php
+
+        echo $this->baseUrl?>/inventory/item/clone?token=<?php
+
+        echo $hit->token;
+        ?>&entity_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">
+                                    <small>
+                                       <i class="fa fa-plus" aria-hidden="true"></i>
+                                       &nbsp;
+                                    </small>
+                                    &nbsp;Clone
+                                 </a>
+                              </li>
+                              <li>
+                                 <a href="<?php
+
+        echo $this->baseUrl?>/inventory/item/upload-picture?token=<?php
+
+        echo $hit->token;
+        ?>&target_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">
+                                    <small>
+                                       <i class="fa fa-upload" aria-hidden="true"></i>
+                                       &nbsp;
+                                    </small>
+                                    &nbsp;Upload Picture
+                                 </a>
+                              </li>
+                              <li>
+                                 <a href="<?php
+
+        echo $this->baseUrl?>/inventory/item-attachment/upload?token=<?php
+
+        echo $hit->token;
+        ?>&target_id=<?php
+
+        echo $hit->item_id;
+        ?>&checksum=<?php
+
+        echo $hit->checksum;
+        ?>">
+                                    <small>
+                                       <i class="glyphicon glyphicon-plus"></i>
+                                    </small>
+                                    &nbsp;New Attachment
+                                 </a>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                  </td>
+               
+               
+               <tr>
+            
+            </table>
+         </div>
 
 		<?php
         $count ++;
@@ -164,14 +295,17 @@ if (! $hits == null) :
 		
 		
 	
-<?php endforeach; ?>
+<?php
+    endforeach
+    ;
+    ?>
 
 
 
-<?php endif; ?>
+<?php endif;
+
+?>
 
 </div>
-
-	</div>
+   </div>
 </div>
-

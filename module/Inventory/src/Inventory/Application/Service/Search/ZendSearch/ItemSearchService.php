@@ -243,10 +243,12 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
         $doc->addField(Field::UnIndexed('token', $row['token']));
         $doc->addField(Field::UnIndexed('checksum', $row['checksum']));
         $doc->addField(Field::Keyword('item_token_serial_keyword', $row['token'] . "__" . $row['id'] . "__" . $row['serial_id']));
+
         $doc->addField(Field::Keyword('item_sku_key', $row['item_sku']));
         $doc->addField(Field::Keyword('item_sku1_key', $row['item_sku1']));
         $doc->addField(Field::Keyword('item_sku2_key', $row['item_sku2']));
         $doc->addField(Field::Keyword('item_sys_number', $row['sys_number']));
+
         $doc->addField(Field::Keyword('manufacturer_key', $row['manufacturer']));
         $doc->addField(Field::Keyword('manufacturer_model_key', $row['manufacturer_model']));
         $doc->addField(Field::Keyword('manufacturer_serial_key', $row['manufacturer_serial']));
@@ -281,16 +283,14 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
         $doc->addField(Field::text('sp_label', $row['sparepart_label']));
         $doc->addField(Field::text('asset_label', $row['asset_label']));
 
+        // serial ID:
         $doc->addField(Field::UnIndexed('serial_id', $row['serial_id']));
-
         $doc->addField(Field::Keyword('serial_number_key', $row['serial_no']));
         $doc->addField(Field::Keyword('serial_number_1_key', $row['serial_no1']));
         $doc->addField(Field::Keyword('serial_number_2_key', $row['serial_no2']));
-
         $doc->addField(Field::text('serial_number', $row['serial_no']));
         $doc->addField(Field::text('serial_number_1', $row['serial_no1']));
         $doc->addField(Field::text('serial_number_2', $row['serial_no2']));
-
         $doc->addField(Field::text('mfg_name', $row['mfg_name']));
         $doc->addField(Field::text('mfg_description', $row['mfg_description']));
         $doc->addField(Field::text('serial_remarks', $row['serial_remarks']));

@@ -1,0 +1,84 @@
+<?php
+use Application\Application\Service\Search\Contracts\SearchResult;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
+
+/**@var SearchResult $results ;*/
+
+$table_body = '';
+$message = '';
+$hits_detail = '';
+
+if ($results !== null) {
+    $message = $results->getMessage();
+    $hits = $results->getHits();
+
+    if (count($hits) > 0) {
+
+        $lineBreak = 4;
+        $count = 0;
+        $n = 0;
+
+        foreach ($hits as $hit) {
+
+            $url = $nmtPlugin->getItemPic($hit->item_id);
+            $img = sprintf('<img id="%s" style="cursor: pointer;"
+title="click for more detail!" onclick="" class="img-rounded" width="150" height="150" src="%s" />', $hit->item_id, $url);
+
+            $format = '<a style ="color:navy;" href="/inventory/item/show?token=%s&entity_id=%s&">%s</a>';
+            $itemUrl = sprintf($format, $hit->token, $hit->item_id, $hit->itemName);
+
+            if ($count == 0 || $count % $lineBreak == 0) {
+                $hits_detail = $hits_detail . '<div class="row" style="height-min:130px; border:1px;">';
+            }
+            $count ++;
+
+            $hits_detail = $hits_detail . '<div class="col-xs-6 col-md-3">';
+
+            $tbl = '<table style="">';
+            $tbl = $tbl . ' <tr style="padding: 1pt 2pt 10pt 1pt;">';
+            $tbl = $tbl . ' <td> <div style="position: relative; float: right;">';
+            $tbl = $tbl . $count;
+            $tbl = $tbl . $img;
+            $tbl = $tbl . '</div></td>';
+            $tbl = $tbl . ' <td style="padding: 1pt 1pt 1pt 10pt;"><span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">';
+            $tbl = $tbl . $itemUrl;
+            $tbl = $tbl . '</span>';
+            $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
+            $tbl = $tbl . sprintf("<br>%s<br>%s<br>%s<br>%s", $hit->itemSku, $hit->itemSku1, $hit->manufacturerSerial, $hit->manufacturerCode);
+            $tbl = $tbl . ' </span';
+
+            $tbl = $tbl . '</td></tr></table>';
+
+            $hits_detail = $hits_detail . $tbl . '</div>';
+
+            if ($count % $lineBreak == 0) {
+
+                $hits_detail = $hits_detail . '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
+            }
+        }
+    }
+}
+
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Search Result</a>
+      </li>
+   </ul>
+   <div id="general">
+
+<?php
+echo $message;
+echo $hits_detail;
+?>
+
+
+
+   </div>
+</div>

@@ -114,6 +114,15 @@ class NmtInventoryItem
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
+    public function getPrList()
+    {
+        return $this->prList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
     public function getQoList()
     {
         return $this->qoList;

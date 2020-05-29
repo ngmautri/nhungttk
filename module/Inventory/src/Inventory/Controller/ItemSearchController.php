@@ -1,23 +1,62 @@
 <?php
 namespace Inventory\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Controller\Contracts\AbstractGenericController;
+use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
+use Inventory\Domain\Service\Search\ItemSearchIndexInterface;
+use Inventory\Domain\Service\Search\ItemSearchQueryInterface;
 use Inventory\Service\ItemSearchService;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSearchController extends AbstractActionController
+class ItemSearchController extends AbstractGenericController
 {
 
-    protected $doctrineEM;
-
     protected $itemSearchService;
+
+    protected $itemQueryService;
+
+    protected $itemIndexerService;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemQueryService()
+    {
+        return $this->itemQueryService;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemIndexerService()
+    {
+        return $this->itemIndexerService;
+    }
+
+    /**
+     *
+     * @param ItemSearchQueryInterface $itemQueryService
+     */
+    public function setItemQueryService(ItemSearchQueryInterface $itemQueryService)
+    {
+        $this->itemQueryService = $itemQueryService;
+    }
+
+    /**
+     *
+     * @param ItemSearchIndexInterface $itemIndexerService
+     */
+    public function setItemIndexerService(ItemSearchIndexInterface $itemIndexerService)
+    {
+        $this->itemIndexerService = $itemIndexerService;
+    }
 
     /**
      *
@@ -145,6 +184,41 @@ class ItemSearchController extends AbstractActionController
      */
     public function doAction()
     {
+        $layout = $this->params()->fromQuery('layout');
+
+        if ($layout == null) {
+            $layout = 'grid';
+        }
+
+        $q = $this->params()->fromQuery('q');
+        $q = trim(strip_tags($q));
+
+        $queryFilter = new ItemQueryFilter();
+        $results = $this->getItemQueryService()->search($q, $queryFilter);
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $viewTemplete = "inventory/item-search/search-result";
+
+        if ($layout == "grid") {
+            $viewTemplete = "inventory/item-search/search-result-gird";
+        }
+
+        $viewModel = new ViewModel(array(
+            'results' => $results,
+            'nmtPlugin' => $nmtPlugin
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function do2Action()
+    {
         $q = $this->params()->fromQuery('q');
 
         if ($q !== "") {
@@ -224,26 +298,6 @@ class ItemSearchController extends AbstractActionController
         return new ViewModel(array(
             'result' => $result
         ));
-    }
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \BP\Controller\VendorController
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
     }
 
     public function getItemSearchService()

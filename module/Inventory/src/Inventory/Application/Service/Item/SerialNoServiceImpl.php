@@ -42,7 +42,7 @@ class SerialNoServiceImpl extends AbstractService implements SerialNoServiceInte
 
             if ($row->getItemMonitorMethod() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO || $row->getIsFixedAsset() == 1) {
 
-                for ($i = 0; $i < $row->getDocQuantity(); $i ++) {
+                for ($i = 0; $i < $row->getQuantity(); $i ++) {
 
                     // create new serial number
                     $sn_entity = new \Application\Entity\NmtInventoryItemSerial();

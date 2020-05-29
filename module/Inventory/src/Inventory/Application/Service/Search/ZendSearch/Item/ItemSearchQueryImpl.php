@@ -1,13 +1,11 @@
 <?php
-namespace Inventory\Application\Service\Search\ZendSearch\PO;
+namespace Inventory\Application\Service\Search\ZendSearch\Item;
 
 use Application\Application\Service\Search\Contracts\QueryFilterInterface;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
-use Inventory\Application\Service\Search\ZendSearch\Item\SearchIndexer;
 use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
-use Procure\Application\Service\Search\ZendSearch\PO\PoSearch;
-use Procure\Domain\Service\Search\PoSearchQueryInterface;
+use Inventory\Domain\Service\Search\ItemSearchQueryInterface;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Boolean;
@@ -19,13 +17,13 @@ use ZendSearch\Lucene\Search\Query\Wildcard;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSearchQueryImpl extends AbstractService implements PoSearchQueryInterface
+class ItemSearchQueryImpl extends AbstractService implements ItemSearchQueryInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\Service\Search\PoSearchQueryInterface::search()
+     * @see \Inventory\Domain\Service\Search\ItemSearchQueryInterface::search()
      */
     public function search($q, QueryFilterInterface $filter = null)
     {
@@ -36,7 +34,7 @@ class ItemSearchQueryImpl extends AbstractService implements PoSearchQueryInterf
             $query = $q;
             $queryString = null;
 
-            $index = Lucene::open(getcwd() . PoSearch::INDEX_PATH);
+            $index = Lucene::open(getcwd() . SearchIndexer::INDEX_PATH);
 
             $final_query = new Boolean();
 

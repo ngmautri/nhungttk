@@ -139,7 +139,7 @@ class RowMapper
         $snapshot->itemMonitorMethod = $entity->getMonitoredBy();
         $snapshot->itemAssetLabel = $entity->getAssetLabel();
 
-        $snapshot->itemAssetLabel1 = preg_replace('/[0-]/', '', \substr($snapshot->itemAssetLabel, - 5));
+        $snapshot->itemAssetLabel1 = preg_replace('/[-]/', '', \substr($snapshot->itemAssetLabel, - 5));
 
         $snapshot->itemManufacturerCode = $entity->getManufacturerCode();
         $snapshot->itemManufacturerModel = $entity->getManufacturerModel();

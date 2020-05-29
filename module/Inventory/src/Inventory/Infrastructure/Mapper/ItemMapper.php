@@ -297,7 +297,7 @@ class ItemMapper
      * @param ItemSnapshot $snapshot
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function createSnapshot(NmtInventoryItem $entity, ItemSnapshot $snapshot = null)
+    public static function createSnapshot(NmtInventoryItem $entity, ItemSnapshot $snapshot = null, $needDetails = false)
     {
         if ($entity == null) {
             return null;
@@ -310,6 +310,25 @@ class ItemMapper
         // =================================
         // Mapping None-Object Field
         // =================================
+
+        if ($needDetails == true) {
+            $snapshot->qoList = $entity->getQoList();
+            $snapshot->procureGrList = $entity->getProcureGrList();
+            $snapshot->pictureList = $entity->getPictureList();
+            $snapshot->attachmentList = $entity->getAttachmentList();
+            $snapshot->prList = $entity->getPrList();
+            $snapshot->poList = $entity->getPoList();
+            $snapshot->apList = $entity->getApList();
+            $snapshot->fifoLayerList = $entity->getFifoLayerList();
+            $snapshot->fifoLayerConsumeList = $entity->getFifoLayerConsumeList();
+            $snapshot->stockGrList = $entity->getStockGrList();
+        }
+
+        $snapshot->serialNoList = $entity->getSerialNoList();
+        $snapshot->batchNoList = $entity->getBatchNoList();
+
+        // ================================================
+
         $snapshot->id = $entity->getId();
         $snapshot->warehouseId = $entity->getWarehouseId();
         $snapshot->itemSku = $entity->getItemSku();

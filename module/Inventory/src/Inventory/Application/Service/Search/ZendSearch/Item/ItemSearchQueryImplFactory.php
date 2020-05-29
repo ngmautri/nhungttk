@@ -1,7 +1,6 @@
 <?php
 namespace Inventory\Application\Service\Search\ZendSearch\Item;
 
-use Inventory\Application\Service\Search\ZendSearch\PO\ItemSearchQueryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

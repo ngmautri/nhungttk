@@ -1,9 +1,11 @@
 <?php
 namespace Inventory\Infrastructure\Persistence\Doctrine;
 
+use Application\Entity\NmtInventoryItem;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
-use Inventory\Infrastructure\Contract\SqlFilterInterface;
+use Inventory\Infrastructure\Mapper\ItemMapper;
 use Inventory\Infrastructure\Persistence\Contracts\ItemReportRepositoryInterface;
+use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 use Inventory\Infrastructure\Persistence\Filter\ItemSerialSqlFilter;
 use Inventory\Infrastructure\Persistence\Helper\ItemReportHelper;
 
@@ -14,6 +16,29 @@ use Inventory\Infrastructure\Persistence\Helper\ItemReportHelper;
  */
 class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements ItemReportRepositoryInterface
 {
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Infrastructure\Persistence\Contracts\ItemReportRepositoryInterface::getItemList()
+     */
+    public function getItemList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        $results = ItemReportHelper::getItemList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+
+        var_dump(count($results));
+        if ($results == null) {
+            return;
+        }
+
+        $list = [];
+        foreach ($results as $r) {
+            $snapshot = ItemMapper::createSnapshot($r);
+            $list[] = $snapshot;
+        }
+
+        return $list;
+    }
 
     public function getMostValueItems($rate = 8100, $limit = 100, $offset = 0)
     {}
@@ -32,33 +57,19 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
 
         $results = ItemReportHelper::getItemListWithSerialNumber($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
         echo count($results);
+        $n = 0;
         foreach ($results as $r) {
-            foreach ($r[0]->getSerials() as $s) {
-                echo $s->getId() . "\n";
-            }
 
-            foreach ($r[0]->getPictures() as $s) {
-                echo "pic" . $s->getId() . "\n";
-            }
-
-            foreach ($r[0]->getAttachments() as $s) {
-                echo "attachments: " . $s->getFilenameOriginal() . "\n";
-            }
-
-            foreach ($r[0]->getPrList() as $s) {
-                echo "Pr:" . $s->getId() . "\n";
-            }
-
-            foreach ($r[0]->getPoList() as $s) {
-                echo "Po:" . $s->getId() . "\n";
-            }
-
-            foreach ($r[0]->getApList() as $s) {
-                echo "AP:" . $s->getInvoice()->getId() . "\n";
-            }
-
-            foreach ($r[0]->getFifoLayerList() as $s) {
-                echo "Fifo:" . $s->getId() . "\n";
+            /**
+             *
+             * @var NmtInventoryItem $r ;
+             */
+            $n ++;
+            echo $n . "-" . $r->getItemName() . "\n";
+            $i = 0;
+            foreach ($r->getSerialNoList() as $s) {
+                $i ++;
+                echo "    Fifo: " . $i . " : " . $s->getId() . "\n";
             }
         }
     }

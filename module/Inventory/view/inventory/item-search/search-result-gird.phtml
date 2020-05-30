@@ -25,7 +25,14 @@ if ($results !== null) {
 
         foreach ($hits as $hit) {
 
-            $url = $nmtPlugin->getItemPic($hit->item_id);
+            // $url = $nmtPlugin->getItemPic($hit->item_id);
+
+            $url = $hit->item_thumbnail;
+
+            if ($url == null) {
+                $url = '/images/no-pic1.jpg';
+            }
+
             $img = sprintf('<img id="%s" style="cursor: pointer;"
 title="click for more detail!" onclick="" class="img-rounded" width="150" height="150" src="%s" />', $hit->item_id, $url);
 

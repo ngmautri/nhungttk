@@ -25,6 +25,25 @@ class AbstractGenericController extends AbstractActionController
 
     /**
      *
+     * @return \Zend\Http\Response|\Application\Entity\MlaUsers
+     */
+    protected function getUser()
+    {
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        if ($u == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        return $u;
+    }
+
+    /**
+     *
      * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
      */
     public function getCache()

@@ -2,6 +2,7 @@
 namespace Inventory\Application\Service\Search\ZendSearch\Item;
 
 use Application\Application\Service\Search\Contracts\IndexingResult;
+use Application\Entity\NmtInventoryItemPicture;
 use Application\Entity\NmtInventoryItemSerial;
 use Application\Service\AbstractService;
 use Doctrine\Common\Collections\Collection;
@@ -240,6 +241,20 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
         $k = SearchIndexer::STOCKED_ITEM_KEY;
         $v = \sprintf(SearchIndexer::STOCKED_ITEM_VALUE, $snapshot->getIsStocked());
         $doc->addField(Field::keyword($k, $v));
+
+        $pictureList = $snapshot->getPictureList();
+
+        $thumbnail_file = null;
+
+        $lastPic = $pictureList->last();
+
+        if ($lastPic instanceof NmtInventoryItemPicture) {
+
+            $thumbnail_file = "/thumbnail/item/" . $lastPic->getFolderRelative() . "thumbnail_200_" . $lastPic->getFileName();
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+        }
+
+        $doc->addField(Field::UnIndexed('item_thumbnail', $thumbnail_file));
 
         // Serial
         if ($sn !== null) {

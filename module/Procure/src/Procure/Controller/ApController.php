@@ -48,9 +48,22 @@ class ApController extends AbstractGenericController
      */
     public function createFromPoAction()
     {
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         /**@var \Application\Entity\MlaUsers $u ;*/
         /**@var ApDTO $dto ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        if ($u == null) {
+            return $this->redirect()->toRoute('access_denied    ');
+        }
+
+        $localCurrencyId = $u->getCompany()
+            ->getDefaultCurrency()
+            ->getId();
+
         $this->layout("Procure/layout-fullscreen");
 
         $nmtPlugin = $this->Nmtplugin();
@@ -58,10 +71,6 @@ class ApController extends AbstractGenericController
         $form_title = "Invoice from PO";
         $action = Constants::FORM_ACTION_AP_FROM_PO;
         $viewTemplete = "procure/ap/crudHeader";
-
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
 
         $prg = $this->prg($form_action, true);
 
@@ -105,7 +114,8 @@ class ApController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -163,7 +173,8 @@ class ApController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -187,16 +198,9 @@ class ApController extends AbstractGenericController
         /**
          *
          * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ; *
-         * @var \Application\Entity\MlaUsers $u ;
          * @var ApDTO $dto ;
          */
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        if ($u == null) {
-            return $this->redirect()->toRoute('access_denied    ');
-        }
+        $u = $this->getUser();
 
         $nmtPlugin = $this->Nmtplugin();
 

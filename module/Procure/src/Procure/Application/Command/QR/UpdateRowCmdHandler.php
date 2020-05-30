@@ -80,6 +80,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
+                "isActive",
                 "rowNumber",
                 "prRow",
                 "item",
@@ -88,6 +89,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "warehouse",
                 "docQuantity",
                 "docUnit",
+                "taxRate",
                 "docUnitPrice",
                 "conversionFactor",
                 "glAccount",

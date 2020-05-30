@@ -81,6 +81,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
+                "isActive",
                 "rowNumber",
                 "item",
                 "vendorItemCode",

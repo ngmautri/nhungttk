@@ -1,8 +1,10 @@
 <?php
 namespace Inventory\Controller;
 
+use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Controller\Contracts\AbstractGenericController;
 use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Service\Search\ItemSearchIndexInterface;
 use Inventory\Domain\Service\Search\ItemSearchQueryInterface;
 use Inventory\Service\ItemSearchService;
@@ -70,6 +72,7 @@ class ItemSearchController extends AbstractGenericController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Stdlib\ResponseInterface
      */
     public function autocompleteAction()
@@ -121,6 +124,64 @@ class ItemSearchController extends AbstractGenericController
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($a_json));
+        return $response;
+    }
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function autocomplete2Action()
+    {
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        /* retrieve the search term that autocomplete sends */
+        $q = trim(strip_tags($_GET['term']));
+
+        if ($q !== "") {
+            return;
+        }
+
+        $n = 0;
+        $results = null;
+
+        $queryFilter = new ItemQueryFilter();
+        $results = $this->getItemQueryService->search($q, $queryFilter);
+
+        if ($results instanceof SearchResult) {}
+
+        $results_array = [];
+        $hits_array = [];
+        foreach ($results->getHits() as $hit) {
+            $n ++;
+
+            if ($n > 10) {
+                break;
+            }
+
+            $hits_array["n"] = \sprintf('%s/%s found.', $n, $results->getTotalHits());
+
+            if ($n == 10) {
+                $hits_array["n"] = \sprintf('%s/%s found. There are %s hits more...', $n, $results->getTotalHits(), $results->getTotalHits() - $n);
+            }
+
+            $hits_array["value"] = \sprintf('%s | %s', $hit->docNumber, $hit->itemName);
+
+            $item_thumbnail = '/images/no-pic1.jpg';
+            if ($hit->itemId != null) {
+                $item_thumbnail = $nmtPlugin->getItemPic($hit->itemId);
+            }
+            $hits_array["item_thumbnail"] = $item_thumbnail;
+            $hits_array["hit"] = ItemSnapshotAssembler::createFromQueryHit($hit);
+
+            $results_array[] = $hits_array;
+        }
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($results_array));
         return $response;
     }
 

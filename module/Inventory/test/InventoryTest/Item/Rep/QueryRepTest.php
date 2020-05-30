@@ -26,6 +26,10 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $id = 1010;
             $token = "gFPYQewcor_DUbWWl8FUFouBwdGV4JQN";
+
+            // $id = 5080;
+            // $token = "039712b8-753e-4924-8025-94e9e8432fe5";
+
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
             $fifo = $rootEntity->getFifoLayerList();
 

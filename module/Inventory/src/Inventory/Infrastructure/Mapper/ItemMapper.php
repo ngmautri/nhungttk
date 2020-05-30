@@ -326,6 +326,7 @@ class ItemMapper
 
         $snapshot->serialNoList = $entity->getSerialNoList();
         $snapshot->batchNoList = $entity->getBatchNoList();
+        $snapshot->pictureList = $entity->getPictureList();
 
         // ================================================
 

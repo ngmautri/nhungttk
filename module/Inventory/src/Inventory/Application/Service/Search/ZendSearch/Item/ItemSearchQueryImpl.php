@@ -5,6 +5,7 @@ use Application\Application\Service\Search\Contracts\QueryFilterInterface;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
 use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Service\Search\ItemSearchQueryInterface;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Index\Term;
@@ -97,5 +98,39 @@ class ItemSearchQueryImpl extends AbstractService implements ItemSearchQueryInte
         }
 
         return new SearchResult($query, $queryString, $message, $hits);
+    }
+
+    /**
+     *
+     * @param string $q
+     * @param QueryFilterInterface $filter
+     */
+    public function queryForAutoCompletion($q, QueryFilterInterface $filter = null)
+    {
+        $results = $this->search($q, $filter);
+        $results_array = [];
+
+        $results_array['message'] = $results->getMessage();
+        $results_array['total_hits'] = $results->getTotalHits();
+
+        $hits_array = [];
+        $n = 0;
+
+        foreach ($results->getHits() as $hit) {
+            $n ++;
+            $item_thumbnail = '/images/no-pic1.jpg';
+            if ($hit->item_thumbnail != null) {
+                $item_thumbnail = $hit->item_thumbnail;
+            }
+
+            $hits_array["item_thumbnail"] = $item_thumbnail;
+
+            $hits_array["n"] = $n;
+            $hits_array["value"] = \sprintf('%s | %s', $hit->itemSku, $hit->itemName);
+            $hits_array["hit"] = ItemSnapshotAssembler::createFromQueryHit($hit);
+        }
+
+        $results_array['hits'] = $hits_array;
+        return (\json_encode($results_array));
     }
 }

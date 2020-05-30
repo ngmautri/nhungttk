@@ -282,7 +282,7 @@ LEFT JOIN
 as last_ap
 on last_ap.item_id = nmt_procure_pr_row.item_id
 
-WHERE nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1 order by nmt_inventory_item.item_name
+WHERE nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1 order by nmt_procure_pr_row.row_number
 ";
 
         $tmp1 = sprintf(" AND nmt_procure_pr_row.pr_id=%s AND nmt_procure_pr_row.is_active=1", $id);

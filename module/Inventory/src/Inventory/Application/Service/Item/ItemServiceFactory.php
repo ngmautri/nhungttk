@@ -1,9 +1,9 @@
 <?php
 namespace Inventory\Application\Service\Factory;
 
+use Inventory\Application\Service\ItemService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Inventory\Application\Service\ItemService;
 
 /**
  *
@@ -26,16 +26,14 @@ class ItemServiceFactory implements FactoryInterface
 
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));
-
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
-        $grListener = $container->get('Application\Listener\LoggingListener');
+        $sv = $container->get('AppLogger');
+        $service->setLogger($sv);
 
-        $eventManager = $container->get('EventManager');
-        $eventManager->attachAggregate($grListener);
-
-        $service->setEventManager($eventManager);
+        $sv = $container->get('AppCache');
+        $service->setCache($sv);
 
         return $service;
     }

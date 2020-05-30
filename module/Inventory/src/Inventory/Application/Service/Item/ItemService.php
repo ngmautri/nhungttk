@@ -2,6 +2,8 @@
 namespace Inventory\Application\Service;
 
 use Application\Service\AbstractService;
+use Inventory\Domain\Item\GenericItem;
+use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 
 /**
  *
@@ -11,38 +13,14 @@ use Application\Service\AbstractService;
 class ItemService extends AbstractService
 {
 
-    private $itemRepository;
-
-    private $itemAssembler;
-
-    public function getItemList()
-    {}
-
-    /**
-     *
-     * @return \Inventory\Domain\Item\Repository\ItemRepositoryInterface
-     */
-    public function getItemRepository()
+    public function getDocDetailsByTokenId($id, $token)
     {
-        return $this->itemRepository;
-    }
+        $rep = new ItemQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-    public function getItemAssembler()
-    {
-        return $this->itemAssembler;
-    }
-
-    /**
-     *
-     * @param \Inventory\Domain\Item\Repository\ItemRepositoryInterface $itemRepository
-     */
-    public function setItemRepository($itemRepository)
-    {
-        $this->itemRepository = $itemRepository;
-    }
-
-    public function setItemAssembler($itemAssembler)
-    {
-        $this->itemAssembler = $itemAssembler;
+        if (! $rootEntity instanceof GenericItem) {
+            return null;
+        }
+        return $rootEntity;
     }
 }

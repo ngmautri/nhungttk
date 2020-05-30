@@ -1,13 +1,13 @@
 <?php
 namespace Inventory\Controller;
 
+use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Shared\Constants;
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemCategoryMember;
 use Application\Entity\NmtInventoryItemDepartment;
 use Application\Entity\NmtInventoryItemPicture;
-use Doctrine\ORM\EntityManager;
 use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Application\Service\Item\ItemCRUDService;
 use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
 use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 use Inventory\Service\ItemSearchService;
@@ -16,7 +16,6 @@ use Zend\Barcode\Barcode;
 use Zend\Cache\Storage\StorageInterface;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Exception;
@@ -27,10 +26,8 @@ use Ramsey;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemController extends AbstractActionController
+class ItemController extends AbstractGenericController
 {
-
-    protected $doctrineEM;
 
     protected $itemListRepository;
 
@@ -42,17 +39,11 @@ class ItemController extends AbstractActionController
 
     protected $smptService;
 
-    protected $cacheService;
-
-    /**
-     *
-     * @var ItemCRUDService
-     */
     protected $itemCRUDService;
 
     /**
      *
-     * @return \Inventory\Service\Report\ItemReportService
+     * @return mixed
      */
     public function getItemReportService()
     {
@@ -61,208 +52,57 @@ class ItemController extends AbstractActionController
 
     /**
      *
-     * @param \Inventory\Service\Report\ItemReportService $itemReportService
+     * @param mixed $itemReportService
      */
-    public function setItemReportService(\Inventory\Service\Report\ItemReportService $itemReportService)
+    public function setItemReportService($itemReportService)
     {
         $this->itemReportService = $itemReportService;
     }
 
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
-     */
-    public function showAction()
+    public function viewAction()
     {
+        $u = $this->getUser();
         $request = $this->getRequest();
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $item_group_list = $nmtPlugin->itemGroupList();
-        $uom_list = $nmtPlugin->uomList();
 
-        $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
-            // return $this->redirect ()->toRoute ( 'access_denied' );
-        } else {
-            $redirectUrl = $request->getHeader('Referer')->getUri();
-        }
-
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-
-        $tab_idx = (int) $this->params()->fromQuery('tab_idx');
-
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $item = $res->getItem($entity_id, $token);
-
-        if ($item == null) {
             return $this->redirect()->toRoute('not_found');
         }
 
-        $entity = null;
-        if ($item[0] instanceof NmtInventoryItem) {
-            $entity = $item[0];
-        }
-
-        // $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-        $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
-            "item" => $entity_id
-        ));
-
-        if ($entity instanceof NmtInventoryItem) {
-            return new ViewModel(array(
-                'entity' => $entity,
-                'department' => null,
-                'category' => null,
-                'pictures' => $pictures,
-                'redirectUrl' => $redirectUrl,
-                'item_group_list' => $item_group_list,
-                'uom_list' => $uom_list,
-
-                'total_picture' => $item['total_picture'],
-                'total_attachment' => $item['total_attachment'],
-                'total_pr_row' => $item['total_pr_row'],
-                'total_ap_row' => $item['total_ap_row'],
-                'total_po_row' => $item['total_po_row'],
-                'total_qo_row' => $item['total_qo_row'],
-                'nmtPlugin' => $nmtPlugin,
-                'tab_idx' => $tab_idx
-            ));
-        }
-
-        return $this->redirect()->toRoute('not_found');
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function show1Action()
-    {
         $request = $this->getRequest();
-        $redirectUrl = null;
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $this->layout("Procure/layout-fullscreen");
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('not_found');
+         * }
+         */
         $nmtPlugin = $this->Nmtplugin();
-        $item_group_list = $nmtPlugin->itemGroupList();
-        $uom_list = $nmtPlugin->uomList();
+        $form_action = "";
+        $form_title = "Show item:";
+        $action = Constants::FORM_ACTION_SHOW;
+        $viewTemplete = "inventory/item/review";
 
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getApService()->getDocDetailsByTokenId($id, $token);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
         }
-        ;
-
-        $this->layout("layout/user/ajax");
-        $request = $this->getRequest();
-
-        $redirectUrl = null;
-        if ($request->getHeader('Referer') == null) {
-            // return $this->redirect ()->toRoute ( 'access_denied' );
-        } else {
-            $redirectUrl = $request->getHeader('Referer')->getUri();
-        }
-
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $tab_idx = (int) $this->params()->fromQuery('tab_idx');
-
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $item = $res->getItem($entity_id, $token);
-
-        if ($item == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity = null;
-        if ($item[0] instanceof NmtInventoryItem) {
-            $entity = $item[0];
-        }
-
-        $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
-            "item" => $entity_id
-        ));
-
-        $onhand_list = $this->itemReportService->getOnhandReportByItem($entity, $u, __METHOD__);
-
-        if (! $entity instanceof NmtInventoryItem) {
-
-            return $this->redirect()->toRoute('access_denied');
-        }
-        return new ViewModel(array(
-            'entity' => $entity,
-            'department' => null,
-            'category' => null,
-            'pictures' => $pictures,
-            'redirectUrl' => $redirectUrl,
-            'total_picture' => $item['total_picture'],
-            'item_group_list' => $item_group_list,
-            'uom_list' => $uom_list,
-
-            'total_attachment' => $item['total_attachment'],
-            'total_pr_row' => $item['total_pr_row'],
-            'total_ap_row' => $item['total_ap_row'],
-            'total_po_row' => $item['total_po_row'],
-            'total_qo_row' => $item['total_qo_row'],
-            'tab_idx' => $tab_idx,
-            'onhand_list' => $onhand_list,
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $form_action,
+            'form_title' => $nmtPlugin->translate("Show Invoice"),
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin
         ));
-    }
+        $viewModel->setTemplate($viewTemplete);
 
-    /**
-     *
-     * @return \Zend\Stdlib\ResponseInterface
-     */
-    public function getItemAction()
-    {
-        $id = $this->params()->fromQuery('id');
-
-        /**@var \Application\Entity\NmtInventoryItem $item ;*/
-        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
-            "id" => $id
-        ));
-
-        $a_json_row = array();
-
-        if ($item != null) {
-            $a_json_row["id"] = $item->getId();
-            $a_json_row["token"] = $item->getToken();
-
-            $uom_code = '';
-            $purchase_uom_code = '';
-
-            if ($item->getStandardUom() != null) {
-                $uom_code = $item->getStandardUom()->getUomCode();
-                $purchase_uom_code = $uom_code;
-            }
-
-            $a_json_row["uom_code"] = $uom_code;
-
-            if ($item->getPurchaseUom() != null) {
-                $purchase_uom_code = $item->getPurchaseUom()->getUomCode();
-            }
-
-            $a_json_row["purchase_uom_code"] = $purchase_uom_code;
-
-            $purchaseCF = 1;
-            if ($item->getPurchaseUomConvertFactor() != null) {
-                $purchaseCF = $item->getPurchaseUomConvertFactor();
-            }
-            $a_json_row["purchase_uom_convert_factor"] = $purchaseCF;
-        }
-        // var_dump($a_json);
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($a_json_row));
-        return $response;
+        $this->getLogger()->info(\sprintf("AP #%s viewed by #%s", $id, $u->getId()));
+        return $viewModel;
     }
 
     /**
@@ -306,7 +146,7 @@ class ItemController extends AbstractActionController
                 'form_token' => $tk
             ));
 
-            $viewModel->setTemplate("inventory/item/crud");
+            $viewModel->setTemplate("inventory/item/crud-v1");
             return $viewModel;
         }
 
@@ -332,7 +172,7 @@ class ItemController extends AbstractActionController
         if ($notification->hasErrors()) {
 
             $viewModel = new ViewModel(array(
-                'errors' => $notification->errorMessage(),
+                'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'dto' => $dto,
@@ -343,7 +183,7 @@ class ItemController extends AbstractActionController
                 'form_token' => $tk
             ));
 
-            $viewModel->setTemplate("inventory/item/crud");
+            $viewModel->setTemplate("inventory/item/crud-v1");
             return $viewModel;
         }
 
@@ -438,6 +278,210 @@ class ItemController extends AbstractActionController
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/inventory/item/list2";
         return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    // ===========================
+    // Deprecated.
+    // ===========================
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getItemAction()
+    {
+        $id = $this->params()->fromQuery('id');
+
+        /**@var \Application\Entity\NmtInventoryItem $item ;*/
+        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
+            "id" => $id
+        ));
+
+        $a_json_row = array();
+
+        if ($item != null) {
+            $a_json_row["id"] = $item->getId();
+            $a_json_row["token"] = $item->getToken();
+
+            $uom_code = '';
+            $purchase_uom_code = '';
+
+            if ($item->getStandardUom() != null) {
+                $uom_code = $item->getStandardUom()->getUomCode();
+                $purchase_uom_code = $uom_code;
+            }
+
+            $a_json_row["uom_code"] = $uom_code;
+
+            if ($item->getPurchaseUom() != null) {
+                $purchase_uom_code = $item->getPurchaseUom()->getUomCode();
+            }
+
+            $a_json_row["purchase_uom_code"] = $purchase_uom_code;
+
+            $purchaseCF = 1;
+            if ($item->getPurchaseUomConvertFactor() != null) {
+                $purchaseCF = $item->getPurchaseUomConvertFactor();
+            }
+            $a_json_row["purchase_uom_convert_factor"] = $purchaseCF;
+        }
+        // var_dump($a_json);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_row));
+        return $response;
+    }
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function showAction()
+    {
+        $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $item_group_list = $nmtPlugin->itemGroupList();
+        $uom_list = $nmtPlugin->uomList();
+
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') == null) {
+            // return $this->redirect ()->toRoute ( 'access_denied' );
+        } else {
+            $redirectUrl = $request->getHeader('Referer')->getUri();
+        }
+
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+
+        $tab_idx = (int) $this->params()->fromQuery('tab_idx');
+
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $item = $res->getItem($entity_id, $token);
+
+        if ($item == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $entity = null;
+        if ($item[0] instanceof NmtInventoryItem) {
+            $entity = $item[0];
+        }
+
+        // $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
+        $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
+            "item" => $entity_id
+        ));
+
+        if ($entity instanceof NmtInventoryItem) {
+            return new ViewModel(array(
+                'entity' => $entity,
+                'department' => null,
+                'category' => null,
+                'pictures' => $pictures,
+                'redirectUrl' => $redirectUrl,
+                'item_group_list' => $item_group_list,
+                'uom_list' => $uom_list,
+
+                'total_picture' => $item['total_picture'],
+                'total_attachment' => $item['total_attachment'],
+                'total_pr_row' => $item['total_pr_row'],
+                'total_ap_row' => $item['total_ap_row'],
+                'total_po_row' => $item['total_po_row'],
+                'total_qo_row' => $item['total_qo_row'],
+                'nmtPlugin' => $nmtPlugin,
+                'tab_idx' => $tab_idx
+            ));
+        }
+
+        return $this->redirect()->toRoute('not_found');
+    }
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function show1Action()
+    {
+        $request = $this->getRequest();
+        $redirectUrl = null;
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $item_group_list = $nmtPlugin->itemGroupList();
+        $uom_list = $nmtPlugin->uomList();
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        ;
+
+        $this->layout("layout/user/ajax");
+        $request = $this->getRequest();
+
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') == null) {
+            // return $this->redirect ()->toRoute ( 'access_denied' );
+        } else {
+            $redirectUrl = $request->getHeader('Referer')->getUri();
+        }
+
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        $tab_idx = (int) $this->params()->fromQuery('tab_idx');
+
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $item = $res->getItem($entity_id, $token);
+
+        if ($item == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity = null;
+        if ($item[0] instanceof NmtInventoryItem) {
+            $entity = $item[0];
+        }
+
+        $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
+            "item" => $entity_id
+        ));
+
+        $onhand_list = $this->itemReportService->getOnhandReportByItem($entity, $u, __METHOD__);
+
+        if (! $entity instanceof NmtInventoryItem) {
+
+            return $this->redirect()->toRoute('access_denied');
+        }
+        return new ViewModel(array(
+            'entity' => $entity,
+            'department' => null,
+            'category' => null,
+            'pictures' => $pictures,
+            'redirectUrl' => $redirectUrl,
+            'total_picture' => $item['total_picture'],
+            'item_group_list' => $item_group_list,
+            'uom_list' => $uom_list,
+
+            'total_attachment' => $item['total_attachment'],
+            'total_pr_row' => $item['total_pr_row'],
+            'total_ap_row' => $item['total_ap_row'],
+            'total_po_row' => $item['total_po_row'],
+            'total_qo_row' => $item['total_qo_row'],
+            'tab_idx' => $tab_idx,
+            'onhand_list' => $onhand_list,
+            'nmtPlugin' => $nmtPlugin
+        ));
     }
 
     /**
@@ -2197,7 +2241,8 @@ class ItemController extends AbstractActionController
     }
 
     /**
-     * * @deprecated
+     *
+     * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -2223,7 +2268,6 @@ class ItemController extends AbstractActionController
         $this->doctrineEM->flush();
 
         // Update Puchasing Data
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
 
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $item_purchasing = $res->getItemPurchasing();
@@ -2349,21 +2393,9 @@ class ItemController extends AbstractActionController
         ));
     }
 
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
+    // ===========================
+    // setter and getter.
+    // ===========================
     public function getItemSearchService()
     {
         return $this->itemSearchService;

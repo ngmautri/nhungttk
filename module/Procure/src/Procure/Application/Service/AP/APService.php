@@ -37,7 +37,6 @@ class APService extends AbstractService
 {
 
     /**
-     * '
      *
      * @param int $id
      * @param string $token

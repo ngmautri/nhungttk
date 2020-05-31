@@ -20,6 +20,8 @@ use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
 use Inventory\Application\Eventbus\HandlerMapperFactory;
+use Inventory\Application\Service\Item\ItemService;
+use Inventory\Application\Service\Item\Factory\ItemServiceFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
@@ -238,26 +240,24 @@ return array(
 
             'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
+            'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
 
+            // Services:
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
             'Inventory\Application\Service\Item\FIFOService' => 'Inventory\Application\Service\Item\FIFOServiceFactory',
             'Inventory\Application\Service\Item\ItemCategoryService' => 'Inventory\Application\Service\Item\ItemCategoryServiceFactory',
-
             'Inventory\Application\Service\Warehouse\TransactionService' => 'Inventory\Application\Service\Warehouse\TransactionServiceFactory',
             'Inventory\Application\Service\Warehouse\WarehouseService' => 'Inventory\Application\Service\Warehouse\WarehouseServiceFactory',
-
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemUpdatedEventListener' => 'Inventory\Application\Event\Listener\ItemUpdatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemLoggingListener' => 'Inventory\Application\Event\Listener\ItemLoggingListenerFactory',
             'Inventory\Application\Event\Listener\WarehouseLoggingListener' => 'Inventory\Application\Event\Listener\WarehouseLoggingListenerFactory',
-
             'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
+            ItemService::class => ItemServiceFactory::class,
 
-            'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
+            // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
             'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory',
-
-            // Repository Service
             'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
 
             // Search Handler

@@ -30,12 +30,12 @@ class UpdateCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 5071;
-            $rootEntityToken = "d0f492e0-04ec-4d1f-9b01-9db637f928f7";
-            $version = 5;
+            $rootEntityId = 5082;
+            $rootEntityToken = "0043fdc5-3e76-49b2-92b9-2b8719002dc0";
+            $version = 3;
 
             $dto = new ItemDTO();
-            $dto->itemName = "SDD8";
+            $dto->itemName = "1";
             $dto->itemSku = "xx";
             $dto->standardUom = 1;
             $dto->stockUom = 1;
@@ -53,7 +53,7 @@ class UpdateCmdTest extends PHPUnit_Framework_TestCase
             var_dump($dto->getNotification());
         } catch (\Exception $e) {
             echo $e->getMessage() . "\n\n\n";
-            // echo $e->getTraceAsString();
+            echo $e->getTraceAsString();
         }
     }
 }

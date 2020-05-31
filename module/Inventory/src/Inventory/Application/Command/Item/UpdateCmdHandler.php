@@ -76,7 +76,24 @@ class UpdateCmdHandler extends AbstractCommandHandler
             ];
 
             $newSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTOExcludeFields($newSnapshot, $dto, $excludedProperties);
-            $changeLog = $snapshot->compare($newSnapshot);
+
+            $excludedProps = [
+                "qoList",
+                "procureGrList",
+                "batchNoList",
+                "fifoLayerConsumeList",
+                "stockGrList",
+                "pictureList",
+                "attachmentList",
+                "prList",
+                "poList",
+                "apList",
+                "serialNoList",
+                "batchList",
+                "fifoLayerList"
+            ];
+
+            $changeLog = $snapshot->compareExcludedFields($newSnapshot, $excludedProps);
 
             if ($changeLog == null) {
                 $notification->addError("Nothing change on Item #" . $rootEntityId);
@@ -87,8 +104,6 @@ class UpdateCmdHandler extends AbstractCommandHandler
             $params = [
                 "changeLog" => $changeLog
             ];
-
-            \var_dump($changeLog);
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $cmdRepository = new ItemCmdRepositoryImpl($cmd->getDoctrineEM());

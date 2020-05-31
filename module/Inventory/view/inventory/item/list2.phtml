@@ -23,7 +23,9 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 							style="padding: 3px; font-size: 9.5pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
 							<form class="form-horizontal"
-								action="<?php echo $this->baseUrl ?>/inventory/item/list2"
+								action="<?php
+
+        echo $this->baseUrl?>/inventory/item/list2"
 								method="get" enctype="multipart/form-data">
 
 								<div class="form-group margin-bottom">
@@ -32,13 +34,22 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 										<select class="form-control input-sm" name="item_type">
 											<option value="All">All</option>
 											<option
-												<?php echo $item_type=='ITEM'? "selected='selected'":"";?>
+												<?php
+
+            echo $item_type == 'ITEM' ? "selected='selected'" : "";
+            ?>
 												value="ITEM">Item</option>
 											<option
-												<?php echo $item_type=='SERVICE'? "selected='selected'":"";?>
+												<?php
+
+            echo $item_type == 'SERVICE' ? "selected='selected'" : "";
+            ?>
 												value="SERVICE">Service</option>
 											<option
-												<?php echo $item_type=='SOFTWARE'? "selected='selected'":"";?>
+												<?php
+
+            echo $item_type == 'SOFTWARE' ? "selected='selected'" : "";
+            ?>
 												value="SOFTWARE">Software</option>
 										</select>
 									</div>
@@ -51,13 +62,22 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 									<div class="col-sm-3">
 										<select class="form-control input-sm" name="is_active">
 											<option
-												<?php echo $is_active ==''? "selected='selected'":"";?>
+												<?php
+
+            echo $is_active == '' ? "selected='selected'" : "";
+            ?>
 												value="2">All</option>
 											<option
-												<?php echo $is_active=='1'? "selected='selected'":"";?>
+												<?php
+
+            echo $is_active == '1' ? "selected='selected'" : "";
+            ?>
 												value="1">Active</option>
 											<option
-												<?php echo $is_active=='-1'? "selected='selected'":"";?>
+												<?php
+
+            echo $is_active == '-1' ? "selected='selected'" : "";
+            ?>
 												value="-1">Inactive</option>
 										</select>
 									</div>
@@ -69,13 +89,22 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 									<div class="col-sm-3">
 										<select class="form-control input-sm" name="is_fixed_asset">
 											<option
-												<?php echo $is_fixed_asset==''? "selected='selected'":"";?>
+												<?php
+
+            echo $is_fixed_asset == '' ? "selected='selected'" : "";
+            ?>
 												value="">All</option>
 											<option
-												<?php echo $is_fixed_asset=='1'? "selected='selected'":"";?>
+												<?php
+
+            echo $is_fixed_asset == '1' ? "selected='selected'" : "";
+            ?>
 												value="1">Fixed Asset</option>
 											<option
-												<?php echo $is_fixed_asset=='-1'? "selected='selected'":"";?>
+												<?php
+
+            echo $is_fixed_asset == '-1' ? "selected='selected'" : "";
+            ?>
 												value="-1">None Fixed Asset</option>
 										</select>
 									</div>
@@ -87,16 +116,36 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 										<select class="form-control input-sm" name="sort_by">
 											<option value="">None</option>
 											<option
-												<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
+												<?php
+
+            echo $sort_by == 'itemName' ? "selected='selected'" : "";
+            ?>
 												value="itemName">Item Name</option>
 
 											<option
-												<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
+												<?php
+
+            echo $sort_by == 'createdOn' ? "selected='selected'" : "";
+            ?>
 												value="createdOn">Created Date</option>
 										</select> <input
-											<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
+											<?php
+
+        if (! $sort == null) :
+            echo ($sort == 'ASC') ? "checked" : "";
+        else :
+            echo "checked";
+        endif;
+        ?>
 											type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
-											<?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?>
+											<?php
+
+        if (! $sort == null) :
+            echo ($sort == 'DESC') ? "checked" : "";
+        else :
+            echo "";
+        endif;
+        ?>
 											type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
 
 									</div>
@@ -107,11 +156,17 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 										<select class="form-control input-sm" name="layout">
 											<option value="">None</option>
 											<option
-												<?php echo $layout=='list'? "selected='selected'":"";?>
+												<?php
+
+            echo $layout == 'list' ? "selected='selected'" : "";
+            ?>
 												value="list">List</option>
 
 											<option
-												<?php echo $layout=='grid'? "selected='selected'":"";?>
+												<?php
+
+            echo $layout == 'grid' ? "selected='selected'" : "";
+            ?>
 												value=grid>Gird</option>
 										</select>
 
@@ -126,25 +181,43 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 										<select class="form-control input-sm" name="perPage">
 											<option value="">None</option>
 											<option
-												<?php echo $per_pape=='15'? "selected='selected'":"";?>
+												<?php
+
+            echo $per_pape == '15' ? "selected='selected'" : "";
+            ?>
 												value="15">15</option>
 
 											<option
-												<?php echo $per_pape=='20'? "selected='selected'":"";?>
+												<?php
+
+            echo $per_pape == '20' ? "selected='selected'" : "";
+            ?>
 												value="20">20</option>
 
 											<option
-												<?php echo $per_pape=='30'? "selected='selected'":"";?>
+												<?php
+
+            echo $per_pape == '30' ? "selected='selected'" : "";
+            ?>
 												value="30">30</option>
 
 											<option
-												<?php echo $per_pape=='50'? "selected='selected'":"";?>
+												<?php
+
+            echo $per_pape == '50' ? "selected='selected'" : "";
+            ?>
 												value="50">50</option>
 											<option
-												<?php echo $per_pape=='100'? "selected='selected'":"";?>
+												<?php
+
+            echo $per_pape == '100' ? "selected='selected'" : "";
+            ?>
 												value="100">100</option>
 											<option
-												<?php echo $per_pape=='200'? "selected='selected'":"";?>
+												<?php
+
+            echo $per_pape == '200' ? "selected='selected'" : "";
+            ?>
 												value="200">200</option>
 										</select>
 									</div>
@@ -179,13 +252,16 @@ if ($total_records <= 0) {
         echo $total_records . ' records found!';
     }
 
-    $url = sprintf($this->baseUrl . '/inventory/item/list2?layout=grid&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s', $is_active, $item_type, $sort_by, $sort, $is_fixed_asset, $per_pape, $page);
+    $url = sprintf($this->baseUrl . '/inventory/item/list2?layout=grid&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s', $is_active, $item_type, $sort_by, $sort, $is_fixed_asset, $perPage, $page);
 
     ?>
     
 &nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm"
 			style="color: black; padding: 1pt 5pt 1pt 5pt; margin: 1pt 5pt 5pt 1pt;"
-			title="Grid View" href="<?php echo $url;?>"> <i class="fa fa-th"
+			title="Grid View" href="<?php
+
+    echo $url;
+    ?>"> <i class="fa fa-th"
 			aria-hidden="true"></i></a>
 
 
@@ -212,30 +288,88 @@ if ($total_records <= 0) {
         $count ++;
         ?>
 	 <tr>
-					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+					<td><?php
+
+        echo ($paginator === null) ? $count : $paginator->minInPage - 1 + $count;
+        ?></td>
 					<td><a style="color: navy;"
-						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a['token'] ;?>&entity_id=<?php echo $a['id'];?>&checksum=<?php echo $a['checksum'];?>"><?php echo $a['sys_number'];?></a>
+						href="<?php
+
+        echo $this->baseUrl?>/inventory/item/show?token=<?php
+
+        echo $a['token'];
+        ?>&entity_id=<?php
+
+        echo $a['id'];
+        ?>&checksum=<?php
+
+        echo $a['checksum'];
+        ?>"><?php
+
+        echo $a['sys_number'];
+        ?></a>
 
 					</td>
 
-					<td><?php echo $this->escapeHtml(($a['item_sku']));?></td>
+					<td><?php
+
+        echo $this->escapeHtml(($a['item_sku']));
+        ?></td>
 					<td><span class="dropdown"><a class="dropdown-toggle"
 							data-toggle="dropdown" href="#"
-							title="<?php echo $this->escapeHtml($a['item_name']);?>"
-							style="padding-left: 20px; padding-right: 10px;"><?php echo substr($this->escapeHtml($a['item_name']),0,45);?> <span
-								class="caret"></span></a> </span></td>
-					<td><?php echo substr($this->escapeHtml($a['manufacturer_model']),0,30);?></td>
-					<td><?php echo $this->escapeHtml($a['serial_number']);?></td>
+							title="<?php
 
-					<!-- <td><?php echo date_format ( $a['created_on'], "d/m/y");?> </td>  -->
+        echo $this->escapeHtml($a['item_name']);
+        ?>"
+							style="padding-left: 20px; padding-right: 10px;"><?php
+
+        echo substr($this->escapeHtml($a['item_name']), 0, 45);
+        ?> <span
+								class="caret"></span></a> </span></td>
+					<td><?php
+
+        echo substr($this->escapeHtml($a['manufacturer_model']), 0, 30);
+        ?></td>
+					<td><?php
+
+        echo $this->escapeHtml($a['serial_number']);
+        ?></td>
+
+					<!-- <td><?php
+
+        echo date_format($a['created_on'], "d/m/y");
+        ?> </td>  -->
 					<td><a style="cursor: pointer;" title="picture" item-pic=""
-						id="<?php echo $this->escapeHtml($a['id']);?>"
-						item_name="<?php echo $this->escapeHtml($a['item_name']);?>"
-						href="<?php echo $this->baseUrl ?>/inventory/item/show?nid=<?php echo $nid;?>&token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
+						id="<?php
+
+        echo $this->escapeHtml($a['id']);
+        ?>"
+						item_name="<?php
+
+        echo $this->escapeHtml($a['item_name']);
+        ?>"
+						href="<?php
+
+        echo $this->baseUrl?>/inventory/item/show?nid=<?php
+
+        echo $nid;
+        ?>&token=<?php
+
+        echo $this->escapeHtml($a['token']);
+        ?>&entity_id=<?php
+
+        echo $this->escapeHtml($a['id']);
+        ?>&checksum=<?php
+
+        echo $this->escapeHtml($a['checksum']);
+        ?>">Show</a>
 					</td>
 
 				</tr>
-<?php endforeach; ?>
+<?php
+    endforeach
+    ;
+    ?>
 
  </tbody>
 		</table>

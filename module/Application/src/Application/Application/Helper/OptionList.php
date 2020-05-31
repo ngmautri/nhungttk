@@ -358,4 +358,35 @@ class OptionList
         }
         return $option;
     }
+
+    public static function createPerPageOption($id)
+    {
+        $list = [
+            '20' => 20,
+            '30' => 30,
+            '50' => 50,
+            '100' => 100,
+            '200' => 200
+        ];
+
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l => $v) {
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s  %s</option>', $l, $v, "");
+            } else {
+                if ($id == $l) {
+                    $option = $option . sprintf('<option selected value="%s">%s  %s</option>', $l, $v, "");
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s  %s</option>', $l, $v, "");
+                }
+            }
+        }
+        return $option;
+    }
 }

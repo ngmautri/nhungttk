@@ -36,7 +36,7 @@ if ($results !== null) {
             $img = sprintf('<img id="%s" style="cursor: pointer;"
 title="click for more detail!" onclick="" class="img-rounded" width="150" height="150" src="%s" />', $hit->item_id, $url);
 
-            $format = '<a style ="color:navy;" href="/inventory/item/show?token=%s&entity_id=%s&">%s</a>';
+            $format = '<a style ="color:navy;" href="/inventory/item/view?entity_token=%s&entity_id=%s">%s</a>';
             $itemUrl = sprintf($format, $hit->token, $hit->item_id, $hit->itemName);
 
             if ($count == 0 || $count % $lineBreak == 0) {
@@ -44,12 +44,35 @@ title="click for more detail!" onclick="" class="img-rounded" width="150" height
             }
             $count ++;
 
+            $format = '<a href="javascript:;"  onclick="showJqueryDialog(\'%s\',\'1500\',$(window).height()-50,\'%s\', \'j_loaded_data\',true)"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>';
+            $url1 = sprintf('/inventory/item/show1?token=%s&entity_id=%s', $hit->token, $hit->item_id);
+            $item_name = sprintf('%s-%s', $this->escapeHtml($hit->itemName), $hit->itemSku);
+            $quickShow = sprintf($format, $item_name, $url1);
+
+            $format = '<a href="/inventory/item/update?entity_token=%s&entity_id=%s"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>';
+            $editUrl = sprintf($format, $hit->token, $hit->item_id);
+
+            $format = '<a href="/inventory/item/upload-picture?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Picture</a>';
+            $pictureUrl = sprintf($format, $hit->token, $hit->item_id);
+
+            $format = '<a href="/inventory/item-attachment/upload?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Attachment</a>';
+            $attachmentUrl = sprintf($format, $hit->token, $hit->item_id);
+
+            $dropDownList = [
+                $quickShow,
+                $editUrl,
+                'divider',
+                $pictureUrl,
+                $attachmentUrl
+            ];
+
+            $dropDown = \Application\Application\Helper\FormHelper::createDropDownBtn($dropDownList);
+
             $hits_detail = $hits_detail . '<div class="col-xs-6 col-md-3">';
 
             $tbl = '<table style="">';
             $tbl = $tbl . ' <tr style="padding: 1pt 2pt 10pt 1pt;">';
             $tbl = $tbl . ' <td> <div style="position: relative; float: right;">';
-            $tbl = $tbl . $count;
             $tbl = $tbl . $img;
             $tbl = $tbl . '</div></td>';
             $tbl = $tbl . ' <td style="padding: 1pt 1pt 1pt 10pt;"><span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">';
@@ -58,6 +81,7 @@ title="click for more detail!" onclick="" class="img-rounded" width="150" height
             $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
             $tbl = $tbl . sprintf("<br>%s<br>%s<br>%s<br>%s", $hit->itemSku, $hit->itemSku1, $hit->manufacturerSerial, $hit->manufacturerCode);
             $tbl = $tbl . ' </span';
+            $tbl = $tbl . $dropDown;
 
             $tbl = $tbl . '</td></tr></table>';
 

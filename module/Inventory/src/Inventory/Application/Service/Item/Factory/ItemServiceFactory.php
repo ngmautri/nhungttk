@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\Service\Factory;
+namespace Inventory\Application\Service\Item\Factory;
 
-use Inventory\Application\Service\ItemService;
+use Inventory\Application\Service\Item\ItemService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

@@ -36,12 +36,27 @@ class ItemSnapshotAssembler
         "createdBy",
         "lastChangeBy",
         "company",
+
         "lastPrRow",
         "lastPoRow",
         "lastApInvoiceRow",
         "lastTrxRow",
         "lastPurchasing",
-        "itemType"
+        "itemType",
+
+        "qoList",
+        "procureGrList",
+        "batchNoList",
+        "fifoLayerConsumeList",
+        "stockGrList",
+        "pictureList",
+        "attachmentList",
+        "prList",
+        "poList",
+        "apList",
+        "serialNoList",
+        "batchList",
+        "fifoLayerList"
     ];
 
     public static function createFromQueryHit($hit)
@@ -187,8 +202,9 @@ class ItemSnapshotAssembler
      */
     public static function updateSnapshotFromDTOExcludeFields(ItemSnapshot $snapShot, ItemDTO $dto, $excludedProperties)
     {
-        if ($dto == null || ! $snapShot instanceof ItemSnapshot || $excludedProperties == null)
+        if ($dto == null || ! $snapShot instanceof ItemSnapshot || $excludedProperties == null) {
             return null;
+        }
 
         $reflectionClass = new \ReflectionClass($dto);
         $props = $reflectionClass->getProperties();

@@ -1,14 +1,116 @@
 <?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
+use Application\Application\Helper\OptionList;
 use Procure\Application\Helper\FormHelper;
 
 $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
 
 /**
  *
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
+$format = $this->baseUrl . '/inventory/item/list2?layout=%s&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s';
+$base = sprintf($format, $layout, $is_active, $item_type, $sort_by, $sort, $is_fixed_asset);
 
-$base = $this->baseUrl . '/inventory/item/list2?is_active=' . $is_active . '&layout=' . $layout . '&item_type=' . $item_type . '&sort_by=' . $sort_by . '&sort=' . $sort . '&is_fixed_asset=' . $is_fixed_asset;
+$format = $this->baseUrl . '/inventory/item/list2?layout=list&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s';
+$view_url = sprintf($format, $is_active, $item_type, $sort_by, $sort, $is_fixed_asset, $perPage, $page);
+
+$item_type_option = OptionList::createItemTypeOption($item_type);
+$per_page_option = OptionList::createPerPageOption($perPage);
+
+$count = 0;
+$lineBreak = 4;
+
+$hits_detail = '';
+$dropDown = '';
+
+if (count($list) > 0) {
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
+    }
+    foreach ($list as $a) {
+
+        if ($count == 0 || $count % $lineBreak == 0) {
+            $hits_detail = $hits_detail . '<div class="row" style="height-min:130px; border:1px;">';
+        }
+        $count ++;
+
+        $url = $nmtPlugin->getItemPic($a['id']);
+
+        if ($url == null) {
+            $url = '/images/no-pic1.jpg';
+        }
+
+        $img = sprintf('<img id="%s" style="cursor: pointer;"
+title="click for more detail!" onclick="" class="img-rounded" width="150" height="150" src="%s" />', $a['id'], $url);
+
+        $format = '<a style ="color:navy;" href="/inventory/item/view?entity_token=%s&entity_id=%s">%s</a>';
+        $itemUrl = sprintf($format, $a['token'], $a['id'], $a['item_name']);
+
+        $format = '<a href="javascript:;"  onclick="showJqueryDialog(\'%s\',\'1500\',$(window).height()-50,\'%s\', \'j_loaded_data\',true)"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>';
+        $url1 = sprintf('/inventory/item/show1?token=%s&entity_id=%s', $a['token'], $a['id']);
+        $item_name = sprintf('%s-%s', $this->escapeHtml($a['item_name']), $a['item_sku']);
+        $quickShow = sprintf($format, $item_name, $url1);
+
+        $format = '<a href="/inventory/item/update?entity_token=%s&entity_id=%s"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>';
+        $editUrl = sprintf($format, $a['token'], $a['id']);
+
+        $format = '<a href="/inventory/item/upload-picture?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Picture</a>';
+        $pictureUrl = sprintf($format, $a['token'], $a['id']);
+
+        $format = '<a href="/inventory/item-attachment/upload?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Attachment</a>';
+        $attachmentUrl = sprintf($format, $a['token'], $a['id']);
+
+        $dropDownList = [
+            $quickShow,
+            $editUrl,
+            'divider',
+            $pictureUrl,
+            $attachmentUrl
+        ];
+
+        $dropDown = \Application\Application\Helper\FormHelper::createDropDownBtn($dropDownList);
+
+        $tbl = '<table style="">';
+        $tbl = $tbl . ' <tr style="padding: 1pt 2pt 10pt 1pt;">';
+        $tbl = $tbl . ' <td> <div style="position: relative; float: right;">';
+        $tbl = $tbl . $img;
+        $tbl = $tbl . '</div></td>';
+        $tbl = $tbl . ' <td style="padding: 1pt 1pt 1pt 10pt;"><span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">';
+        $tbl = $tbl . $itemUrl;
+        $tbl = $tbl . '</span>';
+        $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
+        $tbl = $tbl . sprintf("<br>%s<br>%s<br>%s<br>%s", $a['item_sku'], $a['sys_number'], $a['serial_number'], $a['manufacturer_model']);
+        $tbl = $tbl . ' </span';
+        $tbl = $tbl . $dropDown;
+        $tbl = $tbl . '</td></tr></table>';
+
+        // detail starts
+        $hits_detail = $hits_detail . '<div class="col-xs-6 col-md-3">';
+        $hits_detail = $hits_detail . $tbl;
+        $hits_detail = $hits_detail . '</div>';
+        // detail ends
+
+        if ($count % $lineBreak == 0) {
+
+            $hits_detail = $hits_detail . '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
+        }
+    }
+}
+
+$filter_msg = sprintf("Active=%s |Sorted by = %s - %s", $is_active, $sort_by, $sort);
+
+// ========================================================
+
 ?>
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
@@ -40,18 +142,9 @@ $base = $this->baseUrl . '/inventory/item/list2?is_active=' . $is_active . '&lay
                            <div class="col-sm-3">
                               <select class="form-control input-sm" name="item_type">
                                  <option value="All">All</option>
-                                 <option <?php
-
-                                echo $item_type == 'ITEM' ? "selected='selected'" : "";
-                                ?> value="ITEM">Item</option>
-                                 <option <?php
-
-                                echo $item_type == 'SERVICE' ? "selected='selected'" : "";
-                                ?> value="SERVICE">Service</option>
-                                 <option <?php
-
-                                echo $item_type == 'SOFTWARE' ? "selected='selected'" : "";
-                                ?> value="SOFTWARE">Software</option>
+                                <?php
+                                echo $item_type_option;
+                                ?>
                               </select>
                            </div>
                            <div class="col-sm-4"></div>
@@ -61,7 +154,6 @@ $base = $this->baseUrl . '/inventory/item/list2?is_active=' . $is_active . '&lay
                            <div class="col-sm-3">
                               <select class="form-control input-sm" name="is_active">
                                  <option <?php
-
                                 echo $is_active == '' ? "selected='selected'" : "";
                                 ?> value="2">All</option>
                                  <option <?php
@@ -153,36 +245,15 @@ $base = $this->baseUrl . '/inventory/item/list2?is_active=' . $is_active . '&lay
                            <div class="col-sm-3">
                               <select class="form-control input-sm" name="perPage">
                                  <option value="">None</option>
-                                 <option <?php
-
-                                echo $per_pape == '20' ? "selected='selected'" : "";
-                                ?> value="20">20</option>
-                                 <option <?php
-
-                                echo $per_pape == '25' ? "selected='selected'" : "";
-                                ?> value="25">25</option>
-                                 <option <?php
-
-                                echo $per_pape == '30' ? "selected='selected'" : "";
-                                ?> value="30">30</option>
-                                 <option <?php
-
-                                echo $per_pape == '50' ? "selected='selected'" : "";
-                                ?> value="50">50</option>
-                                 <option <?php
-
-                                echo $per_pape == '100' ? "selected='selected'" : "";
-                                ?> value="100">100</option>
-                                 <option <?php
-
-                                echo $per_pape == '200' ? "selected='selected'" : "";
-                                ?> value="200">200</option>
+                               <?php
+                            echo $per_page_option;
+                            ?>
                               </select>
                            </div>
                         </div>
                         <div class="form-group margin-bottom">
                            <div class="col-sm-offset-2 col-sm-10">
-                              <button type="submit" class="btn btn-default">Show</button>
+                              <button type="submit" class="btn btn-default">Filter</button>
                            </div>
                         </div>
                      </form>
@@ -191,284 +262,21 @@ $base = $this->baseUrl . '/inventory/item/list2?is_active=' . $is_active . '&lay
             </div>
          </div>
       </div>
+      <div style="color: gray; font-size: 9pt; margin-top: 8px">
+      <?php
 
-
-
-<?php
-
-if ($total_records <= 0) {
-
-    echo 'No record found!';
-} else {
-
-    if (! is_null($paginator)) {
-        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
-    } else {
-        echo $total_records . ' records found!';
-    }
-
-    $url = sprintf($this->baseUrl . '/inventory/item/list2?layout=list&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s', $is_active, $item_type, $sort_by, $sort, $is_fixed_asset, $per_pape, $page);
-
+    echo $filter_msg;
     ?>
-
-
-	&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm" style="color: black; padding: 1pt 5pt 2pt 5pt;" title="List View" href="<?php
-
-    echo $url;
-    ?>">
-         <i class="fa fa-list" aria-hidden="true"></i>
-      </a>
-      <hr style="margin: 5pt 1pt 5pt 1pt;">
-      <div class="container-fluid">
-
- <?php
-
-    $lineBreak = 4;
-    $count = 0;
-
-    foreach ($list as $a) :
-
-        $url = $nmtPlugin->getItemPic($a['id']);
-
-        if ($count == 0 || $count % $lineBreak == 0) {
-            echo '<div class="row" style="height-min:130px; border:1px;">';
-        }
-
-        ?>
-		    <div class="col-xs-6 col-md-3	">
-            <table style="">
-               <tr style="padding: 1pt 2pt 10pt 1pt;">
-                  <td>
-                     <div style="position: relative; float: right;">
-                        <!-- <span class="badge badge-primary"><?php
-
-        echo ($paginator === null) ? $count : $paginator->minInPage - 1 + $count + 1;
-        ?></span> -->
-                        <!--  <img id="item_<?php
-
-        echo $this->escapeHtml($a['id']);
-        ?>"
-									style="cursor: pointer;" title="click for more detail!"
-									onclick="" class="img-rounded" width="120" height="120"
-									src="/inventory/item/get-picture1?&item_id=<?php
-
-        echo $a['id'];
-        ?>" />-->
-                        <a target="_blank" style="color: black;" href="<?php
-
-        echo $this->baseUrl?>/inventory/item/show?token=<?php
-
-        echo $a['token'];
-        ?>&entity_id=<?php
-
-        echo $a['id'];
-        ?>&checksum=<?php
-
-        echo $a['checksum'];
-        ?>">
-                           <img id="item_<?php
-
-        echo $this->escapeHtml($a['id']);
-        ?>" style="cursor: pointer;" title="click for more detail!" onclick="" class="img-rounded" width="160" height="160" src="<?php
-
-        echo $url;
-        ?>" />
-                        </a>
-                     </div>
-                  </td>
-                  <td style="padding: 1pt 1pt 1pt 10pt;">
-                     <span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">
-                        <a target="_blank" style="color: black;" href="<?php
-
-        echo $this->baseUrl?>/inventory/item/show?token=<?php
-
-        echo $a['token'];
-        ?>&entity_id=<?php
-
-        echo $a['id'];
-        ?>&checksum=<?php
-
-        echo $a['checksum'];
-        ?>">
-						<?php
-
-        echo ucwords(substr($this->escapeHtml($a['item_name']), 0, 100));
-        ?></a>	
-							<?php
-
-        if ($a['item_type'] == "SERVICE") :
-            ?>			
-							<span style="font-size: 8pt;" class="badge">S</span>
-							<?php endif;
-
-        ?>
-							
-								<?php
-
-        if ($a['is_fixed_asset'] == "1") :
-            ?>			
-							<span style="font-size: 6pt;" class="badge">A</span>
-							<?php endif;
-
-        ?>
-							
-								</span>
-                     <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-size: 8pt;">
-                        <br><?php
-
-        echo $this->escapeHtml(($a['item_sku']));
-        ?>
-						
-			<br><?php
-
-        echo $this->escapeHtml($a['sys_number']);
-        ?>
-				<br><?php
-
-        echo $this->escapeHtml($a['serial_number']);
-        ?>
-						<br><?php
-
-        echo substr($this->escapeHtml($a['manufacturer_model']), 0, 30);
-        ?>
-						
-						<div style="margin: 2px; font-size: 9pt">
-                           <div class="dropdown">
-                              <button style="color: black; padding: 2pt 2pt 2pt 2pt; color: navy; font-size: 8.5pt" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                 <i class="fa fa-bars" aria-hidden="true"></i>
-                                 &nbsp;Action&nbsp;
-                                 <span class="caret"></span>
-                              </button>
-                              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                 <li>
-                                    <a href="javascript:;"
-                                       onclick="showJqueryDialog('<?php
-
-        echo $a['item_name'] . ' - ' . $a['item_sku'];
-        ?>','1550',$(window).height()-50,'/inventory/item/show1?token=<?php
-
-        echo $a['token']?>&entity_id=<?php
-
-        echo $a['id']?>&checksum=<?php
-
-        echo $a['checksum']?>','j_loaded_data',true);">
-                                       <i class="fa fa-eye" aria-hidden="true"></i>
-                                       &nbsp;Quick Show
-                                    </a>
-                                    <a href="<?php
-
-        echo $this->baseUrl?>/inventory/item/update?token=<?php
-
-        echo $a['token'];
-        ?>&entity_id=<?php
-
-        echo $a['id'];
-        ?>">
-                                       <small>
-                                          <i class="glyphicon glyphicon-pencil"></i>
-                                       </small>
-                                       &nbsp;Edit
-                                    </a>
-                                 </li>
-                                 <li role="separator" class="divider"></li>
-                                 <li>
-                                    <a href="<?php
-
-        echo $this->baseUrl?>/inventory/item/clone?<?php
-
-        echo $a['token'];
-        ?>&entity_id=<?php
-
-        echo $a['id'];
-        ?>&checksum=<?php
-
-        echo $a['checksum'];
-        ?>">
-                                       <small>
-                                          <i class="fa fa-plus" aria-hidden="true"></i>
-                                          &nbsp;
-                                       </small>
-                                       &nbsp;Clone
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a href="<?php
-
-        echo $this->baseUrl?>/inventory/item/upload-picture?token=<?php
-
-        echo $a['token'];
-        ?>&target_id=<?php
-
-        echo $a['id'];
-        ?>&checksum=<?php
-
-        echo $a['checksum'];
-        ?>">
-                                       <small>
-                                          <i class="fa fa-upload" aria-hidden="true"></i>
-                                          &nbsp;
-                                       </small>
-                                       &nbsp;Upload Picture
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a href="<?php
-
-        echo $this->baseUrl?>/inventory/item-attachment/upload?token=<?php
-
-        echo $a['token'];
-        ?>&target_id=<?php
-
-        echo $a['id'];
-        ?>&checksum=<?php
-
-        echo $a['checksum'];
-        ?>">
-                                       <small>
-                                          <i class="glyphicon glyphicon-plus"></i>
-                                       </small>
-                                       &nbsp;New Attachment
-                                    </a>
-                                 </li>
-                              </ul>
-                           </div>
-						
-	
-		<?php
-
-        ?>
-	
-					<tr>
-            
-            </table>
-         </div>
-
-		<?php
-        $count ++;
-
-        if ($count % $lineBreak == 0) {
-
-            echo '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
-        }
-        ?>
-        
-    	
+       </div>
+      <hr style="margin: 1pt 1pt 5pt 1pt;">
 <?php
-    endforeach
-    ;
-    ?>
-</div>
-
-
-
-
+echo $result_msg;
+echo $hits_detail;
+?>
 
 <?php
-
-    // ===============================
-
-    echo FormHelper::createPaginator($base, $paginator, "&");
-}
+// ===============================
+echo FormHelper::createPaginator($base, $paginator, "&");
 // ===============================
 ?>
 

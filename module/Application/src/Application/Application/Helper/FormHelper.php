@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Helper;
+namespace Application\Application\Helper;
 
 use MLA\Paginator;
 
@@ -10,6 +10,46 @@ use MLA\Paginator;
  */
 class FormHelper
 {
+
+    public static function createTabs($list)
+    {
+        if ($list == null) {
+            return;
+        }
+
+        $tabs = '';
+        foreach ($list as $l) {
+
+            $tabs = $tabs . \sprintf('<li>%s</li>', $l);
+        }
+
+        return $tabs;
+    }
+
+    public static function createDropDownBtn($list)
+    {
+        if ($list == null) {
+            return;
+        }
+        $dropDown = '<div style="margin: 2px; font-size: 9pt">';
+        $dropDown = $dropDown . '<div class="dropdown">';
+        $dropDown = $dropDown . '<button style="color: black; padding: 2pt 2pt 2pt 2pt; color: navy; font-size: 8.5pt" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">';
+        $dropDown = $dropDown . '<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;Action&nbsp;<span class="caret"></span></button>';
+        $dropDown = $dropDown . '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">';
+
+        foreach ($list as $l) {
+
+            if ($l == "divider") {
+                $dropDown = $dropDown . '<li role="separator" class="divider"></li>';
+            } else {
+                $dropDown = $dropDown . \sprintf('<li>%s</li>', $l);
+            }
+        }
+
+        $dropDown . $dropDown . '</ul></div></div>';
+
+        return $dropDown;
+    }
 
     public static function createButton($name, $title, $url, $icon)
     {

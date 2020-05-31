@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Application\Service;
+namespace Inventory\Application\Service\Item;
 
 use Application\Service\AbstractService;
 use Inventory\Domain\Item\GenericItem;

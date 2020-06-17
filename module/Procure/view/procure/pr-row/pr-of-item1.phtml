@@ -1,145 +1,325 @@
-<?php if (count($rows)==0): ?>
-
+<?php
+if (count($rows) == 0) :
+    ?>
 <h5>no thing found!</h5>
+<?php
 
-<?php else: ?>
+else :
+    ?>
+<h4 style="color: graytext;"><?php
 
-<h4 style="color:graytext;"><?php echo $this->translate("Purchase Request");?>:</h4>
-
-
-<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
-<div style="color: gray;font-size: 9pt;" id="total_received"></div>
-
+    echo $this->translate("Purchase Request");
+    ?>:</h4>
+<div style="color: gray; font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray; font-size: 9pt;" id="total_received"></div>
 <div style="font-size: 14pt; font-weight: trong" id="total_balance"></div>
+<table id="mytable28" style="" class="table table-bordered table-striped table-hover">
+   <thead>
+      <tr>
+         <td>
+            <b>#</b>
+         </td>
+         <td>
+            <b>Pr No.</b>
+         </td>
+         <td>
+            <b>Pr Date</b>
+         </td>
+         <td>
+            <b>Ref</b>
+         </td>
+         <td>
+            <b>Item</b>
+         </td>
+         <td>
+            <b>Item Code</b>
+         </td>
+         <td>
+            <b>Unit</b>
+         </td>
+         <td>
+            <b>Ordered Q'ty</b>
+         </td>
+         <td>
+            <b>Ordered Q'ty1</b>
+         </td>
+         <td>
+            <b><?php
 
-<table id = "mytable28" style="font-size" class="table table-bordered table-striped table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Pr No.</b></td>
-			<td><b>Pr Date</b></td>
-			<td><b>Ref</b></td>
-			<td><b>Item</b></td>
-			<td><b>Item Code</b></td>
-		
-			<td><b>Unit</b></td>
-			<td><b>Ordered Q'ty</b></td>
-			<td><b>Ordered Q'ty1</b></td>
-		
-			<td><b><?php echo $this->translate("PO Qty");?></b></td>
-			<td><b><?php echo $this->translate("Posted PO Qty");?></b></td>
-			<td><b><?php echo $this->translate("GR Qty");?></b></td>
-			<td><b><?php echo $this->translate("Stock GR QTy");?></b></td>
-			<td><b><?php echo $this->translate("Balance Qty");?></b></td>
-			<td><b><?php echo $this->translate("Balance Qty");?></b></td>
-			<td><b><?php echo $this->translate("AP Qty");?></b></td>
-			<td><b><?php echo $this->translate("Posted AP Qty");?></b></td>
-			<td><b><?php echo $this->translate("GR Status");?></b></td>
-		
-			<td><b>Action</b></td>
-		</tr>
-		<tr style="font-weight:bold;">
-			<td>[A1]</td>
-			<td>[A2]</td>
-			<td>[A3]</td>
-			<td>[A4]</td>
-			<td>[A5]</td>
-			<td>[1]</td>
-			<td>[1.1]</td>
-			<td>[1.2]</td>
-			<td>[2]</td>
-			<td>[3]</td>
-			<td>[4] = [1]-[2]</td>
-			<td>[5] = [1]-[3]</td>
-			<td>[6]</td>
-			<td>[7]</td>
-			<td>[8]</td>
-			<td>[9]</td>
-			<td>[10]</td>
-			<td>[12]</td>
-		</tr>
-	</thead>
-	<tbody>
+    echo $this->translate("PO Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Posted PO Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("GR Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Stock GR QTy");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Balance Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Balance Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("AP Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("Posted AP Qty");
+    ?></b>
+         </td>
+         <td>
+            <b><?php
+
+    echo $this->translate("GR Status");
+    ?></b>
+         </td>
+         <td>
+            <b>Action</b>
+         </td>
+      </tr>
+      <tr style="font-weight: bold;">
+         <td>[A1]</td>
+         <td>[A2]</td>
+         <td>[A3]</td>
+         <td>[A4]</td>
+         <td>[A5]</td>
+         <td>[1]</td>
+         <td>[1.1]</td>
+         <td>[1.2]</td>
+         <td>[2]</td>
+         <td>[3]</td>
+         <td>[4] = [1]-[2]</td>
+         <td>[5] = [1]-[3]</td>
+         <td>[6]</td>
+         <td>[7]</td>
+         <td>[8]</td>
+         <td>[9]</td>
+         <td>[10]</td>
+         <td>[12]</td>
+      </tr>
+   </thead>
+   <tbody>
  
 	 <?php
-	
-	$count = 0;
-	$total_ordered = 0;
-	$total_received = 0;
-	$total_balance = 0;
-	
-	foreach ( $rows as $r ) :
-		$count ++;
-		/**@var \Application\Entity\NmtProcurePrRow $a ;*/		
-		$a = $r[0];
-		$total_ordered =  $total_ordered + $a->getQuantity();
-		$total_received =  $total_received + $r['gr_qty'];
-		$total_balance =  $total_balance + $r['stock_gr_qty'];
-			
-		?>
-	 <tr style="color:graytext;">
-			 <td ><?php echo $count;?></td>
-	 		<td><a title="<?php echo $this->escapeHtml($a->getPr()->getPrAutoNumber());?>" href="/procure/pr/show?entity_id=<?php echo $a->getPr()->getId();?>&token=<?php echo $a->getPr()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPr()->getPrNumber());?></a></td>
-			<td><?php if(!$a->getPr()->getSubmittedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
-   		    <td><?php echo $a->getRowIdentifer();?></td>
-		
-			<td><?php echo $a->getRowName();?></td>
-			<td><?php echo $a->getRowCode();?></td>
-		
-			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
-			<td><?php echo $a->getQuantity();?></td>
-			<td><?php if(!$a->getConvertedStandardQuantiy()==null): 
-			if (is_numeric($a->getConvertedStandardQuantiy())):echo number_format($a->getConvertedStandardQuantiy(),2); endif;
-			else:
-			
-			if (is_numeric($a->getQuantity())):echo number_format($a->getQuantity(),2); endif;
-			
-			endif;?>
+
+    $count = 0;
+    $total_ordered = 0;
+    $total_received = 0;
+    $total_balance = 0;
+
+    foreach ($rows as $r) :
+        $count ++;
+        /**@var \Application\Entity\NmtProcurePrRow $a ;*/
+        $a = $r[0];
+        $total_ordered = $total_ordered + $a->getQuantity();
+        $total_received = $total_received + $r['gr_qty'];
+        $total_balance = $total_balance + $r['stock_gr_qty'];
+        $format = '/procure/pr/view?entity_id=%s&entity_token=%s';
+        $pr_view = sprintf($format, $a->getPr()->getId(), $a->getPr()->getToken());
+
+        ?>
+	 <tr style="color: graytext;">
+         <td><?php
+
+        echo $count;
+        ?></td>
+         <td>
+            <a title="<?php
+
+        echo $this->escapeHtml($a->getPr()
+            ->getPrAutoNumber());
+        ?>" href="<?php
+
+        echo $a->getPr()->getId();
+        ?>&token=<?php
+
+        echo $a->getPr()->getToken();
+        ?>" target="_blank"><?php
+
+        echo $this->escapeHtml($a->getPr()
+            ->getPrNumber());
+        ?></a>
+         </td>
+         <td><?php
+
+        if (! $a->getPr()->getSubmittedOn() == null) :
+            echo date_format($a->getPr()->getSubmittedOn(), "d/m/y");endif;
+
+        ?> </td>
+         <td>
+            <a title="<?php
+
+        echo $this->escapeHtml($a->getPr()
+            ->getPrAutoNumber());
+        ?>" href="<?php
+
+        echo $pr_view;
+        ?>" target="_blank"><?php
+        echo $this->escapeHtml($a->getRowIdentifer());
+        ?></a>
+         </td>
+         <td><?php
+
+        echo $a->getRowName();
+        ?></td>
+         <td><?php
+
+        echo $a->getRowCode();
+        ?></td>
+         <td><?php
+
+        echo $a->getItem()
+            ->getStandardUom()
+            ->getUomCode();
+        ?></td>
+         <td><?php
+
+        echo $a->getQuantity();
+        ?></td>
+         <td><?php
+
+        if (! $a->getConvertedStandardQuantiy() == null) :
+            if (is_numeric($a->getConvertedStandardQuantiy())) :
+                echo number_format($a->getConvertedStandardQuantiy(), 2); endif;
+
+        else :
+
+            if (is_numeric($a->getQuantity())) :
+                echo number_format($a->getQuantity(), 2); endif;
+
+        endif;
+        ?>
 			</td>
-	
-			<td><?php if (is_numeric($r['po_qty'])):echo number_format($r['po_qty'],2); endif;?></td>		
-			
-			<td><?php if (is_numeric($r['posted_po_qty'])):echo number_format($r['posted_po_qty'],2); endif;?></td>		
-			<td><?php if (is_numeric($r['gr_qty'])):echo number_format($r['gr_qty'],2); endif;?></td>		
-			<td><?php if (is_numeric($r['stock_gr_qty'])):echo number_format($r['stock_gr_qty'],2); endif;?></td>		
-			<td><?php if (is_numeric($r['gr_qty'])):echo number_format($a->getQuantity()-$r['gr_qty'],2); endif;?></td>		
-			<td><?php if (is_numeric($r['stock_gr_qty'])):echo number_format($a->getQuantity()-$r['stock_gr_qty'],2); endif;?></td>		
-		
-			<td><?php if (is_numeric($r['ap_qty'])):echo number_format($r['ap_qty'],2); endif;?></td>		
-			<td><?php if (is_numeric($r['posted_ap_qty'])):echo number_format($r['posted_ap_qty'],2); endif;?></td>		
-		<td>			
-	<?php if($a->getQuantity()-$r['gr_qty'] <=0 or $a->getQuantity()-$r['stock_gr_qty']<=0):
-	   echo $this->translate("fullly received");
+         <td><?php
+
+        if (is_numeric($r['po_qty'])) :
+            echo number_format($r['po_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['posted_po_qty'])) :
+            echo number_format($r['posted_po_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['gr_qty'])) :
+            echo number_format($r['gr_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['stock_gr_qty'])) :
+            echo number_format($r['stock_gr_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['gr_qty'])) :
+            echo number_format($a->getQuantity() - $r['gr_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['stock_gr_qty'])) :
+            echo number_format($a->getQuantity() - $r['stock_gr_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['ap_qty'])) :
+            echo number_format($r['ap_qty'], 2); endif;
+
+        ?></td>
+         <td><?php
+
+        if (is_numeric($r['posted_ap_qty'])) :
+            echo number_format($r['posted_ap_qty'], 2); endif;
+
+        ?></td>
+         <td>			
+	<?php
+
+        if ($a->getQuantity() - $r['gr_qty'] <= 0 or $a->getQuantity() - $r['stock_gr_qty'] <= 0) :
+            echo $this->translate("fullly received");
 	endif;
-	?>		
+
+        ?>		
 		
-		<?php if($r['gr_qty'] >0 AND $r['gr_qty']<$a->getQuantity()):
-	   echo $this->translate("partial");
+		<?php
+
+        if ($r['gr_qty'] > 0 and $r['gr_qty'] < $a->getQuantity()) :
+            echo $this->translate("partial");
 	endif;
-	?>		
+
+        ?>		
 			</td>
-			
-			<td>
-			</td>
-			
-		</tr>
-<?php endforeach; ?>
+         <td></td>
+      </tr>
+<?php
+    endforeach
+    ;
+    ?>
 
  </tbody>
 </table>
-
 <script type="text/javascript">
-$('#total_ordered').text("<?php echo "Ordered Q'ty: " . $total_ordered; ?>");
-$('#total_received').text("<?php echo "Received Q'ty: ". $total_received; ?>");
-<?php if($total_balance>0): ?>
-$('#total_balance').html('<?php echo '<span class="label label-danger"> Balance Qty: ' . $total_balance .'<br></div>'; ?>');
-<?php else: ?>
-$('#total_balance').html("<?php echo "Balance Q'ty: " . $total_balance; ?>");
+$('#total_ordered').text("<?php
+
+    echo "Ordered Q'ty: " . $total_ordered;
+    ?>");
+$('#total_received').text("<?php
+
+    echo "Received Q'ty: " . $total_received;
+    ?>");
 <?php
-endif;
-?>
+
+    if ($total_balance > 0) :
+        ?>
+$('#total_balance').html('<?php
+
+        echo '<span class="label label-danger"> Balance Qty: ' . $total_balance . '<br></div>';
+        ?>');
+<?php
+
+    else :
+        ?>
+$('#total_balance').html("<?php
+
+        echo "Balance Q'ty: " . $total_balance;
+        ?>");
+<?php
+    endif;
+    ?>
 
 </script>
+<?php
 
-<?php endif; ?>
+endif;
+?>
 	

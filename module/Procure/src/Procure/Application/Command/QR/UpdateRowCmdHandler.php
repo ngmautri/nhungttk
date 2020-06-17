@@ -92,6 +92,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "taxRate",
                 "docUnitPrice",
                 "conversionFactor",
+                "discountRate",
                 "glAccount",
                 "costCenter",
                 "remarks"

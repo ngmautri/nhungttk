@@ -647,6 +647,8 @@ class QrMapper
         if ($entity->getItem() !== null) {
             RowMapper::updateItemDetails($snapshot, $entity->getItem());
         }
+        // other
+        $snapshot->discountAmount = $snapshot->netAmount * $snapshot->discountRate / 100;
 
         return $snapshot;
     }

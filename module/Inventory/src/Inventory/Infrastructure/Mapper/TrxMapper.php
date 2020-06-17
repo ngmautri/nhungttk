@@ -31,7 +31,7 @@ class TrxMapper
         // =================================
         // Mapping None-Object Field
         // =================================
-        - 
+
         // $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
         $entity->setCurrencyIso3($snapshot->currencyIso3);
@@ -44,7 +44,6 @@ class TrxMapper
         $entity->setSapDoc($snapshot->sapDoc);
         $entity->setContractNo($snapshot->contractNo);
         $entity->setQuotationNo($snapshot->quotationNo);
-        $entity->setQuotationDate($snapshot->quotationDate);
         $entity->setSysNumber($snapshot->sysNumber);
         $entity->setRevisionNo($snapshot->revisionNo);
         $entity->setDeliveryMode($snapshot->deliveryMode);
@@ -115,6 +114,10 @@ class TrxMapper
 
         if ($snapshot->docDate !== null) {
             $entity->setDocDate(new \DateTime($snapshot->docDate));
+        }
+
+        if ($snapshot->quotationDate !== null) {
+            $entity->setQuotationDate(new \DateTime($snapshot->quotationDate));
         }
 
         // ============================

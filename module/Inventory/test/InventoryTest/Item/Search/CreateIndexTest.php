@@ -39,8 +39,8 @@ class CreateIndexTest extends PHPUnit_Framework_TestCase
             $results = $rep->getItemList($filter, $sort_by, $sort, $limit, $offset);
 
             $indexer = new ItemSearchIndexImpl();
-            $r = $indexer->createIndex($results);
-            // $r = $indexer->optimizeIndex();
+            // $r = $indexer->createIndex($results);
+            $r = $indexer->optimizeIndex();
             var_dump($r);
 
             $timer = $stopWatch->stop("test");

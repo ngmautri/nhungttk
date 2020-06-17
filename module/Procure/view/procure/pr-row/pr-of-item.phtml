@@ -1,90 +1,182 @@
-<?php if (count($rows)==0): ?>
+<
 
+<?php
+if (count($rows) == 0) :
+    ?>
 <h5>no thing found!</h5>
+<?php
 
-<?php else: ?>
+else :
+    ?>
+<h4 style="color: graytext;"><?php
 
-<h4 style="color:graytext;"><?php echo $this->translate("Purchase Request");?>:</h4>
-
-
-<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
-<div style="color: gray;font-size: 9pt;" id="total_received"></div>
-
+    echo $this->translate("Purchase Request");
+    ?>:</h4>
+<div style="color: gray; font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray; font-size: 9pt;" id="total_received"></div>
 <div style="font-size: 14pt; font-weight: trong" id="total_balance"></div>
-
-<table id = "mytable28" style="font-size: 9pt;" class="table table-bordered table-striped table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Pr No.</b></td>
-			<td><b>Pr No.</b></td>
-			<td><b>Pr Date</b></td>
-			<td><b>Ref.</b></td>		
-			<td><b>Item Name</b></td>
-			<td><b>Unit</b></td>
-			<td><b>Ordered <br> Q'ty</b></td>
-			<td><b>Receipted<br>Q'ty</b></td>
-			<td><b>Balance</b></td>
-			
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
-	<tbody>
+<table id="mytable28" style="font-size: 9pt;" class="table table-bordered table-striped table-hover">
+   <thead>
+      <tr>
+         <td>
+            <b>#</b>
+         </td>
+         <td>
+            <b>Pr No.</b>
+         </td>
+         <td>
+            <b>Pr No.</b>
+         </td>
+         <td>
+            <b>Pr Date</b>
+         </td>
+         <td>
+            <b>Ref.</b>
+         </td>
+         <td>
+            <b>Item Name</b>
+         </td>
+         <td>
+            <b>Unit</b>
+         </td>
+         <td>
+            <b>
+               Ordered
+               <br>
+               Q'ty
+            </b>
+         </td>
+         <td>
+            <b>
+               Receipted
+               <br>
+               Q'ty
+            </b>
+         </td>
+         <td>
+            <b>Balance</b>
+         </td>
+         <td>
+            <b>Action</b>
+         </td>
+      </tr>
+   </thead>
+   <tbody>
  
 	 <?php
-	
-	$count = 0;
-	$total_ordered = 0;
-	$total_received = 0;
-	$total_balance = 0;
-	
-	foreach ( $rows as $r ) :
-		$count ++;
-		/**@var \Application\Entity\NmtProcurePrRow $a ;*/		
-		$a = $r[0];
-		$total_ordered =  $total_ordered + $a->getQuantity();
-		$total_received =  $total_received + $r['total_received'];
-		$total_balance =  $total_balance + $r['confirmed_balance'];
-		
-		
-		?>
+
+    $count = 0;
+    $total_ordered = 0;
+    $total_received = 0;
+    $total_balance = 0;
+
+    foreach ($rows as $r) :
+        $count ++;
+        /**@var \Application\Entity\NmtProcurePrRow $a ;*/
+        $a = $r[0];
+        $total_ordered = $total_ordered + $a->getQuantity();
+        $total_received = $total_received + $r['total_received'];
+        $total_balance = $total_balance + $r['confirmed_balance'];
+        $format = '/procure/pr/show?entity_id=%s&entity_token=%s';
+        $pr_view = sprintf($format, $a->getPr()->getId(), $a->getPr()->getToken());
+        ?>
 	 <tr>
-	 <td><?php echo $count;?></td>
-	 		<td><a href="/procure/pr/show?entity_id=<?php echo $a->getPr()->getId();?>&token=<?php echo $a->getPr()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPr()->getPrAutoNumber());?></a></td>
-			<td><?php echo $this->escapeHtml($a->getPr()->getPrNumber());?></td>
-			<td><?php if(!$a->getPr()->getCreatedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
-			<td><?php echo $a->getRowIdentifer();?></td>
-	
-			<td><?php echo $a->getRowName();?></td>
-		
-			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
-		
-			<td><?php echo $a->getQuantity();?></td>
-			
-			<td><?php echo $r['total_received'];?></td>
-			<td><?php echo $r['confirmed_balance'];?></td>
-	
-			<td>
-			</td>
-			
-		</tr>
-<?php endforeach; ?>
+         <td><?php
+
+        echo $count;
+        ?></td>
+         <td>
+            <a href="<?php
+
+echo $pr_view;
+        ?>" target="_blank"><?php
+        echo $this->escapeHtml($a->getPr()
+            ->getPrAutoNumber());
+        ?></a>
+         </td>
+         <td>
+                <a href="<?php
+
+echo $pr_view;
+        ?>" target="_blank"><?php
+        echo $this->escapeHtml($a->getPr()
+            ->getPrNumber());
+        ?></a>
+ 
+         </td>
+         <td><?php
+
+        if (! $a->getPr()->getCreatedOn() == null) :
+            echo date_format($a->getPr()->getSubmittedOn(), "d/m/y");endif;
+
+        ?> </td>
+         <td><?php
+
+        echo $a->getRowIdentifer();
+        ?></td>
+         <td><?php
+
+        echo $a->getRowName();
+        ?></td>
+         <td><?php
+
+        echo $a->getItem()
+            ->getStandardUom()
+            ->getUomCode();
+        ?></td>
+         <td><?php
+
+        echo $a->getQuantity();
+        ?></td>
+         <td><?php
+
+        echo $r['total_received'];
+        ?></td>
+         <td><?php
+
+        echo $r['confirmed_balance'];
+        ?></td>
+         <td></td>
+      </tr>
+<?php
+    endforeach
+    ;
+    ?>
 
  </tbody>
 </table>
-
 <script type="text/javascript">
-$('#total_ordered').text("<?php echo "Ordered Q'ty: " . $total_ordered; ?>");
-$('#total_received').text("<?php echo "Received Q'ty: ". $total_received; ?>");
-<?php if($total_balance>0): ?>
-$('#total_balance').html('<?php echo '<span class="label label-danger"> Balance Qty: ' . $total_balance .'<br></div>'; ?>');
-<?php else: ?>
-$('#total_balance').html("<?php echo "Balance Q'ty: " . $total_balance; ?>");
+$('#total_ordered').text("<?php
+
+    echo "Ordered Q'ty: " . $total_ordered;
+    ?>");
+$('#total_received').text("<?php
+
+    echo "Received Q'ty: " . $total_received;
+    ?>");
 <?php
-endif;
-?>
+
+    if ($total_balance > 0) :
+        ?>
+$('#total_balance').html('<?php
+
+        echo '<span class="label label-danger"> Balance Qty: ' . $total_balance . '<br></div>';
+        ?>');
+<?php
+
+    else :
+        ?>
+$('#total_balance').html("<?php
+
+        echo "Balance Q'ty: " . $total_balance;
+        ?>");
+<?php
+    endif;
+    ?>
 
 </script>
+<?php
 
-<?php endif; ?>
+endif;
+?>
 	

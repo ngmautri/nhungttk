@@ -107,6 +107,14 @@ class GenericRow extends BaseRow
             $this->unitPrice = $this->getDocUnitPrice() / $this->quantity;
 
             $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+
+            $discountAmount = 0;
+            if ($this->getDiscountRate() > 0) {
+                $discountAmount = $netAmount * ($this->getDiscountRate() / 100);
+                $this->setDiscountAmount($discountAmount);
+                $netAmount = $netAmount - $discountAmount;
+            }
+
             $taxAmount = $netAmount * $this->getTaxRate() / 100;
             $grosAmount = $netAmount + $taxAmount;
 

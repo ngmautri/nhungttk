@@ -376,6 +376,32 @@ echo $error_msg;
                      </div>
                   </div>
                   <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Discount Rate (%):</label>
+                     <div class="col-sm-3">
+                        <input class="form-control input-sm" type="text" id="discountRate" name="discountRate" value="<?php
+
+                        echo (! $dto == null) ? $dto->getDiscountRate() : "";
+                        ?>">
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
+                     <label class="control-label col-sm-2" for="inputTag">Discount Amount:</label>
+                     <div class="col-sm-3">
+                        <input readonly="readonly" class="form-control input-sm" type="text" id="discountAmount" name="" discountAmount"" value="<?php
+
+                        echo (! $dto == null) ? $dto->getDiscountAmount() : "";
+                        ?>">
+                     </div>
+                     <div class="col-sm-1">
+                        <strong><?php
+
+                        if (! $headerDTO == null) :
+                            echo $headerDTO->getCurrencyIso3(); endif;
+
+                        ?></strong>
+                     </div>
+                  </div>
+                  <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Net Amount:</label>
                      <div class="col-sm-3">
                         <input readonly class="form-control input-sm" type="text" id="net_amount" name="netAmount" value="<?php
@@ -697,6 +723,16 @@ echo $cost_center_option;
         <?php
        	 endif
         ?>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
       function selectItem(id, token,target, name, target_name, context = null){

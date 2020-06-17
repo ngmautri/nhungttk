@@ -63,6 +63,20 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
                 $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
             }
+
+            if ($localEntity->getDiscountRate() !== null) {
+                if (! $spec->isSatisfiedBy($localEntity->getDiscountRate())) {
+                    $format = 'Discount rate is not valid! %s%s';
+                    $m = \sprintf($format, $localEntity->getDiscountRate(), '%');
+                    $localEntity->addError($m);
+                } else {
+                    if ($localEntity->getDiscountRate() > 100) {
+                        $format = 'Discount rate is not valid! To high: %s%s';
+                        $m = \sprintf($format, $localEntity->getDiscountRate(), '%');
+                        $localEntity->addError($m);
+                    }
+                }
+            }
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

@@ -36,26 +36,30 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
         $this->getBuilder()->buildHeader($params);
         $objPHPExcel = $this->getBuilder()->getPhpSpreadsheet();
 
-        $header = 3;
+        $header = 7;
         $i = 0;
 
         $cols = ExcelColumnMap::COLS;
 
         $headerValues = array(
             "#",
-            "Vendor",
-            "PO#",
-            "Item",
             "SKU",
+            "Sys No.",
+            "Item",
             "Item Vendor Name",
             "Item Vendor code",
+            "Item code",
+            "PR ",
+            "PR Date",
+            "Row#",
             "Unit",
-            "Qty",
-            "UP",
-            "Net Amt",
-            "CUrr",
-            "PR",
-            "PR"
+            "PR Qty",
+            "PO",
+            "Posted PO",
+            "AP",
+            "Posted AP",
+            "last Vendor",
+            "last UP"
         );
 
         $n = 0;
@@ -78,20 +82,24 @@ class SaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
-                $row->vendorName,
-                $row->docNumber,
                 $row->itemSKU,
+                $row->itemSysNumber,
                 $row->itemName,
                 $row->vendorItemName,
                 $row->vendorItemCode,
+                $row->itemManufacturerCode,
+                $row->docNumber,
+                $row->docDate,
+                $row->rowIdentifer,
                 $row->docUnit,
-                $row->quantity,
-                $row->docUnitPrice,
-                $row->netAmount,
-                $row->docCurrencyISO,
-                $row->remarks,
-                $row->prRowIndentifer,
-                $row->prNumber
+                $row->docQuantity,
+                $row->draftPoQuantity,
+                $row->postedPoQuantity,
+                $row->draftApQuantity,
+                $row->postedApQuantity,
+                $row->lastVendorName,
+                $row->lastUnitPrice,
+                $row->lastCurrency
             );
 
             $n = 0;

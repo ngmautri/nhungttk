@@ -193,6 +193,10 @@ WHERE 1
 
             $localSnapshot->draftStockQrQuantity = $r["stock_gr_qty"];
             $localSnapshot->postedStockQrQuantity = $r["posted_stock_gr_qty"];
+            $localSnapshot->lastVendorName = $r["last_vendor_name"];
+            $localSnapshot->lastUnitPrice = $r["last_unit_price"];
+            $localSnapshot->lastCurrency = $r["currency_iso3"];
+
             $resultList[] = $localSnapshot;
         }
 

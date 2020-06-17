@@ -79,7 +79,7 @@ title="click for more detail!" onclick="" class="img-rounded" width="150" height
             $tbl = $tbl . $itemUrl;
             $tbl = $tbl . '</span>';
             $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
-            $tbl = $tbl . sprintf("<br>%s<br>%s<br>%s<br>%s", $hit->itemSku, $hit->itemSku1, $hit->manufacturerSerial, $hit->manufacturerCode);
+            $tbl = $tbl . sprintf("<br>%s // %s<br>%s<br>%s<br>%s", $hit->sysNumber, $hit->itemSku, $hit->itemSku1, $hit->manufacturerSerial, $hit->manufacturerCode);
             $tbl = $tbl . ' </span';
             $tbl = $tbl . $dropDown;
 

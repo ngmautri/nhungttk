@@ -30,8 +30,8 @@ SELECT
     IFNULL(fin_vendor_invoice_row.ap_qty,0) AS ap_qty,
     IFNULL(fin_vendor_invoice_row.posted_ap_qty,0) AS posted_ap_qty,
     
-    last_ap.vendor_name as vendor_name,
-    last_ap.unit_price as unit_price,
+    last_ap.vendor_name as last_vendor_name,
+    last_ap.unit_price as last_unit_price,
     last_ap.currency_iso3 as currency_iso3   
         
 FROM nmt_procure_pr_row

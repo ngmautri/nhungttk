@@ -288,23 +288,28 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 </div>
 <script>
 
-    var columns = [
-      
-        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
-        { title: "Vendor", dataType: "string", dataIndx: "vendorName", width: 150,editable: false },
-        { title: "Vendor", dataType: "string", dataIndx: "postingDate", width: 150,editable: false },
-        { title: "Ref", dataType: "string", dataIndx: "sapNumber", width: 150,editable: false },
-        { title: "Cur", dataType: "string", dataIndx: "docCurrencyISO", width: 10,editable: false },
-       	{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
-       	{ title: "Item", dataType: "string", dataIndx: "itemName", width: 280,editable: false },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false,editable: false},
-        { title: "UP", dataType: "string", dataIndx: "unitPrice", width:70, align: 'right',editable: false},
-        { title: "Net Amt", dataType: "string", dataIndx: "netAmount", width:70, align: 'right',editable: false},
-        { title: "FX", dataType: "string", dataIndx: "exchangeRate", width:10, align: 'right',editable: false},
-        { title: "PR", dataType: "string", dataIndx: "prNumber", width:150, align: 'left',editable: false},
-        { title: "PO", dataType: "string", dataIndx: "poNumber", width:150, align: 'left',editable: false},
-        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+    var columns = [      
+            { title: "SKU", dataType: "string", dataIndx: "itemSKU", align: 'left',minWidth: 50,editable: true},
+            { title: "Item No.", dataType: "string", dataIndx: "itemSysNumber", width: 80,editable: false },
+            { title: "Item Name", dataType: "string", dataIndx: "itemName", width: 200,editable: false },
+            { title: "Name1", dataType: "string", dataIndx: "vendorItemName", width: 150,editable: false },
+            { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width: 100,editable: false },
+           	{ title: "Code1", dataType: "string", dataIndx: "itemManufacturerCode", width:100,editable: false },
+           	{ title: "PR", dataType: "string", dataIndx: "docNumber", width: 100,editable: false },
+            { title: "PR date", dataType: "integer", dataIndx: "docDate", width: 100,align: 'left',hidden: false,editable: false},
+            { title: "Row", dataType: "string", dataIndx: "rowIdentifer", width:100, align: 'left',editable: false},
+            { title: "Unit", dataType: "string", dataIndx: "docUnit", width:70, align: 'center',editable: false},
+            { title: "Qty", dataType: "string", dataIndx: "docQuantity", width:70, align: 'right',editable: false},
+            { title: "PO", dataType: "string", dataIndx: "draftPoQuantity", width:70, align: 'right',editable: false},
+            { title: "PO posted", dataType: "string", dataIndx: "postedPoQuantity", width:70, align: 'right',editable: false},
+            { title: "AP", dataType: "string", dataIndx: "draftApQuantity", align: 'right',minWidth: 70,editable: false},
+            { title: "AP Post", dataType: "string", dataIndx: "postedApQuantity", align: 'right',minWidth: 70,editable: false},
+            { title: "Vendor", dataType: "string", dataIndx: "lastVendorName", align: 'left',minWidth: 150,editable: false},
+            { title: "UP", dataType: "string", dataIndx: "lastUnitPrice", align: 'right',minWidth: 100,editable: false},
+            { title: "Cur", dataType: "string", dataIndx: "lastCurrency", align: 'right',minWidth: 70,editable: false}
+     
    ];
+    
     var url = "<?php
     echo $girdUrl;
     ?>";

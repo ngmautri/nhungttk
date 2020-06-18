@@ -24,10 +24,10 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
-        $spec = $factory->getDepartmentSpecification();
+        $spec = $factory->getAssociationItemExitsSpecification();
         $subject = array(
-            "companyId" => 1,
-            "departmentId" => 23
+            "associationId" => 2,
+            "companyId" => 1
         );
         var_dump($spec->isSatisfiedBy($subject));
     }

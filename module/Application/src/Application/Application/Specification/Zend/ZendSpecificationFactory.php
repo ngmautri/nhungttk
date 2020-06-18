@@ -283,4 +283,14 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new DepartmentExitsSpecification($this->doctrineEM);
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getAssociationItemExitsSpecification()
+     */
+    public function getAssociationItemExitsSpecification()
+    {
+        return new AssociationItemExitsSpecification($this->doctrineEM);
+    }
 }

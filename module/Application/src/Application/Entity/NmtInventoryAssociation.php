@@ -78,6 +78,20 @@ class NmtInventoryAssociation
     private $lastChangeBy;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="version", type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -289,6 +303,54 @@ class NmtInventoryAssociation
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryAssociation
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set version
+     *
+     * @param integer $version
+     *
+     * @return NmtInventoryAssociation
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return integer
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryAssociationItem
  *
- * @ORM\Table(name="nmt_inventory_association_item", indexes={@ORM\Index(name="nmt_inventory_association_item_FK1_idx", columns={"association_id"}), @ORM\Index(name="nmt_inventory_association_item_FK2_idx", columns={"main_item_id"}), @ORM\Index(name="nmt_inventory_association_item_FK3_idx", columns={"related_item_id"}), @ORM\Index(name="nmt_inventory_association_item_FK3_idx1", columns={"created_by"}), @ORM\Index(name="nmt_inventory_association_item_FK5_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_association_item", indexes={@ORM\Index(name="nmt_inventory_association_item_FK1_idx", columns={"association_id"}), @ORM\Index(name="nmt_inventory_association_item_FK2_idx", columns={"main_item_id"}), @ORM\Index(name="nmt_inventory_association_item_FK3_idx", columns={"related_item_id"}), @ORM\Index(name="nmt_inventory_association_item_FK3_idx1", columns={"created_by"}), @ORM\Index(name="nmt_inventory_association_item_FK5_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_association_item_FK6_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtInventoryAssociationItem
@@ -64,6 +64,20 @@ class NmtInventoryAssociationItem
     private $remarks;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="version", type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
      * @var \Application\Entity\NmtInventoryAssociation
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryAssociation")
@@ -112,6 +126,16 @@ class NmtInventoryAssociationItem
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -270,6 +294,54 @@ class NmtInventoryAssociationItem
     }
 
     /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryAssociationItem
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set version
+     *
+     * @param integer $version
+     *
+     * @return NmtInventoryAssociationItem
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return integer
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
      * Set association
      *
      * @param \Application\Entity\NmtInventoryAssociation $association
@@ -387,5 +459,29 @@ class NmtInventoryAssociationItem
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtInventoryAssociationItem
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

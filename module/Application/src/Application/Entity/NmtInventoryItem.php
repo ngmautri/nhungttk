@@ -1,253 +1,18 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * NmtInventoryItem
  *
  * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"}), @ORM\Index(name="nmt_inventory_item_FK10_idx", columns={"item_group_id"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK11_idx", columns={"stock_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK12_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_FK13_idx", columns={"purchase_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK14_idx", columns={"sales_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK15_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_FK16_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_FK17_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_FK18_idx", columns={"default_warehouse_id"})})
- * @ORM\MappedSuperclass
- * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
+ * @ORM\Entity
  */
 class NmtInventoryItem
 {
-
     /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtProcureQoRow", mappedBy="item")
-     */
-    private $qoList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtProcureGrRow", mappedBy="item")
-     */
-    private $procureGrList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryItemSerial", mappedBy="item")
-     */
-    private $serialNoList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryItemBatch", mappedBy="item")
-     */
-    private $batchNoList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryItemPicture", mappedBy="item")
-     */
-    private $pictureList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtApplicationAttachment", mappedBy="item")
-     */
-    private $attachmentList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtProcurePrRow", mappedBy="item")
-     */
-    private $prList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtProcurePoRow", mappedBy="item")
-     */
-    private $poList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\FinVendorInvoiceRow", mappedBy="item")
-     */
-    private $apList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryFifoLayer", mappedBy="item")
-     */
-    private $fifoLayerList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryFifoLayerConsume", mappedBy="item")
-     */
-    private $fifoLayerConsumeList;
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryTrx", mappedBy="item")
-     */
-    private $stockGrList;
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getPrList()
-    {
-        return $this->prList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getQoList()
-    {
-        return $this->qoList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getProcureGrList()
-    {
-        return $this->procureGrList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getSerialNoList()
-    {
-        return $this->serialNoList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getBatchNoList()
-    {
-        return $this->batchNoList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getPictureList()
-    {
-        return $this->pictureList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getAttachmentList()
-    {
-        return $this->attachmentList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getFifoLayerList()
-    {
-        return $this->fifoLayerList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getFifoLayerConsumeList()
-    {
-        return $this->fifoLayerConsumeList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getStockGrList()
-    {
-        return $this->stockGrList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getPoList()
-    {
-        return $this->poList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getApList()
-    {
-        return $this->apList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
-    public function __construct()
-    {
-        $this->qoList = new ArrayCollection();
-        $this->procureGrList = new ArrayCollection();
-        $this->serialNoList = new ArrayCollection();
-        $this->batchNoList = new ArrayCollection();
-        $this->pictureList = new ArrayCollection();
-        $this->attachmentList = new ArrayCollection();
-        $this->prList = new ArrayCollection();
-        $this->poList = new ArrayCollection();
-        $this->apList = new ArrayCollection();
-        $this->fifoLayerList = new ArrayCollection();
-        $this->fifoLayerList = new ArrayCollection();
-        $this->fifoLayerConsumeList = new ArrayCollection();
-        $this->stockGrList = new ArrayCollection();
-    }
-
-    // ================================
-
-    /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -257,7 +22,6 @@ class NmtInventoryItem
     private $id;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="warehouse_id", type="integer", nullable=true)
@@ -265,7 +29,6 @@ class NmtInventoryItem
     private $warehouseId;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_sku", type="string", length=45, nullable=false)
@@ -273,7 +36,6 @@ class NmtInventoryItem
     private $itemSku;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_name", type="string", length=100, nullable=false)
@@ -281,7 +43,6 @@ class NmtInventoryItem
     private $itemName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_name_foreign", type="string", length=100, nullable=true)
@@ -289,7 +50,6 @@ class NmtInventoryItem
     private $itemNameForeign;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_description", type="string", length=255, nullable=true)
@@ -297,7 +57,6 @@ class NmtInventoryItem
     private $itemDescription;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_type", type="string", nullable=true)
@@ -305,7 +64,6 @@ class NmtInventoryItem
     private $itemType;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_category", type="string", length=45, nullable=true)
@@ -313,7 +71,6 @@ class NmtInventoryItem
     private $itemCategory;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
@@ -321,7 +78,6 @@ class NmtInventoryItem
     private $keywords;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -329,7 +85,6 @@ class NmtInventoryItem
     private $isActive;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_stocked", type="boolean", nullable=true)
@@ -337,7 +92,6 @@ class NmtInventoryItem
     private $isStocked;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_sale_item", type="boolean", nullable=true)
@@ -345,7 +99,6 @@ class NmtInventoryItem
     private $isSaleItem;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_purchased", type="boolean", nullable=true)
@@ -353,7 +106,6 @@ class NmtInventoryItem
     private $isPurchased;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_fixed_asset", type="boolean", nullable=true)
@@ -361,7 +113,6 @@ class NmtInventoryItem
     private $isFixedAsset;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_sparepart", type="boolean", nullable=true)
@@ -369,7 +120,6 @@ class NmtInventoryItem
     private $isSparepart;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uom", type="string", length=45, nullable=true)
@@ -377,7 +127,6 @@ class NmtInventoryItem
     private $uom;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="barcode", type="string", length=40, nullable=true)
@@ -385,7 +134,6 @@ class NmtInventoryItem
     private $barcode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="barcode39", type="string", length=40, nullable=true)
@@ -393,7 +141,6 @@ class NmtInventoryItem
     private $barcode39;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="barcode128", type="string", length=50, nullable=true)
@@ -401,7 +148,6 @@ class NmtInventoryItem
     private $barcode128;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -409,7 +155,6 @@ class NmtInventoryItem
     private $status;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -417,7 +162,6 @@ class NmtInventoryItem
     private $createdOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="manufacturer", type="string", length=50, nullable=true)
@@ -425,7 +169,6 @@ class NmtInventoryItem
     private $manufacturer;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="manufacturer_code", type="string", length=100, nullable=true)
@@ -433,7 +176,6 @@ class NmtInventoryItem
     private $manufacturerCode;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="manufacturer_catalog", type="string", length=45, nullable=true)
@@ -441,7 +183,6 @@ class NmtInventoryItem
     private $manufacturerCatalog;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="manufacturer_model", type="string", length=45, nullable=true)
@@ -449,7 +190,6 @@ class NmtInventoryItem
     private $manufacturerModel;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="manufacturer_serial", type="string", length=45, nullable=true)
@@ -457,7 +197,6 @@ class NmtInventoryItem
     private $manufacturerSerial;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="origin", type="string", length=45, nullable=true)
@@ -465,7 +204,6 @@ class NmtInventoryItem
     private $origin;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="serial_number", type="string", length=45, nullable=true)
@@ -473,7 +211,6 @@ class NmtInventoryItem
     private $serialNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="last_purchase_price", type="decimal", precision=19, scale=6, nullable=true)
@@ -481,7 +218,6 @@ class NmtInventoryItem
     private $lastPurchasePrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="last_purchase_currency", type="string", length=3, nullable=true)
@@ -489,7 +225,6 @@ class NmtInventoryItem
     private $lastPurchaseCurrency;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_purchase_date", type="datetime", nullable=true)
@@ -497,7 +232,6 @@ class NmtInventoryItem
     private $lastPurchaseDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="lead_time", type="string", length=50, nullable=true)
@@ -505,7 +239,6 @@ class NmtInventoryItem
     private $leadTime;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from_date", type="datetime", nullable=true)
@@ -513,7 +246,6 @@ class NmtInventoryItem
     private $validFromDate;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to_date", type="datetime", nullable=true)
@@ -521,7 +253,6 @@ class NmtInventoryItem
     private $validToDate;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
@@ -529,7 +260,6 @@ class NmtInventoryItem
     private $location;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_internal_label", type="string", length=50, nullable=true)
@@ -537,7 +267,6 @@ class NmtInventoryItem
     private $itemInternalLabel;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="asset_label", type="string", length=45, nullable=true)
@@ -545,7 +274,6 @@ class NmtInventoryItem
     private $assetLabel;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sparepart_label", type="string", length=45, nullable=true)
@@ -553,7 +281,6 @@ class NmtInventoryItem
     private $sparepartLabel;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -561,7 +288,6 @@ class NmtInventoryItem
     private $remarks;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="local_availabiliy", type="boolean", nullable=true)
@@ -569,7 +295,6 @@ class NmtInventoryItem
     private $localAvailabiliy;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -577,7 +302,6 @@ class NmtInventoryItem
     private $lastChangeOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -585,7 +309,6 @@ class NmtInventoryItem
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -593,7 +316,6 @@ class NmtInventoryItem
     private $checksum;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -601,7 +323,6 @@ class NmtInventoryItem
     private $currentState;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_number", type="string", length=45, nullable=true)
@@ -609,7 +330,6 @@ class NmtInventoryItem
     private $docNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="monitored_by", type="string", nullable=true)
@@ -617,7 +337,6 @@ class NmtInventoryItem
     private $monitoredBy;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
@@ -625,7 +344,6 @@ class NmtInventoryItem
     private $sysNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks_text", type="text", length=65535, nullable=true)
@@ -633,7 +351,6 @@ class NmtInventoryItem
     private $remarksText;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -641,7 +358,6 @@ class NmtInventoryItem
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_sku1", type="string", length=45, nullable=true)
@@ -649,7 +365,6 @@ class NmtInventoryItem
     private $itemSku1;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="item_sku2", type="string", length=45, nullable=true)
@@ -657,7 +372,6 @@ class NmtInventoryItem
     private $itemSku2;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="asset_group", type="integer", nullable=true)
@@ -665,7 +379,6 @@ class NmtInventoryItem
     private $assetGroup;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="asset_class", type="integer", nullable=true)
@@ -673,7 +386,6 @@ class NmtInventoryItem
     private $assetClass;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="stock_uom_convert_factor", type="decimal", precision=14, scale=4, nullable=true)
@@ -681,7 +393,6 @@ class NmtInventoryItem
     private $stockUomConvertFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="purchase_uom_convert_factor", type="decimal", precision=14, scale=4, nullable=true)
@@ -689,7 +400,6 @@ class NmtInventoryItem
     private $purchaseUomConvertFactor;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="sales_uom_convert_factor", type="decimal", precision=14, scale=4, nullable=true)
@@ -697,7 +407,6 @@ class NmtInventoryItem
     private $salesUomConvertFactor;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="capacity", type="integer", nullable=true)
@@ -705,7 +414,6 @@ class NmtInventoryItem
     private $capacity;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="avg_unit_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -713,7 +421,6 @@ class NmtInventoryItem
     private $avgUnitPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="standard_price", type="decimal", precision=15, scale=4, nullable=true)
@@ -721,7 +428,6 @@ class NmtInventoryItem
     private $standardPrice;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -729,7 +435,6 @@ class NmtInventoryItem
     private $uuid;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="item_type_id", type="integer", nullable=true)
@@ -737,7 +442,6 @@ class NmtInventoryItem
     private $itemTypeId;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -748,7 +452,6 @@ class NmtInventoryItem
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItemGroup
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemGroup")
@@ -759,7 +462,6 @@ class NmtInventoryItem
     private $itemGroup;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -770,7 +472,6 @@ class NmtInventoryItem
     private $stockUom;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -781,7 +482,6 @@ class NmtInventoryItem
     private $cogsAccount;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -792,7 +492,6 @@ class NmtInventoryItem
     private $purchaseUom;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -803,7 +502,6 @@ class NmtInventoryItem
     private $salesUom;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -814,7 +512,6 @@ class NmtInventoryItem
     private $inventoryAccount;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -825,7 +522,6 @@ class NmtInventoryItem
     private $expenseAccount;
 
     /**
-     *
      * @var \Application\Entity\FinAccount
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
@@ -836,7 +532,6 @@ class NmtInventoryItem
     private $revenueAccount;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -847,7 +542,6 @@ class NmtInventoryItem
     private $defaultWarehouse;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -858,7 +552,6 @@ class NmtInventoryItem
     private $lastChangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationUom
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
@@ -869,7 +562,6 @@ class NmtInventoryItem
     private $standardUom;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -880,7 +572,6 @@ class NmtInventoryItem
     private $company;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -891,7 +582,6 @@ class NmtInventoryItem
     private $lastPrRow;
 
     /**
-     *
      * @var \Application\Entity\NmtProcurePoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
@@ -902,7 +592,6 @@ class NmtInventoryItem
     private $lastPoRow;
 
     /**
-     *
      * @var \Application\Entity\FinVendorInvoiceRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
@@ -913,7 +602,6 @@ class NmtInventoryItem
     private $lastApInvoiceRow;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryTrx
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
@@ -924,7 +612,6 @@ class NmtInventoryItem
     private $lastTrxRow;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryItemPurchasing
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemPurchasing")
@@ -933,6 +620,8 @@ class NmtInventoryItem
      * })
      */
     private $lastPurchasing;
+
+
 
     /**
      * Get id

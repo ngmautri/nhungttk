@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Repository;
+namespace Inventory\Domain\Association\Repository;
 
 use Inventory\Domain\Contracts\Repository\QueryRepositoryInterface;
 

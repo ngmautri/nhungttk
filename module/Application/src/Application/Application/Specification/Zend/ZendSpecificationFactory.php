@@ -293,4 +293,9 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new AssociationItemExitsSpecification($this->doctrineEM);
     }
+
+    public function getAssociationExitsSpecification()
+    {
+        return new AssociationExitsSpecification($this->doctrineEM);
+    }
 }

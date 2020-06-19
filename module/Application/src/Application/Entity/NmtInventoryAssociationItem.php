@@ -22,9 +22,9 @@ class NmtInventoryAssociationItem
     private $id;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="uuid", type="integer", nullable=true)
+     * @ORM\Column(name="uuid", type="string", length=38, nullable=true)
      */
     private $uuid;
 
@@ -152,7 +152,7 @@ class NmtInventoryAssociationItem
     /**
      * Set uuid
      *
-     * @param integer $uuid
+     * @param string $uuid
      *
      * @return NmtInventoryAssociationItem
      */
@@ -166,7 +166,7 @@ class NmtInventoryAssociationItem
     /**
      * Get uuid
      *
-     * @return integer
+     * @return string
      */
     public function getUuid()
     {

@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Association;
 
+use Inventory\Application\DTO\Association\AssociationDTO;
 use Inventory\Application\DTO\Association\AssociationDTOAssembler;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\ItemSnapshot;
@@ -20,44 +21,14 @@ class AssociationSnapshotAssembler
 
     const AUTO_GENERATED_FIELDS = [
         "id",
-        "isStocked",
-        "isFixedAsset",
-        "isSparepart",
         "createdOn",
-        "lastPurchasePrice",
-        "lastPurchaseCurrency",
-        "lastPurchaseDate",
-        "lastChangeOn",
-        "token",
-        "checksum",
-        "sysNumber",
-        "revisionNo",
-        "avgUnitPrice",
         "uuid",
         "createdBy",
         "lastChangeBy",
-        "company",
-
-        "lastPrRow",
-        "lastPoRow",
-        "lastApInvoiceRow",
-        "lastTrxRow",
-        "lastPurchasing",
-        "itemType",
-
-        "qoList",
-        "procureGrList",
-        "batchNoList",
-        "fifoLayerConsumeList",
-        "stockGrList",
-        "pictureList",
-        "attachmentList",
-        "prList",
-        "poList",
-        "apList",
-        "serialNoList",
-        "batchList",
-        "fifoLayerList"
+        "lastChangeOn",
+        "version",
+        "revisionNo",
+        "company"
     ];
 
     /**
@@ -163,9 +134,9 @@ class AssociationSnapshotAssembler
      * @param array $excludedProperties
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function updateSnapshotFromDTOExcludeFields(ItemSnapshot $snapShot, ItemDTO $dto, $excludedProperties)
+    public static function updateSnapshotFromDTOExcludeFields(AssociationSnapshot $snapShot, AssociationDTO $dto, $excludedProperties)
     {
-        if ($dto == null || ! $snapShot instanceof ItemSnapshot || $excludedProperties == null) {
+        if ($dto == null || ! $snapShot instanceof AssociationSnapshot || $excludedProperties == null) {
             return null;
         }
 
@@ -192,6 +163,35 @@ class AssociationSnapshotAssembler
         return $snapShot;
     }
 
+    public static function updateSnapshotFromDTO(AssociationSnapshot $snapShot, AssociationDTO $dto)
+    {
+        if ($dto == null || ! $snapShot instanceof AssociationSnapshot) {
+            return null;
+        }
+
+        $reflectionClass = new \ReflectionClass($dto);
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (in_array($propertyName, self::AUTO_GENERATED_FIELDS)) {
+                continue;
+            }
+
+            if (property_exists($snapShot, $propertyName)) {
+
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($dto);
+                }
+            }
+        }
+        return $snapShot;
+    }
+
     /**
      * generete fields.
      */
@@ -205,28 +205,5 @@ class AssociationSnapshotAssembler
             $propertyName = $property->getName();
             print "\n" . "protected $" . $propertyName . ";";
         }
-    }
-
-    public static function updateSnapshotFromDTO($snapShot, $dto)
-    {
-        if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
-            return null;
-
-        $reflectionClass = new \ReflectionClass($dto);
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, self::AUTO_GENERATED_FIELDS)) {
-
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
-            }
-        }
-        return $snapShot;
     }
 }

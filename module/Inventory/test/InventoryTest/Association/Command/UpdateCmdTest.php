@@ -1,13 +1,13 @@
 <?php
-namespace InventoryTest\Item\Command;
+namespace InventoryTest\Association\Command;
 
 use Doctrine\ORM\EntityManager;
 use Inventory\Application\Command\GenericCmd;
-use Inventory\Application\Command\Item\UpdateCmdHandler;
-use Inventory\Application\Command\Item\Options\UpdateItemOptions;
-use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Application\Command\Association\UpdateCmdHandler;
+use Inventory\Application\Command\Association\Options\UpdateOptions;
+use Inventory\Application\DTO\Association\AssociationDTO;
 use Inventory\Application\Eventbus\EventBusService;
-use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\AssociationQueryRepositoryImpl;
 use ProcureTest\Bootstrap;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use PHPUnit_Framework_TestCase;
@@ -30,20 +30,19 @@ class UpdateCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 5082;
-            $rootEntityToken = "0043fdc5-3e76-49b2-92b9-2b8719002dc0";
-            $version = 3;
+            $rootEntityId = 3;
+            $rootEntityToken = "7c10c765-0f50-451f-b9c5-bd292a9e622f";
+            $version = 2;
 
-            $dto = new ItemDTO();
-            $dto->itemName = "1";
-            $dto->itemSku = "xx";
-            $dto->standardUom = 1;
-            $dto->stockUom = 1;
-            $dto->stockUomConvertFactor = 1;
+            $dto = new AssociationDTO();
+            $dto->association = 1;
+            $dto->mainItem = 5099;
+            $dto->relatedItem = 4054;
+            $dto->isActive = 1;
 
-            $queryRep = new ItemQueryRepositoryImpl($doctrineEM);
+            $queryRep = new AssociationQueryRepositoryImpl($doctrineEM);
             $rootEntity = $queryRep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);
-            $options = new UpdateItemOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
+            $options = new UpdateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
 
             $cmdHandler = new UpdateCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
@@ -53,7 +52,7 @@ class UpdateCmdTest extends PHPUnit_Framework_TestCase
             var_dump($dto->getNotification());
         } catch (\Exception $e) {
             echo $e->getMessage() . "\n\n\n";
-            echo $e->getTraceAsString();
+            // echo $e->getTraceAsString();
         }
     }
 }

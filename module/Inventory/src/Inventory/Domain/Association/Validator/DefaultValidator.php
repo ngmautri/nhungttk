@@ -34,7 +34,7 @@ class DefaultValidator extends AbstractAssociationValidator implements Associati
 
             // ==== CK COMPANY =======
 
-            $spec = $this->sharedSpecificationFactory->getAssociationItemExitsSpecification();
+            $spec = $this->sharedSpecificationFactory->getAssociationExitsSpecification();
 
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
@@ -63,6 +63,18 @@ class DefaultValidator extends AbstractAssociationValidator implements Associati
 
             if (! $spec->isSatisfiedBy($subject)) {
                 $rootEntity->addError(sprintf("Related Item #%s not exits in the company #%s", $rootEntity->getRelatedItem(), $rootEntity->getCompany()));
+            }
+
+            $spec = $this->sharedSpecificationFactory->getAssociationItemExitsSpecification();
+
+            $subject = array(
+                "associationId" => $rootEntity->getAssociation(),
+                "mainItemId" => $rootEntity->getMainItem(),
+                "relatedItemId" => $rootEntity->getRelatedItem()
+            );
+
+            if ($spec->isSatisfiedBy($subject)) {
+                $rootEntity->addError(sprintf("Relation exits %s-%s-%s", $rootEntity->getMainItem(), $rootEntity->getAssociation(), $rootEntity->getRelatedItem()));
             }
 
             // ===== USER ID =======

@@ -66,9 +66,10 @@ class AssociationMapper
         if ($snapshot->association > 0) {
             /**
              *
-             * @var \Application\Entity\NmtInventoryAssociationItem $obj ;
+             * @var \Application\Entity\NmtInventoryAssociation $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryAssociationItem')->find($snapshot->association);
+
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryAssociation')->find($snapshot->association);
             $entity->setAssociation($obj);
         }
 

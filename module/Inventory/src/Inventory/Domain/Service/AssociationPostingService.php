@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Domain\Service;
 
+use Inventory\Domain\Association\Repository\AssociationCmdRepositoryInterface;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
-use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Procure\Domain\Exception\InvalidArgumentException;
 
 /**
@@ -10,14 +10,14 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TrxPostingService implements PostingServiceInterface
+class AssociationPostingService implements PostingServiceInterface
 {
 
     protected $cmdRepository;
 
-    public function __construct(TrxCmdRepositoryInterface $cmdRepository)
+    public function __construct(AssociationCmdRepositoryInterface $cmdRepository)
     {
-        if ($cmdRepository == null) {
+        if (! $cmdRepository instanceof AssociationCmdRepositoryInterface) {
             throw new InvalidArgumentException("Cmd Repository not set!");
         }
         $this->cmdRepository = $cmdRepository;

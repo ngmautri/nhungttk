@@ -1,11 +1,11 @@
 <?php
-namespace InventoryTest\Item\Command;
+namespace InventoryTest\Association\Command;
 
 use Doctrine\ORM\EntityManager;
 use Inventory\Application\Command\GenericCmd;
-use Inventory\Application\Command\Item\CreateCmdHandler;
-use Inventory\Application\Command\Item\Options\CreateItemOptions;
-use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Application\Command\Association\CreateCmdHandler;
+use Inventory\Application\Command\Association\Options\CreateOptions;
+use Inventory\Application\DTO\Association\AssociationDTO;
 use ProcureTest\Bootstrap;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use PHPUnit_Framework_TestCase;
@@ -27,20 +27,15 @@ class CreateCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $dto = new ItemDTO();
+            $dto = new AssociationDTO();
+            $dto->association = 1;
+            $dto->mainItem = 5099;
+            $dto->relatedItem = 4054;
 
-            $dto->itemTypeId = 1015;
-            $dto->itemSku = "2-5-1";
-            $dto->isActive = 1;
-            $dto->itemName = "Special Item 2-5 updated5";
-            $dto->itemDescription = "Special Item itemDescription";
-            $dto->remarks = "Special Item itemDescription";
-            $dto->standardUom = 1;
-            $dto->stockUom = 1;
-            $dto->stockUomConvertFactor = 1;
             $dto->createdBy = $userId;
             $dto->company = $companyId;
-            $options = new CreateItemOptions($companyId, $userId, __METHOD__);
+
+            $options = new CreateOptions($companyId, $userId, __METHOD__);
 
             $cmdHandler = new CreateCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
@@ -49,7 +44,7 @@ class CreateCmdTest extends PHPUnit_Framework_TestCase
             var_dump($dto->getNotification()->getErrors());
         } catch (\Exception $e) {
             echo $e->getMessage();
-            echo "====================";
+            echo "\n==================== ";
             // echo $e->getTraceAsString();
         }
     }

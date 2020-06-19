@@ -26,8 +26,9 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
         $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
         $spec = $factory->getAssociationItemExitsSpecification();
         $subject = array(
-            "associationId" => 2,
-            "companyId" => 1
+            "associationId" => 1,
+            "mainItemId" => 5099,
+            "relatedItemId" => 4054
         );
         var_dump($spec->isSatisfiedBy($subject));
     }

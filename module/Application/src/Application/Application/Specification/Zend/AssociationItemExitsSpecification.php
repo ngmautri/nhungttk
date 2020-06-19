@@ -16,30 +16,36 @@ class AssociationItemExitsSpecification extends DoctrineSpecification
      */
     public function isSatisfiedBy($subject)
     {
-        $companyId = null;
-        if (isset($subject["companyId"])) {
-            $companyId = $subject["companyId"];
-        }
-
         $associationId = null;
         if (isset($subject["associationId"])) {
             $associationId = $subject["associationId"];
         }
 
-        if ($this->doctrineEM == null || $associationId == null || $companyId == null) {
+        $mainItemId = null;
+        if (isset($subject["mainItemId"])) {
+            $mainItemId = $subject["mainItemId"];
+        }
+
+        $relatedItemId = null;
+        if (isset($subject["relatedItemId"])) {
+            $relatedItemId = $subject["relatedItemId"];
+        }
+
+        if ($this->doctrineEM == null || $associationId == null || $relatedItemId == null || $mainItemId == null) {
             return false;
         }
 
         $criteria = array(
-            "id" => $associationId,
-            "company" => $companyId
+            "association" => $associationId,
+            "mainItem" => $mainItemId,
+            "relatedItem" => $relatedItemId
         );
 
         /**
          *
-         * @var \Application\Entity\NmtInventoryAssociation $entiy ;
+         * @var \Application\Entity\NmtInventoryAssociationItem $entiy ;
          */
-        $entiy = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryAssociation")->findOneBy($criteria);
+        $entiy = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryAssociationItem")->findOneBy($criteria);
         return (! $entiy == null);
     }
 }

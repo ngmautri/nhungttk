@@ -33,6 +33,8 @@ abstract class AbstractSpecificationFactory
 
     abstract function getAssociationItemExitsSpecification();
 
+    abstract function getAssociationExitsSpecification();
+
     abstract function getUserExitsSpecification();
 
     abstract function getCostCenterExitsSpecification();

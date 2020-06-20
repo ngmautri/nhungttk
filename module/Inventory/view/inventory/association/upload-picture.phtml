@@ -1,0 +1,57 @@
+
+<h4>
+	<i class="icon-upload"> </i> Upload picture:
+</h4>
+
+
+
+<?php
+if ($item !== null) {
+    echo '<div class="alert alert-info">';
+
+    echo '<ul>';
+    echo '<li>Item Name	: <strong>' . $item->getItemName() . '</strong></li>';
+
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+
+<!--  <div class="alert alert-warning">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Info!</strong> This alert box could indicate a neutral informative change or action.
+  </div>
+  -->
+
+<form id="sp_upload_pic_form" class="form-horizontal" action=""
+	method="post" enctype="multipart/form-data">
+
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Picture</label>
+		<div class="col-sm-3">
+			<input type="file" name="pictures[]" /> <input type="file"
+				name="pictures[]" /> <input type="file" name="pictures[]" /> <input
+				type="file" name="pictures[]" /> <input type="file"
+				name="pictures[]" />
+		</div>
+	</div>
+
+
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+			<button type="button"
+				onclick="uploadImages('/inventory/item/upload-picture','<?php echo $item!==null ? $item->getId():""?>','<?php echo $redirectUrl ?>')"
+				class="btn btn-primary" id="upload">
+				<i class="glyphicon glyphicon-upload"> </i> Upload
+			</button>
+			<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i
+				class="icon-back"> </i> << Back</a>
+		</div>
+	</div>
+</form>
+
+

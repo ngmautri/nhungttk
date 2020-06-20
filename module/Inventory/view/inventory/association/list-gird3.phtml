@@ -1,0 +1,284 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
+use Application\Application\Helper\OptionList;
+use Procure\Application\Helper\FormHelper;
+
+$nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
+
+/**
+ *
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+$format = $this->baseUrl . '/inventory/item/list2?layout=%s&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s';
+$base = sprintf($format, $layout, $is_active, $item_type, $sort_by, $sort, $is_fixed_asset);
+
+$format = $this->baseUrl . '/inventory/item/list2?layout=list&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s';
+$view_url = sprintf($format, $is_active, $item_type, $sort_by, $sort, $is_fixed_asset, $perPage, $page);
+
+$item_type_option = OptionList::createItemTypeOption($item_type);
+$per_page_option = OptionList::createPerPageOption($perPage);
+
+$count = 0;
+$lineBreak = 4;
+
+$hits_detail = '';
+$dropDown = '';
+
+if (count($list) > 0) {
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
+    }
+    foreach ($list as $a) {
+
+        if ($count == 0 || $count % $lineBreak == 0) {
+            $hits_detail = $hits_detail . '<div class="row" style="height-min:130px; border:1px;">';
+        }
+        $count ++;
+
+        $url = $nmtPlugin->getItemPic($a['id']);
+
+        if ($url == null) {
+            $url = '/images/no-pic1.jpg';
+        }
+
+        $img = sprintf('<img id="%s" style="cursor: pointer;"
+title="click for more detail!" onclick="" class="img-rounded" width="150" height="150" src="%s" />', $a['id'], $url);
+
+        $format = '<a style ="color:navy;" href="/inventory/item/view?entity_token=%s&entity_id=%s">%s</a>';
+        $itemUrl = sprintf($format, $a['token'], $a['id'], $a['item_name']);
+
+        $format = '<a href="javascript:;"  onclick="showJqueryDialog(\'%s\',\'1500\',$(window).height()-50,\'%s\', \'j_loaded_data\',true)"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>';
+        $url1 = sprintf('/inventory/item/show1?token=%s&entity_id=%s', $a['token'], $a['id']);
+        $item_name = sprintf('%s-%s', $this->escapeHtml($a['item_name']), $a['item_sku']);
+        $quickShow = sprintf($format, $item_name, $url1);
+
+        $format = '<a href="/inventory/item/update?entity_token=%s&entity_id=%s"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>';
+        $editUrl = sprintf($format, $a['token'], $a['id']);
+
+        $format = '<a href="/inventory/item/upload-picture?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Picture</a>';
+        $pictureUrl = sprintf($format, $a['token'], $a['id']);
+
+        $format = '<a href="/inventory/item-attachment/upload?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Attachment</a>';
+        $attachmentUrl = sprintf($format, $a['token'], $a['id']);
+
+        $dropDownList = [
+            $quickShow,
+            $editUrl,
+            'divider',
+            $pictureUrl,
+            $attachmentUrl
+        ];
+
+        $dropDown = \Application\Application\Helper\FormHelper::createDropDownBtn($dropDownList);
+
+        $tbl = '<table style="">';
+        $tbl = $tbl . ' <tr style="padding: 1pt 2pt 10pt 1pt;">';
+        $tbl = $tbl . ' <td> <div style="position: relative; float: right;">';
+        $tbl = $tbl . $img;
+        $tbl = $tbl . '</div></td>';
+        $tbl = $tbl . ' <td style="padding: 1pt 1pt 1pt 10pt;"><span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">';
+        $tbl = $tbl . $itemUrl;
+        $tbl = $tbl . '</span>';
+        $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
+        $tbl = $tbl . sprintf("<br>%s<br>%s<br>%s<br>%s", $a['item_sku'], $a['sys_number'], $a['serial_number'], $a['manufacturer_model']);
+        $tbl = $tbl . ' </span';
+        $tbl = $tbl . $dropDown;
+        $tbl = $tbl . '</td></tr></table>';
+
+        // detail starts
+        $hits_detail = $hits_detail . '<div class="col-xs-6 col-md-3">';
+        $hits_detail = $hits_detail . $tbl;
+        $hits_detail = $hits_detail . '</div>';
+        // detail ends
+
+        if ($count % $lineBreak == 0) {
+
+            $hits_detail = $hits_detail . '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
+        }
+    }
+}
+
+$filter_msg = sprintf("Active=%s |Sorted by = %s - %s", $is_active, $sort_by, $sort);
+
+// ========================================================
+
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">Items</a>
+      </li>
+   </ul>
+   <div id="general">
+      <div class="panel-group">
+         <div class="panel panel-default">
+            <div class="panel-heading">
+               <h4 class="panel-title">
+                  <a data-toggle="collapse" href="#collapse1">
+                     <small>
+                        <span class="glyphicon glyphicon-filter"></span>
+                     </small>
+                     Filter
+                  </a>
+               </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+               <div class="panel-body" style="padding: 0px;">
+                  <div style="padding: 3px; font-size: 9.5pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+                     <form class="form-horizontal" action="<?php
+
+                    echo $this->baseUrl?>/inventory/item/list2" method="get" enctype="multipart/form-data">
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Item Type</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="item_type">
+                                 <option value="All">All</option>
+                                <?php
+                                echo $item_type_option;
+                                ?>
+                              </select>
+                           </div>
+                           <div class="col-sm-4"></div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Active Items</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="is_active">
+                                 <option <?php
+                                echo $is_active == '' ? "selected='selected'" : "";
+                                ?> value="2">All</option>
+                                 <option <?php
+
+                                echo $is_active == '1' ? "selected='selected'" : "";
+                                ?> value="1">Active</option>
+                                 <option <?php
+
+                                echo $is_active == '-1' ? "selected='selected'" : "";
+                                ?> value="-1">Inactive</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="is_fixed_asset">
+                                 <option <?php
+
+                                echo $is_fixed_asset == '' ? "selected='selected'" : "";
+                                ?> value="">All</option>
+                                 <option <?php
+
+                                echo $is_fixed_asset == '1' ? "selected='selected'" : "";
+                                ?> value="1">Fixed Asset</option>
+                                 <option <?php
+
+                                echo $is_fixed_asset == '-1' ? "selected='selected'" : "";
+                                ?> value="-1">None Fixed Asset</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Sort by</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="sort_by">
+                                 <option value="">None</option>
+                                 <option <?php
+
+                                echo $sort_by == 'itemName' ? "selected='selected'" : "";
+                                ?> value="itemName">Item Name</option>
+                                 <option <?php
+
+                                echo $sort_by == 'createdOn' ? "selected='selected'" : "";
+                                ?> value="createdOn">Created Date</option>
+                              </select>
+                              <input
+                                 <?php
+
+                                if (! $sort == null) :
+                                    echo ($sort == 'ASC') ? "checked" : "";
+                                else :
+                                    echo "checked";
+                                endif;
+                                ?>
+                                 type="radio" name="sort" value="ASC">
+                              &nbsp;ASC&nbsp;&nbsp;
+                              <input
+                                 <?php
+
+                                if (! $sort == null) :
+                                    echo ($sort == 'DESC') ? "checked" : "";
+                                else :
+                                    echo "";
+                                endif;
+                                ?>
+                                 type="radio" name="sort" value="DESC">
+                              &nbsp;DESC&nbsp;&nbsp;
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Layout</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="layout">
+                                 <option value="">None</option>
+                                 <option <?php
+
+                                echo $layout == 'list' ? "selected='selected'" : "";
+                                ?> value="list">List</option>
+                                 <option <?php
+
+                                echo $layout == 'grid' ? "selected='selected'" : "";
+                                ?> value="grid">grid</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Result per page</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="perPage">
+                                 <option value="">None</option>
+                               <?php
+                            echo $per_page_option;
+                            ?>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-default">Filter</button>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div style="color: gray; font-size: 9pt; margin-top: 8px">
+      <?php
+
+    echo $filter_msg;
+    ?>
+       </div>
+      <hr style="margin: 1pt 1pt 5pt 1pt;">
+<?php
+echo $result_msg;
+echo $hits_detail;
+?>
+
+<?php
+// ===============================
+echo FormHelper::createPaginator($base, $paginator, "&");
+// ===============================
+?>
+
+</div>
+</div>

@@ -322,6 +322,9 @@ class ItemMapper
             $snapshot->fifoLayerList = $entity->getFifoLayerList();
             $snapshot->fifoLayerConsumeList = $entity->getFifoLayerConsumeList();
             $snapshot->stockGrList = $entity->getStockGrList();
+            $snapshot->stockGrList = $entity->getStockGrList();
+            $snapshot->associationList = $entity->getAssociationList();
+            $snapshot->backwardAssociationList = $entity->getBackwardAssociationList();
         }
 
         $snapshot->serialNoList = $entity->getSerialNoList();

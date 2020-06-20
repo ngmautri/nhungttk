@@ -1,0 +1,495 @@
+<?php
+use Inventory\Domain\Item\ItemType;
+use Inventory\Domain\Item\MonitorMethod;
+
+/**
+ *
+ * @var \Application\Entity\NmtInventoryItem $entity ;
+ * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+
+?>
+
+
+<div id="tabs" style="font-size: 9pt">
+	<ul>
+		<li><a href="#general"><?php echo $form_title;?></a></li>
+	</ul>
+
+	<div id="general">
+	
+		<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+    echo '<p>' . $errors;
+    echo '</p></div>';
+}
+?>
+
+		<form id="create_item_form" class="form-horizontal"
+			action="<?php echo $form_action;?>" method="post"
+			enctype="multipart/form-data">
+
+			<input type="hidden" name="form_token"
+				value="<?php echo $form_token ?>" />
+		
+			
+			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+				<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
+
+			<input type="hidden" name="n" value="<?php echo $n;?>" />
+			<?php endif;?>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Item Type</label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="itemTypeId">
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::FIXED_ASSET_ITEM_TYPE;?>"><?php echo $this->translate("Fixed Asset");?></option>
+
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("Inventory Item");?></option>
+
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::NONE_INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("None-Inventory Item");?></option>
+
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::SERVICE_ITEM_TYPE;?>"><?php echo $this->translate("Service");?></option>
+
+					</select>
+				</div>
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Item ID</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="itemSku"
+						value="<?php echo (!$dto == null)? $dto->itemSku:"xx";?>"> <input
+						class="form-control input-sm" type="text"
+						placeholder="optional sku" name="itemSku1"
+						value="<?php echo (!$dto == null)? $dto->itemSku1:"xx";?>">
+
+				</div>
+				<div class="col-sm-4">
+					<input
+						<?php if(!$dto == null): echo ($dto->isActive=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;<br>
+					<input
+						<?php if(!$dto == null): echo ($dto->isPurchased=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
+					&nbsp;&nbsp;<input
+						<?php if(!$dto == null): echo ($dto->isSaleItem=="1")?"checked":""; else: echo ""; endif;?>
+						type="checkbox" name="isSaleItem" value="0" />&nbsp;For
+					Sale&nbsp;&nbsp;
+
+
+				</div>
+
+				<div class="col-sm-3">
+					<img alt="" height=""
+						src="/inventory/item/barcode?barcode=22011979">
+				</div>
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Item Name</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="itemName"
+						value="<?php echo (!$dto == null)? $dto->itemName:"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Item Foreign Name</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="itemNameForeign"
+						value="<?php echo (!$dto == null)? $dto->itemNameForeign:"";?>">
+				</div>
+			</div>
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Item Description</label>
+				<div class="col-sm-8">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="itemDescription"
+						value="<?php echo (!$dto == null)? $dto->itemDescription:"";?>">
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Keyworks</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="keywords"
+						value="<?php echo (!$dto == null)? $dto->keywords:"";?>">
+				</div>
+			</div>
+
+
+			<div class="form-group margin-bottom">
+
+				<label class="control-label col-sm-2">Inventory No.</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="assetLabel"
+						value="<?php echo (!$dto == null)? $dto->assetLabel:"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Barcode</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="barcode"
+						value="<?php echo (!$dto == null)? $dto->barcode:"";?>">
+
+				</div>
+
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Standard Unit");?></label>
+				<div class="col-sm-3">
+
+					<select name="standardUom" id="standardUom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select Standard unit");?></option>
+   	    	<?php
+
+        $uom_list = $nmtPlugin->uomList();
+
+        if ($uom_list !== null) :
+            foreach ($uom_list as $uom) :
+
+                /**@var \Application\Entity\NmtApplicationUom $uom ; */
+                $selected = '';
+                if ($dto !== null) :
+                    if ($dto->standardUom == $uom->getId()) :
+                        $selected = 'selected';
+                    endif;
+                endif;
+
+
+                echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+            endforeach
+            ;
+   	    	endif;
+
+        ?>
+   					</select>
+
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
+				<div class="col-sm-3">
+
+					<select name="stockUom" id="stockUom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select inventory unit");?></option>
+   	    							<?php
+            $uom_list = $nmtPlugin->uomList();
+
+            if ($uom_list !== null) :
+                foreach ($uom_list as $uom) :
+
+                    /**@var \Application\Entity\NmtApplicationUom $uom ; */
+                    $selected = '';
+                    if ($dto !== null) :
+                        if ($dto->stockUom == $uom->getId()) :
+                            $selected = 'selected';
+   	    							endif;
+   	    							endif;
+
+
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				<div class="col-sm-1">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="stockUomConvertFactor" id="stock_uom_convert_factor_id"
+						value="<?php echo (!$dto == null)? $dto->stockUomConvertFactor:"";?>">
+				</div>
+
+				<div class="col-sm-3">
+					<span style="color: graytext;" id="stock_uom_convert_text"></span>
+				</div>
+
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>
+				<div class="col-sm-3">
+
+					<select name="purchaseUom" id="purchaseUom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select purchase unit");?></option>
+   	    							<?php
+            $uom_list = $nmtPlugin->uomList();
+
+            if ($uom_list !== null) :
+                foreach ($uom_list as $uom) :
+
+                    /**@var \Application\Entity\NmtApplicationUom $uom ; */
+                    $selected = '';
+                    if ($dto !== null) :
+                        if ($dto->purchaseUom == $uom->getId()) :
+                            $selected = 'selected';
+   	    							endif;
+   	    							endif;
+
+
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+
+				</div>
+
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				<div class="col-sm-1">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="purchaseUomConvertFactor"
+						id="purchase_uom_convert_factor_id"
+						value="<?php echo (!$dto == null)? $dto->purchaseUomConvertFactor:"";?>">
+				</div>
+
+				<div class="col-sm-3">
+					<span style="color: graytext;" id="purchase_uom_convert_text"></span>
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Sales Unit");?>:</label>
+				<div class="col-sm-3">
+
+					<select name="salesUom" id="salesUom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select Sales Unit");?></option>
+   	    							<?php
+
+            $uom_list = $nmtPlugin->uomList();
+
+            if ($uom_list !== null) :
+                foreach ($uom_list as $uom) :
+
+                    /**@var \Application\Entity\NmtApplicationUom $uom ; */
+                    $selected = '';
+                    if ($dto !== null) :
+                        if ($dto->salesUom == $uom->getId()) :
+                            $selected = 'selected';
+   	    							endif;
+   	    							endif;
+
+
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+
+				</div>
+
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				<div class="col-sm-1">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="salesUomConvertFactor" id="sales_uom_convert_factor_id"
+						value="<?php echo (!$dto == null)? $dto->salesUomConvertFactor:"";?>">
+
+
+				</div>
+				<div class="col-sm-3">
+					<span style="color: graytext;" id="sales_uom_convert_text"></span>
+				</div>
+			</div>
+
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
+			<div class="form-group margin-bottom required">
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Item Group");?>:</label>
+				<div class="col-sm-3">
+					<select name="itemGroup" class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select Group");?></option>
+   	    							<?php
+            $item_group_list = $nmtPlugin->itemGroupList();
+
+            if ($item_group_list !== null) :
+                foreach ($item_group_list as $l) :
+
+                    /**@var \Application\Entity\NmtInventoryItemGroup $l ; */
+                    $selected = '';
+                    if ($dto !== null) :
+                        if ($dto->itemGroup == $l->getId()) :
+                            $selected = 'selected';
+                     endif;
+                     endif;
+
+
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($l->getId()), ucwords($l->getGroupName()));
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Monitored by:</label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="monitoredBy">
+						<option value="">NONE</option>
+						<option
+							<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_SERIAL_NO)?"selected":""; endif;?>
+							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Serial
+							Number</option>
+						<option
+							<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_BATCH_NO)?"selected":""; endif;?>
+							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Batch
+							Number</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Location</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="location"
+						value="<?php echo (!$dto == null)? $dto->location:"";?>">
+				</div>
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Manufacturer</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="manufacturer"
+						value="<?php echo (!$dto == null)? $dto->manufacturer:"";?>">
+				</div>
+				<label class="control-label col-sm-2">Manufacturer Model</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="manufacturerModel"
+						value="<?php echo (!$dto == null)? $dto->manufacturerModel:"";?>">
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Manufacturer's Item Code</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="manufacturerCode"
+						value="<?php echo (!$dto == null)? $dto->manufacturerCode:"";?>">
+				</div>
+
+
+				<label class="control-label col-sm-2">Manufacturer Serial</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="manufacturerSerial"
+						value="<?php echo (!$dto == null)? $dto->manufacturerSerial:"";?>">
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Lead time</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="leadTime"
+						value="<?php echo (!$dto == null)? $dto->leadTime:"";?>"> <input
+						name="localAvailabiliy"
+						<?php if(!$dto == null): echo ($dto->localAvailabiliy=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" value="1">&nbsp;Local Availability
+
+				</div>
+
+				<label class="control-label col-sm-2">Remarks</label>
+				<div class="col-sm-3">
+					<textarea class="form-control input-sm" type="text" rows="5"
+						placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$dto == null)? $dto->remarks:"";?></textarea>
+				</div>
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
+
+			<div class="form-group margin-bottom">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button onclick="submitForm('create_item_form');"
+						class="btn btn-default">
+						<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save
+					</button>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+   	$('#stock_uom_convert_text').text($( "#stockUuom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+    
+
+	$('#standardUom_id').change(function() {
+	   	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+	   	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+	});
+
+    $('#purchase_uom_convert_factor_id').bind('change', function() {
+    	$('#purchase_uom_convert_text').text($( "#purchaseUom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+    
+    });
+
+    $('#purchaseUom_id').change(function() {
+    	$('#purchase_uom_convert_text').text($( "#purchaseUom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+   	});
+
+    $('#salesUom_id').change(function() {
+     	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+    });
+
+    $('#sales_uom_convert_factor_id').bind('change', function() {
+    	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+    
+    });
+
+    $('#stockUom_id').change(function() {
+       	$('#stock_uom_convert_text').text($( "#stockUom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+    });
+
+    $('#stock_uom_convert_factor_id').bind('change', function() {
+    	$('#stock_uom_convert_text').text($( "#stockUom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+    
+    });
+
+</script>
+
+

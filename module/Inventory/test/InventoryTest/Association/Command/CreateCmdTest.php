@@ -28,9 +28,9 @@ class CreateCmdTest extends PHPUnit_Framework_TestCase
             $userId = 39;
 
             $dto = new AssociationDTO();
-            $dto->association = 1;
-            $dto->mainItem = 5099;
-            $dto->relatedItem = 4054;
+            $dto->association = 2;
+            $dto->mainItem = 3355;
+            $dto->relatedItem = 3355;
 
             $dto->createdBy = $userId;
             $dto->company = $companyId;

@@ -325,6 +325,8 @@ return array(
 
             'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
             'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
+            'Inventory\Controller\AssociationController' => 'Inventory\Controller\AssociationControllerFactory',
+            'Inventory\Controller\AssociationItemController' => 'Inventory\Controller\AssociationItemControllerFactory',
 
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',

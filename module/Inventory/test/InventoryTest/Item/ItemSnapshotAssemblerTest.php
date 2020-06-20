@@ -2,7 +2,6 @@
 namespace InventoryTest\Item;
 
 use Inventory\Domain\Item\BaseItem;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 

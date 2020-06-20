@@ -43,6 +43,10 @@ class GenericItemSnapshot extends BaseItemSnapshot
 
     public $serialSystemNo;
 
+    public $associationList;
+
+    public $backwardAssociationList;
+
     public $qoList;
 
     public $procureGrList;
@@ -74,51 +78,6 @@ class GenericItemSnapshot extends BaseItemSnapshot
     public $onHandValue;
 
     public $standardUnitName;
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getQoList()
-    {
-        return $this->qoList;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getProcureGrList()
-    {
-        return $this->procureGrList;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBatchNoList()
-    {
-        return $this->batchNoList;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFifoLayerConsumeList()
-    {
-        return $this->fifoLayerConsumeList;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getStockGrList()
-    {
-        return $this->stockGrList;
-    }
 
     /**
      *
@@ -271,6 +230,69 @@ class GenericItemSnapshot extends BaseItemSnapshot
     public function getSerialSystemNo()
     {
         return $this->serialSystemNo;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAssociationList()
+    {
+        return $this->associationList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBackwardAssociationList()
+    {
+        return $this->backwardAssociationList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getQoList()
+    {
+        return $this->qoList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getProcureGrList()
+    {
+        return $this->procureGrList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBatchNoList()
+    {
+        return $this->batchNoList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFifoLayerConsumeList()
+    {
+        return $this->fifoLayerConsumeList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockGrList()
+    {
+        return $this->stockGrList;
     }
 
     /**

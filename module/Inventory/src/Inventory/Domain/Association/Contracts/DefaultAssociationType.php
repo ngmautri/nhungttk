@@ -20,5 +20,5 @@ final class DefaultAssociationType
 
     const ALTERNATIVE = 5;
 
-    const ACCESSORIRES = 6;
+    const IS_ACCESSORY_OF = 6;
 }

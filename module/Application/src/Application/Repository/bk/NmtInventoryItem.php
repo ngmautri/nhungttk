@@ -1,8 +1,8 @@
 <?php
 namespace Application\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * NmtInventoryItem
@@ -13,6 +13,22 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class NmtInventoryItem
 {
+
+    /**
+     * One product has many features.
+     * This is the inverse side.
+     *
+     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryAssociationItem", mappedBy="mainItem")
+     */
+    private $associationList;
+
+    /**
+     * One product has many features.
+     * This is the inverse side.
+     *
+     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryAssociationItem", mappedBy="relatedItem")
+     */
+    private $backwardAssociationList;
 
     /**
      * One product has many features.
@@ -109,6 +125,87 @@ class NmtInventoryItem
      * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryTrx", mappedBy="item")
      */
     private $stockGrList;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAssociationList()
+    {
+        return $this->associationList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBackwardAssociationList()
+    {
+        return $this->backwardAssociationList;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isIsStocked()
+    {
+        return $this->isStocked;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isIsSaleItem()
+    {
+        return $this->isSaleItem;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isIsPurchased()
+    {
+        return $this->isPurchased;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isIsFixedAsset()
+    {
+        return $this->isFixedAsset;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isIsSparepart()
+    {
+        return $this->isSparepart;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isLocalAvailabiliy()
+    {
+        return $this->localAvailabiliy;
+    }
 
     /**
      *
@@ -242,6 +339,9 @@ class NmtInventoryItem
         $this->fifoLayerList = new ArrayCollection();
         $this->fifoLayerConsumeList = new ArrayCollection();
         $this->stockGrList = new ArrayCollection();
+
+        $this->associationList = new ArrayCollection();
+        $this->backwardAssociationList = new ArrayCollection();
     }
 
     // ================================

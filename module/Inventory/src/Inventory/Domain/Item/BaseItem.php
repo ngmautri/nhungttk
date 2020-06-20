@@ -49,6 +49,10 @@ class BaseItem extends AbstractItem
 
     // addtional attribute.
     // =======================================
+    protected $associationList;
+
+    protected $backwardAssociationList;
+
     protected $qoList;
 
     protected $procureGrList;
@@ -80,6 +84,24 @@ class BaseItem extends AbstractItem
     protected $onHandValue;
 
     protected $standardUnitName;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAssociationList()
+    {
+        return $this->associationList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBackwardAssociationList()
+    {
+        return $this->backwardAssociationList;
+    }
 
     /**
      *

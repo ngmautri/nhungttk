@@ -1,9 +1,9 @@
 <?php
-namespace InventoryTest\Item\Rep;
+namespace InventoryTest\Association\Rep;
 
-use Application\Entity\NmtInventoryFifoLayer;
 use Doctrine\ORM\EntityManager;
-use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
+use Inventory\Infrastructure\Persistence\Doctrine\AssociationQueryRepositoryImpl;
+use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
@@ -22,29 +22,17 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new ItemQueryRepositoryImpl($doctrineEM);
+            $rep = new AssociationQueryRepositoryImpl($doctrineEM);
 
-            $id = 1010;
-            $token = "gFPYQewcor_DUbWWl8FUFouBwdGV4JQN";
+            $filter = new ItemReportSqlFilter();
+            $filter->setIsActive(1);
+            $sort_by = null;
+            $sort = null;
+            $limit = null;
+            $offset = null;
 
-            // $id = 5080;
-            // $token = "039712b8-753e-4924-8025-94e9e8432fe5";
-
-            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            $fifo = $rootEntity->getFifoLayerList();
-
-            foreach ($fifo as $f) {
-                /**
-                 *
-                 * @var NmtInventoryFifoLayer $f ;
-                 */
-                echo $f->getPostingDate()->format("d-M-Y") . "\n";
-                echo $f->getOnhandQuantity() . "\n";
-
-                if ($f->getWarehouse()) {
-                    echo $f->getWarehouse()->getWhName() . "\n";
-                }
-            }
+            $result = $rep->getList($filter, $sort_by, $sort, $limit, $offset);
+            \var_dump(count($result));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

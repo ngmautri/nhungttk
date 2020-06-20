@@ -87,6 +87,48 @@ class ItemController extends AbstractGenericController
         return $viewModel;
     }
 
+    public function show3Action()
+    {
+        $u = $this->getUser();
+        $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        // $this->layout("Procure/layout-fullscreen");
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "";
+        $form_title = "Show item:";
+        $action = Constants::FORM_ACTION_SHOW;
+        $viewTemplete = "inventory/item/view-v1";
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getItemService()->getDocDetailsByTokenId($id, $token);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'dto' => $rootEntity->makeSnapshot(),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'tab_id' => __FUNCTION__
+        ));
+        $viewModel->setTemplate($viewTemplete);
+
+        $this->getLogger()->info(\sprintf("AP #%s viewed by #%s", $id, $u->getId()));
+        return $viewModel;
+    }
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel

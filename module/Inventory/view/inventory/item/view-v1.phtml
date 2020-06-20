@@ -1,0 +1,285 @@
+<?php
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Application\Application\Helper\ErrorMessage;
+use Application\Application\Helper\OptionList;
+use Application\Domain\Shared\Constants;
+
+/**
+ *
+ * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+
+$standardUOM = null;
+$stockUOM = null;
+$purchaseUOM = null;
+$salesUOM = null;
+$itemGroup = null;
+$itemTypeId = null;
+$monitorMethod = null;
+$dropDown = null;
+$tabs = null;
+$img = null;
+$img_url = null;
+$view_url = null;
+
+if ($action == Constants::FORM_ACTION_EDIT) {
+    $view_url = sprintf($this->baseUrl . "/inventory/item/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+}
+
+if (! $dto == null) {
+    $standardUOM = $dto->getStandardUom();
+    $stockUOM = $dto->getStockUom();
+    $purchaseUOM = $dto->getPurchaseUom();
+    $salesUOM = $dto->getSalesUom();
+    $itemGroup = $dto->getItemGroup();
+    $itemTypeId = $dto->getItemTypeId();
+    $monitorMethod = $dto->getMonitoredBy();
+
+    $format = '<a href="/inventory/item/view?entity_token=%s&entity_id=%s"><small><i class="fa fa-bar-chart" aria-hidden="true"></i></small>&nbsp;Detail</a>';
+    $detailUrl = sprintf($format, $dto->getToken(), $dto->getId());
+
+    $format = '<a href="/inventory/item/update?entity_token=%s&entity_id=%s"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>';
+    $editUrl = sprintf($format, $dto->getToken(), $dto->getId());
+
+    $format = '<a href="/inventory/item/upload-picture?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Picture</a>';
+    $pictureUrl = sprintf($format, $dto->getToken(), $dto->getId());
+
+    $format = '<a href="/inventory/item-attachment/upload?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Attachment</a>';
+    $attachmentUrl = sprintf($format, $dto->getToken(), $dto->getId());
+
+    $dropDownList = [
+        $detailUrl,
+        $editUrl,
+        'divider',
+        $pictureUrl,
+        $attachmentUrl
+    ];
+
+    $dropDown = \Application\Application\Helper\FormHelper::createDropDownBtn($dropDownList);
+
+    if ($action == Constants::FORM_ACTION_SHOW) {
+
+        $format = '/procure/price-comparison/price-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+
+        $pricesTab = sprintf('<a title="Price Comparison" href="%s"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>', $url1);
+
+        $format = '/inventory/item-picture/list1?token=%s&target_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $url1, $dto->getPictureList()->count());
+
+        $format = '/inventory/item-serial/list1?token=%s&target_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $serialNoTab = sprintf('<a title="Serial" href="%s"><span class=""></span>Serial No.(%s)</a></li></a>', $url1, $dto->getSerialNoList()->count());
+
+        $format = '/inventory/item-attachment/list1?token=%s&target_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $url1, $dto->getAttachmentList()->count());
+
+        $format = '/procure/pr-row/pr-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $prTab = sprintf('<a title="Purchase Request" href="%s">PR&nbsp;(%s)</a></li></a>', $url1, $dto->getPrList()->count());
+
+        $format = '/procure/quote-row/qo-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $qoTab = sprintf('<a title="Quotation" href="%s">QO&nbsp;(%s)</a></li></a>', $url1, $dto->getQoList()->count());
+
+        $format = '/procure/po-row/po-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $poTab = sprintf('<a title="Purchase Order" href="%s">PO&nbsp;(%s)</a></li></a>', $url1, $dto->getPoList()->count());
+
+        $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $apTab = sprintf('<a title="AP Invoice" href="%s">AP&nbsp;(%s)</a></li></a>', $url1, $dto->getApList()->count());
+
+        $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $logTab = sprintf('<a title="Change Log" href="%s"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li></a>', $url1);
+
+        $format = '/inventory/stock/summary?token=%s&target_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $stockTab = sprintf('<a title="Serial" href="%s"><i class="fa fa-industry" aria-hidden="true"></i>&nbsp;Stock</a>', $url1);
+
+        $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $associationTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Association (%s)</a>', $url1, $dto->getAssociationList()->count());
+
+        $tabsList = [
+            $stockTab,
+            $pricesTab,
+            $picturesTab,
+            $attachTab,
+            $serialNoTab,
+            $prTab,
+            $qoTab,
+            $poTab,
+            $apTab,
+            $logTab,
+            $associationTab
+        ];
+
+        $tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
+    }
+
+    $img_url = $nmtPlugin->getItemPic($dto->getId());
+    if ($img_url == null) {
+        $img_url = '/images/no-pic1.jpg';
+    }
+    $format = '<img style="cursor: pointer;" title="click for more detail!" onclick="$(\' // tabs\').tabs({ active: 1});" class="img-rounded" width="150" height="150" src="%s" />';
+    $img = sprintf($format, $img_url);
+}
+
+$uomList = $nmtPlugin->uomList();
+$item_group_list = $nmtPlugin->itemGroupList();
+
+$uom_option = OptionList::createUoMOption($uomList, $standardUOM);
+$stock_uom_option = OptionList::createUoMOption($uomList, $stockUOM);
+$purchase_uom_option = OptionList::createUoMOption($uomList, $purchaseUOM);
+$sales_uom_option = OptionList::createUoMOption($uomList, $salesUOM);
+$item_group_option = OptionList::createItemGroupOption($item_group_list, $itemGroup);
+$item_type_option = OptionList::createItemTypeOption($itemTypeId);
+$item_monitor_option = OptionList::createItemMonitorOption($monitorMethod);
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+// ================================
+?>
+<main class="item_container">
+   <!-- Left Column / Headphones Image -->
+   <div class="left-column">
+      <img class="active" src="<?php
+
+    echo $img_url?>" alt="">
+    
+
+   </div>
+   
+    
+   <!-- Right Column -->
+   <div class="right-column">
+      <!-- Product Description -->
+      <div class="product-description">
+         <span>Headphones</span>
+         <h3>
+         
+         <?php
+
+        echo (! $dto == null) ? $dto->getItemName() : "";
+        ?></h3>
+         
+         
+         <p>
+<?php
+echo (! $dto == null) ? $dto->getItemDescription() : "";
+?>   
+
+<?php
+echo (! $dto == null) ? $dto->getItemSku() : "";
+?>  
+
+<?php
+echo (! $dto == null) ? $dto->getSysNumber() : "";
+?>
+
+<?php
+
+echo (! $dto == null) ? $dto->manufacturerModel : "";
+?>
+
+<?php
+
+echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
+?>       
+</p>
+
+  <div>
+           <?php
+        echo $dropDown;
+        ?>
+            </div>
+                <hr>
+      </div>
+  
+      <!-- Product Configuration -->
+      <div class="product-configuration">
+         <!-- Product Color -->
+         <div class="product-color">
+            <span>Color</span>
+            <div class="color-choose">
+               <div>
+                  <input data-image="red" type="radio" id="red" name="color" value="red" checked>
+                  <label for="red">
+                     <span></span>
+                  </label>
+               </div>
+               <div>
+                  <input data-image="blue" type="radio" id="blue" name="color" value="blue">
+                  <label for="blue">
+                     <span></span>
+                  </label>
+               </div>
+               <div>
+                  <input data-image="black" type="radio" id="black" name="color" value="black">
+                  <label for="black">
+                     <span></span>
+                  </label>
+               </div>
+            </div>
+         </div>
+         <!-- Cable Configuration -->
+         <div class="cable-config">
+            <span>Cable configuration</span>
+            <div class="cable-choose">
+               <button>Straight</button>
+               <button>Coiled</button>
+               <button>Long-coiled</button>
+            </div>
+            <a href="#">How to configurate your headphones</a>
+         </div>
+      </div>
+      <!-- Product Pricing    -->
+      <div class="product-price">
+         <span>148$</span>
+         <a href="#" class="cart-btn">Add to cart</a>
+      </div>
+
+</main>
+
+<!-- 
+<div style="font-size: 9pt" id="<?php
+echo $tab_id;
+?>">
+   <ul>
+      <li>
+         <a href="#general"><?php
+        echo $form_title;
+        ?></a>
+      </li>
+      
+      <?php
+    echo $tabs;
+    ?>
+      
+   </ul>
+   <div id="general"></div>
+</div>
+
+-->
+
+<script type="text/javascript">
+
+
+$("#<?php
+echo $tab_id;
+?>").tabs({
+   beforeLoad:function(e,ui){
+      $( ui.panel ).html('<p>Loading...</p>');       
+       },
+      
+});
+</script>

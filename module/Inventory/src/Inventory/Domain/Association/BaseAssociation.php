@@ -4,7 +4,7 @@ namespace Inventory\Domain\Association;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Association\Repository\AssociationCmdRepositoryInterface;
+use Inventory\Domain\Association\Repository\AssociationItemCmdRepositoryInterface;
 use Inventory\Domain\Event\Association\AssociationCreated;
 use Inventory\Domain\Event\Association\AssociationUpdated;
 use Inventory\Domain\Exception\OperationFailedException;
@@ -12,6 +12,7 @@ use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Validator\Association\AssociationValidatorCollection;
+use Inventory\Infrastructure\Persistence\Contracts\AssociationCmdRepositoryInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -53,7 +54,7 @@ class BaseAssociation extends AbstractAssociation
         $instance->_checkInputParams($snapshot, $validators, $postingService);
 
         $cmdRep = $postingService->getCmdRepository();
-        if (! $cmdRep instanceof AssociationCmdRepositoryInterface) {
+        if (! $cmdRep instanceof AssociationItemCmdRepositoryInterface) {
             throw new InvalidArgumentException("AssociationCmdRepositoryInterface is given");
         }
         if ($options == null) {

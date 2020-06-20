@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\Service\Item\Factory;
+namespace Inventory\Application\Service\Association\Factory;
 
-use Inventory\Application\Service\Item\ItemService;
+use Inventory\Application\Service\Association\AssociationService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemServiceFactory implements FactoryInterface
+class AssociationServiceFactory implements FactoryInterface
 {
 
     /**
@@ -22,7 +22,7 @@ class ItemServiceFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new ItemService();
+        $service = new AssociationService();
 
         $sv = $container->get('ControllerPluginManager');
         $service->setControllerPlugin($sv->get('NmtPlugin'));

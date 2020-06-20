@@ -2,13 +2,13 @@
 namespace InventoryTest\Association\Rep;
 
 use Doctrine\ORM\EntityManager;
-use Inventory\Infrastructure\Persistence\Doctrine\AssociationQueryRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\AssociationItemQueryRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Filter\AssociationSqlFilter;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
-class QueryRepTest extends PHPUnit_Framework_TestCase
+class AssociationItemQueryRepTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -22,7 +22,7 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new AssociationQueryRepositoryImpl($doctrineEM);
+            $rep = new AssociationItemQueryRepositoryImpl($doctrineEM);
 
             $filter = new AssociationSqlFilter();
             $filter->setItemId(5099);

@@ -14,8 +14,8 @@ use Inventory\Domain\Association\BaseAssociation;
 use Inventory\Domain\Association\Validator\DefaultValidator;
 use Inventory\Domain\Service\AssociationPostingService;
 use Inventory\Domain\Validator\Association\AssociationValidatorCollection;
-use Inventory\Infrastructure\Doctrine\AssociationCmdRepositoryImpl;
-use Inventory\Infrastructure\Doctrine\AssociationQueryRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\AssociationItemCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\AssociationItemQueryRepositoryImpl;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use InvalidArgumentException;
 
@@ -87,7 +87,7 @@ class UpdateCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $cmdRepository = new AssociationCmdRepositoryImpl($cmd->getDoctrineEM());
+            $cmdRepository = new AssociationItemCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new AssociationPostingService($cmdRepository);
 
             $validators = new AssociationValidatorCollection();
@@ -98,7 +98,7 @@ class UpdateCmdHandler extends AbstractCommandHandler
             $newRootEntity = BaseAssociation::updateFrom($newSnapshot, $params, $options, $validators, $postingService);
 
             // No Check Version when Posting when posting.
-            $queryRep = new AssociationQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new AssociationItemQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;

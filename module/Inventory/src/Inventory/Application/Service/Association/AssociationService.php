@@ -2,8 +2,8 @@
 namespace Inventory\Application\Service\Association;
 
 use Application\Service\AbstractService;
-use Inventory\Infrastructure\Persistence\Doctrine\AssociationQueryRepositoryImpl;
-use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
+use Inventory\Infrastructure\Doctrine\AssociationItemQueryRepositoryImpl;
+use Inventory\Infrastructure\Persistence\Filter\AssociationSqlFilter;
 
 /**
  *
@@ -13,16 +13,14 @@ use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 class AssociationService extends AbstractService
 {
 
-    public function getList()
+    public function getAssociationOf($entity_id, $limit, $offset)
     {
-        $rep = new AssociationQueryRepositoryImpl($this->getDoctrineEM());
+        $rep = new AssociationItemQueryRepositoryImpl($this->getDoctrineEM());
 
-        $filter = new ItemReportSqlFilter();
-        $filter->setIsActive(1);
+        $filter = new AssociationSqlFilter();
+        $filter->setItemId($entity_id);
         $sort_by = null;
         $sort = null;
-        $limit = null;
-        $offset = null;
         return $rep->getList($filter, $sort_by, $sort, $limit, $offset);
     }
 }

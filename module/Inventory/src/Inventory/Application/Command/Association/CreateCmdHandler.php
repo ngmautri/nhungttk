@@ -12,7 +12,7 @@ use Inventory\Domain\Association\BaseAssociation;
 use Inventory\Domain\Association\Validator\DefaultValidator;
 use Inventory\Domain\Service\AssociationPostingService;
 use Inventory\Domain\Validator\Association\AssociationValidatorCollection;
-use Inventory\Infrastructure\Doctrine\AssociationCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\AssociationItemCmdRepositoryImpl;
 use InvalidArgumentException;
 
 /**
@@ -54,7 +54,7 @@ class CreateCmdHandler extends AbstractCommandHandler
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
 
-            $cmdRepository = new AssociationCmdRepositoryImpl($cmd->getDoctrineEM());
+            $cmdRepository = new AssociationItemCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new AssociationPostingService($cmdRepository);
 
             $validators = new AssociationValidatorCollection();

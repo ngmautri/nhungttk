@@ -20,6 +20,8 @@ use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
 use Inventory\Application\Eventbus\HandlerMapperFactory;
+use Inventory\Application\Service\Association\AssociationService;
+use Inventory\Application\Service\Association\Factory\AssociationServiceFactory;
 use Inventory\Application\Service\Item\ItemService;
 use Inventory\Application\Service\Item\Factory\ItemServiceFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
@@ -254,6 +256,7 @@ return array(
             'Inventory\Application\Event\Listener\WarehouseLoggingListener' => 'Inventory\Application\Event\Listener\WarehouseLoggingListenerFactory',
             'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
             ItemService::class => ItemServiceFactory::class,
+            AssociationService::class => AssociationServiceFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
@@ -325,8 +328,9 @@ return array(
 
             'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
             'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
-            'Inventory\Controller\AssociationController' => 'Inventory\Controller\AssociationControllerFactory',
-            'Inventory\Controller\AssociationItemController' => 'Inventory\Controller\AssociationItemControllerFactory',
+
+            'Inventory\Controller\Association' => 'Inventory\Controller\AssociationControllerFactory',
+            'Inventory\Controller\AssociationItem' => 'Inventory\Controller\AssociationItemControllerFactory',
 
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',

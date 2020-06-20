@@ -6,6 +6,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Inventory\Infrastructure\Persistence\Contracts\AssociationQueryRepositoryInterface;
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
+use Inventory\Infrastructure\Persistence\Filter\AssociationSqlFilter;
 
 /**
  *
@@ -17,10 +18,15 @@ class AssociationQueryRepositoryImpl extends AbstractDoctrineRepository implemen
 
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
+        if (! $filter instanceof AssociationSqlFilter) {
+            return null;
+        }
+
         $sql = "SELECT * FROM nmt_inventory_association WHERE 1";
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryAssociationItem', 'nmt_inventory_association');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryAssociation', 'nmt_inventory_association');
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

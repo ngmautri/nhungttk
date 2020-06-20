@@ -4,7 +4,7 @@ namespace Inventory\Infrastructure\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Association\BaseAssociation;
 use Inventory\Domain\Association\BaseAssociationSnapshot;
-use Inventory\Domain\Association\Repository\AssociationCmdRepositoryInterface;
+use Inventory\Domain\Association\Repository\AssociationItemCmdRepositoryInterface;
 use Inventory\Infrastructure\Mapper\AssociationMapper;
 use InvalidArgumentException;
 
@@ -13,7 +13,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class AssociationCmdRepositoryImpl extends AbstractDoctrineRepository implements AssociationCmdRepositoryInterface
+class AssociationItemCmdRepositoryImpl extends AbstractDoctrineRepository implements AssociationItemCmdRepositoryInterface
 {
 
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtInventoryAssociationItem";

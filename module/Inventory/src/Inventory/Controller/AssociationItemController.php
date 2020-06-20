@@ -7,10 +7,11 @@ use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
-use Inventory\Application\Command\Item\UpdateCmdHandler;
+use Inventory\Application\Command\Association\UpdateCmdHandler;
 use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemAssembler;
 use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Application\Service\Association\AssociationService;
 use MLA\Paginator;
 use Ramsey\Uuid\Uuid;
 use Zend\Session\Container;
@@ -23,6 +24,26 @@ use Zend\View\Model\ViewModel;
  */
 class AssociationItemController extends AbstractGenericController
 {
+
+    protected $associationService;
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Association\AssociationService
+     */
+    public function getAssociationService()
+    {
+        return $this->associationService;
+    }
+
+    /**
+     *
+     * @param AssociationService $associationService
+     */
+    public function setAssociationService(AssociationService $associationService)
+    {
+        $this->associationService = $associationService;
+    }
 
     public function viewAction()
     {
@@ -263,132 +284,53 @@ class AssociationItemController extends AbstractGenericController
      */
     public function listAction()
     {
+        $request = $this->getRequest();
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-
-        $sort_criteria = array();
-        $criteria = array();
-
-        $item_type = $this->params()->fromQuery('item_type');
-        $is_active = (int) $this->params()->fromQuery('is_active');
-        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
-
-        $sort_by = $this->params()->fromQuery('sort_by');
-        $sort = $this->params()->fromQuery('sort');
-        $layout = $this->params()->fromQuery('layout');
-        $page = $this->params()->fromQuery('page');
-        $resultsPerPage = $this->params()->fromQuery('perPage');
-
-        $criteria1 = array();
-        if (! $item_type == null) {
-            $criteria1 = array(
-                "itemType" => $item_type
-            );
+        if ($request->isXmlHttpRequest()) {
+            $this->layout("layout/user/ajax");
         }
 
-        if ($is_active == null) {
-            $is_active = 1;
-        }
+        $entity_token = $this->params()->fromQuery('entity_token');
+        $entity_id = $this->params()->fromQuery('entity_id');
 
-        $criteria2 = array();
-
-        if ($is_active == 1) {
-            $criteria2 = array(
-                "isActive" => 1
-            );
-        } elseif ($is_active == - 1) {
-            $criteria2 = array(
-                "isActive" => 0
-            );
-        }
-
-        $criteria3 = array();
-        if (! $is_fixed_asset == '') {
-            $criteria3 = array(
-                "isFixedAsset" => $is_fixed_asset
-            );
-
-            if ($is_fixed_asset == - 1) {
-                $criteria3 = array(
-                    "isFixedAsset" => 0
-                );
-            }
-        }
-
-        if ($sort_by == null) :
-            $sort_by = "createdOn";
-        endif;
-
-        if ($sort == null) :
-            $sort = "DESC";
-        endif;
-
-        if ($layout == null) :
-            $layout = "grid";
-        endif;
-
-        $sort_criteria = array(
-            $sort_by => $sort
-        );
-
-        $criteria = array_merge($criteria1, $criteria2, $criteria3);
-        // var_dump($criteria);
-
-        if ($resultsPerPage == null) {
-            $resultsPerPage = 28;
-        }
-
-        if ($page == null) {
-            $page = 1;
-        }
-        ;
-
-        $res = $this->getItemListRepository();
-
-        $total_recored_cache_key = "item_list_type" . $item_type . "_is_active" . $is_active . "_is_fixed_asset" . $is_fixed_asset;
-
-        $ck = $this->cacheService->hasItem($total_recored_cache_key);
-
-        if ($ck) {
-            $total_records = $this->cacheService->getItem($total_recored_cache_key);
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
         } else {
-            $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
-            $this->cacheService->setItem($total_recored_cache_key, $total_records);
+            $resultsPerPage = $this->params()->fromQuery('perPage');
         }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        $limit = null;
+        $offset = null;
+
+        $result = $this->getAssociationService()->getAssociationOf($entity_id, $limit, $offset);
+
+        $total_records = count($result);
 
         $paginator = null;
-        $list = null;
-
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-        } else {
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
         }
 
-        $viewModel = new ViewModel(array(
-            'list' => $list,
+        $result = $this->getAssociationService()->getAssociationOf($entity_id, $limit, $offset);
+
+        return new ViewModel(array(
+            'list' => $result,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'sort_by' => $sort_by,
-            'sort' => $sort,
-            'is_active' => $is_active,
-            'is_fixed_asset' => $is_fixed_asset,
-            'perPage' => $resultsPerPage,
-            'item_type' => $item_type,
-            'layout' => $layout,
-            'nmtPlugin' => $nmtPlugin,
-            'page' => $page
+            'entity_token' => $entity_token,
+            'entity_id' => $entity_id
         ));
+    }
 
-        $viewModel->setTemplate("inventory/item/list2");
-
-        // echo Uuid::uuid4();
-
-        if ($layout == "grid") {
-            $viewModel->setTemplate("inventory/item/list-gird3");
-        }
-        return $viewModel;
+    public function list1Action()
+    {
+        echo "hello";
     }
 }

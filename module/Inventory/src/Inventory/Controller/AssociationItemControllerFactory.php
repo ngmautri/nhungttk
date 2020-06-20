@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Controller;
 
+use Inventory\Application\Service\Association\AssociationService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -29,6 +30,9 @@ class AssociationItemControllerFactory implements FactoryInterface
 
         $sv = $container->get('AppLogger');
         $controller->setLogger($sv);
+
+        $sv = $container->get(AssociationService::class);
+        $controller->setAssociationService($sv);
 
         return $controller;
     }

@@ -60,6 +60,27 @@ class NmtPlugin extends AbstractPlugin
         return $thumbnail_file;
     }
 
+    public function getBigItemPic($id)
+    {
+
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
+            'item' => $id,
+            'isActive' => 1
+        ));
+
+        $thumbnail_file = '/images/no-pic1.jpg';
+        if ($pic instanceof NmtInventoryItemPicture) {
+
+            $thumbnail_file = "../../data/inventory/item/pictures/" . $pic->getFolderRelative() . "" . $pic->getFileName();
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+
+            return $thumbnail_file;
+        }
+
+        return $thumbnail_file;
+    }
+
     /**
      * Return User List
      *

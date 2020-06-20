@@ -100,7 +100,7 @@ if (! $dto == null) {
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
         $stockTab = sprintf('<a title="Serial" href="%s"><i class="fa fa-industry" aria-hidden="true"></i>&nbsp;Stock</a>', $url1);
 
-        $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
+        $format = '/inventory/association-item/list?token=%s&entity_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
         $associationTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Association (%s)</a>', $url1, $dto->getAssociationList()->count());
 

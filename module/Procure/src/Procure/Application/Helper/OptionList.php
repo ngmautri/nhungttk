@@ -7,6 +7,7 @@ use Application\Entity\NmtApplicationCurrency;
 use Application\Entity\NmtApplicationDepartment;
 use Application\Entity\NmtApplicationIncoterms;
 use Application\Entity\NmtApplicationPmtTerm;
+use Application\Entity\NmtInventoryAssociation;
 use Application\Entity\NmtInventoryWarehouse;
 
 /**
@@ -133,6 +134,34 @@ class OptionList
                     $option = $option . sprintf('<option selected value="%s">%s - %s</option>', $l->getId(), $l->getCostCenterName(), $l->getDescription());
                 } else {
                     $option = $option . sprintf('<option value="%s">%s - %s</option>', $l->getId(), $l->getCostCenterName(), $l->getDescription());
+                }
+            }
+        }
+        return $option;
+    }
+
+    public static function createAssociationOption($list, $id)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var NmtInventoryAssociation $l ;
+             */
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s</option>', $l->getId(), \strtoupper($l->getAssociationName()));
+            } else {
+                if ($id == $l->getId()) {
+                    $option = $option . sprintf('<option selected value="%s">%s</option>', $l->getId(), strtoupper($l->getAssociationName()));
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s</option>', $l->getId(), strtoupper($l->getAssociationName()));
                 }
             }
         }

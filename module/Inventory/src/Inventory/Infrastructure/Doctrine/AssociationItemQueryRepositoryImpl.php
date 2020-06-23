@@ -88,13 +88,21 @@ class AssociationItemQueryRepositoryImpl extends AbstractDoctrineRepository impl
             return null;
         }
 
-        $sql = "SELECT * FROM nmt_inventory_association_item WHERE 1";
+        $sql = "SELECT nmt_inventory_association_item. * FROM nmt_inventory_association_item WHERE 1";
 
         if ($filter->getItemId() > 0) {
 
             $format = ' AND main_item_id = %s';
             $sql = $sql . \sprintf($format, $filter->getItemId());
+
+            $sql = $sql . ' UNION ';
+
+            $sql = $sql . "SELECT nmt_inventory_association_item.* FROM nmt_inventory_association_item WHERE 1";
+            $format = ' AND related_item_id = %s and has_both_direction=1';
+            $sql = $sql . \sprintf($format, $filter->getItemId());
         }
+
+        // echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());

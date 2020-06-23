@@ -442,6 +442,13 @@ class NmtInventoryItem
     private $itemTypeId;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_model", type="boolean", nullable=true)
+     */
+    private $isModel;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

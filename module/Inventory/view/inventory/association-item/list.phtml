@@ -13,7 +13,7 @@ $table_body = "";
 $count = 0;
 $n = 0;
 $base = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-$createUrl = $this->baseUrl . "/procure/ap/create";
+$createUrl = $this->baseUrl . "/inventory/association-item/create";
 
 $result_msg = "No record found!";
 
@@ -41,6 +41,7 @@ if (count($list) > 0) {
          */
         $table_body = $table_body . "<tr>";
         $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->getMainItem()->getItemName());
         $table_body = $table_body . sprintf("<td>%s</td>", $item->getAssociation()->getAssociationName());
         $table_body = $table_body . sprintf("<td>%s</td>", $item->getRelatedItem()->getItemName());
 
@@ -73,6 +74,12 @@ echo $result_msg;
                <b><?php
 
             echo $this->translate("#");
+            ?></b>
+            </td>
+            <td>
+               <b><?php
+
+            echo $this->translate("Item");
             ?></b>
             </td>
             <td>

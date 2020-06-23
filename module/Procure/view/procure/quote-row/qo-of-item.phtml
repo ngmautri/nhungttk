@@ -41,6 +41,12 @@ else :
             <b>UP Price</b>
          </td>
          <td>
+            <b>Q'ty</b>
+         </td>
+         <td>
+            <b>UP Price</b>
+         </td>
+         <td>
             <b>Total</b>
          </td>
          <td>
@@ -132,6 +138,15 @@ else :
          <td><?php
 
         echo number_format($a->getUnitPrice() * $a->getQuantity(), 2);
+        ?></td>
+        
+          <td><?php
+
+        echo number_format($a->getDocUnitPrice(), 2);
+        ?></td>
+         <td><?php
+
+        echo number_format($a->getDocUnitPrice() * $a->getDocQuantity(), 2);
         ?></td>
          <td><?php
 

@@ -161,10 +161,13 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
    
     
    <!-- Right Column -->
-   <div class="right-column">
+   <div class="right-column" style="min-height: 500px">
       <!-- Product Description -->
       <div class="product-description">
-         <span>Headphones</span>
+         <span><?php
+
+        echo (! $dto == null) ? $dto->getItemGroup() : "";
+        ?></span>
          <h3>
          
          <?php
@@ -205,10 +208,9 @@ echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
                 <hr>
       </div>
   
-      <!-- Product Configuration -->
+      <!-- Product Configuration 
       <div class="product-configuration">
-         <!-- Product Color -->
-         <div class="product-color">
+          <div class="product-color">
             <span>Color</span>
             <div class="color-choose">
                <div>
@@ -231,7 +233,8 @@ echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
                </div>
             </div>
          </div>
-         <!-- Cable Configuration -->
+         -->
+         <!-- Cable Configuration 
          <div class="cable-config">
             <span>Cable configuration</span>
             <div class="cable-choose">
@@ -241,13 +244,14 @@ echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
             </div>
             <a href="#">How to configurate your headphones</a>
          </div>
+         -->
       </div>
-      <!-- Product Pricing    -->
+      <!-- Product Pricing   
       <div class="product-price">
          <span>148$</span>
          <a href="#" class="cart-btn">Add to cart</a>
       </div>
-
+      -->
 </main>
 
 <!-- 

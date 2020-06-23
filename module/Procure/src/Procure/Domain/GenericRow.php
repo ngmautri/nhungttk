@@ -104,7 +104,7 @@ class GenericRow extends BaseRow
 
             // actuallly converted doc quantity /price.
             $this->quantity = $this->getDocQuantity() * $this->getConversionFactor();
-            $this->unitPrice = $this->getDocUnitPrice() / $this->quantity;
+            $this->unitPrice = $this->getDocUnitPrice() / $this->getConversionFactor();
 
             $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
 

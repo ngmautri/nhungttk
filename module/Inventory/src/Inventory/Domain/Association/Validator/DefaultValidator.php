@@ -45,6 +45,10 @@ class DefaultValidator extends AbstractAssociationValidator implements Associati
                 $rootEntity->addError(sprintf("Item association #%s not exits in the company #%s", $rootEntity->getAssociation(), $rootEntity->getCompany()));
             }
 
+            if ($rootEntity->getMainItem() == $rootEntity->getRelatedItem() && $rootEntity->getMainItem() !== null) {
+                $rootEntity->addError(sprintf("Item are the same %s-%s", $rootEntity->getMainItem(), $rootEntity->getRelatedItem()));
+            }
+
             $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
 
             $subject = array(

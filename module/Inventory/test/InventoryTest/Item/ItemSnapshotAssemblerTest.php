@@ -16,7 +16,7 @@ class ItemSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
         try {
 
             // $result = ItemSnapshotAssembler::findMissingPropsInBaseItem();
-            BaseItem::createSnapshotProps();
+            BaseItem::createSnapshotBaseProps();
             // var_dump($result);
             // ItemSnapshotAssembler::createIndexDoc();
         } catch (InvalidArgumentException $e) {

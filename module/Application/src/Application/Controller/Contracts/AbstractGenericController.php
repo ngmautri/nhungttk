@@ -29,7 +29,6 @@ class AbstractGenericController extends AbstractActionController
      */
     protected function getUser()
     {
-
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -38,8 +37,42 @@ class AbstractGenericController extends AbstractActionController
         if ($u == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-
         return $u;
+    }
+
+    protected function getUserId()
+    {
+        $u = $this->getUser();
+        return $u->getId();
+    }
+
+    protected function getCompany()
+    {
+        $u = $this->getUser();
+        return $u->getCompany();
+    }
+
+    protected function getCompanyId()
+    {
+        $c = $this->getCompany();
+        if ($c == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        return $c->getId();
+    }
+
+    protected function getLocalCurrencyId()
+    {
+        $c = $this->getCompany();
+        if ($c == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $curr = $c->getDefaultCurrency();
+        if ($curr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        return $curr->getId();
     }
 
     /**

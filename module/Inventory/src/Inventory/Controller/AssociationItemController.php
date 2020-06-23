@@ -5,16 +5,17 @@ use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
+use Inventory\Application\Command\Association\CreateCmdHandler;
 use Inventory\Application\Command\Association\UpdateCmdHandler;
+use Inventory\Application\Command\Association\Options\CreateOptions;
 use Inventory\Application\Command\Item\Options\UpdateItemOptions;
-use Inventory\Application\DTO\Item\ItemAssembler;
+use Inventory\Application\DTO\Association\AssociationDTO;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\Service\Association\AssociationService;
 use MLA\Paginator;
-use Ramsey\Uuid\Uuid;
-use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -93,13 +94,17 @@ class AssociationItemController extends AbstractGenericController
      */
     public function createAction()
     {
+        // $this->layout("Procure/layout-fullscreen");
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
-        // create new session
-        $session = new Container('MLA_FORM');
+        $form_action = '/inventory/association-item/create';
+        $form_title = 'Create Association Item';
+        $action = \Application\Model\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "inventory/association-item/crud";
 
-        $prg = $this->prg('/inventory/item/create', true);
+        $prg = $this->prg($form_action, true);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -107,73 +112,59 @@ class AssociationItemController extends AbstractGenericController
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
-            $hasFormToken = $session->offsetExists('form_token');
-
-            if (! $hasFormToken) {
-                $tk = Uuid::uuid4()->toString();
-                $session->offsetSet('form_token', $tk);
-            } else {
-                $tk = $session->offsetGet('form_token');
-            }
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => null,
+                'entity_token' => null,
                 'dto' => null,
                 'nmtPlugin' => $nmtPlugin,
-                'form_action' => "/inventory/item/create",
-                'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'form_token' => $tk
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'version' => null
             ));
 
-            $viewModel->setTemplate("inventory/item/crud");
+            $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
 
-        $data = $prg;
+        $notification = new Notification();
+        try {
+            $data = $prg;
+            $dto = SnapshotAssembler::createSnapShotFromArray($data, new AssociationDTO());
+            $options = new CreateOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
 
-        $form_token = $data['form_token'];
-
-        $tk = $session->offsetGet('form_token');
-
-        if ($form_token != $tk) {
-            return $this->redirect()->toRoute('access_denied');
+            $cmdHandler = new CreateCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
         }
 
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-        $dto = ItemAssembler::createItemDTOFromArray($data);
-
-        $userId = $u->getId();
-
-        $notification = $this->itemCRUDService->create($dto, 1, $userId, __METHOD__, true);
         if ($notification->hasErrors()) {
 
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'dto' => $dto,
+                'entity_token' => null,
+                'dto' => null,
                 'nmtPlugin' => $nmtPlugin,
-                'form_action' => "/inventory/item/create",
-                'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'form_token' => $tk
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'version' => null
             ));
 
-            $viewModel->setTemplate("inventory/item/crud-v1");
+            $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
 
-        $session->getManager()
-            ->getStorage()
-            ->clear('MLA_FORM');
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n' . $tk);
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/inventory/item/list2";
 
         return $this->redirect()->toUrl($redirectUrl);

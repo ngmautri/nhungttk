@@ -1,14 +1,14 @@
 <?php
 namespace Application\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * NmtInventoryItem
  *
  * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"}), @ORM\Index(name="nmt_inventory_item_FK10_idx", columns={"item_group_id"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK11_idx", columns={"stock_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK12_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_FK13_idx", columns={"purchase_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK14_idx", columns={"sales_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK15_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_FK16_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_FK17_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_FK18_idx", columns={"default_warehouse_id"})})
- * @ORM\MappedSuperclass
+ * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
 class NmtInventoryItem
@@ -128,7 +128,7 @@ class NmtInventoryItem
 
     /**
      *
-     * @return mixed
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getAssociationList()
     {
@@ -137,11 +137,119 @@ class NmtInventoryItem
 
     /**
      *
-     * @return mixed
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getBackwardAssociationList()
     {
         return $this->backwardAssociationList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getQoList()
+    {
+        return $this->qoList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getProcureGrList()
+    {
+        return $this->procureGrList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getSerialNoList()
+    {
+        return $this->serialNoList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getBatchNoList()
+    {
+        return $this->batchNoList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getPictureList()
+    {
+        return $this->pictureList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAttachmentList()
+    {
+        return $this->attachmentList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getPrList()
+    {
+        return $this->prList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getPoList()
+    {
+        return $this->poList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getApList()
+    {
+        return $this->apList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getFifoLayerList()
+    {
+        return $this->fifoLayerList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getFifoLayerConsumeList()
+    {
+        return $this->fifoLayerConsumeList;
+    }
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getStockGrList()
+    {
+        return $this->stockGrList;
     }
 
     /**
@@ -209,121 +317,14 @@ class NmtInventoryItem
 
     /**
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return boolean
      */
-    public function getPrList()
+    public function isIsModel()
     {
-        return $this->prList;
+        return $this->isModel;
     }
 
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getQoList()
-    {
-        return $this->qoList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getProcureGrList()
-    {
-        return $this->procureGrList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getSerialNoList()
-    {
-        return $this->serialNoList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getBatchNoList()
-    {
-        return $this->batchNoList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getPictureList()
-    {
-        return $this->pictureList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getAttachmentList()
-    {
-        return $this->attachmentList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getFifoLayerList()
-    {
-        return $this->fifoLayerList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getFifoLayerConsumeList()
-    {
-        return $this->fifoLayerConsumeList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getStockGrList()
-    {
-        return $this->stockGrList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getPoList()
-    {
-        return $this->poList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getApList()
-    {
-        return $this->apList;
-    }
-
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
+    // ================================
     public function __construct()
     {
         $this->qoList = new ArrayCollection();
@@ -343,8 +344,6 @@ class NmtInventoryItem
         $this->associationList = new ArrayCollection();
         $this->backwardAssociationList = new ArrayCollection();
     }
-
-    // ================================
 
     /**
      *
@@ -835,6 +834,14 @@ class NmtInventoryItem
      * @ORM\Column(name="item_type_id", type="integer", nullable=true)
      */
     private $itemTypeId;
+
+    /**
+     *
+     * @var boolean
+     *
+     * @ORM\Column(name="is_model", type="boolean", nullable=true)
+     */
+    private $isModel;
 
     /**
      *
@@ -2482,6 +2489,30 @@ class NmtInventoryItem
     public function getItemTypeId()
     {
         return $this->itemTypeId;
+    }
+
+    /**
+     * Set isModel
+     *
+     * @param boolean $isModel
+     *
+     * @return NmtInventoryItem
+     */
+    public function setIsModel($isModel)
+    {
+        $this->isModel = $isModel;
+
+        return $this;
+    }
+
+    /**
+     * Get isModel
+     *
+     * @return boolean
+     */
+    public function getIsModel()
+    {
+        return $this->isModel;
     }
 
     /**

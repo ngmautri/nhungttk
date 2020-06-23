@@ -209,11 +209,9 @@ class ApController extends AbstractGenericController
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
         $viewTemplete = "procure/ap/crudHeader";
 
-        $userId = $u->getId();
-        $companyId = $u->getCompany()->getId();
-        $localCurrencyId = $u->getCompany()
-            ->getDefaultCurrency()
-            ->getId();
+        $userId = $this->getUserId();
+        $companyId = $this->getCompanyId();
+        $localCurrencyId = $this->getLocalCurrencyId();
 
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {

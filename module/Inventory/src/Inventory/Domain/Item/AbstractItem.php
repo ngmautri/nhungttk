@@ -173,6 +173,17 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
 
     protected $lastPurchasing;
 
+    protected $isModel;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getIsModel()
+    {
+        return $this->isModel;
+    }
+
     /**
      *
      * @param ItemSnapshot $itemSnapshot

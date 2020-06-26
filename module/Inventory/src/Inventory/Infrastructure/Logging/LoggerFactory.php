@@ -24,7 +24,7 @@ class LoggerFactory implements FactoryInterface
         $logger = new Logger("InventoryLog");
 
         $path = './data/log';
-        $filename = \sprintf("inventory_log_%s_%s_W%s.log", date('F'), date('Y'), date('W'));
+        $filename = \sprintf("inventory_log_%s_%s_W%s.log", date('Y'), date('n'), date('W'));
 
         if (false === file_exists($path)) {
             mkdir($path, 0777, true);

@@ -1,21 +1,20 @@
 <?php
 namespace Inventory\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtApplicationAttachment;
+use Doctrine\ORM\EntityManager;
 use Zend\Http\Headers;
-use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Zend\Validator\Date;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSerialAttachmentController extends AbstractActionController
+class ItemSerialAttachmentController extends AbstractGenericController
 {
 
     /**
@@ -716,6 +715,138 @@ class ItemSerialAttachmentController extends AbstractActionController
             return $response;
         } else {
             return;
+        }
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface|\Zend\Http\Response
+     */
+    public function upload1Action()
+    {
+        $request = $this->getRequest();
+        $this->layout("layout/user/ajax");
+
+        if ($request->isPost()) {
+
+            $u = $this->getUser();
+
+            $errors = array();
+            // $data = $request->getPost();
+
+            $data = $_POST;
+
+            $redirectUrl = null;
+            $target_id = $data['target_id'];
+            $target_token = $data['token'];
+
+            $criteria = array(
+                'id' => $target_id,
+                'token' => $target_token
+            );
+
+            /**
+             *
+             * @todo : Change Target
+             * @var \Application\Entity\NmtInventoryItemSerial $target ;
+             *     
+             */
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
+
+            if (! $target instanceof \Application\Entity\NmtInventoryItemSerial) {
+
+                $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
+                $this->flashMessenger()->addMessage('Something wrong!' . $target_id);
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => null,
+                    'entity' => null
+                ));
+
+                $viewModel->setTemplate("inventory/item-serial-attachment/upload1");
+                return $viewModel;
+            }
+
+            $attachments = null;
+            if (isset($_FILES['attachments'])) {
+                $attachments = $_FILES['attachments'];
+            }
+
+            $errors = $this->getAttachmentService()->doUploading(null, $target_id, $target_token, $data, $attachments, $u, TRUE);
+
+            $data = array();
+
+            if (count($errors) > 0) {
+
+                $data['message'] = $errors[0];
+                $response = $this->getResponse();
+                $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                $response->setContent(json_encode($data));
+                return $response;
+            }
+
+            $m = sprintf('[OK] Attachment for Serial  #%s added.', $target->getId());
+            $this->flashMessenger()->addMessage($m);
+
+            $createdOn = new \DateTime();
+            // Trigger Activity Log . AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn
+            ));
+            // return $this->redirect()->toUrl($redirectUrl);
+
+            $data['message'] = $m;
+            $response = $this->getResponse();
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            return $response;
+        }
+
+        // NO POST
+        // Initiating....................
+        // ================================
+
+        $redirectUrl = null;
+        if ($this->getRequest()->getHeader('Referer') != null) {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+
+        /**
+         *
+         * @todo : Change Target
+         * @var \Application\Entity\NmtInventoryItemSerial $target ;
+         */
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
+
+        if ($target instanceof \Application\Entity\NmtInventoryItemSerial) {
+
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'target' => $target,
+                'entity' => null
+            ));
+
+            $viewModel->setTemplate("inventory/item-serial-attachment/upload1");
+            return $viewModel;
         }
     }
 

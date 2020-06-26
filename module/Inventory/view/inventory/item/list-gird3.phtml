@@ -30,6 +30,8 @@ $lineBreak = 4;
 $hits_detail = '';
 $dropDown = '';
 
+$item_legend = '';
+
 if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
 
@@ -55,6 +57,18 @@ title="click for more detail!" onclick="" class="img-rounded" width="150" height
 
         $format = '<a style ="color:navy;" href="/inventory/item/show3?entity_token=%s&entity_id=%s">%s</a>';
         $itemUrl = sprintf($format, $a['token'], $a['id'], $a['item_name']);
+
+        if ($a['is_model'] == "1") {
+            $model_legend = ' <i class="fa fa-sitemap" aria-hidden="true"></i>';
+        } else {
+            $model_legend = '';
+        }
+
+        if ($a['is_fixed_asset'] == "1") {
+            $asset_legend = '<span style="font-size: 6pt;" class="badge">A</span>';
+        } else {
+            $asset_legend = '';
+        }
 
         $format = '<a href="javascript:;"  onclick="showJqueryDialog(\'%s\',\'1500\',$(window).height()-50,\'%s\', \'j_loaded_data\',true)"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>';
         $url1 = sprintf('/inventory/item/show1?token=%s&entity_id=%s', $a['token'], $a['id']);
@@ -87,7 +101,8 @@ title="click for more detail!" onclick="" class="img-rounded" width="150" height
         $tbl = $tbl . '</div></td>';
         $tbl = $tbl . ' <td style="padding: 1pt 1pt 1pt 10pt;"><span style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">';
         $tbl = $tbl . $itemUrl;
-        $tbl = $tbl . '</span>';
+        $tbl = $tbl . '</span> ';
+        $tbl = $tbl . '<div style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">' . $asset_legend . $model_legend . '</div>';
         $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
         $tbl = $tbl . sprintf("<br>%s<br>%s<br>%s<br>%s", $a['item_sku'], $a['sys_number'], $a['serial_number'], $a['manufacturer_model']);
         $tbl = $tbl . ' </span';
@@ -145,6 +160,16 @@ $filter_msg = sprintf("Active=%s |Sorted by = %s - %s", $is_active, $sort_by, $s
                                 <?php
                                 echo $item_type_option;
                                 ?>
+                              </select>
+                           </div>
+                           <div class="col-sm-4"></div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Item Model</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="item_model">
+                                 <option value="All">All</option>
+                                 <option value="1">Item Model</option>                                
                               </select>
                            </div>
                            <div class="col-sm-4"></div>

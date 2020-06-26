@@ -171,6 +171,46 @@ class BaseItemSnapshot extends AbstractDTO
 
     public $isModel;
 
+    public $canOrder;
+
+    public $modelDetail;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCanOrder()
+    {
+        return $this->canOrder;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getModelDetail()
+    {
+        return $this->modelDetail;
+    }
+
+    /**
+     *
+     * @param mixed $canOrder
+     */
+    public function setCanOrder($canOrder)
+    {
+        $this->canOrder = $canOrder;
+    }
+
+    /**
+     *
+     * @param mixed $modelDetail
+     */
+    public function setModelDetail($modelDetail)
+    {
+        $this->modelDetail = $modelDetail;
+    }
+
     /**
      *
      * @return mixed

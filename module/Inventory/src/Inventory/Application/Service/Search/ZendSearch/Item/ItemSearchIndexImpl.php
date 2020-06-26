@@ -10,6 +10,7 @@ use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Service\Search\ItemSearchIndexInterface;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Lucene;
+use ZendSearch\Lucene\SearchIndexInterface;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
 use ZendSearch\Lucene\Document\Field;
@@ -123,7 +124,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             $indexer = $this->getIndexer();
             Analyzer::setDefault(new CaseInsensitive());
 
-            $this->_updateIndexFromSnapshot($indexer, $$snapshot);
+            $this->_updateIndexFromSnapshot($indexer, $snapshot);
 
             $message = \sprintf('Document has been added successfully! %s', $snapshot->getId());
 
@@ -146,7 +147,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
      * @param IndexingResult $indexResult
      * @return \Application\Application\Service\Search\Contracts\IndexingResult
      */
-    private function _updateIndexingResult(\ZendSearch\Lucene\SearchIndexInterface $indexer, IndexingResult $indexResult)
+    private function _updateIndexingResult(SearchIndexInterface $indexer, IndexingResult $indexResult)
     {
         $indexResult->setDocsCount($indexer->numDocs());
         $indexResult->setIndexSize($indexer->count());
@@ -166,7 +167,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
      * @param ItemSnapshot $snapshot
      * @throws \InvalidArgumentException
      */
-    private function _createNewIndexFromSnapshot(\ZendSearch\Lucene\SearchIndexInterface $indexer, ItemSnapshot $snapshot)
+    private function _createNewIndexFromSnapshot(SearchIndexInterface $indexer, ItemSnapshot $snapshot)
     {
         if (! $snapshot instanceof ItemSnapshot) {
             throw new \InvalidArgumentException("ItemSnapshot empty");
@@ -196,7 +197,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
      * @param ItemSnapshot $snapshot
      * @throws \InvalidArgumentException
      */
-    private function _updateIndexFromSnapshot(\ZendSearch\Lucene\SearchIndexInterface $indexer, ItemSnapshot $snapshot)
+    private function _updateIndexFromSnapshot(SearchIndexInterface $indexer, ItemSnapshot $snapshot)
     {
         if (! $snapshot instanceof ItemSnapshot) {
             throw new \InvalidArgumentException("ItemSnapshot empty");
@@ -292,6 +293,11 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
 
         // Serial END
         // ==========================
+
+        $doc->addField(Field::UnIndexed('isFixedAsset', $snapshot->getIsFixedAsset()));
+        $doc->addField(Field::UnIndexed('isSparepart', $snapshot->getIsSparepart()));
+        $doc->addField(Field::UnIndexed('isModel', $snapshot->getIsModel()));
+
         $doc->addField(Field::UnIndexed('item_id', $snapshot->getId()));
         $doc->addField(Field::UnIndexed('token', $snapshot->getToken()));
 

@@ -180,7 +180,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 ?>
 
 
- <div class="container_dropzone">
+  <div class="container_dropzone">
          <input style="display: none;" type="file" name="pictures[]" id="file">
          <!-- Drag and Drop container-->
          <div class="upload-area" id="uploadfile">
@@ -530,25 +530,32 @@ echo $department_option;
 
                                     echo $save_as_pdf;
                                     ?>">
-                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf) default
+                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Pdf (*.pdf) default
                                     </a>
                                  </li>
-                                    <li class="divider"></li>
-                             
+                                 <li class="divider"></li>
                                  <li class="dropdown-submenu">
                                     <a class="test" tabindex="-1" href="#">
-                                    <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf) Detail&nbsp; &nbsp; &nbsp; &nbsp; 
+                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Pdf (*.pdf) Detail&nbsp; &nbsp; &nbsp; &nbsp;
                                        <i class="fa fa-caret-right" aria-hidden="true"></i>
                                     </a>
                                     <ul style="font-size: 9pt;" class="dropdown-menu">
                                        <li>
-                                          <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with price <i class="fa fa-lock" aria-hidden="true"></i></a>
+                                          <a tabindex="-1" href="#">
+                                             <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                             Details with price
+                                             <i class="fa fa-lock" aria-hidden="true"></i>
+                                          </a>
                                        </li>
-                                          <li class="divider"></li>
-                            
+                                       <li class="divider"></li>
                                        <li>
-                                           <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with picture</a>
-                                      </li>
+                                          <a tabindex="-1" href="#">
+                                             <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                             Details with picture
+                                          </a>
+                                       </li>
                                     </ul>
                                  </li>
                                  <li class="divider"></li>
@@ -1289,7 +1296,7 @@ echo $hoverMode;
  }
 
  //Sending AJAX request and upload file
- function doUploading(){
+function doUploading(){
 
  	 if(dataArray.length == 0){
  		alert("No File");

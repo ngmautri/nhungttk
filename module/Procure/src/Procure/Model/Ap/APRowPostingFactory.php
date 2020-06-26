@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Model\Ap;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -11,7 +10,7 @@ class APRowPostingFactory
 {
 
     /**
-     * 
+     *
      * @param string $tTransaction
      * @throws \Exception
      * @return \Procure\Model\Ap\GRNIStrategy|\Procure\Model\Ap\GRIRStrategy
@@ -26,13 +25,12 @@ class APRowPostingFactory
             case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_IRNG:
                 throw new \Exception("Unknown handler!");
             default:
-                throw new \Exception("Unknown Transaction Type");
+                throw new \Exception("Unknown Transaction Type- Procure\Model\Ap");
         }
     }
-    
-    
+
     /**
-     * 
+     *
      * @param string $tTransaction
      * @throws \Exception
      * @return \Procure\Model\Ap\GRNIReservalStrategy|\Procure\Model\Ap\GRIRReversalStrategy

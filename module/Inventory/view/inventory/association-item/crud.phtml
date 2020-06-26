@@ -17,8 +17,13 @@ use Procure\Application\Helper\OptionList;
 $message_url = null;
 $associtation = null;
 
+$hasBothDirectionFormat = '<input type="hidden" name="hasBothDirection" isActive="0">';
+$hasBothDirectionFormat = $hasBothDirectionFormat . '<input %s type="checkbox" name="hasBothDirection" value="1">&nbsp;Both direction&nbsp;';
+$hasBothDirection = sprintf($hasBothDirectionFormat, "");
+
 if ($dto !== null) {
     $associtation = $dto->getAssociation();
+    $hasBothDirection = sprintf($hasBothDirectionFormat, 'checked');
 }
 
 $associtation_option = OptionList::createAssociationOption($nmtPlugin->associationList(), $associtation);
@@ -136,7 +141,17 @@ echo $associtation_option;
 ?>
                                         </select>
             </div>
+               <div class="col-sm-4">
+         <?php
+        echo $hasBothDirection;
+        ?>
+               
+            </div>
+         
          </div>
+         
+       
+          
          <hr style="margin: 5pt 1pt 5pt 1pt">
          <div class="form-group margin-bottom  required">
             <label class="control-label col-sm-2">Related Item: </label>
@@ -308,6 +323,12 @@ echo $associtation_option;
         <?php
        	 endif
         ?>
+        
+        
+        
+        
+        
+        
         
         
         

@@ -449,6 +449,20 @@ class NmtInventoryItem
     private $isModel;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="can_order", type="boolean", nullable=true)
+     */
+    private $canOrder;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="model_detail", type="string", length=255, nullable=true)
+     */
+    private $modelDetail;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

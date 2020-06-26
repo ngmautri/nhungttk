@@ -26,11 +26,36 @@ $tabs = null;
 $img = null;
 $view_url = null;
 
+$isModelFormat = '<input type="hidden" name="isModel" value="0">';
+$isModelFormat = $isModelFormat . '<input %s type="checkbox" name="isModel" value="1">&nbsp;Model&nbsp;';
+$isModel = sprintf($isModelFormat, "");
+
+$isActiveFormat = '<input type="hidden" name="isModel" isActive="0">';
+$isActiveFormat = $isActiveFormat . '<input %s type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;';
+$isActive = sprintf($isActiveFormat, "");
+
+$isPurchaseFormat = '<input type="hidden" name="isPurchased" isActive="0">';
+$isPurchaseFormat = $isPurchaseFormat . '<input %s type="checkbox" name="isPurchased" value="1">&nbsp;Purchased&nbsp;';
+$isPurchased = sprintf($isPurchaseFormat, "");
+
 if ($action == Constants::FORM_ACTION_EDIT) {
     $view_url = sprintf($this->baseUrl . "/inventory/item/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
 }
 
 if (! $dto == null) {
+
+    if ($dto->getIsModel() == "1") {
+        $isModel = sprintf($isModelFormat, 'checked');
+    }
+
+    if ($dto->getIsActive() == "1") {
+        $isActive = sprintf($isActiveFormat, 'checked');
+    }
+
+    if ($dto->getIsPurchased() == "1") {
+        $isPurchased = sprintf($isPurchaseFormat, 'checked');
+    }
+
     $standardUOM = $dto->getStandardUom();
     $stockUOM = $dto->getStockUom();
     $purchaseUOM = $dto->getPurchaseUom();
@@ -272,34 +297,10 @@ if ($action == Constants::FORM_ACTION_EDIT) :
             ?>">
             </div>
             <div class="col-sm-4">
-               <input <?php
-
-            if (! $dto == null) :
-                echo ($dto->isActive == "1") ? "checked" : "";
-            else :
-                echo "checked";
-            endif;
-            ?> type="checkbox" name="isActive" value="1">
-               &nbsp;Active&nbsp;&nbsp;
-               <br>
-               <input <?php
-
-            if (! $dto == null) :
-                echo ($dto->isPurchased == "1") ? "checked" : "";
-            else :
-                echo "checked";
-            endif;
-            ?> type="checkbox" name="isPurchased" value="1">
-               &nbsp;Purchased &nbsp;&nbsp;
-               <input <?php
-
-            if (! $dto == null) :
-                echo ($dto->isSaleItem == "1") ? "checked" : "";
-            else :
-                echo "";
-            endif;
-            ?> type="checkbox" name="isSaleItem" value="0" />
-               &nbsp;For Sale&nbsp;&nbsp;
+               <?php
+            echo $isActive . '&nbsp;&nbsp;' . $isModel . '&nbsp;&nbsp;' . $isPurchased;
+            ?>
+               
             </div>
             <div class="col-sm-3">
                <img alt="" height="" src="/inventory/item/barcode?barcode=22011979">
@@ -446,6 +447,10 @@ if ($action == Constants::FORM_ACTION_EDIT) :
                    <?php
                 echo $sales_uom_option;
                 ?>
+               
+               
+               
+               
                
                
                

@@ -90,9 +90,10 @@ class UpdateCmdHandler extends AbstractCommandHandler
                 "apList",
                 "serialNoList",
                 "batchList",
-                "fifoLayerList"
+                "fifoLayerList",
+                "backwardAssociationList",
+                "associationList"
             ];
-
             $changeLog = $snapshot->compareExcludedFields($newSnapshot, $excludedProps);
 
             if ($changeLog == null) {

@@ -79,6 +79,9 @@ class ItemMapper
         $entity->setStandardPrice($snapshot->standardPrice);
         $entity->setUuid($snapshot->uuid);
         $entity->setItemTypeId($snapshot->itemTypeId);
+        $entity->setIsModel($snapshot->isModel);
+        $entity->setCanOrder($snapshot->canOrder);
+        $entity->setModelDetail($snapshot->modelDetail);
 
         // ============================
         // DATE MAPPING
@@ -390,6 +393,9 @@ class ItemMapper
         $snapshot->standardPrice = $entity->getStandardPrice();
         $snapshot->uuid = $entity->getUuid();
         $snapshot->itemTypeId = $entity->getItemTypeId();
+        $snapshot->isModel = $entity->getIsModel();
+        $snapshot->canOrder = $entity->getCanOrder();
+        $snapshot->modelDetail = $entity->getModelDetail();
 
         // modification
         $snapshot->assetLabel1 = preg_replace('/[0-]/', '', \substr($snapshot->assetLabel, - 5));

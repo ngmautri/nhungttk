@@ -14,10 +14,10 @@ use Inventory\Domain\Transaction\GoodsReceipt;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
+use Inventory\Domain\Transaction\Contracts\TrxFlow;
+use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
-use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
-use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -33,8 +33,8 @@ class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
 
     public function __construct()
     {
-        $this->movementType = TransactionType::GR_FROM_PURCHASING;
-        $this->movementFlow = TransactionFlow::WH_TRANSACTION_IN;
+        $this->movementType = TrxType::GR_FROM_PURCHASING;
+        $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;
     }
 
     public static function postCopyFromProcureGR(GRDoc $sourceObj, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)

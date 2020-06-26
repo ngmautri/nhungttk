@@ -30,16 +30,14 @@ class UpdateCmdTest extends PHPUnit_Framework_TestCase
             $companyId = 1;
             $userId = 39;
 
-            $rootEntityId = 5082;
-            $rootEntityToken = "0043fdc5-3e76-49b2-92b9-2b8719002dc0";
-            $version = 3;
+            $rootEntityId = 5064;
+            $rootEntityToken = "12485d89-26f8-40b9-b796-0c6db59f2901";
+            $version = 13;
 
             $dto = new ItemDTO();
-            $dto->itemName = "1";
-            $dto->itemSku = "xx";
-            $dto->standardUom = 1;
-            $dto->stockUom = 1;
-            $dto->stockUomConvertFactor = 1;
+            $dto->isModel = "1";
+            $dto->itemName = "Test AssetXYZ";
+            $dto->itemSku = 'xx';
 
             $queryRep = new ItemQueryRepositoryImpl($doctrineEM);
             $rootEntity = $queryRep->getRootEntityByTokenId($rootEntityId, $rootEntityToken);

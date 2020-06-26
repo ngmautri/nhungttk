@@ -1287,7 +1287,7 @@ class PrController extends AbstractGenericController
         $request = $this->getRequest();
 
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('not_found');
+            // return $this->redirect()->toRoute('not_found');
         }
 
         /**@var \Application\Entity\MlaUsers $u ;*/

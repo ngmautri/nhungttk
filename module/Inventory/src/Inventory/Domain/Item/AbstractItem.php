@@ -175,6 +175,28 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
 
     protected $isModel;
 
+    protected $canOrder;
+
+    protected $modelDetail;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCanOrder()
+    {
+        return $this->canOrder;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getModelDetail()
+    {
+        return $this->modelDetail;
+    }
+
     /**
      *
      * @return mixed

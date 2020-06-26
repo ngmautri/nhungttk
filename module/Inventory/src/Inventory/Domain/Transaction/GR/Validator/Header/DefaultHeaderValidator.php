@@ -7,7 +7,7 @@ use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface;
 use Procure\Domain\Exception\Gr\GrCreateException;
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  *
@@ -25,7 +25,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
     public function validate(AbstractTrx $rootEntity)
     {
         if (! $rootEntity instanceof GenericTrx) {
-            throw new GrInvalidArgumentException('GenericTrx entity not given!');
+            throw new InvalidArgumentException('GenericTrx entity not given!.');
         }
 
         /**

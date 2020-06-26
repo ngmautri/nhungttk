@@ -26,6 +26,7 @@ $tabs = null;
 $img = null;
 $img_url = null;
 $view_url = null;
+$table_body = "";
 
 if ($action == Constants::FORM_ACTION_EDIT) {
     $view_url = sprintf($this->baseUrl . "/inventory/item/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
@@ -132,6 +133,27 @@ if (! $dto == null) {
     }
     $format = '<img style="cursor: pointer;" title="click for more detail!" onclick="$(\' // tabs\').tabs({ active: 1});" class="img-rounded" width="150" height="150" src="%s" />';
     $img = sprintf($format, $img_url);
+
+    if ($dto->getAssociationList()->count() > 0) {
+
+        $n = 0;
+        foreach ($dto->getAssociationList() as $item) {
+
+            $n ++;
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryAssociationItem $item ;
+             */
+            $table_body = $table_body . "<tr>";
+            $table_body = $table_body . sprintf("<td>%s</td>", $n);
+            $table_body = $table_body . sprintf("<td>%s</td>", $item->getMainItem()->getItemName());
+            $table_body = $table_body . sprintf("<td>%s</td>", $item->getAssociation()->getAssociationName());
+            $table_body = $table_body . sprintf("<td>%s</td>", $item->getRelatedItem()->getItemName());
+
+            $table_body = $table_body . "</tr>";
+        }
+    }
 }
 
 $uomList = $nmtPlugin->uomList();
@@ -155,11 +177,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
       <img class="active" src="<?php
 
     echo $img_url?>" alt="">
-    
-
    </div>
-   
-    
    <!-- Right Column -->
    <div class="right-column" style="min-height: 500px">
       <!-- Product Description -->
@@ -169,18 +187,16 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
         echo (! $dto == null) ? $dto->getItemGroup() : "";
         ?></span>
          <h3>
-         
+            
          <?php
 
         echo (! $dto == null) ? $dto->getItemName() : "";
         ?></h3>
-         
-         
          <p>
 <?php
 echo (! $dto == null) ? $dto->getItemDescription() : "";
 ?>   
-
+</p>
 <?php
 echo (! $dto == null) ? $dto->getItemSku() : "";
 ?>  
@@ -191,23 +207,22 @@ echo (! $dto == null) ? $dto->getSysNumber() : "";
 
 <?php
 
-echo (! $dto == null) ? $dto->manufacturerModel : "";
+echo (! $dto == null) ? $dto->getManufacturerModel() : "";
 ?>
 
 <?php
 
 echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
 ?>       
-</p>
 
-  <div>
+         <div>
+         
            <?php
         echo $dropDown;
         ?>
             </div>
-                <hr>
+         <hr>
       </div>
-  
       <!-- Product Configuration 
       <div class="product-configuration">
           <div class="product-color">
@@ -234,7 +249,7 @@ echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
             </div>
          </div>
          -->
-         <!-- Cable Configuration 
+      <!-- Cable Configuration 
          <div class="cable-config">
             <span>Cable configuration</span>
             <div class="cable-choose">
@@ -245,14 +260,51 @@ echo (! $dto == null) ? '<br>' . $dto->getRemarks() : "";
             <a href="#">How to configurate your headphones</a>
          </div>
          -->
-      </div>
-      <!-- Product Pricing   
+   </div>
+   <!-- Product Pricing -->   
       <div class="product-price">
-         <span>148$</span>
-         <a href="#" class="cart-btn">Add to cart</a>
-      </div>
-      -->
+      
+      <table id="mytable26" style="font-size: 9.5pt; color: graytext; font-family: Courier, monospace;" class="table table-bordered table-striped table-hover">
+      <thead>
+         <tr>
+            <td>
+               <b><?php
+
+            echo $this->translate("#");
+            ?></b>
+            </td>
+            <td>
+               <b><?php
+
+            echo $this->translate("Item");
+            ?></b>
+            </td>
+            <td>
+               <b><?php
+
+            echo $this->translate("Assocation");
+            ?></b>
+            </td>
+            <td>
+               <b><?php
+
+            echo $this->translate("Item");
+            ?></b>
+            </td>
+         </tr>
+      </thead>
+      <tbody>
+      <?php
+
+    echo $table_body;
+    ?>
+      </tbody>
+   </table>
+   </div>
+      
 </main>
+
+
 
 <!-- 
 <div style="font-size: 9pt" id="<?php
@@ -274,7 +326,6 @@ echo $tab_id;
 </div>
 
 -->
-
 <script type="text/javascript">
 
 

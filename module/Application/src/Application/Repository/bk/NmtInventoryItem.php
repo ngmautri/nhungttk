@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"}), @ORM\Index(name="nmt_inventory_item_FK10_idx", columns={"item_group_id"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK11_idx", columns={"stock_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK12_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_FK13_idx", columns={"purchase_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK14_idx", columns={"sales_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK15_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_FK16_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_FK17_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_FK18_idx", columns={"default_warehouse_id"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
 class NmtInventoryItem
 {
@@ -254,74 +253,128 @@ class NmtInventoryItem
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $associationList
      */
-    public function isIsActive()
+    public function setAssociationList($associationList)
     {
-        return $this->isActive;
+        $this->associationList = $associationList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $backwardAssociationList
      */
-    public function isIsStocked()
+    public function setBackwardAssociationList($backwardAssociationList)
     {
-        return $this->isStocked;
+        $this->backwardAssociationList = $backwardAssociationList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $qoList
      */
-    public function isIsSaleItem()
+    public function setQoList($qoList)
     {
-        return $this->isSaleItem;
+        $this->qoList = $qoList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $procureGrList
      */
-    public function isIsPurchased()
+    public function setProcureGrList($procureGrList)
     {
-        return $this->isPurchased;
+        $this->procureGrList = $procureGrList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $serialNoList
      */
-    public function isIsFixedAsset()
+    public function setSerialNoList($serialNoList)
     {
-        return $this->isFixedAsset;
+        $this->serialNoList = $serialNoList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $batchNoList
      */
-    public function isIsSparepart()
+    public function setBatchNoList($batchNoList)
     {
-        return $this->isSparepart;
+        $this->batchNoList = $batchNoList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $pictureList
      */
-    public function isLocalAvailabiliy()
+    public function setPictureList($pictureList)
     {
-        return $this->localAvailabiliy;
+        $this->pictureList = $pictureList;
     }
 
     /**
      *
-     * @return boolean
+     * @param \Doctrine\Common\Collections\ArrayCollection $attachmentList
      */
-    public function isIsModel()
+    public function setAttachmentList($attachmentList)
     {
-        return $this->isModel;
+        $this->attachmentList = $attachmentList;
+    }
+
+    /**
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $prList
+     */
+    public function setPrList($prList)
+    {
+        $this->prList = $prList;
+    }
+
+    /**
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $poList
+     */
+    public function setPoList($poList)
+    {
+        $this->poList = $poList;
+    }
+
+    /**
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $apList
+     */
+    public function setApList($apList)
+    {
+        $this->apList = $apList;
+    }
+
+    /**
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $fifoLayerList
+     */
+    public function setFifoLayerList($fifoLayerList)
+    {
+        $this->fifoLayerList = $fifoLayerList;
+    }
+
+    /**
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $fifoLayerConsumeList
+     */
+    public function setFifoLayerConsumeList($fifoLayerConsumeList)
+    {
+        $this->fifoLayerConsumeList = $fifoLayerConsumeList;
+    }
+
+    /**
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $stockGrList
+     */
+    public function setStockGrList($stockGrList)
+    {
+        $this->stockGrList = $stockGrList;
     }
 
     // ================================
@@ -340,7 +393,6 @@ class NmtInventoryItem
         $this->fifoLayerList = new ArrayCollection();
         $this->fifoLayerConsumeList = new ArrayCollection();
         $this->stockGrList = new ArrayCollection();
-
         $this->associationList = new ArrayCollection();
         $this->backwardAssociationList = new ArrayCollection();
     }
@@ -842,6 +894,22 @@ class NmtInventoryItem
      * @ORM\Column(name="is_model", type="boolean", nullable=true)
      */
     private $isModel;
+
+    /**
+     *
+     * @var boolean
+     *
+     * @ORM\Column(name="can_order", type="boolean", nullable=true)
+     */
+    private $canOrder;
+
+    /**
+     *
+     * @var string
+     *
+     * @ORM\Column(name="model_detail", type="string", length=255, nullable=true)
+     */
+    private $modelDetail;
 
     /**
      *
@@ -2513,6 +2581,54 @@ class NmtInventoryItem
     public function getIsModel()
     {
         return $this->isModel;
+    }
+
+    /**
+     * Set canOrder
+     *
+     * @param boolean $canOrder
+     *
+     * @return NmtInventoryItem
+     */
+    public function setCanOrder($canOrder)
+    {
+        $this->canOrder = $canOrder;
+
+        return $this;
+    }
+
+    /**
+     * Get canOrder
+     *
+     * @return boolean
+     */
+    public function getCanOrder()
+    {
+        return $this->canOrder;
+    }
+
+    /**
+     * Set modelDetail
+     *
+     * @param string $modelDetail
+     *
+     * @return NmtInventoryItem
+     */
+    public function setModelDetail($modelDetail)
+    {
+        $this->modelDetail = $modelDetail;
+
+        return $this;
+    }
+
+    /**
+     * Get modelDetail
+     *
+     * @return string
+     */
+    public function getModelDetail()
+    {
+        return $this->modelDetail;
     }
 
     /**

@@ -1,6 +1,13 @@
-<?php /**@var \Application\Entity\NmtInventoryItemSerial $entity ;*/?>
-
 <?php
+
+/**@var \Application\Entity\NmtInventoryItemSerial $entity ;*/
+$entity_id = null;
+$entity_token = null;
+
+if ($entity != null) {
+    $entity_id = $entity->getId();
+    $entity_token = $entity->getId();
+}
 
 $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 
@@ -15,118 +22,203 @@ if (count($errors) > 0) {
     echo '</ul>';
     echo '</div>';
 }
+
+// ==========================================
 ?>
-
-
-
 <div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;Serial
-				Number:</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/item-serial-attachment/get-pictures?nid=<?php echo $nid;?>&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><span
-				class="glyphicon glyphicon-picture"></span></a></li>
+   <ul>
+      <li>
+         <a href="#general">
+            <small>
+               <i class="glyphicon glyphicon-plus"></i>
+            </small>
+            &nbsp;Serial Number:
+         </a>
+      </li>
+      <li>
+         <a
+            href="<?php
 
-		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
-				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+            echo $this->baseUrl?>/inventory/item-serial-attachment/get-pictures?nid=<?php
 
-	</ul>
+            echo $nid;
+            ?>&token=<?php
 
-	<div id="general" style="font-size: 9pt">
+            echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&target_id=<?php
 
-		<a style="cursor: pointer;" title=""
-			href="<?php echo $this->baseUrl ?>/inventory/item/show?tab_idx=5&nid=<?php echo $nid;?>&token=<?php echo $entity->getItem()->getToken();?>&entity_id=<?php echo $entity->getItem()->getId();?>"><h5
-				style="color: graytext;"><?php echo (!$entity == null)? $entity->getItem()->getItemName():"";?>:</h5>
-		</a> <img alt="" height=""
-			src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
+            echo (! $entity == null) ? $entity->getId() : "";
+            ?>">
+            <span class="glyphicon glyphicon-picture"></span>
+         </a>
+      </li>
+      <li>
+         <a
+            href="<?php
 
-		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/inventory/item-serial/edit" method="post"
-			enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-				name="entity_id"
-				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
-				type="hidden" name="token"
-				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
-				type="hidden" name="n" value="<?php echo $n;?>" />
+            echo $this->baseUrl?>/inventory/change-log/list1?object_token=<?php
 
-			<fieldset>
-				<legend style="font-size: 9.5pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse"
-						style="color: graytext;">Serial Detail:</a>
-				</legend>
-				<div id="invoice_header" class="collapse in">
+            echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&object_id=<?php
 
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Serial number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="invoiceNo" name="serialNumber"
-								value="<?php echo (!$entity == null)? $entity->getSerialNumber():"";?>">
-						</div>
+            echo (! $entity == null) ? $entity->getId() : "";
+            ?>&class_name=<?php
 
-						<div class="col-sm-3">
-							<input
-								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Is
-							Active&nbsp;&nbsp;&nbsp;&nbsp;
+            echo (! $entity == null) ? get_class($entity) : "";
+            ?>">
+            <span class="glyphicon glyphicon-list"></span>
+            &nbsp;Log
+         </a>
+      </li>
+   </ul>
+   <div id="general" style="font-size: 9pt">
+      <table>
+         <tr>
+            <td>
+               <a style="cursor: pointer;" title=""
+                  href="<?php
 
-						</div>
+                echo $this->baseUrl?>/inventory/item/show?tab_idx=5&nid=<?php
 
-					</div>
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Location:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="location" name="location"
-								value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
+                echo $nid;
+                ?>&token=<?php
 
-						</div>
+                echo $entity->getItem()->getToken();
+                ?>&entity_id=<?php
 
-					</div>
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Category:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="category" name="category"
-								value="<?php echo (!$entity == null)? $entity->getCategory():"";?>">
+                echo $entity->getItem()->getId();
+                ?>">
+                  <h5 style="color: graytext;"><?php
 
-						</div>
+                echo (! $entity == null) ? $entity->getItem()->getItemName() : "";
+                ?>:</h5>
+               </a>
+               <img alt="" height="" src="/inventory/item/barcode?barcode=<?php
 
-					</div>
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Manufactuer (Mfg):</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgName" name="mfgName"
-								value="<?php echo (!$entity == null)? $entity->getMfgName():"";?>">
-						</div>
-					</div>
+            echo (! $entity == null) ? $entity->getSysNumber() : "";
+            ?>">
+            </td>
+            <td>
+               <div class="container_dropzone">
+                  <input style="display: none;" type="file" name="pictures[]" id="file">
+                  <!-- Drag and Drop container-->
+                  <div class="upload-area" id="uploadfile">
+                     <h4>
+                        <i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i>
+                        <br>
+                        <br>
+                        Drag and Drop file here
+                     </h4>
+                  </div>
+                  <div id="selected_file"></div>
+                  <a id="uploadBtn" class="btn btn-default btn-sm" style="color: black; margin-top: 4pt; margin-left: 10pt; display: none;" href="javascript:;" onclick="doUploading();">
+                     <i class="fa fa-upload" aria-hidden="true">&nbsp;&nbsp;Upload</i>
+                  </a>
+               </div>
+            </td>
+         </tr>
+      </table>
+      <!-- end  -->
+      <form id="Create_Inv_Form" class="form-horizontal" action="/inventory/item-serial/edit" method="post" enctype="multipart/form-data">
+         <input type="hidden" name="redirectUrl" value="<?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Mfg Model:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgModel" name="mfgModel"
-								value="<?php echo (!$entity == null)? $entity->getMfgModel():"";?>">
-						</div>
-						<label class="control-label col-sm-2">Mfg Serial number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgSerialNumber" name="mfgSerialNumber"
-								value="<?php echo (!$entity == null)? $entity->getMfgSerialNumber():"";?>">
-						</div>
-					</div>
+        echo $redirectUrl?>" />
+         <input type="hidden" name="entity_id" value="<?php
 
-					<div class="form-group margin-bottom">
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>" />
+         <input type="hidden" name="token" value="<?php
 
-						<label class="control-label col-sm-2"><?php echo $this->translate("Origin");?>:</label>
-						<div class="col-sm-3">
-							<select name="origin_country_id" class="form-control input-sm">
-								<option value=""><?php echo $this->translate("Select Country");?></option>
+        echo (! $entity == null) ? $entity->getToken() : "";
+        ?>" />
+         <input type="hidden" name="n" value="<?php
+
+        echo $n;
+        ?>" />
+         <fieldset>
+            <legend style="font-size: 9.5pt; color: gray;">
+               <small>
+                  <span class="glyphicon glyphicon-triangle-right"></span>
+               </small>
+               &nbsp;
+               <a href="#invoice_header" class="" data-toggle="collapse" style="color: graytext;">Serial Detail:</a>
+            </legend>
+            <div id="invoice_header" class="collapse in">
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2">Serial number:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="invoiceNo" name="serialNumber" value="<?php
+
+                    echo (! $entity == null) ? $entity->getSerialNumber() : "";
+                    ?>">
+                  </div>
+                  <div class="col-sm-3">
+                     <input <?php
+
+                    if (! $entity == null) :
+                        echo ($entity->getIsActive() == "1") ? "checked" : "";
+                    else :
+                        echo "checked";
+                    endif;
+                    ?> type="checkbox"
+                        name="isActive" value="1">
+                     &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                  </div>
+               </div>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2">Location:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="location" name="location" value="<?php
+
+                    echo (! $entity == null) ? $entity->getLocation() : "";
+                    ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2">Category:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="category" name="category" value="<?php
+
+                    echo (! $entity == null) ? $entity->getCategory() : "";
+                    ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2">Manufactuer (Mfg):</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="mfgName" name="mfgName" value="<?php
+
+                    echo (! $entity == null) ? $entity->getMfgName() : "";
+                    ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2">Mfg Model:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="mfgModel" name="mfgModel" value="<?php
+
+                    echo (! $entity == null) ? $entity->getMfgModel() : "";
+                    ?>">
+                  </div>
+                  <label class="control-label col-sm-2">Mfg Serial number:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="mfgSerialNumber" name="mfgSerialNumber" value="<?php
+
+                    echo (! $entity == null) ? $entity->getMfgSerialNumber() : "";
+                    ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2"><?php
+
+                echo $this->translate("Origin");
+                ?>:</label>
+                  <div class="col-sm-3">
+                     <select name="origin_country_id" class="form-control input-sm">
+                        <option value=""><?php
+
+                        echo $this->translate("Select Country");
+                        ?></option>
    	    							<?php
             if ($country_list !== null) :
                 foreach ($country_list as $country) :
@@ -152,82 +244,332 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-						</div>
-					</div>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2"><?php
+
+                echo $this->translate("Capacity (W)");
+                ?>:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="capacity" name="capacity" value="<?php
+
+                    echo (! $entity == null) ? $entity->getCapacity() : "";
+                    ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2">Mfg Date:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="mfgDate" name="mfgDate"
+                        value="<?php
+
+                        if (! $entity == null) :
+                            if ($entity->getMfgDate() !== null) :
+                                echo date_format($entity->getMfgDate(), "Y-m-d"); endif; endif;
 
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2"><?php echo $this->translate("Capacity (W)");?>:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="capacity" name="capacity"
-								value="<?php echo (!$entity == null)? $entity->getCapacity():"";?>">
-						</div>
-					</div>
+                        ?>">
+                  </div>
+                  <label class="control-label col-sm-2">Lot Number:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="lotNumber" name="lotNumber" value="<?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Mfg Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgDate" name="mfgDate"
-								value="<?php if(!$entity == null): if ($entity->getMfgDate() !== null): echo date_format($entity->getMfgDate(),"Y-m-d"); endif; endif;?>">
-						</div>
-						<label class="control-label col-sm-2">Lot Number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="lotNumber" name="lotNumber"
-								value="<?php echo (!$entity == null)? $entity->getLotNumber():"";?>">
-						</div>
-					</div>
+                    echo (! $entity == null) ? $entity->getLotNumber() : "";
+                    ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2">Mfg Warranty Start:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="mfgWarrantyStart" name="mfgWarrantyStart"
+                        value="<?php
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Mfg Warranty Start:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgWarrantyStart" name="mfgWarrantyStart"
-								value="<?php if(!$entity == null): if ($entity->getMfgWarrantyStart() !== null): echo date_format($entity->getMfgWarrantyStart(),"Y-m-d"); endif; endif;?>">
-						</div>
-						<label class="control-label col-sm-2">Mfg Warranty Start:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgWarrantyEnd" name="mfgWarrantyEnd"
-								value="<?php if(!$entity == null): if ($entity->getMfgWarrantyEnd() !== null): echo date_format($entity->getMfgWarrantyEnd(),"Y-m-d"); endif; endif;?>">
-						</div>
-					</div>
+                        if (! $entity == null) :
+                            if ($entity->getMfgWarrantyStart() !== null) :
+                                echo date_format($entity->getMfgWarrantyStart(), "Y-m-d"); endif; endif;
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Remarks:</label>
-						<div class="col-sm-8">
-							<textarea class="form-control input-sm" type="text" rows="6"
-								placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-						</div>
-					</div>
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag"></label>
-						<div class="col-sm-3">
-							<button onclick="submitForm('Create_Inv_Form');"
-								class="btn btn-default btn-sm">
-								<i class="glyphicon glyphicon-floppy-disk"> </i> Save
-							</button>
-							<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $redirectUrl ?>"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
-						</div>
-					</div>
-			
-			</fieldset>
-		</form>
-	</div>
+                        ?>">
+                  </div>
+                  <label class="control-label col-sm-2">Mfg Warranty Start:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" placeholder="" id="mfgWarrantyEnd" name="mfgWarrantyEnd"
+                        value="<?php
+
+                        if (! $entity == null) :
+                            if ($entity->getMfgWarrantyEnd() !== null) :
+                                echo date_format($entity->getMfgWarrantyEnd(), "Y-m-d"); endif; endif;
+
+
+                        ?>">
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2">Remarks:</label>
+                  <div class="col-sm-8">
+                     <textarea class="form-control input-sm" type="text" rows="6" placeholder="" name="remarks" style="font-size: 9pt;"><?php
+
+                    echo (! $entity == null) ? $entity->getRemarks() : "";
+                    ?></textarea>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag"></label>
+                  <div class="col-sm-3">
+                     <button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm">
+                        <i class="glyphicon glyphicon-floppy-disk"> </i>
+                        Save
+                     </button>
+                     <a tabindex="11" class="btn btn-default btn-sm" href="<?php
+
+                    echo $redirectUrl?>">
+                        <small>
+                           <i class="glyphicon glyphicon-remove"></i>
+                        </small>
+                        &nbsp;Cancel
+                     </a>
+                  </div>
+               </div>
+         
+         </fieldset>
+      </form>
+   </div>
 </div>
-
-
-
 <script>
 
 $( "input[id='mfgDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='mfgWarrantyStart']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='mfgWarrantyEnd']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-  
-</script>
 
+//==================
+
+
+var dataArray = [];
+var maxFiles = 2;
+
+
+// Drag enter
+$('.upload-area').on('dragenter', function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $("h4").addClass('cat_drag_over');
+        
+    //$("h4").text("Drop");
+});
+
+// Drag enter
+$('.upload-area').on('dragleave', function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $("h4").removeClass('cat_drag_over');
+        
+    //$("h4").text("Drop");
+});
+
+// Drag over
+$('.upload-area').on('dragover', function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $("h4").addClass('cat_drag_over');
+    //$("h4").text("Drop");
+});
+
+// Drop
+$('.upload-area').on('drop', function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    //$("h4").text("Uploaded");
+    $("h4").removeClass('cat_drag_over');
+    
+
+    var file = e.originalEvent.dataTransfer.files;
+    var fd = new FormData();
+
+    fd.append('attachments', file[0]);         
+    fd.append('target_id',<?php
+
+    echo $entity_id;
+    ?>);
+    fd.append('token','<?php
+
+    echo $entity_token;
+    ?>');
+    fd.append('redirectUrl',null);
+    fd.append('documentSubject','na');
+    fd.append('validTo','');
+    fd.append('validFrom','');
+    fd.append('isActive',1);
+    fd.append('markedForDeletion',0);
+    fd.append('filePassword','');
+    fd.append('visibility',1);
+    fd.append('remarks','');
+
+    $('#file')[0] = file[0];
+    //alert(file[0].size + file[0].type);
+
+    dataArray.push(file[0]);
+
+    if(dataArray.length>maxFiles){
+ 	   alert("Max file " +  maxFiles);
+ 	   return;
+    }
+
+    if(dataArray.length == 0){
+ 	   return;
+    }
+    
+    var i;
+    var selected_file="";
+    
+    selected_file= "<ul>";
+    for (i = 0; i < dataArray.length; i++) {
+ 	   selected_file = selected_file + "<li>"+ dataArray[i].name +"; "+dataArray[i].size + "</li>";
+    } 
+
+    selected_file= selected_file+"</ul>";
+
+    $('#selected_file').html(selected_file);
+    $('#uploadBtn').show();
+       
+    //uploadData(fd);
+});
+
+// Open file selector on div click
+$("#uploadfile").click(function(){
+    $("#file").click();
+});
+
+// file selected
+$("#file").change(function(){
+    var fd = new FormData();
+
+    var files = $('#file')[0].files[0];
+
+    fd.append('attachments',files);
+    fd.append('target_id',<?php
+
+    echo $entity_id;
+    ?>);
+    fd.append('token','<?php
+
+    echo $entity_token;
+    ?>');
+    fd.append('checksum','na');
+    fd.append('token', '1');       
+    fd.append('subject','na');
+    fd.append('entity_id','na');
+    fd.append('entity_token','na');
+
+
+    //uploadData(fd);
+});
+
+
+//Sending AJAX request and upload file
+function uploadData(formdata){
+	
+$.ajax({
+    url: '/inventory/item-serial-attachment/upload1',
+    type: 'POST',
+    data: formdata,
+    contentType: false,
+    processData: false,
+    dataType: 'json',       
+    success: function( jqXHR, textStatus ){
+ 	   //alert("ok");
+        //alert(response);
+ 	   location.reload();
+    },
+}).fail(function(  jqXHR, textStatus ) {
+	    
+		
+		 alert('false');
+
+		   });
+}
+
+//Sending AJAX request and upload file
+function doUploading(){
+
+	 if(dataArray.length == 0){
+		alert("No File");
+	  	return;
+	 }    
+
+	 $("#b_modal_no_header").modal(); 
+
+	 //alert(dataArray.length);
+	 
+     var fd = new FormData();
+     fd.append('attachments',dataArray[0]);
+     fd.append('target_id',<?php
+
+    echo $entity_id;
+    ?>);
+     fd.append('token','<?php
+
+    echo $entity_token;
+    ?>');
+     fd.append('documentSubject','na');
+     fd.append('entity_id','na');
+     fd.append('entity_token','na');
+     fd.append('validFrom','');
+     fd.append('validTo','');
+     fd.append('redirectUrl',null);
+     fd.append('isActive',1);
+     fd.append('remarks','');
+     fd.append('markedForDeletion',0);
+     fd.append('visibility',1);
+     fd.append('filePassword','');
+         
+             
+    $.ajax({
+        url: '/inventory/item-serial-attachment/upload1',
+       type: 'POST',
+        data: fd,
+        contentType: false,
+        processData: false,
+        dataType: 'json',       
+        success: function( jqXHR, textStatus ){
+     	   //alert("ok");
+            //alert(response);
+     	   location.reload();
+        },
+    }).fail(function(  jqXHR, textStatus ) {
+    	    
+    		
+    		 alert(jqXHR.responseText  + textStatus);
+
+		   });
+}
+
+//Added thumbnail
+function addThumbnail(data){
+$("#uploadfile h1").remove(); 
+var len = $("#uploadfile div.thumbnail").length;
+
+var num = Number(len);
+num = num + 1;
+
+var name = data.name;
+var size = convertSize(data.size);
+var src = data.src;
+
+// Creating an thumbnail
+$("#uploadfile").append('<div id="thumbnail_'+num+'" class="thumbnail"></div>');
+$("#thumbnail_"+num).append('<img src="'+src+'" width="100%" height="78%">');
+$("#thumbnail_"+num).append('<span class="size">'+size+'<span>');
+
+}
+
+//Bytes conversion
+function convertSize(size) {
+var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+if (size == 0) return '0 Byte';
+var i = parseInt(Math.floor(Math.log(size) / Math.log(1024)));
+return Math.round(size / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
+</script>

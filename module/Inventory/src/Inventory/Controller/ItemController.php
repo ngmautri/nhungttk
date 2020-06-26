@@ -325,6 +325,7 @@ class ItemController extends AbstractGenericController
             $entity_id = (int) $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
+            // var_dump($data);
 
             $dto = DTOFactory::createDTOFromArray($data, new ItemDTO());
             $rootEntity = $this->getItemService()->getDocDetailsByTokenId($entity_id, $entity_token);
@@ -339,7 +340,9 @@ class ItemController extends AbstractGenericController
             $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
+            $this->getLogger()->info(\sprintf("Item update %s", $entity_id));
         } catch (\Exception $e) {
+            $this->getLogger()->debug($e->getMessage());
             $notification->addError($e->getMessage());
         }
         if ($notification->hasErrors()) {

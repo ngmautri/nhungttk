@@ -28,6 +28,8 @@ use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImplFactory;
+use Inventory\Application\Service\Upload\ItemSerialUploadService;
+use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
 
 return array(
     'navigation' => array(
@@ -257,6 +259,7 @@ return array(
             'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
             ItemService::class => ItemServiceFactory::class,
             AssociationService::class => AssociationServiceFactory::class,
+            ItemSerialUploadService::class => ItemSerialUploadServiceFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',

@@ -7,6 +7,7 @@ use Procure\Application\Service\PR\PRService;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 
 /**
  *
@@ -27,7 +28,14 @@ class UpdateIndexOnPrSubmitted extends AbstractEventHandler
         }
 
         $indexer = new PrSearchIndexImpl();
-        $indexer->createDoc($event->getTarget());
+        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $entity = $rep->getRootEntityByTokenId($event->getTarget()
+            ->getId(), $event->getTarget()
+            ->getToken());
+
+        $indexer->setLogger($this->getLogger());
+        $indexer->createDoc($entity->makeSnapshot());
+
         $this->getLogger()->info(\sprintf("Search index for PR#%s created!", $event->getTarget()
             ->getId()));
 

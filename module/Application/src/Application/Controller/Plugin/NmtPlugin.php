@@ -72,8 +72,8 @@ class NmtPlugin extends AbstractPlugin
         $thumbnail_file = '/images/no-pic1.jpg';
         if ($pic instanceof NmtInventoryItemPicture) {
 
-            $thumbnail_file = "../../data/inventory/item/pictures/" . $pic->getFolderRelative() . "" . $pic->getFileName();
-            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+            $format = 'http://localhost:81/inventory/item-picture/get?token=%s&entity_id=%s&checksum=%s';
+            $thumbnail_file = \sprintf($format, $pic->getToken(), $pic->getId(), $pic->getChecksum());
 
             return $thumbnail_file;
         }

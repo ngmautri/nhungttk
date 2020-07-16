@@ -365,24 +365,22 @@ echo $wh_option;
                            <div class="col-sm-3"></div>
                         </div>
                      </form>
-                  
-                  <!-- COL 1 -->
+                     <!-- COL 1 -->
+                  </div>
+                  <!-- COL 2 -->
+                  <div class="col-sm-2" style="background-color: white;">
+                     <div id="item_img"></div>
+                  </div>
+                  <!-- ROW -->
                </div>
-               <!-- COL 2 -->
-               <div class="col-sm-2" style="background-color: white;">
-                  <div id="item_img"></div>
-               </div>
-               <!-- ROW -->
+               <!-- end tab -->
             </div>
-           
-            <!-- end tab -->
          </div>
       </div>
+      <!-- /#page-content-wrapper -->
    </div>
-   <!-- /#page-content-wrapper -->
-</div>
-<!-- /#wrapper -->
-<script type="text/javascript">
+   <!-- /#wrapper -->
+   <script type="text/javascript">
 
 $( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "#item_name" ).focus();
@@ -494,17 +492,7 @@ $( "#item_name" ).focus();
        	 endif
         ?>
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-  
+   
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);

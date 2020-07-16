@@ -335,6 +335,9 @@ class APDoc extends GenericAP
             $this->setCompany($options->getCompanyId());
         }
 
+        // update warehouse for row.
+        $this->refreshRows($snapshot);
+
         $createdDate = new \Datetime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
 

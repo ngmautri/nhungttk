@@ -229,6 +229,17 @@ abstract class GenericAP extends AbstractAP
         return $localSnapshot;
     }
 
+    protected function refreshRows(APSnapshot $snapshot)
+    {
+        foreach ($this->getDocRows() as $row) {
+            /**
+             *
+             * @var APRow $row ;
+             */
+            $row->refreshRowsFromNewHeaderSnapshot($snapshot);
+        }
+    }
+
     /**
      *
      * @param \Application\Domain\Shared\Command\CommandOptions $options

@@ -21,9 +21,11 @@ Interface POQueryRepositoryInterface
 
     public function getPODetailsById($id, $token = null);
 
+    public function getOpenItems($id, $token = null);
+
     public function getVersion($id, $token = null);
 
     public function getVersionArray($id, $token = null);
-    
+
     public function getHeaderIdByRowId($id);
 }

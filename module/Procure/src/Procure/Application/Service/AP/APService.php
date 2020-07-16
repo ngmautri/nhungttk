@@ -136,7 +136,7 @@ class APService extends AbstractService
     {
         $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
 
-        $po = $rep->getPODetailsById($id, $token);
+        $po = $rep->getOpenItems($id, $token);
 
         $headerValidators = new HeaderValidatorCollection();
 

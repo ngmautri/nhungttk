@@ -548,6 +548,10 @@ class ApController extends AbstractGenericController
         $action = \Procure\Domain\Shared\Constants::FORM_ACTION_EDIT;
         $viewTemplete = "procure/ap/crudHeader";
 
+        $userId = $this->getUserId();
+        $companyId = $this->getCompanyId();
+        $localCurrencyId = $this->getLocalCurrencyId();
+
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -573,7 +577,8 @@ class ApController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

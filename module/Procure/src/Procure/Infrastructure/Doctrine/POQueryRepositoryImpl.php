@@ -327,4 +327,110 @@ WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by ro
             return null;
         }
     }
+
+    public function getOpenItems($id, $token = null)
+    {
+        if ($id == null || $token == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+
+        $po = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtProcurePo')
+            ->findOneBy($criteria);
+
+        $poDetailsSnapshot = PoMapper::createSnapshot($this->getDoctrineEM(), $po);
+
+        if ($poDetailsSnapshot == null) {
+            return null;
+        }
+
+        $rows = $this->getPoRowsDetails($id);
+
+        // $rows = null;
+
+        if (count($rows) == 0) {
+            $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
+            return $rootEntity;
+        }
+
+        $docRowsArray = array();
+        $rowIdArray = array();
+
+        $totalOpenRows = 0;
+        $netAmount = 0;
+        $taxAmount = 0;
+        $grossAmount = 0;
+        $billedAmount = 0;
+        $completedRows = 0;
+        $grIdArray = array();
+        $apIdArray = array();
+
+        foreach ($rows as $r) {
+
+            /**@var \Application\Entity\NmtProcurePoRow $poRowEntity ;*/
+            $po_row = $r[0];
+
+            $poRowDetailSnapshot = PoMapper::createRowSnapshot($this->getDoctrineEM(), $po_row);
+            if ($poRowDetailSnapshot == null) {
+                continue;
+            }
+
+            /**
+             *
+             * @todo
+             */
+            if ($r['confirmed_ap_balance'] <= 0 and $r['confirmed_gr_balance'] <= 0) {
+                $completedRows ++;
+                continue;
+            }
+
+            $poRowDetailSnapshot->transactionStatus = Constants::TRANSACTION_STATUS_UNCOMPLETED;
+
+            if ($r["gr_id"] > 0) {
+                $grIdArray[] = $r["gr_id"];
+            }
+
+            if ($r["ap_id"] > 0) {
+                $apIdArray[] = $r["ap_id"];
+            }
+
+            $poRowDetailSnapshot->draftGrQuantity = $r["draft_gr_qty"];
+            $poRowDetailSnapshot->postedGrQuantity = $r["posted_gr_qty"];
+            $poRowDetailSnapshot->confirmedGrBalance = $r["confirmed_gr_balance"];
+            $poRowDetailSnapshot->openGrBalance = $r["open_gr_qty"];
+            $poRowDetailSnapshot->draftAPQuantity = $r["draft_ap_qty"];
+            $poRowDetailSnapshot->postedAPQuantity = $r["posted_ap_qty"];
+            $poRowDetailSnapshot->openAPQuantity = $r["open_ap_qty"];
+
+            $poRowDetailSnapshot->billedAmount = $r["billed_amount"];
+            $poRowDetailSnapshot->openAPAmount = $poRowDetailSnapshot->netAmount - $poRowDetailSnapshot->billedAmount;
+
+            $totalOpenRows ++;
+            $netAmount = $netAmount + $poRowDetailSnapshot->netAmount;
+            $taxAmount = $taxAmount + $poRowDetailSnapshot->taxAmount;
+            $grossAmount = $grossAmount + $poRowDetailSnapshot->grossAmount;
+            $billedAmount = $billedAmount + $poRowDetailSnapshot->billedAmount;
+
+            $poRow = PORow::makeFromSnapshot($poRowDetailSnapshot);
+            $docRowsArray[] = $poRow;
+            $rowIdArray[] = $poRow->getId();
+
+            // break;
+        }
+
+        $poDetailsSnapshot->completedRows = $completedRows;
+
+        $rootEntity = PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
+        $rootEntity->setDocRows($docRowsArray);
+        $rootEntity->setRowIdArray($rowIdArray);
+        $rootEntity->addGrArray($grIdArray);
+        $rootEntity->addApArray($apIdArray);
+
+        return $rootEntity;
+    }
 }

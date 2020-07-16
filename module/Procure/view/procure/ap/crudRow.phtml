@@ -676,6 +676,7 @@ echo $cost_center_option;
                   
                   var item_detail = item.hit.itemSKU +  ' | ' + item.hit.itemName 
                   var item_detail_html = '<span style="font-size: 9pt; padding-top:0px;">' + item_detail + '</span><br>';
+                  var item_detail_html = item_detail_html + '<span style="color:graytext; font-size: 8pt; padding-top:0px;">' +  item.hit.vendorItemName + '</span><br>';
                   var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;">' + item.hit.itemManufacturerCode + '</span>';
                   var pr_detail= item.hit.docNumber + ' | Qty: ' + item.hit.quantity + ' |' + item.hit.rowName; 
                   var pr_detail_html = '<span style="padding-top:7px; font-size: 9.5pt; color:navy;font-weight: bold;">' + pr_detail + '</span>';
@@ -832,6 +833,12 @@ echo $cost_center_option;
         <?php
        	 endif
         ?>
+        
+        
+        
+        
+        
+        
         
         
         

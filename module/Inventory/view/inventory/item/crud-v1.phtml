@@ -129,7 +129,12 @@ if (! $dto == null) {
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
         $associationTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Association (%s)</a>', $url1, $dto->getAssociationList()->count());
 
+        $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $logisticTab = sprintf('<a title="Logistic" href="%s"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Logistic %s</a>', $url1, "");
+
         $tabsList = [
+            // $logisticTab,
             $stockTab,
             $pricesTab,
             $picturesTab,
@@ -236,12 +241,54 @@ echo $tab_id;
         echo $form_title;
         ?></a>
       </li>
+      <li>
+         <a href="#logistic"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Logistic
+         </a>
+      </li>
       
       <?php
     echo $tabs;
     ?>
       
    </ul>
+   <div id="logistic">
+      <form id="" class="form-horizontal" action="">
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">HS Code</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" placeholder="" name="hsCode" value="<?php
+            echo (! $dto == null) ? $dto->hsCode : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">HS Code Description: </label>
+            <div class="col-sm-3">
+               <textarea class="form-control input-sm" type="text" rows="5" placeholder="" name="hsCodeDescription" style="font-size: 9pt;"><?php
+
+            echo (! $dto == null) ? $dto->hsCodeDescription : "";
+            ?></textarea>
+            </div>
+         </div>
+         <hr style="margin: 5pt 1pt 5pt 1pt;">
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">Standard Weight (gram):</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" placeholder="" name="standardWeightInKg" value="<?php
+            echo (! $dto == null) ? $dto->standardWeightInKg : "";
+            ?>">
+            </div>
+         </div>
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">Standard Volumn (m3):</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" placeholder="" name="standardVolumnInM3" value="<?php
+            echo (! $dto == null) ? $dto->standardVolumnInM3 : "";
+            ?>">
+            </div>
+         </div>
+      </form>
+   </div>
    <div id="general">
 	
 <?php
@@ -447,14 +494,6 @@ if ($action == Constants::FORM_ACTION_EDIT) :
                    <?php
                 echo $sales_uom_option;
                 ?>
-               
-               
-               
-               
-               
-               
-               
-               
                
                
                </select>

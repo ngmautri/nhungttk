@@ -1,4 +1,5 @@
 <?php
+
 namespace Procure\Application\Service\Search\ZendSearch\PR;
 
 use Application\Application\Service\Search\Contracts\IndexingResult;
@@ -476,6 +477,8 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::text('vendorItemName', $row->getVendorItemName()));
         $doc->addField(Field::text('rowName', $row->getRowName()));
         $doc->addField(Field::text('rowCode', $row->getRowCode()));
+
+        $this->getLogger()->info($row->getRowIdentifer());
 
         $index->addDocument($doc);
     }

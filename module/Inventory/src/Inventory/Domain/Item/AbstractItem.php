@@ -179,6 +179,153 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
 
     protected $modelDetail;
 
+    protected $hsCode;
+
+    protected $hsCodeDescription;
+
+    protected $standardWeightInKg;
+
+    protected $standardVolumnInM3;
+
+    protected $itemName1;
+
+    protected $itemName2;
+
+    /**
+     *
+     * @param mixed $itemName1
+     */
+    protected function setItemName1($itemName1)
+    {
+        $this->itemName1 = $itemName1;
+    }
+
+    /**
+     *
+     * @param mixed $itemName2
+     */
+    protected function setItemName2($itemName2)
+    {
+        $this->itemName2 = $itemName2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName1()
+    {
+        return $this->itemName1;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemName2()
+    {
+        return $this->itemName2;
+    }
+
+    /**
+     *
+     * @param mixed $isModel
+     */
+    protected function setIsModel($isModel)
+    {
+        $this->isModel = $isModel;
+    }
+
+    /**
+     *
+     * @param mixed $canOrder
+     */
+    protected function setCanOrder($canOrder)
+    {
+        $this->canOrder = $canOrder;
+    }
+
+    /**
+     *
+     * @param mixed $modelDetail
+     */
+    protected function setModelDetail($modelDetail)
+    {
+        $this->modelDetail = $modelDetail;
+    }
+
+    /**
+     *
+     * @param mixed $hsCode
+     */
+    protected function setHsCode($hsCode)
+    {
+        $this->hsCode = $hsCode;
+    }
+
+    /**
+     *
+     * @param mixed $hsCodeDescription
+     */
+    protected function setHsCodeDescription($hsCodeDescription)
+    {
+        $this->hsCodeDescription = $hsCodeDescription;
+    }
+
+    /**
+     *
+     * @param mixed $standardWeightInKg
+     */
+    protected function setStandardWeightInKg($standardWeightInKg)
+    {
+        $this->standardWeightInKg = $standardWeightInKg;
+    }
+
+    /**
+     *
+     * @param mixed $standardVolumnInM3
+     */
+    protected function setStandardVolumnInM3($standardVolumnInM3)
+    {
+        $this->standardVolumnInM3 = $standardVolumnInM3;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getHsCode()
+    {
+        return $this->hsCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getHsCodeDescription()
+    {
+        return $this->hsCodeDescription;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardWeightInKg()
+    {
+        return $this->standardWeightInKg;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardVolumnInM3()
+    {
+        return $this->standardVolumnInM3;
+    }
+
     /**
      *
      * @return mixed

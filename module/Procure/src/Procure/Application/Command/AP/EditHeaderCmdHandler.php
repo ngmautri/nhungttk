@@ -99,6 +99,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
                 "pmtTerm",
                 "warehouse",
                 "incoterm",
+                "incotermPlace",
                 "remarks"
             ];
 
@@ -113,7 +114,8 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
                     "warehouse",
                     "pmtTerm",
                     "remarks",
-                    "docCurrency"
+                    "docCurrency",
+                    "remarks"
                 ];
             }
 

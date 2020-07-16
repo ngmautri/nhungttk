@@ -83,6 +83,13 @@ class ItemMapper
         $entity->setCanOrder($snapshot->canOrder);
         $entity->setModelDetail($snapshot->modelDetail);
 
+        $entity->setHsCode($snapshot->hsCode);
+        $entity->setHsCodeDescription($snapshot->hsCodeDescription);
+        $entity->setStandardWeightInKg($snapshot->standardWeightInKg);
+        $entity->setStandardVolumnInM3($snapshot->standardVolumnInM3);
+        $entity->setItemName1($snapshot->itemName1);
+        $entity->setItemName2($snapshot->itemName2);
+
         // ============================
         // DATE MAPPING
         // ============================
@@ -396,6 +403,13 @@ class ItemMapper
         $snapshot->isModel = $entity->getIsModel();
         $snapshot->canOrder = $entity->getCanOrder();
         $snapshot->modelDetail = $entity->getModelDetail();
+
+        $snapshot->hsCode = $entity->getHsCode();
+        $snapshot->hsCodeDescription = $entity->getHsCodeDescription();
+        $snapshot->standardWeightInKg = $entity->getStandardWeightInKg();
+        $snapshot->standardVolumnInM3 = $entity->getStandardVolumnInM3();
+        $snapshot->itemName1 = $entity->getItemName1();
+        $snapshot->itemName2 = $entity->getItemName2();
 
         // modification
         $snapshot->assetLabel1 = preg_replace('/[0-]/', '', \substr($snapshot->assetLabel, - 5));

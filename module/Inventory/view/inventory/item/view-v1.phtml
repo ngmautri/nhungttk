@@ -110,7 +110,12 @@ if (! $dto == null) {
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
         $associationTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Association (%s)</a>', $url1, $dto->getAssociationList()->count());
 
+        $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
+        $url1 = sprintf($format, $dto->getToken(), $dto->getId());
+        $logisticTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Logistic (%s)</a>', $url1, $dto->getAssociationList()->count());
+        
         $tabsList = [
+            $logisticTab,
             $stockTab,
             $pricesTab,
             $picturesTab,
@@ -127,11 +132,11 @@ if (! $dto == null) {
         $tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
     }
 
-    $img_url = $nmtPlugin->getItemPic($dto->getId());
+    $img_url = $nmtPlugin->getBigItemPic($dto->getId());
     if ($img_url == null) {
         $img_url = '/images/no-pic1.jpg';
     }
-    $format = '<img style="cursor: pointer;" title="click for more detail!" onclick="$(\' // tabs\').tabs({ active: 1});" class="img-rounded" width="150" height="150" src="%s" />';
+    $format = '<img style="cursor: pointer;" title="click for more detail!" onclick="$(\' // tabs\').tabs({ active: 1});" class="img-rounded" width="300" src="%s" />';
     $img = sprintf($format, $img_url);
 
     if ($dto->getAssociationList()->count() > 0) {

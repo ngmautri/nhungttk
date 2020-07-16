@@ -34,6 +34,8 @@ if (count($list) > 0) {
         } else {
             $count = $n;
         }
+        $format = '<a target ="_blank" href="/inventory/item/view?entity_token=%s&entity_id=%s"> Show</a>';
+        $showUrl = sprintf($format, $item->getRelatedItem()->getToken(), $item->getRelatedItem()->getId());
 
         /**
          *
@@ -44,6 +46,7 @@ if (count($list) > 0) {
         $table_body = $table_body . sprintf("<td>%s</td>", $item->getMainItem()->getItemName());
         $table_body = $table_body . sprintf("<td>%s</td>", $item->getAssociation()->getAssociationName());
         $table_body = $table_body . sprintf("<td>%s</td>", $item->getRelatedItem()->getItemName());
+        $table_body = $table_body . sprintf("<td>%s</td>", $showUrl);
 
         $table_body = $table_body . "</tr>";
     }
@@ -92,6 +95,12 @@ echo $result_msg;
                <b><?php
 
             echo $this->translate("Item");
+            ?></b>
+            </td>
+            <td>
+               <b><?php
+
+            echo $this->translate("Action");
             ?></b>
             </td>
          </tr>

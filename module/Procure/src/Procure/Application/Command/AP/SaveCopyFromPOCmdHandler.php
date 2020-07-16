@@ -8,6 +8,7 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
+use Procure\Application\Command\AP\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
@@ -48,7 +49,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var ApDTO $dto ;
-         * @var SaveCopyFromPOCmd $options ;
+         * @var SaveCopyFromPOOptions $options ;
          */
         $dto = $cmd->getDto();
         $options = $cmd->getOptions();

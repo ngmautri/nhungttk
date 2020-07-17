@@ -1,0 +1,99 @@
+<?php
+use Application\Application\Service\Search\Contracts\SearchResult;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
+
+/**@var SearchResult $results ;*/
+
+$table_body = '';
+$message = '';
+
+if ($results !== null) {
+    $message = $results->getMessage();
+    $hits = $results->getHits();
+
+    if (count($hits) > 0) {
+
+        $count = 0;
+        $n = 0;
+
+        foreach ($hits as $hit) {
+
+            $format = '<a target="_blank" style ="color:blue;" href="/inventory/hs-code/tree?cat=%s">%s</a>';
+            $catUrl = sprintf($format, $hit->hsCode_id, $hit->hsCode);
+
+            $format = '<a target="_blank" style ="color:blue;" href="/inventory/hs-code/tree?cat=%s">%s</a>';
+            $parentUrl = sprintf($format, $hit->parentCode_id, $hit->parentCode);
+
+            $count ++;
+            $table_body = $table_body . "<tr>";
+            $table_body = $table_body . sprintf("<td>%s</td>", $count);
+            $table_body = $table_body . sprintf("<td>%s</td>", $catUrl);
+
+            $table_body = $table_body . sprintf("<td>%s</td>", $parentUrl);
+            $table_body = $table_body . sprintf("<td>%s</td>", $hit->codeDescription);
+
+            $table_body = $table_body . "</tr>";
+        }
+    }
+}
+
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">HS Code Search Result</a>
+      </li>
+   </ul>
+   <div id="general">
+   
+   
+      <form class="form-inline" action="/inventory/hs-code/search" method="get" enctype="multipart/form-data">
+            <div class="form-group" style="padding-left: 8px;">
+               <input placeholder="enter search term ..." class="form-control" size="20" type="text" name="q">
+            </div>
+            <div class="form-group">
+               <button type="submit" class="btn btn-default">
+                  <small>
+                     <i class="glyphicon glyphicon-search"> </i>
+                  </small>
+               </button>
+            </div>
+         </form>
+         
+         <hr>
+
+<?php
+echo $message;
+?>
+
+
+<table style="font-size: 9.5pt;" class="table table-hover table-bordered">
+         <thead>
+            <tr>
+               <td>
+                  <b>#</b>
+               </td>
+                <td>
+                  <b>HSCode</b>
+               </td>
+               <td>
+                  <b>Parent HSCode</b>
+               </td>
+                <td>
+                  <b>HSCode</b>
+               </td>
+            </tr>
+         </thead>
+         <tbody>
+         <?php
+        echo $table_body;
+        ?>
+         </tbody>
+      </table>
+   </div>
+</div>

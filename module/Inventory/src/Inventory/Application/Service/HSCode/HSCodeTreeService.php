@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Application\Service\HSCode;
 
+use Application\Domain\Util\Composite\GenericComponent;
 use Application\Domain\Util\Composite\Builder\AbstractBuilder;
 use Doctrine\ORM\EntityManager;
 use Inventory\Infrastructure\Persistence\Doctrine\HSCodeReportRepositoryImpl;
@@ -30,7 +31,16 @@ class HSCodeTreeService extends AbstractBuilder
 
             $id = $row->getId();
             $parent_id = $row->getParentId();
-            $this->data[$id] = \sprintf('<span style="color:navy">%s</span> <span title="%s" style="color:grey;"> %s</span>', $row->getHsCode(), $row->getCodeDescription1(), $row->getCodeDescription());
+
+            // convert to Generic Component
+            $genericComponent = new GenericComponent();
+            $genericComponent->setId($row->getId());
+            $genericComponent->setComponentName($row->getCodeDescription());
+            $genericComponent->setComponentCode($row->getHsCode());
+            $genericComponent->setComponentDescription($row->getCodeDescription());
+            $genericComponent->setComponentDescription1($row->getCodeDescription1());
+
+            $this->data[$id] = $genericComponent;
             $this->index[$parent_id][] = $id;
         }
         return $this;

@@ -2,6 +2,7 @@
 namespace Application\Domain\Util\Composite\Builder;
 
 use Application\Domain\Util\Composite\Composite;
+use Application\Domain\Util\Composite\GenericComponent;
 use Application\Domain\Util\Composite\Leaf;
 
 /**
@@ -26,9 +27,16 @@ abstract class AbstractBuilder
      */
     public function createComposite($parent_id, $level)
     {
+        $data = $this->data[$parent_id];
+        if (! $data instanceof GenericComponent) {
+            throw new \RuntimeException("GenericComponent not set.");
+        }
+
         if (isset($this->index[$parent_id])) {
             $composite = new Composite();
-            $composite->setComponentName($this->data[$parent_id]);
+            $composite->setId($data->getId());
+            $composite->setComponentCode($data->getComponentCode());
+            $composite->setComponentName($data->getComponentName());
 
             foreach ($this->index[$parent_id] as $cat_id) {
 
@@ -38,7 +46,9 @@ abstract class AbstractBuilder
             }
         } else {
             $composite = new Leaf();
-            $composite->setComponentName($this->data[$parent_id]);
+            $composite->setId($data->getId());
+            $composite->setComponentCode($data->getComponentCode());
+            $composite->setComponentName($data->getComponentName());
         }
         return $composite;
     }

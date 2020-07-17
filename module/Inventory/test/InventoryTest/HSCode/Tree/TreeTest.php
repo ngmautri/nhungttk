@@ -35,7 +35,7 @@ class TreeTest extends PHPUnit_Framework_TestCase
             $builder = Bootstrap::getServiceManager()->get(HSCodeTreeService::class);
             $builder->initCategory();
             $tree = $builder->createComposite(1, 0);
-            var_dump($tree->generateJsTree());
+            var_dump($tree->getNumberOfChildren());
 
             $timer = $stopWatch->stop("test");
             echo $timer;

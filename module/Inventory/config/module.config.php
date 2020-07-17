@@ -29,7 +29,7 @@ use Inventory\Application\Service\Item\Factory\ItemServiceFactory;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
-use Inventory\Application\Service\Search\ZendSearch\Item\HSCodeSearchQueryImplFactory;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;

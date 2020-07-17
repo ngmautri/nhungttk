@@ -21,7 +21,9 @@ class Leaf extends AbstractComponent
 
     public function generateJsTree()
     {
-        return sprintf("<li data-jstree='{}'>%s</li>\n", $this->getComponentName());
+        // return sprintf("<li data-jstree='{}'><span style=\"color:black;\">%s<span></li>\n", $this->getComponentName());
+        $format = '<li id="%s" data-jstree="{}"><span style="color:blue;">%s </span> <span style="color:black;">%s</span></li>' . "\n";
+        return sprintf($format, $this->getId(), $this->getComponentCode(), $this->getComponentName());
     }
 
     public function getNumberOfChildren()

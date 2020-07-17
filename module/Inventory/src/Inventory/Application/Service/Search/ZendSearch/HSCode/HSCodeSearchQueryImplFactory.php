@@ -1,7 +1,6 @@
 <?php
-namespace Inventory\Application\Service\Search\ZendSearch\Item;
+namespace Inventory\Application\Service\Search\ZendSearch\HSCode;
 
-use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

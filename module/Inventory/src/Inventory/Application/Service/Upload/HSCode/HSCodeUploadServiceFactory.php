@@ -1,15 +1,15 @@
 <?php
-namespace Inventory\Application\Service\Search\ZendSearch\HSCode;
+namespace Inventory\Application\Service\Upload\HSCode;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
- * @author Nguyen Mau Tri
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class HSCodeSearchIndexImplFactory implements FactoryInterface
+class HSCodeUploadServiceFactory implements FactoryInterface
 {
 
     /**
@@ -21,13 +21,19 @@ class HSCodeSearchIndexImplFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new HSCodeSearchIndexImpl();
+        $service = new HSCodeUpload();
 
+        $sv = $container->get('ControllerPluginManager');
+        $service->setControllerPlugin($sv->get('NmtPlugin'));
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
-        
+
         $sv = $container->get('AppLogger');
         $service->setLogger($sv);
+
+        $sv = $container->get('AppCache');
+        $service->setCache($sv);
+
         return $service;
     }
 }

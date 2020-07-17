@@ -4,7 +4,6 @@ namespace Inventory\Application\Service\Search\ZendSearch\HSCode;
 use Application\Application\Service\Search\Contracts\QueryFilterInterface;
 use Application\Application\Service\Search\Contracts\SearchResult;
 use Application\Service\AbstractService;
-use Inventory\Application\Service\Search\ZendSearch\Item\SearchIndexer;
 use Inventory\Application\Service\Search\ZendSearch\Item\Filter\ItemQueryFilter;
 use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Service\Search\HSCode\HSCodeSearchQueryInterface;

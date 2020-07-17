@@ -505,6 +505,27 @@ class NmtInventoryItem
     private $itemName2;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_length", type="decimal", precision=10, scale=5, nullable=true)
+     */
+    private $standardLength;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_height", type="decimal", precision=10, scale=5, nullable=true)
+     */
+    private $standardHeight;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_width", type="decimal", precision=10, scale=5, nullable=true)
+     */
+    private $standardWidth;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

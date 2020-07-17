@@ -397,6 +397,7 @@ class NmtInventoryItem
         $this->associationList = new ArrayCollection();
         $this->backwardAssociationList = new ArrayCollection();
     }
+    
     /**
      * @var integer
      *
@@ -888,6 +889,27 @@ class NmtInventoryItem
      * @ORM\Column(name="item_name_2", type="string", length=150, nullable=true)
      */
     private $itemName2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_length", type="decimal", precision=10, scale=5, nullable=true)
+     */
+    private $standardLength;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_height", type="decimal", precision=10, scale=5, nullable=true)
+     */
+    private $standardHeight;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_width", type="decimal", precision=10, scale=5, nullable=true)
+     */
+    private $standardWidth;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -2735,6 +2757,78 @@ class NmtInventoryItem
     public function getItemName2()
     {
         return $this->itemName2;
+    }
+
+    /**
+     * Set standardLength
+     *
+     * @param string $standardLength
+     *
+     * @return NmtInventoryItem
+     */
+    public function setStandardLength($standardLength)
+    {
+        $this->standardLength = $standardLength;
+
+        return $this;
+    }
+
+    /**
+     * Get standardLength
+     *
+     * @return string
+     */
+    public function getStandardLength()
+    {
+        return $this->standardLength;
+    }
+
+    /**
+     * Set standardHeight
+     *
+     * @param string $standardHeight
+     *
+     * @return NmtInventoryItem
+     */
+    public function setStandardHeight($standardHeight)
+    {
+        $this->standardHeight = $standardHeight;
+
+        return $this;
+    }
+
+    /**
+     * Get standardHeight
+     *
+     * @return string
+     */
+    public function getStandardHeight()
+    {
+        return $this->standardHeight;
+    }
+
+    /**
+     * Set standardWidth
+     *
+     * @param string $standardWidth
+     *
+     * @return NmtInventoryItem
+     */
+    public function setStandardWidth($standardWidth)
+    {
+        $this->standardWidth = $standardWidth;
+
+        return $this;
+    }
+
+    /**
+     * Get standardWidth
+     *
+     * @return string
+     */
+    public function getStandardWidth()
+    {
+        return $this->standardWidth;
     }
 
     /**

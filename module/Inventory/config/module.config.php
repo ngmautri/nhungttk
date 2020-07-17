@@ -30,6 +30,12 @@ use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImplFactory;
 use Inventory\Application\Service\Upload\ItemSerialUploadService;
 use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
+use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
+use Inventory\Application\Service\Upload\HSCode\HSCodeUploadServiceFactory;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImpl;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImplFactory;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\HSCodeSearchQueryImplFactory;
 
 return array(
     'navigation' => array(
@@ -260,6 +266,7 @@ return array(
             ItemService::class => ItemServiceFactory::class,
             AssociationService::class => AssociationServiceFactory::class,
             ItemSerialUploadService::class => ItemSerialUploadServiceFactory::class,
+            HSCodeUpload::class => HSCodeUploadServiceFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
@@ -270,6 +277,9 @@ return array(
             ItemSearchIndexImpl::class => ItemSearchIndexImplFactory::class,
             ItemSearchQueryImpl::class => ItemSearchQueryImplFactory::class,
 
+            HSCodeSearchIndexImpl::class => HSCodeSearchIndexImplFactory::class,
+            HSCodeSearchQueryImpl::class => HSCodeSearchQueryImplFactory::class,
+            
             // Event Handler Resolver
             EventBusService::class => EventBusServiceFactory::class,
             HandlerMapper::class => HandlerMapperFactory::class,

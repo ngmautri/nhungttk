@@ -1,8 +1,6 @@
 <?php
 namespace Inventory\Domain\Service\Search\HSCode;
 
-use Inventory\Domain\HSCode\BaseHSCodeSnapshot;
-
 /**
  * HSCode Search
  *
@@ -11,8 +9,6 @@ use Inventory\Domain\HSCode\BaseHSCodeSnapshot;
  */
 Interface HSCodeSearchIndexInterface
 {
-
-    public function createDoc(BaseHSCodeSnapshot $doc);
 
     public function optimizeIndex();
 

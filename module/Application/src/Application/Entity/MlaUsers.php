@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,10 +8,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="mla_users", uniqueConstraints={@ORM\UniqueConstraint(name="CT_users_1", columns={"email"})}, indexes={@ORM\Index(name="mla_users_FK1_idx", columns={"company_id"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\MlaUsersRepository")
  */
 class MlaUsers
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +24,7 @@ class MlaUsers
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +32,7 @@ class MlaUsers
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -36,6 +40,7 @@ class MlaUsers
     private $checksum;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=40, nullable=true)
@@ -43,6 +48,7 @@ class MlaUsers
     private $title;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=64, nullable=false)
@@ -50,6 +56,7 @@ class MlaUsers
     private $firstname = '';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=64, nullable=false)
@@ -57,6 +64,7 @@ class MlaUsers
     private $lastname = '';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=32, nullable=false)
@@ -64,6 +72,7 @@ class MlaUsers
     private $password = '';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="salt", type="string", length=64, nullable=true)
@@ -71,6 +80,7 @@ class MlaUsers
     private $salt;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
@@ -78,6 +88,7 @@ class MlaUsers
     private $email = '';
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="role", type="string", length=64, nullable=true)
@@ -85,6 +96,7 @@ class MlaUsers
     private $role;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="registration_key", type="string", length=32, nullable=false)
@@ -92,6 +104,7 @@ class MlaUsers
     private $registrationKey;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="confirmed", type="boolean", nullable=false)
@@ -99,6 +112,7 @@ class MlaUsers
     private $confirmed = '0';
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="register_date", type="datetime", nullable=false)
@@ -106,6 +120,7 @@ class MlaUsers
     private $registerDate = 'CURRENT_TIMESTAMP';
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastvisit_date", type="datetime", nullable=true)
@@ -113,6 +128,7 @@ class MlaUsers
     private $lastvisitDate;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="block", type="boolean", nullable=false)
@@ -120,6 +136,7 @@ class MlaUsers
     private $block = '0';
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -128,8 +145,6 @@ class MlaUsers
      * })
      */
     private $company;
-
-
 
     /**
      * Get id

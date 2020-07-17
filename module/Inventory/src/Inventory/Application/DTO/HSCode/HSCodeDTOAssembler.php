@@ -9,7 +9,7 @@ namespace Inventory\Application\DTO\HSCode;
 class HSCodeDTOAssembler
 {
 
-    const ROOT_ENTITY = "\Application\Entity\NmtInventoryItem";
+    const ROOT_ENTITY = "\Application\Entity\InventoryHsCode";
 
     /**
      *

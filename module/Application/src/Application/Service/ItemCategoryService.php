@@ -3,11 +3,10 @@ namespace Application\Service;
 
 use Application\Utility\AbstractCategory;
 use Doctrine\ORM\EntityManager;
-use Application\Entity\NmtApplicationDepartment;
 
 /**
  *
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
 class ItemCategoryService extends AbstractCategory
@@ -71,15 +70,13 @@ class ItemCategoryService extends AbstractCategory
             } else {
                 if ($expandAll === true) {
 
-                    $tmp = sprintf('<li title="%s" id="%s" data-jstree=\'{"opened" : true}\' data-ic=\'{"hasMember":%s}\'><span id="%s" class="categoryDroppable"> %s </span>', ucwords($tree['instance']->getNodeName()), $tree['instance']->getNodeId(), $tree['instance']->getHasMember(), $tree['instance']->getNodeId(), 
-                    ucwords($tree['instance']->getNodeName()) . "(" . count($children) . ")");
+                    $tmp = sprintf('<li title="%s" id="%s" data-jstree=\'{"opened" : true}\' data-ic=\'{"hasMember":%s}\'><span id="%s" class="categoryDroppable"> %s </span>', ucwords($tree['instance']->getNodeName()), $tree['instance']->getNodeId(), $tree['instance']->getHasMember(), $tree['instance']->getNodeId(), ucwords($tree['instance']->getNodeName()) . "(" . count($children) . ")");
 
                     $this->jsTree = $this->jsTree . $tmp;
                     // $this->jsTree = $this->jsTree . '<li title="'. ucwords($tree['instance']->getNodeName()).'" id="' . $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'<span class="categoryDroppable">' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")</span>\n";
                 } else {
 
-                    $tmp = sprintf('<li title="%s" id="%s" data-ic=\'{"hasMember":%s}\'><span id="%s" class="categoryDroppable"> %s </span>', ucwords($tree['instance']->getNodeName()), $tree['instance']->getNodeId(), $tree['instance']->getHasMember(), $tree['instance']->getNodeId(), 
-                    ucwords($tree['instance']->getNodeName()) . "(" . count($children) . ")");
+                    $tmp = sprintf('<li title="%s" id="%s" data-ic=\'{"hasMember":%s}\'><span id="%s" class="categoryDroppable"> %s </span>', ucwords($tree['instance']->getNodeName()), $tree['instance']->getNodeId(), $tree['instance']->getHasMember(), $tree['instance']->getNodeId(), ucwords($tree['instance']->getNodeName()) . "(" . count($children) . ")");
 
                     $this->jsTree = $this->jsTree . $tmp;
 

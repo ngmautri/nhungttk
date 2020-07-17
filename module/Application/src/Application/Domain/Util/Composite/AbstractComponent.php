@@ -19,6 +19,24 @@ abstract class AbstractComponent
 
     protected $components;
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getComponentName()
+    {
+        return $this->componentName;
+    }
+
+    /**
+     *
+     * @param mixed $componentName
+     */
+    public function setComponentName($componentName)
+    {
+        $this->componentName = $componentName;
+    }
+
     abstract public function operation();
 
     abstract public function generateJsTree();

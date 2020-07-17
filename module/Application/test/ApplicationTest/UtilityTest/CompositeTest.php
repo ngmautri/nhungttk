@@ -1,8 +1,8 @@
 <?php
 namespace ApplicationTest\UtilityTest;
 
-use Application\Utility\Composite\Composite;
-use Application\Utility\Composite\Leaf;
+use Application\Domain\Util\Composite\Composite;
+use Application\Domain\Util\Composite\Leaf;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
@@ -26,6 +26,7 @@ class CompositeTest extends PHPUnit_Framework_TestCase
         $branch1 = new Composite();
         $branch1->add(new Leaf());
         $branch1->add(new Leaf());
+
         $branch2 = new Composite();
         $branch2->add(new Leaf());
         $tree->add($branch1);

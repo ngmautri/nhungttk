@@ -22,8 +22,14 @@ use Inventory\Application\Eventbus\HandlerMapper;
 use Inventory\Application\Eventbus\HandlerMapperFactory;
 use Inventory\Application\Service\Association\AssociationService;
 use Inventory\Application\Service\Association\Factory\AssociationServiceFactory;
+use Inventory\Application\Service\HSCode\HSCodeTreeService;
+use Inventory\Application\Service\HSCode\Factory\HSCodeTreeServiceFactory;
 use Inventory\Application\Service\Item\ItemService;
 use Inventory\Application\Service\Item\Factory\ItemServiceFactory;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImpl;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImplFactory;
+use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\HSCodeSearchQueryImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
@@ -32,10 +38,6 @@ use Inventory\Application\Service\Upload\ItemSerialUploadService;
 use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUploadServiceFactory;
-use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImpl;
-use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImplFactory;
-use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
-use Inventory\Application\Service\Search\ZendSearch\Item\HSCodeSearchQueryImplFactory;
 
 return array(
     'navigation' => array(
@@ -98,6 +100,14 @@ return array(
                 'route' => 'Inventory/default',
                 'controller' => 'item-variant',
                 'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+
+            array(
+                'label' => 'HS Code',
+                'route' => 'Inventory/default',
+                'controller' => 'hs-code',
+                'action' => 'tree',
                 'icon' => 'glyphicon glyphicon-list'
             ),
 
@@ -267,6 +277,7 @@ return array(
             AssociationService::class => AssociationServiceFactory::class,
             ItemSerialUploadService::class => ItemSerialUploadServiceFactory::class,
             HSCodeUpload::class => HSCodeUploadServiceFactory::class,
+            HSCodeTreeService::class => HSCodeTreeServiceFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
@@ -279,7 +290,7 @@ return array(
 
             HSCodeSearchIndexImpl::class => HSCodeSearchIndexImplFactory::class,
             HSCodeSearchQueryImpl::class => HSCodeSearchQueryImplFactory::class,
-            
+
             // Event Handler Resolver
             EventBusService::class => EventBusServiceFactory::class,
             HandlerMapper::class => HandlerMapperFactory::class,
@@ -344,6 +355,8 @@ return array(
 
             'Inventory\Controller\Association' => 'Inventory\Controller\AssociationControllerFactory',
             'Inventory\Controller\AssociationItem' => 'Inventory\Controller\AssociationItemControllerFactory',
+
+            'Inventory\Controller\HSCode' => 'Inventory\Controller\HSCodeControllerFactory',
 
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',

@@ -3,7 +3,6 @@ namespace Inventory\Service;
 
 use Application\Utility\AbstractCategory;
 use Doctrine\ORM\EntityManager;
-use Application\Entity\NmtApplicationDepartment;
 
 /**
  *

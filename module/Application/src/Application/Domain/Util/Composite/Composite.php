@@ -75,7 +75,8 @@ class Composite extends AbstractComponent
     {
         $results = '';
 
-        $results = $results . sprintf("<li data-jstree='{ \"opened\" : true}'>%s\n", "branch-" . $this->getNumberOfChildren());
+        // $results = $results . sprintf("<li data-jstree='{ \"opened\" : true}'>%s %s\n", "", $this->getComponentName(), $this->getNumberOfChildren());
+        $results = $results . sprintf("<li data-jstree='{ \"\" : true}'>%s %s\n", "", $this->getComponentName(), $this->getNumberOfChildren());
         $results = $results . sprintf("<ul>\n");
 
         foreach ($this->children as $child) {

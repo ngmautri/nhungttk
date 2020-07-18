@@ -70,6 +70,8 @@ class BaseRow extends AbstractRow
 
     protected $docMonth;
 
+    protected $docRevisionNo;
+
     // Warehouse Details
     // ====================
     protected $docWarehouseName;

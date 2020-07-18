@@ -19,6 +19,7 @@ use Procure\Application\Command\PO\CreateHeaderCmdHandler;
 use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
 use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
+use Procure\Application\Command\PO\InlineUpdateRowCmdHandler;
 use Procure\Application\Command\PO\PostCmdHandler;
 use Procure\Application\Command\PO\SaveCopyFromQuoteCmdHandler;
 use Procure\Application\Command\PO\UpdateRowCmd;
@@ -39,6 +40,7 @@ use Procure\Application\DTO\Po\PoDetailsDTO;
 use Procure\Application\Reporting\PO\PoReporter;
 use Procure\Application\Service\PO\POService;
 use Procure\Domain\Shared\Constants;
+use Zend\Escaper\Escaper;
 use Zend\Math\Rand;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -339,7 +341,7 @@ class PoController extends AbstractGenericController
 
                 'dto' => null,
                 'headerDTO' => $rootEntity->makeHeaderDTO(),
-                'version' => $rootEntity->getRevisionNo(),
+                'docRevisionNo' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -365,7 +367,7 @@ class PoController extends AbstractGenericController
 
             $target_id = $data['target_id'];
             $target_token = $data['target_token'];
-            $version = $data['version'];
+            $version = $data['docRevisionNo'];
 
             $rootEntity = $this->purchaseOrderService->getPO($target_id, $target_token);
 
@@ -395,7 +397,7 @@ class PoController extends AbstractGenericController
                 'target_token' => $target_token,
                 'dto' => $dto,
                 'headerDTO' => $rootEntity->makeHeaderDTO(),
-                'version' => $rootEntity->getRevisionNo(),
+                'docRevisionNo' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -475,7 +477,7 @@ class PoController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                'version' => $rootDTO->getRevisionNo(),
+                'docRevisionNo' => $rootDTO->getRevisionNo(),
                 'headerDTO' => $rootDTO,
                 'dto' => $localDTO, // row
                 'nmtPlugin' => $nmtPlugin,
@@ -507,7 +509,7 @@ class PoController extends AbstractGenericController
             $target_token = $data['target_token'];
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
-            $version = $data['version'];
+            $version = $data['docRevisionNo'];
 
             $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
 
@@ -558,7 +560,7 @@ class PoController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                'version' => $rootEntity->getRevisionNo(), // get current version.
+                'docRevisionNo' => $rootEntity->getRevisionNo(), // get current version.
                 'dto' => $dto,
                 'headerDTO' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
@@ -576,6 +578,75 @@ class PoController extends AbstractGenericController
         $this->getLogger()->info(\sprintf("PO Row of %s is updated by #%s", $target_id, $u->getId()));
 
         return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function inlineUpdateRowAction()
+    {
+        $a_json_final = array();
+        $escaper = new Escaper();
+
+        $sent_list = json_decode($_POST['sent_list'], true);
+        $to_update = $sent_list['addList'];
+
+        $this->getLogger()->info(\serialize($to_update));
+        $response = $this->getResponse();
+
+        try {
+            foreach ($to_update as $a) {
+
+                $dto = DTOFactory::createDTOFromArray($a, new PORowDetailsDTO());
+
+                $target_id = $a['docId'];
+                $target_token = $a['docToken'];
+                $entity_id = $a['id'];
+                $entity_token = $a['token'];
+                $version = $a['docRevisionNo'];
+
+                $result = $this->purchaseOrderService->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+
+                $rootEntity = null;
+                $localEntity = null;
+                $rootDTO = null;
+                $localDTO = null;
+                $this->getLogger()->info(\serialize($a));
+
+                if (isset($result["rootEntity"])) {
+                    $rootEntity = $result["rootEntity"];
+                }
+
+                if (isset($result["localEntity"])) {
+                    $localEntity = $result["localEntity"];
+                }
+                if (isset($result["rootDTO"])) {
+                    $rootDTO = $result["rootDTO"];
+                }
+
+                if (isset($result["localDTO"])) {
+                    $localDTO = $result["localDTO"];
+                }
+
+                $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+                $cmdHandler = new InlineUpdateRowCmdHandler();
+                $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+                $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+                $cmd->execute();
+
+                $notification = $dto->getNotification();
+                // $this->getLogger()->info(\serialize($notification));
+            }
+        } catch (\Exception $e) {
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+            $this->getLogger()->error($e->getMessage());
+        }
+
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(\json_encode("[OK] PO Row updated!"));
+        return $response;
     }
 
     /**

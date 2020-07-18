@@ -260,6 +260,10 @@ echo $tab_id;
             echo (! $dto == null) ? $dto->hsCode : "";
             ?>">
             </div>
+           
+            <a class="btn btn-default btn-sm" target="blank" style="font-size: 9pt;" href="/inventory/hs-code/search?q=<?php
+            echo (! $dto == null) ? $dto->itemName : "";
+            ?>">HS Code Search&nbsp;<i class="fa fa-search" aria-hidden="true"></i> </a>
          </div>
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">HS Code Description: </label>

@@ -30,7 +30,7 @@ use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class UpdateRowCmdHandler extends AbstractCommandHandler
+class InlineUpdateRowCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -80,19 +80,13 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
-                "isActive",
+                "faRemarks",
                 "remarks",
                 "rowNumber",
-                "item",
-                "prRow",
-                "vendorItemCode",
-                "vendorItemName",
                 "docQuantity",
                 "docUnit",
                 "docUnitPrice",
-                "conversionFactor",
-                "descriptionText",
-                "taxRate"
+                "conversionFactor"
             ];
 
             /*
@@ -155,6 +149,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             }
             $dto->setNotification($notification);
         } catch (\Exception $e) {
+
             throw new OperationFailedException($e->getMessage());
         }
     }

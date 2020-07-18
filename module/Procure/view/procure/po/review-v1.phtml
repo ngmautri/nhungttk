@@ -163,7 +163,7 @@
                <b><?php
 
             if (! $headerDTO == null) :
-                echo sprintf("PO #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()); endif;
+                echo sprintf("PO #%s (Version #%s-%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion(), $headerDTO->getRevisionNo()); endif;
 
             ?></b>
             </li>
@@ -389,7 +389,7 @@
                         &nbsp;
                         <a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php
 
-                        echo (! $headerDTO == null) ? sprintf("%s - version #%s", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()) : "";
+                        echo (! $headerDTO == null) ? sprintf("%s - version #%s-%s", $headerDTO->getSysNumber(), $headerDTO->getDocVersion(), $headerDTO->getRevisionNo()) : "";
                         ?>)</a>
                      </legend>
                      <div id="invoice_header" class="collapse">
@@ -414,43 +414,11 @@
                                 
                                 
                                 
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
                                 
                                 
                                 
@@ -1198,7 +1166,7 @@
                             //else if (grid.isDirty({rowData: rowData})) {
                             else {
                                 updateList.push(rowData);
-                          		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                          		//alert(rowData[recIndx]  + "remarks: " + rowData.id);
     
                             }
                         }
@@ -1211,10 +1179,11 @@
                         addList: addList,
                         deleteList: deleteList
                     });
-                    //alert(sent_list);
+
+    	                     //alert(sent_list);
     
                       $.ajax({
-                          url: '/procure/po/update-row',
+                          url: '/procure/po/inline-update-row',
                           data: {
                               sent_list: sent_list
                           },
@@ -1222,32 +1191,19 @@
                           type: "POST",
                           async: true,
                           beforeSend: function (jqXHR, settings) {
-                              //$(".saving", $grid).show();
-    
-    
-                              //$("#global-notice").text("Updating...").show();
-                              //alert(updateList[0].item_name  +  updateList[0].row_id);
-                          },
-                          success: function (changes) {
+                           },
+                          success: function (data, textStatus, jqXHR ) {
                               //commit the changes.
-    
-                          	  if(changes.status == <?php
-
-                            echo Constants::AJAX_FAILED;
-                            ?>){
-                          		$("#global-notice").text(changes.message).show();
-                          	  }else{
-                          		$("#global-notice").text("[OK] Updated...").show();
-                          	  }
-                		      //alert('it is ok');
-                              /* grid.commit({ type: 'add', rows: changes.addList });
-                              grid.commit({ type: 'update', rows: changes.updateList });
-                              grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                        	  $("#global-notice").text(data + ' ' + textStatus).show();
                           },
-                          complete: function () {
+                          error: function (response, status, error) {
+                              alert(status);
+                          },
+                          complete: function (changes) {
                               //$(".saving", $grid).hide();
                               $("#global-notice").delay(2200).fadeOut(500);
                          	  refreshGird();
+                         	 location.reload();
                           }
                       });
                   }
@@ -1306,7 +1262,7 @@
         if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
             ?>
             { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
-            { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
+            { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
                         <?php
 
         else :
@@ -1360,8 +1316,7 @@
     
                 redirectUrl="/procure/po/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
               	//alert(redirectUrl);
-    			window.location.href = redirectUrl;
-              	//window.open(redirectUrl,'_blank');
+    			window.location.href = redirectUrl;              	
             });
     
          });

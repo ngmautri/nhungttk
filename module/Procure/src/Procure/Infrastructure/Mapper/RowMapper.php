@@ -287,6 +287,7 @@ class RowMapper
         $snapshot->docId = $snapshot->po;
         $snapshot->docToken = $entity->getToken();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docRevisionNo = $entity->getRevisionNo();
 
         $snapshot->exchangeRate = $entity->getExchangeRate();
 

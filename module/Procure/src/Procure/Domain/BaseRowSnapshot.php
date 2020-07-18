@@ -12,6 +12,24 @@ use Application\Domain\Shared\AbstractDTO;
 class BaseRowSnapshot extends AbstractDTO
 {
 
+    public $createdByName;
+
+    public $lastChangeByName;
+
+    public $glAccountName;
+
+    public $glAccountNumber;
+
+    public $glAccountType;
+
+    public $costCenterName;
+
+    public $discountAmount;
+
+    public $convertedDocQuantity;
+
+    public $convertedDocUnitPrice;
+
     public $companyId;
 
     public $companyToken;
@@ -49,6 +67,8 @@ class BaseRowSnapshot extends AbstractDTO
     public $docYear;
 
     public $docMonth;
+
+    public $docRevisionNo;
 
     public $docWarehouseName;
 
@@ -153,20 +173,6 @@ class BaseRowSnapshot extends AbstractDTO
     public $prDepartment;
 
     public $prDepartmentName;
-
-    public $createdByName;
-
-    public $lastChangeByName;
-
-    public $glAccountName;
-
-    public $glAccountNumber;
-
-    public $glAccountType;
-
-    public $costCenterName;
-
-    public $discountAmount;
 
     public $id;
 
@@ -305,6 +311,87 @@ class BaseRowSnapshot extends AbstractDTO
     public $costCenter;
 
     public $standardConvertFactor;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedByName()
+    {
+        return $this->createdByName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLastChangeByName()
+    {
+        return $this->lastChangeByName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGlAccountName()
+    {
+        return $this->glAccountName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGlAccountNumber()
+    {
+        return $this->glAccountNumber;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGlAccountType()
+    {
+        return $this->glAccountType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCostCenterName()
+    {
+        return $this->costCenterName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getConvertedDocQuantity()
+    {
+        return $this->convertedDocQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getConvertedDocUnitPrice()
+    {
+        return $this->convertedDocUnitPrice;
+    }
 
     /**
      *
@@ -475,6 +562,15 @@ class BaseRowSnapshot extends AbstractDTO
     public function getDocMonth()
     {
         return $this->docMonth;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDocRevisionNo()
+    {
+        return $this->docRevisionNo;
     }
 
     /**
@@ -943,69 +1039,6 @@ class BaseRowSnapshot extends AbstractDTO
     public function getPrDepartmentName()
     {
         return $this->prDepartmentName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCreatedByName()
-    {
-        return $this->createdByName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLastChangeByName()
-    {
-        return $this->lastChangeByName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGlAccountName()
-    {
-        return $this->glAccountName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGlAccountNumber()
-    {
-        return $this->glAccountNumber;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGlAccountType()
-    {
-        return $this->glAccountType;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCostCenterName()
-    {
-        return $this->costCenterName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDiscountAmount()
-    {
-        return $this->discountAmount;
     }
 
     /**

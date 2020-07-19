@@ -35,6 +35,7 @@ class HSCodeTreeService extends AbstractBuilder
             // convert to Generic Component
             $genericComponent = new GenericComponent();
             $genericComponent->setId($row->getId());
+            $genericComponent->setParenId($row->getParentId());
             $genericComponent->setComponentName($row->getCodeDescription());
             $genericComponent->setComponentCode($row->getHsCode());
             $genericComponent->setComponentDescription($row->getCodeDescription());

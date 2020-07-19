@@ -11,6 +11,8 @@ abstract class AbstractComponent
 
     protected $id;
 
+    protected $parenId;
+
     protected $level;
 
     protected $componentCode;
@@ -33,6 +35,26 @@ abstract class AbstractComponent
 
     protected $parentLabel;
 
+    public function updateFromGenericComponent(GenericComponent $input)
+    {
+        if (! $input instanceof GenericComponent) {
+            return;
+        }
+
+        $this->setId($input->getId());
+        $this->setParenId($input->getParenId());
+        $this->setComponentCode($input->getComponentCode());
+        $this->setComponentCode1($input->getComponentCode1());
+        $this->setComponentDescription($input->getComponentDescription());
+        $this->setComponentDescription1($input->getComponentDescription1());
+        $this->setComponentLabel($input->getComponentLabel());
+        $this->setComponentLabel1($input->getComponentLabel1());
+        $this->setComponentName($input->getComponentName());
+        $this->setComponentName1($input->getComponentName1());
+        $this->setParentCode($input->getParentCode());
+        $this->setParentLabel($input->getParentLabel());
+    }
+
     /**
      *
      * @var AbstractComponent;
@@ -40,6 +62,40 @@ abstract class AbstractComponent
     protected $parent;
 
     protected $components;
+
+    public function showPathTo()
+    {
+        return $this->_showPathTo($this->getParent());
+    }
+
+    private function _showPathTo(AbstractComponent $component = null)
+    {
+        if ($component == null) {
+            return "";
+        }
+
+        if ($component->getParent() !== null) {
+            return $this->_showPathTo($component->getParent()) . "<br>" . $component->getComponentCode() . "  " . $component->getComponentName();
+        }
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getParenId()
+    {
+        return $this->parenId;
+    }
+
+    /**
+     *
+     * @param mixed $parenId
+     */
+    public function setParenId($parenId)
+    {
+        $this->parenId = $parenId;
+    }
 
     /**
      *

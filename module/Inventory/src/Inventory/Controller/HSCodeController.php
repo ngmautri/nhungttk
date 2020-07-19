@@ -47,34 +47,39 @@ class HSCodeController extends AbstractGenericController
      */
     public function treeAction()
     {
-        $cat = $this->params()->fromQuery('cat');
+        try {
 
-        if ($cat == null) {
-            $cat = 1;
+            $cat = $this->params()->fromQuery('cat');
+
+            if ($cat == null) {
+                $cat = 1;
+            }
+
+            $key = "_hs_code_tree_" . $cat;
+            $resultCache = $this->getCache()->getItem($key);
+
+            if ($resultCache->isHit()) {
+
+                $cachedTree = $this->getCache()
+                    ->getItem($key)
+                    ->get();
+                $tree = $cachedTree;
+            } else {
+                $builder = $this->getHsCodeTreeService();
+                $builder->initCategory();
+                $tree = $builder->createComposite($cat, 0);
+                $resultCache->set($tree);
+                $this->getCache()->save($resultCache);
+                $this->getLogger()->info("HS Code tree cached!");
+            }
+
+            $viewModel = new ViewModel(array(
+                'tree' => $tree
+            ));
+            return $viewModel;
+        } catch (\Exception $e) {
+            return $this->redirect()->toRoute('not_found');
         }
-
-        $key = "_hs_code_tree_" . $cat;
-        $resultCache = $this->getCache()->getItem($key);
-
-        if ($resultCache->isHit()) {
-
-            $cachedTree = $this->getCache()
-                ->getItem($key)
-                ->get();
-            $tree = $cachedTree;
-        } else {
-            $builder = $this->getHsCodeTreeService();
-            $builder->initCategory();
-            $tree = $builder->createComposite($cat, 0)->generateJsTree();
-            $resultCache->set($tree);
-            $this->getCache()->save($resultCache);
-            $this->getLogger()->info("HS Code tree cached!");
-        }
-
-        $viewModel = new ViewModel(array(
-            'tree' => $tree
-        ));
-        return $viewModel;
     }
 
     /**

@@ -1,3 +1,13 @@
+<?php
+use Application\Domain\Util\Composite\AbstractComponent;
+
+/**
+ *
+ * @var AbstractComponent $tree ;
+ */
+
+?>
+
 <div id="tabs" style="font-size: 9.5pt">
    <ul>
       <li>
@@ -20,15 +30,20 @@
          </form>
          
          <hr>
-   
-   
+            <?php
+            echo $tree->showPathTo();
+            ?>
+         <hr>
+
+            <ul>
+ 
       <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('open_all');">Expand all </a>
       &nbsp;|&nbsp;
       <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('close_all');">Collapse all </a>
       <div id="html" class="demo">
          <ul>
    <?php
-echo $tree;
+echo $tree->generateJsTree();
 ?>
 </ul>
       </div>

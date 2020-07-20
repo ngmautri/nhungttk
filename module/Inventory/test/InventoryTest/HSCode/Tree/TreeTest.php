@@ -2,6 +2,7 @@
 namespace InventoryTest\HSCode\Tree;
 
 use Application\Domain\Util\Composite\Builder\AbstractBuilder;
+use Application\Domain\Util\Composite\Output\SimpleFormatter;
 use Doctrine\ORM\EntityManager;
 use Inventory\Application\Service\HSCode\HSCodeTreeService;
 use ProcureTest\Bootstrap;
@@ -34,8 +35,8 @@ class TreeTest extends PHPUnit_Framework_TestCase
              */
             $builder = Bootstrap::getServiceManager()->get(HSCodeTreeService::class);
             $builder->initCategory();
-            $tree = $builder->createComposite(7189, 0);
-            var_dump($tree->showPathTo());
+            $tree = $builder->createComposite(7172, 0);
+            var_dump($tree->display(new SimpleFormatter()));
 
             $timer = $stopWatch->stop("test");
             echo $timer;

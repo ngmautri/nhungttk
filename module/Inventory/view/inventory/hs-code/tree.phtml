@@ -1,9 +1,9 @@
 <?php
-use Application\Domain\Util\Composite\AbstractComponent;
+use Application\Domain\Util\Composite\AbstractBaseComponent;
 
 /**
  *
- * @var AbstractComponent $tree ;
+ * @var AbstractBaseComponent $tree ;
  */
 
 ?>
@@ -35,18 +35,26 @@ use Application\Domain\Util\Composite\AbstractComponent;
             ?>
          <hr>
 
-            <ul>
- 
-      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('open_all');">Expand all </a>
+       <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('open_all');">Expand all </a>
       &nbsp;|&nbsp;
       <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('close_all');">Collapse all </a>
       <div id="html" class="demo">
+     &nbsp;
          <ul>
    <?php
-echo $tree->generateJsTree();
+echo $tree->display();
 ?>
 </ul>
+
+
       </div>
+      
+      <div>
+   <?php
+// echo $tree->display(new SimpleFormatter());
+?>
+</div>
+
    </div>
 </div>
 

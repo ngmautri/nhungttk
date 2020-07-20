@@ -8,13 +8,4 @@ namespace Application\Domain\Util\Composite;
  */
 class GenericComponent extends AbstractComponent
 {
-
-    public function getNumberOfChildren()
-    {}
-
-    public function generateJsTree()
-    {}
-
-    public function operation()
-    {}
 }

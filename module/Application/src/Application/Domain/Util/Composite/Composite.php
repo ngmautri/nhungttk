@@ -1,12 +1,14 @@
 <?php
 namespace Application\Domain\Util\Composite;
 
+use SplObjectStorage;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class Composite extends AbstractComponent
+class Composite extends AbstractBaseComponent
 {
 
     /**
@@ -14,6 +16,15 @@ class Composite extends AbstractComponent
      * @var \SplObjectStorage
      */
     protected $children;
+
+    /**
+     *
+     * @return SplObjectStorage
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
 
     public function __construct()
     {
@@ -50,45 +61,6 @@ class Composite extends AbstractComponent
     public function isComposite()
     {
         return true;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Application\Utility\Composite\AbstractComponent::operation()
-     */
-    public function operation()
-    {
-        $results = [];
-        foreach ($this->children as $child) {
-            $results[] = $child->operation();
-        }
-        return "Branch(" . implode("+", $results) . ")";
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Application\Utility\Composite\AbstractComponent::generateJsTree()
-     */
-    public function generateJsTree()
-    {
-        $results = '';
-
-        // $results = $results . sprintf("<li data-jstree='{ \"opened\" : true}'>%s %s\n", "", $this->getComponentName(), $this->getNumberOfChildren());
-
-        $format = '<li id="%s" data-jstree="{}"><span style="color:blue;">%s</span> %s (<span style="color: blue;">%s</span>)' . "\n";
-        $results = $results . sprintf($format, $this->getId(), $this->getComponentCode(), $this->getComponentName(), $this->getNumberOfChildren() - 1);
-        $results = $results . sprintf("<ul>\n");
-
-        foreach ($this->children as $child) {
-            $results = $results . $child->generateJsTree();
-        }
-
-        $results = $results . sprintf("</ul>\n");
-        $results = $results . sprintf("</li>\n");
-
-        return $results;
     }
 
     /**

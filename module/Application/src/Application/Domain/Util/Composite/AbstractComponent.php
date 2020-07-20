@@ -35,26 +35,6 @@ abstract class AbstractComponent
 
     protected $parentLabel;
 
-    public function updateFromGenericComponent(GenericComponent $input)
-    {
-        if (! $input instanceof GenericComponent) {
-            return;
-        }
-
-        $this->setId($input->getId());
-        $this->setParenId($input->getParenId());
-        $this->setComponentCode($input->getComponentCode());
-        $this->setComponentCode1($input->getComponentCode1());
-        $this->setComponentDescription($input->getComponentDescription());
-        $this->setComponentDescription1($input->getComponentDescription1());
-        $this->setComponentLabel($input->getComponentLabel());
-        $this->setComponentLabel1($input->getComponentLabel1());
-        $this->setComponentName($input->getComponentName());
-        $this->setComponentName1($input->getComponentName1());
-        $this->setParentCode($input->getParentCode());
-        $this->setParentLabel($input->getParentLabel());
-    }
-
     /**
      *
      * @var AbstractComponent;
@@ -63,20 +43,13 @@ abstract class AbstractComponent
 
     protected $components;
 
-    public function showPathTo()
+    /**
+     *
+     * @return mixed
+     */
+    public function getId()
     {
-        return $this->_showPathTo($this->getParent());
-    }
-
-    private function _showPathTo(AbstractComponent $component = null)
-    {
-        if ($component == null) {
-            return "";
-        }
-
-        if ($component->getParent() !== null) {
-            return $this->_showPathTo($component->getParent()) . "<br>" . $component->getComponentCode() . "  " . $component->getComponentName();
-        }
+        return $this->id;
     }
 
     /**
@@ -86,24 +59,6 @@ abstract class AbstractComponent
     public function getParenId()
     {
         return $this->parenId;
-    }
-
-    /**
-     *
-     * @param mixed $parenId
-     */
-    public function setParenId($parenId)
-    {
-        $this->parenId = $parenId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -155,6 +110,15 @@ abstract class AbstractComponent
      *
      * @return mixed
      */
+    public function getComponentName()
+    {
+        return $this->componentName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getComponentName1()
     {
         return $this->componentName1;
@@ -198,6 +162,15 @@ abstract class AbstractComponent
 
     /**
      *
+     * @return \Application\Domain\Util\Composite\AbstractComponent;
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getComponents()
@@ -212,6 +185,15 @@ abstract class AbstractComponent
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $parenId
+     */
+    public function setParenId($parenId)
+    {
+        $this->parenId = $parenId;
     }
 
     /**
@@ -261,6 +243,15 @@ abstract class AbstractComponent
 
     /**
      *
+     * @param mixed $componentName
+     */
+    public function setComponentName($componentName)
+    {
+        $this->componentName = $componentName;
+    }
+
+    /**
+     *
      * @param mixed $componentName1
      */
     public function setComponentName1($componentName1)
@@ -306,75 +297,19 @@ abstract class AbstractComponent
 
     /**
      *
-     * @param mixed $components
+     * @param \Application\Domain\Util\Composite\AbstractComponent; $parent
      */
-    public function setComponents($components)
-    {
-        $this->components = $components;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getComponentName()
-    {
-        return $this->componentName;
-    }
-
-    /**
-     *
-     * @param mixed $componentName
-     */
-    public function setComponentName($componentName)
-    {
-        $this->componentName = $componentName;
-    }
-
-    abstract public function operation();
-
-    abstract public function generateJsTree();
-
-    abstract public function getNumberOfChildren();
-
-    /**
-     *
-     * @param AbstractComponent $parent
-     */
-    public function setParent(AbstractComponent $parent)
+    public function setParent($parent)
     {
         $this->parent = $parent;
     }
 
     /**
      *
-     * @return AbstractComponent
+     * @param mixed $components
      */
-    public function getParent()
+    public function setComponents($components)
     {
-        return $this->parent;
-    }
-
-    /**
-     *
-     * @param AbstractComponent $component
-     */
-    public function add(AbstractComponent $component)
-    {}
-
-    /**
-     *
-     * @param AbstractComponent $component
-     */
-    public function remove(AbstractComponent $component)
-    {}
-
-    /**
-     *
-     * @return bool
-     */
-    public function isComposite()
-    {
-        return false;
+        $this->components = $components;
     }
 }

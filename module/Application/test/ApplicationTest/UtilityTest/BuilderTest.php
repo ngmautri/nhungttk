@@ -23,6 +23,6 @@ class CompositeTest extends PHPUnit_Framework_TestCase
     {
         $builder = new TestBuilder();
         $builder->initCategory();
-        \var_dump($builder->createComposite(2, 0)->generateJsTree());
+        \var_dump($builder->createComposite(2, 0)->display());
     }
 }

@@ -1,12 +1,11 @@
 <?php
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Service\ApplicationService;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
 use MLA\Paginator;
 use Zend\Math\Rand;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -16,14 +15,12 @@ use Zend\Math\Rand;
  * @version 1.0
  *         
  */
-class AclController extends AbstractActionController
+class AclController extends AbstractGenericController
 {
 
     const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $appService;
-
-    protected $doctrineEM;
 
     /*
      * Defaul Action
@@ -219,17 +216,6 @@ class AclController extends AbstractActionController
     public function setAppService(ApplicationService $appService)
     {
         $this->appService = $appService;
-        return $this;
-    }
-
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
         return $this;
     }
 }

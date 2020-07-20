@@ -14,6 +14,8 @@ use Application\Domain\Util\Composite\Leaf;
 abstract class AbstractBuilder
 {
 
+    protected $components = array();
+
     protected $data = array();
 
     protected $index = array();

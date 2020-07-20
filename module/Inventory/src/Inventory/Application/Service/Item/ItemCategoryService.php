@@ -14,6 +14,12 @@ class ItemCategoryService extends AbstractService
 
     private $itemCategoryRepository;
 
+    /**
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return NULL|NULL[]|\Inventory\Domain\Item\ItemSnapshot[]
+     */
     public function getNoneCategorizedItems($limit, $offset)
     {
         return $this->getItemCategoryRepository()->getNoneCategorizedItems($limit, $offset);

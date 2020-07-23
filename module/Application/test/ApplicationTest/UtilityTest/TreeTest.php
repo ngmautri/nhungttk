@@ -1,11 +1,11 @@
 <?php
 namespace ApplicationTest\UtilityTest;
 
-use Application\Domain\Util\Composite\Builder\TestBuilder;
+use Application\Domain\Util\Tree\Test\TestTree;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_TestCase;
 
-class CompositeTest extends PHPUnit_Framework_TestCase
+class TreeTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -21,8 +21,10 @@ class CompositeTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $builder = new TestBuilder();
-        $builder->initCategory();
-        \var_dump($builder->createComposite(1, 0)->display());
+        $builder = new TestTree();
+        $builder->initTree();
+        // \var_dump($builder->createTree(1, 0)->display(new SimpleFormatter()));
+
+        \var_dump($builder->createTree(1, 0)->isRoot());
     }
 }

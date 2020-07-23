@@ -14,6 +14,21 @@ abstract class AbstractBaseComponent extends AbstractComponent
 
     abstract public function getNumberOfChildren();
 
+    public function isNodeAncestor(AbstractComponent $node)
+    {
+        if ($node == null) {
+            return false;
+        }
+
+        $current = $this;
+
+        while ($current != null && $current != $node) {
+            $current = $current->getParent();
+        }
+
+        return $current == $node;
+    }
+
     /**
      *
      * @param AbstractFormatter $formatter
@@ -85,7 +100,7 @@ abstract class AbstractBaseComponent extends AbstractComponent
         }
 
         if ($component->getParent() !== null) {
-            return $this->_showPathTo($component->getParent()) . "<br>" . $component->getComponentCode() . "  " . $component->getComponentName();
+            return $this->_showPathTo($component->getParent()) . "<br>" . '<i class="fa fa-caret-up" aria-hidden="true"></i> ' . $component->getComponentCode() . "  " . $component->getComponentName();
         }
     }
 }

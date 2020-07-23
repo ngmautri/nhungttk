@@ -79,6 +79,10 @@ class TestBuilder extends AbstractBuilder
         $genericComponent->setComponentName(' - Other cuts with bone in');
         $this->data[41] = $genericComponent;
 
+        $genericComponent = new GenericComponent();
+        $genericComponent->setId(41);
+        $genericComponent->setParenId(39);
+        $genericComponent->setComponentName(' -Other cuts with bone in');
         $this->data[42] = $genericComponent;
         // $this->data[41] = ' - Other cuts with bone in';
 

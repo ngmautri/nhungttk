@@ -38,8 +38,24 @@ class Composite extends AbstractBaseComponent
      */
     public function add(AbstractComponent $component)
     {
-        $this->children->attach($component);
         $component->setParent($this);
+
+        if ($this->has($component)) {
+            throw new \InvalidArgumentException("Child exits already! " . $component->getComponentName());
+        }
+
+        $this->children->attach($component);
+    }
+
+    public function has(AbstractComponent $component)
+    {
+        foreach ($this->getChildren() as $child) {
+
+            if ($child == $component) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

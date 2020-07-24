@@ -1,10 +1,9 @@
 <?php
 namespace InventoryTest\HSCode\Tree;
 
-use Application\Domain\Util\Composite\Builder\AbstractBuilder;
-use Application\Domain\Util\Composite\Output\SimpleFormatter;
+use Application\Domain\Util\Tree\AbstractTree;
 use Doctrine\ORM\EntityManager;
-use Inventory\Application\Service\HSCode\HSCodeTreeService;
+use Inventory\Application\Service\HSCode\Tree\HSCodeTree;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -31,12 +30,12 @@ class TreeTest extends PHPUnit_Framework_TestCase
 
             /**
              *
-             * @var AbstractBuilder $builder
+             * @var AbstractTree $builder
              */
-            $builder = Bootstrap::getServiceManager()->get(HSCodeTreeService::class);
-            $builder->initCategory();
-            $tree = $builder->createComposite(7172, 0);
-            var_dump($tree->display(new SimpleFormatter()));
+            $builder = Bootstrap::getServiceManager()->get(HSCodeTree::class);
+            $builder->initTree();
+            $tree = $builder->createTree(1, 0);
+            var_dump($tree->getPath());
 
             $timer = $stopWatch->stop("test");
             echo $timer;

@@ -3,6 +3,7 @@ namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
 use Inventory\Application\Service\HSCode\HSCodeTreeService;
+use Inventory\Application\Service\HSCode\Tree\HSCodeTree;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\Filter\HSCodeQueryFilter;
 use Zend\View\Model\ViewModel;
@@ -15,9 +16,29 @@ use Zend\View\Model\ViewModel;
 class HSCodeController extends AbstractGenericController
 {
 
+    protected $hsCodeTree;
+
     protected $hsCodeTreeService;
 
     protected $hsCodeQueryService;
+
+    /**
+     *
+     * @return \Inventory\Application\Service\HSCode\Tree\HSCodeTree
+     */
+    public function getHsCodeTree()
+    {
+        return $this->hsCodeTree;
+    }
+
+    /**
+     *
+     * @param HSCodeTree $hsCodeTree
+     */
+    public function setHsCodeTree(HSCodeTree $hsCodeTree)
+    {
+        $this->hsCodeTree = $hsCodeTree;
+    }
 
     public function searchAction()
     {
@@ -65,9 +86,9 @@ class HSCodeController extends AbstractGenericController
                     ->get();
                 $tree = $cachedTree;
             } else {
-                $builder = $this->getHsCodeTreeService();
-                $builder->initCategory();
-                $tree = $builder->createComposite($cat, 0);
+                $builder = $this->getHsCodeTree();
+                $builder->initTree();
+                $tree = $builder->createTree($cat, 0);
                 $resultCache->set($tree);
                 $this->getCache()->save($resultCache);
                 $this->getLogger()->info("HS Code tree cached!");

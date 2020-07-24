@@ -34,14 +34,12 @@ abstract class AbstractTree implements TreeInterface
             throw new \RuntimeException("Input for tree buider not valid");
         }
 
-        $data = $this->data[$current_id];
+        $node = $this->data[$current_id];
 
-        if (! $data instanceof GenericNode) {
-            throw new \RuntimeException("GenericNode not set.");
+        if (! $node instanceof GenericNode) {
+            throw new \RuntimeException("Invalid input. GenericNode not set.");
         }
 
-        $node = new GenericNode();
-        $node->updateFrom($data);
         $node->setAllowChildren(true);
 
         if (isset($this->index[$current_id])) {
@@ -55,14 +53,12 @@ abstract class AbstractTree implements TreeInterface
         }
 
         if ($updateParent) {
-            $parent_id = $data->getParentId();
+            $parent_id = $node->getParentId();
             if (! $parent_id == null) {
 
-                $parentData = $this->data[$parent_id];
-                if ($parentData instanceof GenericNode) {
-                    $parent = new GenericNode();
+                $parent = $this->data[$parent_id];
+                if ($parent instanceof GenericNode) {
                     $parent->setAllowChildren(true);
-                    $parent->updateFrom($parentData);
                     $parent->add($node);
                     $this->updateParent($parent);
                 }

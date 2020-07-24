@@ -24,6 +24,8 @@ use Inventory\Application\Service\Association\AssociationService;
 use Inventory\Application\Service\Association\Factory\AssociationServiceFactory;
 use Inventory\Application\Service\HSCode\HSCodeTreeService;
 use Inventory\Application\Service\HSCode\Factory\HSCodeTreeServiceFactory;
+use Inventory\Application\Service\HSCode\Tree\HSCodeTree;
+use Inventory\Application\Service\HSCode\Tree\Factory\HSCodeTreeFactory;
 use Inventory\Application\Service\Item\ItemService;
 use Inventory\Application\Service\Item\Factory\ItemServiceFactory;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImpl;
@@ -278,6 +280,7 @@ return array(
             ItemSerialUploadService::class => ItemSerialUploadServiceFactory::class,
             HSCodeUpload::class => HSCodeUploadServiceFactory::class,
             HSCodeTreeService::class => HSCodeTreeServiceFactory::class,
+            HSCodeTree::class => HSCodeTreeFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',

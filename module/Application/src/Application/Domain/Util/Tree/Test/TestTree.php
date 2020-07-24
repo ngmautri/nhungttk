@@ -83,8 +83,15 @@ class TestTree extends AbstractTree
         $genericNode = new GenericNode();
         $genericNode->setId(41);
         $genericNode->setParentId(39);
-        $genericNode->setNodeName(' -Other cuts with bone in');
+        $genericNode->setNodeName(' - Other cuts with bone in');
         $this->data[42] = $genericNode;
+
+        $genericNode = new GenericNode();
+        $genericNode->setId(41);
+        $genericNode->setParentId(39);
+        $genericNode->setNodeName(' - Other cuts with bone in');
+        $this->data[43] = $genericNode;
+
         // $this->data[41] = ' - Other cuts with bone in';
 
         $this->index[1][] = 2;
@@ -95,6 +102,6 @@ class TestTree extends AbstractTree
         $this->index[38][] = 39;
         $this->index[39][] = 40;
         $this->index[39][] = 41;
-        $this->index[39][] = 42;
+        // $this->index[39][] = 42;
     }
 }

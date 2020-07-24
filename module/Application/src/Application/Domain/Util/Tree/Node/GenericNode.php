@@ -13,4 +13,19 @@ class GenericNode extends AbstractBaseNode
     {
         $this->children = new \SplObjectStorage();
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Util\Tree\Node\NodeInterface::equals()
+     */
+    public function equals(AbstractNode $other = null)
+    {
+        return $other == $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNodeName();
+    }
 }

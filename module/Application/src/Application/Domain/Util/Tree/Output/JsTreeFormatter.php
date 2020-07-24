@@ -25,7 +25,7 @@ class JsTreeFormatter extends AbstractFormatter
         if (! $node->isLeaf()) {
 
             $format = '<li id="%s" data-jstree="{}"><span style="color:blue;">%s</span> %s (<span style="color: blue; font-size: 11pt;">%s</span>)' . "\n";
-            $results = $results . sprintf($format, $node->getId(), $node->getNodeCode(), $node->getNodeName(), $node->getChildCount());
+            $results = $results . sprintf($format, $node->getId(), $node->getNodeCode(), $node->getNodeName(), $node->getChildCount() - 1);
             $results = $results . sprintf("<ul>\n");
 
             foreach ($node->getChildren() as $child) {

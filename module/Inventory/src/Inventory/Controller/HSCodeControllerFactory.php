@@ -2,6 +2,7 @@
 namespace Inventory\Controller;
 
 use Inventory\Application\Service\HSCode\HSCodeTreeService;
+use Inventory\Application\Service\HSCode\Tree\HSCodeTree;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -25,6 +26,9 @@ class HSCodeControllerFactory implements FactoryInterface
         $container = $serviceLocator->getServiceLocator();
 
         $controller = new HSCodeController();
+
+        $sv = $container->get(HSCodeTree::class);
+        $controller->setHsCodeTree($sv);
 
         $sv = $container->get(HSCodeTreeService::class);
         $controller->setHsCodeTreeService($sv);

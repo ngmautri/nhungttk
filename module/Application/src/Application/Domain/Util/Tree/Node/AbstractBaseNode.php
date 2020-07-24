@@ -14,12 +14,17 @@ abstract class AbstractBaseNode extends AbstractNode
 
     public function getChildCount()
     {
-        return count($this->getChildren());
+        $total = 1;
+        foreach ($this->children as $child) {
+            $total = $total + $child->getChildCount();
+        }
+
+        return $total;
     }
 
     public function isLeaf()
     {
-        return $this->getChildCount() == 0;
+        return $this->getChildren()->count() == 0;
     }
 
     /**
@@ -56,11 +61,17 @@ abstract class AbstractBaseNode extends AbstractNode
             throw new \InvalidArgumentException("Can not add ancestor node! " . $node->getNodeName());
         }
 
+        /*
+         * if ($this->has($node)) {
+         * throw new \InvalidArgumentException("Child exits already! " . $node->getNodeName());
+         * }
+         */
         $node->setParent($this);
 
-        if ($this->has($node)) {
-            throw new \InvalidArgumentException("Child exits already! " . $node->getNodeName());
-        }
+        // if ($this->searchDescendant($node)) {
+        // throw new \InvalidArgumentException(\sprintf("node {%s} is decendent {%s}!.", $node->getId() . $node->getNodeName(), $this->getNodeName()));
+        // echo \sprintf("node {%s} is decendent {%s}!.", $node->getNodeName(), $this->getNodeName()) . "========\n";
+        // }
 
         $this->getChildren()->attach($node);
     }
@@ -163,11 +174,65 @@ abstract class AbstractBaseNode extends AbstractNode
 
         $current = $this;
 
-        while ($current != null && $current != $node) {
+        while ($current != null && ! $current->equals($node)) {
             $current = $current->getParent();
         }
 
-        return $current == $node;
+        return $node->equals($current);
+    }
+
+    /**
+     *
+     * @param AbstractNode $node
+     * @return boolean
+     */
+    public function isNodeDescendant(AbstractNode $node)
+    {
+        if ($node == null) {
+            return false;
+        }
+
+        $current = $node;
+
+        while ($current != null && ! $current->equals($this)) {
+            $current = $current->getParent();
+        }
+
+        return $current->equals($this);
+    }
+
+    /**
+     *
+     * @param AbstractNode $node
+     * @return boolean
+     */
+    public function searchDescendant(AbstractNode $node)
+    {
+        if ($node == null) {
+            return false;
+        }
+
+        // echo $this->getId() . $this->getNodeName() . "==This==\n";
+
+        if ($this->getChildCount() == 0) {
+            if ($node->equals($this)) {
+                return true;
+            }
+        }
+
+        if ($this->getChildCount() > 0) {
+
+            foreach ($this->getChildren() as $child) {
+                // echo $child->getId() . $child->getNodeName() . "==Current==\n";
+
+                if ($node->equals($child)) {
+                    return true;
+                }
+                $child->searchDescendant($node);
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -187,6 +252,10 @@ abstract class AbstractBaseNode extends AbstractNode
      */
     protected function getPathToRoot(AbstractNode $node = null, $depth)
     {
+        if ($node->isRoot()) {
+            return null;
+        }
+
         $path = [];
 
         if ($node == null) {

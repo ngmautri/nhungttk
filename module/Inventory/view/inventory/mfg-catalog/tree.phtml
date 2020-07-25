@@ -1,0 +1,154 @@
+<?php
+use Application\Domain\Util\Tree\Node\AbstractBaseNode;
+use Inventory\Application\Service\ItemCatalog\Tree\Output\JsTreeFormatter;
+
+/**
+ *
+ * @var AbstractBaseNode $tree ;
+ */
+
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">HS-CODE</a>
+      </li>
+   </ul>
+   <div id="general">
+   
+   <form class="form-inline" action="/inventory/hs-code/search" method="get" enctype="multipart/form-data">
+            <div class="form-group" style="padding-left: 8px;">
+               <input placeholder="enter search term ..." class="form-control" size="15" type="text" name="q">
+            </div>
+            <div class="form-group">
+               <button type="submit" class="btn btn-default">
+                  <small>
+                     <i class="glyphicon glyphicon-search"> </i>
+                  </small>
+               </button>
+            </div>
+         </form>
+         
+         <hr>
+            <?php
+            echo $tree->showPathTo();
+            ?>
+         <hr>
+
+       <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('open_all');">Expand all </a>
+      &nbsp;|&nbsp;
+      <a style="color: #0080ff;" href="javascript:;" onclick="$('#html').jstree('close_all');">Collapse all </a>
+      <div id="html" class="demo">
+     &nbsp;
+         <ul>
+   <?php
+echo $tree->display(new JsTreeFormatter());
+?>
+</ul>
+
+
+      </div>
+      
+      <div>
+   <?php
+
+// echo $tree->display(new SimpleFormatter());
+?>
+</div>
+
+   </div>
+</div>
+
+
+<script> 
+// html demo
+   $('#html1').jstree({});
+
+   $('#html').jstree({
+      "core" : {
+             // so that create works
+             "check_callback" : true
+           },
+          "plugins" : [ "contextmenu" ],
+
+          "contextmenu":{         
+              "items": function($node) {
+                  var tree = $("#html").jstree(true);
+                  return {
+                      "Create": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Create New Category",
+                          "action": function (obj) { 
+                           var ref = $.jstree.reference(obj.reference);
+                                sel = ref.get_selected();
+                             $node = tree.create_node($node);
+                             tree.edit($node);
+                          }
+                      },
+                      "Rename": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Rename Category",
+                          "action": function (obj) { 
+                              tree.edit($node);
+                          }
+                      },                         
+                      "Remove": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Remove Category",
+                          "action": function (obj) { 
+                              tree.delete_node($node);
+                          }
+                      },
+                      "Add Member": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Add Member",
+                          "action": function (obj) {
+                           var redirectUrl = "/application/item-category/add-member?category="+$node.text; 
+                           window.location = redirectUrl;
+                         }
+                      },
+                      
+                  };
+              }
+          }
+          
+    });
+
+   // When the jsTree is ready, add two more records.
+   $('#html').on('create_node.jstree', function (e, data) {
+      //alert(data.node.parent +  data.node.id);
+   });
+   
+   $('#html').on('rename_node.jstree', function (e, data) {
+      //alert(data.node.parent +  data.node.id);
+      //createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+   $('#html').on('delete_node.jstree', function (e, data) {
+      //alert(data.node.parent +  data.node.id);
+      //createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+   $("#html").on("click", ".jstree-anchor", function(e) {
+
+         var node = $("#html").jstree(true).get_node($(this));
+         var id = $("#html").jstree(true).get_node($(this)).id;
+         var cat_name = $("#html").jstree(true).get_node($(this)).text;
+         //var node = $("#html").jstree(true).get_node($(this)).data.ic.hasMember;
+         if (node.state.disabled)
+         {
+          
+         }else{
+
+            var url = "http://localhost:81/inventory/mfg-catalog/tree?cat=" + id
+            //window.location.href = ;
+
+            window.open(url, '_blank');
+         }
+   });
+</script>

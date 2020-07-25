@@ -20,6 +20,8 @@ use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
 use Inventory\Application\Eventbus\HandlerMapperFactory;
+use Inventory\Application\Reporting\Item\ItemReporter;
+use Inventory\Application\Reporting\Item\ItemReporterFactory;
 use Inventory\Application\Service\Association\AssociationService;
 use Inventory\Application\Service\Association\Factory\AssociationServiceFactory;
 use Inventory\Application\Service\HSCode\HSCodeTreeService;
@@ -28,6 +30,8 @@ use Inventory\Application\Service\HSCode\Tree\HSCodeTree;
 use Inventory\Application\Service\HSCode\Tree\Factory\HSCodeTreeFactory;
 use Inventory\Application\Service\Item\ItemService;
 use Inventory\Application\Service\Item\Factory\ItemServiceFactory;
+use Inventory\Application\Service\MfgCatalog\Tree\MfgCatalogTree;
+use Inventory\Application\Service\MfgCatalog\Tree\Factory\MfgCatalogTreeFactory;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\HSCode\HSCodeSearchQueryImpl;
@@ -40,6 +44,8 @@ use Inventory\Application\Service\Upload\ItemSerialUploadService;
 use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUploadServiceFactory;
+use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
+use Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemReportRepositoryImplFactory;
 
 return array(
     'navigation' => array(
@@ -66,19 +72,19 @@ return array(
                 'action' => 'list2',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            array(
-                'label' => 'Item Price',
-                'route' => 'Inventory/default',
-                'controller' => 'item',
-                'action' => 'item-price',
-                'icon' => 'glyphicon glyphicon-list'
-            ),
 
             array(
                 'label' => 'Item Category',
                 'route' => 'Inventory/default',
                 'controller' => 'item-category',
                 'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+            array(
+                'label' => 'Manufactuer Catalog',
+                'route' => 'Inventory/default',
+                'controller' => 'mfg-catalog',
+                'action' => 'tree',
                 'icon' => 'glyphicon glyphicon-list'
             ),
 
@@ -116,8 +122,8 @@ return array(
             array(
                 'label' => 'Reporting',
                 'route' => 'Inventory/default',
-                'controller' => 'report',
-                'action' => 'index',
+                'controller' => 'item-report',
+                'action' => 'default',
                 'icon' => 'fa fa-book'
             ),
 
@@ -281,11 +287,16 @@ return array(
             HSCodeUpload::class => HSCodeUploadServiceFactory::class,
             HSCodeTreeService::class => HSCodeTreeServiceFactory::class,
             HSCodeTree::class => HSCodeTreeFactory::class,
+            MfgCatalogTree::class => MfgCatalogTreeFactory::class,
+
+            // Reporting
+            ItemReporter::class => ItemReporterFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
             'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory',
             'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
+            ItemReportRepositoryImpl::class => ItemReportRepositoryImplFactory::class,
 
             // Search Handler
             ItemSearchIndexImpl::class => ItemSearchIndexImplFactory::class,
@@ -316,7 +327,6 @@ return array(
             'Inventory\Controller\Warehouse' => 'Inventory\Controller\WarehouseControllerFactory',
 
             // refactory
-
             'Inventory\Controller\Item' => 'Inventory\Controller\ItemControllerFactory',
             'Inventory\Controller\Category' => 'Inventory\Controller\CategoryControllerFactory',
             'Inventory\Controller\ItemAttachment' => 'Inventory\Controller\ItemAttachmentControllerFactory',
@@ -360,6 +370,8 @@ return array(
             'Inventory\Controller\AssociationItem' => 'Inventory\Controller\AssociationItemControllerFactory',
 
             'Inventory\Controller\HSCode' => 'Inventory\Controller\HSCodeControllerFactory',
+            'Inventory\Controller\MfgCatalog' => 'Inventory\Controller\MfgCatalogControllerFactory',
+            'Inventory\Controller\ItemReport' => 'Inventory\Controller\ItemReportControllerFactory',
 
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',

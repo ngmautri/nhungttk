@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemCategory
  *
- * @ORM\Table(name="nmt_inventory_item_category", uniqueConstraints={@ORM\UniqueConstraint(name="node_name_UNIQUE", columns={"node_name"})}, indexes={@ORM\Index(name="nmt_inventory_item_category_FK1_idx", columns={"node_created_by"})})
+ * @ORM\Table(name="nmt_inventory_item_category", indexes={@ORM\Index(name="nmt_inventory_item_category_FK1_idx", columns={"node_created_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItemCategory
@@ -90,6 +90,13 @@ class NmtInventoryItemCategory
      * @ORM\Column(name="has_member", type="boolean", nullable=true)
      */
     private $hasMember;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="root_id", type="integer", nullable=true)
+     */
+    private $rootId;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -351,6 +358,30 @@ class NmtInventoryItemCategory
     public function getHasMember()
     {
         return $this->hasMember;
+    }
+
+    /**
+     * Set rootId
+     *
+     * @param integer $rootId
+     *
+     * @return NmtInventoryItemCategory
+     */
+    public function setRootId($rootId)
+    {
+        $this->rootId = $rootId;
+
+        return $this;
+    }
+
+    /**
+     * Get rootId
+     *
+     * @return integer
+     */
+    public function getRootId()
+    {
+        return $this->rootId;
     }
 
     /**

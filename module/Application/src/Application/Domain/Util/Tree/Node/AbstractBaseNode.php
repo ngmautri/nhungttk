@@ -12,6 +12,8 @@ use Application\Domain\Util\Tree\Output\JsTreeFormatter;
 abstract class AbstractBaseNode extends AbstractNode
 {
 
+    protected $visited = [];
+
     public function getChildCount()
     {
         $total = 1;
@@ -60,18 +62,11 @@ abstract class AbstractBaseNode extends AbstractNode
         if ($this->isNodeAncestor($node)) {
             throw new \InvalidArgumentException("Can not add ancestor node! " . $node->getNodeName());
         }
-
-        /*
-         * if ($this->has($node)) {
-         * throw new \InvalidArgumentException("Child exits already! " . $node->getNodeName());
-         * }
-         */
         $node->setParent($this);
 
-        // if ($this->searchDescendant($node)) {
-        // throw new \InvalidArgumentException(\sprintf("node {%s} is decendent {%s}!.", $node->getId() . $node->getNodeName(), $this->getNodeName()));
-        // echo \sprintf("node {%s} is decendent {%s}!.", $node->getNodeName(), $this->getNodeName()) . "========\n";
-        // }
+        if ($this->searchDescendant($node)) {
+            throw new \InvalidArgumentException(\sprintf("node {%s} is decendent {%s}!.", $node->getId() . $node->getNodeName(), $this->getNodeName()));
+        }
 
         $this->getChildren()->attach($node);
     }
@@ -233,6 +228,24 @@ abstract class AbstractBaseNode extends AbstractNode
         }
 
         return false;
+    }
+
+    public function dfs(AbstractNode $node)
+    {
+        if ($node == null) {
+            return false;
+        }
+
+        $this->visited[$node] = true;
+
+        if ($this->getChildCount() > 0) {
+
+            foreach ($this->getChildren() as $child) {
+                if (! $this->visited[$child]) {
+                    $this->dfs($node);
+                }
+            }
+        }
     }
 
     /**

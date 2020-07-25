@@ -1,0 +1,163 @@
+<?php
+use Application\Domain\Util\Tree\Node\AbstractBaseNode;
+use Inventory\Application\Service\ItemCatalog\Tree\Output\JsTreeFormatter;
+
+/**
+ *
+ * @var AbstractBaseNode $tree ;
+ */
+
+?>
+
+<div class="row">
+   <div class="col-xs-6 col-md-4">
+      <h5 style="padding-left: 10px;">
+         <strong><?php
+
+        echo $this->translate("MFG Catalog")?></strong>
+      </h5>
+      <hr>
+
+
+
+      <a style="color: #0080ff; padding-left: 10px;" href="javascript:;"
+         onclick="$('#html').jstree('open_all');">Expand all </a>
+
+      &nbsp;|&nbsp; <a style="color: #0080ff;" href="javascript:;"
+         onclick="$('#html').jstree('close_all');">Collapse all </a>
+
+  <div id="html" class="demo">
+     &nbsp;
+         <ul>
+   <?php
+echo $tree->display(new JsTreeFormatter());
+?>
+</ul>
+
+
+      </div>
+
+   </div>
+
+   <div class="col-xs-12 col-sm-6 col-md-8" style="">
+      <a class="btn btn-default btn-sm"
+         style="color: black; padding: 1pt 5pt 2pt 5pt;" title="List View"
+         href="http://localhost:81/inventory/item-category/list"> <i
+         class="fa fa-list" aria-hidden="true"></i></a>
+
+ <hr>
+            <?php
+            echo $tree->showPathTo();
+            ?>
+         <hr>
+         
+      <div style="" id="category_list"></div>
+   </div>
+</div>
+
+
+<hr>
+
+
+
+<script>
+
+
+  
+
+// html demo
+   $('#html').jstree({
+      "core" : {
+             // so that create works
+             "check_callback" : true
+           },
+          "plugins" : [ "contextmenu" ],
+
+          "contextmenu":{         
+              "items": function($node) {
+                  var tree = $("#html").jstree(true);
+                  return {
+                      "Create": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Create New Category",
+                          "action": function (obj) { 
+                           var ref = $.jstree.reference(obj.reference);
+                                sel = ref.get_selected();
+                             $node = tree.create_node($node);
+                             tree.edit($node);
+                          }
+                      },
+                      "Rename": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Rename Category",
+                          "action": function (obj) { 
+                              tree.edit($node);
+                          }
+                      },                         
+                      "Remove": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Remove Category",
+                          "action": function (obj) { 
+                              tree.delete_node($node);
+                          }
+                      },
+                      "Add Member": {
+                          "separator_before": false,
+                          "separator_after": false,
+                          "label": "Add Member",
+                          "action": function (obj) {
+                           var redirectUrl = "/application/item-category/add-member?category="+$node.text; 
+                           window.location = redirectUrl;
+                         }
+                      },
+                      
+                  };
+              }
+          }
+          
+    });
+
+   // When the jsTree is ready, add two more records.
+   $('#html').on('create_node.jstree', function (e, data) {
+      //alert(data.node.parent +  data.node.id);
+   });
+   
+   $('#html').on('rename_node.jstree', function (e, data) {
+      //alert(data.node.parent +  data.node.id);
+      //createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+   $('#html').on('delete_node.jstree', function (e, data) {
+      //alert(data.node.parent +  data.node.id);
+      //createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+   $("#html").on("click", ".jstree-anchor", function(e) {
+
+         var node = $("#html").jstree(true).get_node($(this));
+         var id = $("#html").jstree(true).get_node($(this)).id;
+         var cat_name = $("#html").jstree(true).get_node($(this)).text;
+         //var node = $("#html").jstree(true).get_node($(this)).data.ic.hasMember;
+         if (node.state.disabled)
+         {
+            //alert('disabled');
+         }else{ 
+
+            //alert(cat_name);
+               loadCategory(id,cat_name,1);
+         }
+   });
+
+
+   $('#html').on('open_node.jstree', function (e, data) {
+      //refreshDroppable();
+    });
+
+      
+</script>
+
+
+

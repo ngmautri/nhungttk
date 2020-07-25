@@ -366,14 +366,26 @@ if ($action == Constants::FORM_ACTION_EDIT) :
             echo (! $dto == null) ? $dto->itemName : "";
             ?>">
             </div>
-            <label class="control-label col-sm-2">Item Foreign Name</label>
+            </div>
+         
+         <div class="form-group margin-bottom required">
+            <label class="control-label col-sm-2">Item Foreign Name1</label>
             <div class="col-sm-3">
                <input class="form-control input-sm" type="text" placeholder="" name="itemNameForeign" value="<?php
 
             echo (! $dto == null) ? $dto->itemNameForeign : "";
             ?>">
             </div>
+            <label class="control-label col-sm-2">Item Foreign Name2</label>
+            <div class="col-sm-3">
+               <input class="form-control input-sm" type="text" placeholder="" name="itemName1" value="<?php
+
+            echo (! $dto == null) ? $dto->itemName1 : "";
+            ?>">
+            </div>
          </div>
+         
+         
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2">Item Description</label>
             <div class="col-sm-8">

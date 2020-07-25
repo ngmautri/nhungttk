@@ -137,7 +137,7 @@ class ItemCategoryController extends AbstractActionController
             $entity->setNodeParentId($parent_entity->getNodeId());
             $entity->setNodeCreatedOn(new \DateTime());
             $entity->setNodeCreatedby($u);
-
+            $entity->setRootId($parent_entity->getRootId());
             $entity->setHasMember($has_member);
             $entity->setStatus($status);
             $entity->setRemarks($remarks);

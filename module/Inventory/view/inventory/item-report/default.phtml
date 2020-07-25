@@ -1,0 +1,429 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Application\Application\Helper\FormHelper;
+use Application\Application\Helper\OptionList;
+use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
+
+$toogleFileType = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+$toggleViewTitle = "Gird View";
+$icon = 'fa fa-th';
+
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+    $toggleViewTitle = "HTML View";
+    $icon = 'fa fa-list';
+    
+endif;
+
+$baseUrl = "/inventory/item-report/default";
+
+$link = "%s?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
+$base = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, $file_type);
+
+$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, $toogleFileType);
+
+$link1 = "/inventory/item-report/default-gird";
+$girdUrl = $this->baseUrl . sprintf($link1);
+
+$filter_url = $baseUrl;
+$filtered1 = "Year=%s,Balance=%s, Sorted By=%s %s, Display=%s";
+$filtered = sprintf($filtered1, "", $balance, $sort_by, $sort, $file_type);
+
+$url_excel = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+// ===============================================================================
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">
+            <i class="glyphicon glyphicon-shopping-cart"></i>
+            &nbsp;PR Row
+         </a>
+      </li>
+   </ul>
+   <div id="general" style="font-size: 9pt">
+      <div>
+         <small>
+            <span class="glyphicon glyphicon-filter"></span>
+         </small>
+         <a style="font-size: 9.5pt" href="#transaction" class="" data-toggle="collapse">FILTER</a>
+      </div>
+      <div id="transaction" class="collapse">
+         <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+            <form id="filter_form" class="form-horizontal" action="<?php
+            echo $filter_url;
+            ?>" method="get" enctype="multipart/form-data">
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Doc Year</label>
+                  <div class="col-sm-3">
+                     <select name="docYear" class="form-control input-sm">
+                        <option value="0">All</option>
+                        <?php
+                        echo OptionList::createYearOption($docYear);
+                        ?>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Month</label>
+                  <div class="col-sm-3">
+                     <select name="docMonth" class="form-control input-sm">
+                        <option value="all">All</option>
+                          <?php
+                        ?>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">PR Row Balance</label>
+                  <div class="col-sm-3">
+                     <select name="balance" class="form-control input-sm">
+                        <option value="2">All</option>
+                        <option <?php
+
+                        echo $balance == '0' ? "selected='selected'" : "";
+                        ?> value="0">Balance=0 (Fulfilled Items)</option>
+                        <option <?php
+
+                        echo $balance == '1' ? "selected='selected'" : "";
+                        ?> value="1">Balance>0 (Pending Items)</option>
+                        <option <?php
+
+                        echo $balance == '-1' ? "selected='selected'" : "";
+                        ?> value="-1">Balance<0 (Some Free Items)</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Active Items</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="is_active">
+                        <option <?php
+
+                        echo $is_active == '' ? "selected='selected'" : "";
+                        ?> value="">All</option>
+                        <option <?php
+
+                        echo $is_active == '1' ? "selected='selected'" : "";
+                        ?> value="1">Active</option>
+                        <option <?php
+
+                        echo $is_active == '-1' ? "selected='selected'" : "";
+                        ?> value="-1">Inactive</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Sort by</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="sort_by">
+                        <option value="">None</option>
+                        <option <?php
+
+                        echo $sort_by == 'itemName' ? "selected='selected'" : "";
+                        ?> value="itemName">Item Name</option>
+                        <option <?php
+
+                        echo $sort_by == 'prNumber' ? "selected='selected'" : "";
+                        ?> value="prNumber">Pr Number</option>
+                        <option <?php
+
+                        echo $sort_by == 'vendorName' ? "selected='selected'" : "";
+                        ?> value="vendorName">Vendor</option>
+                        <option <?php
+
+                        echo $sort_by == 'currency' ? "selected='selected'" : "";
+                        ?> value="currency">Currency</option>
+                        <option <?php
+
+                        echo $sort_by == 'unitPrice' ? "selected='selected'" : "";
+                        ?> value="unitPrice">Price</option>
+                        <option <?php
+
+                        echo $sort_by == 'balance' ? "selected='selected'" : "";
+                        ?> value="balance">Balance</option>
+                        <option <?php
+
+                        echo $sort_by == 'prSubmitted' ? "selected='selected'" : "";
+                        ?> value="prSubmitted">Pr Date</option>
+                     </select>
+                     <input <?php
+
+                    if (! $sort == null) :
+                        echo ($sort == 'ASC') ? "checked" : "";
+                    else :
+                        echo "checked";
+                    endif;
+                    ?> type="radio" name="sort"
+                        value="ASC">
+                     &nbsp;ASC&nbsp;&nbsp;
+                     <input <?php
+
+                    if (! $sort == null) :
+                        echo ($sort == 'DESC') ? "checked" : "";
+                    else :
+                        echo "";
+                    endif;
+                    ?> type="radio" name="sort" value="DESC">
+                     &nbsp;DESC&nbsp;&nbsp;
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Display</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="file_type">
+                        <option <?php
+
+                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY ? "selected='selected'" : "";
+                        ?> value="<?php
+
+                        echo SaveAsSupportedType::OUTPUT_IN_ARRAY;
+                        ?>">Gird</option>
+                        <option <?php
+
+                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE ? "selected='selected'" : "";
+                        ?> value="<?php
+
+                        echo SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+                        ?>">HTML</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <div class="col-sm-offset-2 col-sm-10">
+                     <a class="btn btn-default btn-sm" href="javascript:;" onClick="submitForm('filter_form');">
+                        <i class="fa fa-filter" aria-hidden="true"></i>
+                        &nbsp;&nbsp;Filter...
+                     </a>
+                  </div>
+               </div>
+               <hr style="margin: 5pt 1pt 10pt 1pt;">
+            </form>
+         </div>
+      </div>
+      <div style="color: gray; font-size: 9pt; margin-top: 8px">
+     <?php
+    echo $filtered;
+    ?>
+	  </div>
+      <hr style="font-size: 9.5pt; margin: 3pt 1pt 5pt 1pt;">
+      <div id="transaction" class="collapse in">
+         <div id="pr_rows">
+            <div style="font-size: 9pt">
+               <div class="dropdown">
+                  <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                     <i class="fa fa-download" aria-hidden="true"></i>
+                     &nbsp;Download &nbsp;
+                     <span class="caret"></span>
+                  </button>
+	<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    ?>
+						<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="
+						<?php
+    echo $this->translate("Refresh");
+    ?>" class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();">
+                     &nbsp;
+                     <i class="fa fa-refresh" aria-hidden="true"></i>
+                     &nbsp;
+                  </a> 
+<?php 
+endif;
+
+?>
+				 <a class="btn btn-default btn-sm" style="color: black; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
+    echo $toggleViewTitle;
+    ?>" href="<?php
+    echo $toggleUrl;
+    ?>">
+                     <i class="<?php
+                    echo $icon;
+                    ?>" aria-hidden="true"></i>
+                  </a>
+                  <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                     <li>
+                        <a class="" href="<?php
+                        echo $url_excel;
+                        ?>">
+                           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                           &nbsp;&nbsp;Excel (*.xlxs)
+                        </a>
+                     </li>
+                     <li>
+                        <a class="" href="<?php
+
+                        echo $url_oo;
+                        ?>">
+                           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                           &nbsp;&nbsp;OpenOffice (*.ods)
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+
+<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
+    echo $result;
+    echo FormHelper::createPaginator($base, $paginator, "&");    
+endif;
+
+?>
+
+
+<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    ?>
+
+<div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
+   </div>
+</div>
+<script>
+
+    var columns = [
+      
+        { title: "ItemName", dataType: "string", dataIndx: "itemName", align: 'left',minWidth: 150,editable: true},
+    ];
+    var url = "<?php
+    echo $girdUrl;
+    ?>";
+    var dataModel = {
+    		  dataType: "JSON",
+              location: "remote",
+              method: "GET",
+              recIndx: "row_id",
+              url: url,
+              getData: function (response) {
+           	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+             },
+    };
+
+	var obj = { width: "auto", height: $(window).height()-250, showTitle : true,
+			resizable:true,
+			//draggable:true,
+			sortable: true,
+			hoverMode: 'cell',
+			pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+			columnBorders: true,
+			dataModel: dataModel,
+			colModel: columns,
+		    numberCell: {show:true, resizable: true, width: 40, title: "#", minWidth: 25 },
+	        resizable: true,
+	        editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            editor: {
+                select: true
+            },
+ 			change: function (evt, ui) {               
+                
+                if (ui.source == 'commit' || ui.source == 'rollback') {
+                    return;
+                }
+                console.log(ui);
+                var $grid = $(this),
+                    grid = $grid.pqGrid('getInstance').grid;
+                var rowList = ui.rowList,
+                    addList = [],
+                    recIndx = grid.option('dataModel').recIndx,
+                    deleteList = [],
+                    updateList = [];
+                
+                for (var i = 0; i < rowList.length; i++) {
+                    var obj = rowList[i],
+                        rowIndx = obj.rowIndx,
+                        newRow = obj.newRow,
+                        type = obj.type,
+                        rowData = obj.rowData;
+                     if (type == 'add') {                        
+                        var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                        if (valid) {
+                            addList.push(newRow);
+                        }
+                    }
+                    else if (type == 'update') {                        
+                        var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                        if (valid) {
+                            if (rowData[recIndx] == null) {
+                                addList.push(rowData);
+                            }
+                            //else if (grid.isDirty({rowData: rowData})) {
+                            else {
+                                updateList.push(rowData);
+                          		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                                 
+                            }
+                        }
+                    }
+                  }
+
+                  if (addList.length || updateList.length || deleteList.length) {
+					var sent_list = JSON.stringify({
+                        updateList: updateList,
+                        addList: addList,
+                        deleteList: deleteList
+                    });
+                    //alert(sent_list);
+                      
+                      $.ajax({
+                          url: '/procure/pr-row/update-row',
+                          data: {
+                              sent_list: sent_list
+                          },
+                          dataType: "json",
+                          type: "POST",
+                          async: true,
+                          beforeSend: function (jqXHR, settings) {
+                              //$(".saving", $grid).show();
+
+							  	
+                              //$("#global-notice").text("Updating...").show();
+                              //alert(updateList[0].item_name  +  updateList[0].row_id);
+                          },
+                          success: function (changes) {
+                              //commit the changes.
+                              //alert(changes.updateList);
+                               $("#global-notice").text("Updated...").show();
+                		      //alert('it is ok');                
+                              /* grid.commit({ type: 'add', rows: changes.addList });
+                              grid.commit({ type: 'update', rows: changes.updateList });
+                              grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                          },
+                          complete: function () {
+                              //$(".saving", $grid).hide();
+                              $("#global-notice").delay(2200).fadeOut(500);
+                              
+                          }
+                      });
+                  }
+                //alert(updateList.length);
+               
+            },     
+	                
+       		
+   	};
+
+    var $grid = $("#gird_div").pqGrid(obj);
+
+    $("#main_container").height() = $(window).height()-300;
+
+    function refreshGird(){
+    	$( "#gird_div" ).pqGrid( "refreshDataAndView" )
+	} 
+    
+</script>
+<?php
+endif;
+
+?>
+

@@ -333,7 +333,7 @@ FROM nmt_inventory_item";
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-        echo $sql;
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');

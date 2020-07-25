@@ -1,8 +1,11 @@
 <?php
 namespace Application\Domain\Util\Tree;
 
+use Application\Domain\Util\Tree\Event\TreeNodeInserted;
+use Application\Domain\Util\Tree\Node\AbstractBaseNode;
 use Application\Domain\Util\Tree\Node\AbstractNode;
 use Application\Domain\Util\Tree\Node\GenericNode;
+use Application\Domain\Util\Tree\Repository\TreeCmdRepositoryInterface;
 
 /**
  *
@@ -12,11 +15,40 @@ use Application\Domain\Util\Tree\Node\GenericNode;
 abstract class AbstractTree implements TreeInterface
 {
 
+    /**
+     *
+     * @var \SplStack;
+     */
+    protected $childrenStack;
+
     protected $nodes = array();
 
     protected $data = array();
 
     protected $index = array();
+
+    protected $nextNode;
+
+    /**
+     *
+     * @return SplStack;
+     */
+    public function getChildrenStack()
+    {
+        if ($this->childrenStack == null) {
+            return new \SplStack();
+        }
+        return $this->childrenStack;
+    }
+
+    /**
+     *
+     * @param SplStack; $childrenStack
+     */
+    public function setChildrenStack(\SplStack $childrenStack)
+    {
+        $this->childrenStack = $childrenStack;
+    }
 
     abstract public function initTree();
 
@@ -89,5 +121,50 @@ abstract class AbstractTree implements TreeInterface
         }
 
         return $currentNode;
+    }
+
+    /**
+     *
+     * @param AbstractBaseNode $node
+     * @param AbstractBaseNode $parent
+     * @param TreeCmdRepositoryInterface $repository
+     * @throws \InvalidArgumentException
+     * @return \Application\Domain\Util\Tree\Event\TreeNodeInserted
+     */
+    public function insertNode(AbstractBaseNode $node, AbstractBaseNode $parent, TreeCmdRepositoryInterface $repository)
+    {
+        if ($repository == null) {
+            throw new \InvalidArgumentException("TreeCmdInterface not found");
+        }
+        $parent->add($node);
+        $target = $node;
+        $defaultParams = null;
+        $params = null;
+        return new TreeNodeInserted($target, $defaultParams, $params);
+    }
+
+    /**
+     *
+     * @param AbstractBaseNode $node
+     * @param AbstractBaseNode $parent
+     * @return \Application\Domain\Util\Tree\Event\TreeNodeInserted
+     */
+    public function removeNode(AbstractBaseNode $node, AbstractBaseNode $parent, TreeCmdRepositoryInterface $repository)
+    {
+        $parent->remove($node);
+        $target = $node;
+        $defaultParams = null;
+        $params = null;
+        return new TreeNodeInserted($target, $defaultParams, $params);
+    }
+
+    public function depthFirstSearch(AbstractBaseNode $node)
+    {
+        $children = $this->getChildrenStack()->top();
+    }
+
+    public function _depthFirstSearch($children)
+    {
+        $children = $this->getChildrenStack()->top();
     }
 }

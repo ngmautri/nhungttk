@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
@@ -17,13 +9,15 @@ use Zend\View\Model\ViewModel;
 
 /**
  *
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
 class ItemCategoryController extends AbstractGenericController
 {
 
     const ROOT_NODE = '_ROOT_';
+
+    const MGF_CATALOG_ROOT = 'MFG_CATALOG';
 
     protected $tree;
 
@@ -70,6 +64,240 @@ class ItemCategoryController extends AbstractGenericController
         return new ViewModel(array(
             'status' => $status
         ));
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function listAction()
+    {
+        $this->layout("Inventory/layout-blank");
+
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
+            "nodeName" => "_ROOT_"
+        ));
+
+        $this->itemCategoryService->initCategory();
+        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
+        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
+
+        $request = $this->getRequest();
+        $viewModel = new ViewModel(array(
+            'jsTree' => $jsTree
+        ));
+
+        $viewModel->setTemplate("inventory/item-category/list2");
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function updateListAction()
+    {
+        $this->layout("Inventory/layout-blank");
+
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
+            "nodeName" => "_ROOT_"
+        ));
+
+        $this->itemCategoryService->initCategory();
+        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
+        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
+
+        $request = $this->getRequest();
+
+        /*
+         * if ($request->isXmlHttpRequest ()) {
+         * $this->layout ( "layout/user/ajax" );
+         * }
+         *
+         */
+        // $jsTree = $this->tree;
+        $viewModel = new ViewModel(array(
+            'jsTree' => $jsTree
+        ));
+
+        $viewModel->setTemplate("inventory/item-category/list3");
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function showAction()
+    {
+        $request = $this->getRequest();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $this->layout("layout/user/ajax");
+
+        // $user = $this->userTable->getUserByEmail ( $this->identity());
+
+        $catId = $this->params()->fromQuery('cat_id');
+        $catName = $this->params()->fromQuery('cat_name');
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 16;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+
+        $limit = 0;
+        $offset = 0;
+        $paginator = null;
+
+        if ($catId == 50) {
+            $total_records = $this->getItemCatService()->getNoneCategorizedItemsTotal($limit, $offset);
+        } else {
+            $total_records = $this->getItemCatService()->getTotalItemsByCategory($catId, $limit, $offset);
+        }
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        if ($catId == 50) {
+            $records = $this->getItemCatService()->getNoneCategorizedItems($limit, $offset);
+        } else {
+            $records = $this->getItemCatService()->getItemsByCategory($catId, $limit, $offset);
+        }
+
+        $viewModel = new ViewModel(array(
+            'list' => $records,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'cat_id' => $catId,
+            'cat_name' => $catName,
+            'nmtPlugin' => $nmtPlugin,
+            'page' => $page
+        ));
+
+        $viewModel->setTemplate("inventory/item-category/show1");
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function addMemberAction()
+    {
+        $itemId = (int) $this->params()->fromQuery('item_id');
+        $catId = (int) $this->params()->fromQuery('cat_id');
+
+        try {
+
+            $result = $this->getItemCatService()->addItemToCategory($itemId, $catId, $this->getUserId());
+        } catch (\Exception $e) {
+            $result = $e->getMessage();
+        }
+
+        $viewModel = new ViewModel(array(
+            'itemId' => $itemId,
+            'cat_id' => $catId,
+            'result' => $result
+        ));
+
+        $viewModel->setTemplate("inventory/item-category/add-member1");
+        return $viewModel;
+    }
+
+    // DEPRECATED.
+    // ++++++++++++++++++++++++++++++++++++++
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function list1Action()
+    {
+        $request = $this->getRequest();
+
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $this->layout("layout/user/ajax");
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
+            "nodeName" => "_ROOT_"
+        ));
+
+        $this->itemCategoryService->initCategory();
+        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
+        $jsTree = $this->itemCategoryService->generateJSTreeForAddingMember($root->getNodeId(), false);
+
+        $this->getResponse()
+            ->getHeaders()
+            ->addHeaderLine('Expires', '3800', true);
+        $this->getResponse()
+            ->getHeaders()
+            ->addHeaderLine('Cache-Control', 'public', true);
+        $this->getResponse()
+            ->getHeaders()
+            ->addHeaderLine('Cache-Control', 'max-age=3800');
+        $this->getResponse()
+            ->getHeaders()
+            ->addHeaderLine('Pragma', '', true);
+
+        // $jsTree = $this->tree;
+        return new ViewModel(array(
+            'jsTree' => $jsTree
+        ));
+    }
+
+    /**
+     *
+     * @deprecated
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function changeListAction()
+    {
+        $this->layout("Inventory/layout-blank");
+
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
+            "nodeName" => "_ROOT_"
+        ));
+
+        $this->itemCategoryService->initCategory();
+        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
+        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
+
+        $request = $this->getRequest();
+
+        /*
+         * if ($request->isXmlHttpRequest ()) {
+         * $this->layout ( "layout/user/ajax" );
+         * }
+         *
+         */
+        // $jsTree = $this->tree;
+        $viewModel = new ViewModel(array(
+            'jsTree' => $jsTree
+        ));
+
+        $viewModel->setTemplate("inventory/item-category/list3");
+        return $viewModel;
     }
 
     /**
@@ -164,209 +392,6 @@ class ItemCategoryController extends AbstractGenericController
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function listAction()
-    {
-        $this->layout("Inventory/layout-blank");
-
-        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
-            "nodeName" => "_ROOT_"
-        ));
-
-        $this->itemCategoryService->initCategory();
-        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
-        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
-
-        $request = $this->getRequest();
-        $viewModel = new ViewModel(array(
-            'jsTree' => $jsTree
-        ));
-
-        $viewModel->setTemplate("inventory/item-category/list2");
-        return $viewModel;
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function updateListAction()
-    {
-        $this->layout("Inventory/layout-blank");
-
-        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
-            "nodeName" => "_ROOT_"
-        ));
-
-        $this->itemCategoryService->initCategory();
-        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
-        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
-
-        $request = $this->getRequest();
-
-        /*
-         * if ($request->isXmlHttpRequest ()) {
-         * $this->layout ( "layout/user/ajax" );
-         * }
-         *
-         */
-        // $jsTree = $this->tree;
-        $viewModel = new ViewModel(array(
-            'jsTree' => $jsTree
-        ));
-
-        $viewModel->setTemplate("inventory/item-category/list3");
-        return $viewModel;
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function changeListAction()
-    {
-        $this->layout("Inventory/layout-blank");
-
-        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
-            "nodeName" => "_ROOT_"
-        ));
-
-        $this->itemCategoryService->initCategory();
-        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
-        $jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(), false);
-
-        $request = $this->getRequest();
-
-        /*
-         * if ($request->isXmlHttpRequest ()) {
-         * $this->layout ( "layout/user/ajax" );
-         * }
-         *
-         */
-        // $jsTree = $this->tree;
-        $viewModel = new ViewModel(array(
-            'jsTree' => $jsTree
-        ));
-
-        $viewModel->setTemplate("inventory/item-category/list3");
-        return $viewModel;
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function list1Action()
-    {
-        $request = $this->getRequest();
-
-        // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $this->layout("layout/user/ajax");
-        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array(
-            "nodeName" => "_ROOT_"
-        ));
-
-        $this->itemCategoryService->initCategory();
-        $this->itemCategoryService->updateCategory($root->getNodeId(), 0);
-        $jsTree = $this->itemCategoryService->generateJSTreeForAddingMember($root->getNodeId(), false);
-
-        $this->getResponse()
-            ->getHeaders()
-            ->addHeaderLine('Expires', '3800', true);
-        $this->getResponse()
-            ->getHeaders()
-            ->addHeaderLine('Cache-Control', 'public', true);
-        $this->getResponse()
-            ->getHeaders()
-            ->addHeaderLine('Cache-Control', 'max-age=3800');
-        $this->getResponse()
-            ->getHeaders()
-            ->addHeaderLine('Pragma', '', true);
-
-        // $jsTree = $this->tree;
-        return new ViewModel(array(
-            'jsTree' => $jsTree
-        ));
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function showAction()
-    {
-        $request = $this->getRequest();
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-
-        // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        $this->layout("layout/user/ajax");
-
-        // $user = $this->userTable->getUserByEmail ( $this->identity());
-
-        $catId = $this->params()->fromQuery('cat_id');
-        $catName = $this->params()->fromQuery('cat_name');
-
-        if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 16;
-        } else {
-            $resultsPerPage = $this->params()->fromQuery('perPage');
-        }
-        ;
-
-        if (is_null($this->params()->fromQuery('page'))) {
-            $page = 1;
-        } else {
-            $page = $this->params()->fromQuery('page');
-        }
-        ;
-
-        $limit = 0;
-        $offset = 0;
-        $paginator = null;
-
-        if ($catId == 50) {
-            $total_records = $this->getItemCatService()->getNoneCategorizedItemsTotal($limit, $offset);
-        } else {
-            $total_records = $this->getItemCatService()->getTotalItemsByCategory($catId, $limit, $offset);
-        }
-
-        if ($total_records > $resultsPerPage) {
-            $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
-            $offset = $paginator->minInPage - 1;
-        }
-
-        if ($catId == 50) {
-            $records = $this->getItemCatService()->getNoneCategorizedItems($limit, $offset);
-        } else {
-            $records = $this->getItemCatService()->getItemsByCategory($catId, $limit, $offset);
-        }
-
-        $viewModel = new ViewModel(array(
-            'list' => $records,
-            'total_records' => $total_records,
-            'paginator' => $paginator,
-            'cat_id' => $catId,
-            'cat_name' => $catName,
-            'nmtPlugin' => $nmtPlugin,
-            'page' => $page
-        ));
-
-        $viewModel->setTemplate("inventory/item-category/show1");
-        return $viewModel;
-    }
-
-    /**
-     *
      * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
@@ -437,32 +462,6 @@ class ItemCategoryController extends AbstractGenericController
         return new ViewModel(array(
             'album' => $album
         ));
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function addMemberAction()
-    {
-        $itemId = (int) $this->params()->fromQuery('item_id');
-        $catId = (int) $this->params()->fromQuery('cat_id');
-
-        try {
-
-            $result = $this->getItemCatService()->addItemToCategory($itemId, $catId, $this->getUserId());
-        } catch (\Exception $e) {
-            $result = $e->getMessage();
-        }
-
-        $viewModel = new ViewModel(array(
-            'itemId' => $itemId,
-            'cat_id' => $catId,
-            'result' => $result
-        ));
-
-        $viewModel->setTemplate("inventory/item-category/add-member1");
-        return $viewModel;
     }
 
     // +++++++++++++++++++

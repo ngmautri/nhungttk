@@ -1,0 +1,47 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+
+$toogleFileType = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+$toggleViewTitle = "Gird View";
+$icon = 'fa fa-th';
+
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+    $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+    $toggleViewTitle = "HTML View";
+    $icon = 'fa fa-list';
+    
+endif;
+
+$baseUrl = "/procure/po-report/vendor-row-status";
+
+$link = "%s?vendorId=%s";
+$base = $this->baseUrl . sprintf($link, $baseUrl, $vendorId);
+
+$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $toogleFileType);
+
+$link1 = "/procure/po-report/row-status-gird?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $docYear, $balance, $is_active, $sort_by, $sort);
+
+$filter_url = $baseUrl;
+$filtered1 = "Year=%s,Balance=%s, Sorted By=%s %s, Display=%s";
+$filtered = sprintf($filtered1, $docYear, $balance, $sort_by, $sort, $file_type);
+
+$url_excel = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+// ===============================================================================
+?>
+
+<?php
+if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
+    echo sprintf('<div id="result_div">%s %s</div>', $result, FormHelper::createPaginatorAjax($base, $paginator, "&", "result_div"));         
+endif;
+
+?>

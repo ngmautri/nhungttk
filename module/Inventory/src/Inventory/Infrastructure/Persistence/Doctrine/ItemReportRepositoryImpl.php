@@ -26,7 +26,7 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
     {
         $results = ItemReportHelper::getItemList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
-        var_dump(count($results));
+        // var_dump(count($results));
         if ($results == null) {
             return;
         }

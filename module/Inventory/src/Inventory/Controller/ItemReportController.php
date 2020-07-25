@@ -20,28 +20,23 @@ class ItemReportController extends AbstractGenericController
 
     public function defaultAction()
     {
-        $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $file_type = $this->params()->fromQuery('file_type');
-
-        $item_type = $this->params()->fromQuery('item_type');
-        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
-
         $layout = $this->params()->fromQuery('layout');
-        $page = $this->params()->fromQuery('page');
-        $resultsPerPage = $this->params()->fromQuery('perPage');
 
-        if (is_null($this->params()->fromQuery('perPage'))) {
+        $isActive = (int) $this->params()->fromQuery('isActive');
+        $itemType = $this->params()->fromQuery('itemType');
+        $isFixedAsset = (int) $this->params()->fromQuery('isFixedAsset');
+
+        $resultsPerPage = (int) $this->params()->fromQuery('perPage');
+        if ($resultsPerPage == 0) {
             $resultsPerPage = 15;
-        } else {
-            $resultsPerPage = $this->params()->fromQuery('perPage');
         }
 
-        if (is_null($this->params()->fromQuery('page'))) {
+        $page = $this->params()->fromQuery('page');
+        if ($page == 0) {
             $page = 1;
-        } else {
-            $page = $this->params()->fromQuery('page');
         }
 
         if ($isActive == null) {
@@ -62,8 +57,7 @@ class ItemReportController extends AbstractGenericController
 
         $filter = new ItemReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setIsFixedAsset($is_fixed_asset);
-        $filter->setItemType($item_type);
+        $filter->setItemType($itemType);
 
         $total_records = $this->getReporter()->getListTotal($filter);
 
@@ -77,7 +71,7 @@ class ItemReportController extends AbstractGenericController
             $offset = $paginator->minInPage - 1;
         }
 
-        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+        if ($file_type != SaveAsSupportedType::OUTPUT_IN_ARRAY) {
             $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
         } else {
             $list = null;
@@ -87,15 +81,13 @@ class ItemReportController extends AbstractGenericController
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'is_active' => $isActive,
             'sort_by' => $sort_by,
             'sort' => $sort,
             'perPage' => $resultsPerPage,
+            'page' => $page,
             'file_type' => $file_type,
-            'is_fixed_asset' => $is_fixed_asset,
-            'item_type' => $item_type,
             'layout' => $layout,
-            'page' => $page
+            'filter' => $filter
         ));
 
         $viewModel->setTemplate("inventory/item-report/default");
@@ -120,14 +112,14 @@ class ItemReportController extends AbstractGenericController
             $sort = "ASC";
         }
 
-        if (isset($_GET['is_active'])) {
-            $isActive = (int) $_GET['is_active'];
+        if (isset($_GET['isActive'])) {
+            $isActive = (int) $_GET['isActive'];
         } else {
             $isActive = 1;
         }
 
-        if (isset($_GET['item_type'])) {
-            $item_type = (int) $_GET['item_type'];
+        if (isset($_GET['itemType'])) {
+            $item_type = (int) $_GET['itemType'];
         } else {
             $item_type = 1;
         }
@@ -149,7 +141,6 @@ class ItemReportController extends AbstractGenericController
 
         $filter = new ItemReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setIsFixedAsset($isActive);
         $filter->setItemType($item_type);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
@@ -166,8 +157,7 @@ class ItemReportController extends AbstractGenericController
             }
         }
 
-        $result = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
-
+        $result = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
         // var_dump($result);
 
         $a_json_final['data'] = $result;

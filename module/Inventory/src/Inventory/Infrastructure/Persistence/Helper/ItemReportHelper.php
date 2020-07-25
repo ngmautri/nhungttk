@@ -369,19 +369,14 @@ FROM nmt_inventory_item";
 
         $sql_tmp = '';
 
-        if ($filter->getItemType() == "ITEM" || $filter->getItemType() == "SERVICE" || $filter->getItemType() == "SOFTWARE") {
-            $sql1 = $sql_tmp . sprintf(" AND nmt_inventory_item.item_type ='%s'", $filter->getItemType());
+        if ($filter->getItemType() > 0) {
+            $sql_tmp = $sql_tmp . sprintf(" AND nmt_inventory_item.item_type_id =%s", $filter->getItemType());
         }
 
         if ($filter->getIsActive() == 1) {
-            $sql1 = $sql_tmp . " AND nmt_inventory_item.is_active = 1";
+            $sql_tmp = $sql_tmp . " AND nmt_inventory_item.is_active = 1";
         } elseif ($filter->getIsActive() == - 1) {
             $sql_tmp = $sql_tmp . " AND nmt_inventory_item.is_active = 0";
-        }
-        if ($filter->getIsFixedAsset() == 1) {
-            $sql_tmp = $sql_tmp . " AND nmt_inventory_item.is_fixed_asset = 1";
-        } elseif ($filter->getIsFixedAsset() == - 1) {
-            $sql1 = $sql_tmp . " AND nmt_inventory_item.is_fixed_asset = 0";
         }
 
         switch ($sort_by) {
@@ -411,7 +406,7 @@ FROM nmt_inventory_item";
         }
 
         $sql = $sql . ";";
-
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');

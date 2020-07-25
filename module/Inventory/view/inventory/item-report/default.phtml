@@ -8,14 +8,20 @@
 use Application\Application\Helper\FormHelper;
 use Application\Application\Helper\OptionList;
 use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
+use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
+
+/**
+ *
+ * @var ItemReportSqlFilter $filter ;
+ */
 
 $toogleFileType = SaveAsSupportedType::OUTPUT_IN_ARRAY;
 $toggleViewTitle = "Gird View";
 $icon = 'fa fa-th';
-$item_type_option = OptionList::createItemTypeOption($item_type);
+$item_type_option = OptionList::createItemTypeOption($filter->getItemType());
 $per_page_option = OptionList::createPerPageOption($perPage);
 
-if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
+if ($filter->getItemType() == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
     $toggleViewTitle = "HTML View";
     $icon = 'fa fa-list';
@@ -24,20 +30,22 @@ endif;
 
 $baseUrl = "/inventory/item-report/default";
 
-$link = "%s?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
-$base = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, $file_type);
+$link = "%s?isFixedAsset=%s&itemType=%s&isActive=%s&sort_by=%s&sort=%s&file_type=%s";
+$base = $this->baseUrl . sprintf($link, $baseUrl, $filter->getIsFixedAsset(), $filter->getItemType(), $filter->getIsActive(), $sort_by, $sort, $file_type);
 
-$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, $toogleFileType);
+$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, $filter->getIsFixedAsset(), $filter->getItemType(), $filter->getIsActive(), $sort_by, $sort, $toogleFileType);
 
 $link1 = "/inventory/item-report/default-gird";
-$girdUrl = $this->baseUrl . sprintf($link1);
+$link2 = "%s?isFixedAsset=%s&itemType=%s&isActive=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link2, $link1, $filter->getIsFixedAsset(), $filter->getItemType(), $filter->getIsActive(), $sort_by, $sort);
 
 $filter_url = $baseUrl;
-$filtered1 = "Year=%s,Balance=%s, Sorted By=%s %s, Display=%s";
-$filtered = sprintf($filtered1, "", "", $sort_by, $sort, $file_type);
 
-$url_excel = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
-$url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$filtered1 = "Item type=%s, Fixed asset=%s, Active =%s, Sorted By=%s %s, Display=%s";
+$filtered = sprintf($filtered1, $filter->getItemType(), $filter->getIsFixedAsset(), $filter->getIsActive(), $sort_by, $sort, $file_type);
+
+$url_excel = $this->baseUrl . sprintf($link, $baseUrl, $filter->getIsFixedAsset(), $filter->getItemType(), $filter->getIsActive(), $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $baseUrl, $filter->getIsFixedAsset(), $filter->getItemType(), $filter->getIsActive(), $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 // ===============================================================================
 ?>
@@ -65,7 +73,7 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by
                 <div class="form-group margin-bottom">
                            <label class="control-label col-sm-2" for="inputTag">Item Type</label>
                            <div class="col-sm-3">
-                              <select class="form-control input-sm" name="item_type">
+                              <select class="form-control input-sm" name="itemType">
                                  <option value="All">All</option>
                                 <?php
                                 echo $item_type_option;
@@ -77,7 +85,7 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by
                         <div class="form-group margin-bottom">
                            <label class="control-label col-sm-2" for="inputTag">Item Model</label>
                            <div class="col-sm-3">
-                              <select class="form-control input-sm" name="item_model">
+                              <select class="form-control input-sm" name="itemModel">
                                  <option value="All">All</option>
                                  <option value="1">Item Model</option>                                
                               </select>
@@ -87,17 +95,17 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by
                         <div class="form-group margin-bottom">
                            <label class="control-label col-sm-2" for="inputTag">Active Items</label>
                            <div class="col-sm-3">
-                              <select class="form-control input-sm" name="is_active">
+                              <select class="form-control input-sm" name="isActive">
                                  <option <?php
-                                echo $is_active == '' ? "selected='selected'" : "";
+                                echo $filter->getIsActive() == '' ? "selected='selected'" : "";
                                 ?> value="2">All</option>
                                  <option <?php
 
-                                echo $is_active == '1' ? "selected='selected'" : "";
+                                echo $filter->getIsActive() == '1' ? "selected='selected'" : "";
                                 ?> value="1">Active</option>
                                  <option <?php
 
-                                echo $is_active == '-1' ? "selected='selected'" : "";
+                                echo $filter->getIsActive() == '-1' ? "selected='selected'" : "";
                                 ?> value="-1">Inactive</option>
                               </select>
                            </div>
@@ -105,18 +113,18 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by
                         <div class="form-group margin-bottom">
                            <label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
                            <div class="col-sm-3">
-                              <select class="form-control input-sm" name="is_fixed_asset">
+                              <select class="form-control input-sm" name="isFixedAsset">
                                  <option <?php
 
-                                echo $is_fixed_asset == '' ? "selected='selected'" : "";
+                                echo $filter->getIsFixedAsset() == '' ? "selected='selected'" : "";
                                 ?> value="">All</option>
                                  <option <?php
 
-                                echo $is_fixed_asset == '1' ? "selected='selected'" : "";
+                                echo $filter->getIsFixedAsset() == '1' ? "selected='selected'" : "";
                                 ?> value="1">Fixed Asset</option>
                                  <option <?php
 
-                                echo $is_fixed_asset == '-1' ? "selected='selected'" : "";
+                                echo $filter->getIsFixedAsset() == '-1' ? "selected='selected'" : "";
                                 ?> value="-1">None Fixed Asset</option>
                               </select>
                            </div>

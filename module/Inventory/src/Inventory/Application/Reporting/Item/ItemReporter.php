@@ -68,7 +68,7 @@ class ItemReporter extends AbstractService
 
     public function getListTotal(SqlFilterInterface $filter)
     {
-        $key = \sprintf("_item_total_list_%s", $filter->__toString());
+        $key = \sprintf("_list_%s", $filter->__toString());
 
         $resultCache = $this->getCache()->getItem($key);
         if (! $resultCache->isHit()) {

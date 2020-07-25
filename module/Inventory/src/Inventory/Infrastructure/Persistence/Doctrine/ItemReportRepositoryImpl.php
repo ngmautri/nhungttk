@@ -24,9 +24,8 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
      */
     public function getItemList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {
-        $results = ItemReportHelper::getItemList($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+        $results = ItemReportHelper::getItemList1($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
-        // var_dump(count($results));
         if ($results == null) {
             return;
         }
@@ -99,4 +98,10 @@ class ItemReportRepositoryImpl extends AbstractDoctrineRepository implements Ite
 
     public function getListTotal(SqlFilterInterface $filter)
     {}
+
+    public function getItemListTotal(SqlFilterInterface $filter)
+    {
+        $results = ItemReportHelper::getItemList($this->getDoctrineEM(), $filter, null, null, null, null);
+        return count($results);
+    }
 }

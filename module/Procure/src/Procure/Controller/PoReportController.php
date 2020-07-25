@@ -316,7 +316,12 @@ class PoReportController extends AbstractActionController
             $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
             $offset = $paginator->minInPage - 1;
         }
-        $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+        } else {
+            $result = null;
+        }
 
         return new ViewModel(array(
             'sort_by' => $sort_by,

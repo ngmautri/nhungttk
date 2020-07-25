@@ -86,7 +86,11 @@ class ApReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        } else {
+            $list = null;
+        }
 
         $viewModel = new ViewModel(array(
             'list' => $list,
@@ -177,7 +181,11 @@ class ApReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $result = $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $result = $this->getApReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+        } else {
+            $result = null;
+        }
 
         return new ViewModel(array(
             'sort_by' => $sort_by,

@@ -11,6 +11,8 @@ Interface ItemReportRepositoryInterface
 
     public function getItemList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
+    public function getItemListTotal(SqlFilterInterface $filter);
+
     public function getAllItemWithSerial($itemId = null);
 
     public function getMostOrderItems($limit = 50, $offset = 0);

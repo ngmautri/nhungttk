@@ -6,6 +6,7 @@ use Inventory\Application\Export\Item\SaveAsArray;
 use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Item\Formatter\NullFormatter;
 use Inventory\Application\Reporting\Item\Export\SaveAsExcel;
+use Inventory\Application\Reporting\Item\Export\SaveAsOpenOffice;
 use Inventory\Application\Reporting\Item\Export\Spreadsheet\ExcelBuilder;
 use Inventory\Infrastructure\Persistence\Contracts\ItemReportRepositoryInterface;
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
@@ -51,12 +52,10 @@ class ItemReporter extends AbstractService
 
             case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
 
-            /*
-             * $builder = new PoReportOpenOfficeBuilder();
-             * $formatter = new PoRowFormatter(new RowNumberFormatter());
-             * $factory = new PoSaveAsOpenOffice($builder);
-             * break;
-             */
+                $builder = new ExcelBuilder();
+                $formatter = new NullFormatter();
+                $factory = new SaveAsOpenOffice($builder);
+                break;
 
             default:
                 $formatter = new NullFormatter();
@@ -73,7 +72,7 @@ class ItemReporter extends AbstractService
 
         $resultCache = $this->getCache()->getItem($key);
         if (! $resultCache->isHit()) {
-            $total = count($this->getReporterRespository()->getItemList($filter));
+            $total = $this->getReporterRespository()->getItemListTotal($filter);
             $resultCache->set($total);
             $this->getCache()->save($resultCache);
         } else {

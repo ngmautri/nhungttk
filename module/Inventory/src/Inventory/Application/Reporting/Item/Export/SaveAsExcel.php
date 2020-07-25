@@ -3,8 +3,8 @@ namespace Inventory\Application\Reporting\Item\Export;
 
 use Application\Domain\Util\ExcelColumnMap;
 use Inventory\Application\Export\Item\AbstractSaveAsSpreadsheet;
-use Procure\Application\Service\Output\Formatter\AbstractRowFormatter;
-use Procure\Domain\AccountPayable\APRowSnapshot;
+use Inventory\Application\Export\Item\Formatter\AbstractFormatter;
+use Inventory\Domain\Item\ItemSnapshot;
 
 /**
  * Director in builder pattern.
@@ -20,7 +20,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
      * {@inheritdoc}
      * @see \Inventory\Application\Export\Item\Contracts\SaveAsInterface::saveAs()
      */
-    public function saveAs($rows, AbstractRowFormatter $formatter)
+    public function saveAs($rows, AbstractFormatter $formatter)
     {
         if ($this->getBuilder() == null) {
             return null;
@@ -36,26 +36,22 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
         $this->getBuilder()->buildHeader($params);
         $objPHPExcel = $this->getBuilder()->getPhpSpreadsheet();
 
-        $header = 3;
+        $header = 7;
         $i = 0;
 
         $cols = ExcelColumnMap::COLS;
 
         $headerValues = array(
             "#",
-            "Vendor",
-            "PO#",
-            "Item",
+            "ID",
             "SKU",
-            "Item Vendor Name",
-            "Item Vendor code",
-            "Unit",
-            "Qty",
-            "UP",
-            "Net Amt",
-            "CUrr",
-            "PR",
-            "PR"
+            "Ref.",
+            "ItemName",
+            "ItemName1",
+            "Mfg Code",
+            "Mfg Model",
+            "Mfg S/N",
+            "HS Code"
         );
 
         $n = 0;
@@ -70,7 +66,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
 
             /**
              *
-             * @var APRowSnapshot $row ;
+             * @var ItemSnapshot $row ;
              */
 
             $i ++;
@@ -78,20 +74,15 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
-                $row->vendorName,
-                $row->docNumber,
-                $row->itemSKU,
+                $row->id,
+                $row->itemSku,
+                $row->sysNumber,
                 $row->itemName,
-                $row->vendorItemName,
-                $row->vendorItemCode,
-                $row->docUnit,
-                $row->quantity,
-                $row->docUnitPrice,
-                $row->netAmount,
-                $row->docCurrencyISO,
-                $row->remarks,
-                $row->prRowIndentifer,
-                $row->prNumber
+                $row->itemNameForeign,
+                $row->manufacturerCode,
+                $row->manufacturerModel,
+                $row->manufacturerSerial,
+                $row->hsCode
             );
 
             $n = 0;

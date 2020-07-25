@@ -103,7 +103,11 @@ class PrReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        } else {
+            $list = null;
+        }
 
         $viewModel = new ViewModel(array(
             'list' => $list,
@@ -190,7 +194,11 @@ class PrReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        } else {
+            $result = null;
+        }
 
         return new ViewModel(array(
             'sort_by' => $sort_by,

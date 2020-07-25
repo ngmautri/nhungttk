@@ -6,7 +6,6 @@ use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 use Inventory\Application\Reporting\Item\ItemReporter;
 use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 use MLA\Paginator;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -24,11 +23,14 @@ class ItemReportController extends AbstractGenericController
         $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
-        $currentState = $this->params()->fromQuery('currentState');
-        $docStatus = $this->params()->fromQuery('docStatus');
         $file_type = $this->params()->fromQuery('file_type');
-        $docYear = $this->params()->fromQuery('docYear');
-        $balance = $this->params()->fromQuery('balance');
+
+        $item_type = $this->params()->fromQuery('item_type');
+        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
+
+        $layout = $this->params()->fromQuery('layout');
+        $page = $this->params()->fromQuery('page');
+        $resultsPerPage = $this->params()->fromQuery('perPage');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -41,8 +43,6 @@ class ItemReportController extends AbstractGenericController
         } else {
             $page = $this->params()->fromQuery('page');
         }
-
-        $isActive = (int) $this->params()->fromQuery('is_active');
 
         if ($isActive == null) {
             $isActive = 1;
@@ -62,6 +62,8 @@ class ItemReportController extends AbstractGenericController
 
         $filter = new ItemReportSqlFilter();
         $filter->setIsActive($isActive);
+        $filter->setIsFixedAsset($is_fixed_asset);
+        $filter->setItemType($item_type);
 
         $total_records = $this->getReporter()->getListTotal($filter);
 
@@ -75,7 +77,11 @@ class ItemReportController extends AbstractGenericController
             $offset = $paginator->minInPage - 1;
         }
 
-        $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $list = $this->getReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        } else {
+            $list = null;
+        }
 
         $viewModel = new ViewModel(array(
             'list' => $list,
@@ -84,12 +90,12 @@ class ItemReportController extends AbstractGenericController
             'is_active' => $isActive,
             'sort_by' => $sort_by,
             'sort' => $sort,
-            'per_pape' => $resultsPerPage,
-            'currentState' => $currentState,
-            'docStatus' => $docStatus,
-            'yy' => $docYear,
-            'balance' => $balance,
-            'file_type' => $file_type
+            'perPage' => $resultsPerPage,
+            'file_type' => $file_type,
+            'is_fixed_asset' => $is_fixed_asset,
+            'item_type' => $item_type,
+            'layout' => $layout,
+            'page' => $page
         ));
 
         $viewModel->setTemplate("inventory/item-report/default");
@@ -114,28 +120,16 @@ class ItemReportController extends AbstractGenericController
             $sort = "ASC";
         }
 
-        if (isset($_GET['balance'])) {
-            $balance = $_GET['balance'];
-        } else {
-            $balance = 1;
-        }
-
         if (isset($_GET['is_active'])) {
             $isActive = (int) $_GET['is_active'];
         } else {
             $isActive = 1;
         }
 
-        if (isset($_GET['docYear'])) {
-            $docYear = $_GET['docYear'];
+        if (isset($_GET['item_type'])) {
+            $item_type = (int) $_GET['item_type'];
         } else {
-            $docYear = date('Y');
-        }
-
-        if (isset($_GET['docStatus'])) {
-            $docStatus = $_GET['docStatus'];
-        } else {
-            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+            $item_type = 1;
         }
 
         if (isset($_GET["pq_curpage"])) {
@@ -154,23 +148,13 @@ class ItemReportController extends AbstractGenericController
         $offset = null;
 
         $filter = new ItemReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setIsFixedAsset($isActive);
+        $filter->setItemType($item_type);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
 
-        $key = \sprintf("item_total_%s", $filter->__toString());
-        $total = $this->getCache()->getItem($key);
-        if (! $total->isHit()) {
-
-            $total_records = $this->getReporter()->getListTotal($filter);
-            $total->set($total_records);
-            $this->getCache()->save($total);
-        }
-
-        if ($this->getCache()->hasItem($key)) {
-            $total_records = $this->getCache()
-                ->getItem($key)
-                ->get();
-        }
+        $total_records = $this->getReporter()->getListTotal($filter);
 
         $a_json_final = array();
 

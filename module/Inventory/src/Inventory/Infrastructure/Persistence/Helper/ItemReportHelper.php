@@ -344,4 +344,82 @@ FROM nmt_inventory_item";
             return null;
         }
     }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param SqlFilterInterface $filter
+     * @param string $sort_by
+     * @param string $sort
+     * @param int $limit
+     * @param int $offset
+     * @return NULL|array|mixed|\Doctrine\DBAL\Driver\Statement|NULL
+     */
+    static public function getItemList1(EntityManager $doctrineEM, SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        if (! $filter instanceof ItemReportSqlFilter) {
+            return null;
+        }
+
+        $sql = "SELECT * FROM nmt_inventory_item";
+
+        $sql_tmp = '';
+
+        if ($filter->getItemType() == "ITEM" || $filter->getItemType() == "SERVICE" || $filter->getItemType() == "SOFTWARE") {
+            $sql1 = $sql_tmp . sprintf(" AND nmt_inventory_item.item_type ='%s'", $filter->getItemType());
+        }
+
+        if ($filter->getIsActive() == 1) {
+            $sql1 = $sql_tmp . " AND nmt_inventory_item.is_active = 1";
+        } elseif ($filter->getIsActive() == - 1) {
+            $sql_tmp = $sql_tmp . " AND nmt_inventory_item.is_active = 0";
+        }
+        if ($filter->getIsFixedAsset() == 1) {
+            $sql_tmp = $sql_tmp . " AND nmt_inventory_item.is_fixed_asset = 1";
+        } elseif ($filter->getIsFixedAsset() == - 1) {
+            $sql1 = $sql_tmp . " AND nmt_inventory_item.is_fixed_asset = 0";
+        }
+
+        switch ($sort_by) {
+            case "itemName":
+                $sql_tmp = $sql_tmp . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+
+            case "createdOn":
+                $sql_tmp = $sql_tmp . " ORDER BY nmt_inventory_item.created_on " . $sort;
+                break;
+        }
+
+        // when paginator needed
+        if ($limit > 0) {
+            $sql1 = "SELECT id from nmt_inventory_item";
+            $sql1 = $sql1 . " WHERE 1";
+            $sql1 = $sql1 . $sql_tmp;
+
+            $sql1 = $sql1 . " LIMIT " . $limit;
+
+            $sql1 = $sql1 . " OFFSET " . $offset;
+
+            $sql = $sql . " INNER JOIN (" . $sql1 . ") as t1 on t1.id = nmt_inventory_item.id";
+        } else {
+            $sql = $sql . " WHERE 1";
+            $sql = $sql . $sql_tmp;
+        }
+
+        $sql = $sql . ";";
+
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }

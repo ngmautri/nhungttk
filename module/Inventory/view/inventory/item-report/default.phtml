@@ -12,6 +12,8 @@ use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 $toogleFileType = SaveAsSupportedType::OUTPUT_IN_ARRAY;
 $toggleViewTitle = "Gird View";
 $icon = 'fa fa-th';
+$item_type_option = OptionList::createItemTypeOption($item_type);
+$per_page_option = OptionList::createPerPageOption($perPage);
 
 if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
@@ -23,19 +25,19 @@ endif;
 $baseUrl = "/inventory/item-report/default";
 
 $link = "%s?docYear=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
-$base = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, $file_type);
+$base = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, $file_type);
 
-$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, $toogleFileType);
+$toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, $toogleFileType);
 
 $link1 = "/inventory/item-report/default-gird";
 $girdUrl = $this->baseUrl . sprintf($link1);
 
 $filter_url = $baseUrl;
 $filtered1 = "Year=%s,Balance=%s, Sorted By=%s %s, Display=%s";
-$filtered = sprintf($filtered1, "", $balance, $sort_by, $sort, $file_type);
+$filtered = sprintf($filtered1, "", "", $sort_by, $sort, $file_type);
 
-$url_excel = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
-$url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$url_excel = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
+$url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", "", $is_active, $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 // ===============================================================================
 ?>
@@ -44,7 +46,7 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $s
       <li>
          <a href="#general">
             <i class="glyphicon glyphicon-shopping-cart"></i>
-            &nbsp;PR Row
+            &nbsp;ITEM REPORT
          </a>
       </li>
    </ul>
@@ -60,150 +62,135 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, "", $balance, $is_active, $s
             <form id="filter_form" class="form-horizontal" action="<?php
             echo $filter_url;
             ?>" method="get" enctype="multipart/form-data">
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Doc Year</label>
-                  <div class="col-sm-3">
-                     <select name="docYear" class="form-control input-sm">
-                        <option value="0">All</option>
-                        <?php
-                        echo OptionList::createYearOption($docYear);
-                        ?>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Month</label>
-                  <div class="col-sm-3">
-                     <select name="docMonth" class="form-control input-sm">
-                        <option value="all">All</option>
-                          <?php
-                        ?>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">PR Row Balance</label>
-                  <div class="col-sm-3">
-                     <select name="balance" class="form-control input-sm">
-                        <option value="2">All</option>
-                        <option <?php
+                <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Item Type</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="item_type">
+                                 <option value="All">All</option>
+                                <?php
+                                echo $item_type_option;
+                                ?>
+                              </select>
+                           </div>
+                           <div class="col-sm-4"></div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Item Model</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="item_model">
+                                 <option value="All">All</option>
+                                 <option value="1">Item Model</option>                                
+                              </select>
+                           </div>
+                           <div class="col-sm-4"></div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Active Items</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="is_active">
+                                 <option <?php
+                                echo $is_active == '' ? "selected='selected'" : "";
+                                ?> value="2">All</option>
+                                 <option <?php
 
-                        echo $balance == '0' ? "selected='selected'" : "";
-                        ?> value="0">Balance=0 (Fulfilled Items)</option>
-                        <option <?php
+                                echo $is_active == '1' ? "selected='selected'" : "";
+                                ?> value="1">Active</option>
+                                 <option <?php
 
-                        echo $balance == '1' ? "selected='selected'" : "";
-                        ?> value="1">Balance>0 (Pending Items)</option>
-                        <option <?php
+                                echo $is_active == '-1' ? "selected='selected'" : "";
+                                ?> value="-1">Inactive</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="is_fixed_asset">
+                                 <option <?php
 
-                        echo $balance == '-1' ? "selected='selected'" : "";
-                        ?> value="-1">Balance<0 (Some Free Items)</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Active Items</label>
-                  <div class="col-sm-3">
-                     <select class="form-control input-sm" name="is_active">
-                        <option <?php
+                                echo $is_fixed_asset == '' ? "selected='selected'" : "";
+                                ?> value="">All</option>
+                                 <option <?php
 
-                        echo $is_active == '' ? "selected='selected'" : "";
-                        ?> value="">All</option>
-                        <option <?php
+                                echo $is_fixed_asset == '1' ? "selected='selected'" : "";
+                                ?> value="1">Fixed Asset</option>
+                                 <option <?php
 
-                        echo $is_active == '1' ? "selected='selected'" : "";
-                        ?> value="1">Active</option>
-                        <option <?php
+                                echo $is_fixed_asset == '-1' ? "selected='selected'" : "";
+                                ?> value="-1">None Fixed Asset</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Sort by</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="sort_by">
+                                 <option value="">None</option>
+                                 <option <?php
 
-                        echo $is_active == '-1' ? "selected='selected'" : "";
-                        ?> value="-1">Inactive</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Sort by</label>
-                  <div class="col-sm-3">
-                     <select class="form-control input-sm" name="sort_by">
-                        <option value="">None</option>
-                        <option <?php
+                                echo $sort_by == 'itemName' ? "selected='selected'" : "";
+                                ?> value="itemName">Item Name</option>
+                                 <option <?php
 
-                        echo $sort_by == 'itemName' ? "selected='selected'" : "";
-                        ?> value="itemName">Item Name</option>
-                        <option <?php
+                                echo $sort_by == 'createdOn' ? "selected='selected'" : "";
+                                ?> value="createdOn">Created Date</option>
+                              </select>
+                              <input
+                                 <?php
 
-                        echo $sort_by == 'prNumber' ? "selected='selected'" : "";
-                        ?> value="prNumber">Pr Number</option>
-                        <option <?php
+                                if (! $sort == null) :
+                                    echo ($sort == 'ASC') ? "checked" : "";
+                                else :
+                                    echo "checked";
+                                endif;
+                                ?>
+                                 type="radio" name="sort" value="ASC">
+                              &nbsp;ASC&nbsp;&nbsp;
+                              <input
+                                 <?php
 
-                        echo $sort_by == 'vendorName' ? "selected='selected'" : "";
-                        ?> value="vendorName">Vendor</option>
-                        <option <?php
+                                if (! $sort == null) :
+                                    echo ($sort == 'DESC') ? "checked" : "";
+                                else :
+                                    echo "";
+                                endif;
+                                ?>
+                                 type="radio" name="sort" value="DESC">
+                              &nbsp;DESC&nbsp;&nbsp;
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Layout</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="layout">
+                                 <option value="">None</option>
+                                 <option <?php
 
-                        echo $sort_by == 'currency' ? "selected='selected'" : "";
-                        ?> value="currency">Currency</option>
-                        <option <?php
+                                echo $layout == 'list' ? "selected='selected'" : "";
+                                ?> value="list">List</option>
+                                 <option <?php
 
-                        echo $sort_by == 'unitPrice' ? "selected='selected'" : "";
-                        ?> value="unitPrice">Price</option>
-                        <option <?php
-
-                        echo $sort_by == 'balance' ? "selected='selected'" : "";
-                        ?> value="balance">Balance</option>
-                        <option <?php
-
-                        echo $sort_by == 'prSubmitted' ? "selected='selected'" : "";
-                        ?> value="prSubmitted">Pr Date</option>
-                     </select>
-                     <input <?php
-
-                    if (! $sort == null) :
-                        echo ($sort == 'ASC') ? "checked" : "";
-                    else :
-                        echo "checked";
-                    endif;
-                    ?> type="radio" name="sort"
-                        value="ASC">
-                     &nbsp;ASC&nbsp;&nbsp;
-                     <input <?php
-
-                    if (! $sort == null) :
-                        echo ($sort == 'DESC') ? "checked" : "";
-                    else :
-                        echo "";
-                    endif;
-                    ?> type="radio" name="sort" value="DESC">
-                     &nbsp;DESC&nbsp;&nbsp;
-                  </div>
-               </div>
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Display</label>
-                  <div class="col-sm-3">
-                     <select class="form-control input-sm" name="file_type">
-                        <option <?php
-
-                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY ? "selected='selected'" : "";
-                        ?> value="<?php
-
-                        echo SaveAsSupportedType::OUTPUT_IN_ARRAY;
-                        ?>">Gird</option>
-                        <option <?php
-
-                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE ? "selected='selected'" : "";
-                        ?> value="<?php
-
-                        echo SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
-                        ?>">HTML</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-group margin-bottom">
-                  <div class="col-sm-offset-2 col-sm-10">
-                     <a class="btn btn-default btn-sm" href="javascript:;" onClick="submitForm('filter_form');">
-                        <i class="fa fa-filter" aria-hidden="true"></i>
-                        &nbsp;&nbsp;Filter...
-                     </a>
-                  </div>
-               </div>
+                                echo $layout == 'grid' ? "selected='selected'" : "";
+                                ?> value="grid">grid</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <label class="control-label col-sm-2" for="inputTag">Result per page</label>
+                           <div class="col-sm-3">
+                              <select class="form-control input-sm" name="perPage">
+                                 <option value="">None</option>
+                               <?php
+                            echo $per_page_option;
+                            ?>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group margin-bottom">
+                           <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-default">Filter</button>
+                           </div>
+                        </div>
                <hr style="margin: 5pt 1pt 10pt 1pt;">
             </form>
          </div>
@@ -290,9 +277,16 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 <script>
 
     var columns = [
-      
-        { title: "ItemName", dataType: "string", dataIndx: "itemName", align: 'left',minWidth: 150,editable: true},
-    ];
+	    { title: "SKU", dataType: "string", dataIndx: "itemSku", align: 'left',minWidth: 55,editable: false},
+	    { title: "Item#", dataType: "string", dataIndx: "sysNumber", align: 'left',minWidth: 85 ,editable: false},
+	    { title: "ItemName", dataType: "string", dataIndx: "itemName", align: 'left',minWidth: 350,editable: false},
+       { title: "ItemName (VN/LA)", dataType: "string", dataIndx: "itemNameForeign", align: 'left',minWidth: 250 ,editable: false},
+       { title: "Code#", dataType: "string", dataIndx: "manufacturerCode", align: 'left',minWidth: 100 ,editable: false},
+       { title: "Model#", dataType: "string", dataIndx: "manufacturerModel", align: 'left',minWidth: 100 ,editable: false},
+       { title: "SN#", dataType: "string", dataIndx: "manufacturerSerial", align: 'left',minWidth: 100 ,editable: false},
+       { title: "HSCode#", dataType: "string", dataIndx: "hsCode", align: 'left',minWidth: 100 ,editable: false},
+
+	    ];
     var url = "<?php
     echo $girdUrl;
     ?>";

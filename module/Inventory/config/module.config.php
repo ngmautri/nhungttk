@@ -40,6 +40,8 @@ use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImplFactory;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImpl;
 use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchQueryImplFactory;
+use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Application\Service\Transaction\TrxServiceFactory;
 use Inventory\Application\Service\Upload\ItemSerialUploadService;
 use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
@@ -288,6 +290,7 @@ return array(
             HSCodeTreeService::class => HSCodeTreeServiceFactory::class,
             HSCodeTree::class => HSCodeTreeFactory::class,
             MfgCatalogTree::class => MfgCatalogTreeFactory::class,
+            TrxService::class => TrxServiceFactory::class,
 
             // Reporting
             ItemReporter::class => ItemReporterFactory::class,

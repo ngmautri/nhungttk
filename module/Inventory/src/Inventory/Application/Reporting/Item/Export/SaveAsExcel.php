@@ -51,6 +51,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
             "Mfg Code",
             "Mfg Model",
             "Mfg S/N",
+            "Type",
             "HS Code"
         );
 
@@ -82,6 +83,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
                 $row->manufacturerCode,
                 $row->manufacturerModel,
                 $row->manufacturerSerial,
+                $row->itemTypeId,
                 $row->hsCode
             );
 

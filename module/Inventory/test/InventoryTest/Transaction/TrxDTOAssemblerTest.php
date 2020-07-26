@@ -17,6 +17,6 @@ class TrxDTOAssemblerTest extends PHPUnit_Framework_TestCase
         /** @var EntityManager $em ; */
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        TrxDTOAssembler::createStoreMapping();
+        TrxDTOAssembler::createGetMapping();
     }
 }

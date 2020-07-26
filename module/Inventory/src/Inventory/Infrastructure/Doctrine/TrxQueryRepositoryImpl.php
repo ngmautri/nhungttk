@@ -7,7 +7,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface;
-use Procure\Infrastructure\Mapper\QrMapper;
+use Inventory\Infrastructure\Mapper\TrxMapper;
 
 /**
  *
@@ -23,25 +23,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
      * @see \Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface::getHeaderIdByRowId()
      */
     public function getHeaderIdByRowId($id)
-    {
-        $sql = "
-SELECT
-nmt_procure_qo_row.qo_id AS qoId
-FROM nmt_procure_qo_row
-WHERE id = %s";
-
-        $sql = sprintf($sql, $id);
-
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQoRow', 'nmt_procure_qo_row');
-            $rsm->addScalarResult("qoId", "qoId");
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            return $query->getSingleResult()["qoId"];
-        } catch (NoResultException $e) {
-            return null;
-        }
-    }
+    {}
 
     /**
      *
@@ -56,10 +38,10 @@ WHERE id = %s";
 
         /**
          *
-         * @var \Application\Entity\NmtProcureQo $doctrineEntity ;
+         * @var \Application\Entity\NmtInventoryMv $doctrineEntity ;
          */
 
-        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcureQo')->findOneBy($criteria);
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryMv')->findOneBy($criteria);
         if ($doctrineEntity !== null) {
             return $doctrineEntity->getRevisionNo();
         }
@@ -74,10 +56,10 @@ WHERE id = %s";
 
         /**
          *
-         * @var \Application\Entity\NmtProcureQo $doctrineEntity ;
+         * @var \Application\Entity\NmtInventoryMv $doctrineEntity ;
          */
 
-        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcureQo')->findOneBy($criteria);
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryMv')->findOneBy($criteria);
         if ($doctrineEntity !== null) {
             return [
                 "revisionNo" => $doctrineEntity->getRevisionNo(),
@@ -97,10 +79,10 @@ WHERE id = %s";
 
         /**
          *
-         * @var \Application\Entity\NmtProcureQo $entity ;
+         * @var \Application\Entity\NmtInventoryMv $entity ;
          */
-        $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcureQo')->findOneBy($criteria);
-        $snapshot = QrMapper::createSnapshot($this->doctrineEM, $entity);
+        $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryMv')->findOneBy($criteria);
+        $snapshot = TrxMapper::createSnapshot($this->doctrineEM, $entity);
 
         if ($snapshot == null) {
             return null;
@@ -121,14 +103,14 @@ WHERE id = %s";
         );
 
         $rootEntityDoctrine = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtProcureQo')
+            ->getRepository('\Application\Entity\NmtInventoryMv')
             ->findOneBy($criteria);
 
         if ($rootEntityDoctrine == null) {
             return null;
         }
 
-        $rootSnapshot = QrMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+        $rootSnapshot = TrxMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
         if ($rootSnapshot == null) {
             return null;
         }
@@ -147,10 +129,10 @@ WHERE id = %s";
         $grossAmount = 0;
         foreach ($rows as $r) {
 
-            /**@var \Application\Entity\NmtProcureQoRow $localEnityDoctrine ;*/
+            /**@var \Application\Entity\NmtInventoryTrx $localEnityDoctrine ;*/
             $localEnityDoctrine = $r;
 
-            $localSnapshot = QrMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+            $localSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
 
             if ($localSnapshot == null) {
                 continue;
@@ -183,17 +165,17 @@ WHERE id = %s";
     {
         $sql = "select
 *
-from nmt_procure_qo_row
+from nmt_inventory_trx
 where 1%s";
 
-        $tmp1 = sprintf(" AND nmt_procure_qo_row.qo_id=%s AND nmt_procure_qo_row.is_active=1", $id);
+        $tmp1 = sprintf(" AND nmt_inventory_trx.mv_id=%s AND nmt_inventory_trx.is_active=1", $id);
 
         $sql = sprintf($sql, $tmp1);
 
         // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQoRow', 'nmt_procure_qo_row');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrc', 'nmt_inventory_trx');
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

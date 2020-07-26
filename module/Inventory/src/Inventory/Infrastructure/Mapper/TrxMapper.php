@@ -6,6 +6,8 @@ use Application\Entity\NmtInventoryTrx;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Transaction\TrxRowSnapshot;
 use Inventory\Domain\Transaction\TrxSnapshot;
+use Procure\Infrastructure\Mapper\HeaderMapper;
+use Procure\Infrastructure\Mapper\RowMapper;
 
 /**
  *
@@ -605,5 +607,256 @@ class TrxMapper
 
         // ============
         return $entity;
+    }
+
+    public static function createSnapshot(EntityManager $doctrineEM, NmtInventoryMv $entity, $snapshot = null)
+    {
+        if ($entity == null) {
+            return null;
+        }
+
+        if ($snapshot == null) {
+            $snapshot = new TrxSnapshot();
+        }
+
+        $snapshot->id = $entity->getId();
+        $snapshot->token = $entity->getToken();
+        $snapshot->currencyIso3 = $entity->getCurrencyIso3();
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->trxType = $entity->getTrxType();
+        $snapshot->lastchangeBy = $entity->getLastchangeBy();
+        $snapshot->sapDoc = $entity->getSapDoc();
+        $snapshot->contractNo = $entity->getContractNo();
+        $snapshot->quotationNo = $entity->getQuotationNo();
+        $snapshot->sysNumber = $entity->getSysNumber();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->deliveryMode = $entity->getDeliveryMode();
+        $snapshot->incoterm = $entity->getIncoterm();
+        $snapshot->incotermPlace = $entity->getIncotermPlace();
+        $snapshot->paymentTerm = $entity->getPaymentTerm();
+        $snapshot->paymentMethod = $entity->getPaymentMethod();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->movementType = $entity->getMovementType();
+        $snapshot->journalMemo = $entity->getJournalMemo();
+        $snapshot->movementFlow = $entity->getMovementFlow();
+        $snapshot->movementTypeMemo = $entity->getMovementTypeMemo();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->isReversed = $entity->getIsReversed();
+        $snapshot->reversalDoc = $entity->getReversalDoc();
+        $snapshot->reversalReason = $entity->getReversalReason();
+        $snapshot->isReversable = $entity->getIsReversable();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->isTransferTransaction = $entity->getIsTransferTransaction();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->pmtTerm = $entity->getPmtTerm();
+        $snapshot->discountRate = $entity->getDiscountRate();
+
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        $snapshot->createdOn = $entity->getCreatedOn();
+        $snapshot->lastchangeOn = $entity->getLastchangeOn();
+        $snapshot->postingDate = $entity->getPostingDate();
+        $snapshot->contractDate = $entity->getContractDate();
+        $snapshot->quotationDate = $entity->getQuotationDate();
+        $snapshot->movementDate = $entity->getMovementDate();
+        $snapshot->reversalDate = $entity->getReversalDate();
+        $snapshot->docDate = $entity->getDocDate();
+
+        if (! $entity->getInvoiceDate() == null) {
+            $snapshot->invoiceDate = $entity->getInvoiceDate()->format("Y-m-d");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+        $snapshot->createdBy = $entity->getCreatedBy();
+        $snapshot->company = $entity->getCompany();
+        $snapshot->vendor = $entity->getVendor();
+        $snapshot->warehouse = $entity->getWarehouse();
+        $snapshot->postingPeriod = $entity->getPostingPeriod();
+        $snapshot->currency = $entity->getCurrency();
+        $snapshot->docCurrency = $entity->getDocCurrency();
+        $snapshot->localCurrency = $entity->getLocalCurrency();
+        $snapshot->targetWarehouse = $entity->getTargetWarehouse();
+        $snapshot->sourceLocation = $entity->getSourceLocation();
+        $snapshot->tartgetLocation = $entity->getTartgetLocation();
+
+        if ($entity->getVendor() !== null) {
+            HeaderMapper::updateVendorDetails($snapshot, $entity->getVendor());
+        }
+
+        if ($entity->getProcureGr() !== null) {
+            $snapshot->procureGr = $entity->getProcureGr()->getId();
+        }
+
+        return $snapshot;
+    }
+
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param NmtInventoryTrx $entity
+     * @param object $snapshot
+     * @return NULL|string|\Procure\Domain\AccountPayable\APRowSnapshot
+     */
+    public static function createRowSnapshot(EntityManager $doctrineEM, NmtInventoryTrx $entity, $snapshot = null)
+    {
+        if ($entity == null)
+            return null;
+
+        if ($snapshot == null) {
+            $snapshot = new TrxRowSnapshot();
+        }
+
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+
+        $snapshot->id = $entity->getId();
+        $snapshot->token = $entity->getToken();
+        $snapshot->checksum = $entity->getChecksum();
+        $snapshot->trxTypeId = $entity->getTrxTypeId();
+        $snapshot->flow = $entity->getFlow();
+        $snapshot->quantity = $entity->getQuantity();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->isLocked = $entity->getIsLocked();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->isPreferredVendor = $entity->getIsPreferredVendor();
+        $snapshot->vendorItemUnit = $entity->getVendorItemUnit();
+        $snapshot->vendorItemCode = $entity->getVendorItemCode();
+        $snapshot->conversionFactor = $entity->getConversionFactor();
+        $snapshot->conversionText = $entity->getConversionText();
+        $snapshot->vendorUnitPrice = $entity->getVendorUnitPrice();
+        $snapshot->pmtTermId = $entity->getPmtTermId();
+        $snapshot->deliveryTermId = $entity->getDeliveryTermId();
+        $snapshot->leadTime = $entity->getLeadTime();
+        $snapshot->taxRate = $entity->getTaxRate();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->currentStatus = $entity->getCurrentStatus();
+        $snapshot->targetId = $entity->getTargetId();
+        $snapshot->targetClass = $entity->getTargetClass();
+        $snapshot->sourceId = $entity->getSourceId();
+        $snapshot->sourceClass = $entity->getSourceClass();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->sysNumber = $entity->getSysNumber();
+        $snapshot->changeBy = $entity->getChangeBy();
+        $snapshot->revisionNumber = $entity->getRevisionNumber();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->actualQuantity = $entity->getActualQuantity();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->stockRemarks = $entity->getStockRemarks();
+        $snapshot->transactionType = $entity->getTransactionType();
+        $snapshot->itemSerialId = $entity->getItemSerialId();
+        $snapshot->itemBatchId = $entity->getItemBatchId();
+        $snapshot->cogsLocal = $entity->getCogsLocal();
+        $snapshot->cogsDoc = $entity->getCogsDoc();
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->convertedStandardQuantity = $entity->getConvertedStandardQuantity();
+        $snapshot->convertedStandardUnitPrice = $entity->getConvertedStandardUnitPrice();
+        $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
+        $snapshot->convertedStockUnitPrice = $entity->getConvertedStockUnitPrice();
+        $snapshot->convertedPurchaseQuantity = $entity->getConvertedPurchaseQuantity();
+        $snapshot->docQuantity = $entity->getDocQuantity();
+        $snapshot->docUnitPrice = $entity->getDocUnitPrice();
+        $snapshot->docUnit = $entity->getDocUnit();
+        $snapshot->isReversed = $entity->getIsReversed();
+        $snapshot->reversalDoc = $entity->getReversalDoc();
+        $snapshot->reversalReason = $entity->getReversalReason();
+        $snapshot->isReversable = $entity->getIsReversable();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->localUnitPrice = $entity->getLocalUnitPrice();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
+        $snapshot->mvUuid = $entity->getMvUuid();
+        $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
+        $snapshot->glAccount = $entity->getGlAccount();
+        $snapshot->localGrossAmount = $entity->getLocalGrossAmount();
+        $snapshot->localNetAmount = $entity->getLocalNetAmount();
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->vendorItemName = $entity->getVendorItemName();
+        $snapshot->rowIdentifier = $entity->getRowIdentifier();
+        $snapshot->discountRate = $entity->getDiscountRate();
+        $snapshot->discountAmount = $entity->getDiscountAmount();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->unit = $entity->getUnit();
+        $snapshot->grossAmount = $entity->getGrossAmount();
+        $snapshot->netAmount = $entity->getNetAmount();
+        $snapshot->convertFactorPuchase = $entity->getConvertFactorPuchase();
+        $snapshot->convertedPurchaseUnitPrice = $entity->getConvertedPurchaseUnitPrice();
+        $snapshot->lastchangeBy = $entity->getLastchangeBy();
+        $snapshot->invoiceId = $entity->getInvoiceId();
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        $snapshot->trxDate = $entity->getTrxDate();
+        $snapshot->createdOn = $entity->getCreatedOn();
+        $snapshot->changeOn = $entity->getChangeOn();
+        $snapshot->reversalDate = $entity->getReversalDate();
+        $snapshot->lastchangeOn = $entity->getLastchangeOn();
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getReversalDate() == null) {
+            $snapshot->reversalDate = $entity->getReversalDate()->format("Y-m-d");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+        $snapshot->createdBy = $entity->getCreatedBy();
+        $snapshot->lastChangeBy = $entity->getLastChangeBy();
+        $snapshot->item = $entity->getItem();
+        $snapshot->pr = $entity->getPr();
+        $snapshot->po = $entity->getPo();
+        $snapshot->vendorInvoice = $entity->getVendorInvoice();
+        $snapshot->poRow = $entity->getPoRow();
+        $snapshot->grRow = $entity->getGrRow();
+        $snapshot->inventoryGi = $entity->getInventoryGi();
+        $snapshot->inventoryGr = $entity->getInventoryGr();
+        $snapshot->inventoryTransfer = $entity->getInventoryTransfer();
+        $snapshot->wh = $entity->getWh();
+        $snapshot->gr = $entity->getGr();
+        $snapshot->movement = $entity->getMovement();
+        $snapshot->issueFor = $entity->getIssueFor();
+        $snapshot->docCurrency = $entity->getDocCurrency();
+        $snapshot->localCurrency = $entity->getLocalCurrency();
+        $snapshot->project = $entity->getProject();
+        $snapshot->costCenter = $entity->getCostCenter();
+        $snapshot->docUom = $entity->getDocUom();
+        $snapshot->postingPeriod = $entity->getPostingPeriod();
+        $snapshot->whLocation = $entity->getWhLocation();
+        $snapshot->warehouse = $entity->getWarehouse();
+        $snapshot->prRow = $entity->getPrRow();
+        $snapshot->vendor = $entity->getVendor();
+        $snapshot->currency = $entity->getCurrency();
+        $snapshot->pmtMethod = $entity->getPmtMethod();
+        $snapshot->invoiceRow = $entity->getInvoiceRow();
+
+        if ($entity->getInvoice() !== null) {
+            RowMapper::updateInvoiceDetails($snapshot, $entity->getInvoice()); // Parent Detail.
+        }
+        return $snapshot;
     }
 }

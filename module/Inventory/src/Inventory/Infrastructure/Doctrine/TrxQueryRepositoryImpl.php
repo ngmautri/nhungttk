@@ -155,7 +155,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         $rootSnapshot->taxAmount = $taxAmount;
         $rootSnapshot->grossAmount = $grossAmount;
 
-        $rootEntity = TrxDoc::makeFromSnapshot($rootSnapshot);
+        $rootEntity = TrxDoc::constructFromSnapshot($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;
@@ -168,14 +168,14 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
 from nmt_inventory_trx
 where 1%s";
 
-        $tmp1 = sprintf(" AND nmt_inventory_trx.mv_id=%s AND nmt_inventory_trx.is_active=1", $id);
+        $tmp1 = sprintf(" AND nmt_inventory_trx.movement_id=%s AND nmt_inventory_trx.is_active=1", $id);
 
         $sql = sprintf($sql, $tmp1);
 
         // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrc', 'nmt_inventory_trx');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrx', 'nmt_inventory_trx');
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

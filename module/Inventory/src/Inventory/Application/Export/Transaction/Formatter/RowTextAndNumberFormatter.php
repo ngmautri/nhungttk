@@ -38,6 +38,7 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         $escaper = new Escaper();
 
         $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $row->getItemToken(), $row->getItemChecksum(), $row->getItem());
+        echo $row->getItemName();
         $onclick = sprintf("showJqueryDialog('Detail of Item: %s','1600',$(window).height()-50,'%s','j_loaded_data', true);", $escaper->escapeJs($row->getItemName()), $item_detail);
 
         if (strlen($row->getItemName()) < 35) {

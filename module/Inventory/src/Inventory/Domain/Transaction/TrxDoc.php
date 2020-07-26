@@ -8,7 +8,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Event\Qr\QrHeaderCreated;
 use Procure\Domain\Event\Qr\QrHeaderUpdated;
 use Procure\Domain\Exception\OperationFailedException;
@@ -203,12 +202,6 @@ class TrxDoc extends GenericTrx
         return $instance;
     }
 
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
-    {}
-
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PostingServiceInterface $postingService)
-    {}
-
     private function _checkInputParams(TrxSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, QrPostingService $postingService)
     {
         if (! $snapshot instanceof TrxSnapshot) {
@@ -237,5 +230,11 @@ class TrxDoc extends GenericTrx
     {}
 
     protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function doReverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 }

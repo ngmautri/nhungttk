@@ -13,10 +13,6 @@ use Application\Domain\Shared\Constants;
  * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
-$tab_active = 0;
-if (isset($tab_idx)) {
-    $tab_active = $tab_idx;
-}
 
 $standardUOM = null;
 $stockUOM = null;
@@ -42,51 +38,11 @@ $isPurchaseFormat = '<input type="hidden" name="isPurchased" isActive="0">';
 $isPurchaseFormat = $isPurchaseFormat . '<input %s type="checkbox" name="isPurchased" value="1">&nbsp;Purchased&nbsp;';
 $isPurchased = sprintf($isPurchaseFormat, "");
 
-$entityFormInput = '';
-$submitItemFormInput = '';
-$submitLogisticFormInput = '';
-
 if ($action == Constants::FORM_ACTION_EDIT) {
     $view_url = sprintf($this->baseUrl . "/inventory/item/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-
-    $format = '<input type="hidden" name="redirectUrl" value="%s">';
-    $entityFormInput = $entityFormInput . sprintf($format, $redirectUrl);
-
-    $format = '<input type="hidden" id="entity_id" name="entity_id" value="%s">';
-    $entityFormInput = $entityFormInput . sprintf($format, $entity_id);
-
-    $format = '<input type="hidden" id="entity_token" name="entity_token" value="%s">';
-    $entityFormInput = $entityFormInput . sprintf($format, $entity_token);
-
-    $format = '<input type="hidden" id="version" name="version" value="%s">';
-    $entityFormInput = $entityFormInput . sprintf($format, $version);
-
-    $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
-<button onclick="submitForm(\'%s\');" class="btn btn-default">
-<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
-<a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
-</div></div>';
-    $submitItemFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
-
-    $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
-<button onclick="submitForm(\'%s\');" class="btn btn-default">
-<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
-<a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
-</div></div>';
-    $submitLogisticFormInput = $submitLogisticFormInput . sprintf($format, 'logistic_data_frm', $view_url, $this->translate("Cancel"));
 }
 
-$hsCodeSearchUrl = '';
-$q = '';
 if (! $dto == null) {
-
-    $q = $dto->hsCode;
-    if (strlen($dto->hsCode) > 6) {
-        $q = substr($dto->hsCode, 0, 6) . "*";
-    }
-
-    $format = '/inventory/hs-code/search?q=%s';
-    $hsCodeSearchUrl = sprintf($format, $q);
 
     if ($dto->getIsModel() == "1") {
         $isModel = sprintf($isModelFormat, 'checked');
@@ -286,9 +242,7 @@ echo $tab_id;
         ?></a>
       </li>
       <li>
-         <a href="#logistic">
-            <i class="fa fa-truck" aria-hidden="true"></i>
-            &nbsp;Logistic
+         <a href="#logistic"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Logistic
          </a>
       </li>
       
@@ -298,44 +252,34 @@ echo $tab_id;
       
    </ul>
    <div id="logistic">
-   <?php
-echo $error_msg;
-?>
-   
-      <form id="logistic_data_frm" class="form-horizontal" action="/inventory/item/update-logistic" method="post">
-      
-        <?php
-        echo $entityFormInput;
-        ?>
+      <form id="" class="form-horizontal" action="">
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">HS Code</label>
             <div class="col-sm-3">
                <input class="form-control input-sm" type="text" placeholder="" name="hsCode" value="<?php
-            echo (! $dto1 == null) ? $dto->hsCode : "";
+            echo (! $dto == null) ? $dto->hsCode : "";
             ?>">
             </div>
-            <a class="btn btn-default btn-sm" target="blank" style="font-size: 9pt;" href="<?php
-            echo $hsCodeSearchUrl;
-            ?>">
-               HS Code Search&nbsp;
-               <i class="fa fa-search" aria-hidden="true"></i>
-            </a>
+           
+            <a class="btn btn-default btn-sm" target="blank" style="font-size: 9pt;" href="/inventory/hs-code/search?q=<?php
+            echo (! $dto == null) ? $dto->itemName : "";
+            ?>">HS Code Search&nbsp;<i class="fa fa-search" aria-hidden="true"></i> </a>
          </div>
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">HS Code Description: </label>
             <div class="col-sm-3">
                <textarea class="form-control input-sm" type="text" rows="5" placeholder="" name="hsCodeDescription" style="font-size: 9pt;"><?php
 
-            echo (! $dto1 == null) ? $dto->hsCodeDescription : "";
+            echo (! $dto == null) ? $dto->hsCodeDescription : "";
             ?></textarea>
             </div>
          </div>
          <hr style="margin: 5pt 1pt 5pt 1pt;">
          <div class="form-group margin-bottom required">
-            <label class="control-label col-sm-2">Standard Weight (kg):</label>
+            <label class="control-label col-sm-2">Standard Weight (gram):</label>
             <div class="col-sm-3">
                <input class="form-control input-sm" type="text" placeholder="" name="standardWeightInKg" value="<?php
-            echo (! $dto1 == null) ? $dto->standardWeightInKg : "";
+            echo (! $dto == null) ? $dto->standardWeightInKg : "";
             ?>">
             </div>
          </div>
@@ -343,13 +287,10 @@ echo $error_msg;
             <label class="control-label col-sm-2">Standard Volumn (m3):</label>
             <div class="col-sm-3">
                <input class="form-control input-sm" type="text" placeholder="" name="standardVolumnInM3" value="<?php
-            echo (! $dto1 == null) ? $dto->standardVolumnInM3 : "";
+            echo (! $dto == null) ? $dto->standardVolumnInM3 : "";
             ?>">
             </div>
          </div>
-          <?php
-        echo $submitLogisticFormInput;
-        ?>
       </form>
    </div>
    <div id="general">
@@ -362,11 +303,26 @@ echo $error_msg;
 
 echo $form_action;
 ?>" method="post" enctype="multipart/form-data">
-
   <?php
-echo $entityFormInput;
+
+if ($action == Constants::FORM_ACTION_EDIT) :
+    ?>
+				<input type="hidden" name="redirectUrl" value="<?php
+
+    echo $redirectUrl?>" />
+         <input type="hidden" id="entity_id" name="entity_id" value="<?php
+    echo $entity_id;
+    ?>" />
+         <input type="hidden" name="entity_token" value="<?php
+    echo $entity_token;
+    ?>" />
+         <input type="hidden" name="version" value="<?php
+    echo $version;
+    ?>" />
+    
+<?php endif;
+
 ?>
-        
 
 			<div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">Item Type</label>
@@ -410,7 +366,8 @@ echo $entityFormInput;
             echo (! $dto == null) ? $dto->itemName : "";
             ?>">
             </div>
-         </div>
+            </div>
+         
          <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2">Item Foreign Name1</label>
             <div class="col-sm-3">
@@ -427,6 +384,8 @@ echo $entityFormInput;
             ?>">
             </div>
          </div>
+         
+         
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2">Item Description</label>
             <div class="col-sm-8">
@@ -553,12 +512,6 @@ echo $entityFormInput;
                 ?>
                
                
-               
-               
-               
-               
-               
-               
                </select>
             </div>
             <label class="control-label col-sm-2"><?php
@@ -676,8 +629,33 @@ echo $entityFormInput;
          <hr style="margin: 5pt 1pt 5pt 1pt">
          
          <?php
-        echo $submitLogisticFormInput;
+
+        if ($action == Constants::FORM_ACTION_EDIT) :
+            ?>
+         <div class="form-group margin-bottom">
+            <div class="col-sm-offset-2 col-sm-10">
+               <button onclick="submitForm('create_item_form');" class="btn btn-default">
+                  <i class="glyphicon glyphicon-floppy-disk"> </i>
+                  &nbsp;Save
+               </button>
+               <a class="btn btn-default btn-sm" href="<?php
+
+            echo $view_url;
+            ?>">
+                  <small>
+                     <i class="glyphicon glyphicon-remove"></i>
+                  </small>&nbsp;<?php
+
+            echo $this->translate("Cancel");
+            ?></a>
+            </div>
+         </div>
+         
+          <?php endif;
+
         ?>
+    
+         
       </form>
    </div>
 </div>
@@ -686,13 +664,11 @@ echo $entityFormInput;
 
 $("#<?php
 echo $tab_id;
-?>").tabs(
-   {active: <?php
-echo $tab_active;
-?>},
-   { beforeLoad:function(e,ui){
+?>").tabs({
+   beforeLoad:function(e,ui){
       $( ui.panel ).html('<p>Loading...</p>');       
-   },
+       },
+      
 });
 
 
@@ -700,7 +676,6 @@ echo $tab_active;
 if ($action == Constants::FORM_ACTION_SHOW) :
     ?>
 $("#create_item_form :input").attr("disabled", "disabled");
-$("#logistic_data_frm :input").attr("disabled", "disabled");
 <?php endif;
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Validator;
+namespace Inventory\Domain\HSCode\Validator;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Inventory\Domain\Item\AbstractItem;
@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DefaultItemValidator extends AbstractItemValidator implements ItemValidatorInterface
+class DefaultValidator extends AbstractItemValidator implements ItemValidatorInterface
 {
 
     /**

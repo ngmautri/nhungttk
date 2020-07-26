@@ -44,10 +44,21 @@ class ValidatorFactory
                 $validator = new InventoryItemValidator($sharedSpecsFactory);
                 $validatorCollection->add($validator);
 
+                $validator = new LogisticDataValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+
                 break;
 
             case ItemType::FIXED_ASSET_ITEM_TYPE:
                 $validator = new FixedAssetValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+
+                $validator = new LogisticDataValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $validator = new LogisticDataValidator($sharedSpecsFactory);
                 $validatorCollection->add($validator);
                 break;
         }

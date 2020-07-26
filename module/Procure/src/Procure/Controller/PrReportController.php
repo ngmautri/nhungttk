@@ -9,20 +9,17 @@ use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PrReportController extends AbstractActionController
+class PrReportController extends AbstractGenericController
 {
 
     protected $prReporter;
-
-    protected $logger;
-
-    protected $cache;
 
     public function headerStatusAction()
     {
@@ -103,7 +100,7 @@ class PrReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+        if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
             $list = $this->getPrReporter()->getListWithCustomDTO($filter, $sort_by, $sort, $limit, $offset, $file_type);
         } else {
             $list = null;
@@ -194,7 +191,7 @@ class PrReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+        if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
             $result = $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
         } else {
             $result = null;
@@ -314,37 +311,5 @@ class PrReportController extends AbstractActionController
     public function setPrReporter(PrReporter $prReporter)
     {
         $this->prReporter = $prReporter;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *
-     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     *
-     * @param AbstractAdapter $cache
-     */
-    public function setCache(AbstractAdapter $cache)
-    {
-        $this->cache = $cache;
     }
 }

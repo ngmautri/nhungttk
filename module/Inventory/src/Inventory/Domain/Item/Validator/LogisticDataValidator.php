@@ -12,7 +12,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FixedAssetValidator extends AbstractItemValidator implements ItemValidatorInterface
+class LogisticDataValidator extends AbstractItemValidator implements ItemValidatorInterface
 {
 
     /**
@@ -30,7 +30,22 @@ class FixedAssetValidator extends AbstractItemValidator implements ItemValidator
          *
          * @var AbstractSpecification $spec ;
          */
-        try {} catch (\Exception $e) {
+        try {
+
+            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
+
+            if ($rootEntity->getStandardWeightInKg() != null) {
+                if (! $spec->isSatisfiedBy($rootEntity->getStandardWeightInKg())) {
+                    $rootEntity->addError("Standard weight invalid!");
+                }
+            }
+
+            if ($rootEntity->getStandardVolumnInM3() != null) {
+                if (! $spec->isSatisfiedBy($rootEntity->getStandardVolumnInM3())) {
+                    $rootEntity->addError("Standard volumn invalid!");
+                }
+            }
+        } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

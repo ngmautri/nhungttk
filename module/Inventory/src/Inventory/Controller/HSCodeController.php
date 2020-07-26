@@ -56,6 +56,7 @@ class HSCodeController extends AbstractGenericController
 
         $viewModel = new ViewModel(array(
             'results' => $results,
+            'q' => $q,
             'nmtPlugin' => $nmtPlugin
         ));
         $viewModel->setTemplate($viewTemplete);

@@ -10,38 +10,17 @@ use Procure\Infrastructure\Persistence\Filter\PoReportSqlFilter;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoReportController extends AbstractActionController
+class PoReportController extends AbstractGenericController
 {
 
     protected $reporter;
-
-    protected $logger;
-
-    protected $cache;
-
-    /**
-     *
-     * @return \Symfony\Component\Cache\Adapter\AbstractAdapter
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     *
-     * @param AbstractAdapter $cache
-     */
-    public function setCache(AbstractAdapter $cache)
-    {
-        $this->cache = $cache;
-    }
 
     public function headerStatusAction()
     {
@@ -317,7 +296,7 @@ class PoReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+        if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
             $result = $this->getReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
         } else {
             $result = null;
@@ -532,25 +511,6 @@ class PoReportController extends AbstractActionController
     // ====================================
     // Setter and Getter.
     // ====================================
-
-    /**
-     *
-     * @return \Monolog\Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function getReporter()
     {
         return $this->reporter;

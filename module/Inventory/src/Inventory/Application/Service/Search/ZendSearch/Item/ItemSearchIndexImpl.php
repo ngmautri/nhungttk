@@ -342,6 +342,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
         $doc->addField(Field::text('remarks', $snapshot->getRemarks()));
         $doc->addField(Field::keyword('sysNumber', $snapshot->getSysNumber()));
         $doc->addField(Field::text('remarksText', $snapshot->getRemarksText()));
+        $doc->addField(Field::text('hsCode', $snapshot->getHsCode()));
 
         /*
          * $doc->addField(Field::text('origin', $snapshot->getOrigin()));

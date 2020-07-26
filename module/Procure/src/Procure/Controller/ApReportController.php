@@ -8,13 +8,14 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Infrastructure\Persistence\Filter\ApReportSqlFilter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ApReportController extends AbstractActionController
+class ApReportController extends AbstractGenericController
 {
 
     protected $apReporter;
@@ -86,7 +87,7 @@ class ApReportController extends AbstractActionController
             $offset = $paginator->minInPage - 1;
         }
 
-        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+        if (! $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) {
             $list = $this->getApReporter()->getList($filter, $sort_by, $sort, $limit, $offset, $file_type);
         } else {
             $list = null;

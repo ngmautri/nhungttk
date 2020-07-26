@@ -26,6 +26,7 @@ use Zend\Math\Rand;
 use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Exception;
+use Inventory\Application\Command\Item\UpdateLogisticDataCmdHandler;
 
 /**
  *
@@ -70,12 +71,14 @@ class ItemController extends AbstractGenericController
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+        $dto = $rootEntity->makeSnapshot();
         $viewModel = new ViewModel(array(
             'action' => Constants::FORM_ACTION_SHOW,
             'form_action' => $action,
             'form_title' => $form_title,
             'redirectUrl' => null,
-            'dto' => $rootEntity->makeSnapshot(),
+            'dto' => $dto,
+            'dto1' => $dto,
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -112,12 +115,15 @@ class ItemController extends AbstractGenericController
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+        $dto = $rootEntity->makeSnapshot();
+
         $viewModel = new ViewModel(array(
             'action' => Constants::FORM_ACTION_SHOW,
             'form_action' => $action,
             'form_title' => $form_title,
             'redirectUrl' => null,
-            'dto' => $rootEntity->makeSnapshot(),
+            'dto' => $dto,
+            'dto1' => $dto,
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -158,12 +164,15 @@ class ItemController extends AbstractGenericController
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+        $dto = $rootEntity->makeSnapshot();
+
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,
             'form_title' => $form_title,
             'redirectUrl' => null,
-            'dto' => $rootEntity->makeSnapshot(),
+            'dto' => $dto,
+            'dto1' => $dto,
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -209,6 +218,7 @@ class ItemController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'dto' => null,
+                'dto1' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => "/inventory/item/create",
                 'form_title' => "Create Item",
@@ -246,6 +256,7 @@ class ItemController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'dto' => $dto,
+                'dto1' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => "/inventory/item/create",
                 'form_title' => "Create Item",
@@ -296,13 +307,14 @@ class ItemController extends AbstractGenericController
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-
+            $dto = $rootEntity->makeSnapshot();
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
-                'dto' => $rootEntity->makeSnapshot(),
+                'dto' => $dto,
+                'dto1' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -353,14 +365,126 @@ class ItemController extends AbstractGenericController
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
                 'dto' => $dto,
+                'dto1' => $rootEntity->makeSnapshot(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => Constants::FORM_ACTION_EDIT,
+                'version' => $rootEntity->getRevisionNo(),
                 'tab_id' => __FUNCTION__
             ));
 
             $viewModel->setTemplate("inventory/item/crud-v1");
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/inventory/item/list2";
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function updateLogisticAction()
+    {
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $u = $this->getUser();
+
+        $nmtPlugin = $this->Nmtplugin();
+        $prg = $this->prg('/inventory/item/update-logistic', true);
+        $form_action = "/inventory/item/update-logistic";
+        $form_title = "Edit Logistic Data";
+        $viewTemplate = "inventory/item/crud-v1";
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $rootEntity = $this->getItemService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'dto' => $rootEntity->makeSnapshot(),
+                'dto1' => $rootEntity->makeSnapshot(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => Constants::FORM_ACTION_EDIT,
+                'version' => $rootEntity->getRevisionNo(),
+                'tab_id' => __FUNCTION__,
+                'tab_idx' => 1
+            ));
+
+            $this->getLogger()->info(\sprintf("Item Logistic Data will be updated %s", $entity_id));
+
+            $viewModel->setTemplate($viewTemplate);
+            return $viewModel;
+        }
+
+        // ==========================
+
+        $notification = new Notification();
+        try {
+
+            $data = $prg;
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            // var_dump($data);
+
+            $dto1 = DTOFactory::createDTOFromArray($data, new ItemDTO());
+            $rootEntity = $this->getItemService()->getDocDetailsByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new UpdateItemOptions($rootEntity, $entity_id, $entity_token, $version, $u->getId(), __METHOD__);
+
+            $cmdHandler = new UpdateLogisticDataCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto1, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->execute();
+            $notification = $dto1->getNotification();
+            $this->getLogger()->info(\sprintf("Item Logistic Data updated %s", $entity_id));
+        } catch (\Exception $e) {
+            $this->getLogger()->debug($e->getMessage());
+            $notification->addError($e->getMessage());
+        }
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => $redirectUrl,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'dto1' => $dto1,
+                'dto' => $rootEntity->makeSnapshot(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => Constants::FORM_ACTION_EDIT,
+                'version' => $rootEntity->getRevisionNo(),
+                'tab_id' => __FUNCTION__,
+                'tab_idx' => 1
+            ));
+
+            $viewModel->setTemplate($viewTemplate);
             return $viewModel;
         }
 
@@ -2071,6 +2195,7 @@ class ItemController extends AbstractGenericController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
      */
     public function uploadPictureAction()
@@ -2358,6 +2483,10 @@ class ItemController extends AbstractGenericController
         return $response;
     }
 
+    /**
+     *
+     * @deprecated
+     */
     public function barcodeAction()
     {
         $barcode = $this->params()->fromQuery('barcode');
@@ -2379,7 +2508,8 @@ class ItemController extends AbstractGenericController
     }
 
     /**
-     * * @deprecated
+     *
+     * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -2535,7 +2665,8 @@ class ItemController extends AbstractGenericController
     }
 
     /**
-     * * @deprecated
+     *
+     * @deprecated
      *
      * @return \Zend\View\Model\ViewModel
      */

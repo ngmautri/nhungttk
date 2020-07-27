@@ -1,76 +1,27 @@
 
 <div id="tabs" style="font-size: 9.5pt">
-
-	<ul>
-		<li><a href="#general"><?php echo $this->translate('Reporting'); ?></a></li>
-	</ul>
-	<div id="general" style="font-size: 9pt">
-
-
-		<div class="row">
-			<div class="col-xs-6 col-md-3">
-				<div class="list-group" style="">
-					<a class="list-group-item" href="/inventory/opening-balance/list"><?php echo $this->translate('Opening Balance'); ?></a>
-					<a class="list-group-item" href="/inventory/item-group/list"><?php echo $this->translate('Item Group'); ?></a>
-					<a class="list-group-item" href="/inventory/serial-number/list"><?php echo $this->translate('Serial Number'); ?></a>
-					<a class="list-group-item" href="/inventory/batch-number/list"><?php echo $this->translate('Batch Number'); ?></a>
-					<a class="list-group-item" href="/inventory/warehouse/list"><?php echo $this->translate('Warehouse'); ?></a>
-					<a class="list-group-item"
-						href="/inventory/item-attachment/check-picture"><?php echo $this->translate('Check Picture'); ?></a>
-
-				</div>
-			</div>
-
-			<div class="col-xs-12 col-sm-6 col-md-9" style="">
-				<h3><?php echo $this->translate('Inventory Reporting'); ?></h3>
-			</div>
-		</div>
-
-		
-		<ul id="menu">
-  <li class="ui-state-disabled"><div>Toys (n/a)</div></li>
-  <li><div>Books</div></li>
-  <li><div>Clothing</div></li>
-  <li><div>Electronics</div>
-    <ul>
-      <li class="ui-state-disabled"><div>Home Entertainment</div></li>
-      <li><div>Car Hifi</div></li>
-      <li><div>Utilities</div></li>
-    </ul>
-  </li>
-  <li><div>Movies</div></li>
-  <li><div>Music</div>
-    <ul>
-      <li><div>Rock</div>
-        <ul>
-          <li><div>Alternative</div></li>
-          <li><div>Classic</div></li>
-        </ul>
+   <ul>
+      <li>
+         <a href="#general"><?php
+        echo $this->translate('Reporting');
+        ?></a>
       </li>
-      <li><div>Jazz</div>
-        <ul>
-          <li><div>Freejazz</div></li>
-          <li><div>Big Band</div></li>
-          <li><div>Modern</div></li>
-        </ul>
-      </li>
-      <li><div>Pop</div></li>
-    </ul>
-  </li>
-  <li class="ui-state-disabled"><div>Specials (n/a)</div></li>
-</ul>
-
-	</div>
-</div>
-
- <script>
-  $( function() {
-    $( "#menu" ).menu();
-  } );
-
-   </script>
+   </ul>
+   <div id="general" style="font-size: 9pt">
+      <h3><?php
+    echo $this->translate('Inventory Reporting');
+    ?></h3>
+    <hr>
+    
+   <h4 style="color: gray">Master Data</h4>
+   <a style="color: blue" href="/inventory/item-report/default"><i class="fa fa-book" aria-hidden="true"></i> Item Master Data</a>
+   <hr>
+   <h4 style="color: gray">Stock Movement:</h4>
    
-    <style>
-  .ui-menu { width: 200px; }
-  </style>
+   <a style="color: blue" href="/inventory/trx-report/row-status"><i class="fa fa-pie-chart" aria-hidden="true"></i> Warehouse Journal</a><br> 
+   <a style="color: blue" href="/inventory/trx-report/row-status"><i class="fa fa-industry" aria-hidden="true"></i> In-Out-Onhand Report</a><br>
+   <a style="color: blue" href="/inventory/trx-report/row-status"><i class="fa fa-pie-chart" aria-hidden="true"></i> Item On-hand Quantity</a>
  
+    
+   </div>
+</div>

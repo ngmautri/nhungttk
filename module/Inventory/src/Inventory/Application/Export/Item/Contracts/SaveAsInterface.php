@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Application\Export\Item\Contracts;
 
-use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
+use Inventory\Application\Export\Item\Formatter\AbstractFormatter;
 
 /**
  * Director in builder pattern
@@ -13,5 +13,5 @@ use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
 interface SaveAsInterface
 {
 
-    public function saveAs($rows, AbstractRowFormatter $formatter);
+    public function saveAs($rows, AbstractFormatter $formatter);
 }

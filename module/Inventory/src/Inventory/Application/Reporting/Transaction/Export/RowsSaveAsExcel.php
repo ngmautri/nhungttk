@@ -45,8 +45,11 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
             "#",
             "Date",
             "SKU",
+            "SysNo.",
             "ItemName",
-            "Flow"
+            "Flow",
+            "PR",
+            "WH"
         );
 
         $n = 0;
@@ -71,8 +74,11 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
                 $i,
                 $row->getTrxDate(),
                 $row->itemSKU,
+                $row->itemSysNumber,
                 $row->itemName,
-                $row->flow
+                $row->flow,
+                $row->prNumber,
+                $row->warehouseName
             );
 
             $n = 0;

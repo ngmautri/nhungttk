@@ -988,11 +988,11 @@ class TrxMapper
         if ($entity->getWhLocation() !== null) {
             $snapshot->whLocation = $entity->getWhLocation()->getId();
         }
-        if ($entity->getWarehouse() !== null) {
-            $snapshot->warehouse = $entity->getWarehouse()->getId();
+        if ($entity->getWh() !== null) {
+            RowMapper::updateWarehouseDetails($snapshot, $entity->getWh());
         }
         if ($entity->getPrRow() !== null) {
-            $snapshot->prRow = $entity->getPrRow()->getId();
+            RowMapper::updatePRDetails($snapshot, $entity->getPrRow());
         }
         if ($entity->getVendor() !== null) {
             $snapshot->vendor = $entity->getVendor()->getId();

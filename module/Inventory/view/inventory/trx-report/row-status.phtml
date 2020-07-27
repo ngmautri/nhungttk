@@ -234,10 +234,14 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     var columns = [
       
         { title: "Id", dataType: "string", dataIndx: "#", align: 'left',minWidth: 50,editable: true},
-        { title: "Date", dataType: "string", dataIndx: "docDate", width: 150,editable: false },
-        { title: "SKU", dataType: "string", dataIndx: "SKU", width: 100,editable: false },
-        { title: "Name", dataType: "string", dataIndx: "itemName", width: 350,editable: false },
-        { title: "Flow", dataType: "string", dataIndx: "flow", width: 150,editable: false },
+        { title: "Date", dataType: "string", dataIndx: "docDate", width: 80,editable: false },
+        { title: "SKU", dataType: "string", dataIndx: "itemSKU", width: 60,editable: false },
+        { title: "Id", dataType: "string", dataIndx: "itemSysNumber", align: 'left',minWidth: 80,editable: true},
+        
+           { title: "Name", dataType: "string", dataIndx: "itemName", width: 350,editable: false },
+        { title: "Flow", dataType: "string", dataIndx: "flow", width: 50,editable: false },
+        { title: "Pr No.", dataType: "string", dataIndx: "prNumber", width: 150,editable: false },
+        { title: "WH", dataType: "string", dataIndx: "warehouseName", width: 150,editable: false },
          ];
     var url = "<?php
     echo $girdUrl;

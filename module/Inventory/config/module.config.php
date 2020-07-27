@@ -126,27 +126,11 @@ return array(
             ),
 
             array(
-                'label' => 'Item Reporting',
+                'label' => 'Reporting',
                 'route' => 'Inventory/default',
-                'controller' => 'item-report',
-                'action' => 'default',
-                'icon' => 'fa fa-book'
-            ),
-
-            array(
-                'label' => 'Trx Report',
-                'route' => 'Inventory/default',
-                'controller' => 'trx-report',
-                'action' => 'header-status',
-                'icon' => 'fa fa-book'
-            ),
-
-            array(
-                'label' => 'Trx Row Report',
-                'route' => 'Inventory/default',
-                'controller' => 'trx-report',
-                'action' => 'row-status',
-                'icon' => 'fa fa-book'
+                'controller' => 'report',
+                'action' => 'index',
+                'icon' => 'fa fa-bar-chart'
             ),
 
             array(

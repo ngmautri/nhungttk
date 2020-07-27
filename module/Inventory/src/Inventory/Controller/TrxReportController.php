@@ -180,6 +180,87 @@ class TrxReportController extends AbstractGenericController
         ));
     }
 
+    public function inOutOnhandAction()
+    {
+        // $this->layout("layout/fluid");
+        $file_type = (int) $this->params()->fromQuery('file_type');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $docYear = $this->params()->fromQuery('docYear');
+        $docMonth = $this->params()->fromQuery('docMonth');
+        $isActive = $this->params()->fromQuery('isActive');
+
+        if ($file_type == null) :
+            $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+        endif;
+
+        if ($sort_by == null) :
+            $sort_by = "itemName";
+        endif;
+
+        if ($docYear == null) :
+            $docYear = date('Y');
+        endif;
+
+        if ($sort == null) :
+            $sort = "ASC";
+        endif;
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
+        $isActive = null;
+
+        $paginator = null;
+        $result = null;
+
+        $limit = null;
+        $offset = null;
+
+        $filter = new TrxRowReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setDocMonth($docMonth);
+        $filter->setDocYear($docYear);
+
+        $total_records = $this->getTrxReporter()->getAllRowTotal($filter);
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            return $this->getTrxReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+        }
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) {
+            $result = $this->getTrxReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        } else {
+            $result = null;
+        }
+
+        return new ViewModel(array(
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'file_type' => $file_type,
+            'result' => $result,
+            'per_pape' => $resultsPerPage,
+            'paginator' => $paginator,
+            'filter' => $filter
+        ));
+    }
+
     /**
      *
      * @return \Zend\View\Model\ViewModel

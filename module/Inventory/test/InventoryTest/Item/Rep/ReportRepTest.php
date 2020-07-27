@@ -29,11 +29,11 @@ class ReportRepTest extends PHPUnit_Framework_TestCase
             $filter->setItemType(1);
             $sort_by = null;
             $sort = null;
-            $limit = null;
-            $offset = null;
+            $limit = 1;
+            $offset = 1;
 
             $result = $rep->getItemList($filter, $sort_by, $sort, $limit, $offset);
-            echo count($result);
+            var_dump($result[0]->itemSku);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

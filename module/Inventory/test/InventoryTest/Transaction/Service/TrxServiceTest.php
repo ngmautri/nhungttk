@@ -25,7 +25,7 @@ class TrxServiceTest extends PHPUnit_Framework_TestCase
             $token = "1c80354d-b4e2-46be-a8c1-17a885e6d35f";
 
             $rootEntity = $sv->getDocDetailsByTokenId($id, $token);
-            var_dump($rootEntity->getRowsOutput());
+            var_dump($rootEntity->getRowbyId(1));
         } catch (InvalidArgumentException $e) {
             echo ($e->getMessage());
         }

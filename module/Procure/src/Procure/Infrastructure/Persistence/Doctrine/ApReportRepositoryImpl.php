@@ -84,7 +84,7 @@ class ApReportRepositoryImpl extends AbstractDoctrineRepository implements ApRep
     {
         $results = ApReportHelper::getAllRow($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
 
-        if (count($results) == null) {
+        if ($results == null) {
             return null;
         }
 

@@ -22,6 +22,8 @@ use Inventory\Application\Eventbus\HandlerMapper;
 use Inventory\Application\Eventbus\HandlerMapperFactory;
 use Inventory\Application\Reporting\Item\ItemReporter;
 use Inventory\Application\Reporting\Item\ItemReporterFactory;
+use Inventory\Application\Reporting\Transaction\TrxReporter;
+use Inventory\Application\Reporting\Transaction\TrxReporterFactory;
 use Inventory\Application\Service\Association\AssociationService;
 use Inventory\Application\Service\Association\Factory\AssociationServiceFactory;
 use Inventory\Application\Service\HSCode\HSCodeTreeService;
@@ -47,7 +49,9 @@ use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUploadServiceFactory;
 use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
+use Inventory\Infrastructure\Persistence\Doctrine\TrxReportRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemReportRepositoryImplFactory;
+use Inventory\Infrastructure\Persistence\Doctrine\Factory\TrxReportRepositoryImplFactory;
 
 return array(
     'navigation' => array(
@@ -122,10 +126,26 @@ return array(
             ),
 
             array(
-                'label' => 'Reporting',
+                'label' => 'Item Reporting',
                 'route' => 'Inventory/default',
                 'controller' => 'item-report',
                 'action' => 'default',
+                'icon' => 'fa fa-book'
+            ),
+
+            array(
+                'label' => 'Trx Report',
+                'route' => 'Inventory/default',
+                'controller' => 'trx-report',
+                'action' => 'header-status',
+                'icon' => 'fa fa-book'
+            ),
+
+            array(
+                'label' => 'Trx Row Report',
+                'route' => 'Inventory/default',
+                'controller' => 'trx-report',
+                'action' => 'row-status',
                 'icon' => 'fa fa-book'
             ),
 
@@ -294,12 +314,14 @@ return array(
 
             // Reporting
             ItemReporter::class => ItemReporterFactory::class,
+            TrxReporter::class => TrxReporterFactory::class,
 
             // Repository
             'Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemReportingRepositoryFactory',
             'Inventory\Infrastructure\Persistence\DoctrineItemListRepository' => 'Inventory\Infrastructure\Persistence\Factory\DoctrineItemListRepositoryFactory',
             'Inventory\Infrastructure\Persistence\Doctrine\ItemCategoryRepositoryImpl' => 'Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemCategoryRepositoryImplFactory',
             ItemReportRepositoryImpl::class => ItemReportRepositoryImplFactory::class,
+            TrxReportRepositoryImpl::class => TrxReportRepositoryImplFactory::class,
 
             // Search Handler
             ItemSearchIndexImpl::class => ItemSearchIndexImplFactory::class,
@@ -375,6 +397,7 @@ return array(
             'Inventory\Controller\HSCode' => 'Inventory\Controller\HSCodeControllerFactory',
             'Inventory\Controller\MfgCatalog' => 'Inventory\Controller\MfgCatalogControllerFactory',
             'Inventory\Controller\ItemReport' => 'Inventory\Controller\ItemReportControllerFactory',
+            'Inventory\Controller\TrxReport' => 'Inventory\Controller\TrxReportControllerFactory',
 
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',

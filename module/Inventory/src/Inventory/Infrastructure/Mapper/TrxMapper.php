@@ -736,15 +736,15 @@ class TrxMapper
         }
 
         if ($entity->getVendor() !== null) {
-            $snapshot->vendor = $entity->getVendor()->getId();
+            HeaderMapper::updateVendorDetails($snapshot, $entity->getVendor());
         }
 
         if ($entity->getWarehouse() !== null) {
-            $snapshot->warehouse = $entity->getWarehouse()->getId();
+            HeaderMapper::updateWarehouseDetails($snapshot, $entity->getWarehouse());
         }
 
         if ($entity->getPostingPeriod() !== null) {
-            $snapshot->postingPeriod = $entity->getPostingPeriod()->getId();
+            HeaderMapper::updatePostingPeriodDetails($snapshot, $entity->getPostingPeriod());
         }
 
         if ($entity->getCurrency() !== null) {
@@ -965,7 +965,7 @@ class TrxMapper
             $snapshot->issueFor = $entity->getIssueFor()->getId();
         }
         if ($entity->getMovement() !== null) {
-            $snapshot->movement = $entity->getMovement()->getId();
+            RowMapper::updateMovementDetails($snapshot, $entity->getMovement());
         }
         if ($entity->getDocCurrency() !== null) {
             $snapshot->docCurrency = $entity->getDocCurrency()->getId();

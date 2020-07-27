@@ -6,6 +6,7 @@ use Application\Entity\FinCostCenter;
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\NmtApplicationUom;
 use Application\Entity\NmtInventoryItem;
+use Application\Entity\NmtInventoryMv;
 use Application\Entity\NmtInventoryWarehouse;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcurePo;
@@ -477,6 +478,55 @@ class RowMapper
             $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
             $snapshot->docYear = $entity->getDocDate()->format("Y");
             $snapshot->docMonth = $entity->getDocDate()->format("m");
+        }
+
+        return $snapshot;
+    }
+
+    public static function updateMovementDetails(RowSnapshot $snapshot, NmtInventoryMv $entity)
+    {
+        if ($snapshot == null) {
+            return null;
+        }
+
+        if ($entity == null) {
+            return $snapshot;
+        }
+
+        // $snapshot->qo = $entity->getId();
+        $snapshot->docCurrencyISO = $entity->getCurrencyIso3();
+
+        $snapshot->docId = $entity->getId();
+        $snapshot->docToken = $entity->getToken();
+
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->docNumber = $entity->getDocNumber();
+
+        if ($entity->getDocCurrency() !== null) {
+            $snapshot->docCurrencyId = $entity->getDocCurrency()->getId();
+            $snapshot->docCurrencyISO = $entity->getDocCurrency()->getCurrency();
+        }
+
+        if ($entity->getLocalCurrency() !== null) {
+            $snapshot->localCurrencyId = $entity->getLocalCurrency()->getId();
+            $snapshot->localCurrencyISO = $entity->getLocalCurrency()->getCurrency();
+        }
+
+        if ($entity->getVendor() !== null) {
+            $snapshot->vendorId = $entity->getVendor()->getId();
+            $snapshot->vendorToken = $entity->getVendor()->getToken();
+
+            if ($entity->getVendor()->getCountry() !== null) {
+                $snapshot->vendorCountry = $entity->getVendor()
+                    ->getCountry()
+                    ->getCountryName();
+            }
+        }
+
+        if (! $entity->getPostingDate() == null) {
+            $snapshot->docDate = $entity->getPostingDate()->format("Y-m-d");
+            $snapshot->docYear = $entity->getPostingDate()->format("Y");
+            $snapshot->docMonth = $entity->getPostingDate()->format("m");
         }
 
         return $snapshot;

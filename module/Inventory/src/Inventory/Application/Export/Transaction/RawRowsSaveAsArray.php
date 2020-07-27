@@ -3,8 +3,7 @@ namespace Inventory\Application\Export\Transaction;
 
 use Inventory\Application\Export\Transaction\Contracts\RowsSaveAsInterface;
 use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
-use Procure\Domain\PurchaseRequest\PRRowSnapshot;
-use Procure\Infrastructure\Mapper\PrMapper;
+use Inventory\Application\Export\Transaction\Formatter\NullRowFormatter;
 
 /**
  *
@@ -27,27 +26,13 @@ class RawRowsSaveAsArray implements RowsSaveAsInterface
                 return null;
             }
 
+            if ($formatter instanceof NullRowFormatter) {
+                return $rows;
+            }
+
             $output = array();
             foreach ($rows as $r) {
-
-                $entity = $r[0];
-                $row = new PRRowSnapshot();
-                $row = PrMapper::convertToRowSnapshot($entity);
-
-                $row->draftPoQuantity = $r["po_qty"];
-                $row->postedPoQuantity = $r["posted_po_qty"];
-
-                $row->draftGrQuantity = $r["gr_qty"];
-                $row->postedGrQuantity = $r["posted_gr_qty"];
-
-                $row->draftApQuantity = $r["ap_qty"];
-                $row->postedApQuantity = $r["posted_ap_qty"];
-
-                $row->draftStockQrQuantity = $r["stock_gr_qty"];
-                $row->postedStockQrQuantity = $r["posted_stock_gr_qty"];
-
-                // $output[] = $formatter->format($row);
-                $output[] = $row;
+                $output[] = $formatter->format($r);
             }
 
             return $output;

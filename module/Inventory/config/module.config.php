@@ -9,17 +9,17 @@ use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnWhGrReversedCloseFiFoLayer;
 use Inventory\Application\EventBus\Handler\Item\Factory\OnItemCreatedCreateIndexFactory;
 use Inventory\Application\EventBus\Handler\Item\Factory\OnItemUpdatedUpdateIndexFactory;
-use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseFifoLayer;
-use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
-use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateSerialNo;
-use Inventory\Application\EventBus\Handler\Transaction\Factory\OnOpenBalancePostedCloseFifoLayerFactory;
-use Inventory\Application\EventBus\Handler\Transaction\Factory\OnOpenBalancePostedCloseTrxFactory;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseFifoLayer;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBlancePostedCreateSerialNo;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateFiFoLayerFactory;
-use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateSerialNoFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrReversedCloseFiFoLayerFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBalancePostedCloseFifoLayerFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBalancePostedCloseTrxFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBlancePostedCreateSerialNoFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
@@ -328,11 +328,13 @@ return array(
 
             // Event Handler// Transaction
             OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
+
             OnWhGrPostedCreateFiFoLayer::class => OnWhGrPostedCreateFiFoLayerFactory::class,
-            OnWhGrPostedCreateSerialNo::class => OnWhGrPostedCreateSerialNoFactory::class,
             OnWhGrReversedCloseFiFoLayer::class => OnWhGrReversedCloseFiFoLayerFactory::class,
-            OnOpenBalancePostedCloseFifoLayer::class => OnOpenBalancePostedCloseFifoLayerFactory::class,
-            OnOpenBalancePostedCloseTrx::class => OnOpenBalancePostedCloseTrxFactory::class
+
+            OnWhOpenBalancePostedCloseFifoLayer::class => OnWhOpenBalancePostedCloseFifoLayerFactory::class,
+            OnWhOpenBlancePostedCreateSerialNo::class => OnWhOpenBlancePostedCreateSerialNoFactory::class,
+            OnWhOpenBalancePostedCloseTrx::class => OnWhOpenBalancePostedCloseTrxFactory::class
         )
     ),
 

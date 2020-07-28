@@ -5,6 +5,7 @@ use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Service\Item\SerialNoServiceImpl;
 use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
+use Inventory\Domain\Event\Transaction\GR\WhOpenBalancePosted;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 
 /**
@@ -12,14 +13,14 @@ use Procure\Domain\GoodsReceipt\GRSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnWhGrPostedCreateSerialNo extends AbstractEventHandler
+class OnWhOpenBlancePostedCreateSerialNo extends AbstractEventHandler
 {
 
     /**
      *
      * @param WhGrPosted $event
      */
-    public function __invoke(WhGrPosted $event)
+    public function __invoke(WhOpenBalancePosted $event)
     {
         try {
             if (! $event->getTarget() instanceof GRSnapshot) {
@@ -44,6 +45,6 @@ class OnWhGrPostedCreateSerialNo extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return WhGrPosted::class;
+        return WhOpenBalancePosted::class;
     }
 }

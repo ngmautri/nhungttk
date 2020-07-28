@@ -14,6 +14,7 @@ class TransactionServiceFactory implements FactoryInterface
 
     /**
      *
+     * @deprecated
      * {@inheritdoc}
      * @see \Zend\ServiceManager\FactoryInterface::createService()
      */

@@ -10,9 +10,10 @@ use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
 use Inventory\Domain\Event\TransactionCreatedEvent;
 use Inventory\Domain\Event\TransactionRowCreatedEvent;
 use Inventory\Domain\Event\TransactionUpdatedEvent;
-use Inventory\Domain\Service\TransactionPostingService;
+use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionRowSnapshotAssembler;
+use Inventory\Domain\Warehouse\Transaction\TransactionSnapshot;
 use Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler;
 use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionCmdRepository;
@@ -20,11 +21,10 @@ use Inventory\Infrastructure\Doctrine\DoctrineTransactionQueryRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineTransactionRepository;
 use Inventory\Infrastructure\Doctrine\DoctrineWarehouseQueryRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Inventory\Domain\Service\TransactionSpecificationService;
-use Inventory\Domain\Service\TransactionValuationService;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

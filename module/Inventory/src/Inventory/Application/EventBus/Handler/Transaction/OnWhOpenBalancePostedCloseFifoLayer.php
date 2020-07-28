@@ -10,7 +10,7 @@ use Inventory\Domain\Event\Transaction\GR\WhOpenBalancePosted;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnOpenBalancePostedCloseTrx extends AbstractEventHandler
+class OnWhOpenBalancePostedCloseFifoLayer extends AbstractEventHandler
 {
 
     /**
@@ -22,9 +22,9 @@ class OnOpenBalancePostedCloseTrx extends AbstractEventHandler
     {
         try {
 
-            // close all transations.
+            // close all fifo current fifo layer.
 
-            $this->getLogger()->info(\sprintf("Transactions closed on opening balance posted!  #%s ", $event->getTarget()
+            $this->getLogger()->info(\sprintf("Fifo layer closed on opening balance posted!  #%s ", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
 

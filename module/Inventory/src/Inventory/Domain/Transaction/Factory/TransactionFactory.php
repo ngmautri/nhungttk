@@ -1,6 +1,16 @@
 <?php
 namespace Inventory\Domain\Transaction\Factory;
 
+use Application\Application\Event\DefaultParameter;
+use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Event\Transaction\TrxHeaderCreated;
+use Inventory\Domain\Service\SharedService;
+use Inventory\Domain\Transaction\GenericTrx;
+use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Domain\Transaction\Contracts\TrxType;
+use Inventory\Domain\Transaction\GR\GRFromOpening;
+use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionType;
 use Inventory\Domain\Warehouse\Transaction\GI\GIforCostCenter;
@@ -9,6 +19,8 @@ use Inventory\Domain\Warehouse\Transaction\GR\GRFromExchange;
 use Inventory\Domain\Warehouse\Transaction\GR\GRFromOpeningBalance;
 use Inventory\Domain\Warehouse\Transaction\GR\GRWithInvoice;
 use Inventory\Domain\Warehouse\Transaction\GR\GRWithoutInvoice;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  *
@@ -18,6 +30,95 @@ use Inventory\Domain\Warehouse\Transaction\GR\GRWithoutInvoice;
 class TransactionFactory
 {
 
+    /**
+     *
+     * @param TrxSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws RuntimeException
+     * @return \Inventory\Domain\Transaction\GenericTrx
+     */
+    public static function createFrom(TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    {
+        if (! $snapshot instanceof TrxSnapshot) {
+            throw new InvalidArgumentException("TrxSnapshot not found!");
+        }
+
+        $typeId = $snapshot->getItemTypeId();
+
+        if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
+            throw new InvalidArgumentException("Trx type empty or not supported! #" . $snapshot->getTrxType());
+        }
+
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        $trx = null;
+
+        switch ($typeId) {
+
+            case TrxType::GR_FROM_OPENNING_BALANCE:
+                $trx = new GRFromOpening();
+                break;
+        }
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $snapshot->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        /**
+         *
+         * @var GenericTrx $trx
+         */
+        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
+
+        $validators = ValidatorFactory::create($typeId, $sharedService);
+        $trx->validate($validators);
+
+        if ($trx->hasErrors()) {
+            throw new \RuntimeException($item->getNotification()->errorMessage());
+        }
+
+        $trx->recordedEvents = array();
+
+        /**
+         *
+         * @var TrxSnapshot $rootSnapshot
+         */
+        $rootSnapshot = $sharedService->getPostingService()
+            ->getCmdRepository()
+            ->store($trx, true);
+
+        if ($rootSnapshot == null) {
+            throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $trx->getId()));
+        }
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new TrxHeaderCreated($target, $defaultParams, $params);
+        $trx->addEvent($event);
+        return $trx;
+    }
+
+    public static function contructFromDB($snapshot)
+    {}
+
+    /**
+     *
+     * @deprecated
+     * @param int $transactionTypeId
+     * @return \Inventory\Domain\Warehouse\Transaction\GenericTransaction|NULL
+     */
     public static function createTransaction($transactionTypeId)
     {
         switch ($transactionTypeId) {

@@ -66,6 +66,7 @@ class ItemFactory
 
     /**
      *
+     * @deprecated
      * @param int $itemTypeId
      * @return \Inventory\Domain\Item\InventoryItem
      */

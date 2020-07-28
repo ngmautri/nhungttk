@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
-use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseTrx;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseFifoLayer;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnOpenBalancePostedCloseTrxFactory implements FactoryInterface
+class OnWhOpenBalancePostedCloseFifoLayerFactory implements FactoryInterface
 {
 
     /**
@@ -26,7 +26,7 @@ class OnOpenBalancePostedCloseTrxFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new OnOpenBalancePostedCloseTrx($doctrineEM, $eventBusService);
+        $service = new OnWhOpenBalancePostedCloseFifoLayer($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

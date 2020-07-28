@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
-use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseFifoLayer;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBlancePostedCreateSerialNo;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnOpenBalancePostedCloseFifoLayerFactory implements FactoryInterface
+class OnWhOpenBlancePostedCreateSerialNoFactory implements FactoryInterface
 {
 
     /**
@@ -26,7 +26,7 @@ class OnOpenBalancePostedCloseFifoLayerFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new OnOpenBalancePostedCloseFifoLayer($doctrineEM, $eventBusService);
+        $service = new OnWhOpenBlancePostedCreateSerialNo($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

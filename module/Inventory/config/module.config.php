@@ -4,18 +4,22 @@
  * @author Nguyen Mau Tri
  *
  */
-use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
-use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
-use Inventory\Application\EventBus\Handler\Item\CreateIndexOnItemCreated;
-use Inventory\Application\EventBus\Handler\Item\CreateSerialNoOnProcureGrPosted;
-use Inventory\Application\EventBus\Handler\Item\UpdateIndexOnItemUpdated;
-use Inventory\Application\EventBus\Handler\Item\Factory\CalculateCostOnWhGiPostedFactory;
-use Inventory\Application\EventBus\Handler\Item\Factory\CreateFiFoLayerOnWhGrPostedFactory;
-use Inventory\Application\EventBus\Handler\Item\Factory\CreateIndexOnItemCreatedFactory;
-use Inventory\Application\EventBus\Handler\Item\Factory\CreateSerialNoOnProcureGrPostedFactory;
-use Inventory\Application\EventBus\Handler\Item\Factory\UpdateIndexOnItemUpdatedFactory;
-use Inventory\Application\EventBus\Handler\Transaction\CreateWhGrOnProcureGrPosted;
-use Inventory\Application\EventBus\Handler\Transaction\Factory\CreateWhGrOnProcureGrPostedFactory;
+use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
+use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
+use Inventory\Application\EventBus\Handler\Item\OnWhGrReversedCloseFiFoLayer;
+use Inventory\Application\EventBus\Handler\Item\Factory\OnItemCreatedCreateIndexFactory;
+use Inventory\Application\EventBus\Handler\Item\Factory\OnItemUpdatedUpdateIndexFactory;
+use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseFifoLayer;
+use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseTrx;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateSerialNo;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnOpenBalancePostedCloseFifoLayerFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnOpenBalancePostedCloseTrxFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateFiFoLayerFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateSerialNoFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrReversedCloseFiFoLayerFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
@@ -318,13 +322,17 @@ return array(
             EventBusService::class => EventBusServiceFactory::class,
             HandlerMapper::class => HandlerMapperFactory::class,
 
-            // Event Handler
-            CalculateCostOnWhGiPosted::class => CalculateCostOnWhGiPostedFactory::class,
-            CreateFiFoLayerOnWhGrPosted::class => CreateFiFoLayerOnWhGrPostedFactory::class,
-            CreateWhGrOnProcureGrPosted::class => CreateWhGrOnProcureGrPostedFactory::class,
-            CreateSerialNoOnProcureGrPosted::class => CreateSerialNoOnProcureGrPostedFactory::class,
-            CreateIndexOnItemCreated::class => CreateIndexOnItemCreatedFactory::class,
-            UpdateIndexOnItemUpdated::class => UpdateIndexOnItemUpdatedFactory::class
+            // Event Handler// ITEM
+            OnItemCreatedCreateIndex::class => OnItemCreatedCreateIndexFactory::class,
+            OnItemUpdatedUpdateIndex::class => OnItemUpdatedUpdateIndexFactory::class,
+
+            // Event Handler// Transaction
+            OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
+            OnWhGrPostedCreateFiFoLayer::class => OnWhGrPostedCreateFiFoLayerFactory::class,
+            OnWhGrPostedCreateSerialNo::class => OnWhGrPostedCreateSerialNoFactory::class,
+            OnWhGrReversedCloseFiFoLayer::class => OnWhGrReversedCloseFiFoLayerFactory::class,
+            OnOpenBalancePostedCloseFifoLayer::class => OnOpenBalancePostedCloseFifoLayerFactory::class,
+            OnOpenBalancePostedCloseTrx::class => OnOpenBalancePostedCloseTrxFactory::class
         )
     ),
 

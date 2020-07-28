@@ -3,10 +3,12 @@ namespace Inventory\Application\Eventbus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
-use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
-use Inventory\Application\EventBus\Handler\Item\CreateFiFoLayerOnWhGrPosted;
-use Inventory\Application\EventBus\Handler\Item\CreateIndexOnItemCreated;
-use Inventory\Application\EventBus\Handler\Item\UpdateIndexOnItemUpdated;
+use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
+use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
+use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseFifoLayer;
+use Inventory\Application\EventBus\Handler\Transaction\OnOpenBalancePostedCloseTrx;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
 
 /**
  *
@@ -23,10 +25,12 @@ class HandlerMapper extends AbstractService
     protected function setUpMapper()
     {
         $handlers = [
-            CalculateCostOnWhGiPosted::class,
-            CreateFiFoLayerOnWhGrPosted::class,
-            CreateIndexOnItemCreated::class,
-            UpdateIndexOnItemUpdated::class
+            OnWhGiPostedCalculateCost::class,
+            OnWhGrPostedCreateFiFoLayer::class,
+            OnItemCreatedCreateIndex::class,
+            OnItemUpdatedUpdateIndex::class,
+            OnOpenBalancePostedCloseFifoLayer::class,
+            OnOpenBalancePostedCloseTrx::class
         ];
 
         $this->handlers = $handlers;

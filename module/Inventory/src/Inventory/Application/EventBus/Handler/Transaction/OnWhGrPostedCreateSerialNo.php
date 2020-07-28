@@ -1,18 +1,18 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item;
+namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Application\Service\Item\FIFOServiceImpl;
+use Inventory\Application\Service\Item\SerialNoServiceImpl;
 use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
-use Inventory\Domain\Transaction\GenericTrx;
+use Procure\Domain\GoodsReceipt\GRSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateFiFoLayerOnWhGrPosted extends AbstractEventHandler
+class OnWhGrPostedCreateSerialNo extends AbstractEventHandler
 {
 
     /**
@@ -22,15 +22,15 @@ class CreateFiFoLayerOnWhGrPosted extends AbstractEventHandler
     public function __invoke(WhGrPosted $event)
     {
         try {
-            if (! $event->getTarget() instanceof GenericTrx) {
-                Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service!");
+            if (! $event->getTarget() instanceof GRSnapshot) {
+                Throw new \InvalidArgumentException("GRSnapshot not give for Serial No");
             }
 
-            $fifoService = new FIFOServiceImpl();
-            $fifoService->setDoctrineEM($this->getDoctrineEM());
-            $fifoService->closeLayersOf($event->getTarget());
+            $sv = new SerialNoServiceImpl();
+            $sv->setDoctrineEM($this->getDoctrineEM());
+            $sv->createSerialNoFor($event->getTarget());
 
-            $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
+            $this->getLogger()->info(\sprintf("Serial No for PO-GR#%s handled and created, if any!", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;

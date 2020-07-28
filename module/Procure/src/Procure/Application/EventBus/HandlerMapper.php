@@ -3,8 +3,9 @@ namespace Procure\Application\Eventbus;
 
 use Application\Domain\EventBus\Handler\Mapper\FullNameHandlerMapper;
 use Application\Service\AbstractService;
-use Inventory\Application\EventBus\Handler\Item\CreateSerialNoOnProcureGrPosted;
-use Inventory\Application\EventBus\Handler\Transaction\CreateWhGrOnProcureGrPosted;
+use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
+use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
+use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrReversedCreateWhGi;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
 use Procure\Application\EventBus\Handler\GR\CreateGrReversalOnApReversed;
@@ -33,8 +34,9 @@ class HandlerMapper extends AbstractService
             CreateGrOnApPosted::class,
             CreateGrReversalOnApReversed::class,
 
-            CreateWhGrOnProcureGrPosted::class,
-            CreateSerialNoOnProcureGrPosted::class
+            OnProcureGrPostedCreateWhGr::class,
+            OnProcureGrPostedCreateSerialNo::class,
+            OnProcureGrReversedCreateWhGi::class
         ];
 
         $this->handlers = $handlers;

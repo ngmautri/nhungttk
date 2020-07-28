@@ -8,6 +8,7 @@ use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptio
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Procure\Application\Command\GenericCmd;
 use Procure\Domain\Event\Gr\GrPosted;
+use Procure\Domain\Event\Gr\GrReversed;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 
@@ -16,7 +17,7 @@ use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateWhGiOnProcureGrReversed extends AbstractEventHandler
+class OnProcureGrReversedCreateWhGi extends AbstractEventHandler
 {
 
     /**
@@ -24,7 +25,7 @@ class CreateWhGiOnProcureGrReversed extends AbstractEventHandler
      * @param GrPosted $event
      * @throws \InvalidArgumentException
      */
-    public function __invoke(GrPosted $event)
+    public function __invoke(GrReversed $event)
     {
         if (! $event->getTarget() instanceof GRSnapshot) {
             Throw new \InvalidArgumentException("GRSnapshot not given for creating WH Trx");
@@ -41,7 +42,7 @@ class CreateWhGiOnProcureGrReversed extends AbstractEventHandler
         $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
         $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
         $cmd->execute();
-        $this->getLogger()->info(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
+        $this->getLogger()->info(\sprintf("WH-GR Reversed from PO-GR Reversed!  #%s ", $event->getTarget()
             ->getId()));
     }
 
@@ -52,6 +53,6 @@ class CreateWhGiOnProcureGrReversed extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return GrPosted::class;
+        return GrReversed::class;
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item\Factory;
+namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
-use Inventory\Application\EventBus\Handler\Item\CreateSerialNoOnProcureGrPosted;
+use Inventory\Application\EventBus\Handler\Item\OnWhGrReversedCloseFiFoLayer;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateSerialNoOnProcureGrPostedFactory implements FactoryInterface
+class OnWhGrReversedCloseFiFoLayerFactory implements FactoryInterface
 {
 
     /**
@@ -26,7 +26,7 @@ class CreateSerialNoOnProcureGrPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CreateSerialNoOnProcureGrPosted($doctrineEM, $eventBusService);
+        $service = new OnWhGrReversedCloseFiFoLayer($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

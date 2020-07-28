@@ -8,11 +8,12 @@ use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 
 /**
+ * This should be also for none-inventory item
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateSerialNoOnProcureGrPosted extends AbstractEventHandler
+class OnProcureGrPostedCreateSerialNo extends AbstractEventHandler
 {
 
     /**

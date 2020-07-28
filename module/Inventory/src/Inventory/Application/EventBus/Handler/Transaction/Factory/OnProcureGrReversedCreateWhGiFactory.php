@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item\Factory;
+namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
-use Inventory\Application\EventBus\Handler\Item\CreateIndexOnItemCreated;
+use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrReversedCreateWhGi;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateIndexOnItemCreatedFactory implements FactoryInterface
+class OnProcureGrReversedCreateWhGiFactory implements FactoryInterface
 {
 
     /**
@@ -26,7 +26,7 @@ class CreateIndexOnItemCreatedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CreateIndexOnItemCreated($doctrineEM, $eventBusService);
+        $service = new OnProcureGrReversedCreateWhGi($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

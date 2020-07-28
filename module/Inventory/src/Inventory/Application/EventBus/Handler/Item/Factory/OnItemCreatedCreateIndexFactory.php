@@ -1,7 +1,7 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
+namespace Inventory\Application\EventBus\Handler\Item\Factory;
 
-use Inventory\Application\EventBus\Handler\Transaction\CreateWhGrOnProcureGrPosted;
+use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateWhGrOnProcureGrPostedFactory implements FactoryInterface
+class OnItemCreatedCreateIndexFactory implements FactoryInterface
 {
 
     /**
@@ -26,7 +26,7 @@ class CreateWhGrOnProcureGrPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CreateWhGrOnProcureGrPosted($doctrineEM, $eventBusService);
+        $service = new OnItemCreatedCreateIndex($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

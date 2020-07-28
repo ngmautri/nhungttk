@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Item\Factory;
 
-use Inventory\Application\EventBus\Handler\Item\CalculateCostOnWhGiPosted;
+use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CalculateCostOnWhGiPostedFactory implements FactoryInterface
+class OnProcureGrPostedCreateSerialNoFactory implements FactoryInterface
 {
 
     /**
@@ -26,7 +26,7 @@ class CalculateCostOnWhGiPostedFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new CalculateCostOnWhGiPosted($doctrineEM, $eventBusService);
+        $service = new OnProcureGrPostedCreateSerialNo($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

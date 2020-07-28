@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Application\EventBus\Handler\Item;
+namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
@@ -10,7 +10,7 @@ use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CalculateCostOnWhGiPosted extends AbstractEventHandler
+class OnWhGiPostedCalculateCost extends AbstractEventHandler
 {
 
     /**

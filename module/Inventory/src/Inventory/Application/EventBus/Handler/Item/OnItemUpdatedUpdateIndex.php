@@ -3,8 +3,9 @@ namespace Inventory\Application\EventBus\Handler\Item;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Application\Service\Item\SerialNoServiceImpl;
+use Inventory\Application\Service\Search\ZendSearch\Item\ItemSearchIndexImpl;
 use Inventory\Domain\Event\Item\ItemCreated;
+use Inventory\Domain\Event\Item\ItemUpdated;
 use Inventory\Domain\Item\ItemSnapshot;
 
 /**
@@ -12,7 +13,7 @@ use Inventory\Domain\Item\ItemSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CreateIndexOnItemCreated extends AbstractEventHandler
+class OnItemUpdatedUpdateIndex extends AbstractEventHandler
 {
 
     /**
@@ -21,19 +22,19 @@ class CreateIndexOnItemCreated extends AbstractEventHandler
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function __invoke(ItemCreated $event)
+    public function __invoke(ItemUpdated $event)
     {
         try {
 
             if (! $event->getTarget() instanceof ItemSnapshot) {
-                Throw new \InvalidArgumentException("GRSnapshot not give for Serial No");
+                Throw new \InvalidArgumentException("ItemSnapshot not given for updating index.");
             }
 
-            $sv = new SerialNoServiceImpl();
-            $sv->setDoctrineEM($this->getDoctrineEM());
-            $sv->createSerialNoFor($event->getTarget());
+            $indexer = new ItemSearchIndexImpl();
+            $indexer->createDoc($event->getTarget());
 
-            $this->getLogger()->info(\sprintf("Serial No for PO-GR#%s handled and created, if any!", $event->getTarget()
+            $format = "Index for item #%s updated!";
+            $this->getLogger()->info(\sprintf($format, $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;
@@ -47,6 +48,6 @@ class CreateIndexOnItemCreated extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return ItemCreated::class;
+        return ItemUpdated::class;
     }
 }

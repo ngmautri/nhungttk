@@ -88,7 +88,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
             return null;
         }
 
-        return TrxDoc::makeFromSnapshot($snapshot);
+        return TrxDoc::constructFromSnapshot($snapshot);
     }
 
     public function getRootEntityByTokenId($id, $token = null)

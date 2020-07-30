@@ -4,13 +4,14 @@ namespace Inventory\Application\Service\Item;
 use Application\Service\AbstractService;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Inventory\Domain\Exception\InvalidArgumentException;
-use Inventory\Domain\Service\FIFOServiceInterface;
+use Inventory\Domain\Service\Contracts\FIFOServiceInterface;
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Ramsey;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

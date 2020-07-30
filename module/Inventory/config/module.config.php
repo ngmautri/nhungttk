@@ -6,14 +6,18 @@
  */
 use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
+use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
 use Inventory\Application\EventBus\Handler\Item\OnWhGrReversedCloseFiFoLayer;
 use Inventory\Application\EventBus\Handler\Item\Factory\OnItemCreatedCreateIndexFactory;
 use Inventory\Application\EventBus\Handler\Item\Factory\OnItemUpdatedUpdateIndexFactory;
+use Inventory\Application\EventBus\Handler\Item\Factory\OnProcureGrPostedCreateSerialNoFactory;
+use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseFifoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBlancePostedCreateSerialNo;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrPostedCreateWhGrFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateFiFoLayerFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrReversedCloseFiFoLayerFactory;
@@ -327,6 +331,9 @@ return array(
             OnItemUpdatedUpdateIndex::class => OnItemUpdatedUpdateIndexFactory::class,
 
             // Event Handler// Transaction
+            OnProcureGrPostedCreateWhGr::class => OnProcureGrPostedCreateWhGrFactory::class,
+            OnProcureGrPostedCreateSerialNo::class => OnProcureGrPostedCreateSerialNoFactory::class,
+
             OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
 
             OnWhGrPostedCreateFiFoLayer::class => OnWhGrPostedCreateFiFoLayerFactory::class,

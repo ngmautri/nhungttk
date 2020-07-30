@@ -21,10 +21,10 @@ class ValidatorFactory
 
     /**
      *
-     * @param int $itemTypeId
+     * @param int $trxTypeId
      * @param SharedService $sharedService
      * @throws InvalidArgumentException
-     * @return \Inventory\Domain\Validator\Item\ItemValidatorCollection
+     * @return \Inventory\Domain\Service\TrxValidationService
      */
     public static function create($trxTypeId, SharedService $sharedService)
     {

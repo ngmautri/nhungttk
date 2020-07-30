@@ -237,4 +237,7 @@ class TrxDoc extends GenericTrx
 
     protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {}
+
+    public function specify()
+    {}
 }

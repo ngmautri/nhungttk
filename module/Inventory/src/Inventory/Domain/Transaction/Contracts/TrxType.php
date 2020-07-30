@@ -1,6 +1,8 @@
 <?php
 namespace Inventory\Domain\Transaction\Contracts;
 
+use Application\Domain\Util\Translator;
+
 /**
  * Goods Movement Type (GM, WT)
  *
@@ -72,5 +74,100 @@ class TrxType
         $list[] = self::GR_FROM_EXCHANGE;
 
         return $list;
+    }
+
+    public static function getGoodIssueTrx($translator = null)
+    {
+        return [
+
+            self::GI_FOR_REPAIR_MACHINE => [
+                "type_name" => Translator::translate("Issue for reparing machine (no exchange of part)"),
+                "type_description" => Translator::translate("Issue part for repairing of machine. The requester must not give any part")
+            ],
+
+            self::GI_FOR_REPAIR_MACHINE_WITH_EX => [
+                "type_name" => Translator::translate("Issue for reparing machine (exchange of part)"),
+                "type_description" => Translator::translate("Exchange parts for repairing of machine.<ul><li>Spare part controller will issue new parts and receive old /defect one back to store for disposal process.</li><li>Asset code is required.</li></ul>")
+            ],
+
+            self::GI_FOR_PROJECT => [
+                "type_name" => Translator::translate("Issue for Project (e.g IE Project)"),
+                "type_description" => Translator::translate("Spare part, materials will be consumpted by the project.<br>Project must be given! ")
+            ],
+
+            self::GI_FOR_COST_CENTER => [
+                "type_name" => Translator::translate("Issue for Cost Center"),
+                "type_description" => Translator::translate("Spare part, materials will be consumpted by an cost center.<br>Cost Center must be given! ")
+            ],
+
+            self::GI_FOR_PRODUCTION_ORDER => array(
+                "type_name" => Translator::translate("Issue for Production Order"),
+                "type_description" => Translator::translate("Spare part, materials will be issued for Production Order.<br>Production Order must be given! ")
+            ),
+
+            self::GI_FOR_PRODUCTION_ORDER => array(
+                "type_name" => Translator::translate("Issue for Production Order"),
+                "type_description" => Translator::translate("Spare part, materials will be issued for Production Order.<br>Production Order must be given! ")
+            ),
+
+            self::GI_FOR_EXTERNAL_REPAIR => array(
+                "type_name" => Translator::translate("Issue for Repairing"),
+                "type_description" => Translator::translate("Spare part, materials will be repaired by external party. After repaired, part will be received again")
+            ),
+
+            self::GI_FOR_MAINTENANCE_WORK => array(
+                "type_name" => Translator::translate("Issue for Maintenance Work"),
+                "type_description" => Translator::translate("Spare part, materials will be issued for maintenance  worked.")
+            ),
+
+            self::GI_FOR_ASSET => array(
+                "type_name" => Translator::translate("Issue for Asset"),
+                "type_description" => Translator::translate("Spare part, materials will be issued for an asset. Asset ID is required.")
+            ),
+
+            self::GI_FOR_RETURN_PO => array(
+                "type_name" => Translator::translate("Issue for return PO"),
+                "type_description" => Translator::translate("goods will be issued for returning to supplier. PO is required!")
+            ),
+
+            self::GI_FOR_TRANSFER_WAREHOUSE => array(
+                "type_name" => Translator::translate("Transfer to other warehouse"),
+                "type_description" => Translator::translate("goods will be issued for other warehouse.")
+            ),
+
+            self::GI_FOR_TRANSFER_LOCATION => array(
+                "type_name" => Translator::translate("Transfer to other location"),
+                "type_description" => Translator::translate("goods will be issued for other location in warehouse.")
+            ),
+
+            self::GI_FOR_DISPOSAL => array(
+                "type_name" => Translator::translate("Issue for diposal"),
+                "type_description" => Translator::translate("goods will be disposed.PO is required!")
+            )
+        ];
+    }
+
+    public static function getGoodReceiptTrx($translator = null)
+    {
+        return [
+
+            self::GR_FROM_OPENNING_BALANCE => [
+                "type_name" => Translator::translate("Initiate openning balance"),
+                "type_description" => Translator::translate("openning balance")
+            ],
+
+            self::GR_FROM_PURCHASING => [
+                "type_name" => Translator::translate("Good Receipt from purchasing"),
+                "type_description" => Translator::translate("Good Receipt from purchasing")
+            ],
+            self::GR_FROM_TRANSFER_WAREHOUSE => [
+                "type_name" => Translator::translate("Good Receipt from warehouse transfer"),
+                "type_description" => Translator::translate("Good Receipt from warehouse transfer")
+            ],
+            self::GR_FROM_EXCHANGE => [
+                "type_name" => Translator::translate("Good Receipt from exchange)"),
+                "type_description" => Translator::translate("Good Receipt from exchange")
+            ]
+        ];
     }
 }

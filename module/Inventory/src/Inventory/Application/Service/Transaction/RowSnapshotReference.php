@@ -3,7 +3,6 @@ namespace Inventory\Application\Service\Transaction;
 
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Transaction\TrxRowSnapshot;
-use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 
@@ -36,11 +35,6 @@ class RowSnapshotReference
         if ($snapshot->getPrRow() > 0) {
             $poQuery = new PRQueryRepositoryImpl($doctrineEM);
             $snapshot->pr = $poQuery->getHeaderIdByRowId($snapshot->getPrRow());
-        }
-
-        if ($snapshot->getGrRow() > 0) {
-            $apQuery = new GRQueryRepositoryImpl($doctrineEM);
-            // $snapshot-> = $apQuery->getHeaderIdByRowId($snapshot->getApInvoiceRow());
         }
 
         if ($snapshot->getItem() > 0) {

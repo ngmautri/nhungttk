@@ -43,11 +43,11 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 
             $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
             if ($spec->isSatisfiedBy($rootEntity->getMovementType())) {
-                $rootEntity->addError("Goods movement type is not set");
+                $rootEntity->addError("Goods movement type is not set" . __FUNCTION__);
             } else {
                 $supportedType = TrxType::getSupportedTransaction();
                 if (! in_array($rootEntity->getMovementType(), $supportedType)) {
-                    $rootEntity->addError("Transaction Type is not supported");
+                    $rootEntity->addError("Goods movement Type is not supported" . __FUNCTION__);
                 }
             }
 

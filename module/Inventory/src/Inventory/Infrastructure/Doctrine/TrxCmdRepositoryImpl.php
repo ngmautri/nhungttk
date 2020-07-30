@@ -106,7 +106,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         $rows = $rootEntity->getDocRows();
 
         if (count($rows) == null) {
-            throw new InvalidArgumentException("Document is empty.");
+            throw new InvalidArgumentException("Document is empty." . __FUNCTION__ . __LINE__);
         }
 
         $rootSnapshot = $this->_getRootSnapshot($rootEntity);

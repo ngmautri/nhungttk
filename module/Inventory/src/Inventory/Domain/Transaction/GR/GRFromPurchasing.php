@@ -31,10 +31,15 @@ use InvalidArgumentException;
 class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
 {
 
-    public function __construct()
+    public function specify()
     {
         $this->movementType = TrxType::GR_FROM_PURCHASING;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;
+    }
+
+    public function __construct()
+    {
+        $this->specify();
     }
 
     public static function postCopyFromProcureGR(GRDoc $sourceObj, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)

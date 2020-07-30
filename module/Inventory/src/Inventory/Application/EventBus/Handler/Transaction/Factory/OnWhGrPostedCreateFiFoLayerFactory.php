@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Transaction\Factory;
 
-use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateSerialNo;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
 use Inventory\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -26,7 +26,7 @@ class OnWhGrPostedCreateFiFoLayerFactory implements FactoryInterface
         $doctrineEM = $container->get('doctrine.entitymanager.orm_default');
         $eventBusService = $container->get(EventBusService::class);
 
-        $service = new OnWhGrPostedCreateSerialNo($doctrineEM, $eventBusService);
+        $service = new OnWhGrPostedCreateFiFoLayer($doctrineEM, $eventBusService);
 
         $sv = $container->get("AppLogger");
         $service->setLogger($sv);

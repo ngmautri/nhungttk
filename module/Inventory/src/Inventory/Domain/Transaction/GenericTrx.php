@@ -18,10 +18,12 @@ use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
+use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  *
@@ -30,6 +32,8 @@ use InvalidArgumentException;
  */
 abstract class GenericTrx extends BaseDoc
 {
+
+    abstract public function specify();
 
     abstract protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
@@ -112,7 +116,7 @@ abstract class GenericTrx extends BaseDoc
      * @throws OperationFailedException
      * @return \Inventory\Domain\Transaction\TrxRowSnapshot
      */
-    public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
@@ -125,6 +129,8 @@ abstract class GenericTrx extends BaseDoc
         if ($options == null) {
             throw new InvalidArgumentException("Options not found");
         }
+
+        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
 
         $this->_checkParams($validationService, $sharedService);
 
@@ -143,7 +149,7 @@ abstract class GenericTrx extends BaseDoc
         $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getNotification()->errorMessage());
+            throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -157,7 +163,7 @@ abstract class GenericTrx extends BaseDoc
             ->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
+            throw new RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
         $params = [
@@ -200,7 +206,7 @@ abstract class GenericTrx extends BaseDoc
      * @throws OperationFailedException
      * @return \Inventory\Domain\Transaction\TrxRowSnapshot
      */
-    public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("Trx is posted! %s", $this->getId()));
@@ -213,6 +219,8 @@ abstract class GenericTrx extends BaseDoc
         if ($options == null) {
             throw new InvalidArgumentException("Options not found");
         }
+
+        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
 
         $this->_checkParams($validationService, $sharedService);
 

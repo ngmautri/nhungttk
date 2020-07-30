@@ -4,25 +4,19 @@ namespace Inventory\Application\Command\Transaction;
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Inventory\Application\Command\Transaction\Options\CopyFromGROptions;
-use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
-use Inventory\Domain\Exception\OperationFailedException;
+use Inventory\Application\Command\Transaction\Options\TrxCreateOptions;
+use Inventory\Application\Service\Item\FIFOServiceImpl;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
-use Inventory\Domain\Service\TrxValidationService;
-use Inventory\Domain\Transaction\GR\GRFromPurchasing;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Header\DefaultHeaderValidator;
-use Inventory\Domain\Transaction\Validator\Row\DefaultRowValidator;
-use Inventory\Domain\Transaction\Validator\Row\WarehouseValidator;
+use Inventory\Domain\Service\TrxValuationService;
+use Inventory\Domain\Transaction\TrxDoc;
+use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Procure\Application\Service\FXService;
-use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\GoodsReceipt\GRSnapshot;
-use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use InvalidArgumentException;
 
 /**
@@ -47,24 +41,30 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var \Inventory\Application\DTO\Transaction\TrxDTO $dto ;
-         * @var GRDoc $rootEntity ;
-         * @var CopyFromGROptions $options ;
+         * @var TrxCreateOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof PostCopyFromProcureGROptions) {
+        if (! $options instanceof TrxCreateOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
-        $sourceObj = $options->getSourceObj();
-
-        if (! $sourceObj instanceof GRSnapshot) {
-            throw new InvalidArgumentException(sprintf("Source object not given! %s", "PO-GR Document required"));
-        }
-
         try {
+
+            $dto->company = $options->getCompanyId();
+            $dto->createdBy = $options->getUserId();
+            $dto->currency = $dto->getDocCurrency();
+            $dto->localCurrency = $options->getLocalCurrencyId();
+
+            /**
+             *
+             * @var TrxSnapshot $snapshot ;
+             * @var TrxSnapshot $rootSnapshot ;
+             * @var TrxDoc $rootEntity ;
+             */
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new TrxSnapshot());
 
             $notification = new Notification();
 
@@ -76,29 +76,14 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new TrxPostingService($cmdRepository);
 
+            $fifoService = new FIFOServiceImpl();
+            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
+            $valuationService = new TrxValuationService($fifoService);
+
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+            $sharedService->setValuationService($valuationService);
 
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validationService = new TrxValidationService($headerValidators, $rowValidators);
-
-            $id = $sourceObj->getId();
-            $token = $sourceObj->getToken();
-
-            $rep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
-            $sourceObj = $rep->getRootEntityByTokenId($id, $token);
-
-            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $validationService, $sharedService);
+            $rootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch
             // ================
@@ -107,11 +92,11 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("WH-GR #%s copied from PO-GR #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
+            $m = sprintf("Trx Header created %s!", $rootEntity->getId());
             $notification->addSuccess($m);
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

@@ -10,7 +10,7 @@ use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GoodsReceipt extends GenericTrx
+abstract class GoodsReceipt extends GenericTrx
 {
 
     // Specific Attribute, if any

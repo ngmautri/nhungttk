@@ -3,11 +3,13 @@ namespace Inventory\Application\Service\Item;
 
 use Application\Service\AbstractService;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Inventory\Domain\Service\FIFOLayerServiceInterface;
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 use Zend\Math\Rand;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

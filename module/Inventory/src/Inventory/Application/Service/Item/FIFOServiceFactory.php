@@ -6,6 +6,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

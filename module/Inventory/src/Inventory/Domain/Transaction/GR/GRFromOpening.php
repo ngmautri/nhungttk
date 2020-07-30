@@ -22,7 +22,7 @@ use RuntimeException;
 class GRFromOpening extends GoodsReceipt implements GoodsReceiptInterface
 {
 
-    public function __construct()
+    public function specify()
     {
         $this->movementType = TrxType::GR_FROM_OPENNING_BALANCE;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;

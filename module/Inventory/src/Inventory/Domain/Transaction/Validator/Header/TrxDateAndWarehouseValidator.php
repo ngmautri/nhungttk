@@ -2,30 +2,30 @@
 namespace Inventory\Domain\Transaction\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Procure\Domain\AbstractDoc;
-use Procure\Domain\Exception\Gr\GrCreateException;
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
-use Procure\Domain\GoodsReceipt\GenericGR;
-use Procure\Domain\Validator\AbstractValidator;
-use Procure\Domain\Validator\HeaderValidatorInterface;
+use Inventory\Domain\Transaction\AbstractTrx;
+use Inventory\Domain\Transaction\GenericTrx;
+use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
+use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface;
+use Exception;
+use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderValidatorInterface
+class TrxDateAndWarehouseValidator extends AbstractValidator implements HeaderValidatorInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
+     * @see \Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface::validate()
      */
-    public function validate(AbstractDoc $rootEntity)
+    public function validate(AbstractTrx $rootEntity)
     {
-        if (! $rootEntity instanceof GenericGR) {
-            throw new GrInvalidArgumentException('Root entity not given!');
+        if (! $rootEntity instanceof GenericTrx) {
+            throw new InvalidArgumentException('Root entity not given!');
         }
 
         /**
@@ -33,11 +33,11 @@ class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderVal
          * @var AbstractSpecification $spec ;
          */
         try {
-            // ==== GR DATE =======
-            $spec = $this->sharedSpecificationFactory->getDateSpecification();
+            // ==== MV DATE =======
+            $spec = $this->getSharedSpecificationFactory()->getDateSpecification();
 
-            if (! $spec->isSatisfiedBy($rootEntity->getGrDate())) {
-                $rootEntity->addError("Good Receipt date is not correct or empty");
+            if (! $spec->isSatisfiedBy($rootEntity->getMovementDate())) {
+                $rootEntity->addError("Movement date is not correct or empty");
             }
 
             // ===== WAREHOUSE =======
@@ -53,7 +53,7 @@ class GrDateAndWarehouseValidator extends AbstractValidator implements HeaderVal
                 if (! $spec1->isSatisfiedBy($subject))
                     $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));
             }
-        } catch (GrCreateException $e) {
+        } catch (Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

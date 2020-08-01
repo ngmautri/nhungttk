@@ -43,6 +43,7 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
+            "Ref.",
             "Date",
             "SKU",
             "SysNo.",
@@ -72,6 +73,7 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
+                $row->sysNumber,
                 $row->getTrxDate(),
                 $row->itemSKU,
                 $row->itemSysNumber,

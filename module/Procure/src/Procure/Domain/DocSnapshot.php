@@ -74,4 +74,10 @@ class DocSnapshot extends BaseDocSnapshot
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
     }
+
+    public function markAsChange($createdBy, $createdDate)
+    {
+        $this->setLastchangeOn($createdDate);
+        $this->setLastChangedByName($createdBy);
+    }
 }

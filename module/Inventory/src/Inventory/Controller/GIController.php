@@ -1,22 +1,22 @@
 <?php
 namespace Inventory\Controller;
 
+use Application\Notification;
+use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Shared\DTOFactory;
+use Application\Entity\NmtInventoryMv;
 use Application\Entity\NmtInventoryTrx;
-use Doctrine\ORM\EntityManager;
-use Inventory\Application\Service\Warehouse\TransactionService;
-use Inventory\Service\ItemSearchService;
-use MLA\Paginator;
+use Application\Model\Constants;
+use Inventory\Application\Command\GenericCmd;
+use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
+use Inventory\Application\Command\Transaction\CreateHeaderCmdHandler;
+use Inventory\Application\Command\Transaction\Options\TrxCreateOptions;
+use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Domain\Transaction\Contracts\TrxType;
 use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Application\Entity\NmtInventoryGi;
-use Application\Entity\NmtInventoryMv;
-use Inventory\Domain\Warehouse\Transaction\Factory\TransactionFactory;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
-use Zend\Session\Container;
-use Application\Notification;
 
 /**
  * Goods Issue
@@ -24,176 +24,148 @@ use Application\Notification;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIController extends AbstractActionController
+class GIController extends AbstractGenericController
 {
 
-    protected $doctrineEM;
+    protected $trxService;
 
-    protected $itemSearchService;
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function createAction()
+    {
+        $this->layout("Inventory/layout-fullscreen");
 
-    protected $giService;
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $isAllowed = true;
 
-    protected $inventoryTransactionService;
+        $viewTemplete = "inventory/gi/crudHeader";
+        $action = Constants::FORM_ACTION_ADD;
+        $form_action = "/inventory/gi/create";
+        ;
+        $form_title = $nmtPlugin->translate("Create Good Issue");
 
-    protected $transactionService;
+        $transactionType = TrxType::getGoodIssueTrx($nmtPlugin->getTranslator());
+
+        $prg = $this->prg('/inventory/gi/create', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $redirectUrl = null;
+
+            $viewModel = new ViewModel(array(
+
+                'action' => $action,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'version' => null,
+                'dto' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'transactionType' => $transactionType,
+                'isAllowed' => $isAllowed,
+                'errors' => null
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // Is Posting
+        // ++++++++++++++++++++++++++++++
+
+        $notification = new Notification();
+        try {
+            $data = $prg;
+
+            $movementType = $data['movementType'];
+            switch ($movementType) {
+                case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
+                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
+                    return $this->redirect()->toUrl($redirectUrl);
+
+                case TrxType::GI_FOR_TRANSFER_LOCATION:
+                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
+                    return $this->redirect()->toUrl($redirectUrl);
+            }
+
+            /**
+             *
+             * @var TrxDTO $dto ;
+             */
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+
+            $options = new TrxCreateOptions($this->getCompanyId(), $this->getLocalCurrencyId(), $this->getUserId(), __METHOD__);
+            $cmdHandler = new CreateHeaderCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'action' => $action,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'version' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'transactionType' => $transactionType,
+                'errors' => $notification->getErrors()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = "/inventory/item-transaction/list";
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Transaction\TrxService
+     */
+    public function getTrxService()
+    {
+        return $this->trxService;
+    }
+
+    /**
+     *
+     * @param TrxService $trxService
+     */
+    public function setTrxService(TrxService $trxService)
+    {
+        $this->trxService = $trxService;
+    }
 
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function reverseAction()
-    {
-        $request = $this->getRequest();
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
-
-        // Is Posing
-        // =============================
-        if ($request->isPost()) {
-
-            $errors = array();
-
-            $data = $this->params()->fromPost();
-            $redirectUrl = $data['redirectUrl'];
-            $entity_id = (int) $data['entity_id'];
-            $entity_token = $data['entity_token'];
-
-            $reversalDate = $data['reversalDate'];
-            $reversalReason = $data['reversalReason'];
-
-            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-            $entity_array = $res->getMovement($entity_id, $entity_token);
-
-            if ($entity_array == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
-            $entity = null;
-            if ($entity_array[0] instanceof NmtInventoryMv) {
-                $entity = $entity_array[0];
-            }
-
-            if ($entity == null) {
-                $m = $nmtPlugin->translate("WH Transaction not found. Please check.");
-                $errors[] = $m;
-                $this->flashMessenger()->addMessage($m);
-
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'entity' => null,
-                    'errors' => $errors,
-                    'issueType' => $issueType,
-                    'movementTypeInfo' => null
-                ));
-
-                $viewModel->setTemplate("inventory/gi/reverse");
-                return $viewModel;
-            }
-
-            $movementTypeInfo = '';
-            $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
-            if ($giType !== null) {
-                $movementTypeInfo = $giType['type_description'];
-            }
-
-            $errors = $this->inventoryTransactionService->reverse($entity, $u, $reversalDate, $reversalReason, __METHOD__);
-
-            if (count($errors) > 0) {
-
-                $m = $nmtPlugin->translate("Reversal failed!");
-                $this->flashMessenger()->addMessage($m);
-
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'entity' => $entity,
-                    'errors' => $errors,
-                    'issueType' => $issueType,
-                    'movementTypeInfo' => $movementTypeInfo
-                ));
-
-                $viewModel->setTemplate("inventory/gi/reverse");
-                return $viewModel;
-            }
-
-            $m = sprintf("WH GI #%s reversed", $entity->getSysNumber());
-            $this->flashMessenger()->addMessage($m);
-
-            // $redirectUrl = "/inventory/gi/list";
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        // NO POST
-        // Initiate ......................
-        // ================================
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        } else {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $gi = $res->getMovement($id, $token);
-
-        if ($gi == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity = null;
-        if ($gi[0] instanceof NmtInventoryMv) {
-            $entity = $gi[0];
-        }
-
-        if ($entity == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $movementTypeInfo = '';
-        $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
-        if ($giType !== null) {
-            $movementTypeInfo = $giType['type_description'];
-        }
-
-        return new ViewModel(array(
-            'redirectUrl' => $redirectUrl,
-            'entity' => $entity,
-            'errors' => null,
-            'issueType' => $issueType,
-            'movementTypeInfo' => $movementTypeInfo
-        ));
-    }
-
-    /**
-     *
-     * @return \Inventory\Service\InventoryTransactionService
-     */
-    public function getInventoryTransactionService()
-    {
-        return $this->inventoryTransactionService;
-    }
-
-    /**
-     *
-     * @param \Inventory\Service\InventoryTransactionService $inventoryTransactionService
-     */
-    public function setInventoryTransactionService(\Inventory\Service\InventoryTransactionService $inventoryTransactionService)
-    {
-        $this->inventoryTransactionService = $inventoryTransactionService;
-    }
+    {}
 
     /**
      *
@@ -217,6 +189,7 @@ class GIController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function showAction()
@@ -274,544 +247,26 @@ class GIController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function editAction()
-    {
-        $request = $this->getRequest();
-        $this->layout("Inventory/layout-fullscreen");
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-
-        $transactionType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-
-        $isAllowed = true;
-
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
-        }
-
-        // Is Posing
-        // =============================
-        if ($request->isPost()) {
-
-            $errors = array();
-            $data = $this->params()->fromPost();
-
-            $redirectUrl = $data['redirectUrl'];
-            $entity_id = (int) $data['entity_id'];
-            $nTry = $data['n'];
-
-            $criteria = array(
-                'id' => $entity_id
-            );
-
-            /** @var \Application\Entity\NmtInventoryMv $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findOneBy($criteria);
-
-            if ($entity == null) {
-                $errors[] = 'Entity not found or emty!';
-
-                $this->flashMessenger()->addMessage('Something wrong!');
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'form_action' => '/inventory/gi/edit',
-                    'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => null,
-                    'n' => $nTry,
-                    'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed
-                ));
-
-                $viewModel->setTemplate("inventory/item-transaction/crud");
-                return $viewModel;
-            }
-
-            $checkALC = $nmtPlugin->isParent($u, $entity->getCreatedBy());
-            if (isset($checkALC['result']) and isset($checkALC['message'])) {
-                if ($checkALC['result'] == 0) {
-                    $errors[] = $nmtPlugin->translate("No authority to perform this operation on this object! Only the owner or the administrator has the right to do it.");
-                    $isAllowed = false;
-                }
-            } else {
-                $errors[] = $nmtPlugin->translate("ACL checking failed");
-            }
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'form_action' => '/inventory/gi/edit',
-                    'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'n' => $nTry,
-                    'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed
-                ));
-
-                $viewModel->setTemplate("inventory/item-transaction/crud");
-                return $viewModel;
-            }
-
-            $nTry ++;
-
-            if ($nTry >= 3) {
-                $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getId());
-            }
-
-            if ($nTry == 5) {
-                $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getId());
-                $this->flashMessenger()->addMessage($m);
-                return $this->redirect()->toUrl($redirectUrl);
-            }
-
-            if ($entity->getLocalCurrency() == null) {
-                $entity->setLocalCurrency($default_cur);
-            }
-
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE, __METHOD__);
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'form_action' => '/inventory/gi/edit',
-                    'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'n' => $nTry,
-                    'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed
-                ));
-
-                $viewModel->setTemplate("inventory/item-transaction/crud");
-                return $viewModel;
-            }
-
-            $m = sprintf('[OK] Inventory transaction %s updated.', $entity->getId());
-
-            $this->flashMessenger()->addMessage($m);
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        // NO POST
-        // Initiate ......................
-        // ================================
-        $redirectUrl = null;
-
-        if ($this->getRequest()->getHeader('Referer') != null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
-
-        /** @var \Application\Entity\NmtInventoryMv $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findOneBy($criteria);
-
-        $checkALC = $nmtPlugin->isParent($u, $entity->getCreatedBy());
-
-        $errors = array();
-        if (isset($checkALC['result']) and isset($checkALC['message'])) {
-            if ($checkALC['result'] == 0) {
-                $errors[] = $nmtPlugin->translate("No authority to perform this operation on this object! Only the owner or the administrator has the right to do it.");
-                $isAllowed = false;
-            }
-        } else {
-            $errors[] = $nmtPlugin->translate("ACL checking failed");
-        }
-
-        // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
-            $errors[] = $nmtPlugin->translate(" can not change.");
-
-            // $isAllowed = false;
-        }
-
-        $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-            'form_action' => '/inventory/gi/edit',
-            'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-
-            'errors' => $errors,
-            'entity' => $entity,
-            'redirectUrl' => $redirectUrl,
-            'n' => 0,
-            'nmtPlugin' => $nmtPlugin,
-            'transactionType' => $transactionType,
-            'isAllowed' => $isAllowed
-        ));
-
-        $viewModel->setTemplate("inventory/item-transaction/crud");
-        return $viewModel;
-    }
+    {}
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function addAction()
-    {
-        $request = $this->getRequest();
-        $this->layout("Inventory/layout-fullscreen");
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-
-        $transactionType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
-
-        $isAllowed = true;
-
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
-        }
-
-        // Is Posing
-        // =============================
-        if ($request->isPost()) {
-
-            $errors = array();
-            $data = $this->params()->fromPost();
-            $redirectUrl = $data['redirectUrl'];
-
-            $movementType = $data['movementType'];
-            switch ($movementType) {
-                case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
-                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
-                    return $this->redirect()->toUrl($redirectUrl);
-
-                case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
-                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
-                    return $this->redirect()->toUrl($redirectUrl);
-            }
-
-            $entity = new NmtInventoryMv();
-            $entity->setLocalCurrency($default_cur);
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, TRUE, __METHOD__);
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'form_action' => '/inventory/gi/add',
-                    'form_title' => $nmtPlugin->translate("Create Good Issue"),
-
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed
-                ));
-
-                $viewModel->setTemplate("inventory/item-transaction/crud");
-                return $viewModel;
-            }
-
-            $m = sprintf('[OK] Inventory transaction %s created.', $entity->getId());
-
-            $redirectUrl = sprintf('/inventory/gi-row/add?token=%s&target_id=%s', $entity->getToken(), $entity->getId());
-            $this->flashMessenger()->addMessage($m);
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        // NO POST
-        // Initiate ......................
-        // ================================
-
-        $redirectUrl = null;
-
-        if ($request->getHeader('Referer') !== null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
-
-        $entity = new NmtInventoryMv();
-        $entity->setIsActive(1);
-
-        $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-            'form_action' => '/inventory/gi/add',
-            'form_title' => $nmtPlugin->translate("Create Good Issue"),
-
-            'redirectUrl' => $redirectUrl,
-            'errors' => null,
-            'entity' => $entity,
-            'nmtPlugin' => $nmtPlugin,
-            'transactionType' => $transactionType,
-            'isAllowed' => $isAllowed
-        ));
-
-        $viewModel->setTemplate("inventory/item-transaction/crud");
-        return $viewModel;
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function createAction()
-    {
-        $this->layout("Inventory/layout-fullscreen");
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $isAllowed = true;
-
-        $transactionType = TransactionFactory::getGoodIssueTransactions($nmtPlugin->getTranslator());
-
-        $prg = $this->prg('/inventory/gi/create', true);
-
-        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-            // returned a response to redirect us
-            return $prg;
-        } elseif ($prg === false) {
-            // this wasn't a POST request, but there were no params in the flash messenger
-            // probably this is the first time the form was loaded
-            $redirectUrl = null;
-
-            /*
-             * if ($request->getHeader('Referer') !== null) {
-             * $redirectUrl = $this->getRequest()
-             * ->getHeader('Referer')
-             * ->getUri();
-             * }
-             */
-            $dto = new TransactionDTO();
-            $dto->isActive = 1;
-
-            $viewModel = new ViewModel(array(
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'form_action' => '/inventory/gi/create',
-                'form_title' => $nmtPlugin->translate("Create Good Issue"),
-
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'entity_id' => null,
-                'dto' => $dto,
-                'nmtPlugin' => $nmtPlugin,
-                'transactionType' => $transactionType,
-                'isAllowed' => $isAllowed
-            ));
-
-            $viewModel->setTemplate("inventory/gi/crud");
-            return $viewModel;
-        }
-
-        // Is Posting
-        // ++++++++++++++++++++++++++++++
-
-        $data = $prg;
-
-        $movementType = $data['movementType'];
-        switch ($movementType) {
-            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
-                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
-                return $this->redirect()->toUrl($redirectUrl);
-
-            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
-                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
-                return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
-        }
-
-        $dto = TransactionDTOAssembler::createDTOFromArray($data);
-        $dto->currency = $default_cur->getId();
-        $dto->docCurrency = $default_cur->getId();
-        $dto->localCurrency = $default_cur->getId();
-
-        $userId = $u->getId();
-
-        $notification = $this->transactionService->createHeader($dto, $u->getCompany()
-            ->getId(), $userId, __METHOD__);
-        if ($notification->hasErrors()) {
-
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => null,
-                'dto' => $dto,
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => "/inventory/gi/create",
-                'form_title' => "Create Good Issue",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'transactionType' => $transactionType
-            ));
-
-            $viewModel->setTemplate("inventory/gi/crud");
-            return $viewModel;
-        }
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/inventory/item-transaction/list";
-
-        return $this->redirect()->toUrl($redirectUrl);
-    }
+    {}
 
     /**
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function updateAction()
-    {
-        // create new session
-        $session = new Container('MLA_FORM');
-
-        $this->layout("Inventory/layout-fullscreen");
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $isAllowed = true;
-
-        $transactionType = TransactionFactory::getGoodIssueTransactions($nmtPlugin->getTranslator());
-
-        $prg = $this->prg('/inventory/gi/update', true);
-
-        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-            // returned a response to redirect us
-            return $prg;
-        } elseif ($prg === false) {
-
-            // this wasn't a POST request, but there were no params in the flash messenger
-            // probably this is the first time the form was loaded
-            $redirectUrl = null;
-
-            $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $token = $this->params()->fromQuery('token');
-
-            $header = $this->transactionService->getHeader($entity_id, $token);
-
-            if ($header == null)
-                return $this->redirect()->toRoute('not_found');
-
-            $hasDTO = $session->offsetExists('dto');
-
-            if ($hasDTO) {
-                $headerDTO = $session->offsetGet('dto');
-            } else {
-                $headerDTO = $header->makeDTO();
-            }
-
-            $errors = $session->offsetGet('errors');
-
-            $viewModel = new ViewModel(array(
-                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                'form_action' => '/inventory/gi/update',
-                'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-                'redirectUrl' => $redirectUrl,
-                'errors' => $errors,
-                'entity_id' => $entity_id,
-                'entity_token' => $token,
-                'dto' => $headerDTO,
-                'nmtPlugin' => $nmtPlugin,
-                'transactionType' => $transactionType,
-                'isAllowed' => $isAllowed,
-                'n' => 0
-            ));
-
-            $session->getManager()
-                ->getStorage()
-                ->clear('MLA_FORM');
-
-            $viewModel->setTemplate("inventory/gi/crud");
-            return $viewModel;
-        }
-
-        // Is Posting
-        // ++++++++++++++++++++++++++++++
-
-        $data = $prg;
-
-        $movementType = $data['movementType'];
-        switch ($movementType) {
-            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
-                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
-                return $this->redirect()->toUrl($redirectUrl);
-
-            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
-                $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'], $data['source_wh_id'], $data['movementDate']);
-                return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        $entity_id = $data['entity_id'];
-        $token = $data['entity_token'];
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        $userId = null;
-        if (! $u == null)
-            $userId = $u->getId();
-
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
-        }
-
-        $dto = TransactionDTOAssembler::createDTOFromArray($data);
-        $dto->currency = $default_cur->getId();
-        $dto->docCurrency = $default_cur->getId();
-        $dto->localCurrency = $default_cur->getId();
-
-        $userId = $u->getId();
-
-        $notification = $this->transactionService->updateHeader($entity_id, $token, $dto, $userId, __METHOD__);
-
-        if ($notification->hasErrors()) {
-
-            $session->offsetSet('errors', $notification->getErrors());
-            $session->offsetSet('dto', $dto);
-
-            $url = sprintf("/inventory/gi/update?token=%s&entity_id=%s", $token, $entity_id);
-            return $this->redirect()->toUrl($url);
-        }
-
-        $session->getManager()
-            ->getStorage()
-            ->clear('MLA_FORM');
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/inventory/item-transaction/list";
-
-        return $this->redirect()->toUrl($redirectUrl);
-    }
+    {}
 
     /**
      * Review and Post GR.
@@ -1355,136 +810,5 @@ class GIController extends AbstractActionController
             'paginator' => $paginator,
             'target' => $target
         ));
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function prRowAction()
-    {
-        $request = $this->getRequest();
-
-        // accepted only ajax request
-
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $this->layout("layout/user/ajax");
-
-        $pr_row_id = (int) $this->params()->fromQuery('pr_row_id');
-
-        $criteria = array(
-            'prRow' => $pr_row_id
-        );
-
-        $sort_criteria = array(
-            // 'priceValidFrom' => "DESC"
-        );
-
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria, $sort_criteria);
-        $total_records = count($list);
-        $paginator = null;
-
-        return new ViewModel(array(
-            'list' => $list,
-            'total_records' => $total_records,
-            'paginator' => $paginator
-        ));
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function updateTokenAction()
-    {
-        $criteria = array();
-
-        // var_dump($criteria);
-        $sort_criteria = array();
-
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findBy($criteria, $sort_criteria);
-
-        if (count($list) > 0) {
-            foreach ($list as $entity) {
-                $entity->setChecksum(md5(uniqid("item_" . $entity->getId()) . microtime()));
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            }
-        }
-
-        $this->doctrineEM->flush();
-
-        // update search index()
-        $this->itemSearchService->createItemIndex();
-
-        $total_records = count($list);
-
-        return new ViewModel(array(
-            'total_records' => $total_records
-        ));
-    }
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    public function getItemSearchService()
-    {
-        return $this->itemSearchService;
-    }
-
-    public function setItemSearchService(ItemSearchService $itemSearchService)
-    {
-        $this->itemSearchService = $itemSearchService;
-        return $this;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGiService()
-    {
-        return $this->giService;
-    }
-
-    /**
-     *
-     * @param mixed $giService
-     */
-    public function setGiService(\Inventory\Service\GIService $giService)
-    {
-        $this->giService = $giService;
-    }
-
-    /**
-     *
-     * @return \Inventory\Application\Service\Warehouse\TransactionService
-     */
-    public function getTransactionService()
-    {
-        return $this->transactionService;
-    }
-
-    /**
-     *
-     * @param TransactionService $transactionService
-     */
-    public function setTransactionService(TransactionService $transactionService)
-    {
-        $this->transactionService = $transactionService;
     }
 }

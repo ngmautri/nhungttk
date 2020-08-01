@@ -1,15 +1,12 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Controller\Contracts\AbstractGenericController;
 use MLA\Paginator;
-use Monolog\Logger;
 use Procure\Application\Reporting\PR\PrReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
@@ -183,6 +180,9 @@ class PrReportController extends AbstractGenericController
         $filter->setDocYear($prYear);
 
         $total_records = $this->getPrReporter()->getAllRowTotal($filter);
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            return $this->getPrReporter()->getAllRow($filter, $sort_by, $sort, $limit, $offset, $file_type);
+        }
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);

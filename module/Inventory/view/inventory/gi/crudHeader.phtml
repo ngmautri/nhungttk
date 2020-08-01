@@ -1,6 +1,7 @@
 <?php
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionList;
+use Application\Domain\Shared\Constants;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 
 /**
@@ -10,6 +11,35 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
  *     
  */
 
+$entityFormInput = '';
+$view_url = sprintf($this->baseUrl . "/inventory/gi/create");
+
+$format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
+<button onclick="submitForm(\'%s\');" class="btn btn-default">
+<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
+<a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
+</div></div>';
+$submitFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
+
+if ($action == Constants::FORM_ACTION_EDIT) {
+
+    $view_url = sprintf($this->baseUrl . "/inventory/gi/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+
+    $format = '<input type="hidden" name="redirectUrl" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $redirectUrl);
+
+    $format = '<input type="hidden" id="entity_id" name="entity_id" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $entity_id);
+
+    $format = '<input type="hidden" id="entity_token" name="entity_token" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $entity_token);
+
+    $format = '<input type="hidden" id="version" name="version" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $version);
+
+    $submitFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
+}
+
 $wh_id = null;
 
 if ($dto != null) {
@@ -17,6 +47,7 @@ if ($dto != null) {
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+
 $error_msg = ErrorMessage::showErrorMessage($errors);
 
 // ===============================
@@ -54,40 +85,16 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
             <div id="general" style="font-size: 9pt">
                <!-- Tab1 -->
 <?php
-$error_msg;
+echo $error_msg;
 ?>
 <form id="Create_Inv_Form" class="form-horizontal" action="<?php
-
 echo $form_action;
 ?>" method="post" enctype="multipart/form-data">
-                  <input type="hidden" name="redirectUrl" value="<?php
 
-                echo $redirectUrl?>" />
-							
-			<?php
-
-if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
-    ?>
-			<input type="hidden" name="n" value="<?php
-
-    echo $n;
-    ?>" />
-			<?php endif;
-
+<?php
+echo $entityFormInput;
 ?>
-			
-							<input type="hidden" id="entity_id" name="entity_id" value="<?php
-
-    if (! $dto == null) :
-        echo $entity_id;endif;
-
-    ?>" />
-                  <input type="hidden" id="token" name="entity_token" value="<?php
-
-                if (! $dto == null) :
-                    echo $entity_token;endif;
-
-                ?>" />
+                 
                   <fieldset>
                      <legend style="font-size: 9.5pt; color: gray;">
                         <small>
@@ -121,14 +128,16 @@ if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
    					</select>
                         </div>
                         <div class="col-sm-3">
-                           <input <?php
+                           <input
+                              <?php
 
-                        if (! $dto == null) :
-                            echo ($dto->isActive == "1") ? "checked" : "";
-                        else :
-                            echo "checked";
-                        endif;
-                        ?> type="checkbox" name="isActive" value="1">
+                            if (! $dto == null) :
+                                echo ($dto->isActive == "1") ? "checked" : "";
+                            else :
+                                echo "checked";
+                            endif;
+                            ?>
+                              type="checkbox" name="isActive" value="1">
                            &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
                         </div>
                      </div>
@@ -171,19 +180,9 @@ if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
                      <div class="form-group margin-bottom">
                         <label class="control-label col-sm-2" for="inputTag"></label>
                         <div class="col-sm-3">
-                           <button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm">
-                              <i class="glyphicon glyphicon-floppy-disk"> </i>
-                              Save
-                           </button>
-                           <a class="btn btn-default btn-sm" href="<?php
-
-                        echo $redirectUrl;
-                        ?>">
-                              <small>
-                                 <i class="glyphicon glyphicon-remove"></i>
-                              </small>
-                              &nbsp;Cancel
-                           </a>
+                         <?php
+                        echo $submitFormInput;
+                        ?>
                         </div>
                      </div>
                   </fieldset>

@@ -26,7 +26,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\QuotationRequest\Repository\QrCmdRepositoryInterface::storeRow()
+     * @see \Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface::storeRow()
      */
     public function storeRow(GenericTrx $rootEntity, BaseRow $localEntity, $isPosting = false)
     {
@@ -55,7 +55,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         }
 
         $localSnapshot->id = $rowEntityDoctrine->getId();
-        $localSnapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
+        $localSnapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifier();
         $localSnapshot->docVersion = $rowEntityDoctrine->getDocVersion();
         $localSnapshot->revisionNo = $rowEntityDoctrine->getRevisionNo();
 
@@ -195,7 +195,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      * @param boolean $isFlush
      * @param boolean $increaseVersion
      * @throws InvalidArgumentException
-     * @return \Application\Entity\NmtProcureQo
+     * @return \Application\Entity\NmtInventoryMv
      */
     private function _storeHeader(TrxSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
     {
@@ -255,7 +255,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      * @param boolean $increaseVersion
      * @param int $n
      * @throws InvalidArgumentException
-     * @return \Application\Entity\NmtProcureQoRow
+     * @return \Application\Entity\NmtInventoryTrx
      */
     private function _storeRow($rootEntityDoctrine, BaseRowSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {

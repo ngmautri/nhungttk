@@ -11,5 +11,5 @@ Interface StockReportRepositoryInterface
 
     public function getFifoLayer(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
-    public function getOnHandQuantity($warehouseId, $itemId, $movementDate);
+    public function getOnHandQuantity(SqlFilterInterface $filter);
 }

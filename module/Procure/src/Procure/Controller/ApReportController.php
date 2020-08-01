@@ -1,14 +1,13 @@
 <?php
 namespace Procure\Controller;
 
+use Application\Controller\Contracts\AbstractGenericController;
 use MLA\Paginator;
 use Procure\Application\Reporting\AP\ApReporter;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Infrastructure\Persistence\Filter\ApReportSqlFilter;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *

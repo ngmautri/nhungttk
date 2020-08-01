@@ -8,25 +8,16 @@ use Procure\Domain\Service\Contracts\FXServiceInterface;
 use InvalidArgumentException;
 
 /**
- * PO Domain Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SharedService
+class SharedSpecificationService
 {
 
     protected $sharedSpecificationFactory;
 
     protected $domainSpecificationFactory;
-
-    protected $fxService;
-
-    protected $postingService;
-
-    protected $valuationService;
-
-    protected $logger;
 
     /**
      *

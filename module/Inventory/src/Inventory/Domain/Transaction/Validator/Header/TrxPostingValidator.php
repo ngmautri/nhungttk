@@ -2,30 +2,24 @@
 namespace Inventory\Domain\Transaction\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Procure\Domain\AbstractDoc;
-use Procure\Domain\Exception\Gr\GrCreateException;
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
-use Procure\Domain\GoodsReceipt\GenericGR;
-use Procure\Domain\Validator\AbstractValidator;
-use Procure\Domain\Validator\HeaderValidatorInterface;
+use Inventory\Domain\Transaction\AbstractTrx;
+use Inventory\Domain\Transaction\GenericTrx;
+use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
+use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface;
+use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrPostingValidator extends AbstractValidator implements HeaderValidatorInterface
+class TrxPostingValidator extends AbstractValidator implements HeaderValidatorInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
-     */
-    public function validate(AbstractDoc $rootEntity)
+    public function validate(AbstractTrx $rootEntity)
     {
-        if (! $rootEntity instanceof GenericGR) {
-            throw new GrInvalidArgumentException('Root entity not given!');
+        if (! $rootEntity instanceof GenericTrx) {
+            throw new InvalidArgumentException('Root entity not given!');
         }
 
         /**
@@ -33,17 +27,17 @@ class GrPostingValidator extends AbstractValidator implements HeaderValidatorInt
          * @var AbstractSpecification $spec ;
          */
         try {
-            // ==== GR DATE =======
+            // ==== Trx DATE =======
             $spec = $this->getSharedSpecificationFactory()->getCanPostOnDateSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
-                "movementDate" => $rootEntity->getGrDate()
+                "movementDate" => $rootEntity->getMovementDate()
             );
 
             if (! $spec->isSatisfiedBy($subject)) {
                 $rootEntity->addError(sprintf("Can not post on this date (Date %s CompanyID %s). Period is not created or closed. ", $rootEntity->getGrDate(), $rootEntity->getCompany()));
             }
-        } catch (GrCreateException $e) {
+        } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }
     }

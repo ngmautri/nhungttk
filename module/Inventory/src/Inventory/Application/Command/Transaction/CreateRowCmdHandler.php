@@ -11,6 +11,7 @@ use Inventory\Application\Command\Transaction\Options\TrxRowCreateOptions;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
 use Inventory\Application\Service\Transaction\RowSnapshotReference;
+use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
 use Inventory\Domain\Service\TrxValuationService;
@@ -88,11 +89,12 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new TrxPostingService($cmdRepository);
 
+            // create share service.
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
             $sharedService->setValuationService($valuationService);
+            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
 
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
-            ;
 
             // event dispatcher
             // ================
@@ -100,7 +102,7 @@ class CreateRowCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
 
-            $m = sprintf("[OK] Row # %s created", $localSnapshot->getId());
+            $m = sprintf("[OK] Trx Row # %s created", $localSnapshot->getId());
             $notification->addSuccess($m);
 
             $queryRep = new TrxQueryRepositoryImpl($cmd->getDoctrineEM());

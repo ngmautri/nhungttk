@@ -1,29 +1,26 @@
 <?php
-namespace Inventory\Application\Command\Transaction;
+namespace Inventory\Application\Command\;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Inventory\Application\Command\Transaction\Options\CopyFromGROptions;
-use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
-use Inventory\Domain\Exception\OperationFailedException;
-use Inventory\Domain\Service\SharedService;
+use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
+use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Domain\Service\TrxPostingService;
-use Inventory\Domain\Service\TrxValidationService;
-use Inventory\Domain\Transaction\GR\GRFromPurchasing;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Header\DefaultHeaderValidator;
-use Inventory\Domain\Transaction\Validator\Row\DefaultRowValidator;
-use Inventory\Domain\Transaction\Validator\Row\WarehouseValidator;
+use Inventory\Domain\Transaction\TrxDoc;
+use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Domain\Transaction\TrxSnapshotAssembler;
+use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Procure\Application\Service\FXService;
-use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\GoodsReceipt\GRSnapshot;
-use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
-use InvalidArgumentException;
+use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\Exception\InvalidOperationException;
+use Procure\Domain\Service\SharedService;
+use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
 /**
  *
@@ -36,82 +33,125 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
+     * @see \Application\Domain\Shared\Command\AbstractCommandHandler::run()
      */
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
+            throw new InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+        }
+
+        if (! $cmd->getDto() instanceof TrxDoc) {
+            throw new InvalidArgumentException("ApDTO object not found!");
         }
 
         /**
          *
-         * @var \Inventory\Application\DTO\Transaction\TrxDTO $dto ;
-         * @var GRDoc $rootEntity ;
-         * @var CopyFromGROptions $options ;
+         * @var TrxDTO $dto ;
+         * @var TrxDoc $rootEntity ;
+         * @var TrxSnapshot $rootSnapshot ;
+         * @var TrxUpdateOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof PostCopyFromProcureGROptions) {
+        if (! $options instanceof TrxUpdateOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
-        $sourceObj = $options->getSourceObj();
-
-        if (! $sourceObj instanceof GRSnapshot) {
-            throw new InvalidArgumentException(sprintf("Source object not given! %s", "PO-GR Document required"));
-        }
+        $options = $cmd->getOptions();
+        $rootEntity = $options->getRootEntity();
+        $rootEntityId = $options->getRootEntityId();
+        $version = $options->getVersion();
+        $userId = $options->getUserId();
 
         try {
 
             $notification = new Notification();
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            if ($rootEntity->getDocStatus() == ProcureDocStatus::DOC_STATUS_POSTED) {
+                throw new InvalidOperationException(sprintf("Trx is already posted! %s", $rootEntity->getId()));
+            }
 
+            /**
+             *
+             * @var TrxSnapshot $snapshot ;
+             * @var TrxSnapshot $newSnapshot ;
+             */
+            $snapshot = $rootEntity->makeSnapshot();
+            $newSnapshot = clone ($snapshot);
+
+            $editableProperties = [
+                "docNumber",
+                "docDate",
+                "sapDoc",
+                "postingDate",
+                "contractDate",
+                "grDate",
+                "remarks",
+                "docCurrency",
+                "pmtTerm",
+                "warehouse",
+                "incoterm",
+                "incotermPlace",
+                "remarks"
+            ];
+
+            // $snapshot->warehouse;
+
+            $newSnapshot = TrxSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);
+            $changeLog = $snapshot->compare($newSnapshot);
+
+            if ($changeLog == null) {
+                // No Notify when posting.
+                if (! $options->getIsPosting()) {
+                    $notification->addError("Nothing change on Doc#" . $rootEntityId);
+                    $dto->setNotification($notification);
+                }
+                return;
+            }
+
+            $params = [
+                "changeLog" => $changeLog
+            ];
+
+            // do change
+            $newSnapshot->lastchangeBy = $userId;
+
+            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new TrxPostingService($cmdRepository);
+            $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validationService = new TrxValidationService($headerValidators, $rowValidators);
-
-            $id = $sourceObj->getId();
-            $token = $sourceObj->getToken();
-
-            $rep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
-            $sourceObj = $rep->getRootEntityByTokenId($id, $token);
-
-            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $validationService, $sharedService);
+            $newRootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
-            // ================
 
-            $m = sprintf("WH-GR #%s copied from PO-GR #%s and posted!", $rootEntity->getId(), $sourceObj->getId());
+            $m = sprintf("Doc #%s updated", $newRootEntity->getId());
+
             $notification->addSuccess($m);
+
+            // No Check Version when Posting when posting.
+            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+
+            // time to check version - concurency
+            $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
+
+            // revision numner has been increased.
+            if ($version != $currentVersion) {
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! %s", $version, $currentVersion, ""));
+            }
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw $e;
         }
     }
 }

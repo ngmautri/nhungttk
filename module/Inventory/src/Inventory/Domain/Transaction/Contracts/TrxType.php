@@ -76,7 +76,7 @@ class TrxType
         return $list;
     }
 
-    public static function getGoodIssueTrx($translator = null)
+    public static function getGoodIssueTrx()
     {
         return [
 
@@ -147,7 +147,7 @@ class TrxType
         ];
     }
 
-    public static function getGoodReceiptTrx($translator = null)
+    public static function getGoodReceiptTrx()
     {
         return [
 

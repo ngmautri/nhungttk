@@ -25,26 +25,26 @@ class CreateRowCmdTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
+            $rootEntityId = 1356;
+            $rootEntityToken = "093c99ba-a3ad-40b9-a6fd-f1288a0131a5";
+            $version = 1;
+
+            $rep = new TrxQueryRepositoryImpl($doctrineEM);
+            $rootEntity = $rep->getHeaderById($rootEntityId, $rootEntityToken);
+
             $companyId = 1;
             $userId = 39;
 
             $dto = new TrxRowDTO();
-            $dto->docQuantity = 10;
-            $dto->docUnitPrice = 229;
-            $dto->poRow = 2629;
-            $dto->item = 2427;
+            $dto->docQuantity = 12;
+            $dto->docUnitPrice = 12;
+            $dto->item = 12427;
             $dto->conversionFactor = 1;
             $dto->unit = "pcs";
+            $dto->flow = $rootEntity->getMovementFlow();
             $dto->glAccount = 6;
-            $dto->costCenter = 2;
+            $dto->costCenter = - 2;
             $dto->wh = 5;
-
-            $rootEntityId = 1356;
-            $rootEntityToken = "093c99ba-a3ad-40b9-a6fd-f1288a0131a5";
-            $version = 9;
-
-            $rep = new TrxQueryRepositoryImpl($doctrineEM);
-            $rootEntity = $rep->getHeaderById($rootEntityId, $rootEntityToken);
 
             $options = new TrxRowCreateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
 

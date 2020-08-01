@@ -53,6 +53,8 @@ class RowValidatorCollection implements RowValidatorInterface
         }
 
         foreach ($this->validators as $validator) {
+
+            // var_dump(\get_class($validator));
             /**
              *
              * @var RowValidatorInterface $validator ;

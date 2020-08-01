@@ -14,14 +14,9 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnHandQuantityValidator extends AbstractValidator implements RowValidatorInterface
+class CostCenterValidator extends AbstractValidator implements RowValidatorInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface::validate()
-     */
     public function validate(AbstractTrx $rootEntity, BaseRow $localEntity)
     {
         if (! $rootEntity instanceof GenericTrx) {
@@ -32,26 +27,29 @@ class OnHandQuantityValidator extends AbstractValidator implements RowValidatorI
             throw new InvalidArgumentException('BaseRow Row not given!');
         }
 
+        // do verification now
+
         Try {
-            // do verification now
 
             /**
              *
              * @var AbstractSpecification $spec ;
              */
-            $spec = $this->getDomainSpecificationFactory()->getOnhandQuantitySpecification();
 
-            $subject = [
-                "itemId" => $localEntity->getItem(),
-                "warehouseId" => $localEntity->getWh(),
-                "movementDate" => $rootEntity->getPostingDate(),
-                "docQuantity" => $localEntity->getDocQuantity()
-            ];
+            $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
 
-            if (! $spec->isSatisfiedBy($subject)) {
-                $localEntity->addError(\sprintf("Onhand quantity is not enough %s. Pleae review quantity and warehouse !", $localEntity->getDocQuantity()));
+            // ======= COST CENTER =========
+            if ($localEntity->getCostCenter() !== null) {
+                $subject = array(
+                    "companyId" => $rootEntity->getCompany(),
+                    "costCenter" => $localEntity->getCostCenter()
+                );
+
+                if (! $spec->isSatisfiedBy($subject)) {
+                    $localEntity->addError(sprintf("Cost center needed, but not found #%s company #%s", $localEntity->getCostCenter(), $rootEntity->getCompany()));
+                }
             }
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }
     }

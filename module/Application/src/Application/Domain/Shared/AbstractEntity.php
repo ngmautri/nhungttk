@@ -18,6 +18,14 @@ abstract class AbstractEntity
 
     private $logger;
 
+    protected function logException(\Exception $e)
+    {
+        if ($this->logger == null) {
+            return;
+        }
+        $this->logger->alert(sprintf('[%s:%s] %s', $e->getFile(), $e->getLine(), $e->getMessage()));
+    }
+
     /**
      *
      * @return \Psr\Log\LoggerInterface

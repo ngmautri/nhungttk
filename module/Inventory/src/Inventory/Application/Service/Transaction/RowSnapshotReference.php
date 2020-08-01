@@ -40,12 +40,14 @@ class RowSnapshotReference
         if ($snapshot->getItem() > 0) {
             $entity = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->getItem());
 
-            if ($entity->getIsFixedAsset() == 1) {
-                $snapshot->isFixedAsset = 1;
-            }
+            if ($entity !== null) {
+                if ($entity->getIsFixedAsset() == 1) {
+                    $snapshot->isFixedAsset = 1;
+                }
 
-            if ($entity->getIsStocked() == 1) {
-                $snapshot->isInventoryItem = 1;
+                if ($entity->getIsStocked() == 1) {
+                    $snapshot->isInventoryItem = 1;
+                }
             }
         }
 

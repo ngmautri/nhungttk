@@ -9,6 +9,7 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\TrxCreateOptions;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
+use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
 use Inventory\Domain\Service\TrxValuationService;
@@ -82,7 +83,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
             $sharedService->setValuationService($valuationService);
-
+            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
             $rootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch

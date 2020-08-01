@@ -1,8 +1,10 @@
 <?php
 namespace Inventory\Controller;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Inventory\Application\Eventbus\EventBusService;
+use Inventory\Application\Service\Transaction\TrxService;
 use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
@@ -27,18 +29,14 @@ class GIControllerFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $container->get('Inventory\Service\ItemSearchService');
-        $controller->setItemSearchService($sv);
+        $sv = $container->get(TrxService::class);
+        $controller->setTrxService($sv);
 
-        $sv = $container->get('Inventory\Service\GIService');
-        $controller->setGiService($sv);
+        $sv = $container->get(EventBusService::class);
+        $controller->setEventBusService($sv);
 
-        $sv = $container->get('Inventory\Service\InventoryTransactionService');
-        $controller->setInventoryTransactionService($sv);
-
-        $sv = $container->get('Inventory\Application\Service\Warehouse\TransactionService');
-
-        $controller->setTransactionService($sv);
+        $sv = $container->get("AppLogger");
+        $controller->setLogger($sv);
 
         return $controller;
     }

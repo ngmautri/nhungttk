@@ -5,7 +5,6 @@ use Application\Domain\Shared\Specification\AbstractSpecification;
 use Inventory\Domain\Transaction\AbstractTrx;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
-use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface;
 use InvalidArgumentException;
@@ -30,11 +29,9 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
             throw new InvalidArgumentException('GenericTrx entity not given!');
         }
 
-        if (! $localEntity instanceof TrxRow) {
+        if (! $localEntity instanceof BaseRow) {
             throw new InvalidArgumentException('TrxRow not given!');
         }
-
-        // do verification now
 
         Try {
 

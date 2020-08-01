@@ -2,8 +2,9 @@
 namespace Inventory\Domain\Transaction\Validator\Contracts;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
-use Procure\Domain\Exception\PoInvalidArgumentException;
+use Inventory\Domain\Validator\AbstractInventorySpecificationFactory;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
+use InvalidArgumentException;
 
 /**
  *
@@ -15,20 +16,49 @@ abstract class AbstractValidator
 
     protected $sharedSpecificationFactory;
 
+    protected $domainSpecificationFactory;
+
     protected $fxService;
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
+     */
+    public function getSharedSpecificationFactory()
+    {
+        return $this->sharedSpecificationFactory;
+    }
 
     public function __construct(SharedSpecsFactory $sharedSpecsFactory, FXServiceInterface $fxService)
     {
         if (! $sharedSpecsFactory instanceof SharedSpecsFactory) {
-            throw new PoInvalidArgumentException("Shared Specification is required");
+            throw new InvalidArgumentException("Shared Specification is required");
         }
 
         if (! $fxService instanceof FXServiceInterface) {
-            throw new PoInvalidArgumentException("FX service is required");
+            throw new InvalidArgumentException("FX service is required");
         }
 
         $this->sharedSpecificationFactory = $sharedSpecsFactory;
         $this->fxService = $fxService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\Validator\AbstractInventorySpecificationFactory
+     */
+    public function getDomainSpecificationFactory()
+    {
+        return $this->domainSpecificationFactory;
+    }
+
+    /**
+     *
+     * @param AbstractInventorySpecificationFactory $domainSpecificationFactory
+     */
+    public function setDomainSpecificationFactory(AbstractInventorySpecificationFactory $domainSpecificationFactory)
+    {
+        $this->domainSpecificationFactory = $domainSpecificationFactory;
     }
 
     /**

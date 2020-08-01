@@ -181,7 +181,7 @@ abstract class GenericTrx extends BaseDoc
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
         $event = new TrxRowAdded($target, $defaultParams, $params);
-        $this->addEvent(new TrxRowAdded($event));
+        $this->addEvent($event);
 
         return $localSnapshot;
     }

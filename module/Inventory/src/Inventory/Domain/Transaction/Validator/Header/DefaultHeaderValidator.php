@@ -51,33 +51,6 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 }
             }
 
-            // ===== CK VENDOR =======
-            if ($rootEntity->getVendor() == null) {
-                $rootEntity->addError("Vendor is not set");
-            } else {
-                $spec = $this->sharedSpecificationFactory->getVendorExitsSpecification();
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "vendorId" => $rootEntity->getVendor()
-                );
-                if (! $spec->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Vendor not found !C#%s, WH#%s", $rootEntity->getCompany(), $rootEntity->getVendor()));
-            }
-
-            // ===== DOC CURRENCY =======
-            if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($rootEntity->getDocCurrency())) {
-                $rootEntity->addError(sprintf("Doc Currency is empty or invalid! %s", $rootEntity->getDocCurrency()));
-            }
-
-            // ===== LOCAL CURRENCY =======
-            if ($rootEntity->getLocalCurrency() == null) {
-                $rootEntity->addError("Local currency is not set");
-            } else {
-                $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
-                if (! $spec->isSatisfiedBy($rootEntity->getLocalCurrency()))
-                    $rootEntity->addError("Local currency not exits..." . $rootEntity->getLocalCurrency());
-            }
-
             // ===== USER ID =======
             $spec = $this->sharedSpecificationFactory->getUserExitsSpecification();
             $subject = array(

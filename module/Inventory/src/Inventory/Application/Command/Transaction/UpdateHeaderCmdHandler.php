@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Application\Command\;
+namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
@@ -8,19 +8,21 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
 use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Application\Service\Item\FIFOServiceImpl;
+use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
+use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
+use Inventory\Domain\Service\TrxValuationService;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\TrxSnapshotAssembler;
 use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\InvalidOperationException;
-use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use InvalidArgumentException;
 
 /**
  *
@@ -38,11 +40,11 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
         }
 
-        if (! $cmd->getDto() instanceof TrxDoc) {
-            throw new InvalidArgumentException("ApDTO object not found!");
+        if (! $cmd->getDto() instanceof TrxDTO) {
+            throw new InvalidArgumentException("TrxDTO object not found!");
         }
 
         /**
@@ -64,14 +66,13 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
         $rootEntity = $options->getRootEntity();
         $rootEntityId = $options->getRootEntityId();
         $version = $options->getVersion();
-        $userId = $options->getUserId();
 
         try {
 
             $notification = new Notification();
 
             if ($rootEntity->getDocStatus() == ProcureDocStatus::DOC_STATUS_POSTED) {
-                throw new InvalidOperationException(sprintf("Trx is already posted! %s", $rootEntity->getId()));
+                throw new \RuntimeException(sprintf("Trx is already posted! %s", $rootEntity->getId()));
             }
 
             /**
@@ -83,18 +84,9 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             $newSnapshot = clone ($snapshot);
 
             $editableProperties = [
-                "docNumber",
-                "docDate",
-                "sapDoc",
-                "postingDate",
-                "contractDate",
-                "grDate",
-                "remarks",
-                "docCurrency",
-                "pmtTerm",
+                "movementDate",
+                "isActive",
                 "warehouse",
-                "incoterm",
-                "incotermPlace",
                 "remarks"
             ];
 
@@ -112,22 +104,31 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 return;
             }
 
+            \var_dump($changeLog);
+
             $params = [
                 "changeLog" => $changeLog
             ];
 
             // do change
-            $newSnapshot->lastchangeBy = $userId;
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
 
-            $newRootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
+            $fifoService = new FIFOServiceImpl();
+            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
+            $valuationService = new TrxValuationService($fifoService);
+
+            $postingService = new TrxPostingService($cmdRepository);
+            $sharedService = new SharedService($sharedSpecFactory, $fxService, $postingService);
+            $sharedService->setValuationService($valuationService);
+
+            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
+
+            $newRootEntity = TransactionFactory::updateFrom($newSnapshot, $options, $sharedService, $params);
 
             // event dispatch
             // ================
@@ -135,12 +136,12 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
 
-            $m = sprintf("Doc #%s updated", $newRootEntity->getId());
+            $m = sprintf("Trx #%s updated", $newRootEntity->getId());
 
             $notification->addSuccess($m);
 
             // No Check Version when Posting when posting.
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new TrxQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;

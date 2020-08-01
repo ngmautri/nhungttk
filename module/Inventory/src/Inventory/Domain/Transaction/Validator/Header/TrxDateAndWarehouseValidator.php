@@ -37,7 +37,7 @@ class TrxDateAndWarehouseValidator extends AbstractValidator implements HeaderVa
             $spec = $this->getSharedSpecificationFactory()->getDateSpecification();
 
             if (! $spec->isSatisfiedBy($rootEntity->getMovementDate())) {
-                $rootEntity->addError("Movement date is not correct or empty");
+                $rootEntity->addError("Movement date is not correct or empty!" . $rootEntity->getMovementDate());
             }
 
             // ===== WAREHOUSE =======

@@ -196,10 +196,7 @@ abstract class GenericTrx extends BaseDoc
      * @param TrxRowSnapshot $snapshot
      * @param CommandOptions $options
      * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
      * @param SharedService $sharedService
-     * @param PostingServiceInterface $postingService
      * @throws InvalidOperationException
      * @throws InvalidArgumentException
      * @throws ValidationFailedException
@@ -237,7 +234,7 @@ abstract class GenericTrx extends BaseDoc
         $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getNotification()->errorMessage());
+            throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -251,7 +248,7 @@ abstract class GenericTrx extends BaseDoc
             ->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
+            throw new RuntimeException(sprintf("Error occured when updatting Trx row #%s", $this->getId()));
         }
 
         // $target = $this->makeSnapshot(); //
@@ -264,7 +261,6 @@ abstract class GenericTrx extends BaseDoc
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-
         $event = new TrxRowUpdated($target, $defaultParams, $params);
 
         $this->addEvent($event);

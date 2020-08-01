@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Domain\Transaction;
 
+use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxDTOAssembler;
-use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\GenericDoc;
 
 /**
@@ -87,11 +87,11 @@ class TrxSnapshotAssembler
     /**
      *
      * @param TrxSnapshot $snapShot
-     * @param QrDTO $dto
+     * @param TrxDTO $dto
      * @param array $editableProperties
      * @return NULL|\Inventory\Domain\Transaction\TrxSnapshot
      */
-    public static function updateSnapshotFieldsFromDTO(TrxSnapshot $snapShot, QrDTO $dto, $editableProperties)
+    public static function updateSnapshotFieldsFromDTO(TrxSnapshot $snapShot, TrxDTO $dto, $editableProperties)
     {
         if ($dto == null || ! $snapShot instanceof TrxSnapshot || $editableProperties == null)
             return null;

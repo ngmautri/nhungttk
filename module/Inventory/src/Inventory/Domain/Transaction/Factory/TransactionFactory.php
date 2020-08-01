@@ -128,7 +128,7 @@ class TransactionFactory
         return $trx;
     }
 
-    public static function updateFrom(TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public static function updateFrom(TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $params)
     {
         if (! $snapshot instanceof TrxSnapshot) {
             throw new InvalidArgumentException("TrxSnapshot not found!");
@@ -137,7 +137,7 @@ class TransactionFactory
         $typeId = $snapshot->getMovementType();
 
         if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
-            throw new InvalidArgumentException("Movemement type empty or not supported! TransactionFactory #" . $snapshot->getMovementType());
+            throw new InvalidArgumentException("Movemement type empty or not supported! " . $snapshot->getMovementType());
         }
 
         if ($sharedService == null) {
@@ -213,7 +213,6 @@ class TransactionFactory
         $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $params = null;
 
         $event = new TrxHeaderUpdated($target, $defaultParams, $params);
         $trx->addEvent($event);

@@ -4,7 +4,6 @@ namespace Inventory\Domain\Transaction\Validator;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxValidationService;
 use Inventory\Domain\Transaction\Contracts\TrxType;
-use Inventory\Domain\Transaction\GI\Validator\Header\DefaultGIHeaderValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\CostCenterValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\DefaultGIRowValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\OnHandQuantityValidator;
@@ -59,8 +58,8 @@ class ValidatorFactory
         $validator = new TrxDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
         $giHeaderValidators->add($validator);
 
-        $validator = new DefaultGIHeaderValidator($sharedSpecsFactory, $fxService);
-        $giHeaderValidators->add($validator);
+        // $validator = new DefaultGIHeaderValidator($sharedSpecsFactory, $fxService);
+        // $giHeaderValidators->add($validator);
 
         // Goods issues row validators
         $giRowValidators = new RowValidatorCollection();

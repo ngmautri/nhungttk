@@ -17,6 +17,46 @@ class StockFifoLayerReportSqlFilter implements SqlFilterInterface
 
     public $isClosed;
 
+    public $fromDate;
+
+    public $toDate;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFromDate()
+    {
+        return $this->fromDate;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getToDate()
+    {
+        return $this->toDate;
+    }
+
+    /**
+     *
+     * @param mixed $fromDate
+     */
+    public function setFromDate($fromDate)
+    {
+        $this->fromDate = $fromDate;
+    }
+
+    /**
+     *
+     * @param mixed $toDate
+     */
+    public function setToDate($toDate)
+    {
+        $this->toDate = $toDate;
+    }
+
     /**
      *
      * @return mixed

@@ -41,6 +41,13 @@ WHERE 1 %s";
         if ($filter->getWarehouseId() > 0) {
             $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.warehouse_id=%s", $filter->getWarehouseId());
         }
+        if ($filter->getFromDate() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.posting_date >='%s'", $filter->getFromDate());
+        }
+
+        if ($filter->getToDate() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.posting_date <='%s'", $filter->getToDate());
+        }
 
         if ($filter->getIsClosed() == null) {
             $filter->setIsClosed(0);
@@ -70,7 +77,7 @@ WHERE 1 %s";
 
         $sql = $sql . ";";
 
-        echo $sql;
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryFifoLayer', 'nmt_inventory_fifo_layer');

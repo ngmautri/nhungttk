@@ -1,43 +1,21 @@
 <?php
 namespace Inventory\Application\Service\Item;
 
-use Application\Domain\Util\Translator;
 use Application\Service\AbstractService;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Service\Contracts\FIFOServiceInterface;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Infrastructure\Persistence\Doctrine\StockReportRepositoryImpl;
-use Inventory\Infrastructure\Persistence\Filter\StockFifoLayerReportSqlFilter;
-use Ramsey\Uuid\Uuid;
-use InvalidArgumentException;
+use Ramsey;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
+class FIFOServiceImpl1 extends AbstractService implements FIFOServiceInterface
 {
-
-    public function calculateCostOfTrx(GenericTrx $trx)
-    {
-        $totalCost = 0;
-        if ($this->getDoctrineEM() == null || $trx == null) {
-            return $totalCost;
-        }
-
-        $rows = $trx->getDocRows();
-
-        if (count($rows) == 0) {
-            return $totalCost;
-        }
-
-        foreach ($rows as $row) {
-            $totalCost = $totalCost + $this->calculateCOGS($trx, $row);
-        }
-
-        return $totalCost;
-    }
 
     /**
      *
@@ -56,21 +34,23 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             'id' => $trx->getCreatedBy()
         ));
 
-        $rep = new StockReportRepositoryImpl($this->getDoctrineEM());
-        $filter = new StockFifoLayerReportSqlFilter();
-        $filter->setItemId($row->getItem());
-        $filter->setToDate($trx->getMovementDate());
-        $filter->setWarehouseId($trx->getWarehouse());
-        $filter->setIsClosed(0);
-        $sort_by = 'postingDate';
-        $sort = 'ASC';
-        $limit = null;
-        $offset = null;
-        $layers = $rep->getFifoLayer($filter, $sort_by, $sort, $limit, $offset);
+        $sql = "SELECT * FROM nmt_inventory_fifo_layer WHERE 1 %s ORDER BY nmt_inventory_fifo_layer.posting_date ASC";
+
+        $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s'
+AND nmt_inventory_fifo_layer.is_closed=0
+AND nmt_inventory_fifo_layer.item_id=%s
+AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->getItem(), $trx->getWarehouse());
+
+        $sql = sprintf($sql, $sql1);
+
+        $rsm = new ResultSetMappingBuilder($this->doctrineEM);
+        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryFIFOLayer', 'nmt_inventory_fifo_layer');
+        $query = $this->doctrineEM->createNativeQuery($sql, $rsm);
+        $layers = $query->getResult();
 
         if (count($layers) == 0) {
-            $m = Translator::translate("Goods Issue imposible. Please check the stock quantity and the issue date");
-            throw new \RuntimeException($m);
+            $m = $this->controllerPlugin->translate("Goods Issue imposible. Please check the stock quantity and the issue date");
+            throw new \Exception($m);
         }
 
         $issuedQuantity = $row->getDocQuantity();
@@ -139,9 +119,8 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                 $fifo_consume->setCreatedOn(new \DateTime($trx->getMovementDate()));
                 $fifo_consume->setCreatedBy($u);
 
-                $fifo_consume->setToken(Uuid::uuid4()->toString());
+                $fifo_consume->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
                 $this->getDoctrineEM()->persist($fifo_consume);
-                $this->getLogger()->info(sprintf("row #%s- consume layer #%s quantity %s*%s \n", $row->getId(), $layer->getId(), $consumpted_qty, $layer->getDocUnitPrice()));
             }
         }
 
@@ -154,7 +133,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
         // Set header blocked for reversal
         // $trx->setReversalBlocked(1);
         // $trx->getMovement()->setReversalBlocked(1);
-        $this->getLogger()->info(sprintf("row #%s-  quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
+
         return $cogs;
     }
 
@@ -217,7 +196,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
         $fifoLayer->setPostingDate($trx->getPostingDate());
         $fifoLayer->setCreatedOn($row->getCreatedOn());
 
-        $fifoLayer->setToken(Uuid::uuid4()->toString());
+        $fifoLayer->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
         $fifoLayer->setRemarks("Opening Balance");
 
         $this->doctrineEM->persist($fifoLayer);
@@ -326,7 +305,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                 $fifoLayer->setCreatedOn(new \DateTime($trx->getCreatedOn()));
             }
 
-            $fifoLayer->setToken(Uuid::uuid4()->toString());
+            $fifoLayer->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
             $fifoLayer->setRemarks(\sprintf("WH-GR from PO-GR %s", $trx->getSysNumber()));
 
             $this->getDoctrineEM()->persist($fifoLayer);

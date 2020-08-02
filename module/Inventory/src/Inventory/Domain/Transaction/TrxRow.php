@@ -20,6 +20,10 @@ class TrxRow extends BaseRow
     // ====================
 
     // ===================
+    public function setCalculatedCost($cogs)
+    {
+        $this->setCogsLocal($cogs);
+    }
 
     /**
      *

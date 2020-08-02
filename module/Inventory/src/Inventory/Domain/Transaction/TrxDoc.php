@@ -34,6 +34,19 @@ class TrxDoc extends GenericTrx
     private function __construct()
     {}
 
+    /**
+     *
+     * @deprecated
+     * @param TrxSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param PostingServiceInterface $postingService
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Inventory\Domain\Transaction\TrxDoc
+     */
     public static function createFrom(TrxSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, PostingServiceInterface $postingService)
     {
         $instance = new self();
@@ -91,6 +104,20 @@ class TrxDoc extends GenericTrx
         return $instance;
     }
 
+    /**
+     *
+     * @deprecated
+     * @param TrxSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param HeaderValidatorCollection $headerValidators
+     * @param SharedService $sharedService
+     * @param PostingServiceInterface $postingService
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
+     * @return \Inventory\Domain\Transaction\TrxDoc
+     */
     public static function updateFrom(TrxSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, PostingServiceInterface $postingService)
     {
         $instance = new self();

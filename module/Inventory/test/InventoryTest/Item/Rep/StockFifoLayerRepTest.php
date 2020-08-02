@@ -24,9 +24,10 @@ class StockFifoLayerRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new StockReportRepositoryImpl($doctrineEM);
             $filter = new StockFifoLayerReportSqlFilter();
+            $filter->setToDate('2020-06-06');
             $filter->setItemId(2427);
             $filter->setWarehouseId(5);
-            $filter->setIsClosed(1);
+            $filter->setIsClosed(0);
             $sort_by = 'postingDate';
             $sort = 'DESC';
             $limit = null;

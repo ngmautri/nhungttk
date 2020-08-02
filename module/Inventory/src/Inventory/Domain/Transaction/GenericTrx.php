@@ -280,21 +280,17 @@ abstract class GenericTrx extends BaseDoc
      * @throws ValidationFailedException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
-    public function post(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    public function post(CommandOptions $options, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
-        $this->_checkParams($validationService, $sharedService);
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validators not given!");
-        }
+        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
 
         $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();

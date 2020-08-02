@@ -392,7 +392,7 @@ class GIController extends AbstractGenericController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'dto' => null,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -443,7 +443,7 @@ class GIController extends AbstractGenericController
                 'target_id' => $rootEntityId,
                 'target_token' => $rootEntityToken,
                 'dto' => $dto,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -516,51 +516,55 @@ class GIController extends AbstractGenericController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'version' => $rootDTO->getRevisionNo(),
-                'rootDto' => $rootDTO,
+                'headerDTO' => $rootDTO,
                 'dto' => $localDTO, // row
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            $viewModel->setTemplate($viewTemplete);
+            $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
             return $viewModel;
         }
         // Posting
         // =============================
+        $data = $prg;
+
+        $dto = DTOFactory::createDTOFromArray($data, new TrxRowDTO());
+        $userId = $this->getUserId();
+
+        $target_id = $data['target_id'];
+        $target_token = $data['target_token'];
+        $entity_id = $data['entity_id'];
+        $entity_token = $data['entity_token'];
+        $version = $data['version'];
+
+        $result = $this->getTrxService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+        $rootEntity = null;
+        $localEntity = null;
+        $rootDTO = null;
+        $localDTO = null;
+
+        if (isset($result["rootEntity"])) {
+            $rootEntity = $result["rootEntity"];
+        }
+        if (isset($result["localEntity"])) {
+            $localEntity = $result["localEntity"];
+        }
+        if (isset($result["rootDTO"])) {
+            $rootDTO = $result["rootDTO"];
+        }
+        if (isset($result["localDTO"])) {
+            $localDTO = $result["localDTO"];
+        }
+        if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $notification = new Notification();
+
         try {
-            $data = $prg;
 
-            $dto = DTOFactory::createDTOFromArray($data, new TrxRowDTO());
-            $userId = $this->getId();
-
-            $target_id = $data['target_id'];
-            $target_token = $data['target_token'];
-            $entity_id = $data['entity_id'];
-            $entity_token = $data['entity_token'];
-            $version = $data['version'];
-
-            $result = $this->getTrxService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
-            $rootEntity = null;
-            $localEntity = null;
-            $rootDTO = null;
-            $localDTO = null;
-
-            if (isset($result["rootEntity"])) {
-                $rootEntity = $result["rootEntity"];
-            }
-            if (isset($result["localEntity"])) {
-                $localEntity = $result["localEntity"];
-            }
-            if (isset($result["rootDTO"])) {
-                $rootDTO = $result["rootDTO"];
-            }
-            if (isset($result["localDTO"])) {
-                $localDTO = $result["localDTO"];
-            }
-            if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
-                return $this->redirect()->toRoute('not_found');
-            }
             $options = new TrxRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
 
             $cmdHandler = new UpdateRowCmdHandler();
@@ -571,7 +575,6 @@ class GIController extends AbstractGenericController
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
-            $notification = new Notification();
             $notification->addError($e->getMessage());
         }
         if ($notification->hasErrors()) {
@@ -584,19 +587,130 @@ class GIController extends AbstractGenericController
                 'target_token' => $target_token,
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'dto' => $dto,
-                'rootDto' => $rootDTO,
+                'headerDTO' => $rootDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action
             ));
-            $viewModel->setTemplate($viewTemplete);
+            $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
             $this->getLogger()->error(\sprintf("Row Trx #%s is not updated by %s. Error: %s", $target_id, $userId, $notification->errorMessage()));
 
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/inventory/gi/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     * Review and Post GR.
+     * Document can't be changed.
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $this->layout("Inventory/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = "/inventory/gi/review";
+        $form_title = "Review Invoice";
+        $action = Constants::FORM_ACTION_REVIEW;
+        $viewTemplete = "inventory/gi/review-v1";
+
+        $prg = $this->prg($form_action, true);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        // POSTING
+        // ====================================
+
+        try {
+            $notification = new Notification();
+
+            $data = $prg;
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+            $userId = $u->getId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                $this->flashMessenger()->addMessage(\sprintf("%s-%s", $entity_id, $entity_token));
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new PostCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+            $notification = $dto->getNotification();
+            $msg = sprintf("AP #%s is posted", $entity_id);
+            // $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $redirectUrl = "/procure/ap-report/header-status";
+            http: // localhost:81/procure/ap-report/header-status
+        } catch (\Exception $e) {
+            $msg = sprintf("%s", $e->getMessage());
+            $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -700,119 +814,6 @@ class GIController extends AbstractGenericController
      */
     public function addAction()
     {}
-
-    /**
-     * Review and Post GR.
-     * Document can't be changed.
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function reviewAction()
-    {
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $this->layout("Inventory/layout-fullscreen");
-        $nmtPlugin = $this->Nmtplugin();
-
-        $form_action = "/inventory/gi/review";
-        $form_title = "Review Invoice";
-        $action = Constants::FORM_ACTION_REVIEW;
-        $viewTemplete = "inventory/gi/review-v1";
-
-        $prg = $this->prg($form_action, true);
-        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-            // returned a response to redirect us
-            return $prg;
-        } elseif ($prg === false) {
-            // this wasn't a POST request, but there were no params in the flash messenger
-            // probably this is the first time the form was loaded
-            $entity_id = (int) $this->params()->fromQuery('entity_id');
-            $entity_token = $this->params()->fromQuery('entity_token');
-            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token);
-            if ($rootEntity == null) {
-                return $this->redirect()->toRoute('not_found');
-            }
-            // echo memory_get_usage();
-            // var_dump($po->makeDTOForGrid());
-            // echo memory_get_usage();
-            $viewModel = new ViewModel(array(
-                'errors' => null,
-                'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'rootEntity' => $rootEntity,
-                'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
-            ));
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
-        }
-        // POSTING
-        // ====================================
-
-        try {
-            $notification = new Notification();
-
-            $data = $prg;
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
-            $userId = $u->getId();
-            $entity_id = $data['entity_id'];
-            $entity_token = $data['entity_token'];
-            $version = $data['version'];
-            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
-            if ($rootEntity == null) {
-                $this->flashMessenger()->addMessage(\sprintf("%s-%s", $entity_id, $entity_token));
-                return $this->redirect()->toRoute('not_found');
-            }
-            $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-
-            $cmdHandler = new PostCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
-            $cmd->setLogger($this->getLogger());
-
-            $cmd->execute();
-            $notification = $dto->getNotification();
-            $msg = sprintf("AP #%s is posted", $entity_id);
-            // $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-            $redirectUrl = "/procure/ap-report/header-status";
-            http: // localhost:81/procure/ap-report/header-status
-        } catch (\Exception $e) {
-            $msg = sprintf("%s", $e->getMessage());
-            $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-            $notification->addError($e->getMessage());
-        }
-
-        if ($notification->hasErrors()) {
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'rootEntity' => $rootEntity,
-                'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
-            ));
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
-        }
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        return $this->redirect()->toUrl($redirectUrl);
-    }
 
     /**
      *

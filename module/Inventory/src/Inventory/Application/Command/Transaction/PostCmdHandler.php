@@ -6,27 +6,20 @@ use Application\Application\Command\AbstractDoctrineCmd;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\AP\Options\ApPostOptions;
-use Procure\Application\DTO\Ap\ApDTO;
+use Inventory\Application\Command\Transaction\Options\TrxPostOptions;
+use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Application\Service\Item\FIFOServiceImpl;
+use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
+use Inventory\Domain\Service\TrxPostingService;
+use Inventory\Domain\Service\TrxValuationService;
+use Inventory\Domain\Transaction\TrxDoc;
+use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Procure\Application\Service\FXService;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
 /**
@@ -50,20 +43,20 @@ class PostCmdHandler extends AbstractCommandHandler
 
         /**
          *
-         * @var ApDTO $dto ;
-         * @var APDoc $rootEntity ;
-         * @var APSnapshot $rootSnapshot ;
-         * @var ApPostOptions $options ;
+         * @var TrxDTO $dto ;
+         * @var TrxDoc $rootEntity ;
+         * @var TrxSnapshot $rootSnapshot ;
+         * @var TrxPostOptions $options ;
          *     
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
-        if (! $options instanceof ApPostOptions) {
+        if (! $options instanceof TrxPostOptions) {
             throw new InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
-        if (! $dto instanceof ApDTO) {
+        if (! $dto instanceof TrxDTO) {
             throw new InvalidArgumentException("DTO object not found!");
         }
 
@@ -79,39 +72,23 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+
             $fxService = new FXService();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
-            $headerValidators = new HeaderValidatorCollection();
+            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
+            $postingService = new TrxPostingService($cmdRepository);
 
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new APPostingValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
+            $fifoService = new FIFOServiceImpl();
+            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
+            $valuationService = new TrxValuationService($fifoService);
 
-            $rowValidators = new RowValidatorCollection();
+            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+            $sharedService->setValuationService($valuationService);
+            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
 
-            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
-
-            $validator = new WarehouseValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
-
-            $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $rootEntity->post($options, $sharedService);
 
             // event dispatch
             // ================

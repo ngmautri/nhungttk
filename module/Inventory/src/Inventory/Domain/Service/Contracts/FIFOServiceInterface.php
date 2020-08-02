@@ -19,6 +19,8 @@ Interface FIFOServiceInterface
      */
     public function calculateCOGS(GenericTrx $trx, TrxRow $row);
 
+    public function calculateCostOfTrx(GenericTrx $trx);
+
     /**
      *
      * @param GenericTrx $trx

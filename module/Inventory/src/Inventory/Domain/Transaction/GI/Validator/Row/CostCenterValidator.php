@@ -39,15 +39,13 @@ class CostCenterValidator extends AbstractValidator implements RowValidatorInter
             $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
 
             // ======= COST CENTER =========
-            if ($localEntity->getCostCenter() !== null) {
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
-                    "costCenter" => $localEntity->getCostCenter()
-                );
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "costCenter" => $localEntity->getCostCenter()
+            );
 
-                if (! $spec->isSatisfiedBy($subject)) {
-                    $localEntity->addError(sprintf("Cost center needed, but not found #%s company #%s", $localEntity->getCostCenter(), $rootEntity->getCompany()));
-                }
+            if (! $spec->isSatisfiedBy($subject)) {
+                $localEntity->addError(sprintf("Cost center needed, but not found #%s company #%s", $localEntity->getCostCenter(), $rootEntity->getCompany()));
             }
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());

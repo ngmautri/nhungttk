@@ -21,11 +21,11 @@ class TrxServiceTest extends PHPUnit_Framework_TestCase
             /** @var TrxService $sv ; */
             $sv = Bootstrap::getServiceManager()->get(TrxService::class);
 
-            $id = 1317;
-            $token = "1c80354d-b4e2-46be-a8c1-17a885e6d35f";
+            $id = 1362;
+            $token = "af6d3b5b-e838-479e-b989-3c15142ba37c";
 
             $rootEntity = $sv->getDocDetailsByTokenId($id, $token);
-            var_dump($rootEntity->getRowbyId(1));
+            // var_dump($rootEntity);
         } catch (InvalidArgumentException $e) {
             echo ($e->getMessage());
         }

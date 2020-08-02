@@ -115,7 +115,6 @@ class ValidatorFactory
             case TrxType::GI_FOR_COST_CENTER:
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
-
                 $validator = new CostCenterValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
                 $rowValidators->add($validator);

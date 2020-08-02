@@ -91,6 +91,11 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         return TrxDoc::constructFromSnapshot($snapshot);
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface::getRootEntityByTokenId()
+     */
     public function getRootEntityByTokenId($id, $token = null)
     {
         if ($id == null || $token == null) {
@@ -118,7 +123,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         $rows = $this->getRowsById($id);
 
         if (count($rows) == 0) {
-            $rootEntity = TrxDoc::makeFromSnapshot($rootSnapshot);
+            $rootEntity = TrxDoc::constructFromSnapshot($rootSnapshot);
             return $rootEntity;
         }
 

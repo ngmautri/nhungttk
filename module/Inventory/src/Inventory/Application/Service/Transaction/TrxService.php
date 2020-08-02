@@ -12,8 +12,8 @@ use Inventory\Application\Service\Transaction\Output\TrxSaveAsExcel;
 use Inventory\Application\Service\Transaction\Output\TrxSaveAsOpenOffice;
 use Inventory\Application\Service\Transaction\Output\TrxSaveAsPdf;
 use Inventory\Application\Service\Transaction\Output\Pdf\TrxPdfBuilder;
-use Inventory\Application\Service\Transaction\Spreadsheet\TrxExcelBuilder;
-use Inventory\Application\Service\Transaction\Spreadsheet\TrxOpenOfficeBuilder;
+use Inventory\Application\Service\Transaction\Output\Spreadsheet\TrxExcelBuilder;
+use Inventory\Application\Service\Transaction\Output\Spreadsheet\TrxOpenOfficeBuilder;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
@@ -42,7 +42,7 @@ class TrxService extends AbstractService
      * @param int $id
      * @param string $token
      * @param string $outputStrategy
-     * @return NULL|\Procure\Domain\AccountPayable\APDoc
+     * @return NULL|\Inventory\Domain\Transaction\TrxDoc
      */
     public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
     {
@@ -92,6 +92,14 @@ class TrxService extends AbstractService
         return $rootEntity;
     }
 
+    /**
+     *
+     * @param int $target_id
+     * @param string $target_token
+     * @param int $entity_id
+     * @param string $entity_token
+     * @return NULL[]|object[]|\Inventory\Domain\Transaction\TrxRow[]|\Inventory\Domain\Transaction\TrxDoc[]
+     */
     public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());

@@ -104,7 +104,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 return;
             }
 
-            \var_dump($changeLog);
+            // \var_dump($changeLog);
 
             $params = [
                 "changeLog" => $changeLog

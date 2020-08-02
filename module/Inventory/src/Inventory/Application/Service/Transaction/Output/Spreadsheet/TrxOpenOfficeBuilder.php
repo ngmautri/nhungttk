@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Application\Service\Transaction\Spreadsheet;
+namespace Inventory\Application\Service\Transaction\Output\Spreadsheet;
 
 use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
 

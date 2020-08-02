@@ -62,24 +62,9 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
                 $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
             }
 
-            // ======= UNIT PRICE ==========
-            if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
-                $localEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
-            }
-
             // ======= CONVERSION FACTORY ==========
             if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
                 $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
-            }
-            // ======= EXW PRICE ==========
-            if (! $spec->isSatisfiedBy($localEntity->getExwUnitPrice())) {
-                // $notification->addError("Exw Unit price is not valid! " . $localEntity->getExwUnitPrice());
-            }
-
-            if (! $localEntity->getTaxRate() == null) {
-                if (! $spec->isSatisfiedBy($localEntity->getTaxRate())) {
-                    $localEntity->addError("Tax Rate is not valid! " . $localEntity->getTaxRate());
-                }
             }
         } catch (RuntimeException $e) {
             $localEntity->addError($e->getMessage());

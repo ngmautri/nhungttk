@@ -138,7 +138,8 @@ abstract class GenericTrx extends BaseDoc
             throw new InvalidArgumentException("Row Validators not given!");
         }
 
-        $snapshot->docType = $this->docType;
+        $snapshot->flow = $this->getMovementFlow();
+        $snapshot->wh = $this->getWarehouse();
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

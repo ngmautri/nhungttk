@@ -229,6 +229,8 @@ class Constants
 
     const FORM_ACTION_REVIEW = 'REVIEW';
 
+    const FORM_ACTION_REVERSE = 'REVERSE';
+
     const FORM_ACTION_AP_FROM_PO = 'AP-PO';
 
     const FORM_ACTION_AP_FROM_GR = 'AP-GR';

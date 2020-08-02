@@ -783,8 +783,9 @@ class TrxMapper
      */
     public static function createRowSnapshot(EntityManager $doctrineEM, NmtInventoryTrx $entity, $snapshot = null)
     {
-        if ($entity == null)
+        if ($entity == null) {
             return null;
+        }
 
         if ($snapshot == null) {
             $snapshot = new TrxRowSnapshot();

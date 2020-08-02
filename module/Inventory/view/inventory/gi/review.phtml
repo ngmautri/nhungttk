@@ -1,4 +1,7 @@
-<?php /**@var \Application\Entity\NmtInventoryMv $entity ;*/?>
+<?php
+
+/**@var \Application\Entity\NmtInventoryMv $entity ;*/
+?>
 
 <div id="tabs" style="font-size: 10pt; padding: 1px">
 	<ul>
@@ -26,18 +29,40 @@ if (count($errors) > 0) {
 }
 ?>
 
-<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
+<?php
+
+if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT) :
+    ?>
 		<div style="position: relative; float: right;">
 
-			<a title="<?php echo $this->translate("Edit Document Header");?>"
+			<a title="<?php
+
+    echo $this->translate("Edit Document Header");
+    ?>"
 				class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/inventory/gi/edit?token=<?php echo $entity->getToken();?>&entity_id=<?php echo $entity->getId();?>"><?php echo $this->translate("Edit");?></a>
+				href="<?php
+
+    echo $this->baseUrl?>/inventory/gi/edit?token=<?php
+
+    echo $entity->getToken();
+    ?>&entity_id=<?php
+
+    echo $entity->getId();
+    ?>"><?php
+
+    echo $this->translate("Edit");
+    ?></a>
 
 			<a class="btn btn-primary btn-sm" style="color: white"
 				onclick="confirmPost();" href="javascript:;"><i
-				class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+				class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php
+
+    echo $this->translate('Post');
+    ?></a>
 		</div>
-		<?php endif;?>
+		<?php endif;
+
+?>
 		
 
 
@@ -45,12 +70,22 @@ if (count($errors) > 0) {
 			action="/inventory/gi/review" method="post"
 			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-				name="redirectUrl" value="<?php echo $redirectUrl ?>" /> <input
+				value="<?php
+
+    echo $redirectUrl?>" /> <input type="hidden"
+				name="redirectUrl" value="<?php
+
+    echo $redirectUrl?>" /> <input
 				type="hidden" name="entity_id"
-				value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
+				value="<?php
+
+    echo (! $entity == null) ? $entity->getId() : "";
+    ?>" /> <input
 				type="hidden" name="entity_token"
-				value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
+				value="<?php
+
+    echo (! $entity == null) ? $entity->getToken() : "";
+    ?>" />
 
 
 
@@ -92,7 +127,14 @@ if (count($errors) > 0) {
 
 						<div class="col-sm-3">
 							<input
-								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								<?php
+
+        if (! $entity == null) :
+            echo ($entity->getIsActive() == "1") ? "checked" : "";
+        else :
+            echo "checked";
+        endif;
+        ?>
 								type="checkbox" name="isActive" value="1">&nbsp;Is
 							Active&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -104,7 +146,10 @@ if (count($errors) > 0) {
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2"></label>
 						<div class="col-sm-8" style="color: graytext; padding: 5px;">
-								<?php echo $this->translate($movementTypeInfo);?>
+								<?php
+
+        echo $this->translate($movementTypeInfo);
+        ?>
 					</div>
 					</div>
 
@@ -114,17 +159,41 @@ if (count($errors) > 0) {
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text"
 								id="movementDate" name="movementDate"
-								value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
+								value="<?php
+
+        if (! $entity == null) :
+            if ($entity->getMovementDate() !== null) :
+                echo date_format($entity->getMovementDate(), "Y-m-d"); endif; endif;
+
+
+        ?>"
 								placeholder=" please select" />
 						</div>
-						<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Source Warehouse");?>:</label>
+						<label class="control-label col-sm-2" for="inputTag"><?php
+
+    echo $this->translate("Source Warehouse");
+    ?>:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" readonly type="text"
 								id="target_wh_name" placeholder="Please select!"
 								name="target_wh"
-								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+								value="<?php
+
+        if (! $entity == null) :
+            if (! $entity->getWarehouse() == null) :
+                echo $entity->getWarehouse()->getWhName();endif;endif;
+
+
+        ?>">
 							<input type="hidden" id="target_wh_id" name="target_wh_id"
-								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+								value="<?php
+
+        if (! $entity == null) :
+            if (! $entity->getWarehouse() == null) :
+                echo $entity->getWarehouse()->getId();endif;endif;
+
+
+        ?>" />
 						</div>
 					</div>
 
@@ -134,7 +203,10 @@ if (count($errors) > 0) {
 						<div class="col-sm-8">
 							<input class="form-control input-sm" type="text" placeholder=""
 								name="remarks"
-								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+								value="<?php
+
+        echo (! $entity == null) ? $entity->getRemarks() : "";
+        ?>">
 						</div>
 					</div>
 
@@ -166,15 +238,24 @@ if (count($errors) > 0) {
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
-				<h5><?php echo $this->translate(' Good issue will be posted!');?></h5>
+				<h5><?php
+
+    echo $this->translate(' Good issue will be posted!');
+    ?></h5>
 
 				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when submitted! <br> Journal entry will be created automatically!');?>
+					<strong>[Info]</strong> <?php
+
+    echo $this->translate('Document can\'t be changed anymore when submitted! <br> Journal entry will be created automatically!');
+    ?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
 				</div>
-				<p><?php echo $this->translate('Do you want to continue?');?></p>
+				<p><?php
+
+    echo $this->translate('Do you want to continue?');
+    ?></p>
 			</div>
 			<div class="modal-footer">
 				<button onclick="doPosting();" type="button"
@@ -195,7 +276,15 @@ function confirmPost() {
 }
 
 function doPosting() {
-	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
+	//var url="<?php
+
+echo $this->baseUrl?>/finance/v-invoice/post?token=<?php
+
+echo (! $entity == null) ? $entity->getToken() : "";
+?>&entity_id=<?php
+
+echo (! $entity == null) ? $entity->getId() : "";
+?>"
 	//window.location = url;
 	$('#confirm_modal_sm').modal('hide');
 	submitForm('Posting_Form');
@@ -429,7 +518,13 @@ $( "#vendor_name_1" ).autocomplete({
                                 var $grid = $(this).closest('.pq-grid');
                                 //addRow($grid);
                                 
-   		     redirectUrl="/inventory/gi-row/create?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+   		     redirectUrl="/inventory/gi/add-row?target_token=<?php
+
+        echo (! $entity == null) ? $entity->getToken() : "";
+        ?>&target_id=<?php
+
+        echo (! $entity == null) ? $entity->getId() : "";
+        ?>";
               window.location.href= redirectUrl;
                                  
                                 //debugger;
@@ -560,7 +655,13 @@ $( "#vendor_name_1" ).autocomplete({
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/inventory/gi-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+              url: "/inventory/gi-row/gird?token=<?php
+
+            echo (! $entity == null) ? $entity->getToken() : "";
+            ?>&target_id=<?php
+
+            echo (! $entity == null) ? $entity->getId() : "";
+            ?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
@@ -601,7 +702,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/inventory/gi-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/inventory/gi/update-row?entity_token="+rowData['row_token']+"&entity_id="+rowData['row_id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];;
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

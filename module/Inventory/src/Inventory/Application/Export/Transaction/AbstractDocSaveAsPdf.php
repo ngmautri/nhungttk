@@ -2,7 +2,7 @@
 namespace Inventory\Application\Export\Transaction;
 
 use Application\Application\Service\Document\Pdf\AbstractBuilder;
-use Procure\Application\Service\Output\Contract\DocSaveAsInterface;
+use Inventory\Application\Export\Transaction\Contracts\DocSaveAsInterface;
 
 /**
  * Director in Builder Pattern.

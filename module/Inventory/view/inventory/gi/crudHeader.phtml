@@ -6,7 +6,7 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
 
 /**
  *
- * @var TrxDTO $dto ;
+ * @var TrxDTO $headerDTO ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  *     
  */
@@ -19,6 +19,7 @@ $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col
 <i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
 <a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
 </div></div>';
+
 $submitFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
 
 if ($action == Constants::FORM_ACTION_EDIT) {
@@ -36,14 +37,12 @@ if ($action == Constants::FORM_ACTION_EDIT) {
 
     $format = '<input type="hidden" id="version" name="version" value="%s">';
     $entityFormInput = $entityFormInput . sprintf($format, $version);
-
-    $submitFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
 }
 
 $wh_id = null;
 
-if ($dto != null) {
-    $wh_id = $dto->getWarehouse();
+if ($headerDTO != null) {
+    $wh_id = $headerDTO->getWarehouse();
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -87,7 +86,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 <?php
 echo $error_msg;
 ?>
-<form id="Create_Inv_Form" class="form-horizontal" action="<?php
+<form id="Trx_Header_Form" class="form-horizontal" action="<?php
 echo $form_action;
 ?>" method="post" enctype="multipart/form-data">
 
@@ -101,7 +100,9 @@ echo $entityFormInput;
                            <span class="glyphicon glyphicon-triangle-right"></span>
                         </small>
                         &nbsp;
-                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER: (Rev.#<?php
+                        echo $version;
+                        ?>)</a>
                      </legend>
                      <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2">Movement Type:</label>
@@ -111,8 +112,8 @@ echo $entityFormInput;
    	    							<?php
             if ($transactionType !== null) :
                 foreach ($transactionType as $k => $v) :
-                    if ($dto !== null) :
-                        if ($dto->movementType == $k) :
+                    if ($headerDTO !== null) :
+                        if ($headerDTO->movementType == $k) :
                             echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
                         else :
                             echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
@@ -131,8 +132,8 @@ echo $entityFormInput;
                            <input
                               <?php
 
-                            if (! $dto == null) :
-                                echo ($dto->isActive == "1") ? "checked" : "";
+                            if (! $headerDTO == null) :
+                                echo ($headerDTO->isActive == "1") ? "checked" : "";
                             else :
                                 echo "checked";
                             endif;
@@ -146,8 +147,8 @@ echo $entityFormInput;
                         <div class="col-sm-3">
                            <input class="form-control input-sm" type="text" id="movementDate" name="movementDate" value="<?php
 
-                        if (! $dto == null) :
-                            echo $dto->movementDate; endif;
+                        if (! $headerDTO == null) :
+                            echo $headerDTO->movementDate; endif;
 
                         ?>" placeholder=" please select" />
                         </div>
@@ -172,7 +173,7 @@ echo $entityFormInput;
                         <div class="col-sm-8">
                            <input class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
 
-                        echo (! $dto == null) ? $dto->remarks : "";
+                        echo (! $headerDTO == null) ? $headerDTO->remarks : "";
                         ?>">
                         </div>
                      </div>

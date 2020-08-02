@@ -43,13 +43,13 @@ class OnHandQuantityValidator extends AbstractValidator implements RowValidatorI
 
             $subject = [
                 "itemId" => $localEntity->getItem(),
-                "warehouseId" => $localEntity->getWh(),
-                "movementDate" => $rootEntity->getPostingDate(),
+                "warehouseId" => $rootEntity->getWarehouse(),
+                "movementDate" => $rootEntity->getMovementDate(),
                 "docQuantity" => $localEntity->getDocQuantity()
             ];
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $localEntity->addError(\sprintf("Onhand quantity is not enough %s. Pleae review quantity and warehouse !", $localEntity->getDocQuantity()));
+                $localEntity->addError(\sprintf("Onhand quantity is not enough %s %s %s. Pleae review quantity and warehouse !", $rootEntity->getPostingDate(), $localEntity->getDocQuantity(), $rootEntity->getWarehouse()));
             }
         } catch (\RuntimeException $e) {
             $localEntity->addError($e->getMessage());

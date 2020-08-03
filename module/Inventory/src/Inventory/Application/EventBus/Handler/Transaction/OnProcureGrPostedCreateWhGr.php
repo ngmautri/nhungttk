@@ -45,7 +45,7 @@ class OnProcureGrPostedCreateWhGr extends AbstractEventHandler
             $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
             $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
             $cmd->execute();
-            $this->getLogger()->info(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
+            $this->logInfo(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
 

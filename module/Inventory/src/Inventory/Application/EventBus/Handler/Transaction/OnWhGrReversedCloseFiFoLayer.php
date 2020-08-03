@@ -31,7 +31,7 @@ class OnWhGrReversedCloseFiFoLayer extends AbstractEventHandler
             $fifoService->setDoctrineEM($this->getDoctrineEM());
             $fifoService->closeLayersOf($event->getTarget());
 
-            $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s closed!", $event->getTarget()
+            $this->logInfo(\sprintf("FIFO Layer for WH-GR #%s closed!", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;

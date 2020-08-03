@@ -6,6 +6,7 @@ use Inventory\Domain\Service\TrxValidationService;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\GI\Validator\Row\CostCenterValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\DefaultGIRowValidator;
+use Inventory\Domain\Transaction\GI\Validator\Row\GIForMachineValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\OnHandQuantityValidator;
 use Inventory\Domain\Transaction\GR\Validator\Header\DefaultGRHeaderValidator;
 use Inventory\Domain\Transaction\GR\Validator\Row\DefaultGRRowValidator;
@@ -116,6 +117,21 @@ class ValidatorFactory
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
                 $validator = new CostCenterValidator($sharedSpecsFactory, $fxService);
+                $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
+                $rowValidators->add($validator);
+                break;
+
+            case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
+                $headerValidators = $giHeaderValidators;
+                $rowValidators = $giRowValidators;
+                $validator = new GIForMachineValidator($sharedSpecsFactory, $fxService);
+                $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
+                $rowValidators->add($validator);
+                break;
+            case TrxType::GI_FOR_REPAIR_MACHINE:
+                $headerValidators = $giHeaderValidators;
+                $rowValidators = $giRowValidators;
+                $validator = new GIForMachineValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
                 $rowValidators->add($validator);
                 break;

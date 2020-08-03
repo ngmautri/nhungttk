@@ -24,7 +24,7 @@ class OnWhOpenBalancePostedCloseFifoLayer extends AbstractEventHandler
 
             // close all fifo current fifo layer.
 
-            $this->getLogger()->info(\sprintf("Fifo layer closed on opening balance posted!  #%s ", $event->getTarget()
+            $this->logInfo(\sprintf("Fifo layer closed on opening balance posted!  #%s ", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
 

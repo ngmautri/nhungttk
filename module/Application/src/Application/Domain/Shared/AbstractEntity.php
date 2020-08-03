@@ -20,10 +20,23 @@ abstract class AbstractEntity
 
     protected function logException(\Exception $e)
     {
-        if ($this->logger == null) {
-            return;
+        if ($this->logger != null) {
+            $this->logger->alert(sprintf('[%s:%s] %s', $e->getFile(), $e->getLine(), $e->getMessage()));
         }
-        $this->logger->alert(sprintf('[%s:%s] %s', $e->getFile(), $e->getLine(), $e->getMessage()));
+    }
+
+    protected function logInfo($message)
+    {
+        if ($this->logger != null) {
+            $this->logger->info($message);
+        }
+    }
+
+    protected function logAlert($message)
+    {
+        if ($this->logger != null) {
+            $this->logger->alert($message);
+        }
     }
 
     /**

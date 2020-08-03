@@ -14,7 +14,7 @@ use Inventory\Application\Service\Transaction\Output\TrxSaveAsPdf;
 use Inventory\Application\Service\Transaction\Output\Pdf\TrxPdfBuilder;
 use Inventory\Application\Service\Transaction\Output\Spreadsheet\TrxExcelBuilder;
 use Inventory\Application\Service\Transaction\Output\Spreadsheet\TrxOpenOfficeBuilder;
-use Inventory\Domain\Transaction\TrxDoc;
+use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 
@@ -49,7 +49,7 @@ class TrxService extends AbstractService
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-        if (! $rootEntity instanceof TrxDoc) {
+        if (! $rootEntity instanceof GenericTrx) {
             return null;
         }
 

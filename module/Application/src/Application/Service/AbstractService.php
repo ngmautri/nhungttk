@@ -29,6 +29,20 @@ abstract class AbstractService implements EventManagerAwareInterface
 
     protected $logger;
 
+    protected function logInfo($message)
+    {
+        if ($this->getLogger() != null) {
+            $this->getLogger()->info($message);
+        }
+    }
+
+    protected function logAlert($message)
+    {
+        if ($this->getLogger() != null) {
+            $this->getLogger()->alert($message);
+        }
+    }
+
     /**
      *
      * @return \Symfony\Component\Cache\Adapter\AbstractAdapter

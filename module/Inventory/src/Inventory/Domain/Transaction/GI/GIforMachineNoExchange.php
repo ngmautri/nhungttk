@@ -11,7 +11,7 @@ use Inventory\Domain\Transaction\Contracts\TrxType;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforCostCenter extends AbstractGoodsIssue implements GoodsIssueInterface
+class GIforMachineNoExchange extends AbstractGoodsIssue implements GoodsIssueInterface
 {
 
     /**
@@ -21,7 +21,7 @@ class GIforCostCenter extends AbstractGoodsIssue implements GoodsIssueInterface
      */
     public function specify()
     {
-        $this->movementType = TrxType::GI_FOR_COST_CENTER;
+        $this->movementType = TrxType::GI_FOR_REPAIR_MACHINE;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_OUT;
     }
 }

@@ -15,6 +15,7 @@ use Inventory\Application\Command\Transaction\PostCmdHandler;
 use Inventory\Application\Command\Transaction\UpdateHeaderCmdHandler;
 use Inventory\Application\Command\Transaction\UpdateRowCmdHandler;
 use Inventory\Application\Command\Transaction\Options\TrxCreateOptions;
+use Inventory\Application\Command\Transaction\Options\TrxPostOptions;
 use Inventory\Application\Command\Transaction\Options\TrxRowCreateOptions;
 use Inventory\Application\Command\Transaction\Options\TrxRowUpdateOptions;
 use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
@@ -22,8 +23,6 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Inventory\Application\Service\Transaction\TrxService;
 use Inventory\Domain\Transaction\Contracts\TrxType;
-use Procure\Application\Command\AP\Options\ApPostOptions;
-use Procure\Application\DTO\Ap\ApDTO;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
@@ -54,6 +53,7 @@ class GIController extends AbstractGenericController
         $form_title = $nmtPlugin->translate("Show Transaction");
         $action = Constants::FORM_ACTION_SHOW;
         $viewTemplete = "inventory/gi/review-v1";
+        $transactionType = TrxType::getGoodIssueTrx($nmtPlugin->getTranslator());
 
         /**@var \Application\Entity\MlaUsers $u ;*/
 
@@ -73,7 +73,8 @@ class GIController extends AbstractGenericController
             'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'transactionType' => $transactionType
         ));
         $viewModel->setTemplate($viewTemplete);
         $this->getLogger()->info(\sprintf("Trx #%s viewed by #%s", $id, $this->getUserId()));
@@ -95,6 +96,7 @@ class GIController extends AbstractGenericController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+        $transactionType = TrxType::getGoodIssueTrx();
 
         $form_action = "/inventory/gi/view";
         $form_title = "Invoice Invoice:";
@@ -118,10 +120,11 @@ class GIController extends AbstractGenericController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'transactionType' => $transactionType
         ));
         $viewModel->setTemplate($viewTemplete);
 
@@ -621,6 +624,8 @@ class GIController extends AbstractGenericController
         $action = Constants::FORM_ACTION_REVIEW;
         $viewTemplete = "inventory/gi/review-v1";
 
+        $transactionType = TrxType::getGoodIssueTrx($nmtPlugin->getTranslator());
+
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -647,7 +652,8 @@ class GIController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -667,12 +673,12 @@ class GIController extends AbstractGenericController
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
-            $rootEntity = $this->getApService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token);
             if ($rootEntity == null) {
                 $this->flashMessenger()->addMessage(\sprintf("%s-%s", $entity_id, $entity_token));
                 return $this->redirect()->toRoute('not_found');
             }
-            $options = new ApPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+            $options = new TrxPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
 
             $cmdHandler = new PostCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
@@ -681,13 +687,13 @@ class GIController extends AbstractGenericController
 
             $cmd->execute();
             $notification = $dto->getNotification();
-            $msg = sprintf("AP #%s is posted", $entity_id);
+            $msg = sprintf("Trx #%s is posted", $entity_id);
             // $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-            $redirectUrl = "/procure/ap-report/header-status";
+            $redirectUrl = "/inventory/item-transaction/list";
             http: // localhost:81/procure/ap-report/header-status
         } catch (\Exception $e) {
             $msg = sprintf("%s", $e->getMessage());
-            $redirectUrl = sprintf("/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $redirectUrl = sprintf("/inventory/gi/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
             $notification->addError($e->getMessage());
         }
 
@@ -699,12 +705,13 @@ class GIController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

@@ -6,6 +6,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxRow;
+use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface;
 use Inventory\Infrastructure\Mapper\TrxMapper;
 
@@ -160,7 +161,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         $rootSnapshot->taxAmount = $taxAmount;
         $rootSnapshot->grossAmount = $grossAmount;
 
-        $rootEntity = TrxDoc::constructFromSnapshot($rootSnapshot);
+        $rootEntity = TransactionFactory::contructFromDB($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;

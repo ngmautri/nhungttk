@@ -10,7 +10,7 @@ use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
-use Inventory\Domain\Transaction\GoodsReceipt;
+use Inventory\Domain\Transaction\AbstractGoodsReceipt;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
@@ -28,7 +28,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
+class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInterface
 {
 
     public function specify()

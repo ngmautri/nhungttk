@@ -10,17 +10,16 @@ use Inventory\Application\Command\Transaction\Options\TrxPostOptions;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
 use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
+use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
 use Inventory\Domain\Service\TrxValuationService;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
+use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use InvalidArgumentException;
 
 /**
  *
@@ -83,10 +82,12 @@ class PostCmdHandler extends AbstractCommandHandler
             $fifoService = new FIFOServiceImpl();
             $fifoService->setDoctrineEM($cmd->getDoctrineEM());
             $valuationService = new TrxValuationService($fifoService);
+            $fifoService->setLogger($cmd->getLogger());
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
             $sharedService->setValuationService($valuationService);
             $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
+            $sharedService->setLogger($cmd->getLogger());
 
             $rootEntity->post($options, $sharedService);
 
@@ -97,22 +98,22 @@ class PostCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("AP #%s posted", $rootEntity->getId());
+            $m = sprintf("Trx #%s posted", $rootEntity->getId());
             $notification->addSuccess($m);
 
-            $queryRep = new APQueryRepositoryImpl($cmd->getDoctrineEM());
+            $queryRep = new TrxQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
             $currentVersion = $queryRep->getVersion($rootEntityId) - 1;
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
 
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

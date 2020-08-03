@@ -31,7 +31,7 @@ class OnWhOpenBlancePostedCreateSerialNo extends AbstractEventHandler
             $sv->setDoctrineEM($this->getDoctrineEM());
             $sv->createSerialNoFor($event->getTarget());
 
-            $this->getLogger()->info(\sprintf("Serial No for PO-GR#%s handled and created, if any!", $event->getTarget()
+            $this->logInfo(\sprintf("Serial No for PO-GR#%s handled and created, if any!", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;

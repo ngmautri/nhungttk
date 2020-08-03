@@ -87,7 +87,7 @@ class TrxType
 
             self::GI_FOR_REPAIR_MACHINE_WITH_EX => [
                 "type_name" => Translator::translate("Issue for reparing machine (exchange of part)"),
-                "type_description" => Translator::translate("Exchange parts for repairing of machine.<ul><li>Spare part controller will issue new parts and receive old /defect one back to store for disposal process.</li><li>Asset code is required.</li></ul>")
+                "type_description" => Translator::translate("Exchange parts for repairing of machine.<br>- Spare part controller will issue new parts and receive old /defect one back to store for disposal process.<br>- Asset code is required.")
             ],
 
             self::GI_FOR_PROJECT => [

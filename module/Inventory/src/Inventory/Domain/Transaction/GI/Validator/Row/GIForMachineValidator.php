@@ -14,14 +14,9 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnHandQuantityValidator extends AbstractValidator implements RowValidatorInterface
+class GIForMachineValidator extends AbstractValidator implements RowValidatorInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface::validate()
-     */
     public function validate(AbstractTrx $rootEntity, BaseRow $localEntity)
     {
         if (! $rootEntity instanceof GenericTrx) {
@@ -32,26 +27,30 @@ class OnHandQuantityValidator extends AbstractValidator implements RowValidatorI
             throw new InvalidArgumentException('BaseRow Row not given!');
         }
 
+        // do verification now
+
         Try {
-            // do verification now
 
             /**
              *
              * @var AbstractSpecification $spec ;
              */
-            $spec = $this->getDomainSpecificationFactory()->getOnhandQuantitySpecification();
 
-            $subject = [
-                "itemId" => $localEntity->getItem(),
-                "warehouseId" => $rootEntity->getWarehouse(),
-                "movementDate" => $rootEntity->getMovementDate(),
-                "docQuantity" => $localEntity->getDocQuantity()
-            ];
+            $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
+
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "itemId" => $localEntity->getIssueFor()
+            );
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $localEntity->addError(\sprintf("Onhand quantity is not enough %s %s %s %s. Pleae review quantity and warehouse !", $rootEntity->getMovementDate(), $localEntity->getItem(), $localEntity->getDocQuantity(), $rootEntity->getWarehouse()));
+                $localEntity->addError(sprintf("Machine #%s not set or not exits in the company #%s", $localEntity->getItem(), $rootEntity->getCompany()));
             }
-        } catch (\RuntimeException $e) {
+
+            if ($localEntity->getIssueFor() == $localEntity->getItem()) {
+                $localEntity->addError(sprintf("Can not issue part #%s for Machine #%s", $localEntity->getItem(), $rootEntity->getIssueFor()));
+            }
+        } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }
     }

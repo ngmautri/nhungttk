@@ -4,6 +4,7 @@ namespace Procure\Domain\Service;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
 use Procure\Domain\Service\Contracts\PostingServiceInterface;
+use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 
 /**
@@ -20,6 +21,8 @@ class SharedService
     protected $fxService;
 
     protected $postingService;
+
+    protected $logger;
 
     /**
      *
@@ -76,5 +79,19 @@ class SharedService
     public function getFxService()
     {
         return $this->fxService;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }

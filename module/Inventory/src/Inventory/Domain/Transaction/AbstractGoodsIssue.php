@@ -1,9 +1,12 @@
 <?php
 namespace Inventory\Domain\Transaction;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
+use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 
 /**
  *
@@ -20,6 +23,7 @@ abstract class AbstractGoodsIssue extends GenericTrx
      */
     protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
+
         /**
          *
          * @var TrxRow $row ;
@@ -42,15 +46,33 @@ abstract class AbstractGoodsIssue extends GenericTrx
             $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
+        $this->validate($validationService, true);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
-        $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->post($this, true);
+        /**
+         *
+         * @var TrxCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $snapshot = $rep->post($this, true);
+        var_dump($snapshot);
+
+        $target = $this;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new WhGiPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
     }
 
     /**

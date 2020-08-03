@@ -42,7 +42,7 @@ class OnProcureGrReversedCreateWhGi extends AbstractEventHandler
         $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
         $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
         $cmd->execute();
-        $this->getLogger()->info(\sprintf("WH-GR Reversed from PO-GR Reversed!  #%s ", $event->getTarget()
+        $this->logInfo(\sprintf("WH-GR Reversed from PO-GR Reversed!  #%s ", $event->getTarget()
             ->getId()));
     }
 

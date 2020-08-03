@@ -3,6 +3,8 @@ namespace Inventory\Application\Service\Transaction\Output;
 
 use Inventory\Application\Export\Transaction\AbstractDocSaveAsPdf;
 use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
+use Inventory\Domain\Transaction\GenericTrx;
+use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Procure\Domain\GenericDoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 
@@ -25,7 +27,7 @@ class TrxSaveAsPdf extends AbstractDocSaveAsPdf
             return null;
         }
 
-        if (! $doc instanceof GenericDoc) {
+        if (! $doc instanceof GenericTrx) {
             throw new \InvalidArgumentException(sprintf("Invalid input %s", "doc."));
         }
 
@@ -173,7 +175,12 @@ td.text-right {
 
 EOF;
 
-        $details = $html . '<div class=""><h1 class="title" style="text-align: center">Invoice</h1></div>';
+        $docTitle = "Goods Issue";
+        if ($doc->getMovementFlow() == TrxFlow::WH_TRANSACTION_IN) {
+            $docTitle = "Goods Receipt";
+        }
+
+        $details = $html . \sprintf('<div class=""><h1 class="title" style="text-align: center">%s</h1></div>', $docTitle);
 
         $details .= '
         <table class="table-fill">

@@ -11,6 +11,8 @@ use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\GI\GIforCostCenter;
+use Inventory\Domain\Transaction\GI\GIforExchangePartForMachine;
+use Inventory\Domain\Transaction\GI\GIforMachineNoExchange;
 use Inventory\Domain\Transaction\GR\GRFromOpening;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
@@ -70,6 +72,12 @@ class TransactionFactory
 
             case TrxType::GI_FOR_COST_CENTER:
                 $trx = new GIforCostCenter();
+                break;
+            case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
+                $trx = new GIforExchangePartForMachine();
+                break;
+            case TrxType::GI_FOR_REPAIR_MACHINE:
+                $trx = new GIforMachineNoExchange();
                 break;
         }
 
@@ -219,6 +227,64 @@ class TransactionFactory
         return $trx;
     }
 
-    public static function contructFromDB($snapshot)
-    {}
+    /**
+     *
+     * @param TrxSnapshot $snapshot
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \Inventory\Domain\Transaction\GenericTrx
+     */
+    public static function contructFromDB(TrxSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof TrxSnapshot) {
+            throw new InvalidArgumentException("TrxSnapshot not found!");
+        }
+
+        $typeId = $snapshot->getMovementType();
+
+        if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
+            throw new InvalidArgumentException("Movemement type empty or not supported! TransactionFactory #" . $snapshot->getMovementType());
+        }
+
+        $trx = null;
+
+        switch ($typeId) {
+
+            case TrxType::GR_FROM_OPENNING_BALANCE:
+                $trx = new GRFromOpening();
+                break;
+
+            case TrxType::GR_FROM_TRANSFER_LOCATION:
+                $trx = new GRFromTransferLocation();
+                break;
+
+            case TrxType::GR_FROM_PURCHASING:
+                $trx = new GRFromOpening();
+                break;
+
+            case TrxType::GI_FOR_COST_CENTER:
+                $trx = new GIforCostCenter();
+                break;
+            case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
+                $trx = new GIforExchangePartForMachine();
+                break;
+            case TrxType::GI_FOR_REPAIR_MACHINE:
+                $trx = new GIforMachineNoExchange();
+                break;
+        }
+
+        if ($trx == null) {
+            throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
+        }
+
+        /**
+         *
+         * @var GenericTrx $trx
+         */
+        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
+
+        // Important
+        $trx->specify();
+        return $trx;
+    }
 }

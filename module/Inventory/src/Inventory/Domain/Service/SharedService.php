@@ -5,6 +5,7 @@ use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Validator\AbstractInventorySpecificationFactory;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
+use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 
 /**
@@ -27,6 +28,20 @@ class SharedService
     protected $valuationService;
 
     protected $logger;
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      *

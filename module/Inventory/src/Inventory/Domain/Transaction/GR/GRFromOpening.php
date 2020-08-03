@@ -7,7 +7,7 @@ use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
 use Inventory\Domain\Event\Transaction\GR\WhOpenBalancePosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
-use Inventory\Domain\Transaction\GoodsReceipt;
+use Inventory\Domain\Transaction\AbstractGoodsReceipt;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
@@ -19,7 +19,7 @@ use RuntimeException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRFromOpening extends GoodsReceipt implements GoodsReceiptInterface
+class GRFromOpening extends AbstractGoodsReceipt implements GoodsReceiptInterface
 {
 
     public function specify()
@@ -31,7 +31,7 @@ class GRFromOpening extends GoodsReceipt implements GoodsReceiptInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\GoodsReceipt::doPost()
+     * @see \Inventory\Domain\Transaction\AbstractGoodsReceipt::doPost()
      */
     protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {

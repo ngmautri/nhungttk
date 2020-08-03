@@ -141,20 +141,24 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
 
                 $fifo_consume->setToken(Uuid::uuid4()->toString());
                 $this->getDoctrineEM()->persist($fifo_consume);
-                $this->getLogger()->info(sprintf("row #%s- consume layer #%s quantity %s*%s \n", $row->getId(), $layer->getId(), $consumpted_qty, $layer->getDocUnitPrice()));
+                $this->logInfo(sprintf("row #%s- consume layer #%s quantity %s*%s \n", $row->getId(), $layer->getId(), $consumpted_qty, $layer->getDocUnitPrice()));
             }
         }
 
         if ($total_onhand < $totalIssueQty) {
             $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
             $m = sprintf($m . ' (%s>%s)', $totalIssueQty, $total_onhand);
+            $this->logAlert(sprintf("row #%s-  quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
             throw new \Exception($m);
         }
 
-        // Set header blocked for reversal
-        // $trx->setReversalBlocked(1);
-        // $trx->getMovement()->setReversalBlocked(1);
-        $this->getLogger()->info(sprintf("row #%s-  quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
+        if ($cogs < 0) {
+            $m = sprintf('Cost is not valid! Cost=%s Quantity=%s Onhand=%s)', $cogs, $totalIssueQty, $total_onhand);
+            $this->logAlert($m);
+            throw new \Exception($m);
+        }
+
+        $this->logInfo(sprintf("row #%s-  quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
         return $cogs;
     }
 

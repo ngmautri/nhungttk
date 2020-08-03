@@ -30,7 +30,7 @@ class OnWhGrPostedCreateFiFoLayer extends AbstractEventHandler
             $fifoService->setDoctrineEM($this->getDoctrineEM());
             $fifoService->createLayersFor($event->getTarget());
 
-            $this->getLogger()->info(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
+            $this->logInfo(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;

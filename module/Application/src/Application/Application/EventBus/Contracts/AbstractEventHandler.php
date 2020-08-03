@@ -88,4 +88,11 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
         }
         $this->logger->alert(sprintf('[%s:%s] %s', $e->getFile(), $e->getLine(), $e->getMessage()));
     }
+
+    protected function logInfo($m)
+    {
+        if ($this->logger != null) {
+            $this->logger->info($m);
+        }
+    }
 }

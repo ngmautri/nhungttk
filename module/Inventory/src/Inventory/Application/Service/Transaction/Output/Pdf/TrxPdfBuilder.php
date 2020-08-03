@@ -2,7 +2,7 @@
 namespace Inventory\Application\Service\Transaction\Output\Pdf;
 
 use Application\Application\Service\Document\Pdf\AbstractBuilder;
-use Procure\Domain\AccountPayable\APDoc;
+use Inventory\Domain\Transaction\GenericTrx;
 
 /**
  *
@@ -28,15 +28,15 @@ class TrxPdfBuilder extends AbstractBuilder
 
         /**
          *
-         * @var APDoc $doc ;
+         * @var GenericTrx $doc ;
          */
         $doc = "";
         if (isset($params["doc"])) {
             $doc = $params["doc"];
         }
 
-        $detail1 = sprintf("%s.<br>", $doc->getVendorName());
-        $detail1 = $detail1 . sprintf("Incoterm: %s %s.<br>", $doc->getIncotermCode(), $doc->getIncotermPlace());
+        $detail1 = sprintf("Transaction Date: %s.<br>", $doc->getMovementDate());
+        $detail1 = $detail1 . sprintf("Transaction Type: %s.<br>", $doc->getMovementType());
 
         $pdf->writeHTML($detail1, true, false, false, false, '');
 

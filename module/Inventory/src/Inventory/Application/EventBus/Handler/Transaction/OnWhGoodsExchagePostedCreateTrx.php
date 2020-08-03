@@ -3,25 +3,21 @@ namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
+use Inventory\Domain\Event\Transaction\GI\WhGoodsExchangePosted;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnWhGiPostedCalculateCost extends AbstractEventHandler
+class OnWhGoodsExchagePostedCreateTrx extends AbstractEventHandler
 {
 
-    /**
-     *
-     * @param WhGiPosted $event
-     */
-    public function __invoke(WhGiPosted $event)
+    public function __invoke(WhGoodsExchangePosted $event)
     {
         try {
 
-            $this->logInfo(\sprintf("COGS for WH-GI #%s caculated!", $event->getTarget()
+            $this->logInfo(\sprintf("Receipt exchanged/damage goods created for WH-GI #%s", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;
@@ -35,6 +31,6 @@ class OnWhGiPostedCalculateCost extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return WhGiPosted::class;
+        return WhGoodsExchangePosted::class;
     }
 }

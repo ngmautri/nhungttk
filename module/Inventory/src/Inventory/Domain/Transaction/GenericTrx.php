@@ -18,6 +18,7 @@ use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
+use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
@@ -283,12 +284,24 @@ abstract class GenericTrx extends BaseDoc
     public function post(CommandOptions $options, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
-            throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
+            throw new \InvalidArgumentException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
+
+        if ($sharedService == null) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+        }
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof TrxCmdRepositoryInterface) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("TrxCmdRepositoryInterface not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+        $this->validate($validationService, true);
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());
         }
@@ -312,6 +325,7 @@ abstract class GenericTrx extends BaseDoc
         $event = new TrxPosted($target, $defaultParams, $params);
 
         $this->addEvent($event);
+        $this->logInfo(\sprintf("Trx Posted %s", __METHOD__));
         return $this;
     }
 

@@ -24,7 +24,7 @@ class OnWhOpenBalancePostedCloseTrx extends AbstractEventHandler
 
             // close all transations.
 
-            $this->getLogger()->info(\sprintf("Transactions closed on opening balance posted!  #%s ", $event->getTarget()
+            $this->logInfo(\sprintf("Transactions closed on opening balance posted!  #%s ", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
 

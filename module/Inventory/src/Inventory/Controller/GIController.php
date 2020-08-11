@@ -239,7 +239,7 @@ class GIController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = "/inventory/item-transaction/list";
+        $redirectUrl = sprintf("/inventory/gi/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -347,7 +347,7 @@ class GIController extends AbstractGenericController
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         // $redirectUrl = sprintf("/inventory/transaction/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-        $redirectUrl = sprintf("/inventory/gi/show?entity_id=%s&token=%s", $entity_id, $entity_token);
+        $redirectUrl = sprintf("/inventory/gi/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -370,6 +370,8 @@ class GIController extends AbstractGenericController
         $action = Constants::FORM_ACTION_ADD;
         $viewTemplete = "inventory/gi/crudRow";
         $userId = $this->getUserId();
+
+        $transactionType = TrxType::getGoodIssueTrx($nmtPlugin->getTranslator());
 
         $prg = $this->prg($form_action, true);
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -400,7 +402,8 @@ class GIController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete . $rootEntity->getMovementType());
             return $viewModel;
@@ -451,7 +454,8 @@ class GIController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'transactionType' => $transactionType
             ));
             $this->getLogger()->info(\sprintf("Row Trx #%s is not created by %s. Error: %s", $rootEntityId, $this->getUserId(), $notification->errorMessage()));
 
@@ -485,6 +489,8 @@ class GIController extends AbstractGenericController
         $action = Constants::FORM_ACTION_EDIT;
         $viewTemplete = "/inventory/gi/crudRow";
         $userId = $this->getUserId();
+
+        $transactionType = TrxType::getGoodIssueTrx($nmtPlugin->getTranslator());
 
         $prg = $this->prg($form_action, true);
 
@@ -524,7 +530,8 @@ class GIController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
             return $viewModel;
@@ -594,7 +601,8 @@ class GIController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
             $this->getLogger()->error(\sprintf("Row Trx #%s is not updated by %s. Error: %s", $target_id, $userId, $notification->errorMessage()));

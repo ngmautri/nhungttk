@@ -3,7 +3,7 @@ namespace Inventory\Domain\Warehouse;
 
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Application\DTO\Warehouse\WarehouseDTO;
-use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
 
 /**
  *
@@ -13,8 +13,82 @@ use Inventory\Domain\Item\ItemSnapshot;
 class WarehouseSnapshotAssembler
 {
 
+    public static function findMissingPropsInEntity()
+    {
+        $missingProperties = array();
+        $baseObj = new BaseWarehouse();
+
+        $reflectionClass = new \ReflectionClass($baseObj);
+        $baseProps = $reflectionClass->getProperties();
+
+        $entity = WarehouseDTOAssembler::getEntity();
+
+        foreach ($baseProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($entity, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    public static function findMissingDBPropsInBase()
+    {
+        $missingProperties = array();
+
+        $entityProps = WarehouseDTOAssembler::createDTOProperities();
+        $dto = new BaseWarehouse();
+
+        foreach ($entityProps as $property) {
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    public static function createProperities()
+    {
+        $entity = new WarehouseSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $props = $reflectionClass->getProperties();
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "protected $" . $propertyName . ";";
+        }
+    }
+
     /**
      *
+     * @return array;
+     */
+    public static function findMissingPropertiesOfSnapshot()
+    {
+        $missingProperties = array();
+        $entity = new GenericWarehouse();
+        $dto = new WarehouseSnapshot();
+
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
+    }
+
+    /**
+     *
+     * @deprecated
      * @return ItemSnapshot;
      */
     public static function createFromSnapshotCode()
@@ -31,6 +105,7 @@ class WarehouseSnapshotAssembler
 
     /**
      *
+     * @deprecated
      * @param array $data
      * @return \Inventory\Domain\Item\ItemSnapshot
      */
@@ -56,6 +131,7 @@ class WarehouseSnapshotAssembler
 
     /**
      *
+     * @deprecated
      * @param \Inventory\Domain\Warehouse\WarehouseSnapshot $snapShot
      * @param array $data
      * @return NULL|\Inventory\Domain\Warehouse\WarehouseSnapshot
@@ -80,6 +156,7 @@ class WarehouseSnapshotAssembler
 
     /**
      *
+     * @deprecated
      * @param WarehouseDTO $dto
      * @return \Inventory\Domain\Warehouse\WarehouseSnapshot
      */

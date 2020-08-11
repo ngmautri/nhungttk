@@ -13,12 +13,14 @@ use Inventory\Application\EventBus\Handler\Item\Factory\OnItemUpdatedUpdateIndex
 use Inventory\Application\EventBus\Handler\Item\Factory\OnProcureGrPostedCreateSerialNoFactory;
 use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGoodsExchagePostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseFifoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBlancePostedCreateSerialNo;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrPostedCreateWhGrFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGoodsExchangePostedCreateTrxFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateFiFoLayerFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrReversedCloseFiFoLayerFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBalancePostedCloseFifoLayerFactory;
@@ -335,6 +337,7 @@ return array(
             OnProcureGrPostedCreateSerialNo::class => OnProcureGrPostedCreateSerialNoFactory::class,
 
             OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
+            OnWhGoodsExchagePostedCreateTrx::class => OnWhGoodsExchangePostedCreateTrxFactory::class,
 
             OnWhGrPostedCreateFiFoLayer::class => OnWhGrPostedCreateFiFoLayerFactory::class,
             OnWhGrReversedCloseFiFoLayer::class => OnWhGrReversedCloseFiFoLayerFactory::class,

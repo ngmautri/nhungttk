@@ -947,9 +947,13 @@ class TrxMapper
         if ($entity->getPo() !== null) {
             $snapshot->po = $entity->getPo()->getId();
         }
-        if ($entity->getVendorInvoice() !== null) {
-            $snapshot->vendorInvoice = $entity->getVendorInvoice()->getId();
-        }
+        /*
+         * if ($entity->getVendorInvoice() !== null) {
+         * $snapshot->vendorInvoice = $entity->getVendorInvoice()->getId();
+         * $snapshot->invoiceId = $entity->getVendorInvoice()->getSapDoc();
+         * }
+         */
+
         if ($entity->getPoRow() !== null) {
             $snapshot->poRow = $entity->getPoRow()->getId();
         }
@@ -1004,8 +1008,17 @@ class TrxMapper
         if ($entity->getPmtMethod() !== null) {
             $snapshot->pmtMethod = $entity->getPmtMethod()->getId();
         }
+
         if ($entity->getInvoiceRow() !== null) {
-            $snapshot->invoiceRow = $entity->getInvoiceRow()->getId();
+
+            if ($entity->getInvoiceRow()->getInvoice() !== null) {
+                $snapshot->vendorInvoice = $entity->getInvoiceRow()
+                    ->getInvoice()
+                    ->getId();
+                $snapshot->invoiceId = $entity->getInvoiceRow()
+                    ->getInvoice()
+                    ->getSapDoc();
+            }
         }
 
         return $snapshot;

@@ -171,6 +171,12 @@ class TransactionFactory
             case TrxType::GI_FOR_COST_CENTER:
                 $trx = new GIforCostCenter();
                 break;
+            case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
+                $trx = new GIforExchangePartForMachine();
+                break;
+            case TrxType::GI_FOR_REPAIR_MACHINE:
+                $trx = new GIforMachineNoExchange();
+                break;
         }
 
         if ($trx == null) {

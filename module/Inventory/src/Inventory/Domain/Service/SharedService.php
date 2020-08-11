@@ -25,6 +25,8 @@ class SharedService
 
     protected $postingService;
 
+    protected $whQueryRepository;
+
     protected $valuationService;
 
     protected $logger;

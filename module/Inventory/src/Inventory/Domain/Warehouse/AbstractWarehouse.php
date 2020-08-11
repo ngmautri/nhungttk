@@ -1,11 +1,6 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
-use Inventory\Domain\Warehouse\WarehouseSnapshot;
-use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -13,6 +8,8 @@ use Inventory\Domain\Warehouse\WarehouseSnapshotAssembler;
  */
 abstract class AbstractWarehouse
 {
+
+    protected $locationList;
 
     protected $id;
 
@@ -46,6 +43,8 @@ abstract class AbstractWarehouse
 
     protected $revisionNo;
 
+    protected $uuid;
+
     protected $createdBy;
 
     protected $company;
@@ -60,130 +59,238 @@ abstract class AbstractWarehouse
 
     protected $location;
 
-    protected $uuid;
-
     /**
      *
-     * @var AbstractSpecificationFactory $sharedSpecificationFactory;
+     * @param mixed $locationList
      */
-    protected $sharedSpecificationFactory;
-
-    /**
-     *
-     * @var WarehouseCmdRepositoryInterface $cmdRepository;
-     */
-    protected $cmdRepository;
-
-    /**
-     *
-     * @var WarehouseQueryRepositoryInterface $queryRepository;
-     */
-    protected $queryRepository;
-
-    /**
-     *
-     * @return \Inventory\Domain\Warehouse\WarehouseCmdRepositoryInterface
-     */
-    public function getCmdRepository()
+    protected function setLocationList($locationList)
     {
-        return $this->cmdRepository;
+        $this->locationList = $locationList;
     }
 
     /**
      *
-     * @return \Inventory\Domain\Warehouse\WarehouseQueryRepositoryInterface
+     * @param mixed $id
      */
-    public function getQueryRepository()
+    protected function setId($id)
     {
-        return $this->queryRepository;
+        $this->id = $id;
     }
 
     /**
      *
-     * @param WarehouseCmdRepositoryInterface $cmdRepository
-     *            ;
+     * @param mixed $whCode
      */
-    public function setCmdRepository(WarehouseCmdRepositoryInterface $cmdRepository)
+    protected function setWhCode($whCode)
     {
-        $this->cmdRepository = $cmdRepository;
+        $this->whCode = $whCode;
     }
 
     /**
      *
-     * @param mixed $queryRepository
+     * @param mixed $whName
      */
-    public function setQueryRepository(WarehouseQueryRepositoryInterface $queryRepository)
+    protected function setWhName($whName)
     {
-        $this->queryRepository = $queryRepository;
+        $this->whName = $whName;
     }
 
     /**
      *
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+     * @param mixed $whAddress
      */
-    public function makeSnapshot()
+    protected function setWhAddress($whAddress)
     {
-        return WarehouseSnapshotAssembler::createSnapshotFrom($this);
-    }
-
-    public function makeDTO()
-    {
-        return WarehouseDTOAssembler::createDTOFrom($this);
+        $this->whAddress = $whAddress;
     }
 
     /**
      *
-     * @param WarehouseSnapshot $snapshot
+     * @param mixed $whContactPerson
      */
-    public function makeFromSnapshot($snapshot)
+    protected function setWhContactPerson($whContactPerson)
     {
-        if (! $snapshot instanceof WarehouseSnapshot)
-            return;
-
-        $this->id = $snapshot->id;
-        $this->whCode = $snapshot->whCode;
-        $this->whName = $snapshot->whName;
-        $this->whAddress = $snapshot->whAddress;
-        $this->whContactPerson = $snapshot->whContactPerson;
-        $this->whTelephone = $snapshot->whTelephone;
-        $this->whEmail = $snapshot->whEmail;
-        $this->isLocked = $snapshot->isLocked;
-        $this->whStatus = $snapshot->whStatus;
-        $this->remarks = $snapshot->remarks;
-        $this->isDefault = $snapshot->isDefault;
-        $this->createdOn = $snapshot->createdOn;
-        $this->sysNumber = $snapshot->sysNumber;
-        $this->token = $snapshot->token;
-        $this->lastChangeOn = $snapshot->lastChangeOn;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->createdBy = $snapshot->createdBy;
-        $this->company = $snapshot->company;
-        $this->whCountry = $snapshot->whCountry;
-        $this->lastChangeBy = $snapshot->lastChangeBy;
-        $this->stockkeeper = $snapshot->stockkeeper;
-        $this->whController = $snapshot->whController;
-        $this->location = $snapshot->location;
-        $this->uuid = $snapshot->uuid;
+        $this->whContactPerson = $whContactPerson;
     }
 
     /**
      *
-     * @return WarehouseDTO;
+     * @param mixed $whTelephone
      */
-    public function createDTO()
+    protected function setWhTelephone($whTelephone)
     {
-        $dto = WarehouseDTOAssembler::createDTOFrom($this);
-        return $dto;
+        $this->whTelephone = $whTelephone;
     }
 
     /**
      *
-     * @return WarehouseSnapshot;
+     * @param mixed $whEmail
      */
-    public function createSnapshot()
+    protected function setWhEmail($whEmail)
     {
-        $snapshot = WarehouseSnapshotAssembler::createSnapshotFrom($this);
-        return $snapshot;
+        $this->whEmail = $whEmail;
+    }
+
+    /**
+     *
+     * @param mixed $isLocked
+     */
+    protected function setIsLocked($isLocked)
+    {
+        $this->isLocked = $isLocked;
+    }
+
+    /**
+     *
+     * @param mixed $whStatus
+     */
+    protected function setWhStatus($whStatus)
+    {
+        $this->whStatus = $whStatus;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    protected function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $isDefault
+     */
+    protected function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $sysNumber
+     */
+    protected function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeOn
+     */
+    protected function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    protected function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    protected function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $company
+     */
+    protected function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     *
+     * @param mixed $whCountry
+     */
+    protected function setWhCountry($whCountry)
+    {
+        $this->whCountry = $whCountry;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeBy
+     */
+    protected function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $stockkeeper
+     */
+    protected function setStockkeeper($stockkeeper)
+    {
+        $this->stockkeeper = $stockkeeper;
+    }
+
+    /**
+     *
+     * @param mixed $whController
+     */
+    protected function setWhController($whController)
+    {
+        $this->whController = $whController;
+    }
+
+    /**
+     *
+     * @param mixed $location
+     */
+    protected function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocationList()
+    {
+        return $this->locationList;
     }
 
     /**
@@ -400,23 +507,5 @@ abstract class AbstractWarehouse
     public function getLocation()
     {
         return $this->location;
-    }
-
-    /**
-     *
-     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
-     */
-    public function getSharedSpecificationFactory()
-    {
-        return $this->sharedSpecificationFactory;
-    }
-
-    /**
-     *
-     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
-     */
-    public function setSharedSpecificationFactory($sharedSpecificationFactory)
-    {
-        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
     }
 }

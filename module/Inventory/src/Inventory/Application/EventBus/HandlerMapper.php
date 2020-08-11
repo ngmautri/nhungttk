@@ -6,6 +6,7 @@ use Application\Service\AbstractService;
 use Inventory\Application\EventBus\Handler\Item\OnItemCreatedCreateIndex;
 use Inventory\Application\EventBus\Handler\Item\OnItemUpdatedUpdateIndex;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGoodsExchagePostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseFifoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
@@ -30,7 +31,8 @@ class HandlerMapper extends AbstractService
             OnItemCreatedCreateIndex::class,
             OnItemUpdatedUpdateIndex::class,
             OnWhOpenBalancePostedCloseFifoLayer::class,
-            OnWhOpenBalancePostedCloseTrx::class
+            OnWhOpenBalancePostedCloseTrx::class,
+            OnWhGoodsExchagePostedCreateTrx::class
         ];
 
         $this->handlers = $handlers;

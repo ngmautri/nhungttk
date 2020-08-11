@@ -81,8 +81,9 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $fifoService = new FIFOServiceImpl();
             $fifoService->setDoctrineEM($cmd->getDoctrineEM());
-            $valuationService = new TrxValuationService($fifoService);
             $fifoService->setLogger($cmd->getLogger());
+
+            $valuationService = new TrxValuationService($fifoService);
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
             $sharedService->setValuationService($valuationService);

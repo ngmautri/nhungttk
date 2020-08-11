@@ -4,7 +4,6 @@ namespace Inventory\Domain\Transaction\GR;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
 use Procure\Domain\GoodsReceipt\GRRow;
 use InvalidArgumentException;
 
@@ -13,7 +12,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRFromPurchasingRow extends TrxRow
+class GRFromExchangeRow extends TrxRow
 {
 
     /**
@@ -24,10 +23,10 @@ class GRFromPurchasingRow extends TrxRow
      * @throws InvalidArgumentException
      * @return \Inventory\Domain\Transaction\GR\GRFromPurchasingRow
      */
-    public static function createFromPurchaseGrRow(GenericTrx $rootEntity, GRRow $sourceObj, CommandOptions $options)
+    public static function createFromGIRow(GenericTrx $rootEntity, TrxRow $sourceObj, CommandOptions $options)
     {
-        if (! $sourceObj instanceof GRRow) {
-            throw new InvalidArgumentException("PO document is required!");
+        if (! $sourceObj instanceof GenericTrx) {
+            throw new InvalidArgumentException("GenericTrx document is required!");
         }
         if ($options == null) {
             throw new InvalidArgumentException("No Options is found");
@@ -35,19 +34,11 @@ class GRFromPurchasingRow extends TrxRow
 
         /**
          *
-         * @var GRFromPurchasingRow $instance ;
+         * @var GRFromExchangeRow $instance ;
          */
         $instance = new self();
 
         $instance = $sourceObj->convertTo($instance);
-
-        // $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
-        $instance->setGrRow($sourceObj->getId()); // Important
-        $instance->setFlow(TransactionFlow::WH_TRANSACTION_IN);
-        $instance->setWh($instance->getWarehouse());
-
-        // update PR and PO, AP if any
-        $instance->setInvoiceRow($sourceObj->getApInvoiceRow());
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -64,10 +55,10 @@ class GRFromPurchasingRow extends TrxRow
      * @throws InvalidArgumentException
      * @return \Inventory\Domain\Transaction\GR\GRFromPurchasingRow
      */
-    public static function createFromPurchaseGrRowReversal(GenericTrx $rootEntity, GRRow $sourceObj, CommandOptions $options)
+    public static function createFromGIRowReversal(GenericTrx $rootEntity, TrxRow $sourceObj, CommandOptions $options)
     {
-        if (! $sourceObj instanceof GRRow) {
-            throw new InvalidArgumentException("PO document is required!");
+        if (! $sourceObj instanceof GenericTrx) {
+            throw new InvalidArgumentException("GenericTrx is required!");
         }
         if ($options == null) {
             throw new InvalidArgumentException("No Options is found");
@@ -75,17 +66,11 @@ class GRFromPurchasingRow extends TrxRow
 
         /**
          *
-         * @var GRFromPurchasingRow $instance ;
+         * @var GRFromExchangeRow $instance ;
          */
         $instance = new self();
 
         $instance = $sourceObj->convertTo($instance);
-
-        // $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
-        $instance->setGrRow($sourceObj->getId()); // Important
-        $instance->setFlow(TransactionFlow::WH_TRANSACTION_OUT);
-        $instance->setWh($instance->getWarehouse());
-
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));

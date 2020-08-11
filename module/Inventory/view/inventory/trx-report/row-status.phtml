@@ -239,10 +239,13 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
         { title: "SKU", dataType: "string", dataIndx: "itemSKU", width: 60,editable: false },
         { title: "Id", dataType: "string", dataIndx: "itemSysNumber", align: 'left',minWidth: 80,editable: true},
         
-           { title: "Name", dataType: "string", dataIndx: "itemName", width: 350,editable: false },
+         { title: "Name", dataType: "string", dataIndx: "itemName", width: 350,editable: false },
         { title: "Flow", dataType: "string", dataIndx: "flow", width: 50,editable: false },
-        { title: "Pr No.", dataType: "string", dataIndx: "prNumber", width: 150,editable: false },
         { title: "WH", dataType: "string", dataIndx: "warehouseName", width: 150,editable: false },
+        { title: "Pr No.", dataType: "string", dataIndx: "prNumber", width: 150,editable: false },
+        { title: "Pr No.", dataType: "string", dataIndx: "po", width: 150,editable: false },              
+        { title: "SAP#", dataType: "string", dataIndx: "invoiceId", width: 90,editable: false },
+        { title: "InvP#", dataType: "string", dataIndx: "vendorInvoice", width: 90,editable: false },
          ];
     var url = "<?php
     echo $girdUrl;

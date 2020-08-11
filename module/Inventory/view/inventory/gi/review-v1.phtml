@@ -112,65 +112,8 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
     include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
 endif;
 
+include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
 ?>
-
-  		<hr>
-      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
-
-    echo $this->translate('Summary:');
-    ?></span>
-      <div class="alert alert-<?php
-
-    echo $alert;
-    ?>" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-            <li>
-               <b><?php
-
-            if (! $headerDTO == null) :
-                echo sprintf("Trx #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getRevisionNo()); endif;
-
-            ?></b>
-            </li>
-            <li>-----</li>
-            <li>
-               <b><?php
-
-            if (! $transactionTypeArray == null) :
-                echo $transactionTypeArray['type_name']; endif;
-
-            ?></b>
-            </li>
-            <li>-----</li>
-            <li>
-               <i><?php
-
-            if (! $transactionTypeArray == null) :
-                echo $transactionTypeArray['type_description']; endif;
-
-            ?></i>
-            </li>
-            <li>-----</li>
-            <li>Status: <?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getDocStatus(); endif;
-
-            ?> </li>
-            <li>Total rows: <?php
-
-            echo ($headerDTO->totalRows);
-            ?></li>
-            <li>Status: <?php
-
-            echo $transactionStatus;
-            ?> </li>
-            <li>-----</li>
-            <li>Created by: <?php
-            echo $headerDTO->getCreatedByName();
-            ?></li>
-         </ul>
-      </div>
 
 	<?php
 if ($action == Constants::FORM_ACTION_REVIEW) :

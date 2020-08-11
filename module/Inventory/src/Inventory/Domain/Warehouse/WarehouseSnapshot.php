@@ -1,61 +1,66 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
-use Application\Domain\Shared\AbstractValueObject;
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseSnapshot extends AbstractValueObject
+class WarehouseSnapshot extends BaseWarehouseSnapshot
 {
 
-    public $id;
+    public $locations;
 
-    public $whCode;
+    public $rootLocation;
 
-    public $whName;
+    public $returnLocation;
 
-    public $whAddress;
+    public $scrapLocation;
 
-    public $whContactPerson;
+    public $recycleLocation;
 
-    public $whTelephone;
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocations()
+    {
+        return $this->locations;
+    }
 
-    public $whEmail;
+    /**
+     *
+     * @return mixed
+     */
+    public function getRootLocation()
+    {
+        return $this->rootLocation;
+    }
 
-    public $isLocked;
+    /**
+     *
+     * @return mixed
+     */
+    public function getReturnLocation()
+    {
+        return $this->returnLocation;
+    }
 
-    public $whStatus;
+    /**
+     *
+     * @return mixed
+     */
+    public function getScrapLocation()
+    {
+        return $this->scrapLocation;
+    }
 
-    public $remarks;
-
-    public $isDefault;
-
-    public $createdOn;
-
-    public $sysNumber;
-
-    public $token;
-
-    public $lastChangeOn;
-
-    public $revisionNo;
-
-    public $createdBy;
-
-    public $company;
-
-    public $whCountry;
-
-    public $lastChangeBy;
-
-    public $stockkeeper;
-
-    public $whController;
-
-    public $location;
-
-    public $uuid;
+    /**
+     *
+     * @return mixed
+     */
+    public function getRecycleLocation()
+    {
+        return $this->recycleLocation;
+    }
 }

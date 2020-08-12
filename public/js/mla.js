@@ -19,7 +19,6 @@ $(document).ready(function() {
 		
 	
 
-	});
 
 	$("#select_ALL").change(function() {
 		$(".checkbox1").prop('checked', $(this).prop("checked"));

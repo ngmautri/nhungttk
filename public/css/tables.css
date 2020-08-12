@@ -86,8 +86,10 @@ striping:
     color: #0080ff;
     padding: 1px 5px;
     font-size:9.5pt;
-    text-decoration: none;
+    text-decoration:  none;
     text-transform: capitalize;
+    font-style: italic;
+    
  }
 
 .pure-table a:hover{background-color: #0080c0;color: #ffffff;}

@@ -3,7 +3,6 @@
  */
 
 
-
 function submitForm(form_id){
 	
 	var form_id_tmp;
@@ -412,12 +411,15 @@ function doPaginator(source, target=null) {
 	$.ajax({
 		url : source,
 		success : function(text) {
-			//alert(id);
 			
 			$(target_id).html(text);
 			//$('#b_modal_no_header').modal('hide');
+		},
+		always : function(text) {
+		    //alert(source);
+		    //alert(text);
 
-			}
+		},
 	});
 }
 /**

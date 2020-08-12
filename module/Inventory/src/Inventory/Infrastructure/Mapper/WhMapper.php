@@ -2,8 +2,10 @@
 namespace Inventory\Infrastructure\Mapper;
 
 use Application\Entity\NmtInventoryWarehouse;
+use Application\Entity\NmtInventoryWarehouseLocation;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 
 /**
  *
@@ -141,6 +143,89 @@ class WhMapper
         return $entity;
     }
 
+    public static function mapLocationSnapshotEntity(EntityManager $doctrineEM, LocationSnapshot $snapshot, NmtInventoryWarehouseLocation $entity)
+    {
+        if ($snapshot == null || $entity == null || $doctrineEM == null) {
+            return null;
+        }
+
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+        $entity->setId($snapshot->id);
+        $entity->setSysNumber($snapshot->sysNumber);
+        $entity->setToken($snapshot->token);
+        $entity->setRevisionNo($snapshot->revisionNo);
+        $entity->setRemarks($snapshot->remarks);
+        $entity->setIsSystemLocation($snapshot->isSystemLocation);
+        $entity->setIsReturnLocation($snapshot->isReturnLocation);
+        $entity->setIsScrapLocation($snapshot->isScrapLocation);
+        $entity->setIsRootLocation($snapshot->isRootLocation);
+        $entity->setLocationName($snapshot->locationName);
+        $entity->setLocationCode($snapshot->locationCode);
+        $entity->setParentId($snapshot->parentId);
+        $entity->setLocationType($snapshot->locationType);
+        $entity->setIsActive($snapshot->isActive);
+        $entity->setIsLocked($snapshot->isLocked);
+        $entity->setPath($snapshot->path);
+        $entity->setPathDepth($snapshot->pathDepth);
+        $entity->setHasMember($snapshot->hasMember);
+        $entity->setUuid($snapshot->uuid);
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        /*
+         * $entity->setCreatedOn($snapshot->createdOn);
+         * $entity->setLastChangeOn($snapshot->lastChangeOn);
+         */
+        if ($snapshot->createdOn !== null) {
+            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
+        }
+
+        if ($snapshot->lastchangeOn !== null) {
+            $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+        /*
+         * $entity->setCreatedBy($snapshot->createdBy);
+         * $entity->setLastChangeBy($snapshot->lastChangeBy);
+         * $entity->setWarehouse($snapshot->warehouse);
+         */
+        // =========
+
+        if ($snapshot->createdBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
+            $entity->setCreatedBy($obj);
+        }
+        if ($snapshot->lastChangeBy > 0) {
+            /**
+             *
+             * @var \Application\Entity\MlaUsers $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->lastChangeBy);
+            $entity->setLastChangeBy($obj);
+        }
+
+        if ($snapshot->warehouse > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouse $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($snapshot->warehouse);
+            $entity->setWarehouse($obj);
+        }
+
+        return $entity;
+    }
+
     public static function createSnapshot(EntityManager $doctrineEM, NmtInventoryWarehouse $entity, $snapshot = null)
     {
         if ($entity == null) {
@@ -228,6 +313,80 @@ class WhMapper
 
         if ($entity->getLocation() !== null) {
             $snapshot->location = $entity->getLocation()->getId();
+        }
+
+        return $snapshot;
+    }
+
+    public static function createLocationSnapshot(EntityManager $doctrineEM, NmtInventoryWarehouseLocation $entity, $snapshot = null)
+    {
+        if ($entity == null) {
+            return null;
+        }
+
+        if ($snapshot == null) {
+            $snapshot = new WarehouseSnapshot();
+        }
+
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+
+        $snapshot->id = $entity->getId();
+        $snapshot->sysNumber = $entity->getSysNumber();
+        $snapshot->token = $entity->getToken();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->isSystemLocation = $entity->getIsSystemLocation();
+        $snapshot->isReturnLocation = $entity->getIsReturnLocation();
+        $snapshot->isScrapLocation = $entity->getIsScrapLocation();
+        $snapshot->isRootLocation = $entity->getIsRootLocation();
+        $snapshot->locationName = $entity->getLocationName();
+        $snapshot->locationCode = $entity->getLocationCode();
+        $snapshot->parentId = $entity->getParentId();
+        $snapshot->locationType = $entity->getLocationType();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->isLocked = $entity->getIsLocked();
+        $snapshot->path = $entity->getPath();
+        $snapshot->pathDepth = $entity->getPathDepth();
+        $snapshot->hasMember = $entity->getHasMember();
+        $snapshot->uuid = $entity->getUuid();
+
+        // ============================
+        // DATE MAPPING
+        // ============================
+        /*
+         * $snapshot->createdOn = $entity->getCreatedOn();
+         * $snapshot->lastChangeOn = $entity->getLastChangeOn();
+         */
+
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d H:i:s");
+        }
+
+        if (! $entity->getLastChangeOn() == null) {
+            $snapshot->lastChangeOn = $entity->getLastChangeOn()->format("Y-m-d H:i:s");
+        }
+
+        // ============================
+        // REFERRENCE MAPPING
+        // ============================
+
+        /*
+         * $snapshot->createdBy = $entity->getCreatedBy();
+         * $snapshot->lastChangeBy = $entity->getLastChangeBy();
+         * $snapshot->warehouse = $entity->getWarehouse();
+         */
+
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
+        }
+
+        if ($entity->getLastChangeBy() !== null) {
+            $snapshot->lastChangeBy = $entity->getLastChangeBy()->getId();
+        }
+        if ($entity->getWarehouse() !== null) {
+            $snapshot->warehouse = $entity->getWarehouse()->getId();
         }
 
         return $snapshot;

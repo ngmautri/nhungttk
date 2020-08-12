@@ -9,7 +9,7 @@ use Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DefaultWarehouseValidator implements WarehouseValidatorInterface
+class DefaultWarehouseLocationValidator implements WarehouseValidatorInterface
 {
 
     /**

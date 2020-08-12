@@ -1,8 +1,8 @@
 <?php
-namespace Inventory\Domain\Validator\Warehouse;
+namespace Inventory\Domain\Warehouse\Validator\Contracts;
 
-use Inventory\Domain\Warehouse\AbstractWarehouse;
-use Procure\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Warehouse\BaseWarehouse;
+use InvalidArgumentException;
 
 /**
  *
@@ -12,16 +12,12 @@ use Procure\Domain\Exception\InvalidArgumentException;
 class WarehouseValidatorCollection implements WarehouseValidatorInterface
 {
 
-    /**
-     *
-     * @var $validators[];
-     */
     private $validators;
 
     public function add(WarehouseValidatorInterface $validator)
     {
         if (! $validator instanceof WarehouseValidatorInterface) {
-            throw new InvalidArgumentException("Warehouse Validator is required!");
+            throw new InvalidArgumentException("Header Validator is required!");
         }
 
         $this->validators[] = $validator;
@@ -30,12 +26,12 @@ class WarehouseValidatorCollection implements WarehouseValidatorInterface
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Validator\Warehouse\WarehouseValidatorInterface::validate()
+     * @see \Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorInterface::validate()
      */
-    public function validate(AbstractWarehouse $rootEntity)
+    public function validate(BaseWarehouse $rootEntity)
     {
         if (count($this->validators) == 0) {
-            throw new InvalidArgumentException("Warehouse Validator is required! but no is given.");
+            throw new InvalidArgumentException("WH Validator is required! but none is given.");
         }
 
         foreach ($this->validators as $validator) {

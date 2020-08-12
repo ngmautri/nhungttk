@@ -1,7 +1,9 @@
 <?php
 namespace Inventory\Domain\Warehouse\Location;
 
-use Inventory\Application\DTO\Warehouse\Location\LocationDTO;
+use Inventory\Application\DTO\Warehouse\WarehouseDTO;
+use Inventory\Application\DTO\Warehouse\Location\LocationDTOAssembler;
+use Inventory\Domain\Warehouse\WarehouseSnapshot;
 
 /**
  *
@@ -11,91 +13,63 @@ use Inventory\Application\DTO\Warehouse\Location\LocationDTO;
 class LocationSnapshotAssembler
 {
 
-    /**
-     *
-     * @return LocationSnapshot;
-     */
-    public static function createFromSnapshotCode()
+    public static function findMissingPropsInEntity()
     {
-        $itemSnapshot = new LocationSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        $missingProperties = array();
+        $baseObj = new BaseLocation();
+
+        $reflectionClass = new \ReflectionClass($baseObj);
+        $baseProps = $reflectionClass->getProperties();
+
+        $entity = LocationDTOAssembler::getEntity();
+
+        foreach ($baseProps as $property) {
             $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
-        }
-    }
-
-    /**
-     *
-     * @param array $data
-     * @return LocationSnapshot
-     */
-    public static function createSnapshotFromArray($data)
-    {
-        if ($data == null)
-            return null;
-
-        $snapShot = new LocationSnapshot();
-
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property)) {
-
-                if ($value == null || $value == "") {
-                    $snapShot->$property = null;
-                } else {
-                    $snapShot->$property = $value;
-                }
+            if (! property_exists($entity, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
             }
         }
-        return $snapShot;
+        return $missingProperties;
     }
 
-    /**
-     *
-     * @param LocationDTO $dto
-     * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
-     */
-    public static function createSnapshotFromDTO(LocationDTO $dto)
+    public static function findMissingDBPropsInBase()
     {
-        if (! $dto instanceof LocationDTO)
-            return null;
+        $missingProperties = array();
 
-        $snapShot = new LocationSnapshot();
+        $entityProps = LocationDTOAssembler::createDTOProperities();
+        $dto = new BaseLocation();
 
-        $reflectionClass = new \ReflectionClass(get_class($dto));
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
+        foreach ($entityProps as $property) {
             $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-                $snapShot->$propertyName = $property->getValue($dto);
+            if (! property_exists($dto, $propertyName)) {
+                echo (sprintf("\n protected $%s;", $propertyName));
+                $missingProperties[] = $propertyName;
             }
         }
-        return $snapShot;
+        return $missingProperties;
     }
 
-    /**
-     *
-     * @param LocationDTO $snapShot
-     * @param LocationSnapshot $dto
-     * @return NULL|\Inventory\Application\DTO\Warehouse\Location\LocationDTO|\Inventory\Domain\Warehouse\Location\LocationSnapshot
-     */
-    public static function updateSnapshotFromDTO(LocationDTO $snapShot, LocationSnapshot $dto)
+    public static function createProperities()
     {
-        if (! $dto instanceof LocationDTO || ! $snapShot instanceof LocationSnapshot)
+        $entity = new LocationSnapshot();
+        $reflectionClass = new \ReflectionClass($entity);
+        $props = $reflectionClass->getProperties();
+        foreach ($props as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "protected $" . $propertyName . ";";
+        }
+    }
+
+    public static function updateSnapshotFromDTO($snapShot, $dto)
+    {
+        if (! $dto instanceof WarehouseDTO || ! $snapShot instanceof WarehouseSnapshot)
             return null;
 
         $reflectionClass = new \ReflectionClass($dto);
         $itemProperites = $reflectionClass->getProperties();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
         $excludedProperties = array(
             "id",
             "uuid",
@@ -107,12 +81,15 @@ class LocationSnapshotAssembler
             "lastChangeBy",
             "sysNumber",
             "company",
-            "itemType",
-            "revisionNo",
-            "isStocked",
-            "isFixedAsset",
-            "isSparepart",
-            "itemTypeId"
+            "location",
+            "revisionNo"
+        );
+
+        $changeableProperties = array(
+            "movementType",
+            "movementDate",
+            "warehouse",
+            "remarks"
         );
 
         // $dto->isSparepart;
@@ -128,41 +105,18 @@ class LocationSnapshotAssembler
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
             }
+
+            /*
+             * if (property_exists($snapShot, $propertyName) && in_array($propertyName, $changeableProperties)) {
+             *
+             * if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+             * $snapShot->$propertyName = null;
+             * } else {
+             * $snapShot->$propertyName = $property->getValue($dto);
+             * }
+             * }
+             */
         }
-        return $snapShot;
-    }
-
-    /**
-     *
-     * @param GenericLocation $obj
-     * @return NULL|\Inventory\Domain\Warehouse\Location\LocationSnapshot
-     */
-    public static function createSnapshotFrom(GenericLocation $obj)
-    {
-        if (! $obj instanceof GenericLocation) {
-            return null;
-        }
-
-        $snapShot = new LocationSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
-                }
-            }
-        }
-
         return $snapShot;
     }
 }

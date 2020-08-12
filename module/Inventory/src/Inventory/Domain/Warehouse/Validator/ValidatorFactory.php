@@ -1,0 +1,72 @@
+<?php
+namespace Inventory\Domain\Warehouse\Validator;
+
+use Inventory\Domain\Item\Contracts\ItemType;
+use Inventory\Domain\Item\Validator\DefaultItemValidator;
+use Inventory\Domain\Item\Validator\FixedAssetValidator;
+use Inventory\Domain\Item\Validator\InventoryItemValidator;
+use Inventory\Domain\Item\Validator\LogisticDataValidator;
+use Inventory\Domain\Service\SharedService;
+use Inventory\Domain\Validator\Item\ItemValidatorCollection;
+use InvalidArgumentException;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
+ */
+class ValidatorFactory
+{
+
+    /**
+     *
+     * @param int $itemTypeId
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
+     * @return \Inventory\Domain\Validator\Item\ItemValidatorCollection
+     */
+    public static function create($itemTypeId, SharedService $sharedService)
+    {
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($sharedService->getSharedSpecificationFactory() == null) {
+            throw new InvalidArgumentException("Shared spec service not found");
+        }
+
+        $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
+
+        $validatorCollection = new ItemValidatorCollection();
+        $validator = new DefaultItemValidator($sharedSpecsFactory);
+        $validatorCollection->add($validator);
+
+        switch ($itemTypeId) {
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+
+                $validator = new InventoryItemValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+
+                $validator = new LogisticDataValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+
+                break;
+
+            case ItemType::FIXED_ASSET_ITEM_TYPE:
+                $validator = new FixedAssetValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+
+                $validator = new LogisticDataValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $validator = new LogisticDataValidator($sharedSpecsFactory);
+                $validatorCollection->add($validator);
+                break;
+        }
+
+        return $validatorCollection;
+    }
+}

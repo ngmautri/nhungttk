@@ -1,6 +1,9 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
+use Inventory\Domain\Warehouse\Location\GenericLocation;
+use InvalidArgumentException;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -19,6 +22,16 @@ class BaseWarehouse extends AbstractWarehouse
     protected $scrapLocation;
 
     protected $recycleLocation;
+
+    public function addLocation(GenericLocation $location)
+    {
+        if (! $location instanceof GenericLocation) {
+            throw new InvalidArgumentException("Input not invalid! GenericLocation");
+        }
+        $locations = $this->getLocations();
+        $locations[] = $location;
+        $this->locations = $locations;
+    }
 
     public static function createSnapshotProps()
     {

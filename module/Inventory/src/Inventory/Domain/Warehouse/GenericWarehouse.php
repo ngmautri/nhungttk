@@ -13,9 +13,10 @@ use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\WhValidationServiceInterface;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\TrxRowSnapshot;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Inventory\Domain\Warehouse\Location\LocationSnapshot;
+use Inventory\Domain\Warehouse\Validator\Contracts\LocationValidatorCollection;
+use Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorCollection;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -169,34 +170,40 @@ class GenericWarehouse extends BaseWarehouse
             throw new InvalidArgumentException("Validation service not given!");
         }
 
-        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Headers Validators not given!");
+        if (! $validationService->getWarehouseValidators() instanceof WarehouseValidatorCollection) {
+            throw new InvalidArgumentException("WH Validators not given!");
         }
 
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Headers Validators not given!");
+        if (! $validationService->getLocationValidators() instanceof LocationValidatorCollection) {
+            throw new InvalidArgumentException("Location Validators not given!");
         }
 
         // Clear Notification.
         $this->clearNotification();
 
-        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
+        $this->validateWarehouse($validationService->getWarehouseValidators(), $isPosting);
 
         if ($this->hasErrors()) {
             return $this;
         }
 
-        if (count($this->getDocRows()) == 0) {
-            $this->addError("Documment is empty. Please add line!");
+        if (count($this->getLocations()) == 0) {
+            $this->addError("Warehouse has no default location");
             return $this;
         }
 
-        foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
+        foreach ($this->getLocations() as $location) {
+            $this->validateRLocation($location, $validationService->getLocationValidators(), $isPosting);
         }
 
         return $this;
     }
+
+    protected function validateWarehouse(WarehouseValidatorCollection $validators, $isPosting = false)
+    {}
+
+    protected function validateLocation(LocationValidatorCollection $validators, $isPosting = false)
+    {}
 
     public function makeSnapshot()
     {

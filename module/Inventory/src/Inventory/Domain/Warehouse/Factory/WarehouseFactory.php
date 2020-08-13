@@ -11,6 +11,10 @@ use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\Contracts\DefaultLocation;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
+use Inventory\Domain\Warehouse\Validator\ValidatorFactory;
+use Ramsey\Uuid\Uuid;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -44,25 +48,90 @@ class WarehouseFactory
      * @throws RuntimeException
      * @return \Inventory\Domain\Item\GenericItem
      */
-    public static function createFrom(WarehouseSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public static function createFrom(WarehouseSnapshot $snapshot, CommandOptions $options = null, SharedService $sharedService = null)
     {
         if (! $snapshot instanceof WarehouseSnapshot) {
             throw new InvalidArgumentException("WarehouseSnapshot not found!");
         }
 
-        $wh = new GenericWarehouse();
-
-        /**
-         *
-         * @var GenericItem $item
-         */
-        SnapshotAssembler::makeFromSnapshot($wh, $snapshot);
-
-        if ($item->hasErrors()) {
-            throw new \RuntimeException($item->getNotification()->errorMessage());
+        if ($options == null) {
+            throw new InvalidArgumentException("Options is empty");
         }
 
-        $item->recordedEvents = array();
+        $createdDate = new \DateTime();
+        $userId = $options->getUserId();
+
+        $wh = new GenericWarehouse();
+        SnapshotAssembler::makeFromSnapshot($wh, $snapshot);
+
+        // root location
+        $rootUUID = Uuid::uuid4()->toString();
+
+        $location = new GenericLocation();
+        $location->setUuid($rootUUID);
+        $location->setIsActive(1);
+        $location->setLocationName(DefaultLocation::ROOT_LOCATION);
+        $location->setLocationCode(DefaultLocation::ROOT_LOCATION);
+        $location->setIsRootLocation(1);
+        $location->setIsSystemLocation(1);
+        $location->setCreatedBy($userId);
+        $location->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $wh->addLocation($location);
+
+        // recycle location
+        $location = new GenericLocation();
+        $location->setUuid(Uuid::uuid4()->toString());
+        $location->setParentUuid($rootUUID);
+
+        $location->setLocationName(DefaultLocation::RECYCLE_LOCATION);
+        $location->setLocationCode(DefaultLocation::RECYCLE_LOCATION);
+        $location->setIsReturnLocation(1);
+        $location->setIsSystemLocation(1);
+        $location->setIsActive(1);
+        $location->setCreatedBy($userId);
+        $location->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $location->setUuid(Uuid::uuid4()->toString());
+        $wh->addLocation($location);
+
+        // recycle location
+        $location = new GenericLocation();
+        $location->setUuid(Uuid::uuid4()->toString());
+        $location->setParentUuid($rootUUID);
+
+        $location->setLocationName(DefaultLocation::RETURN_LOCATION);
+        $location->setLocationCode(DefaultLocation::RETURN_LOCATION);
+        $location->setIsReturnLocation(1);
+        $location->setIsSystemLocation(1);
+        $location->setIsActive(1);
+        $location->setCreatedBy($userId);
+        $location->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $location->setUuid(Uuid::uuid4()->toString());
+        $wh->addLocation($location);
+
+        // scrap location
+        $location = new GenericLocation();
+        $location->setUuid(Uuid::uuid4()->toString());
+        $location->setParentUuid($rootUUID);
+
+        $location->setLocationName(DefaultLocation::SCRAP_LOCATION);
+        $location->setLocationCode(DefaultLocation::SCRAP_LOCATION);
+        $location->setIsScrapLocation(1);
+        $location->setIsSystemLocation(1);
+        $location->setIsActive(1);
+        $location->setCreatedBy($userId);
+        $location->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $wh->addLocation($location);
+
+        $validationService = ValidatorFactory::create($sharedService);
+
+        // create default location.
+        $wh->validate($validationService);
+
+        if ($wh->hasErrors()) {
+            throw new \RuntimeException($wh->getNotification()->errorMessage());
+        }
+
+        $wh->recordedEvents = array();
 
         /**
          *
@@ -70,10 +139,10 @@ class WarehouseFactory
          */
         $rootSnapshot = $sharedService->getPostingService()
             ->getCmdRepository()
-            ->store($item, true);
+            ->store($wh, true);
 
         if ($rootSnapshot == null) {
-            throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $item->getId()));
+            throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $wh->getId()));
         }
 
         $target = $rootSnapshot;
@@ -86,20 +155,10 @@ class WarehouseFactory
         $params = null;
 
         $event = new WhCreated($target, $defaultParams, $params);
-        $item->addEvent($event);
-        return $item;
+        $wh->addEvent($event);
+        return $wh;
     }
 
-    /**
-     *
-     * @param ItemSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws InvalidArgumentException
-     * @throws \RuntimeException
-     * @throws RuntimeException
-     * @return \Inventory\Domain\Item\GenericItem
-     */
     public static function updateFrom(WarehouseSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         if (! $snapshot instanceof WarehouseSnapshot) {
@@ -116,6 +175,9 @@ class WarehouseFactory
          * @var GenericItem $item
          */
         SnapshotAssembler::makeFromSnapshot($wh, $snapshot);
+
+        $validationService = ValidatorFactory::create($sharedService);
+        $wh->validate($validationService);
 
         if ($wh->hasErrors()) {
             throw new \RuntimeException($item->getNotification()->errorMessage());

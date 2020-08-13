@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryWarehouseLocation
  *
- * @ORM\Table(name="nmt_inventory_warehouse_location", indexes={@ORM\Index(name="nmt_inventory_warehouse_location_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK3_idx", columns={"warehouse_id"})})
+ * @ORM\Table(name="nmt_inventory_warehouse_location", indexes={@ORM\Index(name="nmt_inventory_warehouse_location_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK3_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_warehouse_location_idx1", columns={"uuid"}), @ORM\Index(name="nmt_inventory_warehouse_location_idx2", columns={"parent_uuid"})})
  * @ORM\Entity
  */
 class NmtInventoryWarehouseLocation
@@ -160,6 +160,13 @@ class NmtInventoryWarehouseLocation
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
      */
     private $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_uuid", type="string", length=36, nullable=true)
+     */
+    private $parentUuid;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -681,6 +688,30 @@ class NmtInventoryWarehouseLocation
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set parentUuid
+     *
+     * @param string $parentUuid
+     *
+     * @return NmtInventoryWarehouseLocation
+     */
+    public function setParentUuid($parentUuid)
+    {
+        $this->parentUuid = $parentUuid;
+
+        return $this;
+    }
+
+    /**
+     * Get parentUuid
+     *
+     * @return string
+     */
+    public function getParentUuid()
+    {
+        return $this->parentUuid;
     }
 
     /**

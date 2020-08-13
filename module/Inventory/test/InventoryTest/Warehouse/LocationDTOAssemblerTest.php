@@ -1,7 +1,7 @@
 <?php
 namespace InventoryTest\Warehouse;
 
-use Inventory\Application\DTO\Warehouse\Location\LocationDTOAssembler;
+use Inventory\Application\DTO\Warehouse\WarehouseDTOAssembler;
 use PHPUnit_Framework_TestCase;
 
 class LocationDTOAssemblerTest extends PHPUnit_Framework_TestCase
@@ -12,8 +12,7 @@ class LocationDTOAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-
-        // var_dump(WarehouseDTOAssembler::findMissingProperties());
-        LocationDTOAssembler::createGetMapping();
+        var_dump(WarehouseDTOAssembler::findMissingProperties());
+        // LocationDTOAssembler::createGetMapping();
     }
 }

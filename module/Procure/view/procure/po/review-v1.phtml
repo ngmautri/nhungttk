@@ -405,29 +405,11 @@
                                 
                                 
                                 
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
                                 
                                 
                                 
@@ -1259,7 +1241,7 @@
     
           	<?php
 
-        if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+        if ($action == Constants::FORM_ACTION_REVIEW) :
             ?>
             { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
             { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},

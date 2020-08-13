@@ -57,229 +57,24 @@ abstract class AbstractLocation
 
     protected $warehouse;
 
-    /**
-     *
-     * @param mixed $id
-     */
-    protected function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     *
-     * @param mixed $createdOn
-     */
-    protected function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
-    }
-
-    /**
-     *
-     * @param mixed $sysNumber
-     */
-    protected function setSysNumber($sysNumber)
-    {
-        $this->sysNumber = $sysNumber;
-    }
-
-    /**
-     *
-     * @param mixed $token
-     */
-    protected function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeOn
-     */
-    protected function setLastChangeOn($lastChangeOn)
-    {
-        $this->lastChangeOn = $lastChangeOn;
-    }
-
-    /**
-     *
-     * @param mixed $revisionNo
-     */
-    protected function setRevisionNo($revisionNo)
-    {
-        $this->revisionNo = $revisionNo;
-    }
-
-    /**
-     *
-     * @param mixed $remarks
-     */
-    protected function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     *
-     * @param mixed $isSystemLocation
-     */
-    protected function setIsSystemLocation($isSystemLocation)
-    {
-        $this->isSystemLocation = $isSystemLocation;
-    }
-
-    /**
-     *
-     * @param mixed $isReturnLocation
-     */
-    protected function setIsReturnLocation($isReturnLocation)
-    {
-        $this->isReturnLocation = $isReturnLocation;
-    }
-
-    /**
-     *
-     * @param mixed $isScrapLocation
-     */
-    protected function setIsScrapLocation($isScrapLocation)
-    {
-        $this->isScrapLocation = $isScrapLocation;
-    }
-
-    /**
-     *
-     * @param mixed $isRootLocation
-     */
-    protected function setIsRootLocation($isRootLocation)
-    {
-        $this->isRootLocation = $isRootLocation;
-    }
-
-    /**
-     *
-     * @param mixed $locationName
-     */
-    protected function setLocationName($locationName)
-    {
-        $this->locationName = $locationName;
-    }
-
-    /**
-     *
-     * @param mixed $locationCode
-     */
-    protected function setLocationCode($locationCode)
-    {
-        $this->locationCode = $locationCode;
-    }
-
-    /**
-     *
-     * @param mixed $parentId
-     */
-    protected function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-    }
-
-    /**
-     *
-     * @param mixed $locationType
-     */
-    protected function setLocationType($locationType)
-    {
-        $this->locationType = $locationType;
-    }
-
-    /**
-     *
-     * @param mixed $isActive
-     */
-    protected function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $isLocked
-     */
-    protected function setIsLocked($isLocked)
-    {
-        $this->isLocked = $isLocked;
-    }
-
-    /**
-     *
-     * @param mixed $path
-     */
-    protected function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     *
-     * @param mixed $pathDepth
-     */
-    protected function setPathDepth($pathDepth)
-    {
-        $this->pathDepth = $pathDepth;
-    }
-
-    /**
-     *
-     * @param mixed $hasMember
-     */
-    protected function setHasMember($hasMember)
-    {
-        $this->hasMember = $hasMember;
-    }
-
-    /**
-     *
-     * @param mixed $uuid
-     */
-    protected function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    /**
-     *
-     * @param mixed $createdBy
-     */
-    protected function setCreatedBy($createdBy)
-    {
-        $this->createdBy = $createdBy;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeBy
-     */
-    protected function setLastChangeBy($lastChangeBy)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-    }
-
-    /**
-     *
-     * @param mixed $warehouse
-     */
-    protected function setWarehouse($warehouse)
-    {
-        $this->warehouse = $warehouse;
-    }
+    protected $parentUuid;
 
     /**
      *
      * @return mixed
      */
-    public function getId()
+    public function getParentUuid()
     {
-        return $this->id;
+        return $this->parentUuid;
+    }
+
+    /**
+     *
+     * @param mixed $parentUuid
+     */
+    public function setParentUuid($parentUuid)
+    {
+        $this->parentUuid = $parentUuid;
     }
 
     /**
@@ -487,5 +282,212 @@ abstract class AbstractLocation
     public function getWarehouse()
     {
         return $this->warehouse;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $sysNumber
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeOn
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $isSystemLocation
+     */
+    public function setIsSystemLocation($isSystemLocation)
+    {
+        $this->isSystemLocation = $isSystemLocation;
+    }
+
+    /**
+     *
+     * @param mixed $isReturnLocation
+     */
+    public function setIsReturnLocation($isReturnLocation)
+    {
+        $this->isReturnLocation = $isReturnLocation;
+    }
+
+    /**
+     *
+     * @param mixed $isScrapLocation
+     */
+    public function setIsScrapLocation($isScrapLocation)
+    {
+        $this->isScrapLocation = $isScrapLocation;
+    }
+
+    /**
+     *
+     * @param mixed $isRootLocation
+     */
+    public function setIsRootLocation($isRootLocation)
+    {
+        $this->isRootLocation = $isRootLocation;
+    }
+
+    /**
+     *
+     * @param mixed $locationName
+     */
+    public function setLocationName($locationName)
+    {
+        $this->locationName = $locationName;
+    }
+
+    /**
+     *
+     * @param mixed $locationCode
+     */
+    public function setLocationCode($locationCode)
+    {
+        $this->locationCode = $locationCode;
+    }
+
+    /**
+     *
+     * @param mixed $parentId
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+    }
+
+    /**
+     *
+     * @param mixed $locationType
+     */
+    public function setLocationType($locationType)
+    {
+        $this->locationType = $locationType;
+    }
+
+    /**
+     *
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @param mixed $isLocked
+     */
+    public function setIsLocked($isLocked)
+    {
+        $this->isLocked = $isLocked;
+    }
+
+    /**
+     *
+     * @param mixed $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     *
+     * @param mixed $pathDepth
+     */
+    public function setPathDepth($pathDepth)
+    {
+        $this->pathDepth = $pathDepth;
+    }
+
+    /**
+     *
+     * @param mixed $hasMember
+     */
+    public function setHasMember($hasMember)
+    {
+        $this->hasMember = $hasMember;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeBy
+     */
+    public function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $warehouse
+     */
+    public function setWarehouse($warehouse)
+    {
+        $this->warehouse = $warehouse;
     }
 }

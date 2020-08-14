@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
+use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
 use InvalidArgumentException;
 
@@ -23,6 +24,11 @@ class BaseWarehouse extends AbstractWarehouse
 
     protected $recycleLocation;
 
+    /**
+     *
+     * @param GenericLocation $location
+     * @throws InvalidArgumentException
+     */
     public function addLocation(GenericLocation $location)
     {
         if (! $location instanceof GenericLocation) {
@@ -31,6 +37,107 @@ class BaseWarehouse extends AbstractWarehouse
         $locations = $this->getLocations();
         $locations[] = $location;
         $this->locations = $locations;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocations()
+    {
+        return $this->locations;
+    }
+
+    /**
+     *
+     * @return NULL|\Inventory\Domain\Warehouse\Location\BaseLocation
+     */
+    public function getRootLocation()
+    {
+        if ($this->getLocations() == null) {
+            return null;
+        }
+
+        foreach ($this->getLocations() as $location) {
+            /**
+             *
+             * @var BaseLocation $location ;
+             */
+            if ($location->getIsRootLocation()) {
+                return $location;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @return NULL|\Inventory\Domain\Warehouse\Location\BaseLocation
+     */
+    public function getReturnLocation()
+    {
+        if ($this->getLocations() == null) {
+            return null;
+        }
+
+        foreach ($this->getLocations() as $location) {
+            /**
+             *
+             * @var BaseLocation $location ;
+             */
+            if ($location->getIsReturnLocation()) {
+                return $location;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @return NULL|\Inventory\Domain\Warehouse\Location\BaseLocation
+     */
+    public function getScrapLocation()
+    {
+        if ($this->getLocations() == null) {
+            return null;
+        }
+
+        foreach ($this->getLocations() as $location) {
+            /**
+             *
+             * @var BaseLocation $location ;
+             */
+            if ($location->getIsScrapLocation()) {
+                return $location;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRecycleLocation()
+    {
+        if ($this->getLocations() == null) {
+            return null;
+        }
+
+        foreach ($this->getLocations() as $location) {
+            /**
+             *
+             * @var BaseLocation $location ;
+             */
+            if ($location->getIsReturnLocation()) {
+                return $location;
+            }
+        }
+
+        return null;
     }
 
     public static function createSnapshotProps()
@@ -76,86 +183,5 @@ class BaseWarehouse extends AbstractWarehouse
     public function setLocations($locations)
     {
         $this->locations = $locations;
-    }
-
-    /**
-     *
-     * @param mixed $rootLocation
-     */
-    public function setRootLocation($rootLocation)
-    {
-        $this->rootLocation = $rootLocation;
-    }
-
-    /**
-     *
-     * @param mixed $returnLocation
-     */
-    public function setReturnLocation($returnLocation)
-    {
-        $this->returnLocation = $returnLocation;
-    }
-
-    /**
-     *
-     * @param mixed $scrapLocation
-     */
-    public function setScrapLocation($scrapLocation)
-    {
-        $this->scrapLocation = $scrapLocation;
-    }
-
-    /**
-     *
-     * @param mixed $recycleLocation
-     */
-    public function setRecycleLocation($recycleLocation)
-    {
-        $this->recycleLocation = $recycleLocation;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getLocations()
-    {
-        return $this->locations;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRootLocation()
-    {
-        return $this->rootLocation;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getReturnLocation()
-    {
-        return $this->returnLocation;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getScrapLocation()
-    {
-        return $this->scrapLocation;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRecycleLocation()
-    {
-        return $this->recycleLocation;
     }
 }

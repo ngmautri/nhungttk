@@ -1,14 +1,14 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class BaseWarehouseSnapshot extends AbstractValueObject
+class BaseWarehouseSnapshot extends AbstractDTO
 {
 
     public $locationList;
@@ -60,6 +60,231 @@ class BaseWarehouseSnapshot extends AbstractValueObject
     public $whController;
 
     public $location;
+
+    /**
+     *
+     * @param mixed $locationList
+     */
+    public function setLocationList($locationList)
+    {
+        $this->locationList = $locationList;
+    }
+
+    /**
+     *
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $whCode
+     */
+    public function setWhCode($whCode)
+    {
+        $this->whCode = $whCode;
+    }
+
+    /**
+     *
+     * @param mixed $whName
+     */
+    public function setWhName($whName)
+    {
+        $this->whName = $whName;
+    }
+
+    /**
+     *
+     * @param mixed $whAddress
+     */
+    public function setWhAddress($whAddress)
+    {
+        $this->whAddress = $whAddress;
+    }
+
+    /**
+     *
+     * @param mixed $whContactPerson
+     */
+    public function setWhContactPerson($whContactPerson)
+    {
+        $this->whContactPerson = $whContactPerson;
+    }
+
+    /**
+     *
+     * @param mixed $whTelephone
+     */
+    public function setWhTelephone($whTelephone)
+    {
+        $this->whTelephone = $whTelephone;
+    }
+
+    /**
+     *
+     * @param mixed $whEmail
+     */
+    public function setWhEmail($whEmail)
+    {
+        $this->whEmail = $whEmail;
+    }
+
+    /**
+     *
+     * @param mixed $isLocked
+     */
+    public function setIsLocked($isLocked)
+    {
+        $this->isLocked = $isLocked;
+    }
+
+    /**
+     *
+     * @param mixed $whStatus
+     */
+    public function setWhStatus($whStatus)
+    {
+        $this->whStatus = $whStatus;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $isDefault
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $sysNumber
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeOn
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     *
+     * @param mixed $whCountry
+     */
+    public function setWhCountry($whCountry)
+    {
+        $this->whCountry = $whCountry;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeBy
+     */
+    public function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $stockkeeper
+     */
+    public function setStockkeeper($stockkeeper)
+    {
+        $this->stockkeeper = $stockkeeper;
+    }
+
+    /**
+     *
+     * @param mixed $whController
+     */
+    public function setWhController($whController)
+    {
+        $this->whController = $whController;
+    }
+
+    /**
+     *
+     * @param mixed $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
 
     /**
      *

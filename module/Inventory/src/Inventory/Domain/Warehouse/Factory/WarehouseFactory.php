@@ -7,12 +7,12 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Warehouse\WhCreated;
 use Inventory\Domain\Event\Warehouse\WhUpdated;
 use Inventory\Domain\Item\GenericItem;
-use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
 use Inventory\Domain\Warehouse\Contracts\DefaultLocation;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
+use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 use Inventory\Domain\Warehouse\Validator\ValidatorFactory;
 use Ramsey\Uuid\Uuid;
 use InvalidArgumentException;
@@ -40,13 +40,12 @@ class WarehouseFactory
 
     /**
      *
-     * @param ItemSnapshot $snapshot
+     * @param WarehouseSnapshot $snapshot
      * @param CommandOptions $options
      * @param SharedService $sharedService
      * @throws InvalidArgumentException
      * @throws \RuntimeException
-     * @throws RuntimeException
-     * @return \Inventory\Domain\Item\GenericItem
+     * @return \Inventory\Domain\Warehouse\GenericWarehouse
      */
     public static function createFrom(WarehouseSnapshot $snapshot, CommandOptions $options = null, SharedService $sharedService = null)
     {
@@ -60,6 +59,7 @@ class WarehouseFactory
 
         $createdDate = new \DateTime();
         $userId = $options->getUserId();
+        $snapshot->init($userId, date_format($createdDate, 'Y-m-d H:i:s'));
 
         $wh = new GenericWarehouse();
         SnapshotAssembler::makeFromSnapshot($wh, $snapshot);
@@ -69,6 +69,7 @@ class WarehouseFactory
 
         $location = new GenericLocation();
         $location->setUuid($rootUUID);
+        $location->setToken($location->getToken());
         $location->setIsActive(1);
         $location->setLocationName(DefaultLocation::ROOT_LOCATION);
         $location->setLocationCode(DefaultLocation::ROOT_LOCATION);
@@ -82,6 +83,7 @@ class WarehouseFactory
         $location = new GenericLocation();
         $location->setUuid(Uuid::uuid4()->toString());
         $location->setParentUuid($rootUUID);
+        $location->setToken($location->getToken());
 
         $location->setLocationName(DefaultLocation::RECYCLE_LOCATION);
         $location->setLocationCode(DefaultLocation::RECYCLE_LOCATION);
@@ -97,6 +99,7 @@ class WarehouseFactory
         $location = new GenericLocation();
         $location->setUuid(Uuid::uuid4()->toString());
         $location->setParentUuid($rootUUID);
+        $location->setToken($location->getToken());
 
         $location->setLocationName(DefaultLocation::RETURN_LOCATION);
         $location->setLocationCode(DefaultLocation::RETURN_LOCATION);
@@ -112,6 +115,7 @@ class WarehouseFactory
         $location = new GenericLocation();
         $location->setUuid(Uuid::uuid4()->toString());
         $location->setParentUuid($rootUUID);
+        $location->setToken($location->getToken());
 
         $location->setLocationName(DefaultLocation::SCRAP_LOCATION);
         $location->setLocationCode(DefaultLocation::SCRAP_LOCATION);
@@ -122,7 +126,7 @@ class WarehouseFactory
         $location->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $wh->addLocation($location);
 
-        $validationService = ValidatorFactory::create($sharedService);
+        $validationService = ValidatorFactory::create($sharedService, ValidatorFactory::CREATE_NEW_WH);
 
         // create default location.
         $wh->validate($validationService);
@@ -131,18 +135,18 @@ class WarehouseFactory
             throw new \RuntimeException($wh->getNotification()->errorMessage());
         }
 
-        $wh->recordedEvents = array();
+        $wh->clearEvents();
 
         /**
          *
-         * @var WarehouseSnapshot $rootSnapshot
+         * @var WarehouseSnapshot $rootSnapshot ;
+         * @var WhCmdRepositoryInterface $rep ;
          */
-        $rootSnapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->store($wh, true);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->store($wh, true);
 
         if ($rootSnapshot == null) {
-            throw new RuntimeException(sprintf("Error orcured when creating Item #%s", $wh->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when creating Warehouse #%s", $wh->getId()));
         }
 
         $target = $rootSnapshot;
@@ -162,7 +166,7 @@ class WarehouseFactory
     public static function updateFrom(WarehouseSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         if (! $snapshot instanceof WarehouseSnapshot) {
-            throw new InvalidArgumentException("ItemSnapshot not found!");
+            throw new InvalidArgumentException("WarehouseSnapshot not found!");
         }
 
         $wh = new GenericWarehouse();
@@ -176,7 +180,7 @@ class WarehouseFactory
          */
         SnapshotAssembler::makeFromSnapshot($wh, $snapshot);
 
-        $validationService = ValidatorFactory::create($sharedService);
+        $validationService = ValidatorFactory::create($sharedService, ValidatorFactory::EDIT_WH);
         $wh->validate($validationService);
 
         if ($wh->hasErrors()) {

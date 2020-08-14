@@ -1,12 +1,15 @@
 <?php
 namespace Inventory\Domain\Warehouse;
 
+use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\AggregateRootInterface;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractWarehouse
+abstract class AbstractWarehouse extends AbstractEntity implements AggregateRootInterface
 {
 
     protected $locationList;

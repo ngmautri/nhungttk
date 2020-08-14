@@ -35,6 +35,8 @@ class WarehouseValidatorCollection implements WarehouseValidatorInterface
         }
 
         foreach ($this->validators as $validator) {
+
+            // var_dump(\get_class($validator));
             /**
              *
              * @var WarehouseValidatorInterface $validator ;

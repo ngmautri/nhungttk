@@ -5,11 +5,11 @@ use Application\Entity\NmtInventoryWarehouse;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Inventory\Domain\Warehouse\GenericWarehouse;
 use Inventory\Domain\Warehouse\WarehouseSnapshot;
+use Inventory\Domain\Warehouse\Location\BaseLocationSnapshot;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Inventory\Domain\Warehouse\Location\LocationSnapshot;
 use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
 use Inventory\Infrastructure\Mapper\WhMapper;
-use Procure\Domain\BaseRowSnapshot;
 use InvalidArgumentException;
 
 /**
@@ -129,7 +129,6 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
         $this->doctrineEM->flush();
 
         $rootSnapshot->id = $rootEntityDoctrine->getId();
-        $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
         $rootSnapshot->sysNumber = $rootEntityDoctrine->getSysNumber();
         $rootSnapshot->revisionNo = $rootEntityDoctrine->getRevisionNo();
         return $rootSnapshot;
@@ -184,18 +183,7 @@ class WhCmdRepositoryImpl extends AbstractDoctrineRepository implements WhCmdRep
         return $entity;
     }
 
-    /**
-     *
-     * @param object $rootEntityDoctrine
-     * @param BaseRowSnapshot $localSnapshot
-     * @param boolean $isPosting
-     * @param boolean $isFlush
-     * @param boolean $increaseVersion
-     * @param int $n
-     * @throws InvalidArgumentException
-     * @return \Application\Entity\NmtInventoryWarehouseLocation
-     */
-    private function _storeLocation($rootEntityDoctrine, BaseRowSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
+    private function _storeLocation($rootEntityDoctrine, BaseLocationSnapshot $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n = null)
     {
         if (! $rootEntityDoctrine instanceof NmtInventoryWarehouse) {
             throw new InvalidArgumentException("Doctrine root (NmtInventoryWarehouse) not given!");

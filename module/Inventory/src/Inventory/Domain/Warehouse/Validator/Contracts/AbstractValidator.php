@@ -3,7 +3,6 @@ namespace Inventory\Domain\Warehouse\Validator\Contracts;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecsFactory;
 use Inventory\Domain\Validator\AbstractInventorySpecificationFactory;
-use Procure\Domain\Service\Contracts\FXServiceInterface;
 use InvalidArgumentException;
 
 /**
@@ -18,8 +17,6 @@ abstract class AbstractValidator
 
     protected $domainSpecificationFactory;
 
-    protected $fxService;
-
     /**
      *
      * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
@@ -29,18 +26,13 @@ abstract class AbstractValidator
         return $this->sharedSpecificationFactory;
     }
 
-    public function __construct(SharedSpecsFactory $sharedSpecsFactory, FXServiceInterface $fxService)
+    public function __construct(SharedSpecsFactory $sharedSpecsFactory)
     {
         if (! $sharedSpecsFactory instanceof SharedSpecsFactory) {
             throw new InvalidArgumentException("Shared Specification is required");
         }
 
-        if (! $fxService instanceof FXServiceInterface) {
-            throw new InvalidArgumentException("FX service is required");
-        }
-
         $this->sharedSpecificationFactory = $sharedSpecsFactory;
-        $this->fxService = $fxService;
     }
 
     /**

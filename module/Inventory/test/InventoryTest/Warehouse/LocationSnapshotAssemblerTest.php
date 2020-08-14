@@ -18,6 +18,6 @@ class LocationSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         // LocationSnapshotAssembler::findMissingDBPropsInBase();
-        BaseLocation::createSnapshotBaseProps();
+        BaseLocation::createSnapshotProps();
     }
 }

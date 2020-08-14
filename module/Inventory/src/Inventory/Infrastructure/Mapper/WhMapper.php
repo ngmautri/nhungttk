@@ -32,7 +32,7 @@ class WhMapper
         // Mapping None-Object Field
         // =================================
 
-        $entity->setId($snapshot->id);
+        // $entity->setId($snapshot->id);
         $entity->setWhCode($snapshot->whCode);
         $entity->setWhName($snapshot->whName);
         $entity->setWhAddress($snapshot->whAddress);
@@ -59,8 +59,8 @@ class WhMapper
             $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
         }
 
-        if ($snapshot->lastchangeOn !== null) {
-            $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
+        if ($snapshot->lastChangeOn !== null) {
+            $entity->setLastchangeOn(new \DateTime($snapshot->lastChangeOn));
         }
 
         // ============================
@@ -152,7 +152,7 @@ class WhMapper
         // =================================
         // Mapping None-Object Field
         // =================================
-        $entity->setId($snapshot->id);
+        // $entity->setId($snapshot->id);
         $entity->setSysNumber($snapshot->sysNumber);
         $entity->setToken($snapshot->token);
         $entity->setRevisionNo($snapshot->revisionNo);
@@ -171,6 +171,7 @@ class WhMapper
         $entity->setPathDepth($snapshot->pathDepth);
         $entity->setHasMember($snapshot->hasMember);
         $entity->setUuid($snapshot->uuid);
+        $entity->setParentUuid($snapshot->parentUuid);
 
         // ============================
         // DATE MAPPING
@@ -183,8 +184,8 @@ class WhMapper
             $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
         }
 
-        if ($snapshot->lastchangeOn !== null) {
-            $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
+        if ($snapshot->lastChangeOn !== null) {
+            $entity->setLastchangeOn(new \DateTime($snapshot->lastChangeOn));
         }
 
         // ============================
@@ -325,7 +326,7 @@ class WhMapper
         }
 
         if ($snapshot == null) {
-            $snapshot = new WarehouseSnapshot();
+            $snapshot = new LocationSnapshot();
         }
 
         // =================================
@@ -351,6 +352,7 @@ class WhMapper
         $snapshot->pathDepth = $entity->getPathDepth();
         $snapshot->hasMember = $entity->getHasMember();
         $snapshot->uuid = $entity->getUuid();
+        $snapshot->parentUuid = $entity->getParentUuid();
 
         // ============================
         // DATE MAPPING

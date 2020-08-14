@@ -2,19 +2,17 @@
 namespace Inventory\Domain\Warehouse;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Event\Transaction\TrxRowAdded;
-use Inventory\Domain\Event\Transaction\TrxRowUpdated;
-use Inventory\Domain\Exception\InvalidOperationException;
-use Inventory\Domain\Item\Validator\ValidatorFactory;
+use Inventory\Domain\Event\Warehouse\WhLocationCreated;
+use Inventory\Domain\Event\Warehouse\WhLocationUpdated;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\WhValidationServiceInterface;
-use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Transaction\TrxRowSnapshot;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
+use Inventory\Domain\Warehouse\Location\BaseLocation;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Inventory\Domain\Warehouse\Location\LocationSnapshot;
+use Inventory\Domain\Warehouse\Repository\WhCmdRepositoryInterface;
+use Inventory\Domain\Warehouse\Validator\ValidatorFactory;
 use Inventory\Domain\Warehouse\Validator\Contracts\LocationValidatorCollection;
 use Inventory\Domain\Warehouse\Validator\Contracts\WarehouseValidatorCollection;
 use InvalidArgumentException;
@@ -28,12 +26,18 @@ use RuntimeException;
 class GenericWarehouse extends BaseWarehouse
 {
 
+    /**
+     *
+     * @param LocationSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws RuntimeException
+     * @return \Inventory\Domain\Warehouse\Location\LocationSnapshot
+     */
     public function createLocationFrom(LocationSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
-        }
-
         if ($snapshot == null) {
             throw new InvalidArgumentException("Row Snapshot not found");
         }
@@ -42,41 +46,37 @@ class GenericWarehouse extends BaseWarehouse
             throw new InvalidArgumentException("Options not found");
         }
 
-        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
+        $validationService = ValidatorFactory::create($sharedService, ValidatorFactory::CREATE_NEW_LOCATION);
 
-        $this->_checkParams($validationService, $sharedService);
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validators not given!");
+        if (! $validationService->getLocationValidators() instanceof LocationValidatorCollection) {
+            throw new InvalidArgumentException("Location Validators not given!");
         }
-
-        $snapshot->flow = $this->getMovementFlow();
-        $snapshot->wh = $this->getWarehouse();
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->init($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = TrxRow::makeFromSnapshot($snapshot);
+        $location = GenericLocation::makeFromSnapshot($snapshot);
 
-        $this->validateRow($row, $validationService->getRowValidators());
+        $this->validateLocation($location, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
         /**
          *
-         * @var TrxRowSnapshot $localSnapshot
+         * @var LocationSnapshot $localSnapshot ;
+         * @var WhCmdRepositoryInterface $rep ;
          */
-        $localSnapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->storeRow($this, $row);
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeLocation($this, $location);
 
         if ($localSnapshot == null) {
-            throw new RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
+            throw new RuntimeException(sprintf("Error occured when creating warehouse location #%s", $this->getId()));
         }
 
         $params = [
@@ -93,58 +93,64 @@ class GenericWarehouse extends BaseWarehouse
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $event = new TrxRowAdded($target, $defaultParams, $params);
+        $event = new WhLocationCreated($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
     }
 
+    /**
+     *
+     * @param LocationSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param array $params
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws RuntimeException
+     * @return \Inventory\Domain\Transaction\TrxRowSnapshot
+     */
     public function updateLocationFrom(LocationSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException(sprintf("Trx is posted! %s", $this->getId()));
-        }
-
         if ($snapshot == null) {
-            throw new InvalidArgumentException("TrxRowSnapshot not found");
+            throw new InvalidArgumentException("LocationSnapshot not found");
         }
 
         if ($options == null) {
             throw new InvalidArgumentException("Options not found");
         }
 
-        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
+        $validationService = ValidatorFactory::create($sharedService, ValidatorFactory::EDIT_LOCATION);
 
-        $this->_checkParams($validationService, $sharedService);
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validators not given!");
+        if (! $validationService->getLocationValidators() instanceof LocationValidatorCollection) {
+            throw new InvalidArgumentException("Location Validators not given!");
         }
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = TrxRow::makeFromSnapshot($snapshot);
+        $location = GenericLocation::makeFromSnapshot($snapshot);
 
-        $this->validateRow($row, $validationService->getRowValidators());
+        $this->validateLocation($location, $validationService->getLocationValidators());
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
         /**
          *
-         * @var TrxRowSnapshot $localSnapshot
+         * @var LocationSnapshot $localSnapshot ;
+         * @var WhCmdRepositoryInterface $rep ;
          */
-        $localSnapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->storeRow($this, $row);
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeLocation($this, $location);
 
         if ($localSnapshot == null) {
-            throw new RuntimeException(sprintf("Error occured when updatting Trx row #%s", $this->getId()));
+            throw new RuntimeException(sprintf("Error occured when updatting warehouse location #%s", $this->getId()));
         }
 
         // $target = $this->makeSnapshot(); //
@@ -157,13 +163,19 @@ class GenericWarehouse extends BaseWarehouse
         $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
         $defaultParams->setTriggeredBy($options->getTriggeredBy());
         $defaultParams->setUserId($options->getUserId());
-        $event = new TrxRowUpdated($target, $defaultParams, $params);
-
+        $event = new WhLocationUpdated($target, $defaultParams, $params);
         $this->addEvent($event);
 
         return $localSnapshot;
     }
 
+    /**
+     *
+     * @param WhValidationServiceInterface $validationService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Inventory\Domain\Warehouse\GenericWarehouse
+     */
     public function validate(WhValidationServiceInterface $validationService, $isPosting = false)
     {
         if ($validationService == null) {
@@ -193,18 +205,37 @@ class GenericWarehouse extends BaseWarehouse
         }
 
         foreach ($this->getLocations() as $location) {
-            $this->validateRLocation($location, $validationService->getLocationValidators(), $isPosting);
+            $this->validateLocation($location, $validationService->getLocationValidators(), $isPosting);
         }
 
         return $this;
     }
 
+    /**
+     *
+     * @param WarehouseValidatorCollection $validators
+     * @param boolean $isPosting
+     */
     protected function validateWarehouse(WarehouseValidatorCollection $validators, $isPosting = false)
-    {}
+    {
+        $validators->validate($this);
+    }
 
-    protected function validateLocation(LocationValidatorCollection $validators, $isPosting = false)
-    {}
+    /**
+     *
+     * @param BaseLocation $location
+     * @param LocationValidatorCollection $validators
+     * @param boolean $isPosting
+     */
+    protected function validateLocation(BaseLocation $location, LocationValidatorCollection $validators, $isPosting = false)
+    {
+        $validators->validate($this, $location);
+    }
 
+    /**
+     *
+     * @return NULL|object
+     */
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new WarehouseSnapshot());

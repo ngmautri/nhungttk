@@ -23,11 +23,11 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new WhQueryRepositoryImpl($doctrineEM);
 
-            $id = 8;
-            $token = "AfsVOwbqb1_4uyY7BOuIAwCXlO29SoTL";
+            $id = 22;
+            $token = "5e5a3492-bf88-49d8-9bc2-678dc74766f8";
 
             $rootEntity = $rep->getByTokenId($id, $token);
-            \var_dump($rootEntity->lastChangeBy);
+            \var_dump($rootEntity->getScrapLocation());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

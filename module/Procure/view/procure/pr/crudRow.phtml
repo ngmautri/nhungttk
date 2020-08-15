@@ -1,5 +1,6 @@
 <?php
 use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
 
 /**
@@ -8,11 +9,11 @@ use Procure\Application\Helper\OptionList;
  *         ===========================================
  */
 
-/**@var \Procure\Application\DTO\Pr\PrDTO $rootDto ;*/
+/**@var \Procure\Application\DTO\Pr\PrDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Pr\PrRowDTO $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
-// var_dump($rootDto);
+// var_dump($headerDTO);
 
 // echo memory_get_usage();
 $message_url = null;
@@ -21,17 +22,41 @@ $rowNumber = null;
 $doc_wh_id = null;
 $today = new DateTime();
 $default_edt = $today->modify("10 days")->format("Y-m-d");
+$transactionStatus = "";
+$progress_div = '';
+$alert = "info";
 
-// var_dump($rootDto);
-if ($rootDto !== null) {
-    $target_id = $rootDto->getId();
-    $target_token = $rootDto->getToken();
+// var_dump($headerDTO);
+if ($headerDTO !== null) {
+
+    if ($headerDTO->getTotalRows() > 0) {
+        $completion = $headerDTO->getCompletedRows() / $headerDTO->getTotalRows();
+    } else {
+        $completion = 0;
+    }
+
+    $progress_div = FormHelper::createProgressDiv($completion, 'completed.');
+
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
+
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
+    }
+
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
+    }
+
+    $target_id = $headerDTO->getId();
+    $target_token = $headerDTO->getToken();
 
     $message_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_token=%s&entity_id=%s", $target_token, $target_id);
     $review_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $target_id, $target_token);
     // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
-    $rowNumber = $rootDto->getTotalRows() + 1;
-    $doc_wh_id = $rootDto->getWarehouse();
+    $rowNumber = $headerDTO->getTotalRows() + 1;
+    $doc_wh_id = $headerDTO->getWarehouse();
 }
 
 $wh_id = null;
@@ -63,50 +88,26 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 ?>
 <div id="wrapper" class="toggled">
    <!-- Sidebar -->
-   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+   <div id="sidebar-wrapper" style="font-size: 9.5pt; padding-left: 20px;">
+   
+   <?php
 
-    	<?php
-    $current_step = "STEP2";
-    include (ROOT . '/module/Procure/view/procure/pr-create-wizard.php');
-    ?>
+// include (ROOT . '/module/Procure/view/procure/pr_summary.php');
+?>
 
-      					<hr>
-      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
-
-    echo $this->translate('Summary:');
-    ?></span>
-      <div class="alert alert-info" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-            <li>
-               <b><?php
-
-            if (! $rootDto == null) :
-                echo $rootDto->getSysNumber(); endif;
-
-            ?></b>
-            </li>
-            <li>-----</li>
-            <li>Total rows:<?php
-
-            if (! $rootDto == null) :
-                echo $rootDto->getTotalRows(); endif;
-
-            ?></li>
-            <li>Status:<?php
-
-            if (! $rootDto == null) :
-                echo $rootDto->getTransactionStatus(); endif;
-
-            ?> </li>
-            <li>-----</li>
-            <li>Created by: <?php
-
-            if (! $rootDto == null) :
-                echo $rootDto->getCreatedByName(); endif;
-
-            ?></li>
-         </ul>
-      </div>
+      <form class="form-inline" action="" method="get" onsubmit="return toSubmit();" enctype="multipart/form-data">
+            <div class="form-group" style="padding-left: 0px;">
+               <input placeholder="Search term ..." id= "search_term_id" class="form-control" size="10" type="text" name="q" onkeypress="return runScript(event)">
+            </div>
+            <div class="form-group">
+               <button style="font-size: 9pt"; class="btn btn-default" onclick="doSearch();">
+                  <small>
+                     <i class="glyphicon glyphicon-search"> </i>
+                  </small>
+               </button>
+            </div>
+         </form>
+      <div id="search_result_id"></div>
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -492,7 +493,57 @@ $( "#item_name" ).focus();
        	 endif
         ?>
         
-   
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+     
     function selectItem(id, token,target, name, target_name, context = null){
     	var target_id = '#' + target;
     	$(target_id).val(id);
@@ -524,7 +575,29 @@ $( "#item_name" ).focus();
                 $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
 
        	});
+
+        var img = '<img class="img-rounded" width="200" height="200" src="'+ui.item.item_thumbnail+'"/>';
+    	$( "#item_img").html(img);
+
     }
+
+    function doSearch(){
+        var q =      $('#search_term_id').val();
+        var url = '/inventory/item-search/do3?q=' + q;        
+        doSearching(url,'search_result_id');
+    }
+
+    function runScript(e) {
+	    //See notes about 'which' and 'key'
+	    if (e.keyCode == 13) {
+		    doSearch();
+          
+	    }
+	}
+
+    function toSubmit(){
+	      return false;
+	   }
 
 
      </script>

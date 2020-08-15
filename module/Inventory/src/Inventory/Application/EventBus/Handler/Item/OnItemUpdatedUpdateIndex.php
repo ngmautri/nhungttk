@@ -34,7 +34,7 @@ class OnItemUpdatedUpdateIndex extends AbstractEventHandler
             $indexer->createDoc($event->getTarget());
 
             $format = "Index for item #%s updated!";
-            $this->getLogger()->info(\sprintf($format, $event->getTarget()
+            $this->logInfo(\sprintf($format, $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
             throw $e;

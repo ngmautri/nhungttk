@@ -273,6 +273,38 @@ class ItemSearchController extends AbstractGenericController
         return $viewModel;
     }
 
+    public function do3Action()
+    {
+        $this->layout("layout/user/ajax");
+
+        $layout = $this->params()->fromQuery('layout');
+
+        if ($layout == null) {
+            $layout = 'grid';
+        }
+
+        $q = $this->params()->fromQuery('q');
+        $q = trim(strip_tags($q));
+
+        $queryFilter = new ItemQueryFilter();
+        $results = $this->getItemQueryService()->search($q, $queryFilter);
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $viewTemplete = "inventory/item-search/search-result";
+
+        if ($layout == "grid") {
+            $viewTemplete = "inventory/item-search/search-result-gird-1";
+        }
+
+        $viewModel = new ViewModel(array(
+            'results' => $results,
+            'nmtPlugin' => $nmtPlugin
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
     /**
      *
      * @deprecated
@@ -311,11 +343,9 @@ class ItemSearchController extends AbstractGenericController
 
         // accepted only ajax request
 
-        /*
-         * if (! $request->isXmlHttpRequest ()) {
-         * return $this->redirect ()->toRoute ( 'access_denied' );
-         * }
-         */
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
 
         $this->layout("layout/user/ajax");
 

@@ -2,6 +2,8 @@
 namespace Inventory\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
+use Inventory\Domain\Warehouse\Location\GenericLocation;
 use Inventory\Domain\Warehouse\Repository\WhQueryRepositoryInterface;
 use Inventory\Infrastructure\Mapper\WhMapper;
 
@@ -68,6 +70,11 @@ class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQuer
     public function getLocationById()
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhQueryRepositoryInterface::getByTokenId()
+     */
     public function getByTokenId($id, $token)
     {
         $criteria = array(
@@ -86,6 +93,13 @@ class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQuer
             return null;
         }
 
-        return $snapshot;
+        $wh = WarehouseFactory::contructFromDB($snapshot);
+
+        foreach ($snapshot->getLocationList() as $locationEntity) {
+            $locationSnapshot = WhMapper::createLocationSnapshot($this->doctrineEM, $locationEntity);
+            $location = GenericLocation::makeFromSnapshot($locationSnapshot);
+            $wh->addLocation($location);
+        }
+        return $wh;
     }
 }

@@ -241,9 +241,7 @@ class WhMapper
         // Mapping None-Object Field
         // =================================
 
-        foreach ($entity->getLocationList() as $loc) {
-            echo $loc->getLocationName();
-        }
+        $snapshot->locationList = $entity->getLocationList();
 
         $snapshot->id = $entity->getId();
         $snapshot->whCode = $entity->getWhCode();

@@ -86,7 +86,7 @@ class PrController extends AbstractGenericController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'rootDTO' => null,
+                'headerDTO' => null,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -123,7 +123,7 @@ class PrController extends AbstractGenericController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'rootDTO' => $dto,
+                'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -175,7 +175,7 @@ class PrController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
-                'rootDTO' => $dto,
+                'headerDTO' => $dto,
                 'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -219,7 +219,7 @@ class PrController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
-                'rootDTO' => $dto,
+                'headerDTO' => $dto,
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -275,7 +275,7 @@ class PrController extends AbstractGenericController
                 'target_id' => $target_id,
                 'target_token' => $target_token,
                 'dto' => null,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -325,7 +325,7 @@ class PrController extends AbstractGenericController
                 'target_id' => $rootEntityId,
                 'target_token' => $rootEntityToken,
                 'dto' => $dto,
-                'rootDto' => $rootEntity->makeHeaderDTO(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
                 'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -374,15 +374,15 @@ class PrController extends AbstractGenericController
             $target_token = $this->params()->fromQuery('target_token');
             $result = $this->getPurchaseRequestService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
 
-            $rootDTO = null;
+            $headerDTO = null;
             $localDTO = null;
             if (isset($result["rootDTO"])) {
-                $rootDTO = $result["rootDTO"];
+                $headerDTO = $result["rootDTO"];
             }
             if (isset($result["localDTO"])) {
                 $localDTO = $result["localDTO"];
             }
-            if (! $rootDTO instanceof PrDTO || ! $localDTO instanceof PrRowDTO) {
+            if (! $headerDTO instanceof PrDTO || ! $localDTO instanceof PrRowDTO) {
                 return $this->redirect()->toRoute('not_found');
             }
             $viewModel = new ViewModel(array(
@@ -392,8 +392,8 @@ class PrController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'target_id' => $target_id,
                 'target_token' => $target_token,
-                'version' => $rootDTO->getRevisionNo(),
-                'rootDto' => $rootDTO,
+                'version' => $headerDTO->getRevisionNo(),
+                'headerDTO' => $headerDTO,
                 'dto' => $localDTO, // row
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -423,7 +423,7 @@ class PrController extends AbstractGenericController
             $result = $this->getPurchaseRequestService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
             $rootEntity = null;
             $localEntity = null;
-            $rootDTO = null;
+            $headerDTO = null;
             $localDTO = null;
 
             if (isset($result["rootEntity"])) {
@@ -433,12 +433,12 @@ class PrController extends AbstractGenericController
                 $localEntity = $result["localEntity"];
             }
             if (isset($result["rootDTO"])) {
-                $rootDTO = $result["rootDTO"];
+                $headerDTO = $result["rootDTO"];
             }
             if (isset($result["localDTO"])) {
                 $localDTO = $result["localDTO"];
             }
-            if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+            if ($rootEntity == null || $localEntity == null || $headerDTO == null || $localDTO == null) {
                 return $this->redirect()->toRoute('not_found');
             }
             $options = new RowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
@@ -466,7 +466,7 @@ class PrController extends AbstractGenericController
                 'target_token' => $target_token,
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'dto' => $dto,
-                'rootDto' => $rootDTO,
+                'headerDTO' => $headerDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

@@ -1,0 +1,127 @@
+<?php
+use Application\Application\Service\Search\Contracts\SearchResult;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===========================================
+ */
+
+/**@var SearchResult $results ;*/
+
+$table_body = '';
+$message = '';
+$hits_detail = '';
+
+if ($results !== null) {
+    $message = '<hr style="margin: 5pt 1pt 5pt 1pt;">' . $results->getMessage() . '<hr style="margin: 5pt 1pt 5pt 1pt;">';
+    ;
+    $hits = $results->getHits();
+
+    if (count($hits) > 0) {
+
+        $lineBreak = 1;
+        $count = 0;
+        $n = 0;
+
+        foreach ($hits as $hit) {
+
+            // $url = $nmtPlugin->getItemPic($hit->item_id);
+
+            $url = $hit->item_thumbnail;
+
+            if ($url == null) {
+                $url = '/images/no-pic1.jpg';
+            }
+
+            $img = sprintf('<img id="%s" style="cursor: pointer;"
+title="click for more detail!" onclick="" class="img-rounded" width="150" height="150" src="%s" />', $hit->item_id, $url);
+
+            $format = '<a style ="color:navy;" href="/inventory/item/show3?entity_token=%s&entity_id=%s">%s</a>';
+            $itemUrl = sprintf($format, $hit->token, $hit->item_id, $hit->itemName);
+
+            if ($count == 0 || $count % $lineBreak == 0) {
+                $hits_detail = $hits_detail . '<div class="row" style="height-min:1800px; border:1px;">';
+            }
+            $count ++;
+
+            $format = '<a href="javascript:;"  onclick="showJqueryDialog(\'%s\',\'1500\',$(window).height()-50,\'%s\', \'j_loaded_data\',true)"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>';
+            $url1 = sprintf('/inventory/item/show1?token=%s&entity_id=%s', $hit->token, $hit->item_id);
+            $item_name = sprintf('%s-%s', $this->escapeHtml($hit->itemName), $hit->itemSku);
+            $quickShow = sprintf($format, $item_name, $url1);
+
+            $format = '<a href="/inventory/item/update?entity_token=%s&entity_id=%s"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>';
+            $editUrl = sprintf($format, $hit->token, $hit->item_id);
+
+            $format = '<a href="/inventory/item/upload-picture?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Picture</a>';
+            $pictureUrl = sprintf($format, $hit->token, $hit->item_id);
+
+            $format = '<a href="/inventory/item-attachment/upload?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Attachment</a>';
+            $attachmentUrl = sprintf($format, $hit->token, $hit->item_id);
+
+            if ($hit->isModel == "1") {
+                $model_legend = ' <i class="fa fa-sitemap" aria-hidden="true"></i>';
+            } else {
+                $model_legend = '';
+            }
+
+            if ($hit->isFixedAsset == "1") {
+                $asset_legend = '<span style="font-size: 6pt;" class="badge">A</span>';
+            } else {
+                $asset_legend = '';
+            }
+
+            $format = '<a href="/inventory/item-attachment/upload?token=%s&target_id=%s"><small><i class="fa fa-upload"></i></small>&nbsp;Upload Attachment</a>';
+            $selectItem = sprintf($format, $hit->token, $hit->item_id);
+
+            $format = '<a href="javascript:;" onclick="selectItem(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')"><i class="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;Select</a>';
+            $url1 = sprintf('/inventory/item/show1?token=%s&entity_id=%s', $hit->token, $hit->item_id);
+            $selectItem = sprintf($format, $hit->item_id, $hit->token, 'item_id', $hit->itemName, 'item_name');
+
+            // function selectItem(id, token,target, name, target_name, context = null){
+
+            $dropDownList = [
+                $selectItem,
+                $quickShow
+                // 'divider'
+                // $pictureUrl,
+                // $attachmentUrl
+            ];
+
+            $dropDown = \Application\Application\Helper\FormHelper::createDropDownBtn($dropDownList);
+
+            $hits_detail = $hits_detail . '<div class="col-xs-8 col-md-5">';
+
+            $tbl = '<table style="">';
+            $tbl = $tbl . ' <tr style="padding: 1pt 2pt 1pt 1pt;">';
+            $tbl = $tbl . ' <td> <span style="padding: 1pt 1pt 1pt 1pt; font-weight: bold;">';
+            $tbl = $tbl . $itemUrl;
+            $tbl = $tbl . '</span>';
+            $tbl = $tbl . '<div style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">' . $asset_legend . $model_legend . '</div>';
+            $tbl = $tbl . ' <span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;">';
+            $tbl = $tbl . sprintf("<br>%s // %s%s%s<br>%s", $hit->sysNumber, $hit->itemSku, $hit->itemSku1, $hit->manufacturerSerial, $hit->manufacturerCode);
+            $tbl = $tbl . ' </span';
+            $tbl = $tbl . '<div style="position: relative; float: right;">';
+            $tbl = $tbl . $img;
+            $tbl = $tbl . '</div>';
+            $tbl = $tbl . $dropDown;
+            $tbl = $tbl . '</td></tr></table>';
+
+            $hits_detail = $hits_detail . $tbl . '</div>';
+
+            if ($count % $lineBreak == 0) {
+
+                $hits_detail = $hits_detail . '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
+            }
+        }
+    }
+}
+
+?>
+
+<?php
+echo $message;
+
+echo $hits_detail;
+?>
+

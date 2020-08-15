@@ -8,7 +8,7 @@ use Procure\Domain\Shared\Constants;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
-/**@var \Procure\Application\DTO\Pr\PrDTO $rootDTO ;*/
+/**@var \Procure\Application\DTO\Pr\PrDTO $headerDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 $docStatus = null;
@@ -18,14 +18,14 @@ $currencyId = null;
 $incotermId = null;
 $departmentId = null;
 
-if (! $rootDTO == null) {
-    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $rootDTO->getId(), $rootDTO->getToken());
-    $wh_id = $rootDTO->getWarehouse();
-    $pmtTermId = $rootDTO->getPmtTerm();
-    $currencyId = $rootDTO->getDocCurrency();
-    $incotermId = $rootDTO->getIncoterm();
-    $departmentId = $rootDTO->getDepartment();
+if (! $headerDTO == null) {
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $wh_id = $headerDTO->getWarehouse();
+    $pmtTermId = $headerDTO->getPmtTerm();
+    $currencyId = $headerDTO->getDocCurrency();
+    $incotermId = $headerDTO->getIncoterm();
+    $departmentId = $headerDTO->getDepartment();
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -134,7 +134,7 @@ echo $form_action;
                            <label class="control-label col-sm-2">PR number:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" placeholder="" id="docNumber" name="prNumber" value="<?php
-                            echo (! $rootDTO == null) ? $rootDTO->getPrNumber() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getPrNumber() : "";
                             ?>">
                            </div>
                         </div>
@@ -142,8 +142,8 @@ echo $form_action;
                            <label class="control-label col-sm-2 required">PR Date:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" id="submittedOn" name="submittedOn" value="<?php
-                            if (! $rootDTO == null) :
-                                echo $rootDTO->getSubmittedOn(); endif;
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getSubmittedOn(); endif;
 
                             ?>"
                                  placeholder=" please select" />
@@ -153,7 +153,7 @@ echo $form_action;
                            <label class="control-label col-sm-2">Keywords.:</label>
                            <div class="col-sm-3">
                               <input class="form-control input-sm" type="text" placeholder="" id=""keywords"" name="keywords" value="<?php
-                            echo (! $rootDTO == null) ? $rootDTO->getKeywords() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getKeywords() : "";
                             ?>">
                            </div>
                            
@@ -197,7 +197,7 @@ echo $department_option;
                            <label class="control-label col-sm-2">Description</label>
                            <div class="col-sm-8">
                               <input class="form-control input-sm" type="text" id="remarks" placeholder="" name="remarks" value="<?php
-                            echo (! $rootDTO == null) ? $rootDTO->getRemarks() : "";
+                            echo (! $headerDTO == null) ? $headerDTO->getRemarks() : "";
                             ?>">
                            </div>
                         </div>

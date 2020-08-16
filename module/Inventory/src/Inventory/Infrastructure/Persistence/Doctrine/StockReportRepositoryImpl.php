@@ -129,4 +129,50 @@ AND nmt_inventory_fifo_layer.is_closed=0", $filter->getCheckingDate(), $filter->
             return null;
         }
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Infrastructure\Persistence\Contracts\StockReportRepositoryInterface::getOnHandQuantityAtLocation()
+     */
+    public function getTrxOnHandQuantity(SqlFilterInterface $filter)
+    {
+        if (! $filter instanceof StockOnhandReportSqlFilter) {
+            throw new \InvalidArgumentException("OnhandReportSqlFilter object not valid!");
+        }
+
+        $sql = "
+SELECT
+    nmt_inventory_trx.item_id,
+    nmt_inventory_trx.wh_id,
+    nmt_inventory_trx.wh_location,
+    SUM(CASE WHEN nmt_inventory_trx.is_active =1  AND nmt_inventory_trx.flow = 'IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS in_qty,
+    SUM(CASE WHEN nmt_inventory_trx.is_active =1  AND nmt_inventory_trx.flow = 'OUT' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS out_qty
+FROM nmt_inventory_trx
+Left join nmt_inventory_mv
+On nmt_inventory_mv.id = nmt_inventory_trx.movement_id
+WHERE 1 %s
+GROUP BY nmt_inventory_trx.item_id, nmt_inventory_trx.wh_id, nmt_inventory_trx.wh_location 
+
+
+";
+
+        $f = "AND nmt_inventory_mv.movement_date <='%s' AND nmt_inventory_trx.item_id = %s";
+        $sql1 = sprintf($f, $filter->getCheckingDate(), $filter->getItemId());
+
+        $sql = sprintf($sql, $sql1);
+
+        $sql = $sql . ";";
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrx', 'nmt_inventory_trx');
+            $rsm->addScalarResult("total_gr_qty", "total_gr_qty");
+            $rsm->addScalarResult("total_gi_qty", "total_gi_qty");
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return (int) $query->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }

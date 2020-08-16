@@ -96,16 +96,26 @@ class TrxMapper
             $entity->setLastchangeOn(new \DateTime($snapshot->lastchangeOn));
         }
 
-        if ($snapshot->postingDate !== null) {
-            $entity->setPostingDate(new \DateTime($snapshot->postingDate));
-        }
-
         if ($snapshot->contractDate !== null) {
             $entity->setContractDate(new \DateTime($snapshot->contractDate));
         }
 
+        if ($snapshot->postingDate !== null) {
+            $entity->setPostingDate(new \DateTime($snapshot->postingDate));
+
+            // set Posting = Movement Date
+            if ($snapshot->movementDate == null) {
+                $entity->setMovementDate(new \DateTime($snapshot->postingDate));
+            }
+        }
+
         if ($snapshot->movementDate !== null) {
             $entity->setMovementDate(new \DateTime($snapshot->movementDate));
+
+            // set Posting = Movement Date
+            if ($snapshot->postingDate == null) {
+                $entity->setPostingDate(new \DateTime($snapshot->movementDate));
+            }
         }
 
         if ($snapshot->reversalDate !== null) {

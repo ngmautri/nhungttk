@@ -41,7 +41,7 @@ class GRFromExchangeRow extends TrxRow
 
         // Overwrite
         $instance->setFlow($rootEntity->getMovementFlow());
-        $instance->setCogsDoc(0);
+        $instance->setWhLocation($rootEntity->getTartgetLocation());
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

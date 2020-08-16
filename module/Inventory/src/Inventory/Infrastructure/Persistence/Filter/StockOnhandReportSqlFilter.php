@@ -17,6 +17,26 @@ class StockOnhandReportSqlFilter implements SqlFilterInterface
 
     public $warehouseId;
 
+    public $locationId;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLocationId()
+    {
+        return $this->locationId;
+    }
+
+    /**
+     *
+     * @param mixed $locationId
+     */
+    public function setLocationId($locationId)
+    {
+        $this->locationId = $locationId;
+    }
+
     /**
      *
      * @return mixed
@@ -46,8 +66,8 @@ class StockOnhandReportSqlFilter implements SqlFilterInterface
 
     public function __toString()
     {
-        $f = "OnhandReportSqlFilter_%s_%s_%s";
-        return \sprintf($f, $this->warehouseId, $this->itemId, $this->checkingDate);
+        $f = "OnhandReportSqlFilter_%s_%s_%s_%s";
+        return \sprintf($f, $this->warehouseId, $this->locationId, $this->itemId, $this->checkingDate);
     }
 
     /**

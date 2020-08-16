@@ -10,4 +10,6 @@ abstract class AbstractInventorySpecificationFactory
 {
 
     abstract function getOnhandQuantitySpecification();
+
+    abstract function getOnhandQuantityAtLocationSpecification();
 }

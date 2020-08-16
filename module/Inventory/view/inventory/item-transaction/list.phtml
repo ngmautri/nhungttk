@@ -355,8 +355,7 @@ else :
 
                 echo $this->translate("Show");
                 ?></a>
-                
-                <a href="<?php
+                  <a href="<?php
 
                 echo $this->baseUrl?>/inventory/gi/view?entity_token=<?php
 
@@ -392,7 +391,7 @@ else :
 						
 					<a href="<?php
 
-                echo $this->baseUrl?>/inventory/gr/show?token=<?php
+                echo $this->baseUrl?>/inventory/gr/view?entity_token=<?php
 
                 echo $a->getToken();
                 ?>&entity_id=<?php
@@ -404,7 +403,7 @@ else :
                 ?></a>
                   <a href="<?php
 
-                echo $this->baseUrl?>/inventory/gr/update?token=<?php
+                echo $this->baseUrl?>/inventory/gr/update?entity_token=<?php
 
                 echo $a->getToken();
                 ?>&entity_id=<?php

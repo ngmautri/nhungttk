@@ -1,16 +1,31 @@
 <?php
 namespace Inventory\Controller;
 
+use Application\Notification;
+use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Shared\Constants;
+use Application\Domain\Shared\DTOFactory;
+use Application\Entity\NmtInventoryMv;
 use Application\Entity\NmtInventoryTrx;
-use Doctrine\ORM\EntityManager;
-use Inventory\Service\ItemSearchService;
-use MLA\Paginator;
+use Inventory\Application\Command\GenericCmd;
+use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
+use Inventory\Application\Command\Transaction\CreateHeaderCmdHandler;
+use Inventory\Application\Command\Transaction\CreateRowCmdHandler;
+use Inventory\Application\Command\Transaction\PostCmdHandler;
+use Inventory\Application\Command\Transaction\UpdateHeaderCmdHandler;
+use Inventory\Application\Command\Transaction\UpdateRowCmdHandler;
+use Inventory\Application\Command\Transaction\Options\TrxCreateOptions;
+use Inventory\Application\Command\Transaction\Options\TrxPostOptions;
+use Inventory\Application\Command\Transaction\Options\TrxRowCreateOptions;
+use Inventory\Application\Command\Transaction\Options\TrxRowUpdateOptions;
+use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
+use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Application\DTO\Transaction\TrxRowDTO;
+use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Domain\Transaction\Contracts\TrxType;
 use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Application\Entity\NmtInventoryGr;
-use Application\Entity\NmtInventoryMv;
 
 /**
  * Goods Receipt
@@ -18,14 +33,621 @@ use Application\Entity\NmtInventoryMv;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRController extends AbstractActionController
+class GRController extends AbstractGenericController
 {
 
-    protected $doctrineEM;
+    protected $trxService;
 
-    protected $itemSearchService;
+    public function viewAction()
+    {
 
-    protected $giService;
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $this->layout("Inventory/layout-fullscreen");
+        $form_action = null;
+        $form_title = $nmtPlugin->translate("Show Transaction");
+        $action = Constants::FORM_ACTION_SHOW;
+        $viewTemplete = "inventory/gr/review-v1";
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($id, $token);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        $viewModel = new ViewModel(array(
+            'action' => $action,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'transactionType' => $transactionType
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        $this->getLogger()->info(\sprintf("Trx #%s viewed by #%s", $id, $this->getUserId()));
+        return $viewModel;
+    }
+
+    public function createAction()
+    {
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $isAllowed = true;
+
+        $viewTemplete = "inventory/gr/crudHeader";
+        $action = Constants::FORM_ACTION_ADD;
+        $form_action = "/inventory/gr/create";
+
+        $form_title = $nmtPlugin->translate("Create Good Receipt");
+
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        $prg = $this->prg('/inventory/gr/create', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $redirectUrl = null;
+
+            $viewModel = new ViewModel(array(
+
+                'action' => $action,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'version' => null,
+                'headerDTO' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'transactionType' => $transactionType,
+                'isAllowed' => $isAllowed,
+                'errors' => null
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // Is Posting
+        // ++++++++++++++++++++++++++++++
+
+        $notification = new Notification();
+        try {
+            $data = $prg;
+
+            $movementType = $data['movementType'];
+            switch ($movementType) {
+            }
+
+            /**
+             *
+             * @var TrxDTO $dto ;
+             */
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+
+            $options = new TrxCreateOptions($this->getCompanyId(), $this->getLocalCurrencyId(), $this->getUserId(), __METHOD__);
+            $cmdHandler = new CreateHeaderCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'action' => $action,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'version' => null,
+                'headerDTO' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'transactionType' => $transactionType,
+                'errors' => $notification->getErrors()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/inventory/gr/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function updateAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         */
+        $this->layout("Inventory/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = "/inventory/gr/update";
+        $form_title = "Edit Good Receipt";
+        $action = Constants::FORM_ACTION_EDIT;
+        $viewTemplete = "inventory/gr/crudHeader";
+
+        $userId = $this->getUserId();
+        $localCurrencyId = $this->getLocalCurrencyId();
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        $prg = $this->prg($form_action, true);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $dto = $rootEntity->makeSnapshot();
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'headerDTO' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        try {
+            // POSTING
+            $data = $prg;
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new TrxUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new UpdateHeaderCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            // echo $e->getTraceAsString();
+            $this->getLogger()->alert($e->getTraceAsString());
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'headerDTO' => $dto,
+                'version' => $rootEntity->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        // $redirectUrl = sprintf("/inventory/transaction/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        $redirectUrl = sprintf("/inventory/gr/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function addRowAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         * @var TrxRowDTO $dto ;
+         */
+        $this->layout("Inventory/layout-fullscreen");
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/inventory/gr/add-row";
+        $form_title = "Add Trx Row";
+        $action = Constants::FORM_ACTION_ADD;
+        $viewTemplete = "inventory/gr/crudRow";
+        $userId = $this->getUserId();
+
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        $prg = $this->prg($form_action, true);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $target_id = (int) $this->params()->fromQuery('target_id');
+            $target_token = $this->params()->fromQuery('target_token');
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($target_id, $target_token);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $this->getLogger()->info(\sprintf("Row Trx #%s is going to be created by %s", $target_id, $userId));
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'dto' => null,
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
+                'version' => $rootEntity->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete . $rootEntity->getMovementType());
+            return $viewModel;
+        }
+
+        // POSTING
+        // =====================
+
+        try {
+
+            $data = $prg;
+
+            $dto = DTOFactory::createDTOFromArray($data, new TrxRowDTO());
+
+            // var_dump($dto);
+            $rootEntityId = $data['target_id'];
+            $rootEntityToken = $data['target_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($rootEntityId, $rootEntityToken);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new TrxRowCreateOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, __METHOD__);
+
+            $cmdHander = new CreateRowCmdHandler();
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHander);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'target_id' => $rootEntityId,
+                'target_token' => $rootEntityToken,
+                'dto' => $dto,
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
+                'version' => $rootEntity->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $this->getLogger()->info(\sprintf("Row Trx #%s is not created by %s. Error: %s", $rootEntityId, $this->getUserId(), $notification->errorMessage()));
+
+            $viewModel->setTemplate($viewTemplete . $rootEntity->getMovementType());
+            return $viewModel;
+        }
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/inventory/gr/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
+
+        $this->getLogger()->info(\sprintf("Row Trx #%s is created by %s", $rootEntityId, $userId));
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function updateRowAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         * @var TrxRowDTO $dto ;
+         */
+        $this->layout("Inventory/layout-fullscreen");
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/inventory/gr/update-row";
+        $form_title = "Update Good Receipt Row";
+        $action = Constants::FORM_ACTION_EDIT;
+        $viewTemplete = "/inventory/gr/crudRow";
+        $userId = $this->getUserId();
+
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $target_id = (int) $this->params()->fromQuery('target_id');
+            $target_token = $this->params()->fromQuery('target_token');
+            $result = $this->getTrxService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+
+            $rootDTO = null;
+            $localDTO = null;
+            if (isset($result["rootDTO"])) {
+                $rootDTO = $result["rootDTO"];
+            }
+            if (isset($result["localDTO"])) {
+                $localDTO = $result["localDTO"];
+            }
+            if (! $rootDTO instanceof TrxDTO || ! $localDTO instanceof TrxRowDTO) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'version' => $rootDTO->getRevisionNo(),
+                'headerDTO' => $rootDTO,
+                'dto' => $localDTO, // row
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
+            return $viewModel;
+        }
+        // Posting
+        // =============================
+        $data = $prg;
+
+        $dto = DTOFactory::createDTOFromArray($data, new TrxRowDTO());
+        $userId = $this->getUserId();
+
+        $target_id = $data['target_id'];
+        $target_token = $data['target_token'];
+        $entity_id = $data['entity_id'];
+        $entity_token = $data['entity_token'];
+        $version = $data['version'];
+
+        $result = $this->getTrxService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+        $rootEntity = null;
+        $localEntity = null;
+        $rootDTO = null;
+        $localDTO = null;
+
+        if (isset($result["rootEntity"])) {
+            $rootEntity = $result["rootEntity"];
+        }
+        if (isset($result["localEntity"])) {
+            $localEntity = $result["localEntity"];
+        }
+        if (isset($result["rootDTO"])) {
+            $rootDTO = $result["rootDTO"];
+        }
+        if (isset($result["localDTO"])) {
+            $localDTO = $result["localDTO"];
+        }
+        if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $notification = new Notification();
+
+        try {
+
+            $options = new TrxRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new UpdateRowCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
+        }
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'version' => $rootEntity->getRevisionNo(), // get current version.
+                'dto' => $dto,
+                'headerDTO' => $rootDTO,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
+            $this->getLogger()->error(\sprintf("Row Trx #%s is not updated by %s. Error: %s", $target_id, $userId, $notification->errorMessage()));
+
+            return $viewModel;
+        }
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/inventory/gr/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $this->layout("Inventory/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = "/inventory/gr/review";
+        $form_title = "Review Good Receipt";
+        $action = Constants::FORM_ACTION_REVIEW;
+        $viewTemplete = "inventory/gr/review-v1";
+
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        $prg = $this->prg($form_action, true);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        // POSTING
+        // ====================================
+
+        try {
+            $notification = new Notification();
+
+            $data = $prg;
+
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+
+            $userId = $this->getUserId();
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            if ($rootEntity == null) {
+                $this->flashMessenger()->addMessage(\sprintf("%s-%s", $entity_id, $entity_token));
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new TrxPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new PostCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+            $notification = $dto->getNotification();
+            $msg = sprintf("Trx #%s is posted", $entity_id);
+            // $redirectUrl = sprintf("/procure/ap/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $redirectUrl = "/inventory/item-transaction/list";
+            http: // localhost:81/procure/ap-report/header-status
+        } catch (\Exception $e) {
+            $msg = sprintf("%s", $e->getMessage());
+            $redirectUrl = sprintf("/inventory/gr/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        return $this->redirect()->toUrl($redirectUrl);
+    }
 
     /**
      *
@@ -49,6 +671,7 @@ class GRController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function showAction()
@@ -101,6 +724,7 @@ class GRController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function editAction()
@@ -108,6 +732,7 @@ class GRController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function addAction()
@@ -257,197 +882,8 @@ class GRController extends AbstractActionController
     }
 
     /**
-     * Review and Post GR.
-     * Document can't be changed.
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function reviewAction()
-    {
-        $request = $this->getRequest();
-        $this->layout("Inventory/gi-create-layout");
-
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
-
-        // Is Posing
-        // =============================
-        if ($request->isPost()) {
-
-            $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-
-            $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
-
-            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-            $mv = $res->getMovement($id, $token);
-
-            if ($mv == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
-            /**@var \Application\Entity\NmtInventoryMv $entity ;*/
-
-            $entity = null;
-            if ($mv[0] instanceof NmtInventoryMv) {
-                $entity = $mv[0];
-            }
-
-            if ($entity == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
-            // ========================
-
-            $movementDate = $request->getPost('movementDate');
-
-            $warehouse_id = (int) $request->getPost('target_wh_id');
-            $isActive = (int) $request->getPost('isActive');
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive != 1) {
-                $isActive = 0;
-            }
-
-            $entity->setIsActive($isActive);
-
-            $movementType = $entity->getMovementType();
-
-            if ($movementType == null) {
-                $errors[] = 'Goods Issue Type is not valid!';
-            }
-
-            // check if posting period is close
-            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-
-            $validator = new Date();
-
-            if (! $validator->isValid($movementDate)) {
-                $errors[] = $nmtPlugin->translate('Transaction Date is not correct or empty!');
-            } else {
-
-                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
-
-                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                    $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
-                } else {
-                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                    } else {
-                        $entity->setPostingDate(new \DateTime($movementDate));
-                        $entity->setMovementDate(new \DateTime($movementDate));
-                        $entity->setPostingPeriod($postingPeriod);
-                    }
-                }
-            }
-
-            $warehouse = null;
-            if ($warehouse_id > 0) {
-                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
-            }
-
-            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-                $entity->setWarehouse($warehouse);
-            } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
-            }
-
-            $entity->setRemarks($remarks);
-
-            if (count($errors) > 0) {
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'issueType' => $issueType
-                ));
-            }
-
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            try {
-                $this->giService->post($entity, $u);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            if (count($errors) > 0) {
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'issueType' => $issueType
-                ));
-            }
-
-            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
-            $this->flashMessenger()->addMessage($m);
-
-            $redirectUrl = "/inventory/item-transaction/list";
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        // NO POST
-        // Initiate ......................
-        // ================================
-
-        $redirectUrl = null;
-        /*
-         * if ($request->getHeader('Referer') !== null) {
-         * $redirectUrl = $this->getRequest()
-         * ->getHeader('Referer')
-         * ->getUri();
-         * }
-         */
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $gi = $res->getMovement($id, $token);
-
-        if ($gi == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity = null;
-        if ($gi[0] instanceof NmtInventoryMv) {
-            $entity = $gi[0];
-        }
-
-        if ($entity == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        return new ViewModel(array(
-            'redirectUrl' => $redirectUrl,
-            'errors' => null,
-            'entity' => $entity,
-            'currency_list' => $currency_list,
-            'issueType' => $issueType
-        ));
-    }
-
-    /**
-     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function add1Action()
@@ -789,6 +1225,7 @@ class GRController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function list1Action()
@@ -847,6 +1284,7 @@ class GRController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function prRowAction()
@@ -884,6 +1322,7 @@ class GRController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function updateTokenAction()
@@ -916,45 +1355,19 @@ class GRController extends AbstractActionController
 
     /**
      *
-     * @return \Doctrine\ORM\EntityManager
+     * @return \Inventory\Application\Service\Transaction\TrxService
      */
-    public function getDoctrineEM()
+    public function getTrxService()
     {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    public function getItemSearchService()
-    {
-        return $this->itemSearchService;
-    }
-
-    public function setItemSearchService(ItemSearchService $itemSearchService)
-    {
-        $this->itemSearchService = $itemSearchService;
-        return $this;
+        return $this->trxService;
     }
 
     /**
      *
-     * @return mixed
+     * @param TrxService $trxService
      */
-    public function getGiService()
+    public function setTrxService(TrxService $trxService)
     {
-        return $this->giService;
-    }
-
-    /**
-     *
-     * @param mixed $giService
-     */
-    public function setGiService(\Inventory\Service\GIService $giService)
-    {
-        $this->giService = $giService;
+        $this->trxService = $trxService;
     }
 }

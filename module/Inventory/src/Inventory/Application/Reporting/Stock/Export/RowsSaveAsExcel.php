@@ -77,8 +77,12 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
                 $row->itemSysNumber,
                 $row->itemName,
                 $row->flow,
+                $row->quantity,
+                $row->cogsLocal,
+                $row->docUnitPrice,
                 $row->prNumber,
-                $row->warehouseName
+                $row->warehouseName,
+                $row->whLocation
             );
 
             $n = 0;

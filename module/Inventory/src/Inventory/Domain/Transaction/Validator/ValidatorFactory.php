@@ -64,9 +64,9 @@ class ValidatorFactory
 
         // Goods issues row validators
         $giRowValidators = new RowValidatorCollection();
+
         $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
         $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-
         $giRowValidators->add($validator);
 
         $validator = new DefaultGIRowValidator($sharedSpecsFactory, $fxService);
@@ -82,6 +82,9 @@ class ValidatorFactory
 
         $grHeaderValidators = new HeaderValidatorCollection();
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
+        $grHeaderValidators->add($validator);
+
+        $validator = new TrxDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
         $grHeaderValidators->add($validator);
 
         $validator = new DefaultGRHeaderValidator($sharedSpecsFactory, $fxService);

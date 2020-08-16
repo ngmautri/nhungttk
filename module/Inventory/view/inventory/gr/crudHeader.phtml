@@ -1,0 +1,231 @@
+<?php
+use Application\Application\Helper\ErrorMessage;
+use Application\Application\Helper\OptionList;
+use Application\Domain\Shared\Constants;
+use Inventory\Application\DTO\Transaction\TrxDTO;
+
+/**
+ *
+ * @var TrxDTO $headerDTO ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ *     
+ */
+
+$entityFormInput = '';
+$view_url = sprintf($this->baseUrl . "/inventory/gi/create");
+
+$format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
+<button onclick="submitForm(\'%s\');" class="btn btn-default">
+<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
+<a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
+</div></div>';
+
+$submitFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
+
+if ($action == Constants::FORM_ACTION_EDIT) {
+
+    $view_url = sprintf($this->baseUrl . "/inventory/gi/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+
+    $format = '<input type="hidden" name="redirectUrl" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $redirectUrl);
+
+    $format = '<input type="hidden" id="entity_id" name="entity_id" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $entity_id);
+
+    $format = '<input type="hidden" id="entity_token" name="entity_token" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $entity_token);
+
+    $format = '<input type="hidden" id="version" name="version" value="%s">';
+    $entityFormInput = $entityFormInput . sprintf($format, $version);
+}
+
+$wh_id = null;
+
+if ($headerDTO != null) {
+    $wh_id = $headerDTO->getWarehouse();
+}
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+// ===============================
+?>
+<div id="wrapper" class="toggled">
+   <!-- Sidebar -->
+   <div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php
+    $current_step = "STEP1";
+    include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+    ?>
+
+
+	</div>
+   <!-- /#sidebar-wrapper -->
+   <!-- Page Content -->
+   <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+      <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+         <a style="font-size: 9pt; margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle">
+            <span title="Hide Menu">
+               <i class="fa fa-chevron-left" aria-hidden="true"></i>
+               Menu
+               <span>
+         
+         </a>
+         <div id="tabs" style="font-size: 10pt">
+            <ul>
+               <li>
+                  <a href="#general"><?php
+
+                echo $form_title;
+                ?></a>
+               </li>
+            </ul>
+            <div id="general" style="font-size: 9pt">
+               <!-- Tab1 -->
+<?php
+echo $error_msg;
+?>
+<form id="Trx_Header_Form" class="form-horizontal" action="<?php
+echo $form_action;
+?>" method="post" enctype="multipart/form-data">
+
+<?php
+echo $entityFormInput;
+?>
+                 
+                  <fieldset>
+                     <legend style="font-size: 9.5pt; color: gray;">
+                        <small>
+                           <span class="glyphicon glyphicon-triangle-right"></span>
+                        </small>
+                        &nbsp;
+                        <a href="#invoice_header" class="" data-toggle="collapse">HEADER: (Rev.#<?php
+                        echo $version;
+                        ?>)</a>
+                     </legend>
+                     
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2">Movement Type:</label>
+                        <div class="col-sm-3">
+                           <select name="movementType" class="form-control input-sm">
+                              <option value="">Select Movement</option>
+   	    							<?php
+            if ($transactionType !== null) :
+                foreach ($transactionType as $k => $v) :
+                    if ($headerDTO !== null) :
+                        if ($headerDTO->movementType == $k) :
+                            echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
+                        else :
+                            echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+                        </div>
+                        <div class="col-sm-3">
+                           <input
+                              <?php
+
+                            if (! $headerDTO == null) :
+                                echo ($headerDTO->isActive == "1") ? "checked" : "";
+                            else :
+                                echo "checked";
+                            endif;
+                            ?>
+                              type="checkbox" name="isActive" value="1">
+                           &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2">Movement Date:</label>
+                        <div class="col-sm-3">
+                           <input class="form-control input-sm" type="text" id="movementDate" name="movementDate" value="<?php
+
+                        if (! $headerDTO == null) :
+                            echo $headerDTO->movementDate; endif;
+
+                        ?>" placeholder=" please select" />
+                        </div>
+                        <label class="control-label col-sm-2"><?php
+
+                        echo $this->translate("Source Warehouse");
+                        ?></label>
+                        <div class="col-sm-3">
+                           <select name="warehouse" id="standardUom_id" class="form-control input-sm">
+                              <option value=""><?php
+
+                            echo $this->translate("Select Warehouse");
+                            ?></option>
+   	    	<?php
+        echo $wh_option;
+        ?>
+   					</select>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom">
+                        <label class="control-label col-sm-2">Description</label>
+                        <div class="col-sm-8">
+                           <input class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
+
+                        echo (! $headerDTO == null) ? $headerDTO->remarks : "";
+                        ?>">
+                        </div>
+                     </div>
+                     <hr>
+                     <div class="form-group margin-bottom">
+                        <label class="control-label col-sm-2" for="inputTag"></label>
+                        <div class="col-sm-3">
+                         <?php
+                        echo $submitFormInput;
+                        ?>
+                        </div>
+                     </div>
+                  </fieldset>
+               </form>
+               <!-- end tab -->
+            </div>
+         </div>
+      </div>
+      <!-- /#page-content-wrapper -->
+   </div>
+   <!-- /#wrapper -->
+   <script>
+
+$('#invoiceDate').bind('change', function() {
+	$('#postingDate').val($('#invoiceDate').val());
+	$('#grDate').val($('#invoiceDate').val());
+});
+
+$( "input[id='movementDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+  
+</script>

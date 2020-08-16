@@ -66,6 +66,15 @@ abstract class AbstractLocation extends AbstractEntity implements AggregateRootI
      *
      * @return mixed
      */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getParentUuid()
     {
         return $this->parentUuid;

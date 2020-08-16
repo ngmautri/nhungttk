@@ -72,6 +72,7 @@ class TrxType
         $list[] = self::GR_FROM_TRANSFER_WAREHOUSE;
         $list[] = self::GR_FROM_PURCHASING_REVERSAL;
         $list[] = self::GR_FROM_EXCHANGE;
+        $list[] = self::GR_WITHOUT_INVOICE;
 
         return $list;
     }
@@ -167,6 +168,10 @@ class TrxType
             self::GR_FROM_EXCHANGE => [
                 "type_name" => Translator::translate("Good Receipt from exchange)"),
                 "type_description" => Translator::translate("Good Receipt from exchange")
+            ],
+            self::GR_WITHOUT_INVOICE => [
+                "type_name" => Translator::translate("Good Receipt of free spare part)"),
+                "type_description" => Translator::translate("Receipt free spare part - Zero Valua invoice")
             ]
         ];
     }

@@ -3,7 +3,7 @@ namespace Inventory\Domain\Transaction\GI;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Event\Transaction\GI\WhGoodsExchangePosted;
+use Inventory\Domain\Event\Transaction\GI\WhTransferPosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\AbstractGoodsIssue;
@@ -16,7 +16,7 @@ use Inventory\Domain\Transaction\Contracts\TrxType;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforExchangePartForMachine extends AbstractGoodsIssue implements GoodsIssueInterface
+class GIforTransferWarehouse extends AbstractGoodsIssue implements GoodsIssueInterface
 {
 
     /**
@@ -36,7 +36,7 @@ class GIforExchangePartForMachine extends AbstractGoodsIssue implements GoodsIss
         $defaultParams->setUserId($options->getUserId());
         $params = null;
 
-        $event = new WhGoodsExchangePosted($target, $defaultParams, $params);
+        $event = new WhTransferPosted($target, $defaultParams, $params);
         $this->addEvent($event);
     }
 
@@ -47,7 +47,7 @@ class GIforExchangePartForMachine extends AbstractGoodsIssue implements GoodsIss
      */
     public function specify()
     {
-        $this->movementType = TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX;
+        $this->movementType = TrxType::GI_FOR_TRANSFER_WAREHOUSE;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_OUT;
     }
 }

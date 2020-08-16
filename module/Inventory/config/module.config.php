@@ -18,6 +18,8 @@ use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLay
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseFifoLayer;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBlancePostedCreateSerialNo;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferLocationPostedCreateTrx;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferPostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrPostedCreateWhGrFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGoodsExchangePostedCreateTrxFactory;
@@ -26,6 +28,8 @@ use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrReversedClo
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBalancePostedCloseFifoLayerFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBalancePostedCloseTrxFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhOpenBlancePostedCreateSerialNoFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhTransferLocationPostedCreateTrxFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhTransferPostedCreateTrxFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Eventbus\EventBusServiceFactory;
 use Inventory\Application\Eventbus\HandlerMapper;
@@ -338,6 +342,9 @@ return array(
 
             OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
             OnWhGoodsExchagePostedCreateTrx::class => OnWhGoodsExchangePostedCreateTrxFactory::class,
+
+            OnWhTransferLocationPostedCreateTrx::class => OnWhTransferLocationPostedCreateTrxFactory::class,
+            OnWhTransferPostedCreateTrx::class => OnWhTransferPostedCreateTrxFactory::class,
 
             OnWhGrPostedCreateFiFoLayer::class => OnWhGrPostedCreateFiFoLayerFactory::class,
             OnWhGrReversedCloseFiFoLayer::class => OnWhGrReversedCloseFiFoLayerFactory::class,

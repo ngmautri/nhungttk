@@ -14,7 +14,7 @@ use Inventory\Domain\Transaction\TrxSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnWhGoodsExchagePostedCreateTrx extends AbstractEventHandler
+class OnWhTransferPostedCreateTrx extends AbstractEventHandler
 {
 
     public function __invoke(WhGoodsExchangePosted $event)
@@ -32,8 +32,7 @@ class OnWhGoodsExchagePostedCreateTrx extends AbstractEventHandler
             $cmd = new GenericCmd($this->getDoctrineEM(), new TrxSnapshot(), $options, $cmdHanlder);
             $cmd->setLogger($this->getLogger());
             $cmd->execute();
-
-            $this->logInfo(\sprintf("Receipt exchanged/damage goods created for WH-GI #%s", $event->getTarget()
+            $this->logInfo(\sprintf("GR created for WH-Transfer Warehouse #%s", $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
 

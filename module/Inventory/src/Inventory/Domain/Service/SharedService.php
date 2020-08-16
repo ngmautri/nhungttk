@@ -133,4 +133,22 @@ class SharedService
     {
         $this->valuationService = $valuationService;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWhQueryRepository()
+    {
+        return $this->whQueryRepository;
+    }
+
+    /**
+     *
+     * @param mixed $whQueryRepository
+     */
+    public function setWhQueryRepository($whQueryRepository)
+    {
+        $this->whQueryRepository = $whQueryRepository;
+    }
 }

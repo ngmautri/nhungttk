@@ -113,6 +113,32 @@ class ValidatorFactory
                 // add more,if needed
                 break;
 
+            case TrxType::GR_FROM_EXCHANGE:
+                $headerValidators = $grHeaderValidators;
+                $rowValidators = $grRowValidators;
+                // add more,if needed
+                break;
+
+            case TrxType::GR_WITHOUT_INVOICE:
+                $headerValidators = $grHeaderValidators;
+                $rowValidators = $grRowValidators;
+                // add more,if needed
+                break;
+
+            case TrxType::GR_FROM_TRANSFER_LOCATION:
+                $headerValidators = $grHeaderValidators;
+                $rowValidators = $grRowValidators;
+                // add more,if needed
+                break;
+
+            case TrxType::GR_FROM_TRANSFER_WAREHOUSE:
+                $headerValidators = $grHeaderValidators;
+                $rowValidators = $grRowValidators;
+                // add more,if needed
+                break;
+
+            // ==============
+
             case TrxType::GI_FOR_COST_CENTER:
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
@@ -128,12 +154,23 @@ class ValidatorFactory
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
                 $rowValidators->add($validator);
                 break;
+
             case TrxType::GI_FOR_REPAIR_MACHINE:
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
                 $validator = new GIForMachineValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
                 $rowValidators->add($validator);
+                break;
+
+            case TrxType::GI_FOR_TRANSFER_LOCATION:
+                $headerValidators = $giHeaderValidators;
+                $rowValidators = $giRowValidators;
+                break;
+
+            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
+                $headerValidators = $giHeaderValidators;
+                $rowValidators = $giRowValidators;
                 break;
         }
 

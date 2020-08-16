@@ -41,6 +41,11 @@ class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQuer
     public function getVersionArray($id, $token = null)
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Repository\WhQueryRepositoryInterface::getById()
+     */
     public function getById($id)
     {
         $criteria = array(
@@ -58,7 +63,14 @@ class WhQueryRepositoryImpl extends AbstractDoctrineRepository implements WhQuer
             return null;
         }
 
-        return $snapshot;
+        $wh = WarehouseFactory::contructFromDB($snapshot);
+
+        foreach ($snapshot->getLocationList() as $locationEntity) {
+            $locationSnapshot = WhMapper::createLocationSnapshot($this->doctrineEM, $locationEntity);
+            $location = GenericLocation::makeFromSnapshot($locationSnapshot);
+            $wh->addLocation($location);
+        }
+        return $wh;
     }
 
     public function getLocations($warehouseId)

@@ -24,7 +24,7 @@ use RuntimeException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRFromTransferLocation extends AbstractGoodsReceipt implements GoodsReceiptInterface, BackGroundTrxInterface
+class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsReceiptInterface, BackGroundTrxInterface
 {
 
     /**
@@ -34,7 +34,7 @@ class GRFromTransferLocation extends AbstractGoodsReceipt implements GoodsReceip
      */
     public function specify()
     {
-        $this->movementType = TrxType::GR_FROM_TRANSFER_LOCATION;
+        $this->movementType = TrxType::GR_FROM_TRANSFER_WAREHOUSE;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;
     }
 
@@ -90,7 +90,7 @@ class GRFromTransferLocation extends AbstractGoodsReceipt implements GoodsReceip
          *
          * @var \Inventory\Domain\Transaction\GR\GRFromTransferLocation $instance
          */
-        $instance = new self();
+        $instance = new GRFromTransferWarehouse();
         $instance = $sourceObj->convertTo($instance);
 
         // Important: Update Recycle Location:

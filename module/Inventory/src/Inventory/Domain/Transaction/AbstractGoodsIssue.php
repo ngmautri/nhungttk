@@ -59,9 +59,9 @@ abstract class AbstractGoodsIssue extends GenericTrx
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $snapshot = $rep->post($this, true);
-        var_dump($snapshot);
+        // var_dump($snapshot);
 
-        $target = $this;
+        $target = $snapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());

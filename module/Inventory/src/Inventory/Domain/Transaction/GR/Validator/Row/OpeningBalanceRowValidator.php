@@ -10,6 +10,7 @@ use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface;
 use InvalidArgumentException;
 
 /**
+ * Opening Balance
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

@@ -24,7 +24,7 @@ $submitFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view
 
 if ($action == Constants::FORM_ACTION_EDIT) {
 
-    $view_url = sprintf($this->baseUrl . "/inventory/gi/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+    $view_url = sprintf($this->baseUrl . "/inventory/gr/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
 
     $format = '<input type="hidden" name="redirectUrl" value="%s">';
     $entityFormInput = $entityFormInput . sprintf($format, $redirectUrl);
@@ -76,7 +76,6 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
             <ul>
                <li>
                   <a href="#general"><?php
-
                 echo $form_title;
                 ?></a>
                </li>
@@ -104,7 +103,6 @@ echo $entityFormInput;
                         echo $version;
                         ?>)</a>
                      </legend>
-                     
                      <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2">Movement Type:</label>
                         <div class="col-sm-3">
@@ -151,7 +149,8 @@ echo $entityFormInput;
                         if (! $headerDTO == null) :
                             echo $headerDTO->movementDate; endif;
 
-                        ?>" placeholder=" please select" />
+                        ?>"
+                              placeholder=" please select" />
                         </div>
                         <label class="control-label col-sm-2"><?php
 

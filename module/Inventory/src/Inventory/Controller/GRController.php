@@ -59,6 +59,7 @@ class GRController extends AbstractGenericController
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+        $headerDTO = $rootEntity->makeDTOForGrid(new TrxDTO());
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,
@@ -66,7 +67,7 @@ class GRController extends AbstractGenericController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+            'headerDTO' => $headerDTO,
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,

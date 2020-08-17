@@ -1,8 +1,10 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
+use Application\Domain\Shared\Constants;
 use Application\Entity\NmtInventoryMv;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Doctrine\ORM\NoResultException;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
@@ -367,5 +369,28 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         }
 
         return $localSnapshot;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface::closeTrxOf()
+     */
+    public function closeTrxOf($itemId)
+    {
+        if ($itemId == null) {
+            return;
+        }
+
+        $f = "UPDATE nmt_inventory_trx SET nmt_inventory_trx.doc_status='%s' WHERE nmt_inventory_trx.item_id=%s";
+        $sql = sprintf($f, Constants::DOC_STATUS_CLOSED, $itemId);
+
+        // echo $sql;
+        try {
+            $conn = $this->getDoctrineEM()->getConnection();
+            return $conn->executeUpdate($sql);
+        } catch (NoResultException $e) {
+            return null;
+        }
     }
 }

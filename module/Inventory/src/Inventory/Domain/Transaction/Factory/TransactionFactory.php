@@ -16,10 +16,10 @@ use Inventory\Domain\Transaction\GI\GIforMachineNoExchange;
 use Inventory\Domain\Transaction\GI\GIforTransferLocation;
 use Inventory\Domain\Transaction\GI\GIforTransferWarehouse;
 use Inventory\Domain\Transaction\GR\GRFromOpening;
+use Inventory\Domain\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Transaction\GR\GRFromTransferWarehouse;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
-use Inventory\Domain\Warehouse\Transaction\GR\GRWithoutInvoice;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
@@ -177,14 +177,19 @@ class TransactionFactory
                 $trx = new GRFromOpening();
                 break;
 
+            case TrxType::GR_FROM_PURCHASING:
+                $trx = new GRFromOpening();
+                break;
+
             case TrxType::GR_FROM_TRANSFER_LOCATION:
                 $trx = new GRFromTransferLocation();
                 break;
 
-            case TrxType::GR_WITHOUT_INVOICE:
-                $trx = new GRWithoutInvoice();
+            case TrxType::GR_FROM_TRANSFER_WAREHOUSE:
+                $trx = new GRFromTransferWarehouse();
                 break;
 
+            // ============
             case TrxType::GI_FOR_COST_CENTER:
                 $trx = new GIforCostCenter();
                 break;
@@ -193,6 +198,14 @@ class TransactionFactory
                 break;
             case TrxType::GI_FOR_REPAIR_MACHINE:
                 $trx = new GIforMachineNoExchange();
+                break;
+
+            case TrxType::GI_FOR_TRANSFER_LOCATION:
+                $trx = new GIforTransferLocation();
+                break;
+
+            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
+                $trx = new GIforTransferWarehouse();
                 break;
         }
 
@@ -282,7 +295,7 @@ class TransactionFactory
                 break;
 
             case TrxType::GR_FROM_PURCHASING:
-                $trx = new GRFromOpening();
+                $trx = new GRFromPurchasing();
                 break;
 
             case TrxType::GI_FOR_COST_CENTER:

@@ -154,12 +154,12 @@ class TrxType
 
             self::GR_FROM_OPENNING_BALANCE => [
                 "type_name" => Translator::translate("Initiate openning balance"),
-                "type_description" => Translator::translate("openning balance")
+                "type_description" => Translator::translate("Openning balance")
             ],
 
             self::GR_FROM_PURCHASING => [
                 "type_name" => Translator::translate("Good Receipt from purchasing"),
-                "type_description" => Translator::translate("Good Receipt from purchasing")
+                "type_description" => Translator::translate("Good Receipt from purchasing. This transaction is created automatically when procurment enter goods receipt. if goods does not meat requirment, please create return transaction!")
             ],
             self::GR_FROM_TRANSFER_WAREHOUSE => [
                 "type_name" => Translator::translate("Good Receipt from warehouse transfer"),

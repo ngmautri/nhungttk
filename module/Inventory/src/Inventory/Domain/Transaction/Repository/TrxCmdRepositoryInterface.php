@@ -19,4 +19,6 @@ Interface TrxCmdRepositoryInterface
     public function storeHeader(GenericTrx $rootEntity, $generateSysNumber = false, $isPosting = false);
 
     public function storeRow(GenericTrx $rootEntity, BaseRow $localEntity, $isPosting = false);
+
+    public function closeTrxOf($itemId);
 }

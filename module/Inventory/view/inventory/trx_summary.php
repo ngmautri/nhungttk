@@ -24,7 +24,7 @@ echo $alert;
             echo $this->translate($transactionTypeArray['type_name']); endif;
 
         ?></b>
-      </li>
+      </li> 
       <li>-----</li>
       <li>
          <i><?php

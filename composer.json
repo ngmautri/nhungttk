@@ -24,7 +24,11 @@
 		"zendframework/zendsearch" : "~2.0",
 		"monolog/monolog" : "1.25.3",
 		"fzaninotto/faker" : "~1.9",
-		"doctrine/collections" : "1.4.0"
+		"doctrine/collections" : "1.4.0",
+		"webmozart/assert" : "~1.8",
+		"symfony/cache" : "3.4.40",
+		"symfony/stopwatch" : "3.4.40",
+		"predis/predis" : "~1.1"
 	},
 	"config" : {
 		"platform" : {

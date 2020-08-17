@@ -34,6 +34,29 @@ class OpeningBalanceRowValidator extends AbstractValidator implements RowValidat
 
         Try {
             // do verification now
+
+            $spec = $this->sharedSpecificationFactory->getItemExitsSpecification();
+
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "itemId" => $localEntity->getItem()
+            );
+
+            if (! $spec->isSatisfiedBy($subject)) {
+                $localEntity->addError(sprintf("Item #%s not exits in the company #%s", $localEntity->getItem(), $rootEntity->getCompany()));
+            }
+
+            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
+
+            // ======= QUANTITY ==========
+            if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
+                $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
+            }
+
+            // ======= UNIT PRICE ==========
+            if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
+                $localEntity->addError("Unit price is not valid! " . $localEntity->getDocUnitPrice());
+            }
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

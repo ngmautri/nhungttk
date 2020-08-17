@@ -422,6 +422,23 @@ function doPaginator(source, target=null) {
 		},
 	});
 }
+
+function doSearching(source, target=null) {
+	var target_id = '#' + target;
+	
+	$(target_id).text("Loading...");
+	
+	$.ajax({
+		url : source,
+		success : function(text) {			
+			$(target_id).html(text);	
+		},
+		always : function(text) {
+		},
+	});
+}
+
+
 /**
  * 
  * @param id

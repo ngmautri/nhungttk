@@ -3,6 +3,7 @@ namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
+use Inventory\Application\Service\Item\FIFOServiceImpl;
 use Inventory\Domain\Event\Transaction\GR\WhOpenBalancePosted;
 
 /**
@@ -23,6 +24,10 @@ class OnWhOpenBalancePostedCloseFifoLayer extends AbstractEventHandler
         try {
 
             // close all fifo current fifo layer.
+            $fifoService = new FIFOServiceImpl();
+            $fifoService->setDoctrineEM($this->getDoctrineEM());
+
+            $fifoService->closeLayersOf($event->getTarget());
 
             $this->logInfo(\sprintf("Fifo layer closed on opening balance posted!  #%s ", $event->getTarget()
                 ->getId()));

@@ -20,5 +20,7 @@ Interface TrxCmdRepositoryInterface
 
     public function storeRow(GenericTrx $rootEntity, BaseRow $localEntity, $isPosting = false);
 
-    public function closeTrxOf($itemId);
+    public function closeTrxOfItem($itemId);
+
+    public function closeTrxOf($itemIds);
 }

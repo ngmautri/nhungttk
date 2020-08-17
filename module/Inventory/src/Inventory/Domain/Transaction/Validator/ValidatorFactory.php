@@ -8,7 +8,9 @@ use Inventory\Domain\Transaction\GI\Validator\Row\CostCenterValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\DefaultGIRowValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\GIForMachineValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\OnHandQuantityValidator;
+use Inventory\Domain\Transaction\GI\Validator\Row\OpeningBalanceRowValidator;
 use Inventory\Domain\Transaction\GR\Validator\Header\DefaultGRHeaderValidator;
+use Inventory\Domain\Transaction\GR\Validator\Header\OpeningBalanceHeaderValidator;
 use Inventory\Domain\Transaction\GR\Validator\Row\DefaultGRRowValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
@@ -53,6 +55,7 @@ class ValidatorFactory
         // Goods Issue Validator
         // ===========================
         $giHeaderValidators = new HeaderValidatorCollection();
+
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
         $giHeaderValidators->add($validator);
 
@@ -106,7 +109,11 @@ class ValidatorFactory
 
             case TrxType::GR_FROM_OPENNING_BALANCE:
                 $headerValidators = $grHeaderValidators;
+                $validator = new OpeningBalanceHeaderValidator($sharedSpecsFactory, $fxService);
+                $headerValidators->add($validator);
                 $rowValidators = $grRowValidators;
+                $validator = new OpeningBalanceRowValidator($sharedSpecsFactory, $fxService);
+
                 // add more,if needed
                 break;
 

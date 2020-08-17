@@ -376,7 +376,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface::closeTrxOf()
      */
-    public function closeTrxOf($itemId)
+    public function closeTrxOfItem($itemId)
     {
         if ($itemId == null) {
             return;
@@ -386,6 +386,34 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         $sql = sprintf($f, Constants::DOC_STATUS_CLOSED, $itemId);
 
         // echo $sql;
+        try {
+            $conn = $this->getDoctrineEM()->getConnection();
+            return $conn->executeUpdate($sql);
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface::closeTrxOf()
+     */
+    public function closeTrxOf($itemIds)
+    {
+        if (connt($itemIds) == 0) {
+            return;
+        }
+
+        $inString = '';
+
+        foreach ($itemIds as $id) {
+            $inString = $inString . ',' . $id;
+        }
+
+        $f = "UPDATE nmt_inventory_trx SET nmt_inventory_trx.doc_status='%s' WHERE nmt_inventory_trx.item_id IN (%) ";
+        $sql = sprintf($f, Constants::DOC_STATUS_CLOSED, $inString);
+
         try {
             $conn = $this->getDoctrineEM()->getConnection();
             return $conn->executeUpdate($sql);

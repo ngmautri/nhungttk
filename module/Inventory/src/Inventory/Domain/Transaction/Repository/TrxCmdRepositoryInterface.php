@@ -25,4 +25,6 @@ Interface TrxCmdRepositoryInterface
     public function closeTrxOf($itemIds);
 
     public function closeWhTrxOf($warehouseId, $itemIds);
+
+    public function closeOtherWarehouseTrx(GenericTrx $rootEntity, $itemIds);
 }

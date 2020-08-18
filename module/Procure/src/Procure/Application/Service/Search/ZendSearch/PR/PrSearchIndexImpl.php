@@ -1,5 +1,4 @@
 <?php
-
 namespace Procure\Application\Service\Search\ZendSearch\PR;
 
 use Application\Application\Service\Search\Contracts\IndexingResult;
@@ -454,6 +453,9 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::UnIndexed('itemCogsGL', $row->getItemCogsGL()));
         $doc->addField(Field::UnIndexed('itemCostCenter', $row->getItemCostCenter()));
 
+        $doc->addField(Field::UnIndexed('warehouse', $row->getWarehouse()));
+        $doc->addField(Field::UnIndexed('warehouseName', $row->getWarehouseName()));
+
         $doc->addField(Field::UnIndexed('token', $row->getToken()));
         $doc->addField(Field::UnIndexed('quantity', $row->getQuantity()));
         $doc->addField(Field::UnIndexed('unitPrice', $row->getUnitPrice()));
@@ -478,7 +480,7 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::text('rowName', $row->getRowName()));
         $doc->addField(Field::text('rowCode', $row->getRowCode()));
 
-        $this->getLogger()->info($row->getRowIdentifer());
+        $this->logInfo($row->getRowIdentifer());
 
         $index->addDocument($doc);
     }

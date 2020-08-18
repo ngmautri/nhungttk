@@ -41,7 +41,7 @@ class OnWhOpenBalancePostedCloseTrx extends AbstractEventHandler
                 $itemIds[] = $row->getItem();
             }
 
-            $rep->closeTrxOf($itemIds);
+            $rep->closeOtherWarehouseTrx($trx, $itemIds);
 
             $this->logInfo(\sprintf("Transactions closed on opening balance posted!  #%s ", $trx->getId()));
         } catch (\Exception $e) {

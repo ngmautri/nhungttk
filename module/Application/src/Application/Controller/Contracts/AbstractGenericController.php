@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
+use Exception;
 
 /**
  *
@@ -59,6 +60,24 @@ class AbstractGenericController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
         return $c->getId();
+    }
+
+    protected function logInfo($m)
+    {
+        if ($this->getLogger() == null) {
+            return;
+        }
+
+        $this->getLogger()->info($m);
+    }
+
+    protected function logException(Exception $e)
+    {
+        if ($this->getLogger() == null) {
+            return;
+        }
+
+        $this->getLogger()->alert($e->getTraceAsString());
     }
 
     protected function getLocalCurrencyId()

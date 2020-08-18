@@ -2,7 +2,6 @@
 namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
-use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Domain\Event\Transaction\GR\WhOpenBalancePosted;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
@@ -27,7 +26,7 @@ class OnWhOpenBalancePostedCloseTrx extends AbstractEventHandler
 
             $trx = $event->getTarget();
             if (! $trx instanceof GenericTrx) {
-                Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service!");
+                Throw new \InvalidArgumentException("GenericTrx not given! OnWhOpenBalancePostedCloseTrx");
             }
 
             // close all transations.
@@ -39,7 +38,7 @@ class OnWhOpenBalancePostedCloseTrx extends AbstractEventHandler
                  *
                  * @var BaseRow $row ;
                  */
-                $itemIds[] = $row->getItem;
+                $itemIds[] = $row->getItem();
             }
 
             $rep->closeTrxOf($itemIds);
@@ -54,7 +53,7 @@ class OnWhOpenBalancePostedCloseTrx extends AbstractEventHandler
 
     public static function priority()
     {
-        return EventHandlerPriorityInterface::HIGH_PRIORITY;
+        return 20;
     }
 
     public static function subscribedTo()

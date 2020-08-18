@@ -89,12 +89,13 @@ $current_step = "STEP2";
 <div id="wrapper" class="toggled">
    <!-- Sidebar -->
    <div id="sidebar-wrapper" style="font-size: 9.5pt;">
-					<?php
-    $current_step = "STEP2";
-    include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
-    include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
-
-    ?>
+            <?php
+            $current_step = "STEP2";
+            include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+            include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
+            ?>
+    
+    
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -138,20 +139,20 @@ $current_step = "STEP2";
             </ul>
             <div id="general" style="font-size: 9pt">
                <!-- Tab1 -->
-					
-						<?php
-    echo $error_msg;
-    ?>
+               
+                  <?php
+                echo $error_msg;
+                ?>
 
-					<!-- for all case: -->
+               <!-- for all case: -->
                <form id="New_Trx_Row" class="form-horizontal" action="<?php
             echo $form_action;
             ?>" method="post" enctype="multipart/form-data">
               <?php
             echo $hiddenFormInput;
             ?>
-			
-			<!-- for all case: -->
+         
+         <!-- for all case: -->
                   <div id="new_row" class="collapse in">
                      <div class="form-group margin-bottom">
                         <label class="control-label col-sm-2"></label>
@@ -169,18 +170,20 @@ $current_step = "STEP2";
                            &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
                         </div>
                      </div>
-                    
-                      <div class="form-group margin-bottom  required">
+                     <div class="form-group margin-bottom  required">
                         <label class="control-label col-sm-2">Item: </label>
                         <div class="col-sm-3">
-                           <input tabindex="5" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="item_name"
+                           <input tabindex="2" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="item_name"
                               value="<?php
 
                             if (! $dto == null) :
-                                echo $dto->getItemName();endif;
+                                echo $dto->getItem(); 
+                                endif;
 
-                            ?>">
+                            ?>
+                              ">
                            <input type="hidden" id="item" placeholder="" name="item" value="<?php
+
                         if (! $dto == null) :
                             echo $dto->getItem(); 
                         endif;
@@ -213,99 +216,22 @@ $current_step = "STEP2";
                            </small>
                         </div>
                      </div>
-                     
-                     
-                      <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
-
-                            echo (! $dto == null) ? $dto->getDocQuantity() : "";
-                            ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Unit:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit" value="<?php
-                            echo (! $dto == null) ? $dto->getDocUnit() : "each";
-                            ?>">
-                           </div>
-                           <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
-                           <div class="col-sm-1">
-                              <input tabindex="6" id="conversionFactor" class="form-control input-sm" type="text" name="conversionFactor" value="<?php
-
-                            echo (! $dto == null) ? $dto->getConversionFactor() : "1";
-                            ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
-                           </div>
-                        </div>
-                        <hr style="margin: 5pt 1pt 5pt 1pt;">
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="7" class="form-control input-sm" type="text" id="docUnitPrice" name="docUnitPrice" value="<?php
-
-                            echo (! $dto == null) ? $dto->getDocUnitPrice() : "";
-                            ?>">
-                           </div>
-                           <div class="col-sm-1" style="margin-left: 0px">
-                              <strong><?php
-
-                            if (! $rootDto == null) :
-                                echo $rootDto->getCurrencyIso3(); endif;
-
-                            ?></strong>
-                           </div>
-                           <label class="control-label col-sm-1" for="inputTag">Exw Price (info):</label>
-                           <div class="col-sm-3">
-                              <input tabindex="8" class="form-control input-sm" type="text" id="exw_unit_price" name="exwUnitPrice" value="<?php
-
-                            echo (! $dto == null) ? $dto->getExwUnitPrice() : "";
-                            ?>">
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Net Amount:</label>
-                           <div class="col-sm-3">
-                              <input readonly class="form-control input-sm" type="text" id="net_amount" name="netAmount" value="<?php
-
-                            echo (! $dto == null) ? $dto->getNetAmount() : "";
-                            ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <strong><?php
-
-                            if (! $rootDto == null) :
-                                echo $rootDto->getCurrencyIso3(); endif;
-
-                            ?></strong>
-                           </div>
-                        </div>
-                     
-                     
                      <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
                         <div class="col-sm-3">
-                           <input tabindex="3" class="form-control input-sm" type="text" id="docQuantity" name="docQuantity" value="<?php
+                           <input tabindex="6" class="form-control input-sm" type="text" id="docQuantity" name="docQuantity" value="<?php
 
                         echo (! $dto == null) ? $dto->getDocQuantity() : "";
                         ?>">
                         </div>
                         <label class="control-label col-sm-2" for="inputTag">Convert Factor:</label>
                         <div class="col-sm-3">
-                           <input tabindex="4" class="form-control input-sm" type="text" id="conversionFactor" name="conversionFactor" value="<?php
+                           <input tabindex="6" class="form-control input-sm" type="text" id="conversionFactor" name="conversionFactor" value="<?php
 
                         echo (! $dto == null) ? $dto->getConversionFactor() : "1";
                         ?>">
                         </div>
                      </div>
-                   
                      <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2" for="inputTag"><?php
 
@@ -317,10 +243,10 @@ $current_step = "STEP2";
 
                             echo $this->translate("Select Cost Center");
                             ?></option>
-   	    							<?php
-            echo $cost_center_option;
-            ?>
-   					</select>
+                              <?php
+                            echo $cost_center_option;
+                            ?>
+                  </select>
                         </div>
                      </div>
                      <div class="form-group margin-bottom">
@@ -361,86 +287,55 @@ $current_step = "STEP2";
    </div>
    <!-- /#wrapper -->
    <script type="text/javascript">
- 	$( "#issueForName" ).focus();
- 	 
+   $( "#item_name" ).focus();
+    
 
-    $( "#issueForName" ).autocomplete({
+    $( "#item_name" ).autocomplete({
         source: "/inventory/item-search/auto-complete",
         minLength: 2,
         select: function( event, ui ) {
-        	 $( "#issueFor" ).val(ui.item.id);
-        	    
-             $('#issue_for_url').text('/inventory/item/show1?tab_idx=0&entity_id='+ui.item.id+'&token='+ui.item.token);
+          $( "#item" ).val(ui.item.id);
+             
+             $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id='+ui.item.id+'&token='+ui.item.token);
              
            
-         	 	$('#global-notice').show();
-         		$('#global-notice').html('"' + ui.item.value + '" selected');
-         		$('#global-notice').fadeOut(5000);
-         		//$("#jquery_dialog").dialog("close");
+               $('#global-notice').show();
+               $('#global-notice').html('"' + ui.item.value + '" selected');
+               $('#global-notice').fadeOut(5000);
+               //$("#jquery_dialog").dialog("close");
    
-          	$('#issue_for_detail').show();
-           	$( "#docQuantity" ).focus();
+            $('#item_detail').show();
+            $( "#quantity" ).focus();
        
         }
        
       })
       .autocomplete( "instance" )._renderItem = function( ul, item ) {
-    	  var serial_no = "";
-    	  if(item.item_serial!=""){
-    		  serial_no = " : " + item.item_serial;
-    	  }
-    	   
+        var serial_no = "";
+        if(item.item_serial!=""){
+           serial_no = " : " + item.item_serial;
+        }
+         
          return $( "<li>" )
            .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
            .appendTo( ul );
        };
 
-
-       $( "#item_name" ).autocomplete({
-	        source: "/inventory/item-search/auto-complete",
-	        minLength: 2,
-	        select: function( event, ui ) {
-	        	 $( "#item" ).val(ui.item.id);
-	        	    
-	             $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id='+ui.item.id+'&token='+ui.item.token);
-	             
-	           
-	         	 	$('#global-notice').show();
-	         		$('#global-notice').html('"' + ui.item.value + '" selected');
-	         		$('#global-notice').fadeOut(5000);
-	         		//$("#jquery_dialog").dialog("close");
-	   
-	          	$('#item_detail').show();
-	           	$( "#quantity" ).focus();
-	       
-	        }
-	       
-	      })
-	      .autocomplete( "instance" )._renderItem = function( ul, item ) {
-	    	  var serial_no = "";
-	    	  if(item.item_serial!=""){
-	    		  serial_no = " : " + item.item_serial;
-	    	  }
-	    	   
-	         return $( "<li>" )
-	           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-	           .appendTo( ul );
-	       };
-	       
-
     $('#quantity').bind('change', function() {
          });
 
     function showSelectedItem(){
-       	var url=  $('#item_url').text();
-      	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
+      //var url= '/inventory/item/show1?tab_idx=7&entity_id=<?php
+
+    echo $headerDTO->getId();
+    ?>&token=<?php
+
+    echo $headerDTO->getToken();
+    ?>';
+      var url=  $('#item_url').text();
+         showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
     }
 
-    function showSelectedIssueForItem(){
-       	var url=  $('#issue_for_url').text();
-      	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
-    }
-    
     <?php
     echo $item_view_javascript;
     ?>

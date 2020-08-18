@@ -350,7 +350,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             throw new InvalidArgumentException("Transaction not found");
         }
 
-        $rows = $trx->getRows();
+        $rows = $trx->getDocRows();
 
         if (count($rows) == 0) {
             throw new InvalidArgumentException("Transaction have no lines");
@@ -370,9 +370,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                 foreach ($layers as $l) {
                     /** @var \Application\Entity\NmtInventoryFifoLayer $l ; */
                     $l->setIsClosed(1);
-
-                    // @todo
-                    $l->setClosedOn();
+                    $l->setClosedOn(new \DateTime($trx->getMovementDate()));
                     $this->getDoctrineEM()->persist($l);
                 }
             }

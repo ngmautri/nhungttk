@@ -23,7 +23,7 @@ class OnWhGrPostedCreateFiFoLayer extends AbstractEventHandler
     {
         try {
             if (! $event->getTarget() instanceof GenericTrx) {
-                Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service!");
+                Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service! OnWhGrPostedCreateFiFoLayer");
             }
 
             $fifoService = new FIFOServiceImpl();

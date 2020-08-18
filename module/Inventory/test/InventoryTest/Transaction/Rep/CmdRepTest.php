@@ -22,7 +22,10 @@ class CmdRepTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
             $rep = new TrxCmdRepositoryImpl($doctrineEM);
-            echo $rep->closeTrxOf(2427);
+            echo $rep->closeTrxOf([
+                - 10,
+                - 12
+            ]);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

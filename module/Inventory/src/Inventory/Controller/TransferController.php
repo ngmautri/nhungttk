@@ -105,7 +105,7 @@ class TransferController extends AbstractActionController
         $this->layout("Inventory/layout-fullscreen");
 
         $movementType = $this->params()->fromQuery('movementType');
-        $sourceWhID = (int) $this->params()->fromQuery('sourceWH');
+        $sourceWhId = (int) $this->params()->fromQuery('sourceWH');
         $transferDate = $this->params()->fromQuery('transferDate');
 
         $entity = new NmtInventoryMv();

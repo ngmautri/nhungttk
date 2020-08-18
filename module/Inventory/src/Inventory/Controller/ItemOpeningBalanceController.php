@@ -29,12 +29,12 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRController extends AbstractGenericController
+class ItemOpeningBalanceController extends AbstractGenericController
 {
 
     protected $trxService;
 
-    const BASE_URL = '/inventory/gr/%s';
+    const BASE_URL = '/inventory/item-opening-balance/%s';
 
     public function viewAction()
     {
@@ -46,7 +46,7 @@ class GRController extends AbstractGenericController
         $form_action = null;
         $form_title = $nmtPlugin->translate("Show Transaction");
         $action = Constants::FORM_ACTION_SHOW;
-        $viewTemplete = "inventory/gr/review-v1";
+        $viewTemplete = \sprintf(self::BASE_URL, 'review-v1');
         $transactionType = TrxType::getGoodReceiptTrx();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
@@ -57,15 +57,6 @@ class GRController extends AbstractGenericController
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
-
-        $movementType = $rootEntity->getMovementType();
-        switch ($movementType) {
-            case TrxType::GR_FROM_OPENNING_BALANCE:
-                $f = '/inventory/item-opening-balance/view?entity_id=%s&entity_token=%s';
-                $redirectUrl = sprintf($f, $rootEntity->getId(), $rootEntity->getToken());
-                return $this->redirect()->toUrl($redirectUrl);
-        }
-
         $headerDTO = $rootEntity->makeDTOForGrid(new TrxDTO());
         $viewModel = new ViewModel(array(
             'action' => $action,
@@ -93,15 +84,16 @@ class GRController extends AbstractGenericController
         $nmtPlugin = $this->Nmtplugin();
         $isAllowed = true;
 
-        $viewTemplete = "inventory/gr/crudHeader";
-        $action = Constants::FORM_ACTION_ADD;
-        $form_action = "/inventory/gr/create";
+        $viewTemplete = \sprintf(self::BASE_URL, 'crudHeader');
 
-        $form_title = $nmtPlugin->translate("Create Good Receipt");
+        $action = Constants::FORM_ACTION_ADD;
+        $form_action = \sprintf(self::BASE_URL, 'create');
+
+        $form_title = $nmtPlugin->translate("Create Opening Balance");
 
         $transactionType = TrxType::getGoodReceiptTrx();
 
-        $prg = $this->prg('/inventory/gr/create', true);
+        $prg = $this->prg($form_action, true);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
             // returned a response to redirect us
@@ -110,6 +102,14 @@ class GRController extends AbstractGenericController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
             $redirectUrl = null;
+
+            $sourceWhID = (int) $this->params()->fromQuery('sourceWH');
+            $movementDate = $this->params()->fromQuery('movementDate');
+
+            $headerDTO = new TrxDTO();
+            $headerDTO->movementType = TrxType::GR_FROM_OPENNING_BALANCE;
+            $headerDTO->warehouse = $sourceWhID;
+            $headerDTO->movementDate = $movementDate;
 
             $viewModel = new ViewModel(array(
 
@@ -121,11 +121,12 @@ class GRController extends AbstractGenericController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'headerDTO' => null,
+                'headerDTO' => $headerDTO,
                 'nmtPlugin' => $nmtPlugin,
                 'transactionType' => $transactionType,
                 'isAllowed' => $isAllowed,
-                'errors' => null
+                'errors' => null,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -138,14 +139,6 @@ class GRController extends AbstractGenericController
         $notification = new Notification();
         try {
             $data = $prg;
-
-            $movementType = $data['movementType'];
-            switch ($movementType) {
-                case TrxType::GR_FROM_OPENNING_BALANCE:
-                    $f = '/inventory/item-opening-balance/create?sourceWH=%s&movementDate=%s';
-                    $redirectUrl = sprintf($f, $data['warehouse'], $data['movementDate']);
-                    return $this->redirect()->toUrl($redirectUrl);
-            }
 
             /**
              *
@@ -178,7 +171,8 @@ class GRController extends AbstractGenericController
                 'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'transactionType' => $transactionType,
-                'errors' => $notification->getErrors()
+                'errors' => $notification->getErrors(),
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -186,7 +180,7 @@ class GRController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/inventory/gr/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
+        $redirectUrl = sprintf("/inventory/item-opening-balance/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -200,10 +194,11 @@ class GRController extends AbstractGenericController
         $this->layout("Inventory/layout-fullscreen");
         $nmtPlugin = $this->Nmtplugin();
 
-        $form_action = "/inventory/gr/update";
+        $form_action = \sprintf(self::BASE_URL, 'update');
+        ;
         $form_title = "Edit Good Receipt";
         $action = Constants::FORM_ACTION_EDIT;
-        $viewTemplete = "inventory/gr/crudHeader";
+        $viewTemplete = \sprintf(self::BASE_URL, 'crudHeader');
 
         $userId = $this->getUserId();
         $localCurrencyId = $this->getLocalCurrencyId();
@@ -222,14 +217,6 @@ class GRController extends AbstractGenericController
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
-            }
-
-            $movementType = $rootEntity->getMovementType();
-            switch ($movementType) {
-                case TrxType::GR_FROM_OPENNING_BALANCE:
-                    $f = '/inventory/item-opening-balance/update?entity_id=%s&entity_token=%s';
-                    $redirectUrl = sprintf($f, $rootEntity->getid(), $rootEntity->getToken());
-                    return $this->redirect()->toUrl($redirectUrl);
             }
 
             $dto = $rootEntity->makeSnapshot();
@@ -254,15 +241,6 @@ class GRController extends AbstractGenericController
         try {
             // POSTING
             $data = $prg;
-
-            $movementType = $data['movementType'];
-            switch ($movementType) {
-                case TrxType::GR_FROM_OPENNING_BALANCE:
-                    $f = '/inventory/item-opening-balance/create?sourceWH=%s&movementDate=%s';
-                    $redirectUrl = sprintf($f, '', '');
-                    return $this->redirect()->toUrl($redirectUrl);
-            }
-
             $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
@@ -321,10 +299,10 @@ class GRController extends AbstractGenericController
         $this->layout("Inventory/layout-fullscreen");
 
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/inventory/gr/add-row";
-        $form_title = "Add Trx Row";
+        $form_action = \sprintf(self::BASE_URL, 'add-row');
+        $form_title = "Add Opening Balance Row";
         $action = Constants::FORM_ACTION_ADD;
-        $viewTemplete = "inventory/gr/crudRow";
+        $viewTemplete = \sprintf(self::BASE_URL, 'crudRow');
         $userId = $this->getUserId();
 
         $transactionType = TrxType::getGoodReceiptTrx();
@@ -343,13 +321,7 @@ class GRController extends AbstractGenericController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $movementType = $rootEntity->getMovementType();
-            switch ($movementType) {
-                case TrxType::GR_FROM_OPENNING_BALANCE:
-                    $f = '/inventory/item-opening-balance/add-row?target_id=%s&target_token=%s';
-                    $redirectUrl = sprintf($f, $rootEntity->getid(), $rootEntity->getToken());
-                    return $this->redirect()->toUrl($redirectUrl);
-            }
+            $this->getLogger()->info(\sprintf("Row Trx #%s is going to be created by %s", $target_id, $userId));
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -400,7 +372,6 @@ class GRController extends AbstractGenericController
         } catch (\Exception $e) {
             $notification = new Notification();
             $notification->addError($e->getMessage());
-            $this->logException($e);
         }
 
         if ($notification->hasErrors()) {
@@ -420,7 +391,7 @@ class GRController extends AbstractGenericController
                 'action' => $action,
                 'transactionType' => $transactionType
             ));
-            $this->logInfo(\sprintf("Row Trx #%s is not created by %s. Error: %s", $rootEntityId, $this->getUserId(), $notification->errorMessage()));
+            $this->getLogger()->info(\sprintf("Row Trx #%s is not created by %s. Error: %s", $rootEntityId, $this->getUserId(), $notification->errorMessage()));
 
             $viewModel->setTemplate($viewTemplete . $rootEntity->getMovementType());
             return $viewModel;
@@ -428,7 +399,7 @@ class GRController extends AbstractGenericController
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf("/inventory/gr/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
 
-        $this->logInfo(\sprintf("Row Trx #%s is created by %s", $rootEntityId, $userId));
+        $this->getLogger()->info(\sprintf("Row Trx #%s is created by %s", $rootEntityId, $userId));
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -443,10 +414,10 @@ class GRController extends AbstractGenericController
         $this->layout("Inventory/layout-fullscreen");
 
         $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/inventory/gr/update-row";
+        $form_action = \sprintf(self::BASE_URL, 'update-row');
         $form_title = "Update Good Receipt Row";
         $action = Constants::FORM_ACTION_EDIT;
-        $viewTemplete = "/inventory/gr/crudRow";
+        $viewTemplete = \sprintf(self::BASE_URL, 'crudRow');
         $userId = $this->getUserId();
 
         $transactionType = TrxType::getGoodReceiptTrx();
@@ -528,14 +499,6 @@ class GRController extends AbstractGenericController
         }
         if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
             return $this->redirect()->toRoute('not_found');
-        }
-
-        $movementType = $rootEntity->getMovementType();
-        switch ($movementType) {
-            case TrxType::GR_FROM_OPENNING_BALANCE:
-                $f = '/inventory/item-opening-balance/add-row?target_id=%s&target_token=%s';
-                $redirectUrl = sprintf($f, $rootEntity->getid(), $rootEntity->getToken());
-                return $this->redirect()->toUrl($redirectUrl);
         }
 
         $notification = new Notification();
@@ -639,10 +602,10 @@ class GRController extends AbstractGenericController
         $this->layout("Inventory/layout-fullscreen");
         $nmtPlugin = $this->Nmtplugin();
 
-        $form_action = "/inventory/gr/review";
+        $form_action = \sprintf(self::BASE_URL, 'review');
         $form_title = "Review Good Receipt";
         $action = Constants::FORM_ACTION_REVIEW;
-        $viewTemplete = "inventory/gr/review-v1";
+        $viewTemplete = \sprintf(self::BASE_URL, 'review-v1');
 
         $transactionType = TrxType::getGoodReceiptTrx();
 
@@ -693,19 +656,11 @@ class GRController extends AbstractGenericController
             $entity_token = $data['entity_token'];
             $version = $data['version'];
             $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token);
+
             if ($rootEntity == null) {
                 $this->flashMessenger()->addMessage(\sprintf("%s-%s", $entity_id, $entity_token));
                 return $this->redirect()->toRoute('not_found');
             }
-
-            $movementType = $rootEntity->getMovementType();
-            switch ($movementType) {
-                case TrxType::GR_FROM_OPENNING_BALANCE:
-                    $f = '/inventory/item-opening-balance/review?entity_id=%s&entity_token=%s';
-                    $redirectUrl = sprintf($f, $rootEntity->getid(), $rootEntity->getToken());
-                    return $this->redirect()->toUrl($redirectUrl);
-            }
-
             $options = new TrxPostOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
 
             $cmdHandler = new PostCmdHandler();

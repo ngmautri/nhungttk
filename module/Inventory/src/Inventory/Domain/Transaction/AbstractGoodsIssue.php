@@ -55,13 +55,18 @@ abstract class AbstractGoodsIssue extends GenericTrx
         /**
          *
          * @var TrxCmdRepositoryInterface $rep ;
+         * @var TrxSnapshot $snapshot ;
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $snapshot = $rep->post($this, true);
         // var_dump($snapshot);
 
-        $target = $snapshot;
+        $this->setId($snapshot->getId());
+        $this->setSysNumber($snapshot->getSysNumber());
+        $this->setRevisionNo($snapshot->getRevisionNo());
+
+        $target = $this;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());

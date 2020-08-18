@@ -35,7 +35,7 @@ class TrxPostingValidator extends AbstractValidator implements HeaderValidatorIn
             );
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $rootEntity->addError(sprintf("Can not post on this date (Date %s CompanyID %s). Period is not created or closed. ", $rootEntity->getGrDate(), $rootEntity->getCompany()));
+                $rootEntity->addError(sprintf("Can not post on this date (Date #%s CompanyID #%s). Period is not created or closed. ", $rootEntity->getMovementDate(), $rootEntity->getCompany()));
             }
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());

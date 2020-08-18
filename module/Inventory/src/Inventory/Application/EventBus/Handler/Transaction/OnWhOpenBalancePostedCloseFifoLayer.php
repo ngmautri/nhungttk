@@ -2,9 +2,9 @@
 namespace Inventory\Application\EventBus\Handler\Transaction;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
-use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
 use Inventory\Domain\Event\Transaction\GR\WhOpenBalancePosted;
+use Inventory\Domain\Transaction\GenericTrx;
 
 /**
  *
@@ -23,14 +23,18 @@ class OnWhOpenBalancePostedCloseFifoLayer extends AbstractEventHandler
     {
         try {
 
+            $trx = $event->getTarget();
+            if (! $trx instanceof GenericTrx) {
+                Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service! OnWhOpenBalancePostedCloseFifoLayer");
+            }
+
             // close all fifo current fifo layer.
             $fifoService = new FIFOServiceImpl();
             $fifoService->setDoctrineEM($this->getDoctrineEM());
 
-            $fifoService->closeLayersOf($event->getTarget());
+            $fifoService->closeLayersOf($trx);
 
-            $this->logInfo(\sprintf("Fifo layer closed on opening balance posted!  #%s ", $event->getTarget()
-                ->getId()));
+            $this->logInfo(\sprintf("Fifo layer closed on opening balance posted!  #%s ", $trx->getId()));
         } catch (\Exception $e) {
 
             // There might be nothing to receive in stock, so do not throw exception, just log it.
@@ -40,7 +44,7 @@ class OnWhOpenBalancePostedCloseFifoLayer extends AbstractEventHandler
 
     public static function priority()
     {
-        return EventHandlerPriorityInterface::HIGH_PRIORITY;
+        return 10;
     }
 
     public static function subscribedTo()

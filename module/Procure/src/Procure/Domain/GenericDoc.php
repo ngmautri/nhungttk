@@ -15,6 +15,17 @@ use InvalidArgumentException;
 class GenericDoc extends BaseDoc
 {
 
+    public function updateIdentityFrom($snapshot)
+    {
+        if (! $snapshot instanceof DocSnapshot) {
+            return;
+        }
+
+        $this->setId($snapshot->getId());
+        $this->setRevisionNo($snapshot->getRevisionNo());
+        $this->setDocVersion($snapshot->getDocVersion());
+    }
+
     /**
      *
      * @param int $id

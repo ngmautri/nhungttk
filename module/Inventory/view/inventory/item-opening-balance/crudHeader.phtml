@@ -12,7 +12,7 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
  */
 
 $entityFormInput = '';
-$view_url = sprintf($this->baseUrl . "/inventory/gi/create");
+$view_url = sprintf($this->baseUrl . "/inventory/item-opening-balance/create");
 
 $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
 <button onclick="submitForm(\'%s\');" class="btn btn-default">
@@ -40,12 +40,17 @@ if ($action == Constants::FORM_ACTION_EDIT) {
 }
 
 $wh_id = null;
+$currencyId = $localCurrencyId;
 
 if ($headerDTO != null) {
     $wh_id = $headerDTO->getWarehouse();
+    if ($headerDTO->getDocCurrency() != null) {
+        $currencyId = $headerDTO->getDocCurrency();
+    }
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
 
@@ -56,7 +61,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
    <div id="sidebar-wrapper" style="font-size: 9.5pt;">
 					<?php
     $current_step = "STEP1";
-    include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+    include (ROOT . '/module/Inventory/view/inventory/opening-balance-create-wizard.php');
     ?>
 
 
@@ -107,25 +112,16 @@ echo $entityFormInput;
                         <label class="control-label col-sm-2">Movement Type:</label>
                         <div class="col-sm-3">
                            <select name="movementType" class="form-control input-sm">
-                              <option value="">Select Movement</option>
-   	    							<?php
-            if ($transactionType !== null) :
-                foreach ($transactionType as $k => $v) :
-                    if ($headerDTO !== null) :
-                        if ($headerDTO->movementType == $k) :
-                            echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
-                        else :
-                            echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
+                              <option value="<?php
+                            if ($headerDTO != null) :
+                                echo $headerDTO->getMovementType(); endif;
 
-            ?>
-   					</select>
+                            ?>"><?php
+                            if ($headerDTO != null) :
+                                echo $headerDTO->getMovementType() . ' - ' . $this->translate($transactionType[$headerDTO->getMovementType()]['type_name']); endif;
+
+                            ?></option>
+   	    		</select>
                         </div>
                         <div class="col-sm-3">
                            <input
@@ -157,7 +153,7 @@ echo $entityFormInput;
                         echo $this->translate("Source Warehouse");
                         ?></label>
                         <div class="col-sm-3">
-                           <select name="warehouse" id="warehouseId" class="form-control input-sm">
+                           <select name="warehouse" id="standardUom_id" class="form-control input-sm">
                               <option value=""><?php
 
                             echo $this->translate("Select Warehouse");
@@ -166,6 +162,24 @@ echo $entityFormInput;
         echo $wh_option;
         ?>
    					</select>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2">Currency:</label>
+                        <div class="col-sm-3">
+                           <select name="docCurrency" class="form-control input-sm">
+                              <option value="">Select Currency</option>
+ <?php
+// ================
+echo $currency_option;
+// ================
+?>                                  </select>
+                        </div>
+                        <label class="control-label col-sm-2">Exchange Rate:</label>
+                        <div class="col-sm-3">
+                           <input class="form-control input-sm" type="text" placeholder="" id="exchangeRate" name="exchangeRate" value="<?php
+                        echo (! $headerDTO == null) ? $headerDTO->getExchangeRate() : "";
+                        ?>">
                         </div>
                      </div>
                      <div class="form-group margin-bottom">

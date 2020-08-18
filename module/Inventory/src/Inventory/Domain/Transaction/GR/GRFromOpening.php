@@ -19,15 +19,15 @@ use Inventory\Domain\Transaction\Contracts\TrxType;
 class GRFromOpening extends AbstractGoodsReceipt implements GoodsReceiptInterface
 {
 
-    public function specify()
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\AbstractGoodsReceipt::prePost()
+     */
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
     {
-        $this->movementType = TrxType::GR_FROM_OPENNING_BALANCE;
-        $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;
-    }
-
-    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        $target = $this->makeSnapshot();
+        // return GenericTrx
+        $target = $this;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());
@@ -39,5 +39,16 @@ class GRFromOpening extends AbstractGoodsReceipt implements GoodsReceiptInterfac
 
         $event = new WhOpenBalancePosted($target, $defaultParams, $params);
         $this->addEvent($event);
+    }
+
+    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {
+        // raise event, if needed.
+    }
+
+    public function specify()
+    {
+        $this->movementType = TrxType::GR_FROM_OPENNING_BALANCE;
+        $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;
     }
 }

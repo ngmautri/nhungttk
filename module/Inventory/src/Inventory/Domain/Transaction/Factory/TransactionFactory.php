@@ -19,6 +19,7 @@ use Inventory\Domain\Transaction\GR\GRFromOpening;
 use Inventory\Domain\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Transaction\GR\GRFromTransferWarehouse;
+use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
@@ -129,7 +130,7 @@ class TransactionFactory
         /**
          *
          * @var TrxSnapshot $rootSnapshot ;
-         * @var TrxCmdRepositoryImpl $rep ;
+         * @var TrxCmdRepositoryInterface $rep ;
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
@@ -150,6 +151,9 @@ class TransactionFactory
 
         $event = new TrxHeaderCreated($target, $defaultParams, $params);
         $trx->addEvent($event);
+
+        $trx->updateIdentityFrom($rootSnapshot);
+
         return $trx;
     }
 

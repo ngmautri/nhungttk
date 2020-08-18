@@ -16,7 +16,7 @@ use Inventory\Application\DTO\Transaction\TrxRowDTO;
 
 // var_dump($headerDTO);
 
-$base_url = sprintf($this->baseUrl . "/inventory/gi/");
+$base_url = sprintf($this->baseUrl . "/inventory/item-opening-balance/");
 $view_url = null;
 $review_url = null;
 $rowNumber = null;
@@ -257,8 +257,8 @@ $current_step = "STEP2";
                            <div class="col-sm-1" style="margin-left: 0px">
                               <strong><?php
 
-                            if (! $rootDto == null) :
-                                echo $rootDto->getCurrencyIso3(); endif;
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getCurrencyIso3(); endif;
 
                             ?></strong>
                            </div>
@@ -281,32 +281,13 @@ $current_step = "STEP2";
                            <div class="col-sm-3">
                               <strong><?php
 
-                            if (! $rootDto == null) :
-                                echo $rootDto->getCurrencyIso3(); endif;
+                            if (! $headerDTO == null) :
+                                echo $headerDTO->getCurrencyIso3(); endif;
 
                             ?></strong>
                            </div>
                         </div>
-                     
-                     
-                     <div class="form-group margin-bottom required">
-                        <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
-                        <div class="col-sm-3">
-                           <input tabindex="3" class="form-control input-sm" type="text" id="docQuantity" name="docQuantity" value="<?php
-
-                        echo (! $dto == null) ? $dto->getDocQuantity() : "";
-                        ?>">
-                        </div>
-                        <label class="control-label col-sm-2" for="inputTag">Convert Factor:</label>
-                        <div class="col-sm-3">
-                           <input tabindex="4" class="form-control input-sm" type="text" id="conversionFactor" name="conversionFactor" value="<?php
-
-                        echo (! $dto == null) ? $dto->getConversionFactor() : "1";
-                        ?>">
-                        </div>
-                     </div>
-                   
-                     <div class="form-group margin-bottom required">
+                                       <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2" for="inputTag"><?php
 
                         echo $this->translate("Cost Center");

@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Transaction\GI\Validator\Row;
+namespace Inventory\Domain\Transaction\GR\Validator\Row;
 
 use Inventory\Domain\Transaction\AbstractTrx;
 use Inventory\Domain\Transaction\BaseRow;

@@ -36,6 +36,9 @@ class ItemOpeningBalanceController extends AbstractGenericController
 
     const BASE_URL = '/inventory/item-opening-balance/%s';
 
+    public function uploadRowsAction()
+    {}
+
     public function viewAction()
     {
 
@@ -540,7 +543,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/inventory/gr/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/inventory/item-opening-balance/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
         return $this->redirect()->toUrl($redirectUrl);
     }
 

@@ -133,6 +133,10 @@ class TrxReportHelper
 
         $sql_tmp = '';
 
+        if ($filter->getDocStatus() != null) {
+            $sql = $sql . \sprintf(" AND nmt_inventory_trx.doc_status ='%s'", $filter->getDocStatus());
+        }
+
         if ($filter->getDocYear() > 0) {
             $sql = $sql . " AND YEAR(nmt_inventory_mv.posting_date)=" . $filter->getDocYear();
         }

@@ -2,6 +2,7 @@
 namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Shared\Constants;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Reporting\Transaction\TrxReporter;
 use Inventory\Infrastructure\Persistence\Filter\TrxReportSqlFilter;
@@ -150,6 +151,7 @@ class TrxReportController extends AbstractGenericController
         $filter->setDocMonth($docMonth);
         $filter->setDocYear($docYear);
         $filter->setItem(2427);
+        $filter->setDocStatus(Constants::DOC_STATUS_POSTED);
 
         $total_records = $this->getTrxReporter()->getAllRowTotal($filter);
 
@@ -189,6 +191,8 @@ class TrxReportController extends AbstractGenericController
         $sort = $this->params()->fromQuery('sort');
         $docYear = $this->params()->fromQuery('docYear');
         $docMonth = $this->params()->fromQuery('docMonth');
+        $docStatus = $this->params()->fromQuery('docStatus');
+
         $isActive = $this->params()->fromQuery('isActive');
 
         if ($file_type == null) :
@@ -201,6 +205,10 @@ class TrxReportController extends AbstractGenericController
 
         if ($docYear == null) :
             $docYear = date('Y');
+        endif;
+
+        if ($docStatus == null) :
+            $docStatus = 'posted';
         endif;
 
         if ($sort == null) :
@@ -231,6 +239,7 @@ class TrxReportController extends AbstractGenericController
         $filter->setIsActive($isActive);
         $filter->setDocMonth($docMonth);
         $filter->setDocYear($docYear);
+        $filter->setDocStatus($docStatus);
 
         $total_records = $this->getTrxReporter()->getAllRowTotal($filter);
 
@@ -292,6 +301,12 @@ class TrxReportController extends AbstractGenericController
             $docYear = date('Y');
         }
 
+        if (isset($_GET['$docStatus'])) {
+            $docStatus = $_GET['$docStatus'];
+        } else {
+            $docStatus = 'posted';
+        }
+
         if (isset($_GET['docMonth'])) {
             $docMonth = $_GET['docMonth'];
         } else {
@@ -319,6 +334,7 @@ class TrxReportController extends AbstractGenericController
         $filter->setIsActive($isActive);
         $filter->setDocMonth($docMonth);
         $filter->setDocYear($docYear);
+        $filter->setDocStatus($docStatus);
         $filter->setItem(2427);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;

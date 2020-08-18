@@ -15,11 +15,53 @@
 	<ul>
 		<li><a href="#onhand">On-Hand</a></li>
 		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/stock/returned-item?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><?php echo $this->translate("Exchanged");?></a></li>
+			href="<?php
+
+echo $this->baseUrl?>/inventory/stock/returned-item?token=<?php
+
+echo (! $target == null) ? $target->getToken() : "";
+?>&target_id=<?php
+
+echo (! $target == null) ? $target->getId() : "";
+?>&checksum=<?php
+
+echo (! $target == null) ? $target->getChecksum() : "";
+?>"><?php
+
+echo $this->translate("Exchanged");
+?></a></li>
 		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/stock/disposed-item?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><?php echo $this->translate("Disposal");?></a></li>
+			href="<?php
+
+echo $this->baseUrl?>/inventory/stock/disposed-item?token=<?php
+
+echo (! $target == null) ? $target->getToken() : "";
+?>&target_id=<?php
+
+echo (! $target == null) ? $target->getId() : "";
+?>&checksum=<?php
+
+echo (! $target == null) ? $target->getChecksum() : "";
+?>"><?php
+
+echo $this->translate("Disposal");
+?></a></li>
 		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/item-transaction/list1?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><?php echo $this->translate("All");?></a></li>
+			href="<?php
+
+echo $this->baseUrl?>/inventory/item-transaction/list1?token=<?php
+
+echo (! $target == null) ? $target->getToken() : "";
+?>&target_id=<?php
+
+echo (! $target == null) ? $target->getId() : "";
+?>&checksum=<?php
+
+echo (! $target == null) ? $target->getChecksum() : "";
+?>"><?php
+
+echo $this->translate("All");
+?></a></li>
 
 	</ul>
 
@@ -47,17 +89,44 @@ else :
 			<thead>
 				<tr>
 					<td><b>#</b></td>
-					<td><b><?php echo $this->translate("Warehouse");?></b></td>
-					<td><b><?php echo $this->translate("Posting Date");?></b></td>
-					<td><b><?php echo $this->translate("Posted Qty");?></b></td>
-					<td><b><?php echo $this->translate("On-hand Qty");?></b></td>
-					<td><b><?php echo $this->translate("Unit Price");?></b></td>
-					<td><b><?php echo $this->translate("Stock Value");?><br>(doc cur.)</b></td>
+					<td><b><?php
 
-					<td><b><?php echo $this->translate("Stock Value");?></b><br>(local
+echo $this->translate("Warehouse");
+    ?></b></td>
+					<td><b><?php
+
+echo $this->translate("Posting Date");
+    ?></b></td>
+					<td><b><?php
+
+echo $this->translate("Posted Qty");
+    ?></b></td>
+					<td><b><?php
+
+echo $this->translate("On-hand Qty");
+    ?></b></td>
+					<td><b><?php
+
+echo $this->translate("Unit Price");
+    ?></b></td>
+					<td><b><?php
+
+echo $this->translate("Stock Value");
+    ?><br>(doc cur.)</b></td>
+
+					<td><b><?php
+
+echo $this->translate("Stock Value");
+    ?></b><br>(local
 						cur.)</td>
-					<td><b><?php echo $this->translate("Remark");?></b></td>
-					<td><b><?php echo $this->translate("Action");?></b></td>
+					<td><b><?php
+
+echo $this->translate("Remark");
+    ?></b></td>
+					<td><b><?php
+
+echo $this->translate("Action");
+    ?></b></td>
 
 				</tr>
 			</thead>
@@ -73,32 +142,73 @@ else :
         $count ++;
         $total_onhand = $total_onhand + $a->getOnhandQuantity();
 
-        if ($a->getOnhandQuantity() * $a->getDocUnitPrice()*$a->getExchangeRate() !== null) :
-        $stock_value = $stock_value + $a->getOnhandQuantity() * $a->getDocUnitPrice()*$a->getExchangeRate();
+        if ($a->getOnhandQuantity() * $a->getDocUnitPrice() * $a->getExchangeRate() !== null) :
+            $stock_value = $stock_value + $a->getOnhandQuantity() * $a->getDocUnitPrice() * $a->getExchangeRate();
         endif;
 
         ?>
 	 <tr>
-					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-					<td><?php if($a->getWarehouse()!==null): echo $a->getWarehouse()->getWhName(); endif?></td>
-					<td>	<?php echo date_format($a->getPostingDate(),"m-d-Y");?></td>
+					<td><?php
 
-					<td>	<?php echo $a->getQuantity();?></td>
-					<td>	<?php echo $a->getOnhandQuantity();?></td>
-					<td>	<?php if($a->getDocUnitPrice()!== null ): echo number_format($a->getDocUnitPrice(),2);endif;?></td>
-					<td>	<?php if($a->getOnhandQuantity()*$a->getDocUnitPrice()!== null ): echo number_format($a->getOnhandQuantity()*$a->getDocUnitPrice(),2);endif;?></td>
-					<td>	<?php if($a->getOnhandQuantity()*$a->getDocUnitPrice()*$a->getExchangeRate()!== null ): echo number_format($a->getOnhandQuantity()*$a->getDocUnitPrice()*$a->getExchangeRate(),2);endif;?></td>
+echo ($paginator === null) ? $count : $paginator->minInPage - 1 + $count;
+        ?></td>
+					<td><?php
+
+if ($a->getWarehouse() !== null) :
+            echo $a->getWarehouse()->getWhName(); endif?></td>
+					<td>	<?php
+
+
+echo date_format($a->getPostingDate(), "m-d-Y");
+        ?></td>
+
+					<td>	<?php
+
+echo $a->getQuantity();
+        ?></td>
+					<td>	<?php
+
+echo $a->getOnhandQuantity();
+        ?></td>
+					<td>	<?php
+
+if ($a->getUnitPrice() !== null) :
+            echo number_format($a->getUnitPrice(), 2);endif;
+
+        ?></td>
+					<td>	<?php
+
+if ($a->getOnhandQuantity() * $a->getUnitPrice() !== null) :
+            echo number_format($a->getOnhandQuantity() * $a->getUnitPrice(), 2);endif;
+
+        ?></td>
+					<td>	<?php
+
+if ($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate() !== null) :
+            echo number_format($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate(), 2);endif;
+
+        ?></td>
 					<td>
-			<?php echo $a->getRemarks();?>
+			<?php
+
+echo $a->getRemarks();
+        ?>
 			</td>
 					<td>see Good Issue</td>
 				</tr>
-<?php endforeach; ?>
+<?php
+
+endforeach
+    ;
+    ?>
 
  </tbody>
 		</table>
 
-<?php endif; ?>
+<?php
+
+endif;
+?>
 
 	</div>
 
@@ -118,6 +228,12 @@ $( "#tabs3" ).tabs({
 });
 $( "#tabs3" ).tabs( "option", "active", 0 );
 
-$("#total_onhand").text(<?php echo $total_onhand;?>);
-$("#stock_value").text(<?php echo $stock_value;?>);
+$("#total_onhand").text(<?php
+
+echo $total_onhand;
+?>);
+$("#stock_value").text(<?php
+
+echo $stock_value;
+?>);
 </script>

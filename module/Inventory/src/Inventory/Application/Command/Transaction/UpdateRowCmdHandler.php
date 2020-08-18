@@ -78,7 +78,9 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $editableProperties = [
                 "isActive",
                 "docQuantity",
-                "costCenter"
+                "conversionFactor",
+                "docUnitPrice",
+                "remarks"
             ];
 
             $newSnapshot = TrxRowSnapshotAssembler::updateSnapshotFieldsFromDTO($newSnapshot, $dto, $editableProperties);

@@ -1,23 +1,18 @@
 <?php
 namespace Inventory\Controller;
 
-use Application\Entity\FinJe;
-use Application\Entity\FinJeRow;
-use Application\Entity\NmtHrFingerscan;
+use Application\Entity\NmtInventoryOpeningBalanceRow;
 use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
 use MLA\Paginator;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use Zend\Escaper\Escaper;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Application\Entity\NmtInventoryOpeningBalanceRow;
-use Application\Entity\NmtInventoryOpeningBalance;
-use Zend\Escaper\Escaper;
 
 /**
  *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

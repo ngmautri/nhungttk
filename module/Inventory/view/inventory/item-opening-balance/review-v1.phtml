@@ -1110,7 +1110,7 @@ echo $hoverMode;
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
 
-            redirectUrl="/inventory/gi/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
+            redirectUrl="/inventory/item-opening-balance/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

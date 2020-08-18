@@ -316,11 +316,15 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                 $fifoLayer->setCreatedBy($obj);
             }
 
-            $fifoLayer->setQuantity($row->getQuantity());
+            // quantity in standard unit.
+            $fifoLayer->setQuantity($row->getConvertedStandardQuantity());
+            $fifoLayer->setUnitPrice($row->getConvertedStandardUnitPrice());
 
             // will be changed uppon inventory transaction.
-            $fifoLayer->setOnhandQuantity($row->getQuantity());
-            $fifoLayer->setDocUnitPrice($row->getUnitPrice());
+            $fifoLayer->setOnhandQuantity($row->getConvertedStandardQuantity());
+            $fifoLayer->setDocQuantity($row->getDocQuantity());
+            $fifoLayer->setStandardConvertFactor($row->getConversionFactor());
+            $fifoLayer->setDocUnitPrice($row->getDocUnitPrice());
             $fifoLayer->setLocalCurrency($row->getCurrency());
             $fifoLayer->setExchangeRate($row->getExchangeRate());
             $fifoLayer->setSourceClass(get_class($row));

@@ -204,6 +204,27 @@ class NmtInventoryFifoLayer
     private $isReversable;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_quantity", type="decimal", precision=14, scale=5, nullable=true)
+     */
+    private $docQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="unit_price", type="decimal", precision=14, scale=5, nullable=true)
+     */
+    private $unitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="standard_convert_factor", type="decimal", precision=10, scale=4, nullable=true)
+     */
+    private $standardConvertFactor;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -907,6 +928,78 @@ class NmtInventoryFifoLayer
     public function getIsReversable()
     {
         return $this->isReversable;
+    }
+
+    /**
+     * Set docQuantity
+     *
+     * @param string $docQuantity
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setDocQuantity($docQuantity)
+    {
+        $this->docQuantity = $docQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get docQuantity
+     *
+     * @return string
+     */
+    public function getDocQuantity()
+    {
+        return $this->docQuantity;
+    }
+
+    /**
+     * Set unitPrice
+     *
+     * @param string $unitPrice
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setUnitPrice($unitPrice)
+    {
+        $this->unitPrice = $unitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get unitPrice
+     *
+     * @return string
+     */
+    public function getUnitPrice()
+    {
+        return $this->unitPrice;
+    }
+
+    /**
+     * Set standardConvertFactor
+     *
+     * @param string $standardConvertFactor
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get standardConvertFactor
+     *
+     * @return string
+     */
+    public function getStandardConvertFactor()
+    {
+        return $this->standardConvertFactor;
     }
 
     /**

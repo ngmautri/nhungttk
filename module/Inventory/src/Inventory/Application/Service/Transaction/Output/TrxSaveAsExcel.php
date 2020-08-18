@@ -93,7 +93,7 @@ class TrxSaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $row->vendorItemCode,
                 $row->docUnit,
                 $row->quantity,
-                $row->docUnitPrice,
+                $row->convertedStandardUnitPrice,
                 $row->netAmount,
                 $row->docCurrencyISO,
                 $row->remarks,

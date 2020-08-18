@@ -234,8 +234,13 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
      */
     public function closeLayers(GenericTrx $trx, TrxRow $row)
     {
+        if ($trx == null) {
+            throw new InvalidArgumentException("GenericTrx not found");
+        }
+
         $criteria = array(
-            'item' => $row->getItem()
+            'item' => $row->getItem(),
+            'warehouse' => $$trx->getWarehouse()
         );
 
         $layers = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFifoLayer')->findBy($criteria);
@@ -262,6 +267,15 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
         if ($trx == null) {
             throw new InvalidArgumentException("GenericTrx not found");
         }
+        $wh = null;
+        if ($trx->getWarehouse() > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouse $obj ;
+             */
+            $wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($trx->getWarehouse());
+        }
 
         $rows = $trx->getDocRows();
 
@@ -272,6 +286,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
         foreach ($rows as $row) {
 
             $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+            $fifoLayer->setWarehouse($wh);
 
             $fifoLayer->setIsClosed(0);
             $fifoLayer->setIsOpenBalance(1);
@@ -289,16 +304,6 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                  */
                 $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($row->getItem());
                 $fifoLayer->setItem($obj);
-            }
-
-            if ($row->getWarehouse() > 0) {
-
-                /**
-                 *
-                 * @var \Application\Entity\NmtInventoryWarehouse $obj ;
-                 */
-                $obj = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($row->getItem());
-                $fifoLayer->setWarehouse($obj);
             }
 
             if ($row->getCreatedBy() > 0) {
@@ -361,7 +366,8 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             /** @var TrxRow $row ; */
 
             $criteria = array(
-                'item' => $row->getItem()
+                'item' => $row->getItem(),
+                'warehouse' => $trx->getWarehouse()
             );
 
             $layers = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFifoLayer')->findBy($criteria);

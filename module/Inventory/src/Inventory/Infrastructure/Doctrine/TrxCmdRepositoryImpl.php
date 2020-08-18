@@ -429,4 +429,35 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
             return null;
         }
     }
+
+    public function closeWhTrxOf($warehouseId, $itemIds)
+    {
+        if (count($itemIds) == 0 || $warehouseId == null) {
+            return;
+        }
+
+        $inString = '';
+        $n = 0;
+
+        foreach ($itemIds as $id) {
+            $n ++;
+
+            if ($n == 1) {
+                $inString = $id;
+            } else {
+                $inString = $inString . ',' . $id;
+            }
+        }
+        $inString = \sprintf('IN(%s)', $inString);
+
+        $f = "UPDATE nmt_inventory_trx SET nmt_inventory_trx.doc_status='%s' WHERE nmt_inventory_trx.wh_id=%s AND nmt_inventory_trx.item_id %s";
+        $sql = sprintf($f, Constants::DOC_STATUS_CLOSED, $warehouseId, $inString);
+        echo $sql;
+        try {
+            $conn = $this->getDoctrineEM()->getConnection();
+            return $conn->executeUpdate($sql);
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }

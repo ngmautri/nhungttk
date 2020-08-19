@@ -23,11 +23,17 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new TrxQueryRepositoryImpl($doctrineEM);
 
-            $id = 1362;
-            $token = "af6d3b5b-e838-479e-b989-3c15142ba37c";
+            $id = 1415;
+            $token = "53c733c3-f9c4-411d-90f6-7ea596b4bf26";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            \var_dump($rootEntity);
+
+            $before = memory_get_usage();
+            $o1 = clone $rootEntity;
+            $after = memory_get_usage();
+            \var_dump($after - $before);
+
+            \var_dump($o1->getSysNumber());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

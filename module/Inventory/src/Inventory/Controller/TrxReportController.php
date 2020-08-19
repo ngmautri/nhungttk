@@ -150,7 +150,7 @@ class TrxReportController extends AbstractGenericController
         $filter->setIsActive($isActive);
         $filter->setDocMonth($docMonth);
         $filter->setDocYear($docYear);
-        $filter->setItem(2427);
+        // $filter->setItem(2427);
         $filter->setDocStatus(Constants::DOC_STATUS_POSTED);
 
         $total_records = $this->getTrxReporter()->getAllRowTotal($filter);
@@ -335,7 +335,7 @@ class TrxReportController extends AbstractGenericController
         $filter->setDocMonth($docMonth);
         $filter->setDocYear($docYear);
         $filter->setDocStatus($docStatus);
-        $filter->setItem(2427);
+        // $filter->setItem(2427);
 
         $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
         $total_records = $this->getTrxReporter()->getAllRowTotal($filter);

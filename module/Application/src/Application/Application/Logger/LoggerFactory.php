@@ -31,6 +31,7 @@ class LoggerFactory implements FactoryInterface
         }
 
         $handler = new StreamHandler(\sprintf("%s/%s", $path, $filename), Logger::DEBUG);
+
         $logger->pushHandler($handler);
         return $logger;
     }

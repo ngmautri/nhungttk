@@ -120,7 +120,7 @@ abstract class GenericTrx extends BaseDoc
     public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
+            throw new \InvalidArgumentException(sprintf("PR is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
@@ -148,6 +148,7 @@ abstract class GenericTrx extends BaseDoc
 
         $row = TrxRow::makeFromSnapshot($snapshot);
 
+        // \var_dump($row);
         $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {

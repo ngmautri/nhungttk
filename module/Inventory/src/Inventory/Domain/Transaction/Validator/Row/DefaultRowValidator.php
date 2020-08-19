@@ -64,7 +64,7 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
 
             // ======= CONVERSION FACTORY ==========
             if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
-                $localEntity->addError("Convert factor is not valid! " . $localEntity->getConversionFactor());
+                $localEntity->addError("Convert factor is not valid! #" . $localEntity->getConversionFactor());
             }
         } catch (RuntimeException $e) {
             $localEntity->addError($e->getMessage());

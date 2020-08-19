@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Exception;
 
 /**
  * All Service shall extend this.
@@ -40,6 +41,13 @@ abstract class AbstractService implements EventManagerAwareInterface
     {
         if ($this->getLogger() != null) {
             $this->getLogger()->alert($message);
+        }
+    }
+
+    protected function logException(Exception $e)
+    {
+        if ($this->getLogger() != null) {
+            $this->getLogger()->alert($e->getMessage());
         }
     }
 

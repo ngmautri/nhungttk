@@ -2,13 +2,16 @@
 namespace Inventory\Infrastructure\Doctrine;
 
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface;
 use Inventory\Infrastructure\Mapper\TrxMapper;
+use Closure;
 
 /**
  *
@@ -133,12 +136,16 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         $netAmount = 0;
         $taxAmount = 0;
         $grossAmount = 0;
+        $docRowsArray = null;
+        $rowIdArray = null;
+
         foreach ($rows as $r) {
 
             /**@var \Application\Entity\NmtInventoryTrx $localEnityDoctrine ;*/
             $localEnityDoctrine = $r;
 
-            $localSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+            // $localSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+            $localSnapshot = null;
 
             if ($localSnapshot == null) {
                 continue;
@@ -151,7 +158,6 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
             $localEntity = TrxRow::makeFromSnapshot($localSnapshot);
             $docRowsArray[] = $localEntity;
             $rowIdArray[] = $localEntity->getId();
-            // break;
         }
 
         $rootSnapshot->totalRows = $totalRows;
@@ -164,7 +170,112 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         $rootEntity = TransactionFactory::contructFromDB($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
+        $rootEntity->setRowsReference($this->createRowsReference($id));
         return $rootEntity;
+    }
+
+    public function getLazyRootEntityByTokenId($id, $token = null)
+    {
+        if ($id == null || $token == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+
+        $rootEntityDoctrine = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtInventoryMv')
+            ->findOneBy($criteria);
+
+        if ($rootEntityDoctrine == null) {
+            return null;
+        }
+
+        $rootSnapshot = TrxMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+        if ($rootSnapshot == null) {
+            return null;
+        }
+
+        $totalRows = 0;
+        $netAmount = 0;
+        $taxAmount = 0;
+        $grossAmount = 0;
+        $rowIdArray = null;
+
+        $rootSnapshot->totalRows = $totalRows;
+        $rootSnapshot->netAmount = $netAmount;
+        // $rootSnapshot->taxAmount = $taxAmount;
+        $rootSnapshot->grossAmount = $grossAmount;
+
+        $rootEntity = TransactionFactory::contructFromDB($rootSnapshot);
+        $rootEntity->setRowIdArray($rowIdArray);
+        $rootEntity->setRowsReference($this->createRowsReference($rootEntity));
+        $rootEntity->setRowsCollectionReference($this->createRowsCollectionReference($rootEntity));
+        return $rootEntity;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return NULL|Closure
+     */
+    private function createRowsReference(GenericTrx $rootEntity)
+    {
+        return function () use ($rootEntity) {
+
+            $rows = $this->getRowsById($rootEntity->getId());
+
+            if (count($rows) == 0) {
+                return null;
+            }
+
+            $docRowsArray = [];
+            foreach ($rows as $r) {
+
+                /**@var \Application\Entity\NmtInventoryTrx $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $localSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+                if ($localSnapshot == null) {
+                    continue;
+                }
+                $localEntity = TrxRow::makeFromSnapshot($localSnapshot);
+                $docRowsArray[] = $localEntity;
+            }
+            return $docRowsArray;
+        };
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return NULL|Closure
+     */
+    private function createRowsCollectionReference(GenericTrx $rootEntity)
+    {
+        return function () use ($rootEntity) {
+
+            $rows = $this->getRowsById($rootEntity->getId());
+
+            if (count($rows) == 0) {
+                return null;
+            }
+
+            $collection = new ArrayCollection();
+            foreach ($rows as $r) {
+
+                /**@var \Application\Entity\NmtInventoryTrx $localEnityDoctrine ;*/
+                $localEnityDoctrine = $r;
+                $localSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+                if ($localSnapshot == null) {
+                    continue;
+                }
+                $localEntity = TrxRow::makeFromSnapshot($localSnapshot);
+                $collection->add($localEntity);
+            }
+            return $collection;
+        };
     }
 
     private function getRowsById($id)

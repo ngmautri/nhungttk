@@ -1,6 +1,9 @@
 <?php
 namespace Inventory\Domain\Transaction;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Closure;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -11,6 +14,16 @@ class BaseDoc extends AbstractTrx
 
     // Specific Attribute, that are not on generic doc.
     // ===================
+    protected $rowsCollectionReference;
+
+    protected $rowsCollection;
+
+    protected $rowsReference;
+
+    protected $rawRows;
+
+    protected $lazyDocRows;
+
     protected $movementType;
 
     protected $movementDate;
@@ -32,6 +45,120 @@ class BaseDoc extends AbstractTrx
     protected $sourceLocation;
 
     protected $tartgetLocation;
+
+    /**
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getRowsCollection()
+    {
+        if ($this->rowsCollection == null) {
+            $this->rowsCollection = new ArrayCollection();
+            return ($this->rowsCollection);
+        }
+
+        return $this->rowsCollection;
+    }
+
+    /**
+     *
+     * @param TrxRow $row
+     */
+    public function addIntoRowsCollection(TrxRow $row)
+    {
+        $collection = $this->getRowsCollection();
+        $collection->add($row);
+    }
+
+    /**
+     *
+     * @param ArrayCollection $rowsCollection
+     */
+    public function setRowsCollection(ArrayCollection $rowsCollection)
+    {
+        $this->rowsCollection = $rowsCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyDocRows()
+    {
+        $rowRef = $this->getRowsReference();
+        $this->docRows = $rowRef();
+        return $this->docRows;
+    }
+
+    public function getLazyRowsCollection()
+    {
+        $rowRef = $this->getRowsCollectionReference();
+        $this->rowsCollection = $rowRef();
+        return $this->rowsCollection;
+    }
+
+    /**
+     *
+     * @param mixed $lazyDocRows
+     */
+    public function setLazyDocRows($lazyDocRows)
+    {
+        $this->lazyDocRows = $lazyDocRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRawRows()
+    {
+        return $this->rawRows;
+    }
+
+    /**
+     *
+     * @param mixed $rawRows
+     */
+    public function setRawRows($rawRows)
+    {
+        $this->rawRows = $rawRows;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getRowsReference()
+    {
+        return $this->rowsReference;
+    }
+
+    /**
+     *
+     * @param Closure $rowsReference
+     */
+    public function setRowsReference(Closure $rowsReference)
+    {
+        $this->rowsReference = $rowsReference;
+    }
+
+    /**
+     *
+     * @return Closure
+     */
+    public function getRowsCollectionReference()
+    {
+        return $this->rowsCollectionReference;
+    }
+
+    /**
+     *
+     * @param Closure $rowsCollectionReference
+     */
+    public function setRowsCollectionReference(Closure $rowsCollectionReference)
+    {
+        $this->rowsCollectionReference = $rowsCollectionReference;
+    }
 
     // ===================
 

@@ -37,15 +37,18 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
 
         $escaper = new Escaper();
 
-        $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $row->getItemToken(), $row->getItemChecksum(), $row->getItem());
-        // echo $row->getItemName();
-        $onclick = sprintf("showJqueryDialog('Detail of Item: %s','1600',$(window).height()-50,'%s','j_loaded_data', true);", $escaper->escapeJs($row->getItemName()), $item_detail);
+        $f = "/inventory/item/show1?token=%s&entity_id=%s";
+        $item_detail = sprintf($f, $row->getItemToken(), $row->getItem());
+
+        $f = "showJqueryDialog('Detail of Item: %s','1600',$(window).height()-50,'%s','j_loaded_data', true);";
+        $onclick = sprintf($f, $escaper->escapeJs($row->getItemName()), $item_detail);
 
         if (strlen($row->getItemName()) < 35) {
-            $row->itemName = sprintf('%s <a style="cursor:pointer;color:#337ab7"  item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $row->itemName, $row->item, $row->itemName, $row->itemName, $onclick);
+            $f = '%s <a style="cursor:pointer;color:#337ab7"  item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>';
+            $row->itemName = sprintf($f, $row->itemName, $row->item, $row->itemName, $row->itemName, $onclick);
         } else {
-
-            $row->itemName = sprintf('%s <a style="cursor:pointer;color:#337ab7"  item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', substr($row->itemName, 0, 30), $row->item, $row->itemName, $row->itemName, $onclick);
+            $f = '%s <a style="cursor:pointer;color:#337ab7"  item-pic="" id="%s" item_name="%s" title="%s" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>';
+            $row->itemName = sprintf($f, substr($row->itemName, 0, 30), $row->item, $row->itemName, $row->itemName, $onclick);
         }
 
         if ($row->docUnitPrice !== null) {
@@ -71,7 +74,8 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
             $row->convertedStandardUnitPrice = number_format($row->convertedStandardUnitPrice, $decimalNo);
         }
 
-        $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);
+        $f = '<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>';
+        $link = sprintf($f, $row->prRowIndentifer, $row->prToken, $row->pr);
 
         if ($row->prNumber !== null) {
             $row->prNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->prNumber, $link);
@@ -79,7 +83,10 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
 
         $row->vendorItemName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemName());
         $row->vendorItemCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemCode());
-
+        $row->itemChecksum = '';
+        $row->uuid = '';
+        $row->itemToken = '';
+        $row->itemName1 = '';
         return $row;
     }
 }

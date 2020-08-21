@@ -35,6 +35,7 @@ class OnItemCreatedCreateIndex extends AbstractEventHandler
             $this->logInfo(\sprintf($format, $event->getTarget()
                 ->getId()));
         } catch (\Exception $e) {
+            $this->logException($e);
             throw $e;
         }
     }

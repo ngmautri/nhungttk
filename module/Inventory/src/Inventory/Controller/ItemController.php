@@ -11,7 +11,10 @@ use Application\Entity\NmtInventoryItemDepartment;
 use Application\Entity\NmtInventoryItemPicture;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
+use Inventory\Application\Command\Item\CreateCmdHandler;
 use Inventory\Application\Command\Item\UpdateCmdHandler;
+use Inventory\Application\Command\Item\UpdateLogisticDataCmdHandler;
+use Inventory\Application\Command\Item\Options\CreateItemOptions;
 use Inventory\Application\Command\Item\Options\UpdateItemOptions;
 use Inventory\Application\DTO\Item\ItemAssembler;
 use Inventory\Application\DTO\Item\ItemDTO;
@@ -19,14 +22,11 @@ use Inventory\Application\Service\Item\ItemService;
 use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
 use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 use MLA\Paginator;
-use Ramsey\Uuid\Uuid;
 use Zend\Barcode\Barcode;
 use Zend\Cache\Storage\StorageInterface;
 use Zend\Math\Rand;
-use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Exception;
-use Inventory\Application\Command\Item\UpdateLogisticDataCmdHandler;
 
 /**
  *
@@ -45,6 +45,8 @@ class ItemController extends AbstractGenericController
     protected $itemCRUDService;
 
     protected $itemService;
+
+    const BASE_URL = '/inventory/item/%s';
 
     public function viewAction()
     {
@@ -193,9 +195,10 @@ class ItemController extends AbstractGenericController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
-        // create new session
-        $session = new Container('MLA_FORM');
-
+        $viewTemplete = \sprintf(self::BASE_URL, 'crud-v1');
+        $action = Constants::FORM_ACTION_ADD;
+        $form_action = \sprintf(self::BASE_URL, 'create');
+        $form_title = $nmtPlugin->translate("Create Item");
         $prg = $this->prg('/inventory/item/create', true);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -204,14 +207,6 @@ class ItemController extends AbstractGenericController
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
-            $hasFormToken = $session->offsetExists('form_token');
-
-            if (! $hasFormToken) {
-                $tk = Uuid::uuid4()->toString();
-                $session->offsetSet('form_token', $tk);
-            } else {
-                $tk = $session->offsetGet('form_token');
-            }
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -220,61 +215,60 @@ class ItemController extends AbstractGenericController
                 'dto' => null,
                 'dto1' => null,
                 'nmtPlugin' => $nmtPlugin,
-                'form_action' => "/inventory/item/create",
-                'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'form_token' => $tk
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'tab_id' => __FUNCTION__
             ));
 
-            $viewModel->setTemplate("inventory/item/crud");
+            $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
 
-        $data = $prg;
+        $notification = new Notification();
+        try {
+            $data = $prg;
 
-        $form_token = $data['form_token'];
+            /**
+             *
+             * @var ItemDTO $dto ;
+             */
+            $dto = DTOFactory::createDTOFromArray($data, new ItemDTO());
 
-        $tk = $session->offsetGet('form_token');
+            $options = new CreateItemOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
+            $cmdHandler = new CreateCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->execute();
 
-        if ($form_token != $tk) {
-            return $this->redirect()->toRoute('access_denied');
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
         }
 
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-        $dto = ItemAssembler::createItemDTOFromArray($data);
-
-        $userId = $u->getId();
-
-        $notification = $this->itemCRUDService->create($dto, 1, $userId, __METHOD__, true);
         if ($notification->hasErrors()) {
 
             $viewModel = new ViewModel(array(
+                'action' => $action,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => null,
-                'dto' => $dto,
-                'dto1' => $dto,
+                'entity_token' => null,
+                'version' => null,
+                'dto' => null,
+                'dto1' => null,
                 'nmtPlugin' => $nmtPlugin,
-                'form_action' => "/inventory/item/create",
-                'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                'form_token' => $tk
+                'tab_id' => __FUNCTION__
             ));
 
-            $viewModel->setTemplate("inventory/item/crud-v1");
+            $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
 
-        $session->getManager()
-            ->getStorage()
-            ->clear('MLA_FORM');
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n' . $tk);
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/inventory/item/list2";
-
         return $this->redirect()->toUrl($redirectUrl);
     }
 
@@ -352,9 +346,9 @@ class ItemController extends AbstractGenericController
             $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
-            $this->getLogger()->info(\sprintf("Item update %s", $entity_id));
+            $this->logInfo(\sprintf("Item update %s", $entity_id));
         } catch (\Exception $e) {
-            $this->getLogger()->debug($e->getMessage());
+            $this->logException($e);
             $notification->addError($e->getMessage());
         }
         if ($notification->hasErrors()) {

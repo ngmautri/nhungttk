@@ -4,6 +4,7 @@ namespace Inventory\Application\Service\Transaction;
 use Application\Service\AbstractService;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\Export\Transaction\DocSaveAsArray;
+use Inventory\Application\Export\Transaction\LazyDocSaveAsArray;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Transaction\Formatter\RowNumberFormatter;
 use Inventory\Application\Export\Transaction\Formatter\RowTextAndNumberFormatter;
@@ -35,6 +36,29 @@ class TrxService extends AbstractService
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
+    }
+
+    public function getTotalRows($id, $token)
+    {
+        $key = \sprintf("total_row_%s_%s", $id, $token);
+
+        $resultCache = $this->getCache()->getItem($key);
+
+        if (! $resultCache->isHit()) {
+
+            $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
+            $trx = $rep->getLazyRootEntityByTokenId($id, $token);
+
+            $total = $trx->getTotalRows();
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
     }
 
     /**
@@ -90,6 +114,54 @@ class TrxService extends AbstractService
         }
 
         return $rootEntity;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param string $outputStrategy
+     * @return NULL|\Inventory\Domain\Transaction\GenericTrx|NULL
+     */
+    public function getLazyDocOutputByTokenId($id, $token, $offset, $limit, $outputStrategy)
+    {
+        $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getLazyRootEntityByTokenId($id, $token);
+
+        if (! $rootEntity instanceof GenericTrx) {
+            return null;
+        }
+        $rootEntity->setRowsOutput(null);
+
+        $formatter = new TrxRowFormatter(new RowTextAndNumberFormatter());
+        $factory = new LazyDocSaveAsArray();
+        $factory->setLogger($this->getLogger());
+
+        $output = $factory->saveAs($rootEntity, $formatter, $offset, $limit);
+        $rootEntity->setRowsOutput($output);
+
+        return $rootEntity;
+    }
+
+    public function getLazyDocDetailsByTokenId($id, $token)
+    {
+        $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
+        $trx = $rep->getLazyRootEntityByTokenId($id, $token);
+
+        if ($trx == null) {
+            return null;
+        }
+
+        $key = \sprintf("total_row_%s_%s", $id, $token);
+        $resultCache = $this->getCache()->getItem($key);
+
+        if (! $resultCache->isHit()) {
+            $total = $trx->getTotalRows();
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        }
+
+        return $trx;
     }
 
     /**

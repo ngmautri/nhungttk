@@ -76,6 +76,16 @@ if ($action == Constants::FORM_ACTION_EDIT) {
     $submitLogisticFormInput = $submitLogisticFormInput . sprintf($format, 'logistic_data_frm', $view_url, $this->translate("Cancel"));
 }
 
+if ($action != Constants::FORM_ACTION_SHOW) {
+
+    $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
+<button onclick="submitForm(\'%s\');" class="btn btn-default">
+<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
+<a class="btn btn-default btn-sm" href="%s"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;%s</a>
+</div></div>';
+    $submitItemFormInput = $entityFormInput . sprintf($format, 'create_item_form', $view_url, $this->translate("Cancel"));
+}
+
 $hsCodeSearchUrl = '';
 $q = '';
 if (! $dto == null) {
@@ -559,6 +569,8 @@ echo $entityFormInput;
                
                
                
+               
+               
                </select>
             </div>
             <label class="control-label col-sm-2"><?php
@@ -676,7 +688,8 @@ echo $entityFormInput;
          <hr style="margin: 5pt 1pt 5pt 1pt">
          
          <?php
-        echo $submitLogisticFormInput;
+        echo $submitItemFormInput;
+
         ?>
       </form>
    </div>
@@ -705,8 +718,6 @@ $("#logistic_data_frm :input").attr("disabled", "disabled");
 
 ?>
     
-
-
 	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
 	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
    	$('#stock_uom_convert_text').text($( "#stockUuom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());

@@ -35,6 +35,9 @@ class TrxSaveAsPdf extends AbstractDocSaveAsPdf
             return;
         }
 
+        // take long time
+        set_time_limit(2500);
+
         // Set Header
         $params = [
             "docNumber" => $doc->getSysNumber(),

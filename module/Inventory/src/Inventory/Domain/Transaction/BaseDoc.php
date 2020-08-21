@@ -14,6 +14,11 @@ class BaseDoc extends AbstractTrx
 
     // Specific Attribute, that are not on generic doc.
     // ===================
+    protected $lazyRowSnapshotCollection;
+
+    protected $lazyRowSnapshotCollectionReference;
+
+    // /========
     protected $rowsCollectionReference;
 
     protected $rowsCollection;
@@ -45,6 +50,62 @@ class BaseDoc extends AbstractTrx
     protected $sourceLocation;
 
     protected $tartgetLocation;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollection()
+    {
+        $ref = $this->getLazyRowSnapshotCollectionReference();
+        $this->lazyRowSnapshotCollection = $ref();
+        return $this->lazyRowSnapshotCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollectionReference()
+    {
+        return $this->lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @param mixed $lazyRowSnapshotCollection
+     */
+    public function setLazyRowSnapshotCollection($lazyRowSnapshotCollection)
+    {
+        $this->lazyRowSnapshotCollection = $lazyRowSnapshotCollection;
+    }
+
+    /**
+     *
+     * @param mixed $lazyRowSnapshotCollectionReference
+     */
+    public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
+    {
+        $this->lazyRowSnapshotCollectionReference = $lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowsSnapshotCollectionReference()
+    {
+        return $this->rowsSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @param mixed $rowsSnapshotCollectionReference
+     */
+    public function setRowsSnapshotCollectionReference($rowsSnapshotCollectionReference)
+    {
+        $this->rowsSnapshotCollectionReference = $rowsSnapshotCollectionReference;
+    }
 
     /**
      *

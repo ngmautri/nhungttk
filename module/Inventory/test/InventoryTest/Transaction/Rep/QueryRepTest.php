@@ -27,6 +27,9 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new TrxQueryRepositoryImpl($doctrineEM);
 
+            $id = 1416;
+            $token = "1623f80f-c267-4d10-b2f4-0f908a0a2229";
+
             $id = 1415;
             $token = "53c733c3-f9c4-411d-90f6-7ea596b4bf26";
 
@@ -35,7 +38,12 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             echo $timer . "===\n";
 
             $stopWatch->start("test");
-            \var_dump($rootEntity->getLazyRowsCollection()->next());
+            // $lazyRows = $rootEntity->getLazyRowsCollection();
+            $r = $rootEntity->getLazyRowSnapshotCollection()->slice(300, 3);
+            foreach ($r as $lazyRow) {
+                \var_dump($lazyRow()->getItemName());
+            }
+
             $timer = $stopWatch->stop("test");
             echo $timer . "===\n";
         } catch (InvalidArgumentException $e) {

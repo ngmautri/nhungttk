@@ -4,8 +4,8 @@ namespace Inventory\Application\Service\Transaction\Output;
 use Application\Domain\Util\ExcelColumnMap;
 use Inventory\Application\Export\Transaction\AbstractDocSaveAsSpreadsheet;
 use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
+use Inventory\Domain\Transaction\TrxRowSnapshot;
 use Procure\Domain\GenericDoc;
-use Procure\Domain\AccountPayable\APRowSnapshot;
 
 /**
  * Director in builder pattern.
@@ -53,6 +53,7 @@ class TrxSaveAsExcel extends AbstractDocSaveAsSpreadsheet
             "#",
             "Vendor",
             "PO#",
+            "SysN.",
             "Item",
             "SKU",
             "Item Vendor Name",
@@ -76,7 +77,7 @@ class TrxSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
             /**
              *
-             * @var APRowSnapshot $row ;
+             * @var TrxRowSnapshot $row ;
              */
             $row = $formatter->format($r->makeSnapshot());
 
@@ -87,6 +88,7 @@ class TrxSaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $i,
                 $row->getVendorName(),
                 $row->getDocNumber(),
+                $row->sysNumber,
                 $row->itemSKU,
                 $row->itemName,
                 $row->vendorItemName,

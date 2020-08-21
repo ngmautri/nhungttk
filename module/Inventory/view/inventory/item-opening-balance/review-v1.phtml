@@ -26,7 +26,7 @@ $attachment_url = null;
 $status_url = null;
 $log_url = null;
 $view_url = null;
-
+$rowGirdUrl = null;
 $hoverMode = "row";
 
 $isViewing = false;
@@ -57,6 +57,9 @@ if (! $headerDTO == null) {
     $transactionTypeArray = $transactionType[$headerDTO->getMovementType()];
 
     $base_url = "/inventory/item-opening-balance/";
+
+    $format = $base_url . 'row-gird?entity_id=%s&entity_token=%s';
+    $rowGirdUrl = sprintf($format, $headerDTO->getId(), $headerDTO->getToken());
 
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $attachment_url = sprintf($this->baseUrl . "/procure/v-invoice-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
@@ -611,10 +614,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
 </div>
 <script>
 
-var data = <?php
 
-echo json_encode($rowOutput);
-?>
 
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='reversalDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
@@ -847,7 +847,6 @@ $( "#vendor_name_1" ).autocomplete({
 
 	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
 			resizable:true,
-			//draggable:true,
 			sortable: true,
 			freezeCols:1,
 			hoverMode: '<?php
@@ -1010,10 +1009,17 @@ echo $hoverMode;
 	};
 
     obj.dataModel = {
-            data: data,
-            location: "local",
-            sorting: "local",
-            sortDir: "down"
+	     dataType: "JSON",
+            location: "remote",
+            method: "GET",
+            recIndx: "id",
+            url: "<?php
+
+            echo $rowGirdUrl;
+            ?>",
+            getData: function (response) {
+         	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+           }
     };
 
     obj.colModel = [
@@ -1046,7 +1052,7 @@ echo $hoverMode;
    	   { title: "GL", dataType: "string", dataIndx: "glAccountNumber", width:50,editable: false },
        { title: "CC", dataType: "string", dataIndx: "costCenterName", width:85,editable: false },
 
-       { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
+       { title: "Ref", dataType: "string", dataIndx: "sysNumber", width:120,editable: false},
 
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
   		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },

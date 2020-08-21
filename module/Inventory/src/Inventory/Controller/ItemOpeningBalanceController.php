@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Util\JsonErrors;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
 use Inventory\Application\Command\Transaction\CreateHeaderCmdHandler;
@@ -19,8 +20,10 @@ use Inventory\Application\Command\Transaction\Options\TrxRowUpdateOptions;
 use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
+use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Service\Transaction\TrxService;
 use Inventory\Domain\Transaction\Contracts\TrxType;
+use MLA\Paginator;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -56,10 +59,11 @@ class ItemOpeningBalanceController extends AbstractGenericController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-        $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($id, $token);
+        $rootEntity = $this->getTrxService()->getLazyDocDetailsByTokenId($id, $token);
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
         }
+
         $headerDTO = $rootEntity->makeDTOForGrid(new TrxDTO());
         $viewModel = new ViewModel(array(
             'action' => $action,
@@ -67,7 +71,6 @@ class ItemOpeningBalanceController extends AbstractGenericController
             'form_title' => $form_title,
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
-            'rowOutput' => $rootEntity->getRowsOutput(),
             'headerDTO' => $headerDTO,
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
@@ -77,6 +80,61 @@ class ItemOpeningBalanceController extends AbstractGenericController
         $viewModel->setTemplate($viewTemplete);
         $this->getLogger()->info(\sprintf("Trx #%s viewed by #%s", $id, $this->getUserId()));
         return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function rowGirdAction()
+    {
+        try {
+            if (isset($_GET["pq_curpage"])) {
+                $pq_curPage = $_GET["pq_curpage"];
+            } else {
+                $pq_curPage = 1;
+            }
+
+            if (isset($_GET["pq_rpp"])) {
+                $pq_rPP = $_GET["pq_rpp"];
+            } else {
+                $pq_rPP = 100;
+            }
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $total_records = $this->getTrxService()->getTotalRows($entity_id, $entity_token);
+
+            $a_json_final = [];
+            $a_json_final['totalRecords'] = $total_records;
+            $a_json_final['curPage'] = $pq_curPage;
+
+            // $total_records = 873;
+            $outputStrategy = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+            $limit = null;
+            $offset = null;
+
+            if ($total_records > 0) {
+
+                if ($total_records > $pq_rPP) {
+                    $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
+                    $offset = $paginator->minInPage - 1;
+                    $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+                }
+            }
+            $rootEntity = $this->getTrxService()->getLazyDocOutputByTokenId($entity_id, $entity_token, $offset, $limit, $outputStrategy);
+
+            $a_json_final['data'] = $rootEntity->getRowsOutput();
+
+            $response = $this->getResponse();
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+            $response->setContent(json_encode($a_json_final));
+            $this->logInfo(\sprintf('Json Last error: %s', JsonErrors::getErrorMessage(json_last_error())));
+
+            return $response;
+        } catch (\Exception $e) {
+            $this->logException($e);
+        }
     }
 
     public function createAction()
@@ -558,10 +616,9 @@ class ItemOpeningBalanceController extends AbstractGenericController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $transactionType = TrxType::getGoodIssueTrx();
+        $transactionType = TrxType::getGoodReceiptTrx();
 
-        $form_action = \sprintf(self::BASE_URL, 'view');
-
+        $form_action = \sprintf(self::BASE_URL, 'saveAs');
         $form_title = "Invoice Invoice:";
         $action = null;
         $viewTemplete = \sprintf(self::BASE_URL, 'review-v1');

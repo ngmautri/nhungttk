@@ -3,7 +3,6 @@ namespace Inventory\Application\Export\Transaction;
 
 use Inventory\Application\Export\Transaction\Contracts\RowsSaveAsInterface;
 use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
-use Inventory\Application\Export\Transaction\Formatter\NullRowFormatter;
 
 /**
  *
@@ -24,10 +23,6 @@ class RawRowsSaveAsArray implements RowsSaveAsInterface
 
             if (count($rows) == 0) {
                 return null;
-            }
-
-            if ($formatter instanceof NullRowFormatter) {
-                return $rows;
             }
 
             $output = array();

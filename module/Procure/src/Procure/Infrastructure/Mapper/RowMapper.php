@@ -12,6 +12,7 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Application\Entity\NmtProcureQo;
+use Inventory\Domain\Item\Contracts\ItemType;
 use Procure\Domain\RowSnapshot;
 
 /**
@@ -176,7 +177,7 @@ class RowMapper
             $snapshot->itemStandardUnitCode = $entity->getStandardUom()->getUomCode();
         }
 
-        if ($entity->getIsFixedAsset() == 1) {
+        if ($entity->getIsFixedAsset() == 1 || $entity->getItemTypeId() == ItemType::FIXED_ASSET_ITEM_TYPE) {
             $snapshot->isFixedAsset = 1;
         }
 

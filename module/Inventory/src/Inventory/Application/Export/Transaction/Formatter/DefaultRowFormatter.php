@@ -82,7 +82,7 @@ class DefaultRowFormatter extends AbstractRowFormatter
 
         $row->vendorItemName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemName());
         $row->vendorItemCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemCode());
-
+        $row->itemName1 = '';
         return $row;
     }
 }

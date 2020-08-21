@@ -4,6 +4,7 @@ namespace Inventory\Domain\Item;
 use Application\Notification;
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
+use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *

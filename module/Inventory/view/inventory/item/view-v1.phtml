@@ -27,6 +27,7 @@ $img = null;
 $img_url = null;
 $view_url = null;
 $table_body = "";
+$view_url1 = '';
 
 if ($action == Constants::FORM_ACTION_EDIT) {
     $view_url = sprintf($this->baseUrl . "/inventory/item/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
@@ -40,6 +41,9 @@ if (! $dto == null) {
     $itemGroup = $dto->getItemGroup();
     $itemTypeId = $dto->getItemTypeId();
     $monitorMethod = $dto->getMonitoredBy();
+
+    $format = '<a href="/inventory/item/view?entity_token=%s&entity_id=%s">%s</a>';
+    $view_url1 = sprintf($format, $dto->getToken(), $dto->getId(), $dto->getItemName());
 
     $format = '<a href="/inventory/item/view?entity_token=%s&entity_id=%s"><small><i class="fa fa-bar-chart" aria-hidden="true"></i></small>&nbsp;Detail</a>';
     $detailUrl = sprintf($format, $dto->getToken(), $dto->getId());
@@ -113,7 +117,7 @@ if (! $dto == null) {
         $format = '/finance/v-invoice-row/ap-of-item?token=%s&item_id=%s';
         $url1 = sprintf($format, $dto->getToken(), $dto->getId());
         $logisticTab = sprintf('<a title="Association" href="%s"><i class="fa fa-chain" aria-hidden="true"></i>&nbsp;Logistic (%s)</a>', $url1, $dto->getAssociationList()->count());
-        
+
         $tabsList = [
             $logisticTab,
             $stockTab,
@@ -195,7 +199,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
             
          <?php
 
-        echo (! $dto == null) ? $dto->getItemName() : "";
+        echo $view_url1;
         ?></h3>
          <p>
 <?php

@@ -28,9 +28,11 @@ $log_url = null;
 $view_url = null;
 $rowGirdUrl = null;
 $hoverMode = "row";
-
+$dropDownMenu = null;
+$fullscrean = null;
 $isViewing = false;
-
+$refresh_btn = '';
+$upload_btn = '';
 if ($action == Constants::FORM_ACTION_SHOW) {
     $isViewing = true;
 }
@@ -45,8 +47,15 @@ $pmtTermId = null;
 $currencyId = null;
 $incotermId = null;
 $transactionTypeArray = [];
+$summary_txt = null;
 
 if (! $headerDTO == null) {
+
+    $f = 'Net amount: %s %s  | Tax amount: %s  | Gross amount: %s %s  | Total rows: %s';
+    $summary_tmp = sprintf($f, $headerDTO->getNetAmount(), $headerDTO->getCurrencyIso3(), $headerDTO->getTaxAmount(), $headerDTO->getGrossAmount(), $headerDTO->getCurrencyIso3(), $headerDTO->getTotalRows());
+
+    $f = '&nbsp;&nbsp;<span><strong>Ref no. #%s // </strong></span><span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">%s</span>';
+    $summary_txt = sprintf($f, $headerDTO->getSysNumber(), $summary_tmp);
 
     $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
 
@@ -95,6 +104,33 @@ if (! $headerDTO == null) {
     $pmtTermId = $headerDTO->getPmtTerm();
     $currencyId = $headerDTO->getDocCurrency();
     $incotermId = $headerDTO->getIncoterm();
+
+    $fullscreen_url = 'nmt';
+
+    $format = "showJqueryDialog(\'%s\',\'1850\',$(window).height()-50,\'%s\',\'j_loaded_data\',true);";
+    $fullscreen_onclick = sprintf($format, $headerDTO->getSysNumber(), $fullscreen_url);
+
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;" onclick="%s">
+  &nbsp;<i class="fa fa-window-maximize" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $fullscreen = sprintf($format, $fullscreen_onclick);
+
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;" onclick="%s">
+  &nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $refresh_btn = sprintf($format, "refreshGird();");
+
+    $upload_url = sprintf('/inventory/item-opening-balance/upload-rows?target_id=%s&target_token=%s', $headerDTO->getId(), $headerDTO->getToken());
+    $format = '<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="%s">
+  &nbsp;Upload <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+    $upload_btn = sprintf($format, $upload_url);
+
+    $dropDownList = [
+        sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf)</a>', $save_as_pdf),
+        'divider',
+        sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> &nbsp;Excel (*.xlxs)</a>', $save_as_excel),
+        sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> Open Office (*.ods)</a>', $save_as_openoffice)
+    ];
+
+    $dropDownMenu = \Application\Application\Helper\FormHelper::createCustomDropDownMenu($dropDownList, 'dropdownMenu1');
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -295,7 +331,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
 ?>
 
 
-<!-- ================ TOOL BAR ======================-->
+                <!-- ================ TOOL BAR ======================-->
                <div style="position: relative; float: right;">
                <?php
             echo Toolbar::showToolbarOpeningBalance($headerDTO, $action, $this);
@@ -419,89 +455,22 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                      <div id="rows" class="collapse in">
                         <div style="font-size: 9pt">
                            <div class="dropdown">
+                              <!-- button -->
                               <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                  <i class="fa fa-download" aria-hidden="true"></i>
-                                 &nbsp;&nbsp;
                                  <span class="caret"></span>
                               </button>
-                              <a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
-
-                            echo $this->translate("Refresh");
-                            ?>" class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();">
-                                 &nbsp;
-                                 <i class="fa fa-refresh" aria-hidden="true"></i>
-                                 &nbsp;
-                              </a>
-                              <a <?php
-
-                            echo $this->translate("Full Screen");
-                            ?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
-                                 onclick="showJqueryDialog('Contract /PO: <?php
-
-                                echo $headerDTO->getSysNumber() . ' - ' . $headerDTO->getContractNo();
-                                ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php
-
-                                echo $headerDTO->getToken()?>&entity_id=<?php
-
-                                echo $headerDTO->getId()?>','j_loaded_data',true);">
-                                 <i class="fa fa-window-maximize" aria-hidden="true"></i>
-                              </a>
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              <span>
-                                 <strong>PO#: <?php
-
-                                echo (! $headerDTO == null) ? $headerDTO->getSysNumber() : "";
-                                ?> // </strong>
-                              </span>
-                              <span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
-						Net amount: <?php
-
-    echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3();
-    ?>
-                        &nbsp;|&nbsp;Tax amount: <?php
-
-                        echo number_format($headerDTO->getTaxAmount(), 2);
-                        ?>
-                        &nbsp;|&nbsp;Gross amount: <?php
-
-                        echo "<b>" . number_format($headerDTO->getGrossAmount(), 2) . "</b> " . $headerDTO->getCurrencyIso3();
-                        ?>
-                        &nbsp;|&nbsp;Total rows:<?php
-
-                        echo ($headerDTO->getTotalActiveRows());
-                        ?>
-					</span>
-                              <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                 <li>
-                                    <a target="_blank" class="" href="<?php
-
-                                    echo $save_as_pdf;
-                                    ?>">
-                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
-                                       &nbsp;Pdf (*.pdf)
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a class="" href="<?php
-
-                                    echo $save_as_excel;
-                                    ?>">
-                                       <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
-                                       &nbsp;Excel (*.xlxs)
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a class="" href="<?php
-
-                                    echo $save_as_openoffice;
-                                    ?>">
-                                       <i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i>
-                                       &nbsp;Open Office (*.ods)
-                                    </a>
-                                 </li>
-                              </ul>
+                             
+                            <?php
+                            echo $refresh_btn;
+                            echo $fullscreen;
+                            echo $upload_btn;
+                            echo $summary_txt;
+                            echo $dropDownMenu;
+                            ?>
                            </div>
                         </div>
+                        <!-- button -->
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
                   
                   </fieldset>

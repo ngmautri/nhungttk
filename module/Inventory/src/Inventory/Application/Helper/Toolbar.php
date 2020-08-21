@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Application\Helper;
 
-use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Domain\Transaction\TrxSnapshot;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 
@@ -13,7 +13,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
 class Toolbar
 {
 
-    public static function showToolbarGI(TrxDTO $headerDTO, $action, $view)
+    public static function showToolbarGI(TrxSnapshot $headerDTO, $action, $view)
     {
         $toolbar = "";
 
@@ -47,7 +47,7 @@ class Toolbar
         return $toolbar;
     }
 
-    public static function showToolbarGR(TrxDTO $headerDTO, $action, $view)
+    public static function showToolbarGR(TrxSnapshot $headerDTO, $action, $view)
     {
         $toolbar = "";
 
@@ -81,7 +81,7 @@ class Toolbar
         return $toolbar;
     }
 
-    public static function showToolbarOpeningBalance(TrxDTO $headerDTO, $action, $view)
+    public static function showToolbarOpeningBalance(TrxSnapshot $headerDTO, $action, $view)
     {
         $toolbar = "";
 

@@ -223,6 +223,8 @@ class Constants
 
     const FORM_ACTION_EDIT = 'EDIT';
 
+    const FORM_ACTION_UPLOAD = 'UPLOAD';
+
     const FORM_ACTION_SHOW = 'SHOW';
 
     const FORM_ACTION_DELETE = 'DELETE';

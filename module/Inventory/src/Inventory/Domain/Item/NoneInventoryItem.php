@@ -2,6 +2,7 @@
 namespace Inventory\Domain\Item;
 
 use Application\Notification;
+use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *

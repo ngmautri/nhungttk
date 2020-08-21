@@ -69,6 +69,8 @@ class ItemController extends AbstractGenericController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
+        $tab_idx = $this->params()->fromQuery('tab_idx');
+
         $rootEntity = $this->getItemService()->getDocDetailsByTokenId($id, $token);
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
@@ -84,7 +86,8 @@ class ItemController extends AbstractGenericController
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'tab_id' => __FUNCTION__
+            'tab_id' => __FUNCTION__,
+            'tab_idx' => $tab_idx
         ));
         $viewModel->setTemplate($viewTemplete);
 

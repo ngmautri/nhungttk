@@ -525,7 +525,7 @@ class ItemSerialController extends AbstractGenericController
 
                 $this->flashMessenger()->addMessage($m);
 
-                $redirectUrl = sprintf("/inventory/item/show?tab_idx=5&entity_id=%s&token=%s", $entity->getItem()->getId(), $entity->getItem()->getToken());
+                $redirectUrl = sprintf("/inventory/item/view?tab_idx=6&entity_id=%s&entity_token=%s", $entity->getItem()->getId(), $entity->getItem()->getToken());
 
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -575,7 +575,6 @@ class ItemSerialController extends AbstractGenericController
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
-        ;
 
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;

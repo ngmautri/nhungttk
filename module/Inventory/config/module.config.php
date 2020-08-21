@@ -12,6 +12,7 @@ use Inventory\Application\EventBus\Handler\Item\Factory\OnItemCreatedCreateIndex
 use Inventory\Application\EventBus\Handler\Item\Factory\OnItemUpdatedUpdateIndexFactory;
 use Inventory\Application\EventBus\Handler\Item\Factory\OnProcureGrPostedCreateSerialNoFactory;
 use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
+use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrReversedCreateWhGi;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGoodsExchagePostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
@@ -21,6 +22,7 @@ use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBlancePostedCreat
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferLocationPostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferPostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrPostedCreateWhGrFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrReversedCreateWhGiFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGoodsExchangePostedCreateTrxFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateFiFoLayerFactory;
@@ -342,6 +344,7 @@ return array(
             // Event Handler// Transaction
             OnProcureGrPostedCreateWhGr::class => OnProcureGrPostedCreateWhGrFactory::class,
             OnProcureGrPostedCreateSerialNo::class => OnProcureGrPostedCreateSerialNoFactory::class,
+            OnProcureGrReversedCreateWhGi::class => OnProcureGrReversedCreateWhGiFactory::class,
 
             OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
             OnWhGoodsExchagePostedCreateTrx::class => OnWhGoodsExchangePostedCreateTrxFactory::class,

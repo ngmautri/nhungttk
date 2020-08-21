@@ -2,6 +2,7 @@
 namespace Inventory\Application\Service\Item;
 
 use Application\Service\AbstractService;
+use Inventory\Domain\Item\Contracts\MonitorMethod;
 use Inventory\Domain\Service\Contracts\SerialNoServiceInterface;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
@@ -40,7 +41,7 @@ class SerialNoServiceImpl extends AbstractService implements SerialNoServiceInte
              * @var GRRow $row ;
              */
 
-            if ($row->getItemMonitorMethod() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO || $row->getIsFixedAsset() == 1) {
+            if ($row->getItemMonitorMethod() == MonitorMethod::ITEM_WITH_SERIAL_NO || $row->getIsFixedAsset() == 1) {
 
                 for ($i = 0; $i < $row->getQuantity(); $i ++) {
 
@@ -94,6 +95,7 @@ class SerialNoServiceImpl extends AbstractService implements SerialNoServiceInte
                     $sn_entity->setIsActive(1);
                     $sn_entity->setToken(Uuid::uuid4()->toString());
                     $this->getDoctrineEM()->persist($sn_entity);
+                    $this->logInfo(\sprintf("SN for (%s) to be created!", $row->getItemName()));
                 }
 
                 $this->getDoctrineEM()->flush();

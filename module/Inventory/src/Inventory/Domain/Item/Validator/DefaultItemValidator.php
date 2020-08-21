@@ -73,7 +73,7 @@ class DefaultItemValidator extends AbstractItemValidator implements ItemValidato
             }
 
             // Monitor method is not for service item.
-            if ($rootEntity->getMonitoredBy() !== null && $rootEntity->getItemTypeId() !== ItemType::SERVICE_ITEM_TYPE) {
+            if ($rootEntity->getMonitoredBy() != null && $rootEntity->getItemTypeId() == ItemType::SERVICE_ITEM_TYPE) {
                 if (! \in_array($rootEntity->getMonitoredBy(), MonitorMethod::getSupportedMethod())) {
                     $format = "Monitor method not supported! #%s";
                     $rootEntity->addError(\sprintf($format, $rootEntity->getMonitoredBy()));

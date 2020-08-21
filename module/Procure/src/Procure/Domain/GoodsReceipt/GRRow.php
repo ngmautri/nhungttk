@@ -188,7 +188,7 @@ class GRRow extends GenericRow
         $instance->setApInvoiceRow($sourceObj->getId()); // important
         $instance->setInvoice($sourceObj->getDocId());
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
-
+        $instance->setIsFixedAsset($sourceObj->getIsFixedAsset());
         return $instance;
     }
 

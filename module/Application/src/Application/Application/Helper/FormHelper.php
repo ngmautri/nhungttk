@@ -51,6 +51,28 @@ class FormHelper
         return $dropDown;
     }
 
+    public static function createCustomDropDownMenu($list, $id)
+    {
+        if ($list == null) {
+            return;
+        }
+
+        $dropDown = \sprintf('<ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="%s">', $id);
+
+        foreach ($list as $l) {
+
+            if ($l == "divider") {
+                $dropDown = $dropDown . '<li role="separator" class="divider"></li>';
+            } else {
+                $dropDown = $dropDown . \sprintf('<li>%s</li>', $l);
+            }
+        }
+
+        $dropDown = $dropDown . '</ul>';
+
+        return $dropDown;
+    }
+
     public static function createButton($name, $title, $url, $icon)
     {
         $btn = '<a href="%s" title="%s" >%s</a>';

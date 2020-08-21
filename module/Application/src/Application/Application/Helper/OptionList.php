@@ -10,8 +10,8 @@ use Application\Entity\NmtApplicationPmtTerm;
 use Application\Entity\NmtApplicationUom;
 use Application\Entity\NmtInventoryItemGroup;
 use Application\Entity\NmtInventoryWarehouse;
-use Inventory\Domain\Item\MonitorMethod;
 use Inventory\Domain\Item\Contracts\ItemType;
+use Inventory\Domain\Item\Contracts\MonitorMethod;
 
 /**
  *
@@ -337,7 +337,7 @@ class OptionList
 
     public static function createItemMonitorOption($id)
     {
-        $list = MonitorMethod::getSupportedMethodArray();
+        $list = MonitorMethod::getSupportedMethod();
         if ($list == null) {
             return null;
         }

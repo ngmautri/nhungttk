@@ -19,6 +19,8 @@ class NullRowFormatter extends AbstractRowFormatter
      */
     public function format(RowSnapshot $row)
     {
+        $row->itemToken = null;
+        $row->itemName1 = null;
         return $row;
     }
 }

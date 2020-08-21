@@ -39,9 +39,117 @@ class ItemOpeningBalanceController extends AbstractGenericController
 
     const BASE_URL = '/inventory/item-opening-balance/%s';
 
-    public function uploadRowsAction()
-    {}
+    const VIEW_URL = '/inventory/item-opening-balance/view?entity_id=%s&entity_token=%s';
 
+    const REVIEW_URL = '/inventory/item-opening-balance/review?entity_id=%s&entity_token=%s';
+
+    const ADD_ROW_URL = '/inventory/item-opening-balance/add-row?target_id=%s&target_token=%s';
+
+    public function uploadRowsAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         */
+        $this->layout("Inventory/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = \sprintf(self::BASE_URL, 'upload-row');
+        $form_title = "Upload";
+        $action = Constants::FORM_ACTION_UPLOAD;
+        $viewTemplete = \sprintf(self::BASE_URL, 'review-v1');
+
+        $userId = $this->getUserId();
+        $localCurrencyId = $this->getLocalCurrencyId();
+        $transactionType = TrxType::getGoodReceiptTrx();
+
+        $prg = $this->prg($form_action, true);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $entity_id = (int) $this->params()->fromQuery('target_id');
+            $entity_token = $this->params()->fromQuery('target_token');
+            $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $dto = $rootEntity->makeSnapshot();
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'headerDTO' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'localCurrencyId' => $localCurrencyId,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        try {
+            // POSTING
+            $data = $prg;
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+            $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+            $options = new TrxUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
+
+            $cmdHandler = new UpdateHeaderCmdHandler();
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $this->logException($e);
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'headerDTO' => $dto,
+                'version' => $rootEntity->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'transactionType' => $transactionType
+            ));
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf(self::REVIEW_URL, $entity_id, $entity_token);
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function viewAction()
     {
 
@@ -78,7 +186,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
             'transactionType' => $transactionType
         ));
         $viewModel->setTemplate($viewTemplete);
-        $this->getLogger()->info(\sprintf("Trx #%s viewed by #%s", $id, $this->getUserId()));
+        $this->logInfo(\sprintf("Trx #%s viewed by #%s", $id, $this->getUserId()));
         return $viewModel;
     }
 
@@ -137,6 +245,10 @@ class ItemOpeningBalanceController extends AbstractGenericController
         }
     }
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
     public function createAction()
     {
         $this->layout("Inventory/layout-fullscreen");
@@ -241,11 +353,15 @@ class ItemOpeningBalanceController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/inventory/item-opening-balance/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
+        $redirectUrl = sprintf(self::ADD_ROW_URL, $dto->getId(), $dto->getToken());
 
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function updateAction()
     {
         /**
@@ -346,10 +462,14 @@ class ItemOpeningBalanceController extends AbstractGenericController
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         // $redirectUrl = sprintf("/inventory/transaction/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-        $redirectUrl = sprintf("/inventory/gr/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        $redirectUrl = sprintf(self::VIEW_URL, $entity_id, $entity_token);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function addRowAction()
     {
         /**
@@ -381,8 +501,6 @@ class ItemOpeningBalanceController extends AbstractGenericController
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-
-            $this->getLogger()->info(\sprintf("Row Trx #%s is going to be created by %s", $target_id, $userId));
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -431,11 +549,13 @@ class ItemOpeningBalanceController extends AbstractGenericController
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
+            $this->logException($e);
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
 
         if ($notification->hasErrors()) {
+
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
                 'redirectUrl' => null,
@@ -452,19 +572,21 @@ class ItemOpeningBalanceController extends AbstractGenericController
                 'action' => $action,
                 'transactionType' => $transactionType
             ));
-            $this->getLogger()->info(\sprintf("Row Trx #%s is not created by %s. Error: %s", $rootEntityId, $this->getUserId(), $notification->errorMessage()));
-
             $viewModel->setTemplate($viewTemplete . $rootEntity->getMovementType());
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/inventory/gr/add-row?target_id=%s&target_token=%s", $rootEntityId, $rootEntityToken);
+        $redirectUrl = sprintf(self::ADD_ROW_URL, $rootEntityId, $rootEntityToken);
 
-        $this->getLogger()->info(\sprintf("Row Trx #%s is created by %s", $rootEntityId, $userId));
+        $this->logInfo(\sprintf("Row Trx #%s is created by %s", $rootEntityId, $userId));
 
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function updateRowAction()
     {
         /**
@@ -576,6 +698,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
+            $this->logException($e);
             $notification->addError($e->getMessage());
         }
         if ($notification->hasErrors()) {
@@ -596,15 +719,18 @@ class ItemOpeningBalanceController extends AbstractGenericController
                 'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
-            $this->getLogger()->error(\sprintf("Row Trx #%s is not updated by %s. Error: %s", $target_id, $userId, $notification->errorMessage()));
 
             return $viewModel;
         }
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/inventory/item-opening-balance/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf(self::REVIEW_URL, $target_id, $target_token);
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function saveAsAction()
     {
         $this->layout("Inventory/layout-fullscreen");
@@ -627,7 +753,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
         $token = $this->params()->fromQuery('entity_token');
         $file_type = $this->params()->fromQuery('file_type');
 
-        $this->getLogger()->info(\sprintf("Trx #%s saved as format %s by #%s", $id, $file_type, $this->getUserId()));
+        $this->logInfo(\sprintf("Trx #%s saved as format %s by #%s", $id, $file_type, $this->getUserId()));
 
         $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($id, $token, $file_type);
         if ($rootEntity == null) {
@@ -735,8 +861,8 @@ class ItemOpeningBalanceController extends AbstractGenericController
             $redirectUrl = "/inventory/item-transaction/list";
             http: // localhost:81/procure/ap-report/header-status
         } catch (\Exception $e) {
-            $msg = sprintf("%s", $e->getMessage());
-            $redirectUrl = sprintf("/inventory/gr/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+            $this->logException($e);
+            $redirectUrl = sprintf(self::REVIEW_URL, $entity_id, $entity_token);
             $notification->addError($e->getMessage());
         }
 

@@ -61,8 +61,7 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             $indexResult->setIsSuccess(True);
         } catch (Exception $e) {
 
-            echo $e->getTraceAsString();
-
+            $this->logException($e);
             $m = '??';
             if ($currentSnapshot !== null) {
                 $m = $currentSnapshot->getId();
@@ -132,7 +131,9 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             $this->_updateIndexingResult($indexer, $indexResult);
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(True);
+            $this->logInfo($message);
         } catch (Exception $e) {
+            $this->logException($e);
             $message = \sprintf('Failed! %s', $e->getMessage());
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(False);

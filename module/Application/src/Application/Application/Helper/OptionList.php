@@ -337,7 +337,7 @@ class OptionList
 
     public static function createItemMonitorOption($id)
     {
-        $list = MonitorMethod::getSupportedMethod();
+        $list = MonitorMethod::getSupportedMethodArray();
         if ($list == null) {
             return null;
         }

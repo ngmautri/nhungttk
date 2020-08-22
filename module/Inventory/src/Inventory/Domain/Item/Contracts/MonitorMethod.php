@@ -20,4 +20,12 @@ final class MonitorMethod
         $r[] = self::ITEM_WITH_BATCH_NO;
         return $r;
     }
+
+    public static function getSupportedMethodArray()
+    {
+        $r = [];
+        $r[self::ITEM_WITH_SERIAL_NO] = "Serial Number";
+        $r[self::ITEM_WITH_BATCH_NO] = "Batch Numer";
+        return $r;
+    }
 }

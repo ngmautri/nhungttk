@@ -123,14 +123,21 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
 
         $increaseVersion = false;
         $isFlush = false;
+        $n = 0;
 
         foreach ($rows as $localEntity) {
+            $n ++;
+
+            // flush every 500 line, if big doc.
+            if ($n % 500 == 0) {
+                $this->doctrineEM->flush();
+            }
+
             $localSnapshot = $this->_getLocalSnapshot($localEntity);
             $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
         }
 
-        // it is time to flush.
-        $this->getDoctrineEM()->flush();
+        $this->doctrineEM->flush();
 
         $rootSnapshot->id = $rootEntityDoctrine->getId();
         $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();
@@ -173,14 +180,19 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         $n = 0;
 
         foreach ($rows as $localEntity) {
-            $localSnapshot = $this->_getLocalSnapshot($localEntity);
             $n ++;
+
+            $localSnapshot = $this->_getLocalSnapshot($localEntity);
+
+            // flush every 500 line, if big doc.
+            if ($n % 500 == 0) {
+                $this->doctrineEM->flush();
+            }
 
             $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion, $n);
         }
 
-        // it is time to flush.
-        $this->doctrineEM->flush();
+        $this->getDoctrineEM()->flush();
 
         $rootSnapshot->id = $rootEntityDoctrine->getId();
         $rootSnapshot->docVersion = $rootEntityDoctrine->getDocVersion();

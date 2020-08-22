@@ -13,4 +13,6 @@ Interface ItemSearchQueryInterface
 {
 
     public function search($q, QueryFilterInterface $filter = null);
+
+    public function queryForAutoCompletion($q, QueryFilterInterface $filter, $maxHit = 10, $returnDetail = true);
 }

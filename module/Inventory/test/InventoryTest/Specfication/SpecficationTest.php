@@ -26,5 +26,6 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
         ];
 
         var_dump($spec->isSatisfiedBy($subject));
+        echo 501 % 500;
     }
 }

@@ -59,7 +59,7 @@ class TrxRowsUpload extends AbstractService
         $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
         $sharedService->setValuationService($valuationService);
         $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($this->getDoctrineEM()));
-
+        $sharedService->setLogger($this->getLogger());
         $objPHPExcel = IOFactory::load($file);
 
         $options = new TrxRowCreateOptions($trx, $trx->getId(), $trx->getToken(), $trx->getRevisionNo(), $trx->getCreatedBy(), __METHOD__);
@@ -116,8 +116,11 @@ class TrxRowsUpload extends AbstractService
                         }
                     }
 
-                    $trx->createRowFrom($rowSnapshot, $options, $sharedService);
+                    $trx->createRowFrom($rowSnapshot, $options, $sharedService, false);
                 }
+
+                $this->logInfo(count($trx->getDocRows()) . 'will be stored.');
+                $trx->store($sharedService);
 
                 return $trx;
             }

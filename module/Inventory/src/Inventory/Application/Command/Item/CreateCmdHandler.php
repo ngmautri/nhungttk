@@ -50,6 +50,7 @@ class CreateCmdHandler extends AbstractCommandHandler
 
         try {
 
+            $dto->company = $options->getCompanyId();
             $notification = new Notification();
             $snapshot = $dto;
 

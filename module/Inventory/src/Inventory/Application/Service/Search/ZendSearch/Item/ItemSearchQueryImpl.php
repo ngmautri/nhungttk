@@ -102,22 +102,24 @@ class ItemSearchQueryImpl extends AbstractService implements ItemSearchQueryInte
 
     /**
      *
-     * @param string $q
-     * @param QueryFilterInterface $filter
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Service\Search\ItemSearchQueryInterface::queryForAutoCompletion()
      */
-    public function queryForAutoCompletion($q, QueryFilterInterface $filter = null)
+    public function queryForAutoCompletion($q, QueryFilterInterface $filter, $maxHit = 10, $returnDetails = true)
     {
         $results = $this->search($q, $filter);
         $results_array = [];
-
-        $results_array['message'] = $results->getMessage();
-        $results_array['total_hits'] = $results->getTotalHits();
 
         $hits_array = [];
         $n = 0;
 
         foreach ($results->getHits() as $hit) {
             $n ++;
+
+            if ($n > $maxHit) {
+                break;
+            }
+
             $item_thumbnail = '/images/no-pic1.jpg';
             if ($hit->item_thumbnail != null) {
                 $item_thumbnail = $hit->item_thumbnail;
@@ -125,12 +127,17 @@ class ItemSearchQueryImpl extends AbstractService implements ItemSearchQueryInte
 
             $hits_array["item_thumbnail"] = $item_thumbnail;
 
-            $hits_array["n"] = $n;
+            $hits_array["n"] = \sprintf('%s/%s found. There are %s hits more...', $n, $results->getTotalHits(), $results->getTotalHits() - $n);
             $hits_array["value"] = \sprintf('%s | %s', $hit->itemSku, $hit->itemName);
-            $hits_array["hit"] = ItemSnapshotAssembler::createFromQueryHit($hit);
+
+            if ($returnDetails) {
+                $hits_array["hit"] = ItemSnapshotAssembler::createFromQueryHit($hit);
+            } else {
+                $hits_array["hit"] = null;
+            }
+            $results_array[] = $hits_array;
         }
 
-        $results_array['hits'] = $hits_array;
-        return (\json_encode($results_array));
+        return ($results_array);
     }
 }

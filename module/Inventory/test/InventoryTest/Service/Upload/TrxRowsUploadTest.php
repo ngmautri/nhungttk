@@ -30,8 +30,8 @@ class TrxRowsUploadTest extends PHPUnit_Framework_TestCase
         $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $rep = new TrxQueryRepositoryImpl($doctrineEM);
 
-        $id = 1415;
-        $token = "53c733c3-f9c4-411d-90f6-7ea596b4bf26";
+        $id = 1416;
+        $token = "1623f80f-c267-4d10-b2f4-0f908a0a2229";
 
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
         var_dump(count($rootEntity->getDocRows()));
@@ -45,6 +45,6 @@ class TrxRowsUploadTest extends PHPUnit_Framework_TestCase
          * @var GenericTrx $trx
          */
         $trx = $uploader->doUploading($rootEntity, $file);
-        var_dump(count($trx->getDocRows()));
+        var_dump(($trx->getDocRows()[0]));
     }
 }

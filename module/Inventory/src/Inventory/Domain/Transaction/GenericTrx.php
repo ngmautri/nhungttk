@@ -117,7 +117,7 @@ abstract class GenericTrx extends BaseDoc
      * @throws OperationFailedException
      * @return \Inventory\Domain\Transaction\TrxRowSnapshot
      */
-    public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new \InvalidArgumentException(sprintf("PR is posted! %s", $this->getId()));
@@ -155,15 +155,23 @@ abstract class GenericTrx extends BaseDoc
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
+        $this->addRow($row);
+
+        if (! $storeNow) {
+            return $this;
+        }
+
+        // saving to storage now.
+
         $this->recordedEvents = array();
 
         /**
          *
-         * @var TrxRowSnapshot $localSnapshot
+         * @var TrxRowSnapshot $localSnapshot ;
+         * @var TrxCmdRepositoryInterface $rep ;
          */
-        $localSnapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->storeRow($this, $row);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeRow($this, $row);
 
         if ($localSnapshot == null) {
             throw new RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
@@ -327,6 +335,47 @@ abstract class GenericTrx extends BaseDoc
 
         $this->addEvent($event);
         $this->logInfo(\sprintf("Trx Posted %s", __METHOD__));
+        return $this;
+    }
+
+    /**
+     *
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \Inventory\Domain\Transaction\GenericTrx
+     */
+    public function store(SharedService $sharedService)
+    {
+        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
+        }
+
+        if ($sharedService == null) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+        }
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof TrxCmdRepositoryInterface) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("TrxCmdRepositoryInterface not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
+
+        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, false);
+
+        $this->validate($validationService, false);
+
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $this->clearEvents();
+        $rep->store($this);
+
+        $this->logInfo(\sprintf("WH Trx %s saved! %s", $this->getId(), __METHOD__));
         return $this;
     }
 

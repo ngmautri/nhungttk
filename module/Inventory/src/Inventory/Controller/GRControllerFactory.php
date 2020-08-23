@@ -3,6 +3,7 @@ namespace Inventory\Controller;
 
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -37,6 +38,9 @@ class GRControllerFactory implements FactoryInterface
 
         $sv = $container->get("AppLogger");
         $controller->setLogger($sv);
+
+        $sv = $container->get(TrxRowsUpload::class);
+        $controller->setTrxUploadService($sv);
 
         return $controller;
     }

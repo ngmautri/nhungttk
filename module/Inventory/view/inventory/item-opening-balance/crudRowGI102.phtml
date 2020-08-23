@@ -288,56 +288,14 @@ $current_step = "STEP2";
    <!-- /#wrapper -->
    <script type="text/javascript">
    $( "#item_name" ).focus();
-    
-
-    $( "#item_name" ).autocomplete({
-        source: "/inventory/item-search/auto-complete",
-        minLength: 2,
-        select: function( event, ui ) {
-          $( "#item" ).val(ui.item.id);
-             
-             $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id='+ui.item.id+'&token='+ui.item.token);
-             
-           
-               $('#global-notice').show();
-               $('#global-notice').html('"' + ui.item.value + '" selected');
-               $('#global-notice').fadeOut(5000);
-               //$("#jquery_dialog").dialog("close");
-   
-            $('#item_detail').show();
-            $( "#quantity" ).focus();
-       
-        }
-       
-      })
-      .autocomplete( "instance" )._renderItem = function( ul, item ) {
-        var serial_no = "";
-        if(item.item_serial!=""){
-           serial_no = " : " + item.item_serial;
-        }
-         
-         return $( "<li>" )
-           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-           .appendTo( ul );
-       };
-
+  
     $('#quantity').bind('change', function() {
-         });
+     });
 
-    function showSelectedItem(){
-      //var url= '/inventory/item/show1?tab_idx=7&entity_id=<?php
-
-    echo $headerDTO->getId();
-    ?>&token=<?php
-
-    echo $headerDTO->getToken();
-    ?>';
-      var url=  $('#item_url').text();
-         showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
-    }
-
-    <?php
-    echo $item_view_javascript;
-    ?>
 
  </script>
+ 
+ 
+ <?php
+include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
+?>

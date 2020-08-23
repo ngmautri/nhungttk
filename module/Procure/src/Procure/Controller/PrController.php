@@ -23,6 +23,7 @@ use Procure\Application\Command\PR\Options\UpdateOptions;
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Application\DTO\Pr\PrRowDTO;
 use Procure\Application\Reporting\PR\PrReporter;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\PR\PRService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Shared\Constants;
@@ -480,6 +481,10 @@ class PrController extends AbstractGenericController
         return $this->redirect()->toUrl($redirectUrl);
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function saveAsAction()
     {
         $this->layout("Procure/layout-fullscreen");
@@ -524,6 +529,10 @@ class PrController extends AbstractGenericController
         return $viewModel;
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function printAction()
     {
         $this->layout("Procure/layout-fullscreen");
@@ -904,6 +913,101 @@ class PrController extends AbstractGenericController
         return $viewModel;
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function viewAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            // return $this->redirect()->toRoute('not_found');
+        }
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/pr/view";
+        $form_title = "View Purchase Request:";
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/pr/review-v1";
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($id, $token);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'entity_id' => null,
+            'entity_token' => null
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function view1Action()
+    {
+        $this->layout("layout/user/ajax");
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            // return $this->redirect()->toRoute('not_found');
+        }
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/procure/pr/view1";
+        $form_title = "View Purchase Request:";
+        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
+        $viewTemplete = "procure/pr/view-v1";
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByIdFromDB($id, SaveAsSupportedType::OUTPUT_IN_ARRAY);
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+        $viewModel = new ViewModel(array(
+            'action' => Constants::FORM_ACTION_SHOW,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'entity_id' => null,
+            'entity_token' => null
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
+
     // =================================
     // @deprecated
     // =================================
@@ -1275,54 +1379,6 @@ class PrController extends AbstractGenericController
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
-    }
-
-    /**
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function viewAction()
-    {
-        $this->layout("Procure/layout-fullscreen");
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('not_found');
-        }
-
-        /**@var \Application\Entity\MlaUsers $u ;*/
-
-        $nmtPlugin = $this->Nmtplugin();
-        $form_action = "/procure/pr/view";
-        $form_title = "View Purchase Request:";
-        $action = \Procure\Domain\Shared\Constants::FORM_ACTION_ADD;
-        $viewTemplete = "procure/pr/review-v1";
-
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('entity_token');
-        $rootEntity = $this->getPurchaseRequestService()->getDocDetailsByTokenId($id, $token);
-        if ($rootEntity == null) {
-            return $this->redirect()->toRoute('not_found');
-        }
-        $viewModel = new ViewModel(array(
-            'action' => Constants::FORM_ACTION_SHOW,
-            'form_action' => $form_action,
-            'form_title' => $form_title,
-            'redirectUrl' => null,
-            'rootEntity' => $rootEntity,
-            'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
-            'errors' => null,
-            'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin,
-            'entity_id' => null,
-            'entity_token' => null
-        ));
-        $viewModel->setTemplate($viewTemplete);
-        return $viewModel;
     }
 
     /**

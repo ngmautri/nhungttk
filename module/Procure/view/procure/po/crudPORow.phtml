@@ -14,6 +14,7 @@ use Procure\Application\Helper\ErrorMessage;
 $message_url = null;
 $review_url = null;
 $rowNumber = null;
+$pr_item_name = null;
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -28,6 +29,9 @@ if ($headerDTO !== null) {
 
 if ($dto !== null) {
     $rowNumber = $dto->getRowNumber();
+    if ($dto->getPrRow() != null) {
+        $pr_item_name = $dto->itemName . ' || ' . $dto->getPrNumber();
+    }
 }
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
@@ -42,76 +46,10 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     	<?php
     $current_step = "STEP2";
     include (ROOT . '/module/Procure/view/procure/create-wizard.php');
+    include (ROOT . '/module/Procure/view/procure/po_summary.php');
     ?>
 
-      					<hr>
-      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
-
-    echo $this->translate('Summary:');
-    ?></span>
-      <div class="alert alert-info" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-            <li>
-               <b><?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getVendorName(); endif;
-
-            ?></b>
-            </li>
-            <li>-----</li>
-            <li><?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getIncoterm() . " " . $headerDTO->getIncotermPlace(); endif;
-
-            ?> </li>
-            <li>Total rows:<?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getTotalRows(); endif;
-
-            ?></li>
-            <li>Status:<?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getTransactionStatus(); endif;
-
-            ?> </li>
-            <li>-----</li>
-            <li>Net: <?php
-
-            if (! $headerDTO == null) :
-                echo number_format($headerDTO->getNetAmount(), 2) . " " . $headerDTO->getCurrencyIso3(); endif;
-
-            ?></li>
-            <li>Tax: <?php
-
-            if (! $headerDTO == null) :
-                echo number_format($headerDTO->getTaxAmount(), 2); endif;
-
-            ?></li>
-            <li>Gross: <?php
-
-            if (! $headerDTO == null) :
-                echo number_format($headerDTO->getGrossAmount(), 2) . " " . $headerDTO->getCurrencyIso3(); endif;
-
-            ?></li>
-            <li>Billed: <?php
-
-            if (! $headerDTO == null) :
-                echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->getCurrencyIso3(); endif;
-
-            ?></li>
-            <li>-----</li>
-            <li>Created by: <?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getCreatedByName(); endif;
-
-            ?></li>
-         </ul>
-      </div>
+      				
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -212,12 +150,7 @@ echo $error_msg;
                      <div class="col-sm-3">
                         <input tabindex="1" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
                            value="<?php
-
-                        if (! $dto == null) :
-                            if ($dto->getPrRow() !== null) :
-                                echo $dto->getPrRow(); endif;endif;
-
-
+                        echo $pr_item_name;
                         ?>">
                         <input type="hidden" id="pr_row_id" placeholder="" name="prRow" value="">
                         <div id="pr_row_url" style="display: none;"></div>
@@ -473,319 +406,35 @@ echo $error_msg;
 <!-- /#wrapper -->
 <script type="text/javascript">
 
-        $('#unit_price').bind('change', function() {
-        	$('#exw_unit_price').val($('#unit_price').val());
-        });
+    $('#unit_price').bind('change', function() {
+    	$('#exw_unit_price').val($('#unit_price').val());
+    });
 
+	$("#Create_Inv_Form :input").attr("disabled", "disabled");
 
-    	$("#Create_Inv_Form :input").attr("disabled", "disabled");
+    $( "#pr_item_name" ).focus();
 
-        $( "#pr_item_name" ).focus();
+    $('#quantity').bind('change', function() {
+       	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+       	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
 
-     // select pr item
-        $( "#pr_item_name" ).autocomplete({
-            source: "/procure/pr-search/auto-complete",
-            minLength: 2,
-            select: function( event, ui ) {
+    });
 
-        	      $( "#pr_row_id" ).val(ui.item.hit.id);
+    $('#unit_price').bind('change', function() {
+    	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+    });
 
-                  $( "#quantity" ).val(ui.item.hit.quantity);
-                  
-                  $( "#item_id" ).val(ui.item.hit.item);  
-                  $( "#item_name" ).val(ui.item.hit.itemName);
-                  $('#item_url').text('/inventory/item/show1?tab_idx=1&entity_id='+ui.item.hit.item+'&token='+ui.item.hit.itemToken);
-                  $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.hit.id+'&token='+ui.item.hit.token);             
+    $('#tax_rate').bind('change', function() {
+    	$('#tax_amount').val($('#net_amount').val() * $('#tax_rate').val()/100);
+    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+    });
 
-                  $('#global-notice').show();
-                  $('#global-notice').html('"' + ui.item.hit.itemName + '" selected');
-                  $('#global-notice').fadeOut(5000);
-
-                  	$('#item_detail').show();
-                   	$('#pr_row_detail').show();
-                   	$( "#quantity" ).focus();
-
-               	var url = '/procure/pr-row/get-row?id='+ui.item.hit.id;
-       		  		$.get(url, {   	}, function(data, status) {
-                  		//alert(data.pr_convert_factor);
-                  		$('#purchase_uom_convert_factor').text('Ordered: '+ data.pr_qty + ' '+ data.pr_uom + ' = ' + data.pr_converted_standard_qty +  ' '+ data.item_standard_uom);
-                   		$('#rowUnit').val(data.pr_uom);
-                   	});
-                  
-
-               }
-            })
-            .autocomplete( "instance" )._renderItem = function( ul, item ) {
-                  var img = '<img class="img-rounded" width="75" height="75" src="'+item.item_thumbnail+'"/>';
-                  var item_detail = item.hit.itemSKU +  ' | ' + item.hit.itemName 
-                  var item_detail_html = '<span style="font-size: 9pt; padding-top:0px;">' + item_detail + '</span><br>';
-                  var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;">' + item.hit.itemManufacturerCode + '</span>';
-                  var pr_detail= item.hit.docNumber + ' | Qty: ' + item.hit.quantity + ' |' + item.hit.rowName; 
-                  var pr_detail_html = '<span style="padding-top:7px; font-size: 9.5pt; color:navy;font-weight: bold;">' + pr_detail + '</span>';
-                  var n_html = '<span style="color:graytext;font-size: 8pt; border-bottom: thin solid gray; align:right">' + item.n + '</span>';
-                  var tbl_html = '<table style="Padding-left:5px" ><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt">' + item_detail_html + '<br>' + pr_detail_html + '<br>'+n_html +'</td></tr></table>'
-                  return $( '<li>')
-                  .append('<div style="border-bottom: thin solid gray; padding-bottom:2px; Padding-right:5px">'+tbl_html+'</div>')
-                  .appendTo( ul );
-          };
-
-
-          // if select item, then delete all pr item
-          $( "#item_name" ).autocomplete({
-              source: "/inventory/item-search/auto-complete2",
-              minLength: 2,
-              select: function( event, ui ) {
-               }
-            })
-            .autocomplete( "instance" )._renderItem = function( ul, item ) {
-
-              var img = '<img class="img-rounded" width="80" height="80" src="'+item.item_thumbnail+'"/>';
-              var item_detail = item.hit.itemSku +  ' | ' + item.hit.itemName 
-              var item_detail_html = '<span style="font-size: 9pt; padding-top:0px; color:navy;font-weight: bold;">' + item_detail + '</span><br>';
-              var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;">' + item.hit.manufacturerCode + '</span>';
-              var n_html = '<span style="color:graytext;font-size: 8pt; border-bottom: thin solid gray; align:right">' + item.n + '</span>';
-              var tbl_html = '<table style="Padding-left:5px" ><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt">' + item_detail_html + '<br>'+n_html +'</td></tr></table>'
-      
-                   return $( '<li>')
-                   .append('<div style="border-bottom: thin solid gray; padding-bottom:2px; Padding-right:5px">'+tbl_html+'</div>')
-                   .appendTo( ul );
-            };
-          
-
-
-    	// select pr item
-        $( "#pr_item_name1" ).autocomplete({
-            source: "/procure/pr-search/auto-complete",
-            minLength: 2,
-            select: function( event, ui ) {
-                $( "#pr_row_id" ).val(ui.item.pr_row_id);
-                $( "#quantity" ).val(ui.item.row_quantity);
-                $( "#item_id" ).val(ui.item.item_id);
-                $( "#item_name" ).val(ui.item.item_name);
-
-                $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
-                $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.pr_row_id+'&token='+ui.item.token);
-
-
-                 //alert(ui.item.item_id);
-                $('#global-notice').show();
-                $('#global-notice').html('"' + ui.item.item_name + '" selected');
-                $('#global-notice').fadeOut(5000);
-
-            	$('#item_detail').show();
-             	$('#pr_row_detail').show();
-             	$( "#quantity" ).focus();
-
-             	var url = '/procure/pr-row/get-row?id='+ui.item.pr_row_id;
-     		  		$.get(url, {   	}, function(data, status) {
-                		//alert(data.pr_convert_factor);
-                		$('#purchase_uom_convert_factor').text('Ordered: '+ data.pr_qty + ' '+ data.pr_uom + ' = ' + data.pr_converted_standard_qty +  ' '+ data.item_standard_uom);
-                 		$('#rowUnit').val(data.pr_uom);
-                 	});
-
-            }
-            })
-            .autocomplete( "instance" )._renderItem = function( ul, item ) {
-      	  var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
-    	  var total_hit =item.total_hit;
-
-
-        return $( '<li>'	 )
-        .append('<div><table><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt"><span style="font-size: 9.5pt;font-weight: bold;">' + item.item_sku_key  +  ' | ' + item.item_name + ' | Qty: ' + item.row_quantity + '</span><br>	<span style="padding-top: 7px;color:gray;font-size: 9pt;">' + item.pr_number + ' | ' + item.row_name + '</span></td></tr></table></div>')
-    	.append('<div style="color:graytext;font-size: 8pt; border-bottom: thin solid gray;">' + item.n + ' /' + total_hit + ' record found.</div>' )
-     	.appendTo( ul );
-
-            };
-
-
-
-       
-
-           // if select item, then delete all pr item
-           $( "#item_name1" ).autocomplete({
-               source: "/inventory/item-search/auto-complete",
-               minLength: 2,
-               select: function( event, ui ) {
-
-                 // set pr row empty
-                 $( "#pr_row_id" ).val("");
-                 $( "#pr_item_name" ).val("");
-                 $( "#item_id" ).val(ui.item.id);
-
-                 $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
-
-
-             	 	$('#global-notice').show();
-             		$('#global-notice').html('"' + ui.item.value + '" selected');
-             		$('#global-notice').fadeOut(5000);
-             		//$("#jquery_dialog").dialog("close");
-
-              	  	$('#item_detail').show();
-               	$( "#quantity" ).focus();
-
-               }
-
-             })
-             .autocomplete( "instance" )._renderItem = function( ul, item ) {
-           	  var serial_no = "";
-           	  if(item.item_serial!=""){
-           		  serial_no = " : " + item.item_serial;
-           	  }
-
-                return $( "<li>" )
-                  .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-                  .appendTo( ul );
-              };
-
-        $('#quantity').bind('change', function() {
-           	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
-           	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
-
-        });
-
-        $('#unit_price').bind('change', function() {
-        	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
-        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
-        });
-
-        $('#tax_rate').bind('change', function() {
-        	$('#tax_amount').val($('#net_amount').val() * $('#tax_rate').val()/100);
-        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
-        });
-
-    	$( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-
-        $( function() {
-             $( "#vendor_name" ).autocomplete({
-              source: "/bp/vendor-search/auto-complete",
-              minLength: 3,
-              select: function( event, ui ) {
-            	  $( "#vendor_id" ).val(ui.item.id);
-                //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
-            	  //alert($( "#vendor_id" ).val());
-
-            	 	$('#global-notice').show();
-            		$('#global-notice').html('"' + ui.item.value + '" selected');
-            		$('#global-notice').fadeOut(5000);
-            		//$("#jquery_dialog").dialog("close");
-              }
-              })
-              .autocomplete( "instance" )._renderItem = function( ul, item ) {
-              return $( "<li>" )
-                .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
-                .appendTo( ul );
-            };
-              ;
-         } );
-
-        function showSelectedItem(){
-    		var url= $('#item_url').text();
-    	   	showJqueryDialog('Item Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
-    	}
-
-        function showSelectedPrRow(){
-    		var url= $('#pr_row_url').text();
-    	   	showJqueryDialog('PR Row Detail','1450',$(window).height()-40, url,'j_loaded_data', true);
-    	}
-
-        <?php
-        if ($dto !== null) :
-            ?>
-        		  $("#item_id" ).val(<?php
-
-            echo $dto->getItem();
-            ?>);
-        	      $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id=<?php
-
-            echo $dto->getItem();
-            ?>&token=<?php
-
-            echo $dto->getItemToken();
-            ?>');
-        		  $('#item_detail').show();
-        		  $("#pr_row_id" ).val(<?php
-
-            echo $dto->getPrRow();
-            ?>);
-          	      $('#pr_row_url').text('/procure/pr-row/show1?tab_idx=0&entity_id=<?php
-
-            echo $dto->getPrRow();
-            ?>');
-          	      $('#pr_row_detail').show();
-        <?php
-       	 endif
-        ?>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-  
-    function selectItem(id, token,target, name, target_name, context = null){
-    	var target_id = '#' + target;
-    	$(target_id).val(id);
-
-        var target_name_id = '#' + target_name;
-    	$(target_name_id).val(name);
-    	$('#modal1.close').click();
-    	$('#global-notice').show();
-    	$('#global-notice').html('"' + name + '" selected');
-    	$('#global-notice').fadeOut(5000);
-    	$("#jquery_dialog").dialog("close");
-
-
-        $("#item_id" ).val(id);
-    	  	$('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+id+'&token='+token);
-
-    		$('#item_detail').show();
-    		$("#quantity").focus();
-
-    	var url = '/inventory/item/get-item?id='+id;
-    		$('#rowUnit').val("Loading...");
-    		$('#purchase_uom_convert_text').text("Loading...");
-
-    	$.get(url, {   	}, function(data, status) {
-        		//alert(data.purchase_uom_code);
-        		$('#rowUnit').val(data.purchase_uom_code);
-        		$('#standard_uom_id').text(data.uom_code);
-        		$('#conversionFactor').val(data.purchase_uom_convert_factor);
-                $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
-
-       	});
+    $( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
     }
-
-
-     </script>
+</script>
+    
+<?php
+include (ROOT . '/module/Procure/view/procure/pr_auto_complete.php');
+include (ROOT . '/module/Procure/view/procure/item_auto_complete.php');
+?>

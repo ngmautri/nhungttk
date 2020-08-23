@@ -2333,8 +2333,8 @@ class PrRowController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
-            'id' => $id,
-            'token' => $token
+            'id' => $id
+            // 'token' => $token
         );
 
         /**@var \Application\Entity\NmtProcurePrRow $entity ;*/

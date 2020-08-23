@@ -127,7 +127,10 @@ class ItemSearchQueryImpl extends AbstractService implements ItemSearchQueryInte
 
             $hits_array["item_thumbnail"] = $item_thumbnail;
 
-            $hits_array["n"] = \sprintf('%s/%s found. There are %s hits more...', $n, $results->getTotalHits(), $results->getTotalHits() - $n);
+            $hits_array["n"] = \sprintf('%s/%s found.', $n, $results->getTotalHits());
+            if ($n > $maxHit - 3) {
+                $hits_array["n"] = \sprintf('%s/%s found. There are %s hits more...', $n, $results->getTotalHits(), $results->getTotalHits() - $n);
+            }
             $hits_array["value"] = \sprintf('%s | %s', $hit->itemSku, $hit->itemName);
 
             if ($returnDetails) {

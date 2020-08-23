@@ -123,6 +123,13 @@ class PRService extends AbstractService
         return $rootEntity;
     }
 
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param string $outputStrategy
+     * @return NULL|object
+     */
     public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
     {
 
@@ -134,8 +141,39 @@ class PRService extends AbstractService
             return null;
         }
 
-        // FOR PDF and Excel.
+        return $this->_getRootEntity($rootEntity, $outputStrategy);
+    }
 
+    /**
+     *
+     * @param int $id
+     * @param string $outputStrategy
+     * @return NULL|object
+     */
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
+    {
+
+        // Not in Cache.
+        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getRootEntityById($id);
+
+        if (! $rootEntity instanceof PRDoc) {
+            return null;
+        }
+
+        return $this->_getRootEntity($rootEntity, $outputStrategy);
+    }
+
+    /**
+     *
+     * @param object $rootEntity
+     * @param string $outputStrategy
+     * @return object
+     */
+    private function _getRootEntity($rootEntity, $outputStrategy)
+    {
+
+        // FOR PDF and Excel.
         $factory = null;
         $formatter = null;
 

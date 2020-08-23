@@ -141,6 +141,39 @@ WHERE id = %s";
             ->getRepository('\Application\Entity\NmtProcurePr')
             ->findOneBy($criteria);
 
+        return $this->_createRootEntity($rootEntityDoctrine, $id);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getRootEntityById()
+     */
+    public function getRootEntityById($id)
+    {
+        if ($id == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'id' => $id
+        );
+
+        $rootEntityDoctrine = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtProcurePr')
+            ->findOneBy($criteria);
+
+        return $this->_createRootEntity($rootEntityDoctrine, $id);
+    }
+
+    /**
+     *
+     * @param object $rootEntityDoctrine
+     * @param int $id
+     * @return NULL|void|\Procure\Domain\GoodsReceipt\GRDoc
+     */
+    private function _createRootEntity($rootEntityDoctrine, $id)
+    {
         if ($rootEntityDoctrine == null) {
             return null;
         }

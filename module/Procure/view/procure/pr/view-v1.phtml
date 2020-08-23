@@ -1,0 +1,297 @@
+<?php
+use Procure\Application\Helper\ErrorMessage;
+use Procure\Application\Helper\FormHelper;
+use Procure\Application\Helper\OptionList;
+use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Domain\Shared\Constants;
+use Procure\Domain\Shared\ProcureDocStatus;
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+/**@var \Procure\Application\DTO\Pr\PrDTO $headerDTO ;*/
+/**@var \Procure\Application\DTO\Pr\PrRowDTO $dto ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+
+// var_dump($headerDTO);
+// echo memory_get_usage();
+
+$add_row_url = null;
+$picture_url = null;
+$attachment_url = null;
+$status_url = null;
+$log_url = null;
+$view_url = null;
+
+$hoverMode = "row";
+
+$isViewing = false;
+
+if ($action == Constants::FORM_ACTION_SHOW) {
+    $isViewing = true;
+}
+
+$canPost = true;
+
+$transactionStatus = "";
+$alert = "info";
+
+$wh_id = null;
+$pmtTermId = null;
+$currencyId = null;
+$incotermId = null;
+$progress_div = '';
+
+$prNumber = null;
+
+if (! $headerDTO == null) {
+    $prNumber = $headerDTO->getPrName() . ' - ' . $headerDTO->getSubmittedOn();
+    if ($headerDTO->getTotalRows() > 0) {
+        $completion = $headerDTO->getCompletedRows() / $headerDTO->getTotalRows();
+    } else {
+        $completion = 0;
+    }
+
+    $progress_div = FormHelper::createProgressDiv($completion, 'completed.');
+
+    $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
+
+    if ($headerDTO->getTransactionStatus() == "completed") {
+        $transactionStatus = sprintf('<span style="color:green;">%s</span>', $headerDTO->getTransactionStatus());
+        $alert = "success";
+    }
+
+    $picture_url = sprintf($this->baseUrl . "/procure/pr-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachment_url = sprintf($this->baseUrl . "/procure/pr-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $status_url = sprintf($this->baseUrl . "/procure/pr/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/pr/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $view_url = sprintf($this->baseUrl . "/procure/pr/view?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $update_header_url = sprintf($this->baseUrl . "/procure/pr/update?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $add_row_url = sprintf($this->baseUrl . "/procure/pr/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+
+    $save_as_pdf = sprintf($this->baseUrl . "/procure/pr/print?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_PDF, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
+    $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
+
+    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+        $hoverMode = "cell";
+        $canPost = true;
+    endif;
+
+    switch ($headerDTO->getDocStatus()) {
+        case ProcureDocStatus::DOC_STATUS_DRAFT:
+            $isDraft = true;
+            $canPost = true;
+            break;
+        case ProcureDocStatus::DOC_STATUS_POSTED:
+            $isPosted = true;
+            break;
+    }
+
+    $wh_id = $headerDTO->getWarehouse();
+    $pmtTermId = $headerDTO->getPmtTerm();
+    $currencyId = $headerDTO->getDocCurrency();
+    $incotermId = $headerDTO->getIncoterm();
+}
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$paymentTerm_option = OptionList::createPmtTermOption($nmtPlugin->getPaymentTerms(), $pmtTermId);
+$incoterm_option = OptionList::createIncotermOption($nmtPlugin->incotermList(), $incotermId);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
+$error_msg = ErrorMessage::showErrorMessage($errors);
+
+// ============================
+?>
+<h4><?php
+
+echo $prNumber;
+?></h4>
+<div id="pr_row_gird" style="font-size: 8pt;"></div>
+<script>
+    var data = <?php
+    echo json_encode($rowOutput);
+    ?>
+
+	var obj = { width: "auto", height: $(window).height()-150, showTitle : false,
+			resizable:true,
+			//draggable:true,
+			sortable: true,
+			freezeCols:1,
+			hoverMode: '<?php
+echo $hoverMode;
+?>',
+		   	pageModel: { type: "local", rPP: 100, strRpp: "{0}" },
+		  	editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            editor: {
+                select: true
+            },
+		 columnBorders: true,
+         change: function (evt, ui) {
+
+            if (ui.source == 'commit' || ui.source == 'rollback') {
+                return;
+            }
+            console.log(ui);
+            var $grid = $(this),
+                grid = $grid.pqGrid('getInstance').grid;
+            var rowList = ui.rowList,
+                addList = [],
+                recIndx = grid.option('dataModel').recIndx,
+                deleteList = [],
+                updateList = [];
+
+            for (var i = 0; i < rowList.length; i++) {
+                var obj = rowList[i],
+                    rowIndx = obj.rowIndx,
+                    newRow = obj.newRow,
+                    type = obj.type,
+                    rowData = obj.rowData;
+                 if (type == 'add') {
+                    var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                    if (valid) {
+                        addList.push(newRow);
+                    }
+                }
+                else if (type == 'update') {
+                    var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                    if (valid) {
+                        if (rowData[recIndx] == null) {
+                            addList.push(rowData);
+                        }
+                        //else if (grid.isDirty({rowData: rowData})) {
+                        else {
+                            updateList.push(rowData);
+                      		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+
+                        }
+                    }
+                }
+              }
+
+              if (addList.length || updateList.length || deleteList.length) {
+				var sent_list = JSON.stringify({
+                    updateList: updateList,
+                    addList: addList,
+                    deleteList: deleteList
+                });
+                //alert(sent_list);
+
+                  $.ajax({
+                      url: '/procure/po/update-row',
+                      data: {
+                          sent_list: sent_list
+                      },
+                      dataType: "json",
+                      type: "POST",
+                      async: true,
+                      beforeSend: function (jqXHR, settings) {
+                          //$(".saving", $grid).show();
+
+
+                          //$("#global-notice").text("Updating...").show();
+                          //alert(updateList[0].item_name  +  updateList[0].row_id);
+                      },
+                      success: function (changes) {
+                          //commit the changes.
+
+                      	  if(changes.status == <?php
+
+                        echo Constants::AJAX_FAILED;
+                        ?>){
+                      		$("#global-notice").text(changes.message).show();
+                      	  }else{
+                      		$("#global-notice").text("[OK] Updated...").show();
+                      	  }
+            		      //alert('it is ok');
+                          /* grid.commit({ type: 'add', rows: changes.addList });
+                          grid.commit({ type: 'update', rows: changes.updateList });
+                          grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                      },
+                      complete: function () {
+                          //$(".saving", $grid).hide();
+                          $("#global-notice").delay(2200).fadeOut(500);
+                     	  refreshGird();
+                      }
+                  });
+              }
+            //alert(updateList.length);
+
+        },
+
+	};
+
+    obj.dataModel = {
+            data: data,
+            location: "local",
+            sorting: "local",
+            sortDir: "down"
+    };
+
+    obj.colModel = [
+
+             { title: "", editable: false, minWidth: 55, sortable: false,
+           
+       },
+
+
+       <?php
+    // $rowDTO->convertedStandardQuantity; ?>
+
+       { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+   	   { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:85,editable: false},
+            { title: "Status", dataType: "string", dataIndx: "transactionStatus", align: 'left',minWidth: 150,editable: true},
+
+   	       { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
+  		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+       { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
+       { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
+       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+
+      	<?php
+
+    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+        ?>
+        { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
+        <?php
+
+    else :
+        ?>
+        { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
+        	<?php
+
+    endif;
+    ?>
+       { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
+  
+        { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
+       { title: "Received Stock", dataType: "decimal", dataIndx: "postedStockQrQuantity", align: 'right',width:70,editable: false },
+       { title: "Billed qty", dataType: "decimal", dataIndx: "postedApQuantity", align: 'right',width:70,editable: false },
+       { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
+       { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
+
+       { title: "Target WH", dataType: "string", dataIndx: "warehouseCode", width:50,editable: false },
+	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+      { title: "PR", dataType: "string", dataIndx: "lastApVendor", width:120,editable: false },
+      { title: "PR", dataType: "string", dataIndx: "edt", width:120,editable: false },
+           
+      ];
+
+    var $grid = $("#pr_row_gird").pqGrid(obj);
+
+
+	// important for datamodel: local.
+    $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+
+    function refreshGird(){
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+    }
+    
+</script>

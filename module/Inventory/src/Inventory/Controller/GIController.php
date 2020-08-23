@@ -3,10 +3,11 @@ namespace Inventory\Controller;
 
 use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Util\FileExtension;
 use Application\Entity\NmtInventoryMv;
 use Application\Entity\NmtInventoryTrx;
-use Application\Model\Constants;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
 use Inventory\Application\Command\Transaction\CreateHeaderCmdHandler;
@@ -22,10 +23,12 @@ use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
+use Exception;
 
 /**
  * Goods Issue
@@ -36,7 +39,169 @@ use Zend\View\Model\ViewModel;
 class GIController extends AbstractGenericController
 {
 
+    const BASE_URL = '/inventory/gi/%s';
+
+    const VIEW_URL = '/inventory/gi/view?entity_id=%s&entity_token=%s';
+
+    const REVIEW_URL = '/inventory/gi/review?entity_id=%s&entity_token=%s';
+
+    const ADD_ROW_URL = '/inventory/gi/add-row?target_id=%s&target_token=%s';
+
     protected $trxService;
+
+    protected $trxUploadService;
+
+    public function uploadRowsAction()
+    {
+        /**
+         *
+         * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+         */
+        $this->layout("Inventory/layout-fullscreen");
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = \sprintf(self::BASE_URL, 'upload-rows');
+        $form_title = "Upload";
+        $action = Constants::FORM_ACTION_UPLOAD;
+        $viewTemplete = \sprintf(self::BASE_URL, 'review-v1');
+
+        $transactionType = TrxType::getGoodIssueTrx();
+
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $notify = new Notification();
+
+            try {
+
+                $entity_id = $request->getPost('entity_id');
+                $entity_token = $request->getPost('entity_token');
+
+                $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+                if ($rootEntity == null) {
+                    return $this->redirect()->toRoute('not_found');
+                }
+
+                $file_name = null;
+                $file_size = null;
+                $file_tmp = null;
+                $file_ext = null;
+                $file_type = null;
+
+                if (isset($_FILES['uploaded_file'])) {
+                    $file_name = $_FILES['uploaded_file']['name'];
+                    $file_size = $_FILES['uploaded_file']['size'];
+                    $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                    $file_type = $_FILES['uploaded_file']['type'];
+                    $file_ext1 = (explode('.', $file_name));
+                    $file_ext = end($file_ext1);
+                }
+
+                $ext = FileExtension::get($file_type);
+                if ($ext == null) {
+                    $ext = \strtolower($file_ext);
+                }
+                $expensions = array(
+                    "xlsx",
+                    "xls",
+                    "csv"
+                );
+
+                if (in_array($ext, $expensions) == false) {
+                    $notify->addError("File not supported or empty! " . $file_name);
+                }
+
+                $dto = $rootEntity->makeSnapshot();
+
+                if ($notify->hasErrors()) {
+                    $viewModel = new ViewModel(array(
+                        'errors' => $notify->getErrors(),
+                        'redirectUrl' => null,
+                        'entity_id' => $entity_id,
+                        'entity_token' => $entity_token,
+                        'headerDTO' => $dto,
+                        'version' => $rootEntity->getRevisionNo(),
+                        'nmtPlugin' => $nmtPlugin,
+                        'form_action' => $form_action,
+                        'form_title' => $form_title,
+                        'action' => $action,
+                        'transactionType' => $transactionType,
+                        'rowOutput' => $rootEntity->getRowsOutput()
+                    ));
+                    $viewModel->setTemplate($viewTemplete);
+                    return $viewModel;
+                }
+
+                $folder = ROOT . "/temp";
+
+                if (! is_dir($folder)) {
+                    mkdir($folder, 0777, true); // important
+                }
+
+                move_uploaded_file($file_tmp, "$folder/$file_name");
+
+                $this->getTrxUploadService()->doUploading($rootEntity, "$folder/$file_name");
+            } catch (Exception $e) {
+                $this->logException($e, false);
+                $notify->addError($e->getMessage());
+
+                $viewModel = new ViewModel(array(
+                    'errors' => $notify->getErrors(),
+                    'redirectUrl' => null,
+                    'entity_id' => $entity_id,
+                    'entity_token' => $entity_token,
+                    'headerDTO' => $dto,
+                    'version' => $rootEntity->getRevisionNo(),
+                    'nmtPlugin' => $nmtPlugin,
+                    'form_action' => $form_action,
+                    'form_title' => $form_title,
+                    'action' => $action,
+                    'transactionType' => $transactionType,
+                    'rowOutput' => $rootEntity->getRowsOutput()
+                ));
+                $viewModel->setTemplate($viewTemplete);
+                return $viewModel;
+            }
+
+            $this->logInfo(\sprintf('Trx rows for #%s uploaded!, (%s-%s)', $rootEntity->getId(), $file_name, $file_size));
+            $this->flashMessenger()->addMessage($notify->successMessage(false));
+            $redirectUrl = sprintf(self::REVIEW_URL, $entity_id, $entity_token);
+            \unlink("$folder/$file_name");
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO Posting
+        // =========================
+
+        $entity_id = (int) $this->params()->fromQuery('target_id');
+        $entity_token = $this->params()->fromQuery('target_token');
+        $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $dto = $rootEntity->makeSnapshot();
+
+        $viewModel = new ViewModel(array(
+            'errors' => null,
+            'redirectUrl' => null,
+            'entity_id' => $entity_id,
+            'entity_token' => $entity_token,
+            'headerDTO' => $dto,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'action' => $action,
+            'transactionType' => $transactionType,
+            'rowOutput' => $rootEntity->getRowsOutput()
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
 
     /**
      *
@@ -1390,5 +1555,23 @@ class GIController extends AbstractGenericController
     public function setTrxService(TrxService $trxService)
     {
         $this->trxService = $trxService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Upload\Transaction\TrxRowsUpload
+     */
+    public function getTrxUploadService()
+    {
+        return $this->trxUploadService;
+    }
+
+    /**
+     *
+     * @param TrxRowsUpload $trxUploadService
+     */
+    public function setTrxUploadService(TrxRowsUpload $trxUploadService)
+    {
+        $this->trxUploadService = $trxUploadService;
     }
 }

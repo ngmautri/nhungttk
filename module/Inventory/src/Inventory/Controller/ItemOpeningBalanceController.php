@@ -5,6 +5,7 @@ use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
+use Application\Domain\Util\FileExtension;
 use Application\Domain\Util\JsonErrors;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\TransactionalCmdHandlerDecorator;
@@ -22,12 +23,14 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use MLA\Paginator;
 use Zend\View\Model\ViewModel;
+use Exception;
 
 /**
- * Goods Receipt
+ * Opening Balance
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -37,6 +40,8 @@ class ItemOpeningBalanceController extends AbstractGenericController
 
     protected $trxService;
 
+    protected $trxUploadService;
+
     const BASE_URL = '/inventory/item-opening-balance/%s';
 
     const VIEW_URL = '/inventory/item-opening-balance/view?entity_id=%s&entity_token=%s';
@@ -45,6 +50,10 @@ class ItemOpeningBalanceController extends AbstractGenericController
 
     const ADD_ROW_URL = '/inventory/item-opening-balance/add-row?target_id=%s&target_token=%s';
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function uploadRowsAction()
     {
         /**
@@ -54,96 +63,144 @@ class ItemOpeningBalanceController extends AbstractGenericController
         $this->layout("Inventory/layout-fullscreen");
         $nmtPlugin = $this->Nmtplugin();
 
-        $form_action = \sprintf(self::BASE_URL, 'upload-row');
+        $form_action = \sprintf(self::BASE_URL, 'upload-rows');
         $form_title = "Upload";
         $action = Constants::FORM_ACTION_UPLOAD;
         $viewTemplete = \sprintf(self::BASE_URL, 'review-v1');
 
-        $userId = $this->getUserId();
-        $localCurrencyId = $this->getLocalCurrencyId();
         $transactionType = TrxType::getGoodReceiptTrx();
 
-        $prg = $this->prg($form_action, true);
-        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-            // returned a response to redirect us
-            return $prg;
-        } elseif ($prg === false) {
-            // this wasn't a POST request, but there were no params in the flash messenger
-            // probably this is the first time the form was loaded
-            $entity_id = (int) $this->params()->fromQuery('target_id');
-            $entity_token = $this->params()->fromQuery('target_token');
-            $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+        $request = $this->getRequest();
 
-            if ($rootEntity == null) {
-                return $this->redirect()->toRoute('not_found');
+        if ($request->isPost()) {
+
+            $notify = new Notification();
+
+            try {
+
+                $entity_id = $request->getPost('entity_id');
+                $entity_token = $request->getPost('entity_token');
+
+                $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+                if ($rootEntity == null) {
+                    return $this->redirect()->toRoute('not_found');
+                }
+
+                $file_name = null;
+                $file_size = null;
+                $file_tmp = null;
+                $file_ext = null;
+                $file_type = null;
+
+                if (isset($_FILES['uploaded_file'])) {
+                    $file_name = $_FILES['uploaded_file']['name'];
+                    $file_size = $_FILES['uploaded_file']['size'];
+                    $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                    $file_type = $_FILES['uploaded_file']['type'];
+                    $file_ext1 = (explode('.', $file_name));
+                    $file_ext = end($file_ext1);
+                }
+
+                $ext = FileExtension::get($file_type);
+                if ($ext == null) {
+                    $ext = \strtolower($file_ext);
+                }
+                $expensions = array(
+                    "xlsx",
+                    "xls",
+                    "csv"
+                );
+
+                if (in_array($ext, $expensions) == false) {
+                    $notify->addError("File not supported or empty! " . $file_name);
+                }
+
+                $dto = $rootEntity->makeSnapshot();
+
+                if ($notify->hasErrors()) {
+                    $viewModel = new ViewModel(array(
+                        'errors' => $notify->getErrors(),
+                        'redirectUrl' => null,
+                        'entity_id' => $entity_id,
+                        'entity_token' => $entity_token,
+                        'headerDTO' => $dto,
+                        'version' => $rootEntity->getRevisionNo(),
+                        'nmtPlugin' => $nmtPlugin,
+                        'form_action' => $form_action,
+                        'form_title' => $form_title,
+                        'action' => $action,
+                        'transactionType' => $transactionType
+                    ));
+                    $viewModel->setTemplate($viewTemplete);
+                    return $viewModel;
+                }
+
+                $folder = ROOT . "/temp";
+
+                if (! is_dir($folder)) {
+                    mkdir($folder, 0777, true); // important
+                }
+
+                move_uploaded_file($file_tmp, "$folder/$file_name");
+
+                $this->getTrxUploadService()->doUploading($rootEntity, "$folder/$file_name");
+            } catch (Exception $e) {
+                $this->logException($e, false);
+                $notify->addError($e->getMessage());
+
+                $viewModel = new ViewModel(array(
+                    'errors' => $notify->getErrors(),
+                    'redirectUrl' => null,
+                    'entity_id' => $entity_id,
+                    'entity_token' => $entity_token,
+                    'headerDTO' => $dto,
+                    'version' => $rootEntity->getRevisionNo(),
+                    'nmtPlugin' => $nmtPlugin,
+                    'form_action' => $form_action,
+                    'form_title' => $form_title,
+                    'action' => $action,
+                    'transactionType' => $transactionType
+                ));
+                $viewModel->setTemplate($viewTemplete);
+                return $viewModel;
             }
 
-            $dto = $rootEntity->makeSnapshot();
-
-            $viewModel = new ViewModel(array(
-                'errors' => null,
-                'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'headerDTO' => $dto,
-                'version' => $dto->getRevisionNo(),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action,
-                'localCurrencyId' => $localCurrencyId,
-                'transactionType' => $transactionType
-            ));
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
-        }
-        try {
-            // POSTING
-            $data = $prg;
-            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
-            $entity_id = $data['entity_id'];
-            $entity_token = $data['entity_token'];
-            $version = $data['version'];
-            $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
-
-            if ($rootEntity == null) {
-                return $this->redirect()->toRoute('not_found');
-            }
-            $options = new TrxUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-
-            $cmdHandler = new UpdateHeaderCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
-            $cmd->setLogger($this->getLogger());
-
-            $cmd->execute();
-            $notification = $dto->getNotification();
-        } catch (\Exception $e) {
-            $this->logException($e);
-            $notification = new Notification();
-            $notification->addError($e->getMessage());
+            $this->logInfo(\sprintf('Trx rows for #%s uploaded!, (%s-%s)', $rootEntity->getId(), $file_name, $file_size));
+            $this->flashMessenger()->addMessage($notify->successMessage(false));
+            $redirectUrl = sprintf(self::REVIEW_URL, $entity_id, $entity_token);
+            \unlink("$folder/$file_name");
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
-        if ($notification->hasErrors()) {
-            $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
-                'redirectUrl' => null,
-                'entity_id' => $entity_id,
-                'entity_token' => $entity_token,
-                'headerDTO' => $dto,
-                'version' => $rootEntity->getRevisionNo(),
-                'nmtPlugin' => $nmtPlugin,
-                'form_action' => $form_action,
-                'form_title' => $form_title,
-                'action' => $action,
-                'transactionType' => $transactionType
-            ));
-            $viewModel->setTemplate($viewTemplete);
-            return $viewModel;
+        // NO Posting
+        // =========================
+
+        $entity_id = (int) $this->params()->fromQuery('target_id');
+        $entity_token = $this->params()->fromQuery('target_token');
+        $rootEntity = $this->getTrxService()->getDocHeaderByTokenId($entity_id, $entity_token);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
         }
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf(self::REVIEW_URL, $entity_id, $entity_token);
-        return $this->redirect()->toUrl($redirectUrl);
+
+        $dto = $rootEntity->makeSnapshot();
+
+        $viewModel = new ViewModel(array(
+            'errors' => null,
+            'redirectUrl' => null,
+            'entity_id' => $entity_id,
+            'entity_token' => $entity_token,
+            'headerDTO' => $dto,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'action' => $action,
+            'transactionType' => $transactionType
+        ));
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
     }
 
     /**
@@ -926,5 +983,23 @@ class ItemOpeningBalanceController extends AbstractGenericController
     public function setTrxService(TrxService $trxService)
     {
         $this->trxService = $trxService;
+    }
+
+    /**
+     *
+     * @return \Inventory\Application\Service\Upload\Transaction\TrxRowsUpload
+     */
+    public function getTrxUploadService()
+    {
+        return $this->trxUploadService;
+    }
+
+    /**
+     *
+     * @param TrxRowsUpload $trxUploadService
+     */
+    public function setTrxUploadService(TrxRowsUpload $trxUploadService)
+    {
+        $this->trxUploadService = $trxUploadService;
     }
 }

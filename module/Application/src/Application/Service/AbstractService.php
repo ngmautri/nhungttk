@@ -44,9 +44,15 @@ abstract class AbstractService implements EventManagerAwareInterface
         }
     }
 
-    protected function logException(Exception $e)
+    protected function logException(Exception $e, $trace = true)
     {
-        if ($this->getLogger() != null) {
+        if ($this->getLogger() == null) {
+            return;
+        }
+
+        if ($trace) {
+            $this->getLogger()->alert($e->getTraceAsString());
+        } else {
             $this->getLogger()->alert($e->getMessage());
         }
     }

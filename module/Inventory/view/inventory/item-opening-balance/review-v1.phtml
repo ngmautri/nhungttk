@@ -49,6 +49,8 @@ $incotermId = null;
 $transactionTypeArray = [];
 $summary_txt = null;
 
+$rows_upload_url = "/inventory/item-opening-balance/upload-rows";
+
 if (! $headerDTO == null) {
 
     $f = 'Net amount: %s %s  | Tax amount: %s  | Gross amount: %s %s  | Total rows: %s';
@@ -131,6 +133,17 @@ if (! $headerDTO == null) {
     ];
 
     $dropDownMenu = \Application\Application\Helper\FormHelper::createCustomDropDownMenu($dropDownList, 'dropdownMenu1');
+
+    $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $logTab = sprintf('<a title="Change Log" href="%s"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li></a>', $url1);
+
+    $tabsList = [
+        // $logisticTab,
+        $logTab
+    ];
+
+    $tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -179,6 +192,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                <span>
          
          </a>
+         <div></div>
          <div id="tabs" style="font-size: 9.5pt">
             <ul>
                <li>
@@ -190,62 +204,9 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                     echo $form_title;
                     ?></a>
                </li>
-               <li>
-                  <a href="<?php
-
-                echo $picture_url;
-                ?>">
-                     <span class="glyphicon glyphicon-picture"></span>
-                     </span>
-                     &nbsp;Picture
-                  </a>
-               </li>
-               <li>
-                  <a href="#logistic">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Logistic
-                  </a>
-               </li>
-               <li>
-                  <a href="#accounting">
-                     <small>
-                        <i class="fa fa-calculator" aria-hidden="true"></i>
-                     </small>
-                     &nbsp;Accounting
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
-
-                echo $status_url;
-                ?>">
-                     <span class="glyphicon glyphicon-picture"></span>
-                     </span>
-                     &nbsp;Status
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
-
-                echo $attachment_url;
-                ?>">
-                     <small>
-                        <span class="glyphicon glyphicon-paperclip"></span>
-                     </small>
-                     &nbsp;Attachment
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
-
-                echo $log_url;
-                ?>">
-                     <span class="glyphicon glyphicon-list"></span>
-                     &nbsp;Log
-                  </a>
-               </li>
+                 <?php
+                echo $tabs;
+                ?>
             </ul>
             <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
                <!-- Tab1 -->
@@ -255,9 +216,11 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 // ================================
 echo $error_msg;
 // ===============================
-?>
 
-<?php
+if ($action == Constants::FORM_ACTION_UPLOAD) :
+    include (ROOT . '/module/Inventory/view/inventory/trx_rows_upload.php');
+endif;
+
 if ($action == Constants::FORM_ACTION_REVERSE) :
     ?>
     <form id="REVERSAL_FORM" class="form-horizontal" action="<?php
@@ -453,6 +416,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                         <a href="#rows" class="" data-toggle="collapse">ROWS:</a>
                      </legend>
                      <div id="rows" class="collapse in">
+                        <!-- button -->
                         <div style="font-size: 9pt">
                            <div class="dropdown">
                               <!-- button -->
@@ -476,8 +440,6 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                   </fieldset>
                </form>
             </div>
-            <div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
-            <div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
             <!-- end tab -->
          </div>
       </div>
@@ -609,219 +571,12 @@ function doPosting() {
    
 }
 
-function doPosting1() {
-	$('#confirm_modal_sm').modal('hide');
-	$('#b_modal_no_header').modal();
-
-	//submitForm('Posting_Form');
-
-	var url="/procure/ap/review";
-	var entity_id="<?php
-echo (! $headerDTO == null) ? $headerDTO->getId() : "";
-?>";
-	var entity_token="<?php
-
-echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-?>";
-	var version="<?php
-echo $version;
-?>";
-
-	$.post(url, {
-		entity_id 	: entity_id,
-		entity_token: entity_token,
-		version: version,
-	}, function(data, status, dataType) {
-		//alert(data);
-        window.location.href= data;
-   	});
-}
-
-function confirmReserval() {
-    
- 	$('#reversal_confirm_modal_sm').modal();
-}
-
-function doReserval() {
-    $('#reversal_confirm_modal_sm').modal('hide');    
-    submitForm("REVERSAL_FORM");
-}
-
-
-function doAmendment() {
-	$('#amendment_confirm_modal_sm').modal('hide');
-	$('#b_modal_no_header').modal();
-
-	var url="/procure/po/enable-amendment";
-	var entity_id="<?php
-
-echo (! $headerDTO == null) ? $headerDTO->getId() : "";
-?>";
-	var entity_token="<?php
-
-echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-?>";
-	var version="<?php
-
-echo $version;
-?>";
-
-	$.post(url, {
-		entity_id 	: entity_id,
-		entity_token: entity_token,
-		version: version,
-	}, function(data, status, dataType) {
-	//	alert(data);
-        window.location.href= data;
-   	});
-}
-
-
-function confirmPostAmendment() {
- 	$('#post_amendment_confirm_modal_sm').modal();
-}
-
-function doPostAmendment() {
-	$('#post_amendment_confirm_modal_sm').modal('hide');
-	$('#b_modal_no_header').modal();
-
-	var url="/procure/po/review-amendment";
-	var entity_id="<?php
-
-echo (! $headerDTO == null) ? $headerDTO->getId() : "";
-?>";
-	var entity_token="<?php
-
-echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-?>";
-	var version="<?php
-
-echo $version;
-?>";
-	$.post(url, {
-		entity_id 	: entity_id,
-		entity_token: entity_token,
-		version: version,
-	}, function(data, status, dataType) {
-        window.location.href= data;
-   	});
-}
-
-
-$( "#pr_item_name" ).autocomplete({
-    source: "/procure/pr-search/auto-complete",
-    minLength: 3,
-    select: function( event, ui ) {
-  	  $( "#pr_row_id" ).val(ui.item.pr_row_id);
-
-     alert	( ui.item.pr_row_id );
-  	  //alert($( "#vendor_id" ).val());
-
-  	 	$('#global-notice').show();
-  		$('#global-notice').html('"' + ui.item.item_name + '" selected');
-  		$('#global-notice').fadeOut(5000);
-  		//$("#jquery_dialog").dialog("close");
-    }
-    })
-    .autocomplete( "instance" )._renderItem = function( ul, item ) {
-    return $( "<li>" )
-      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
-      .appendTo( ul );
-    };
-
-    $( "#item_name" ).autocomplete({
-        source: "/inventory/item-search/auto-complete",
-        minLength: 2,
-        select: function( event, ui ) {
-      	  $( "#item_id" ).val(ui.item.id);
-
-      	 	$('#global-notice').show();
-      		$('#global-notice').html('"' + ui.item.value + '" selected');
-      		$('#global-notice').fadeOut(5000);
-      		//$("#jquery_dialog").dialog("close");
-        }
-
-      })
-      .autocomplete( "instance" )._renderItem = function( ul, item ) {
-   	  var serial_no = "";
-   	  if(item.item_serial!=""){
-   		  serial_no = " : " + item.item_serial;
-   	  }
-
-         return $( "<li>" )
-           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-           .appendTo( ul );
-       };
-
-
-
-//$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-
-$( "#vendor_name_1" ).autocomplete({
-    source: "/bp/vendor-search/auto-complete",
-    minLength: 3,
-    select: function( event, ui ) {
-  	  $( "#vendor_id" ).val(ui.item.id);
-      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
-  	  //alert($( "#vendor_id" ).val());
-
-  	 	$('#global-notice').show();
-  		$('#global-notice').html('"' + ui.item.value + '" selected');
-  		$('#global-notice').fadeOut(5000);
-  		//$("#jquery_dialog").dialog("close");
-    }
-    })
-    .autocomplete( "instance" )._renderItem = function( ul, item ) {
-    return $( "<li>" )
-      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
-      .appendTo( ul );
-    };
-
-	//$("#Create_PR_Form :input").attr("disabled", "disabled");
-
-
-	    var autoCompleteEditor = function (ui) {
-        var $inp = ui.$cell.find("input");
-        var rowData = ui.rowData;
-
-        //initialize the editor
-        $inp.autocomplete({
-        	source: "/bp/vendor-search/auto-complete",
-            minLength: 3,
-            select: function( event, ui ) {
-          	  //$( "#vendor_id" ).val(ui.item.id);
-              //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
-          	  //alert($( "#vendor_id" ).val());
-          	  //alert(ui.item.id);
-          	  rowData.vendor_id = ui.item.id;
-
-          	 	$('#global-notice').show();
-          		$('#global-notice').html('"' + ui.item.value + '" selected');
-          		$('#global-notice').fadeOut(5000);
-          		//$("#jquery_dialog").dialog("close");
-            }
-            })
-            .autocomplete( "instance" )._renderItem = function( ul, item ) {
-            return $( "<li>" )
-              .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
-              .appendTo( ul );
-          };
-    }
-
-
-    //var container_height = $('#main_container').height();
-    //alert(container_height);
-
-
 
 	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
 			resizable:true,
 			sortable: true,
 			freezeCols:1,
-			hoverMode: '<?php
-
-echo $hoverMode;
-?>',
+			hoverMode: 'row',
 		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
                 allowInvalid: true,
@@ -831,59 +586,22 @@ echo $hoverMode;
                 select: true
             },
 		 columnBorders: true,
-
-				  	  toolbar: {
-				  	 	<?php
-
-        if (! $isViewing) :
-            ?>
-                    	<?php
-
-            if ($canPost) :
-                ?>
-                        items: [
-                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
-                            { "click": function (evt, ui) {
-                                var $grid = $(this).closest('.pq-grid');
-                                redirectUrl="<?php
-
-                echo $add_row_url;
-                ?>";
-                                window.location.href= redirectUrl;
-                             }
-                            }
-                        ]
-                        }
-                        ]
-                    	<?php endif;
-
-            ?>
-                    	<?php endif;
-
-        ?>
-
-                     	<?php
-
-                    if ($action == Constants::FORM_ACTION_SHOW) :
-                        ?>
-                      	items: [
-                            { type: 'button', icon: 'ui-icon-refresh', label: '', listeners: [
-                                { "click": function (evt, ui) {
-                                    var $grid = $(this).closest('.pq-grid');
-                                  }
-                                }
-                            ]
-                            }
-                        ]
-                     	<?php endif;
-
-                    ?>
-
-
-                },
-
-
-        change: function (evt, ui) {
+	  	  toolbar: {
+            items: [
+              { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+                    { "click": function (evt, ui) {
+                            var $grid = $(this).closest('.pq-grid');
+                            redirectUrl="<?php
+                            echo $add_row_url;
+                            ?>";
+                            window.location.href= redirectUrl;
+                         }
+                    }
+                 ]
+              }
+            ]
+        },
+       change: function (evt, ui) {
 
             if (ui.source == 'commit' || ui.source == 'rollback') {
                 return;
@@ -959,21 +677,14 @@ echo $hoverMode;
                       	  }else{
                       		$("#global-notice").text("[OK] Updated...").show();
                       	  }
-            		      //alert('it is ok');
-                          /* grid.commit({ type: 'add', rows: changes.addList });
-                          grid.commit({ type: 'update', rows: changes.updateList });
-                          grid.commit({ type: 'delete', rows: changes.deleteList }); */
-                      },
+                        },
                       complete: function () {
-                          //$(".saving", $grid).hide();
                           $("#global-notice").delay(2200).fadeOut(500);
                      	  refreshGird();
                       }
                   });
               }
-            //alert(updateList.length);
-
-        },
+          },
 
 	};
 
@@ -983,7 +694,6 @@ echo $hoverMode;
             method: "GET",
             recIndx: "id",
             url: "<?php
-
             echo $rowGirdUrl;
             ?>",
             getData: function (response) {
@@ -992,85 +702,41 @@ echo $hoverMode;
     };
 
     obj.colModel = [
-    	<?php
-
-    if (! $isViewing) :
-        ?>
-      	<?php
-
-        if ($canPost) :
-            ?>
-             { title: "", editable: false, minWidth: 55, sortable: false,
+       { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
         		return '<button type="button" class="edit_btn">Edit </button>';
            }
        },
-       <?php endif;
 
-        ?>
-       <?php endif;
-
-    ?>
-
-
-       <?php
-    // $rowDTO->convertedStandardQuantity; ?>
-
-       { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
-   	   { title: "GL", dataType: "string", dataIndx: "glAccountNumber", width:50,editable: false },
-       { title: "CC", dataType: "string", dataIndx: "costCenterName", width:85,editable: false },
-
-       { title: "Ref", dataType: "string", dataIndx: "sysNumber", width:120,editable: false},
-
-       { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
-  		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
-       { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
-       { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
-       { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
-
-      	<?php
-
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
-        ?>
-        { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
-        { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
-        <?php
-
-    else :
-        ?>
+        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
+        { title: "GL", dataType: "string", dataIndx: "glAccountNumber", width:50,editable: false },
+        { title: "CC", dataType: "string", dataIndx: "costCenterName", width:85,editable: false },
+        { title: "Ref", dataType: "string", dataIndx: "sysNumber", width:120,editable: false},
+        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
+        { title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
+        { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
+        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
+        { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
         { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
-       	<?php
-
-    endif;
-    ?>
-
-
-       { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
-
-       { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
-       { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
-       { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
-
-       { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
-       { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
-       { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
-       { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
-       { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:90,editable: false },
-
-       { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
-       { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
-
-       { title: "Target WH", dataType: "string", dataIndx: "warehouseCode", width:120,editable: false },
-		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
-	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-
-      ];
+        { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
+        { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
+        { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
+        { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
+        { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
+        { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
+        { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
+        { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
+        { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:90,editable: false },
+        { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
+        { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
+        { title: "Target WH", dataType: "string", dataIndx: "warehouseCode", width:120,editable: false },
+        { title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
+        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+     ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);
-
-
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;
         var $grid = $(this);
@@ -1078,17 +744,12 @@ echo $hoverMode;
         $grid.find("button.edit_btn").button({})
         .unbind("click")
         .bind("click", function (evt) {
-
             var $tr = $(this).closest("tr"),
             rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-
             redirectUrl="/inventory/item-opening-balance/update-row?entity_token="+rowData['token']+"&entity_id="+rowData['id']+"&target_id="+rowData['docId']+"&target_token="+rowData['docToken'];
-          	//alert(redirectUrl);
-			window.location.href = redirectUrl;
-          	//window.open(redirectUrl,'_blank');
+  			window.location.href = redirectUrl;
         });
 
      });
@@ -1099,4 +760,5 @@ echo $hoverMode;
     function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
     }
+    
 </script>

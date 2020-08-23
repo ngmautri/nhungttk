@@ -119,13 +119,14 @@ class TrxRowsUpload extends AbstractService
                     $trx->createRowFrom($rowSnapshot, $options, $sharedService, false);
                 }
 
-                $this->logInfo(count($trx->getDocRows()) . 'will be stored.');
+                $this->logInfo(count($trx->getDocRows()) . ' will be stored.');
                 $trx->store($sharedService);
 
                 return $trx;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $this->logException($e);
+            throw new \RuntimeException("Upload failed. The file might be not wrong.");
         }
     }
 }

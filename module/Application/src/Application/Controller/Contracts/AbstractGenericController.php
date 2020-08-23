@@ -71,13 +71,17 @@ class AbstractGenericController extends AbstractActionController
         $this->getLogger()->info($m);
     }
 
-    protected function logException(Exception $e)
+    protected function logException(Exception $e, $trace = true)
     {
         if ($this->getLogger() == null) {
             return;
         }
 
-        $this->getLogger()->alert($e->getTraceAsString());
+        if ($trace) {
+            $this->getLogger()->alert($e->getTraceAsString());
+        } else {
+            $this->getLogger()->alert($e->getMessage());
+        }
     }
 
     protected function getLocalCurrencyId()

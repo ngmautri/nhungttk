@@ -69,7 +69,7 @@ echo $item_url_val;
 
 function showSelectedItem(){
    var url= $('#item_url').text();   
-   showJqueryDialog('Item Detail','1650',$(window).height()-40, url,'j_loaded_data', true);
+   showJqueryDialog('Item Detail','1800',$(window).height()-40, url,'j_loaded_data', true);
 }
 
 function selectItem(id, token,target, name, target_name, context = null){

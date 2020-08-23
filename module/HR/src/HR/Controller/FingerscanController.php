@@ -141,7 +141,7 @@ class FingerscanController extends AbstractActionController
                 $file_ext = strtolower(end(explode('.', $file_name)));
 
                 // attachement required?
-                if ($file_tmp == "" or $file_tmp === null) {
+                if ($file_tmp == "" or $file_tmp == null) {
 
                     $errors[] = 'Attachment can\'t be empty!';
                     $this->flashMessenger()->addMessage('Something wrong!');

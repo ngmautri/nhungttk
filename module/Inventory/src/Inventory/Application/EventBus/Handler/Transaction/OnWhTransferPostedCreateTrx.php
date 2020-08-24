@@ -6,7 +6,7 @@ use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Command\GenericCmd;
 use Inventory\Application\Command\Transaction\PostGrFromExchangeCmdHandler;
 use Inventory\Application\Command\Transaction\Options\PostGRFromExchangeOptions;
-use Inventory\Domain\Event\Transaction\GI\WhGoodsExchangePosted;
+use Inventory\Domain\Event\WhGoodsTransferPostedEvent;
 use Inventory\Domain\Transaction\TrxSnapshot;
 
 /**
@@ -17,7 +17,7 @@ use Inventory\Domain\Transaction\TrxSnapshot;
 class OnWhTransferPostedCreateTrx extends AbstractEventHandler
 {
 
-    public function __invoke(WhGoodsExchangePosted $event)
+    public function __invoke(WhGoodsTransferPostedEvent $event)
     {
         try {
 
@@ -48,6 +48,6 @@ class OnWhTransferPostedCreateTrx extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return WhGoodsExchangePosted::class;
+        return WhGoodsTransferPostedEvent::class;
     }
 }

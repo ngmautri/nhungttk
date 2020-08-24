@@ -408,7 +408,10 @@ echo $entityFormInput;
                
             </div>
             <div class="col-sm-3">
-               <img alt="" height="" src="/inventory/item/barcode?barcode=22011979">
+               <img alt="" height="" src="/inventory/item/barcode?barcode=<?php
+
+            echo (! $dto == null) ? $dto->getSysNumber() : "";
+            ?>">
             </div>
          </div>
          <hr style="margin: 5pt 1pt 5pt 1pt;">

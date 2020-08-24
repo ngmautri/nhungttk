@@ -46,7 +46,6 @@ final class ItemType
         $r[self::INVENTORY_ITEM_TYPE] = "Inventory Item";
         $r[self::NONE_INVENTORY_ITEM_TYPE] = "None-Inventory Item";
         $r[self::SERVICE_ITEM_TYPE] = "Service";
-
         $r[self::FIXED_ASSET_ITEM_TYPE] = "Fixed Asset";
         return $r;
     }

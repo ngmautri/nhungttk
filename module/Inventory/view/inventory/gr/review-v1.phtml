@@ -53,6 +53,8 @@ $upload_btn = '';
 $summary_txt = null;
 $rowGirdUrl = null;
 
+$rows_upload_url = "/inventory/gr/upload-rows";
+
 if (! $headerDTO == null) {
 
     $transactionStatus = sprintf('<span style="color:red;">%s</span>', $headerDTO->getTransactionStatus());
@@ -254,7 +256,14 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
 // ================================
 echo $error_msg;
 // ===============================
+
+if ($action == Constants::FORM_ACTION_UPLOAD) :
+    include (ROOT . '/module/Inventory/view/inventory/trx_rows_upload.php');
+endif;
+
 ?>
+
+
 
 <?php
 if ($action == Constants::FORM_ACTION_REVERSE) :

@@ -26,6 +26,7 @@ use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Service\Transaction\TrxService;
 use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
+use Inventory\Application\Service\Upload\Transaction\UploadFactory;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use MLA\Paginator;
 use Zend\Math\Rand;
@@ -145,7 +146,10 @@ class GIController extends AbstractGenericController
 
                 move_uploaded_file($file_tmp, "$folder/$file_name");
 
-                $this->getTrxUploadService()->doUploading($rootEntity, "$folder/$file_name");
+                $uploader = UploadFactory::create($rootEntity->getMovementType());
+                $uploader->setDoctrineEM($this->getDoctrineEM());
+                $uploader->setLogger($this->getLogger());
+                $uploader->doUploading($rootEntity, "$folder/$file_name");
             } catch (Exception $e) {
                 $this->logException($e, false);
                 $notify->addError($e->getMessage());

@@ -34,8 +34,11 @@ $( "#pr_item_name" ).autocomplete({
     minLength: 2,
     select: function( event, ui ) {
 
-	      $( "#pr_row_id" ).val(ui.item.hit.id);         
-          $( "#quantity" ).val(ui.item.hit.quantity);          
+	      $( "#pr_row_id" ).val(ui.item.hit.id);    
+          $( "#quantity" ).val(1);          
+          $( "#conversionFactor" ).val(ui.item.hit.quantity);          
+
+          
           $( "#item_id" ).val(ui.item.hit.item);  
           $( "#item_name" ).val(ui.item.hit.itemName);
           $('#item_url').text('/inventory/item/show1?tab_idx=1&entity_id='+ui.item.hit.item+'&token='+ui.item.hit.itemToken);

@@ -31,6 +31,7 @@ class OnItemUpdatedUpdateIndex extends AbstractEventHandler
             }
 
             $indexer = new ItemSearchIndexImpl();
+            $indexer->setLogger($this->getLogger());
             $indexer->createDoc($event->getTarget());
 
             $format = "Index for item #%s updated!";

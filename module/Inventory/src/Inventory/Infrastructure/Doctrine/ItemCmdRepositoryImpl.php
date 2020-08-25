@@ -73,6 +73,7 @@ class ItemCmdRepositoryImpl extends AbstractDoctrineRepository implements ItemCm
         $this->doctrineEM->flush();
 
         $rootSnapshot->id = $entity->getId();
+        $rootSnapshot->sysNumber = $entity->getSysNumber();
         return $rootSnapshot;
     }
 

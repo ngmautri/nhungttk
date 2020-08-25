@@ -53,11 +53,11 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
                 $this->_createNewIndexFromSnapshot($indexer, $snapshot);
             }
 
-            $message = \sprintf('Index has been created successfully! %s', count($rows));
+            // $message = \sprintf('Index has been created successfully! %s', count($rows));
 
             $indexResult = new IndexingResult();
             $this->_updateIndexingResult($indexer, $indexResult);
-            $indexResult->setMessage($message);
+            // $indexResult->setMessage($message);
             $indexResult->setIsSuccess(True);
         } catch (Exception $e) {
 
@@ -125,13 +125,11 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
 
             $this->_updateIndexFromSnapshot($indexer, $snapshot);
 
-            $message = \sprintf('Document has been added successfully! %s', $snapshot->getId());
-
             $indexResult = new IndexingResult();
             $this->_updateIndexingResult($indexer, $indexResult);
+            $message = \sprintf('Search index created. %s', $snapshot->getId());
             $indexResult->setMessage($message);
             $indexResult->setIsSuccess(True);
-            $this->logInfo($message);
         } catch (Exception $e) {
             $this->logException($e);
             $message = \sprintf('Failed! %s', $e->getMessage());
@@ -140,56 +138,6 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
         }
 
         return $indexResult;
-    }
-
-    /**
-     *
-     * @param \ZendSearch\Lucene\SearchIndexInterface $index
-     * @param IndexingResult $indexResult
-     * @return \Application\Application\Service\Search\Contracts\IndexingResult
-     */
-    private function _updateIndexingResult(SearchIndexInterface $indexer, IndexingResult $indexResult)
-    {
-        $indexResult->setDocsCount($indexer->numDocs());
-        $indexResult->setIndexSize($indexer->count());
-        $indexResult->setIndexVesion($indexer->getFormatVersion());
-
-        if ($indexer->getDirectory() !== null) {
-            $indexResult->setFileList($indexer->getDirectory()
-                ->fileList());
-        }
-        $indexResult->setIndexDirectory(SearchIndexer::INDEX_PATH);
-        return $indexResult;
-    }
-
-    /**
-     *
-     * @param \ZendSearch\Lucene\SearchIndexInterface $indexer
-     * @param ItemSnapshot $snapshot
-     * @throws \InvalidArgumentException
-     */
-    private function _createNewIndexFromSnapshot(SearchIndexInterface $indexer, ItemSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof ItemSnapshot) {
-            throw new \InvalidArgumentException("ItemSnapshot empty");
-        }
-
-        $snList = $snapshot->getSerialNoList();
-
-        if (! $snList instanceof Collection) {
-            return;
-        }
-
-        if ($snList->count() == 0) {
-            $doc = $this->__createDoc($snapshot);
-            $indexer->addDocument($doc);
-            return;
-        }
-        // add doc with serial numeber
-        foreach ($snList as $sn) {
-            $doc = $this->__createDoc($snapshot, $sn);
-            $indexer->addDocument($doc);
-        }
     }
 
     /**
@@ -215,9 +163,51 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             foreach ($ck_hits as $hit) {
                 $indexer->delete($hit->id);
             }
+            $message = \sprintf('Search index deleted! %s', $snapshot->getId());
+            $this->logInfo($message);
         }
 
         $this->_createNewIndexFromSnapshot($indexer, $snapshot);
+    }
+
+    /**
+     *
+     * @param \ZendSearch\Lucene\SearchIndexInterface $indexer
+     * @param ItemSnapshot $snapshot
+     * @throws \InvalidArgumentException
+     */
+    private function _createNewIndexFromSnapshot(SearchIndexInterface $indexer, ItemSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof ItemSnapshot) {
+            throw new \InvalidArgumentException("ItemSnapshot empty");
+        }
+
+        $snList = $snapshot->getSerialNoList();
+
+        if ($snList instanceof Collection) {
+
+            if ($snList->count() > 0) {
+                // add doc with serial numeber
+                foreach ($snList as $sn) {
+                    $message = \sprintf('Add doc with serial numeber! %s', \get_class($snList));
+                    $this->logInfo($message);
+
+                    $doc = $this->__createDoc($snapshot, $sn);
+                    $indexer->addDocument($doc);
+                }
+
+                $message = \sprintf('Search index created for item with serial no.! %s', $snapshot->getId());
+                $this->logInfo($message);
+
+                return;
+            }
+        }
+
+        $doc = $this->__createDoc($snapshot);
+        $indexer->addDocument($doc);
+
+        $message = \sprintf('Search index created! %s', $snapshot->getId());
+        $this->logInfo($message);
     }
 
     /**
@@ -233,8 +223,8 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
         // KEY
 
         $k = SearchIndexer::ITEM_KEY;
-        $v = \sprintf(SearchIndexer::ITEM_KEY_FORMAT, $snapshot->getId());
-        $doc->addField(Field::keyword($k, $v));
+        $v1 = \sprintf(SearchIndexer::ITEM_KEY_FORMAT, $snapshot->getId());
+        $doc->addField(Field::keyword($k, $v1));
 
         $k = SearchIndexer::FIXED_ASSET_KEY;
         $v = \sprintf(SearchIndexer::FIXED_ASSET_VALUE, $snapshot->getIsFixedAsset());
@@ -248,18 +238,19 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
 
         $thumbnail_file = null;
 
-        $lastPic = $pictureList->last();
+        if ($pictureList != null) {
+            $lastPic = $pictureList->last();
 
-        if ($lastPic instanceof NmtInventoryItemPicture) {
-
-            $thumbnail_file = "/thumbnail/item/" . $lastPic->getFolderRelative() . "thumbnail_200_" . $lastPic->getFileName();
-            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+            if ($lastPic instanceof NmtInventoryItemPicture) {
+                $thumbnail_file = "/thumbnail/item/" . $lastPic->getFolderRelative() . "thumbnail_200_" . $lastPic->getFileName();
+                $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+            }
         }
 
         $doc->addField(Field::UnIndexed('item_thumbnail', $thumbnail_file));
 
         // Serial
-        if ($sn !== null) {
+        if ($sn != null) {
             $doc->addField(Field::text('serialNo', $sn->getSerialNumber()));
 
             $v = preg_replace('/[-]/', '', \substr($sn->getSerialNumber(), - 5));
@@ -277,7 +268,6 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
             $doc->addField(Field::keyword('serialSystemNo', $sn->getSysNumber()));
             $doc->addField(Field::text('mfg_description', $sn->getRemarks()));
         } else {
-
             $doc->addField(Field::UnIndexed('serialNo', null));
             $doc->addField(Field::UnIndexed('serialNo1', null));
             $doc->addField(Field::UnIndexed('serialNo2', null));
@@ -419,7 +409,28 @@ class ItemSearchIndexImpl extends AbstractService implements ItemSearchIndexInte
          * $doc->addField(Field::text('itemTypeId', $snapshot->getItemTypeId()));
          *
          */
+
         return $doc;
+    }
+
+    /**
+     *
+     * @param \ZendSearch\Lucene\SearchIndexInterface $index
+     * @param IndexingResult $indexResult
+     * @return \Application\Application\Service\Search\Contracts\IndexingResult
+     */
+    private function _updateIndexingResult(SearchIndexInterface $indexer, IndexingResult $indexResult)
+    {
+        $indexResult->setDocsCount($indexer->numDocs());
+        $indexResult->setIndexSize($indexer->count());
+        $indexResult->setIndexVesion($indexer->getFormatVersion());
+
+        if ($indexer->getDirectory() !== null) {
+            $indexResult->setFileList($indexer->getDirectory()
+                ->fileList());
+        }
+        $indexResult->setIndexDirectory(SearchIndexer::INDEX_PATH);
+        return $indexResult;
     }
 
     /**

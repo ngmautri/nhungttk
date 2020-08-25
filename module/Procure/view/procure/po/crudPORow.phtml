@@ -148,10 +148,10 @@ echo $error_msg;
                   <div class="form-group margin-bottom">
                      <label class="control-label col-sm-2">PR Item: </label>
                      <div class="col-sm-3">
-                        <input tabindex="1" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
+                        <input tabindex="0" autofocus="autofocus"  class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
                            value="<?php
                         echo $pr_item_name;
-                        ?>">
+                        ?>"><span style="display: none;">Please enter search term!</span></p>
                         <input type="hidden" id="pr_row_id" placeholder="" name="prRow" value="">
                         <div id="pr_row_url" style="display: none;"></div>
                      </div>
@@ -404,7 +404,12 @@ echo $error_msg;
    <!-- /#page-content-wrapper -->
 </div>
 <!-- /#wrapper -->
-<script type="text/javascript">
+
+<script>
+
+    $( "#pr_item_name").focus(function() {
+	  $( this ).next( "span" ).css( "display", "inline" ).fadeOut( 5000 );
+    });
 
     $('#unit_price').bind('change', function() {
     	$('#exw_unit_price').val($('#unit_price').val());
@@ -412,8 +417,7 @@ echo $error_msg;
 
 	$("#Create_Inv_Form :input").attr("disabled", "disabled");
 
-    $( "#pr_item_name" ).focus();
-
+   
     $('#quantity').bind('change', function() {
        	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
@@ -430,11 +434,12 @@ echo $error_msg;
     	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
     });
 
-    $( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-    }
+   
 </script>
     
 <?php
 include (ROOT . '/module/Procure/view/procure/pr_auto_complete.php');
-include (ROOT . '/module/Procure/view/procure/item_auto_complete.php');
+include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
 ?>
+
+

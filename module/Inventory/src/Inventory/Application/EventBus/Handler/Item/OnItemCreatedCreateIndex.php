@@ -29,8 +29,9 @@ class OnItemCreatedCreateIndex extends AbstractEventHandler
             }
 
             $indexer = new ItemSearchIndexImpl();
-            $indexer->createDoc($event->getTarget());
             $indexer->setLogger($this->getLogger());
+            $indexer->createDoc($event->getTarget());
+
             $format = "Index for item #%s created!";
             $this->logInfo(\sprintf($format, $event->getTarget()
                 ->getId()));

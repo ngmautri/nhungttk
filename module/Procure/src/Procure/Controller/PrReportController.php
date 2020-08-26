@@ -18,6 +18,10 @@ class PrReportController extends AbstractGenericController
 
     protected $prReporter;
 
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
     public function headerStatusAction()
     {
         $isActive = (int) $this->params()->fromQuery('is_active');
@@ -42,19 +46,21 @@ class PrReportController extends AbstractGenericController
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
-        ;
 
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
-        ;
 
         $isActive = (int) $this->params()->fromQuery('is_active');
 
         if ($isActive == null) {
             $isActive = 1;
+        }
+
+        if ($docStatus == null) {
+            $docStatus = 'posted';
         }
 
         if ($sort_by == null) :
@@ -69,6 +75,7 @@ class PrReportController extends AbstractGenericController
         $filter->setIsActive($isActive);
         $filter->setDocYear($prYear);
         $filter->setBalance($balance);
+        $filter->setDocStatus($docStatus);
 
         $total_records = null;
 
@@ -107,17 +114,13 @@ class PrReportController extends AbstractGenericController
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'is_active' => $isActive,
             'sort_by' => $sort_by,
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
-            'currentState' => $currentState,
-            'docStatus' => $docStatus,
-            'yy' => $prYear,
-            'balance' => $balance
+            'filter' => $filter
         ));
 
-        $viewModel->setTemplate("procure/pr/dto_list");
+        $viewModel->setTemplate("procure/pr-report/dto_list");
         return $viewModel;
     }
 

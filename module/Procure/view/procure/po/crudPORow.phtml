@@ -148,10 +148,11 @@ echo $error_msg;
                   <div class="form-group margin-bottom">
                      <label class="control-label col-sm-2">PR Item: </label>
                      <div class="col-sm-3">
-                        <input tabindex="0" autofocus="autofocus"  class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name"
-                           value="<?php
+                        <input tabindex="1" autofocus="autofocus" class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR item" name="pr_item_name" value="<?php
                         echo $pr_item_name;
-                        ?>"><span style="display: none;">Please enter search term!</span></p>
+                        ?>">
+                        <span style="display: none;">Please enter search term to search purchase request!</span>
+                        </p>
                         <input type="hidden" id="pr_row_id" placeholder="" name="prRow" value="">
                         <div id="pr_row_url" style="display: none;"></div>
                      </div>
@@ -167,7 +168,7 @@ echo $error_msg;
                         </span>
                      </div>
                      <div class="col-sm-1">
-                        <a tabindex="100" style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">
+                        <a style="color: #0080ff;" href="javascript:;" onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">
                            Select&nbsp;&nbsp;
                            <i class="glyphicon glyphicon-folder-open"></i>
                         </a>
@@ -182,13 +183,15 @@ echo $error_msg;
                   <div class="form-group margin-bottom  required">
                      <label class="control-label col-sm-2">Item: </label>
                      <div class="col-sm-3">
-                        <input tabindex="2" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="itemName"
+                        <input tabindex="1" class="form-control" type="text" id="item_name" placeholder="Enter keyword to search item..." name="itemName"
                            value="<?php
 
                         if (! $dto == null) :
                             echo $dto->getItemName();endif;
 
                         ?>">
+                        <span style="display: none;">Please enter search term to search item!</span>
+                        </p>
                         <input type="hidden" id="item_id" placeholder="" name="item" value="<?php
 
                         if (! $dto == null) :
@@ -404,7 +407,6 @@ echo $error_msg;
    <!-- /#page-content-wrapper -->
 </div>
 <!-- /#wrapper -->
-
 <script>
 
     $( "#pr_item_name").focus(function() {
@@ -434,9 +436,12 @@ echo $error_msg;
     	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
     });
 
+    $( "#item_name").focus(function() {
+	  $( this ).next( "span" ).css( "display", "inline" ).fadeOut( 5000 );
+  });
+
    
 </script>
-    
 <?php
 include (ROOT . '/module/Procure/view/procure/pr_auto_complete.php');
 include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');

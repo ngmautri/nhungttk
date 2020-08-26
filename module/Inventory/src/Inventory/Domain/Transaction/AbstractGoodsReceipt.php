@@ -72,6 +72,7 @@ abstract class AbstractGoodsReceipt extends GenericTrx
 
         $event = new WhGrPosted($target, $defaultParams, $params);
         $this->addEvent($event);
+        $this->updateIdentityFrom($snapshot);
     }
 
     protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)

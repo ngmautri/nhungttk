@@ -15,6 +15,7 @@ use Inventory\Domain\Transaction\GI\GIforExchangePartForMachine;
 use Inventory\Domain\Transaction\GI\GIforMachineNoExchange;
 use Inventory\Domain\Transaction\GI\GIforTransferLocation;
 use Inventory\Domain\Transaction\GI\GIforTransferWarehouse;
+use Inventory\Domain\Transaction\GR\GRFromExchange;
 use Inventory\Domain\Transaction\GR\GRFromOpening;
 use Inventory\Domain\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
@@ -71,6 +72,10 @@ class TransactionFactory
                 $trx = new GRFromOpening();
                 break;
 
+            case TrxType::GR_FROM_EXCHANGE:
+                $trx = new GRFromExchange();
+                break;
+
             case TrxType::GR_FROM_TRANSFER_LOCATION:
                 $trx = new GRFromTransferLocation();
                 break;
@@ -115,6 +120,9 @@ class TransactionFactory
 
         // Important
         $trx->specify();
+
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $trx->updateExchangeRate($fxRate);
 
         $validatorService = ValidatorFactory::create($typeId, $sharedService);
 
@@ -193,6 +201,10 @@ class TransactionFactory
                 $trx = new GRFromTransferWarehouse();
                 break;
 
+            case TrxType::GR_FROM_EXCHANGE:
+                $trx = new GRFromExchange();
+                break;
+
             // ============
             case TrxType::GI_FOR_COST_CENTER:
                 $trx = new GIforCostCenter();
@@ -229,6 +241,8 @@ class TransactionFactory
 
         // Important
         $trx->specify();
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $trx->updateExchangeRate($fxRate);
 
         $validatorService = ValidatorFactory::create($typeId, $sharedService);
 
@@ -300,6 +314,9 @@ class TransactionFactory
 
             case TrxType::GR_FROM_PURCHASING:
                 $trx = new GRFromPurchasing();
+                break;
+            case TrxType::GR_FROM_EXCHANGE:
+                $trx = new GRFromExchange();
                 break;
 
             case TrxType::GI_FOR_COST_CENTER:

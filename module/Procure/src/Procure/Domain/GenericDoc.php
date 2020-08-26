@@ -24,6 +24,9 @@ class GenericDoc extends BaseDoc
         $this->setId($snapshot->getId());
         $this->setRevisionNo($snapshot->getRevisionNo());
         $this->setDocVersion($snapshot->getDocVersion());
+        if ($this->getSysNumber() == Constants::SYS_NUMBER_UNASSIGNED) {
+            $this->setSysNumber($snapshot->getSysNumber());
+        }
     }
 
     /**

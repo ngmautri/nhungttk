@@ -160,6 +160,7 @@ class ValidatorFactory
             case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
+
                 $validator = new GIForMachineValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
                 $rowValidators->add($validator);

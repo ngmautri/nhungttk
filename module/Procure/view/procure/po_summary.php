@@ -1,4 +1,3 @@
-
 <hr>
 <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
 echo $this->translate('Summary:');

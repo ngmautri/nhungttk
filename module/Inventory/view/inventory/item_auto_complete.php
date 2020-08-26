@@ -32,7 +32,7 @@ $( "#item_name" ).autocomplete({
         $( "#pr_row_url" ).val("");
         $( "#pr_row_detail" ).hide();
         $( "#pr_item_name" ).val("");
-        $( "#item_id" ).val(ui.item.hit.id);
+        $( "#item" ).val(ui.item.hit.id);
 
         $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.hit.id+'&token='+ui.item.hit.token);
 

@@ -78,6 +78,7 @@ abstract class AbstractGoodsIssue extends GenericTrx
 
         $event = new WhGiPosted($target, $defaultParams, $params);
         $this->addEvent($event);
+        $this->updateIdentityFrom($snapshot);
     }
 
     /**

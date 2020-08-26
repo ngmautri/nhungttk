@@ -78,7 +78,7 @@ class UploadGiForRepairWithEx extends AbstractTrxRowsUpload
                             $rowSnapshot->costCenter = $val;
                             break;
 
-                        case 6: // Cost Center
+                        case 6: // remark
                             $rowSnapshot->remarks = $val;
                             break;
                     }

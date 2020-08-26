@@ -37,7 +37,7 @@ class PostCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
         /**

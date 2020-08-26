@@ -40,12 +40,17 @@ if ($action == Constants::FORM_ACTION_EDIT) {
 }
 
 $wh_id = null;
+$currencyId = $localCurrencyId;
 
 if ($headerDTO != null) {
     $wh_id = $headerDTO->getWarehouse();
+    if ($headerDTO->getDocCurrency() != null) {
+        $currencyId = $headerDTO->getDocCurrency();
+    }
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
+$currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
 
@@ -104,7 +109,6 @@ echo $entityFormInput;
                         echo $version;
                         ?>)</a>
                      </legend>
-                     
                      <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2">Movement Type:</label>
                         <div class="col-sm-3">
@@ -151,7 +155,8 @@ echo $entityFormInput;
                         if (! $headerDTO == null) :
                             echo $headerDTO->movementDate; endif;
 
-                        ?>" placeholder=" please select" />
+                        ?>"
+                              placeholder=" please select" />
                         </div>
                         <label class="control-label col-sm-2"><?php
 
@@ -167,6 +172,24 @@ echo $entityFormInput;
         echo $wh_option;
         ?>
    					</select>
+                        </div>
+                     </div>
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2">Currency:</label>
+                        <div class="col-sm-3">
+                           <select name="docCurrency" class="form-control input-sm">
+                              <option value="">Select Currency</option>
+ <?php
+// ================
+echo $currency_option;
+// ================
+?>                                  </select>
+                        </div>
+                        <label class="control-label col-sm-2">Exchange Rate:</label>
+                        <div class="col-sm-3">
+                           <input class="form-control input-sm" type="text" placeholder="" id="exchangeRate" name="exchangeRate" value="<?php
+                        echo (! $headerDTO == null) ? $headerDTO->getExchangeRate() : "";
+                        ?>">
                         </div>
                      </div>
                      <div class="form-group margin-bottom">

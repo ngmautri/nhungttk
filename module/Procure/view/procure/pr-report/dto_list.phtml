@@ -3,6 +3,7 @@ use Procure\Application\DTO\Pr\PrHeaderDetailDTO;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
+use Procure\Infrastructure\Persistence\Filter\PrReportSqlFilter;
 
 /**
  *
@@ -12,21 +13,26 @@ use Procure\Application\Service\Output\Contract\HeadersSaveAsSupportedType;
 
 /**@var PrHeaderDetailDTO $rootSnapshot ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+/**@var PrReportSqlFilter $filter ;*/
 
 // echo $total_records;
 $table_body = "";
 $count = 0;
 $n = 0;
 
-$main_tab = $this->translate("PR LIST");
+$main_tab = $this->translate("Purchase Request");
 
 $createUrl = $this->baseUrl . "/procure/pr/create";
-$filterUrl = $this->baseUrl . "/procure/pr/list";
+$filterUrl = $this->baseUrl . "/procure/pr-report/header-status";
 $result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
-$base = sprintf('/procure/pr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&yy=%s&balance=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, $yy, $balance);
+$f = '/procure/pr-report/header-status?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&yy=%s&balance=%s';
+$base = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $sort_by, $sort, $filter->getDocYear(), $filter->getBalance());
 
-$save_as_excel = sprintf('/procure/pr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
-$save_as_openoffice = sprintf('/procure/pr/list?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s', $is_active, $currentState, $docStatus, $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$f = '/procure/pr-report/header-status?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s';
+$save_as_excel = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_EXCEL);
+
+$f = '/procure/pr-report/header-status?is_active=%s&currentState=%s&docStatus=%s&sort_by=%s&sort=%s&file_type=%s';
+$save_as_openoffice = sprintf($f, $filter->getIsActive(), $filter->getCurrentState(), $filter->getDocStatus(), $sort_by, $sort, HeadersSaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
 
 if (count($list) > 0) {
 
@@ -81,7 +87,8 @@ if (count($list) > 0) {
     }
 }
 
-$filter_msg = sprintf("Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s", $yy, $is_active, $balance, $sort_by, $sort);
+$f = "Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s";
+$filter_msg = sprintf($f, $filter->getDocYear(), $filter->getIsActive(), $filter->getBalance(), $sort_by, $sort);
 
 // =================================== ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -147,7 +154,7 @@ $filter_msg = sprintf("Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s", $
                      <select name="yy" class="form-control input-sm">
                         <option value="0">All</option>
                         <?php
-                        echo OptionList::createYearOption($yy);
+                        echo OptionList::createYearOption($filter->getDocYear());
                         ?>
                      </select>
                   </div>
@@ -159,13 +166,30 @@ $filter_msg = sprintf("Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s", $
                         <option value="2">All</option>
                         <option <?php
 
-                        echo $balance == '0' ? "selected='selected'" : "";
+                        echo $filter->getBalance() == 0 ? "selected='selected'" : "";
                         ?> value="0">Balance=0 (Fulfilled PR)</option>
                         <option <?php
 
-                        echo $balance == '1' ? "selected='selected'" : "";
+                        echo $filter->getBalance() == 1 ? "selected='selected'" : "";
                         ?> value="1">Balance>0 (Pending PR)</option>
                      </select>
+                  </div>
+               </div>
+               
+                 <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Doc Status</label>
+                  <div class="col-sm-3">
+                     <select name="balance" class="form-control input-sm">
+                        <option value="2">All</option>
+                        <option <?php
+
+                        echo $filter->getDocStatus() == 'posted' ? "selected='selected'" : "";
+                        ?> value="posted">Posted</option>
+                        <option <?php
+
+                        echo $filter->getDocStatus() == 'draft' ? "selected='selected'" : "";
+                        ?> value="draft">Draft</option>
+              </select>
                   </div>
                </div>
                <div class="form-group margin-bottom">
@@ -174,15 +198,15 @@ $filter_msg = sprintf("Year=%s | Active=%s | Balance=%s |Sorted by = %s - %s", $
                      <select class="form-control input-sm" name="is_active">
                         <option <?php
 
-                        echo $is_active == '2' ? "selected='selected'" : "";
+                        echo $filter->getIsActive() == '2' ? "selected='selected'" : "";
                         ?> value="2">All</option>
                         <option <?php
 
-                        echo $is_active == '1' ? "selected='selected'" : "";
+                        echo $filter->getIsActive() == '1' ? "selected='selected'" : "";
                         ?> value="1">Active</option>
                         <option <?php
 
-                        echo $is_active == '-1' ? "selected='selected'" : "";
+                        echo $filter->getIsActive() == '-1' ? "selected='selected'" : "";
                         ?> value="-1">Inactive</option>
                      </select>
                   </div>

@@ -138,6 +138,7 @@
         { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
         { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
         { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
+        { title: "Cogs", dataType: "string", dataIndx: "cogsLocal", width: 70,align: 'right',editable: false},
         { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
         { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},

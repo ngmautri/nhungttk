@@ -402,7 +402,8 @@ class GIController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'transactionType' => $transactionType,
                 'isAllowed' => $isAllowed,
-                'errors' => null
+                'errors' => null,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -458,7 +459,8 @@ class GIController extends AbstractGenericController
                 'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'transactionType' => $transactionType,
-                'errors' => $notification->getErrors()
+                'errors' => $notification->getErrors(),
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -855,7 +857,7 @@ class GIController extends AbstractGenericController
         $nmtPlugin = $this->Nmtplugin();
 
         $form_action = "/inventory/gi/review";
-        $form_title = "Review Invoice";
+        $form_title = "Review Transaction";
         $action = Constants::FORM_ACTION_REVIEW;
         $viewTemplete = "inventory/gi/review-v1";
 

@@ -36,6 +36,11 @@ abstract class GenericTrx extends BaseDoc
 
     abstract public function specify();
 
+    public function updateExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
+
     abstract protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
 
     abstract protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);

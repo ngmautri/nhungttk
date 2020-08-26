@@ -158,7 +158,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             throw new \Exception($m);
         }
 
-        $this->logInfo(sprintf("row #%s-  quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
+        $this->logInfo(sprintf("Row #%s - Quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
         return $cogs;
     }
 
@@ -316,6 +316,30 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                 $fifoLayer->setCreatedBy($obj);
             }
 
+            $fifoLayer->setExchangeRate($trx->getExchangeRate()); // get from root.
+
+            // get from root
+            if ($trx->getLocalCurrency() > 0) {
+
+                /**
+                 *
+                 * @var \Application\Entity\NmtApplicationCurrency $obj ;
+                 */
+                $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($row->getCreatedBy());
+                $fifoLayer->setLocalCurrency($obj);
+            }
+
+            // get from root
+            if ($trx->getDocCurrency() > 0) {
+
+                /**
+                 *
+                 * @var \Application\Entity\NmtApplicationCurrency $obj ;
+                 */
+                $obj = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($row->getCreatedBy());
+                $fifoLayer->setDocCurrency($obj);
+            }
+
             // quantity in standard unit.
             $fifoLayer->setQuantity($row->getConvertedStandardQuantity());
             $fifoLayer->setUnitPrice($row->getConvertedStandardUnitPrice());
@@ -325,8 +349,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             $fifoLayer->setDocQuantity($row->getDocQuantity());
             $fifoLayer->setStandardConvertFactor($row->getConversionFactor());
             $fifoLayer->setDocUnitPrice($row->getDocUnitPrice());
-            $fifoLayer->setLocalCurrency($row->getCurrency());
-            $fifoLayer->setExchangeRate($row->getExchangeRate());
+
             $fifoLayer->setSourceClass(get_class($row));
             $fifoLayer->setSourceId($row->getId());
             $fifoLayer->setSourceToken($row->getToken());
@@ -340,7 +363,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             }
 
             $fifoLayer->setToken(Uuid::uuid4()->toString());
-            $fifoLayer->setRemarks(\sprintf("WH-GR from PO-GR %s", $trx->getSysNumber()));
+            $fifoLayer->setRemarks(\sprintf("Ref. %s-%s", $trx->getMovementType(), $trx->getSysNumber()));
 
             $this->getDoctrineEM()->persist($fifoLayer);
         }

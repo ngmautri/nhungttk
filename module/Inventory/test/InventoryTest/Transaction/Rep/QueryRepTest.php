@@ -30,10 +30,11 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             $id = 1416;
             $token = "1623f80f-c267-4d10-b2f4-0f908a0a2229";
 
-            $id = 1415;
-            $token = "53c733c3-f9c4-411d-90f6-7ea596b4bf26";
+            $id = 1433;
+            $token = "d75323a7-8c6a-4683-8486-3355d34d00c3";
 
             $rootEntity = $rep->getLazyRootEntityByTokenId($id, $token);
+            var_dump($rootEntity->getMovementType());
             $timer = $stopWatch->stop("test");
             echo $timer . "===\n";
 

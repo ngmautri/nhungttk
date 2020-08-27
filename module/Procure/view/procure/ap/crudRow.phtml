@@ -20,6 +20,7 @@ $rowNumber = null;
 $doc_wh_id = null;
 $pr_item_name = null;
 $po_item_name = null;
+$tabsList = null;
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -31,7 +32,31 @@ if ($headerDTO !== null) {
     // $add_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&token=%s", $target_id, $target_token);
     $rowNumber = $headerDTO->getTotalRows() + 1;
     $doc_wh_id = $headerDTO->getWarehouse();
+
+    $picture_url = sprintf($this->baseUrl . "/procure/ap-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $format = '/inventory/item-picture/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $picturesTab = sprintf('<a title="Picture" href="%s"><span class="glyphicon glyphicon-picture"></span>&nbsp;(%s)</a></li></a>', $picture_url, '');
+
+    $format = '/inventory/item-attachment/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $attachment_url = sprintf($this->baseUrl . "/finance/v-invoice-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $attachTab = sprintf('<a title="Serial" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $attachment_url, '');
+
+    $format = '/inventory/change-log/list1?object_token=%s&object_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $logTab = sprintf('<a title="Change Log" href="%s"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li></a>', $log_url);
+
+    $tabsList = [
+        // $logisticTab,
+        $picturesTab,
+        $attachTab,
+        $logTab
+    ];
 }
+
+$tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
 
 $wh_id = null;
 $gl_account = null;
@@ -97,21 +122,8 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                 echo $form_title;
                 ?></a>
                </li>
-
 <?php
-if ($action == \Application\Model\Constants::FORM_ACTION_EDIT) :
-    ?>
- 	 	<li>
-                  <a href=""<?php
-
-    echo $message_url;
-    ?>">
-                     <span class="glyphicon glyphicon-list"></span>
-                     &nbsp;Log
-                  </a>
-               </li>
-<?php endif;
-
+echo $tabs;
 ?>
 				</ul>
             <div id="general" style="font-size: 9pt">
@@ -254,7 +266,7 @@ echo $error_msg;
                                     echo $dto->getItemName();endif;
 
                                 ?>">
-                              <input type="hidden" id="item_id" placeholder="" name="item" value="<?php
+                              <input type="hidden" id="item" placeholder="" name="item" value="<?php
 
                             if (! $dto == null) :
                                 echo $dto->getItem(); endif;
@@ -482,7 +494,7 @@ echo $cost_center_option;
                         <div class="form-group margin-bottom">
                            <label class="control-label col-sm-2">Description:</label>
                            <div class="col-sm-4">
-                              <textarea class="form-control input-sm" type="text" rows="6" placeholder="" name="descriptionText" style="font-size: 9pt;"><?php
+                              <textarea class="form-control input-sm" type="text" rows="4" placeholder="" name="descriptionText" style="font-size: 9pt;"><?php
 
                             echo (! $dto == null) ? $dto->getDescriptionText() : "";
                             ?></textarea>

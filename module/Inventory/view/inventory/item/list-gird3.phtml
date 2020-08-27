@@ -6,6 +6,7 @@
  *         ===========================================
  */
 use Application\Application\Helper\OptionList;
+use Inventory\Domain\Item\Contracts\ItemType;
 use Procure\Application\Helper\FormHelper;
 
 $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
@@ -30,7 +31,8 @@ $lineBreak = 4;
 $hits_detail = '';
 $dropDown = '';
 
-$item_legend = '';
+$asset_legend = '';
+$model_legend = null;
 
 if (count($list) > 0) {
     $result_msg = sprintf("%s records found!", $total_records);
@@ -64,10 +66,10 @@ title="click for more detail!" onclick="" class="img-rounded" width="150" height
             $model_legend = '';
         }
 
-        if ($a['is_fixed_asset'] == "1") {
+        if ($a['item_type_id'] == ItemType::INVENTORY_ITEM_TYPE) {
+            $asset_legend = ' <i class="fa fa-inbox" aria-hidden="true"></i>';
+        } elseif (($a['item_type_id'] == ItemType::FIXED_ASSET_ITEM_TYPE)) {
             $asset_legend = '<span style="font-size: 6pt;" class="badge">A</span>';
-        } else {
-            $asset_legend = '';
         }
 
         $format = '<a href="javascript:;"  onclick="showJqueryDialog(\'%s\',\'1500\',$(window).height()-50,\'%s\', \'j_loaded_data\',true)"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Quick Show</a>';

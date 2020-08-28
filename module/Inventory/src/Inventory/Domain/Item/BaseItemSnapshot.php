@@ -11,6 +11,7 @@ use Application\Domain\Shared\AbstractDTO;
 class BaseItemSnapshot extends AbstractDTO
 {
 
+    // orignal attributes;
     public $id;
 
     public $warehouseId;

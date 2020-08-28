@@ -2,9 +2,11 @@
 namespace Inventory\Domain\Item;
 
 use Application\Notification;
+use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
+use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Validator\Item\ItemValidatorCollection;
 use InvalidArgumentException;
 
@@ -19,6 +21,11 @@ abstract class GenericItem extends BaseItem
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new ItemSnapshot());
+    }
+
+    public function makeDTO()
+    {
+        return DTOFactory::createDTOFrom($this, new ItemDTO());
     }
 
     /**

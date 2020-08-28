@@ -91,4 +91,36 @@ class ItemQueryRepositoryImpl extends AbstractDoctrineRepository implements Item
         $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
         return $rootEntity;
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Repository\ItemQueryRepositoryInterface::getRootEntityById()
+     */
+    public function getRootEntityById($id)
+    {
+        if ($id == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'id' => $id
+        );
+
+        $rootEntityDoctrine = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtInventoryItem')
+            ->findOneBy($criteria);
+
+        if ($rootEntityDoctrine == null) {
+            return null;
+        }
+
+        $rootSnapshot = ItemMapper::createSnapshot($rootEntityDoctrine, null, true);
+        if ($rootSnapshot == null) {
+            return null;
+        }
+
+        $rootEntity = ItemFactory::contructFromDB($rootSnapshot);
+        return $rootEntity;
+    }
 }

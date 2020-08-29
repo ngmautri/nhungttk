@@ -18,4 +18,6 @@ Interface TrxReportRepositoryInterface
     public function getAllRow(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 
     public function getAllRowTotal(SqlFilterInterface $filter);
+
+    public function getBeginGrGiEnd(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
 }

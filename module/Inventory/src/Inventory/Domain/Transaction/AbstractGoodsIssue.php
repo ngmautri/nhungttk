@@ -60,11 +60,7 @@ abstract class AbstractGoodsIssue extends GenericTrx
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $snapshot = $rep->post($this, true);
-        // var_dump($snapshot);
-
-        $this->setId($snapshot->getId());
-        $this->setSysNumber($snapshot->getSysNumber());
-        $this->setRevisionNo($snapshot->getRevisionNo());
+        $this->updateIdentityFrom($snapshot);
 
         $target = $this;
         $defaultParams = new DefaultParameter();
@@ -78,7 +74,6 @@ abstract class AbstractGoodsIssue extends GenericTrx
 
         $event = new WhGiPosted($target, $defaultParams, $params);
         $this->addEvent($event);
-        $this->updateIdentityFrom($snapshot);
     }
 
     /**

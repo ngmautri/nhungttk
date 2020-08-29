@@ -29,7 +29,27 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
 
     public $item;
 
+    public $itemId;
+
     public $warehouseId;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     *
+     * @param mixed $itemId
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+    }
 
     /**
      *
@@ -70,7 +90,7 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
     public function __toString()
     {
         $f = "TrxRowReportSqlFilter_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s";
-        return \sprintf($f, $this->getWarehouseId(), $this->item, $this->isActive, $this->docYear, $this->docMonth, $this->movementType, $this->docStatus, $this->fromDate, $this->toDate, $this->flow);
+        return \sprintf($f, $this->getWarehouseId(), $this->getItemId(), $this->isActive, $this->docYear, $this->docMonth, $this->movementType, $this->docStatus, $this->fromDate, $this->toDate, $this->flow);
     }
 
     /**

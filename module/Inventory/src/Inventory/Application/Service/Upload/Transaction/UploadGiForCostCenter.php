@@ -91,7 +91,7 @@ class UploadGiForCostCenter extends AbstractTrxRowsUpload
                 return $trx;
             }
         } catch (\Exception $e) {
-            $this->logException($e);
+            $this->logException($e, false);
             throw new \RuntimeException("Upload failed. The file might be not wrong.");
         }
     }

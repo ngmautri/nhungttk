@@ -111,11 +111,7 @@ class TrxMapper
 
         if ($snapshot->movementDate !== null) {
             $entity->setMovementDate(new \DateTime($snapshot->movementDate));
-
-            // set Posting = Movement Date
-            if ($snapshot->postingDate == null) {
-                $entity->setPostingDate(new \DateTime($snapshot->movementDate));
-            }
+            $entity->setPostingDate(new \DateTime($snapshot->movementDate));
         }
 
         if ($snapshot->reversalDate !== null) {
@@ -568,6 +564,15 @@ class TrxMapper
             $entity->setWh($obj);
         }
 
+        if ($snapshot->whLocation > 0) {
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryWarehouseLocation $obj ;
+             */
+            $obj = $doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->find($snapshot->whLocation);
+            $entity->setWhLocation($obj);
+        }
+
         if ($snapshot->prRow > 0) {
             /**
              *
@@ -1006,7 +1011,7 @@ class TrxMapper
         if ($entity->getPostingPeriod() !== null) {
             $snapshot->postingPeriod = $entity->getPostingPeriod()->getId();
         }
-        if ($entity->getWhLocation() !== null) {
+        if ($entity->getWhLocation() != null) {
             $snapshot->whLocation = $entity->getWhLocation()->getId();
         }
         if ($entity->getWh() !== null) {

@@ -45,6 +45,7 @@ class GRFromPurchasingRow extends TrxRow
         $instance->setGrRow($sourceObj->getId()); // Important
         $instance->setFlow(TransactionFlow::WH_TRANSACTION_IN);
         $instance->setWh($instance->getWarehouse());
+        $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] ref. %s', $sourceObj->getRowIdentifer()));
 
         // update PR and PO, AP if any
         $instance->setInvoiceRow($sourceObj->getApInvoiceRow());

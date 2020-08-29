@@ -42,6 +42,7 @@ class GRFromExchangeRow extends TrxRow
         // Overwrite
         $instance->setFlow($rootEntity->getMovementFlow());
         $instance->setWhLocation($rootEntity->getTartgetLocation());
+        $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] %s %s-%s', "Recycle Bin", $rootEntity->getWarehouse(), $rootEntity->getTartgetLocation()));
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

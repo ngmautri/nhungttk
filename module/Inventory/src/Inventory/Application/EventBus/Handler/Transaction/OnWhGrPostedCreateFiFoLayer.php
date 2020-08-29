@@ -22,7 +22,8 @@ class OnWhGrPostedCreateFiFoLayer extends AbstractEventHandler
     public function __invoke(WhGrPosted $event)
     {
         try {
-            if (! $event->getTarget() instanceof GenericTrx) {
+            $trx = $event->getTarget();
+            if (! $trx instanceof GenericTrx) {
                 Throw new \InvalidArgumentException("GenericTrx not give for FIFO Layer Service! OnWhGrPostedCreateFiFoLayer");
             }
 
@@ -30,8 +31,7 @@ class OnWhGrPostedCreateFiFoLayer extends AbstractEventHandler
             $fifoService->setDoctrineEM($this->getDoctrineEM());
             $fifoService->createLayersFor($event->getTarget());
 
-            $this->logInfo(\sprintf("FIFO Layer for WH-GR #%s created!", $event->getTarget()
-                ->getId()));
+            $this->logInfo(\sprintf("FIFO Layer for WH-GR #%s-%s created!", $trx->getId(), $trx->getSysNumber()));
         } catch (\Exception $e) {
             throw $e;
         }

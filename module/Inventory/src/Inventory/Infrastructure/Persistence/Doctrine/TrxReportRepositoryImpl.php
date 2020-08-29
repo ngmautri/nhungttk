@@ -97,6 +97,15 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
     }
 
     public function getOfItem($item_id, $item_token)
-
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Infrastructure\Persistence\Contracts\TrxReportRepositoryInterface::getBeginGrGiEnd()
+     */
+    public function getBeginGrGiEnd(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        return TrxReportHelper::getBeginGrGiEnd($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+    }
 }

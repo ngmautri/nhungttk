@@ -145,8 +145,8 @@ class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterfa
             throw new RuntimeException(sprintf("Error orcured when creating GE-Exchange #%s", $instance->getId()));
         }
 
-        $instance->setId($snapshot->getId());
-        $instance->setToken($snapshot->getToken());
+        $instance->updateIdentityFrom($snapshot);
+
         return $instance;
     }
 

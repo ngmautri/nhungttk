@@ -363,7 +363,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             }
 
             $fifoLayer->setToken(Uuid::uuid4()->toString());
-            $fifoLayer->setRemarks(\sprintf("Ref. %s-%s", $trx->getMovementType(), $trx->getSysNumber()));
+            $fifoLayer->setRemarks(\sprintf("[Auto.] Ref. %s-%s", $trx->getMovementType(), $trx->getSysNumber()));
 
             $this->getDoctrineEM()->persist($fifoLayer);
         }

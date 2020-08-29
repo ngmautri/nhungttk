@@ -1,71 +1,56 @@
-<ul>
-	<li><a href="#general">Valuation method: FIFO</a></li>
-	<li><a href="#general">Minimum in Stock</a></li>
-	<li><a href="#general">Maximum in stock</a></li>
-</ul>
+<?php
 
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+$itemTrxUrl = null;
+if ($target != null) {
+    $f = '/inventory/trx-report/item-trx?itemId=%s';
+    $tmp = sprintf($f, $target->getId());
+
+    $f = '<a href="%s">%s</a>';
+    $itemTrxUrl = sprintf($f, $tmp, $this->translate("Journal"));
+}
+?>
 <h4>
-	Total onhand: <span id="total_onhand"></span>
+   Total onhand:
+   <span id="total_onhand"></span>
+   Stock value:
+   <span id="stock_value"></span>
 </h4>
-<h4>
-	Stock value: <span id="stock_value"></span>
-</h4>
-<div id="tabs3"
-	style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
-	<ul>
-		<li><a href="#onhand">On-Hand</a></li>
-		<li><a
-			href="<?php
+<div id="tabs3" style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
+   <ul>
+      <li>
+         <a href="#onhand">On-Hand</a>
+      </li>
+      <li>
+         <a
+            href="<?php
+            echo $this->baseUrl?>/inventory/stock/returned-item?token=<?php
 
-echo $this->baseUrl?>/inventory/stock/returned-item?token=<?php
+            echo (! $target == null) ? $target->getToken() : "";
+            ?>&target_id=<?php
 
-echo (! $target == null) ? $target->getToken() : "";
-?>&target_id=<?php
+            echo (! $target == null) ? $target->getId() : "";
+            ?>&checksum=<?php
 
-echo (! $target == null) ? $target->getId() : "";
-?>&checksum=<?php
+            echo (! $target == null) ? $target->getChecksum() : "";
+            ?>"><?php
 
-echo (! $target == null) ? $target->getChecksum() : "";
-?>"><?php
+            echo $this->translate("Exchanged");
+            ?></a>
+      </li>
+      <li></li>
+      <li>
+        <?php
 
-echo $this->translate("Exchanged");
-?></a></li>
-		<li><a
-			href="<?php
-
-echo $this->baseUrl?>/inventory/stock/disposed-item?token=<?php
-
-echo (! $target == null) ? $target->getToken() : "";
-?>&target_id=<?php
-
-echo (! $target == null) ? $target->getId() : "";
-?>&checksum=<?php
-
-echo (! $target == null) ? $target->getChecksum() : "";
-?>"><?php
-
-echo $this->translate("Disposal");
-?></a></li>
-		<li><a
-			href="<?php
-
-echo $this->baseUrl?>/inventory/item-transaction/list1?token=<?php
-
-echo (! $target == null) ? $target->getToken() : "";
-?>&target_id=<?php
-
-echo (! $target == null) ? $target->getId() : "";
-?>&checksum=<?php
-
-echo (! $target == null) ? $target->getChecksum() : "";
-?>"><?php
-
-echo $this->translate("All");
-?></a></li>
-
-	</ul>
-
-	<div id="onhand" style="font-size: 9.5pt; padding: 2pt 10pt 10pt 2pt"">
+        echo $itemTrxUrl;
+        ?>
+      </li>
+   </ul>
+   <div id="onhand" style="font-size: 9.5pt; padding: 2pt 10pt 10pt 2pt"">
 
 <?php
 
@@ -86,52 +71,72 @@ else :
     ?>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<td><b>#</b></td>
-					<td><b><?php
+         <thead>
+            <tr>
+               <td>
+                  <b>#</b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Warehouse");
-    ?></b></td>
-					<td><b><?php
+    echo $this->translate("Warehouse");
+    ?></b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Posting Date");
-    ?></b></td>
-					<td><b><?php
+    echo $this->translate("Posting Date");
+    ?></b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Posted Qty");
-    ?></b></td>
-					<td><b><?php
+    echo $this->translate("Posted Qty");
+    ?></b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("On-hand Qty");
-    ?></b></td>
-					<td><b><?php
+    echo $this->translate("On-hand Qty");
+    ?></b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Unit Price");
-    ?></b></td>
-					<td><b><?php
+    echo $this->translate("Unit Price");
+    ?></b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Stock Value");
-    ?><br>(doc cur.)</b></td>
+    echo $this->translate("Stock Value");
+    ?><br>
+                     (doc cur.)
+                  </b>
+               </td>
+               <td>
+                  <b><?php
 
-					<td><b><?php
+    echo $this->translate("Stock Value");
+    ?></b>
+                  <br>
+                  (local cur.)
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Stock Value");
-    ?></b><br>(local
-						cur.)</td>
-					<td><b><?php
+    echo $this->translate("Remark");
+    ?></b>
+               </td>
+               <td>
+                  <b><?php
 
-echo $this->translate("Remark");
-    ?></b></td>
-					<td><b><?php
-
-echo $this->translate("Action");
-    ?></b></td>
-
-				</tr>
-			</thead>
-
-			<tbody>
+    echo $this->translate("Action");
+    ?></b>
+               </td>
+            </tr>
+         </thead>
+         <tbody>
  
 	 <?php
 
@@ -148,62 +153,59 @@ echo $this->translate("Action");
 
         ?>
 	 <tr>
-					<td><?php
+               <td><?php
 
-echo ($paginator === null) ? $count : $paginator->minInPage - 1 + $count;
+        echo ($paginator === null) ? $count : $paginator->minInPage - 1 + $count;
         ?></td>
-					<td><?php
+               <td><?php
 
-if ($a->getWarehouse() !== null) :
+        if ($a->getWarehouse() !== null) :
             echo $a->getWarehouse()->getWhName(); endif?></td>
-					<td>	<?php
+               <td>	<?php
 
-
-echo date_format($a->getPostingDate(), "m-d-Y");
+        echo date_format($a->getPostingDate(), "m-d-Y");
         ?></td>
+               <td>	<?php
 
-					<td>	<?php
-
-echo $a->getQuantity();
+        echo $a->getQuantity();
         ?></td>
-					<td>	<?php
+               <td>	<?php
 
-echo $a->getOnhandQuantity();
+        echo $a->getOnhandQuantity();
         ?></td>
-					<td>	<?php
+               <td>	<?php
 
-if ($a->getUnitPrice() !== null) :
+        if ($a->getUnitPrice() !== null) :
             echo number_format($a->getUnitPrice(), 2);endif;
 
         ?></td>
-					<td>	<?php
+               <td>	<?php
 
-if ($a->getOnhandQuantity() * $a->getUnitPrice() !== null) :
+        if ($a->getOnhandQuantity() * $a->getUnitPrice() !== null) :
             echo number_format($a->getOnhandQuantity() * $a->getUnitPrice(), 2);endif;
 
         ?></td>
-					<td>	<?php
+               <td>	<?php
 
-if ($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate() !== null) :
+        if ($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate() !== null) :
             echo number_format($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate(), 2);endif;
 
         ?></td>
-					<td>
+               <td>
 			<?php
 
-echo $a->getRemarks();
+        echo $a->getRemarks();
         ?>
 			</td>
-					<td>see Good Issue</td>
-				</tr>
+               <td>see Good Issue</td>
+            </tr>
 <?php
-
-endforeach
+    endforeach
     ;
     ?>
 
  </tbody>
-		</table>
+      </table>
 
 <?php
 
@@ -211,13 +213,7 @@ endif;
 ?>
 
 	</div>
-
-
 </div>
-
-
-
-
 <script type="text/javascript">
 $("#create_item_form :input").attr("disabled", "disabled");
 $( "#tabs3" ).tabs({

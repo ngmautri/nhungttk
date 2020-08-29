@@ -88,7 +88,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
         // overwrite.
         // $instance->setDocType(Constants::PROCURE_DOC_TYPE_GR_FROM_INVOICE); // important.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
-        $instance->setRemarks($instance->getRemarks() . \sprintf(' /PO-GR %s', $sourceObj->getId()));
+        $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] Ref.%s', $sourceObj->getSysNumber()));
 
         foreach ($rows as $r) {
 
@@ -122,8 +122,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             throw new OperationFailedException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
         }
 
-        $instance->setId($snapshot->getId());
-        $instance->setToken($snapshot->getToken());
+        $instance->updateIdentityFrom($snapshot);
 
         $target = $instance;
         $defaultParams = new DefaultParameter();

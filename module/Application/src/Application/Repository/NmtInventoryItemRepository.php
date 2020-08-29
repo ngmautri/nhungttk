@@ -3,7 +3,6 @@ namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
@@ -812,7 +811,6 @@ WHERE 1
             $rsm->addScalarResult("total_onhand", "total_onhand");
             $rsm->addScalarResult("total_onhand_value", "total_onhand_value");
             $rsm->addScalarResult("total_onhand_local_value", "total_onhand_local_value");
-
             $rsm->addScalarResult("total_gi", "total_gi");
             $rsm->addScalarResult("total_gi_value", "total_gi_value");
             $rsm->addScalarResult("total_ex", "total_ex");

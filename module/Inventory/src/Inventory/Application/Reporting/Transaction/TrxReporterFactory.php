@@ -35,6 +35,9 @@ class TrxReporterFactory implements FactoryInterface
         $sv = $container->get("AppCache");
         $service->setCache($sv);
 
+        $sv = $container->get("AppLogger");
+        $service->setLogger($sv);
+
         return $service;
     }
 }

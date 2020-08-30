@@ -153,8 +153,8 @@ class TrxType
         return [
 
             self::GR_FROM_OPENNING_BALANCE => [
-                "type_name" => Translator::translate("Initiate openning balance"),
-                "type_description" => Translator::translate("Openning balance")
+                "type_name" => Translator::translate("Opening balance"),
+                "type_description" => Translator::translate("Opening balance")
             ],
 
             self::GR_FROM_PURCHASING => [

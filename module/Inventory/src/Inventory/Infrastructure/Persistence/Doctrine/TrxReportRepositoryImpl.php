@@ -108,4 +108,24 @@ class TrxReportRepositoryImpl extends AbstractDoctrineRepository implements TrxR
     {
         return TrxReportHelper::getBeginGrGiEnd($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
     }
+
+    public function getBeginGrGiEndTotal(SqlFilterInterface $filter)
+    {
+        return count(TrxReportHelper::getBeginGrGiEnd($this->getDoctrineEM(), $filter, null, null, null, null));
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Infrastructure\Persistence\Contracts\TrxReportRepositoryInterface::getAllRowIssueFor()
+     */
+    public function getAllRowIssueFor(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        return TrxReportHelper::getCostIssueFor($this->getDoctrineEM(), $filter, $sort_by, $sort, $limit, $offset);
+    }
+
+    public function getAllRowIssueForTotal(SqlFilterInterface $filter)
+    {
+        return count(TrxReportHelper::getCostIssueFor($this->getDoctrineEM(), $filter, null, null, null, null));
+    }
 }

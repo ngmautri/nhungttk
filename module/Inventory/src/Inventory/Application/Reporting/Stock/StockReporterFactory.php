@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TrxReporterFactory implements FactoryInterface
+class StockReporterFactory implements FactoryInterface
 {
 
     /**
@@ -34,6 +34,9 @@ class TrxReporterFactory implements FactoryInterface
         $service->setReporterRespository($sv);
         $sv = $container->get("AppCache");
         $service->setCache($sv);
+
+        $sv = $container->get("AppLogger");
+        $service->setLogger($sv);
 
         return $service;
     }

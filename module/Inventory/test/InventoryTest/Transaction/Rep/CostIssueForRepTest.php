@@ -3,12 +3,12 @@ namespace InventoryTest\Transaction\Rep;
 
 use Doctrine\ORM\EntityManager;
 use Inventory\Infrastructure\Persistence\Doctrine\TrxReportRepositoryImpl;
-use Inventory\Infrastructure\Persistence\Filter\BeginGrGiEndSqlFilter;
+use Inventory\Infrastructure\Persistence\Filter\CostIssueForSqlFilter;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
-class BeginGrGiEndRepTest extends PHPUnit_Framework_TestCase
+class CostIssueForRepTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -25,20 +25,19 @@ class BeginGrGiEndRepTest extends PHPUnit_Framework_TestCase
             $rep = new TrxReportRepositoryImpl($doctrineEM);
 
             // $filter = new TrxReportSqlFilter();
-            $filter = new BeginGrGiEndSqlFilter();
+            $filter = new CostIssueForSqlFilter();
             $filter->setIsActive(1);
+            $filter->setIssueFor(270);
             $filter->setDocStatus("posted");
-            $filter->setFromDate("2020-08-01");
-            $filter->setToDate("2020-08-31");
-            $filter->setItemId(2427);
-            $filter->setWarehouseId(5);
+            $filter->setFromDate("2020-08-31");
+            $filter->setToDate("2021-08-31");
             $sort_by = null;
             $sort = null;
             $offset = null;
             $limit = null;
             echo ($filter);
 
-            $result = $rep->getBeginGrGiEnd($filter, $sort_by, $sort, $limit, $offset);
+            $result = $rep->getAllRowIssueFor($filter, $sort_by, $sort, $limit, $offset);
             \var_dump(count($result));
             \var_dump($result);
         } catch (InvalidArgumentException $e) {

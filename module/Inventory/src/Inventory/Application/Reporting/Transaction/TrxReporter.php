@@ -2,10 +2,11 @@
 namespace Inventory\Application\Reporting\Transaction;
 
 use Application\Service\AbstractService;
-use Inventory\Application\Export\Transaction\RawRowsSaveAsArray;
 use Inventory\Application\Export\Transaction\RowsSaveAsArray;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Transaction\Formatter\NullRowFormatter;
+use Inventory\Application\Export\Transaction\Formatter\TrxRowFormatter;
+use Inventory\Application\Export\Transaction\Report\InOutOnhandSaveAsArray;
 use Inventory\Application\Reporting\Transaction\Export\RowsSaveAsExcel;
 use Inventory\Application\Reporting\Transaction\Export\RowsSaveAsOpenOffice;
 use Inventory\Application\Reporting\Transaction\Export\Spreadsheet\ExcelBuilder;
@@ -114,8 +115,124 @@ class TrxReporter extends AbstractService
 
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new TrxRowFormatter(new NullRowFormatter());
+                $factory = new RowsSaveAsArray();
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new ExcelBuilder();
                 $formatter = new NullRowFormatter();
-                $factory = new RawRowsSaveAsArray();
+                $factory = new RowsSaveAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new OpenOfficeBuilder();
+                $formatter = new NullRowFormatter();
+                $factory = new RowsSaveAsOpenOffice($builder);
+                break;
+            default:
+                $formatter = new TrxRowFormatter(new NullRowFormatter());
+                $factory = new RowsSaveAsArray();
+                break;
+        }
+
+        $factory->setLogger($this->getLogger());
+        return $factory->saveAs($results, $formatter);
+    }
+
+    public function getAllRowTotal(SqlFilterInterface $filter)
+    {
+        $key = \sprintf("total_rows_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReporterRespository()->getAllRowTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
+    }
+
+    public function getAllRowIssueFor(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records = null)
+    {
+        $results = $this->getReporterRespository()->getAllRowIssueFor($filter, $sort_by, $sort, $limit, $offset);
+        return $results;
+
+        if ($results == null) {
+            return null;
+        }
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new TrxRowFormatter(new NullRowFormatter());
+                $factory = new RowsSaveAsArray();
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new ExcelBuilder();
+                $formatter = new NullRowFormatter();
+                $factory = new RowsSaveAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new OpenOfficeBuilder();
+                $formatter = new NullRowFormatter();
+                $factory = new RowsSaveAsOpenOffice($builder);
+                break;
+            default:
+                $formatter = new TrxRowFormatter(new NullRowFormatter());
+                $factory = new RowsSaveAsArray();
+                break;
+        }
+
+        $factory->setLogger($this->getLogger());
+        return $factory->saveAs($results, $formatter);
+    }
+
+    /**
+     *
+     * @param SqlFilterInterface $filter
+     * @return mixed|NULL|array|\Doctrine\DBAL\Driver\Statement
+     */
+    public function getAllRowIssueForTotal(SqlFilterInterface $filter)
+    {
+        $key = \sprintf("total_rows_issue_for_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $total = $this->getReporterRespository()->getAllRowIssueForTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
+    }
+
+    public function getBeginGrGiEnd(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records = null)
+    {
+        $results = $this->getReporterRespository()->getBeginGrGiEnd($filter, $sort_by, $sort, $limit, $offset);
+
+        if ($results == null) {
+            return null;
+        }
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new NullRowFormatter();
+                $factory = new InOutOnhandSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
@@ -130,20 +247,21 @@ class TrxReporter extends AbstractService
                 break;
             default:
                 $formatter = new NullRowFormatter();
-                $factory = new RowsSaveAsArray();
+                $factory = new InOutOnhandSaveAsArray();
                 break;
         }
 
+        $factory->setLogger($this->getLogger());
         return $factory->saveAs($results, $formatter);
     }
 
-    public function getAllRowTotal(SqlFilterInterface $filter)
+    public function getBeginGrGiEndTotal(SqlFilterInterface $filter)
     {
-        $key = \sprintf("total_rows_%s", $filter->__toString());
+        $key = \sprintf("total_rows_in_out_onhand_%s", $filter->__toString());
 
         $resultCache = $this->getCache()->getItem($key);
         if (! $resultCache->isHit()) {
-            $total = $this->getReporterRespository()->getAllRowTotal($filter);
+            $total = $this->getReporterRespository()->getBeginGrGiEndTotal($filter);
             $resultCache->set($total);
             $this->getCache()->save($resultCache);
         } else {

@@ -10,7 +10,7 @@ if ($target != null) {
     $f = '/inventory/trx-report/item-trx?itemId=%s';
     $tmp = sprintf($f, $target->getId());
 
-    $f = '<a href="%s">%s</a>';
+    $f = '<a href="%s"><i class="fa fa-list-ul" aria-hidden="true"></i>  %s</a>';
     $itemTrxUrl = sprintf($f, $tmp, $this->translate("Journal"));
 }
 ?>
@@ -23,9 +23,16 @@ if ($target != null) {
 <div id="tabs3" style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
    <ul>
       <li>
-         <a href="#onhand">On-Hand</a>
+         <a href="#onhand"><i class="fa fa-money" aria-hidden="true"></i> On-Hand</a>
       </li>
-      <li>
+     
+       <li>
+        <?php
+
+        echo $itemTrxUrl;
+        ?>
+      </li>
+       <li>
          <a
             href="<?php
             echo $this->baseUrl?>/inventory/stock/returned-item?token=<?php
@@ -37,17 +44,10 @@ if ($target != null) {
             ?>&checksum=<?php
 
             echo (! $target == null) ? $target->getChecksum() : "";
-            ?>"><?php
+            ?>"><i class="fa fa-recycle" aria-hidden="true"></i> <?php
 
-            echo $this->translate("Exchanged");
+            echo $this->translate("Recycle Bin");
             ?></a>
-      </li>
-      <li></li>
-      <li>
-        <?php
-
-        echo $itemTrxUrl;
-        ?>
       </li>
    </ul>
    <div id="onhand" style="font-size: 9.5pt; padding: 2pt 10pt 10pt 2pt"">

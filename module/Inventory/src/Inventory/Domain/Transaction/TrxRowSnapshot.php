@@ -11,6 +11,10 @@ use Procure\Domain\RowSnapshot;
 class TrxRowSnapshot extends RowSnapshot
 {
 
+    public $stockQty;
+
+    public $stockValue;
+
     public $checksum;
 
     public $trxDate;
@@ -120,6 +124,42 @@ class TrxRowSnapshot extends RowSnapshot
     public $pmtMethod;
 
     public $invoiceRow;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockQty()
+    {
+        return $this->stockQty;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockValue()
+    {
+        return $this->stockValue;
+    }
+
+    /**
+     *
+     * @param mixed $stockQty
+     */
+    public function setStockQty($stockQty)
+    {
+        $this->stockQty = $stockQty;
+    }
+
+    /**
+     *
+     * @param mixed $stockValue
+     */
+    public function setStockValue($stockValue)
+    {
+        $this->stockValue = $stockValue;
+    }
 
     /**
      *

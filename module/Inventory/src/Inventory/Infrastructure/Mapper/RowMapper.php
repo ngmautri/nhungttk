@@ -525,6 +525,7 @@ class RowMapper
 
         if (! $entity->getPostingDate() == null) {
             $snapshot->docDate = $entity->getPostingDate()->format("Y-m-d");
+            $snapshot->docDate = $entity->getPostingDate()->format("Y-m-d");
             $snapshot->docYear = $entity->getPostingDate()->format("Y");
             $snapshot->docMonth = $entity->getPostingDate()->format("m");
         }

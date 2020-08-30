@@ -40,15 +40,20 @@ $url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDo
     var columns = [
       
         { title: "Id", dataType: "string", dataIndx: "#", align: 'left',minWidth: 50,editable: true},
-        { title: "Date", dataType: "string", dataIndx: "docDate", width: 80,editable: false },
+        { title: "Date", dataType: "string", dataIndx: "docDate", width: 100,editable: false },
         { title: "Ref", dataType: "string", dataIndx: "sysNumber", align: 'left',minWidth: 120,editable: false},
+        { title: "Type", dataType: "string", dataIndx: "transactionType", align: 'left',minWidth: 50,editable: false},        
         { title: "Flow", dataType: "string", dataIndx: "flow", width: 50,editable: false },
         { title: "WH", dataType: "string", dataIndx: "warehouseName", width: 150,editable: false },
-        { title: "location", dataType: "decimal", dataIndx: "whLocation", width: 80,editable: false },        
+        { title: "location", dataType: "decimal", dataIndx: "whLocation", width: 80,editable: false },       
         
         { title: "Qty", dataType: "string", dataIndx: "quantity", width: 50,editable: false },
-        { title: "Cost", dataType: "decimal", dataIndx: "cogsLocal", width: 80,editable: false },
-        { title: "U/P", dataType: "decimal", dataIndx: "convertedStandardUnitPrice", width: 80,editable: false },
+        { title: "Stock Qty", dataType: "decimal", dataIndx: "stockQty", width: 50,editable: false,align: 'right' },
+        { title: "U/P", dataType: "decimal", dataIndx: "convertedStandardUnitPrice", width: 100,editable: false,align: 'right'    },
+               
+        { title: "Cost", dataType: "decimal", dataIndx: "cogsLocal", width: 100,editable: false,align: 'right' },
+        { title: "Stock Value", dataType: "decimal", dataIndx: "stockValue", width: 120,editable: false, align: 'right' },
+        
         { title: "Pr No.", dataType: "string", dataIndx: "prNumber", width: 150,editable: false },
         { title: "Pr No.", dataType: "string", dataIndx: "po", width: 150,editable: false },              
         { title: "SAP#", dataType: "string", dataIndx: "invoiceId", width: 90,editable: false },

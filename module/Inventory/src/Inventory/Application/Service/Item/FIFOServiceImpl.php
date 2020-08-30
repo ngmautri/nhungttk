@@ -112,7 +112,8 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
                 $issuedQuantity = 0;
             }
 
-            $cogs = $cogs + $consumpted_qty * $layer->getDocUnitPrice() * $layer->getExchangeRate();
+            // unit price is converted standard price
+            $cogs = $cogs + $consumpted_qty * $layer->getUnitPrice() * $layer->getExchangeRate();
 
             $this->getDoctrineEM()->persist($layer);
 

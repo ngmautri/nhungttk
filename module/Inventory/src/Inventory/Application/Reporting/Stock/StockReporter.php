@@ -6,6 +6,7 @@ use Inventory\Application\Export\Transaction\RawRowsSaveAsArray;
 use Inventory\Application\Export\Transaction\RowsSaveAsArray;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Transaction\Formatter\NullRowFormatter;
+use Inventory\Application\Export\Transaction\Formatter\TrxRowFormatter;
 use Inventory\Application\Reporting\Transaction\Export\RowsSaveAsExcel;
 use Inventory\Application\Reporting\Transaction\Export\RowsSaveAsOpenOffice;
 use Inventory\Application\Reporting\Transaction\Export\Spreadsheet\ExcelBuilder;
@@ -19,7 +20,7 @@ use Inventory\Infrastructure\Persistence\Doctrine\TrxReportRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class TrxReporter extends AbstractService
+class StockReporter extends AbstractService
 {
 
     private $reporterRespository;
@@ -75,6 +76,8 @@ class TrxReporter extends AbstractService
                 break;
         }
 
+        $factory->setLogger($this->getLogger());
+
         return $factory->saveAs($results, $formatter);
     }
 
@@ -114,7 +117,7 @@ class TrxReporter extends AbstractService
 
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new NullRowFormatter();
+                $formatter = new TrxRowFormatter(new NullRowFormatter());
                 $factory = new RawRowsSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
@@ -129,7 +132,7 @@ class TrxReporter extends AbstractService
                 $factory = new RowsSaveAsOpenOffice($builder);
                 break;
             default:
-                $formatter = new NullRowFormatter();
+                $formatter = new TrxRowFormatter(new NullRowFormatter());
                 $factory = new RowsSaveAsArray();
                 break;
         }

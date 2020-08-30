@@ -1,0 +1,29 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Inventory\Infrastructure\Persistence\Filter\TrxRowReportSqlFilter;
+
+/**
+ *
+ * @var TrxRowReportSqlFilter $filter ;
+ */
+
+$result_table = '';
+$total_consume = 0;
+
+if ($result != null) {
+    foreach ($result as $row) {
+        $format = 'WH %s, Item %s, Qty: %s, Value: %s <br><br>';
+        $result_table = $result_table . sprintf($format, $row['wh_id'], $row['item_name'], $row['end_consume_qty'], $row['end_consume_vl']);
+        $total_consume = $total_consume + $row['end_consume_vl'];
+    }
+}
+
+echo $result_table;
+echo sprintf("Total cost: %s", $total_consume);
+// ===============================================================================
+?>

@@ -992,6 +992,7 @@ class TrxMapper
         }
         if ($entity->getMovement() !== null) {
             RowMapper::updateMovementDetails($snapshot, $entity->getMovement());
+            $snapshot->transactionType = $entity->getMovement()->getMovementType();
         }
         if ($entity->getDocCurrency() !== null) {
             $snapshot->docCurrency = $entity->getDocCurrency()->getId();

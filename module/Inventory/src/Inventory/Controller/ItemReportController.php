@@ -2,10 +2,13 @@
 namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
+use Application\Domain\Shared\Constants;
 use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 use Inventory\Application\Reporting\Item\ItemReporter;
+use Inventory\Infrastructure\Persistence\Filter\InOutOnhandSqlFilter;
 use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 use MLA\Paginator;
+use Zend\Mvc\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -170,9 +173,171 @@ class ItemReportController extends AbstractGenericController
         return $response;
     }
 
+    public function inOutOnhandAction()
+    {
+        // $this->layout("layout/fluid");
+        $file_type = (int) $this->params()->fromQuery('file_type');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $nmtPlugin = $this->Nmtplugin();
+
+        if ($file_type == null) :
+            $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+        endif;
+
+        if ($sort_by == null) :
+            $sort_by = "itemName";
+        endif;
+
+        if ($sort == null) :
+            $sort = "ASC";
+        endif;
+
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+
+        $paginator = null;
+        $result = null;
+
+        $limit = null;
+        $offset = null;
+
+        $filter = $this->_createInOutOnhandFilter($this);
+
+        $total_records = $this->getReporter()->getInOutOnhandTotal($filter);
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            return $this->getReporter()->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset, $file_type, $total_records);
+        }
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        $result = $this->getReporter()->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset, $file_type);
+
+        return new ViewModel(array(
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'file_type' => $file_type,
+            'result' => $result,
+            'per_pape' => $resultsPerPage,
+            'paginator' => $paginator,
+            'filter' => $filter,
+            'nmtPlugin' => $nmtPlugin
+        ));
+    }
+
+    public function inOutOnhandGirdAction()
+    {
+        $warehouseId = null;
+        $sort_by = "postingDate";
+        $sort = "ASC";
+        $isActive = 1;
+        $fromDate = null;
+        $toDate = null;
+        $pq_curPage = 1;
+        $pq_rPP = 100;
+        $limit = null;
+        $offset = null;
+
+        if (isset($_GET['sort_by'])) {
+            $sort_by = $_GET['sort_by'];
+        }
+
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        }
+
+        if (isset($_GET['is_active'])) {
+            $isActive = (int) $_GET['is_active'];
+        }
+
+        if (isset($_GET['fromDate'])) {
+            $fromDate = $_GET['fromDate'];
+        }
+
+        if (isset($_GET['toDate'])) {
+            $toDate = $_GET['toDate'];
+        }
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        }
+
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        }
+
+        if (isset($_GET['warehouseId'])) {
+            $warehouseId = $_GET['warehouseId'];
+        }
+
+        $filter = new InOutOnhandSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setWarehouseId($warehouseId);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
+        $filter->setDocStatus("posted");
+        $file_type = SaveAsSupportedType::OUTPUT_IN_ARRAY;
+        $total_records = $this->getReporter()->getInOutOnhandTotal($filter);
+        $a_json_final = array();
+
+        if ($total_records > 0) {
+
+            if ($total_records > $pq_rPP) {
+                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
+                $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+                $offset = $paginator->minInPage - 1;
+            }
+        }
+        $result = $this->getReporter()->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset, $file_type);
+
+        $a_json_final['data'] = $result;
+        $a_json_final['totalRecords'] = $total_records;
+        $a_json_final['curPage'] = $pq_curPage;
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
     // ====================================
     // Setter and Getter.
     // ====================================
+    private function _createInOutOnhandFilter(AbstractController $controller)
+    {
+        $isActive = $controller->params()->fromQuery('isActive');
+        $itemId = $controller->params()->fromQuery('itemId');
+        $warehouseId = $controller->params()->fromQuery('warehouseId');
+        $fromDate = $controller->params()->fromQuery('fromDate');
+        $toDate = $controller->params()->fromQuery('toDate');
+
+        if ($isActive == null) {
+            $isActive = 1;
+        }
+
+        $filter = new InOutOnhandSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setItemId($itemId);
+        $filter->setWarehouseId($warehouseId);
+        $filter->setDocStatus(Constants::DOC_STATUS_POSTED);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
+        return $filter;
+    }
 
     /**
      *

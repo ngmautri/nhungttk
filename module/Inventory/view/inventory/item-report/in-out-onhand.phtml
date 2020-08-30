@@ -1,0 +1,311 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Application\Application\Helper\OptionList;
+use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
+use Inventory\Infrastructure\Persistence\Filter\BeginGrGiEndSqlFilter;
+/**
+ *
+ * @var BeginGrGiEndSqlFilter $filter ;
+ */
+$baseUrl = "/inventory/item-report/in-out-onhand";
+$filter_url = $baseUrl;
+
+$link1 = "/inventory/item-report/in-out-onhand-gird?warehouseId=%s&fromDate=%s&toDate=%s&is_active=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate(), $filter->getIsActive(), $sort_by, $sort);
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $filter->getWarehouseId());
+
+$f = "/inventory/item-report/in-out-onhand?warehouseId=%s&fromDate=%s&toDate=%s&is_active=%s&file_type=%s";
+$save_as_excel = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate(), $filter->getIsActive(), SaveAsSupportedType::OUTPUT_IN_EXCEL);
+
+$f = "/inventory/item-report/in-out-onhand?warehouseId=%s&fromDate=%s&toDate=%s&is_active=%s&file_type=%s";
+$save_as_openoffice = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate(), $filter->getIsActive(), SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+$format = '<a style="font-size: 9.5pt; margin-bottom: 2pt;
+padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:
+;" onclick="%s">
+  &nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+$refresh_btn = sprintf($format, "refreshGird();");
+
+$dropDownList = [
+    sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> &nbsp;Excel (*.xlxs)</a>', $save_as_excel),
+    sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> Open Office (*.ods)</a>', $save_as_openoffice)
+];
+
+$f = 'WH: %s | From %s to %s';
+$summary_tmp = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate());
+
+$f = '<span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">%s</span>';
+$summary_txt = sprintf($f, $summary_tmp);
+
+$dropDownMenu = \Application\Application\Helper\FormHelper::createCustomDropDownMenu($dropDownList, 'dropdownMenu1');
+
+// ===============================================================================
+?>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">
+            <i class="glyphicon glyphicon-shopping-cart"></i>
+            &nbsp;Goods Receipt - Goods Issue - Onhand
+         </a>
+      </li>
+   </ul>
+   <div id="general" style="font-size: 9pt">
+      <div>
+         <small>
+            <span class="glyphicon glyphicon-filter"></span>
+         </small>
+         <a style="font-size: 9.5pt" href="#transaction" class="" data-toggle="collapse">FILTER</a>
+      </div>
+      <div id="transaction" class="collapse in">
+         <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+            <form id="filter_form" class="form-horizontal" action="<?php
+            echo $filter_url;
+            ?>" method="get" enctype="multipart/form-data">
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2"><?php
+                echo $this->translate("Warehouse");
+                ?>:</label>
+                  <div class="col-sm-3">
+                     <select name="warehouseId" id="wh_id" class="form-control input-sm">
+                        <option value=""><?php
+                        echo $this->translate("...");
+                        ?></option>
+<?php
+// ================
+echo $wh_option;
+// ================
+?>
+                                        </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2 required">From Date:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" id="fromDate" name="fromDate" value="<?php
+                    if (! $filter == null) :
+                        echo $filter->getFromDate(); endif;
+
+                    ?>" placeholder=" please select" />
+                  </div>
+               </div>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2">To Date:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" id="toDate" name="toDate" value="<?php
+                    if (! $filter == null) :
+                        echo $filter->getToDate(); endif;
+
+                    ?>" placeholder=" please select" />
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <label class="control-label col-sm-2" for="inputTag">Display</label>
+                  <div class="col-sm-3">
+                     <select class="form-control input-sm" name="file_type">
+                        <option <?php
+
+                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY ? "selected='selected'" : "";
+                        ?> value="<?php
+
+                        echo SaveAsSupportedType::OUTPUT_IN_ARRAY;
+                        ?>">Gird</option>
+                        <option <?php
+
+                        echo $file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE ? "selected='selected'" : "";
+                        ?> value="<?php
+
+                        echo SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
+                        ?>">HTML</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="form-group margin-bottom">
+                  <div class="col-sm-offset-2 col-sm-10">
+                     <a class="btn btn-default btn-sm" href="javascript:;" onClick="submitForm('filter_form');">
+                        <i class="fa fa-filter" aria-hidden="true"></i>
+                        &nbsp;&nbsp;Filter...
+                     </a>
+                  </div>
+               </div>
+              </form>
+         </div>
+      </div>
+      <hr style="margin: 5pt 1pt 10pt 1pt;">
+      <!-- End Tab -->
+      <!-- button -->
+      <div style="font-size: 9pt">
+         <div class="dropdown">
+            <!-- button -->
+            <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+               <i class="fa fa-download" aria-hidden="true"></i>
+               <span class="caret"></span>
+            </button>
+                             
+                            <?php
+                            echo $refresh_btn;
+                            echo $summary_txt;
+                            echo $dropDownMenu;
+                            ?>
+                           </div>
+      </div>
+      <!-- button -->
+      <div id="in_out_onhand_gird_div"></div>
+   </div>
+</div>
+<script type="text/javascript">
+
+
+$( "input[id='fromDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='toDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+</script>
+<script>
+
+    var columns = [
+      
+        { title: "Id", dataType: "string", dataIndx: "#", align: 'left',minWidth: 10,editable: true},
+        { title: "#", dataType: "string", dataIndx: "sysNumber", width: 40,editable: false },
+        { title: "Item", dataType: "string", dataIndx: "itemSku", width: 12,editable: false },        
+        { title: "Item", dataType: "string", dataIndx: "itemName", width: 200,editable: false },
+        { title: "Begin Qty", dataType: "string", dataIndx: "beginQty", width: 100,editable: false },
+        { title: "GR", dataType: "string", dataIndx: "grQty", width: 100,editable: false },
+        { title: "GI", dataType: "string", dataIndx: "giQty", width: 100,editable: false },
+        { title: "End Qty", dataType: "string", dataIndx: "endQty", width: 100,editable: false },
+        { title: "Begin Value", dataType: "string", dataIndx: "beginValue", width: 100,editable: false },
+        { title: "GR Value", dataType: "string", dataIndx: "grValue", width: 100,editable: false },
+        { title: "GI Value", dataType: "string", dataIndx: "giValue", width: 100,editable: false },
+        { title: "End Value", dataType: "string", dataIndx: "endValue", width: 100,editable: false },
+  
+         ];
+    var url = "<?php
+    echo $girdUrl;
+    ?>";
+    var dataModel = {
+           dataType: "JSON",
+              location: "remote",
+              method: "GET",
+              recIndx: "row_id",
+              url: url,
+              getData: function (response) {
+                return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+             },
+    };
+
+   var obj = { width: "auto", height: $(window).height()-500, showTitle : true,
+         resizable:true,
+         //draggable:true,
+         sortable: true,
+         hoverMode: 'row',
+         pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+         columnBorders: true,
+         dataModel: dataModel,
+         colModel: columns,
+          numberCell: {show:true, resizable: true, width: 40, title: "#", minWidth: 25 },
+           editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            scrollModel: {autoFit:true, flexContent: true},
+            editor: {
+                select: true
+            },
+         change: function (evt, ui) {               
+                
+                if (ui.source == 'commit' || ui.source == 'rollback') {
+                    return;
+                }
+                console.log(ui);
+                var $grid = $(this),
+                    grid = $grid.pqGrid('getInstance').grid;
+                var rowList = ui.rowList,
+                    addList = [],
+                    recIndx = grid.option('dataModel').recIndx,
+                    deleteList = [],
+                    updateList = [];
+                
+                for (var i = 0; i < rowList.length; i++) {
+                    var obj = rowList[i],
+                        rowIndx = obj.rowIndx,
+                        newRow = obj.newRow,
+                        type = obj.type,
+                        rowData = obj.rowData;
+                     if (type == 'add') {                        
+                        var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                        if (valid) {
+                            addList.push(newRow);
+                        }
+                    }
+                    else if (type == 'update') {                        
+                        var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                        if (valid) {
+                            if (rowData[recIndx] == null) {
+                                addList.push(rowData);
+                            }
+                            //else if (grid.isDirty({rowData: rowData})) {
+                            else {
+                                updateList.push(rowData);
+                              //alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                                 
+                            }
+                        }
+                    }
+                  }
+
+                  if (addList.length || updateList.length || deleteList.length) {
+               var sent_list = JSON.stringify({
+                        updateList: updateList,
+                        addList: addList,
+                        deleteList: deleteList
+                    });
+                    //alert(sent_list);
+                      
+                      $.ajax({
+                          url: '/procure/pr-row/update-row',
+                          data: {
+                              sent_list: sent_list
+                          },
+                          dataType: "json",
+                          type: "POST",
+                          async: true,
+                          beforeSend: function (jqXHR, settings) {
+                              //$(".saving", $grid).show();
+
+                        
+                              //$("#global-notice").text("Updating...").show();
+                              //alert(updateList[0].item_name  +  updateList[0].row_id);
+                          },
+                          success: function (changes) {
+                              //commit the changes.
+                              //alert(changes.updateList);
+                               $("#global-notice").text("Updated...").show();
+                           //alert('it is ok');                
+                              /* grid.commit({ type: 'add', rows: changes.addList });
+                              grid.commit({ type: 'update', rows: changes.updateList });
+                              grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                          },
+                          complete: function () {
+                              //$(".saving", $grid).hide();
+                              $("#global-notice").delay(2200).fadeOut(500);
+                              
+                          }
+                      });
+                  }
+                //alert(updateList.length);
+               
+            },     
+                   
+            
+      };
+
+    var $grid = $("#in_out_onhand_gird_div").pqGrid(obj);
+    function refreshGird(){
+      $( "#in_out_onhand_gird_div" ).pqGrid( "refreshDataAndView" )
+   } 
+    
+</script>

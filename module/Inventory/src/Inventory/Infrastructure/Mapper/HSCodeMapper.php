@@ -309,7 +309,7 @@ class ItemMapper
      */
     public static function createSnapshot(NmtInventoryItem $entity, ItemSnapshot $snapshot = null, $needDetails = false)
     {
-        if ($entity == null) {
+        if (! $entity instanceof NmtInventoryItem) {
             return null;
         }
 

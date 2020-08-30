@@ -5,11 +5,16 @@ use Application\Service\AbstractService;
 use Inventory\Application\Export\Item\SaveAsArray;
 use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Item\Formatter\NullFormatter;
+use Inventory\Application\Reporting\Item\Export\InOutOnhandSaveAsExcel;
+use Inventory\Application\Reporting\Item\Export\InOutOnhandSaveAsOpenOffice;
 use Inventory\Application\Reporting\Item\Export\SaveAsExcel;
 use Inventory\Application\Reporting\Item\Export\SaveAsOpenOffice;
 use Inventory\Application\Reporting\Item\Export\Spreadsheet\ExcelBuilder;
+use Inventory\Application\Reporting\Item\Export\Spreadsheet\InOutOnhandExcelBuilder;
+use Inventory\Application\Reporting\Item\Export\Spreadsheet\InOutOnhandOpenOfficeBuilder;
 use Inventory\Infrastructure\Persistence\Contracts\ItemReportRepositoryInterface;
 use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
+use Inventory\Infrastructure\Persistence\Doctrine\ItemTrxReportRepositoryImpl;
 
 /**
  * Item Service.
@@ -22,7 +27,6 @@ class ItemReporter extends AbstractService
 
     private $reporterRespository;
 
-    // Header
     public function getList($filter, $sort_by, $sort, $limit, $offset, $file_type)
     {
         if (! $filter instanceof SqlFilterInterface) {
@@ -64,6 +68,78 @@ class ItemReporter extends AbstractService
         }
 
         return $factory->saveAs($results, $formatter);
+    }
+
+    public function getInOutOnhand($filter, $sort_by, $sort, $limit, $offset, $file_type)
+    {
+        if (! $filter instanceof SqlFilterInterface) {
+            throw new \InvalidArgumentException("Invalid filter object.");
+        }
+
+        if ($file_type == SaveAsSupportedType::OUTPUT_IN_EXCEL || $file_type == SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE) {
+            $limit = null;
+            $offset = null;
+        }
+        $rep = new ItemTrxReportRepositoryImpl($this->getDoctrineEM());
+        $results = $rep->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset);
+
+        if ($results == null) {
+            return null;
+        }
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($file_type) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new NullFormatter();
+                $factory = new SaveAsArray();
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+
+                $builder = new InOutOnhandExcelBuilder();
+                $formatter = new NullFormatter();
+                $factory = new InOutOnhandSaveAsExcel($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+
+                $builder = new InOutOnhandOpenOfficeBuilder();
+                $formatter = new NullFormatter();
+                $factory = new InOutOnhandSaveAsOpenOffice($builder);
+                break;
+
+            default:
+                $formatter = new NullFormatter();
+                $factory = new SaveAsArray();
+                break;
+        }
+
+        return $factory->saveAs($results, $formatter);
+    }
+
+    /**
+     *
+     * @param SqlFilterInterface $filter
+     * @return number|mixed
+     */
+    public function getInOutOnhandTotal(SqlFilterInterface $filter)
+    {
+        $key = \sprintf("_item_in_on_onhand_%s", $filter->__toString());
+
+        $resultCache = $this->getCache()->getItem($key);
+        if (! $resultCache->isHit()) {
+            $rep = new ItemTrxReportRepositoryImpl($this->getDoctrineEM());
+            $total = $rep->getInOutOnhandTotal($filter);
+            $resultCache->set($total);
+            $this->getCache()->save($resultCache);
+        } else {
+            $total = $this->getCache()
+                ->getItem($key)
+                ->get();
+        }
+
+        return $total;
     }
 
     public function getListTotal(SqlFilterInterface $filter)

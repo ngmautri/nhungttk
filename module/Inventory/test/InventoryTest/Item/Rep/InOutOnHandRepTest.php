@@ -1,14 +1,14 @@
 <?php
-namespace InventoryTest\Transaction\Rep;
+namespace InventoryTest\Item\Rep;
 
 use Doctrine\ORM\EntityManager;
-use Inventory\Infrastructure\Persistence\Doctrine\TrxReportRepositoryImpl;
-use Inventory\Infrastructure\Persistence\Filter\BeginGrGiEndSqlFilter;
+use Inventory\Infrastructure\Persistence\Doctrine\ItemTrxReportRepositoryImpl;
+use Inventory\Infrastructure\Persistence\Filter\InOutOnhandSqlFilter;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
-class BeginGrGiEndRepTest extends PHPUnit_Framework_TestCase
+class InOutOnHandRepTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -22,23 +22,21 @@ class BeginGrGiEndRepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new TrxReportRepositoryImpl($doctrineEM);
+            $rep = new ItemTrxReportRepositoryImpl($doctrineEM);
 
-            // $filter = new TrxReportSqlFilter();
-            $filter = new BeginGrGiEndSqlFilter();
+            $filter = new InOutOnhandSqlFilter();
             $filter->setIsActive(1);
             $filter->setDocStatus("posted");
             $filter->setFromDate("2020-08-01");
             $filter->setToDate("2020-08-31");
             $sort_by = null;
             $sort = null;
-            $offset = null;
-            $limit = null;
-            echo ($filter);
+            $offset = 100;
+            $limit = 10;
 
-            $result = $rep->getBeginGrGiEnd($filter, $sort_by, $sort, $limit, $offset);
-            \var_dump(count($result));
-            // \var_dump($result);
+            $result = $rep->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset);
+            var_dump(count($result));
+            var_dump($result[0]->getEndQty());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

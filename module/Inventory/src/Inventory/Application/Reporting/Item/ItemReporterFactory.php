@@ -32,6 +32,7 @@ class ItemReporterFactory implements FactoryInterface
 
         $sv = $container->get(ItemReportRepositoryImpl::class);
         $service->setReporterRespository($sv);
+
         $sv = $container->get("AppCache");
         $service->setCache($sv);
 

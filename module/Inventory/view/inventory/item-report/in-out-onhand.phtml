@@ -173,14 +173,14 @@ $( "input[id='toDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeT
         { title: "#", dataType: "string", dataIndx: "sysNumber", width: 40,editable: false },
         { title: "Item", dataType: "string", dataIndx: "itemSku", width: 12,editable: false },        
         { title: "Item", dataType: "string", dataIndx: "itemName", width: 200,editable: false },
-        { title: "Begin Qty", dataType: "string", dataIndx: "beginQty", width: 100,editable: false },
-        { title: "GR", dataType: "string", dataIndx: "grQty", width: 100,editable: false },
-        { title: "GI", dataType: "string", dataIndx: "giQty", width: 100,editable: false },
-        { title: "End Qty", dataType: "string", dataIndx: "endQty", width: 100,editable: false },
-        { title: "Begin Value", dataType: "string", dataIndx: "beginValue", width: 100,editable: false },
-        { title: "GR Value", dataType: "string", dataIndx: "grValue", width: 100,editable: false },
-        { title: "GI Value", dataType: "string", dataIndx: "giValue", width: 100,editable: false },
-        { title: "End Value", dataType: "string", dataIndx: "endValue", width: 100,editable: false },
+        { title: "Begin Qty", dataType: "integer", dataIndx: "beginQty", width: 100,editable: false, align: 'right'},
+        { title: "GR", dataType: "integer", dataIndx: "grQty", width: 100,editable: false,align: 'right' },
+        { title: "GI", dataType: "integer", dataIndx: "giQty", width: 100,editable: false,align: 'right' },
+        { title: "End Qty", dataType: "integer", dataIndx: "endQty", width: 100,editable: false,align: 'right' },
+        { title: "Begin Value", dataType: "decimal", dataIndx: "beginValue", width: 100,editable: false,align: 'right' },
+        { title: "GR Value", dataType: "decimal", dataIndx: "grValue", width: 100,editable: false,align: 'right' },
+        { title: "GI Value", dataType: "decimal", dataIndx: "giValue", width: 100,editable: false,align: 'right' },
+        { title: "End Value", dataType: "decimal", dataIndx: "endValue", width: 100,editable: false,align: 'right' },
   
          ];
     var url = "<?php

@@ -35,7 +35,7 @@ LEFT JOIN
 	nmt_inventory_trx.wh_id,
 	SUM(CASE WHEN nmt_inventory_trx.flow ='IN' THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS total_gr,
 	SUM(CASE WHEN nmt_inventory_trx.flow ='OUT' THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS total_gi,
-	SUM(CASE WHEN nmt_inventory_trx.flow ='IN' THEN (nmt_inventory_trx.quantity*nmt_inventory_trx.doc_unit_price*nmt_inventory_trx.exchange_rate) ELSE 0 END) AS total_gr_vl,
+	SUM(CASE WHEN nmt_inventory_trx.flow ='IN' THEN (nmt_inventory_trx.quantity*nmt_inventory_trx.converted_standard_unit_price*nmt_inventory_trx.exchange_rate) ELSE 0 END) AS total_gr_vl,
 	SUM(CASE WHEN nmt_inventory_trx.flow ='OUT' THEN (nmt_inventory_trx.cogs_local) ELSE 0 END) AS total_gi_vl
 	FROM nmt_inventory_trx
 	LEFT JOIN nmt_inventory_mv
@@ -52,7 +52,7 @@ LEFT JOIN
 		nmt_inventory_trx.wh_id,
 		SUM(CASE WHEN nmt_inventory_trx.flow ='IN' THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS total_gr,
 		SUM(CASE WHEN nmt_inventory_trx.flow ='OUT' THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS total_gi,
-		SUM(CASE WHEN nmt_inventory_trx.flow ='IN' THEN (nmt_inventory_trx.quantity*nmt_inventory_trx.doc_unit_price*nmt_inventory_trx.exchange_rate) ELSE 0 END) AS total_gr_vl,
+		SUM(CASE WHEN nmt_inventory_trx.flow ='IN' THEN (nmt_inventory_trx.quantity*nmt_inventory_trx.converted_standard_unit_price*nmt_inventory_trx.exchange_rate) ELSE 0 END) AS total_gr_vl,
 		SUM(CASE WHEN nmt_inventory_trx.flow ='OUT' THEN (nmt_inventory_trx.cogs_local) ELSE 0 END) AS total_gi_vl
 	FROM nmt_inventory_trx
 	LEFT JOIN nmt_inventory_mv

@@ -29,14 +29,15 @@ class InOutOnHandRepTest extends PHPUnit_Framework_TestCase
             $filter->setDocStatus("posted");
             $filter->setFromDate("2020-08-01");
             $filter->setToDate("2020-08-31");
+            $filter->setItemId(2427);
             $sort_by = null;
             $sort = null;
-            $offset = 100;
-            $limit = 10;
+            $offset = 1;
+            $limit = 1;
 
             $result = $rep->getInOutOnhand($filter, $sort_by, $sort, $limit, $offset);
             var_dump(count($result));
-            var_dump($result[0]->getEndQty());
+            var_dump($result[0]->getGrValue());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

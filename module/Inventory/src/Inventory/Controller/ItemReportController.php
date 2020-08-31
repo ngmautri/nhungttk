@@ -10,6 +10,7 @@ use Inventory\Infrastructure\Persistence\Filter\ItemReportSqlFilter;
 use MLA\Paginator;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
+use DateTime;
 
 /**
  *
@@ -327,6 +328,18 @@ class ItemReportController extends AbstractGenericController
 
         if ($isActive == null) {
             $isActive = 1;
+        }
+
+        $date = new DateTime();
+
+        if ($fromDate == null) {
+            $d = $date->modify('first day of this month');
+            $fromDate = $d->format('Y-m-d');
+        }
+
+        if ($toDate == null) {
+            $d = $date->modify('last day of this month');
+            $toDate = $d->format('Y-m-d');
         }
 
         $filter = new InOutOnhandSqlFilter();

@@ -174,6 +174,10 @@ class BaseRowSnapshot extends AbstractDTO
 
     public $prDepartmentName;
 
+    public $prWarehouse;
+
+    public $prWarehouseName;
+
     public $id;
 
     public $rowNumber;
@@ -311,6 +315,24 @@ class BaseRowSnapshot extends AbstractDTO
     public $costCenter;
 
     public $standardConvertFactor;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrWarehouse()
+    {
+        return $this->prWarehouse;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrWarehouseName()
+    {
+        return $this->prWarehouseName;
+    }
 
     /**
      *

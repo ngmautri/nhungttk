@@ -1,19 +1,15 @@
 <?php
 namespace Procure\Controller;
 
-use Doctrine\ORM\EntityManager;
-use Monolog\Logger;
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Controller\Contracts\AbstractGenericController;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ReportController extends AbstractActionController
+class ReportController extends AbstractGenericController
 {
-
-    protected $doctrineEM;
 
     protected $prReporter;
 
@@ -27,7 +23,10 @@ class ReportController extends AbstractActionController
 
     protected $procureReporter;
 
-    protected $logger;
+    public function indexAction()
+    {
+        return parent::indexAction();
+    }
 
     public function priceOfItemAction()
     {}
@@ -43,36 +42,4 @@ class ReportController extends AbstractActionController
 
     public function apOfItemAction()
     {}
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-    }
-
-    /**
-     *
-     * @return \Monolog\Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
 }

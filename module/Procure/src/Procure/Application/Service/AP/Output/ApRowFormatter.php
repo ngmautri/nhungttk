@@ -17,7 +17,7 @@ class ApRowFormatter extends RowFormatterDecorator
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\Service\Output\AbstractRowFormatter::format()
+     * @see \Procure\Application\Service\Output\Formatter\AbstractRowFormatter::format()
      */
     public function format(RowSnapshot $row)
     {

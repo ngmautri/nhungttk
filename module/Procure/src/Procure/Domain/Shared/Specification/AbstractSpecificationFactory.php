@@ -10,4 +10,7 @@ abstract class AbstractSpecificationFactory
 {
 
     abstract function getPoRowSpecification();
+
+    abstract function getPrRowSpecification();
 }
+

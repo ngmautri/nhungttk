@@ -118,6 +118,13 @@ return array(
             ), */
 
             array(
+                'label' => 'Reporting',
+                'route' => 'procure/default',
+                'controller' => 'report',
+                'action' => 'index',
+                'icon' => 'fa fa-bar-chart'
+            ),
+            array(
                 'label' => 'PR Row Report',
                 'route' => 'procure/default',
                 'controller' => 'pr-report',

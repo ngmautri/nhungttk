@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\AccountPayable\Validator\Row;
+namespace Procure\Domain\PurchaseRequest\Validator\Row;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Procure\Domain\AbstractDoc;
@@ -30,12 +30,12 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
         }
 
         if (! $localEntity instanceof APRow) {
-            throw new InvalidArgumentException('APRow not given!');
+            throw new InvalidArgumentException('GR Row not given!');
         }
 
-        // do verification now
-
         Try {
+
+            // do verification now
 
             /**
              *

@@ -72,10 +72,22 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
 
         $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);
 
-        if ($row->prNumber !== null) {
-            $row->prNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span', $row->prNumber, $link);
+        if ($row->prNumber != null) {
+            $row->prNumber = sprintf('<span style="font-size:8pt; color: graytext">%s %s</span>', $row->prNumber, $link);
         }
 
+        /*
+         * if ($row->prNumber != null) {
+         * $f = '/procure/pr/view1?&entity_id=%s';
+         * $prViewUrl = \sprintf($f, $row->getPr());
+         *
+         * $f = "showJqueryDialog('PR Row #%s','1800',$(window).height()-50,'%s','j_loaded_data', true);";
+         * $onclick = sprintf($f, $row->prNumber, $prViewUrl);
+         *
+         * $f = '%s <a style="cursor:pointer;color:#337ab7" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>';
+         * $row->prNumber = \sprintf($f, $row->prNumber, $onclick);
+         * }
+         */
         $row->vendorItemName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemName());
         $row->vendorItemCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemCode());
 

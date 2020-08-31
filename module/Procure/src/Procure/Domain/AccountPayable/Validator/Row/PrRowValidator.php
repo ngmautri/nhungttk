@@ -15,7 +15,7 @@ use Procure\Domain\Validator\RowValidatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseValidator extends AbstractValidator implements RowValidatorInterface
+class PrRowValidator extends AbstractValidator implements RowValidatorInterface
 {
 
     /**
@@ -30,28 +30,28 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
         }
 
         if (! $localEntity instanceof APRow) {
-            throw new InvalidArgumentException('APRow not given!');
+            throw new InvalidArgumentException('AP Row not given!');
         }
 
         // do verification now
 
-        Try {
+        /**
+         *
+         * @var AbstractSpecification $spec ;
+         */
 
-            /**
-             *
-             * @var AbstractSpecification $spec ;
-             */
+        try {
 
-            // ===== WAREHOUSE =======
-            if ($localEntity->getIsInventoryItem() == 1) {
+            if ($localEntity->getPrRow() != null) {
 
-                $spec = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
-                $subject = array(
-                    "companyId" => $rootEntity->getCompany(),
+                $subject = [
+                    "prRowId" => $localEntity->getPrRow(),
                     "warehouseId" => $localEntity->getWarehouse()
-                );
+                ];
+
+                $spec = $this->getProcureSpecificationFactory()->getPrRowSpecification();
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $localEntity->addError(sprintf("Warehouse is required for inventory item! %s", $localEntity->getItemName()));
+                    $localEntity->addError(sprintf("[AP] PR and Warehouse not matched!", $localEntity->getPrRow(), $rootEntity->getWarehouse()));
                 }
             }
         } catch (\Exception $e) {

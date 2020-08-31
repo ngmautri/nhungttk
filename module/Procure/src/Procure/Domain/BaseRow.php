@@ -186,6 +186,46 @@ class BaseRow extends AbstractRow
 
     protected $prDepartmentName;
 
+    protected $prWarehouse;
+
+    protected $prWarehouseName;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrWarehouse()
+    {
+        return $this->prWarehouse;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrWarehouseName()
+    {
+        return $this->prWarehouseName;
+    }
+
+    /**
+     *
+     * @param mixed $prWarehouse
+     */
+    public function setPrWarehouse($prWarehouse)
+    {
+        $this->prWarehouse = $prWarehouse;
+    }
+
+    /**
+     *
+     * @param mixed $prWarehouseName
+     */
+    public function setPrWarehouseName($prWarehouseName)
+    {
+        $this->prWarehouseName = $prWarehouseName;
+    }
+
     /**
      *
      * @return mixed

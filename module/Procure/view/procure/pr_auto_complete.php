@@ -50,6 +50,8 @@ $( "#pr_item_name" ).autocomplete({
           $('#item_detail').show();
           $('#pr_row_detail').show();
           $( "#quantity" ).focus();
+          $( "#target_wh_id" ).val(ui.item.hit.warehouse);  
+          
 
            // update GL account and cost center
           if(ui.item.inventory_account_id !==null){

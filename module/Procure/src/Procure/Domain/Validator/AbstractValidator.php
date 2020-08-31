@@ -63,7 +63,7 @@ abstract class AbstractValidator
 
     /**
      *
-     * @return \Procure\Domain\Service\FXServiceInterface
+     * @return \Procure\Domain\Service\Contracts\FXServiceInterface
      */
     public function getFxService()
     {

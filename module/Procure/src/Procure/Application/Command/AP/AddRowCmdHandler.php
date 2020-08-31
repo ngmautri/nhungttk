@@ -12,11 +12,13 @@ use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Application\Service\FXService;
 use Procure\Application\Service\AP\RowSnapshotReference;
+use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
+use Procure\Domain\AccountPayable\Validator\Row\PrRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -80,6 +82,8 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+
             $fxService = new FXService();
             $sharedService = new SharedService($sharedSpecificationFactory, $fxService);
 
@@ -92,6 +96,9 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $rowValidators->add($validator);
 
             $validator = new WarehouseValidator($sharedSpecificationFactory, $fxService);
+            $rowValidators->add($validator);
+
+            $validator = new PrRowValidator($sharedSpecificationFactory, $fxService, $procureSpecsFactory);
             $rowValidators->add($validator);
 
             $validator = new GLAccountValidator($sharedSpecificationFactory, $fxService);

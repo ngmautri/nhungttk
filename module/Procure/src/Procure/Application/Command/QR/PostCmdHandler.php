@@ -3,12 +3,12 @@ namespace Procure\Application\Command\QR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\QR\Options\PostOptions;
 use Procure\Application\DTO\Qr\QrDTO;
-use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -76,7 +76,7 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $headerValidators = new HeaderValidatorCollection();

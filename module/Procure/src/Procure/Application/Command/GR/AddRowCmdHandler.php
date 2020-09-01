@@ -3,13 +3,13 @@ namespace Procure\Application\Command\GR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\GrRowCreateOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Service\FXService;
 use Procure\Application\Service\GR\RowSnapshotReference;
 use Procure\Domain\Exception\Gr\GrRowCreateException;
 use Procure\Domain\Exception\Gr\GrVersionChangedException;
@@ -77,7 +77,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $sharedService = new SharedService($sharedSpecificationFactory, $fxService);
 
             $headerValidators = new HeaderValidatorCollection();

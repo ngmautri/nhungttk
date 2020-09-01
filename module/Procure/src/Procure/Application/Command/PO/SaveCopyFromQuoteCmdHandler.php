@@ -3,6 +3,7 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
@@ -10,7 +11,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\PO\Options\SaveCopyFromQuoteOptions;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Service\FXService;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -113,7 +113,7 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
             $sharedService = new SharedService($sharedSpecsFactory, $fxService);
 

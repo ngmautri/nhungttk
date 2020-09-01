@@ -10,7 +10,7 @@ use Inventory\Domain\Item\ItemSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemMapper
+class HSCodeMapper
 {
 
     public static function mapSnapshotEntity(EntityManager $doctrineEM, ItemSnapshot $snapshot, NmtInventoryItem $entity)

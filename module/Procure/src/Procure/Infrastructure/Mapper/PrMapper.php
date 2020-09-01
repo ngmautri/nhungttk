@@ -276,6 +276,10 @@ class PrMapper
 
     public static function createSnapshot(EntityManager $doctrineEM, NmtProcurePr $entity, $snapshot = null)
     {
+        if ($entity == null || $doctrineEM == null) {
+            return null;
+        }
+
         if (! $snapshot instanceof PRSnapshot) {
             $snapshot = new PRSnapshot();
         }

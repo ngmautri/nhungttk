@@ -3,6 +3,7 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
@@ -11,7 +12,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\PurchaseOrder\PODoc;
@@ -91,7 +91,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $headerValidators = new HeaderValidatorCollection();
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
             $headerValidators->add($validator);

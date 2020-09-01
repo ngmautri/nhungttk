@@ -34,4 +34,8 @@ Interface PrQueryRepositoryInterface
     public function getRootEntityById($id);
 
     public function getHeaderById($id, $token = null);
+
+    public function getHeaderSnapshotById($id);
+
+    public function getHeaderSnapshotByRowId($rowId);
 }

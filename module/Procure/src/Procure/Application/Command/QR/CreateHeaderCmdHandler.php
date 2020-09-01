@@ -3,6 +3,7 @@ namespace Procure\Application\Command\QR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
@@ -11,7 +12,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\QR\Options\CreateOptions;
 use Procure\Application\DTO\Qr\QrDTO;
-use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\QuotationRequest\QRDoc;
@@ -90,7 +90,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             // $snapshot->QRName = $snapshot->getQRNumber();
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $headerValidators = new HeaderValidatorCollection();

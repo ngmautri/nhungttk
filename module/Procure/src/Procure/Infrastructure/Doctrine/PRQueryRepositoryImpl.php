@@ -22,27 +22,70 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
     /**
      *
      * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getHeaderSnapshotById()
+     */
+    public function getHeaderSnapshotById($id)
+    {
+        if ($id == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'id' => $id
+        );
+
+        $rootEntityDoctrine = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtProcurePr')
+            ->findOneBy($criteria);
+
+        return PrMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getHeaderSnapshotByRowId()
+     */
+    public function getHeaderSnapshotByRowId($rowId)
+    {
+        if ($rowId == null) {
+            return null;
+        }
+
+        $criteria = array(
+            'id' => $rowId
+        );
+
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
+
+        if ($doctrineEntity == null) {
+            return null;
+        }
+
+        return PrMapper::createSnapshot($this->getDoctrineEM(), $doctrineEntity->getPr());
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getHeaderIdByRowId()
      */
     public function getHeaderIdByRowId($id)
     {
-        $sql = "
-SELECT
-nmt_procure_pr_row.pr_id AS prId
-FROM nmt_procure_pr_row
-WHERE id = %s";
+        $criteria = array(
+            'id' => $id
+        );
 
-        $sql = sprintf($sql, $id);
-
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            $rsm->addScalarResult("prId", "prId");
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            return $query->getSingleResult()["prId"];
-        } catch (NoResultException $e) {
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
+        if ($doctrineEntity == null) {
             return null;
         }
+
+        if ($doctrineEntity->getPr() != null) {
+            return $doctrineEntity->getPr()->getId();
+        }
+
+        return null;
     }
 
     /**

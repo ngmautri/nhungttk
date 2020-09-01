@@ -1,30 +1,36 @@
 <?php
-namespace Procure\Infrastructure\Doctrine\Factory;
+namespace Procure\Application\Service\Shared;
 
-use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
- * @author Nguyen Mau Tri
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class POCmdRepositoryFactory implements FactoryInterface
+class SharedCmdServiceImplFactory implements FactoryInterface
 {
 
     /**
      *
      * {@inheritdoc}
-     *
      * @see \Zend\ServiceManager\FactoryInterface::createService()
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $container = $serviceLocator;
-        $sv = $container->get('doctrine.entitymanager.orm_default');
 
-        $service = new DoctrinePOCmdRepository($sv);
+        $service = new SharedCmdServiceImpl();
+        $sv = $container->get('doctrine.entitymanager.orm_default');
+        $service->setDoctrineEM($sv);
+
+        $sv = $container->get("AppCache");
+        $service->setCache($sv);
+
+        $sv = $container->get("AppLogger");
+        $service->setLogger($sv);
+
         return $service;
     }
 }

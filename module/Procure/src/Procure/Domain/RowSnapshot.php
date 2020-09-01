@@ -1,6 +1,12 @@
 <?php
 namespace Procure\Domain;
 
+use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\Repository\ItemQueryRepositoryInterface;
+use Inventory\Domain\Service\Contracts\SharedQueryServiceInterface as InventoryQueryService;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface;
+use Procure\Domain\Service\Contracts\SharedQueryServiceInterface as ProcureQueryService;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 use InvalidArgumentException;
@@ -13,6 +19,74 @@ use InvalidArgumentException;
  */
 class RowSnapshot extends BaseRowSnapshot
 {
+
+    /**
+     *
+     * @param ProcureQueryService $queryService
+     * @throws \InvalidArgumentException
+     */
+    public function updateProcureRef(ProcureQueryService $queryService)
+    {
+        if ($queryService instanceof ProcureQueryService) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($this->getPrRow() != null && $this->getPr() == null) {
+
+            /**
+             *
+             * @var PrQueryRepositoryInterface $rep
+             */
+            $rep = $queryService->getPRQueryRepository();
+            if ($rep != null) {
+                $prSnapshot = $rep->getHeaderSnapshotByRowId($this->getPrRow());
+                if ($prSnapshot instanceof PRSnapshot) {
+                    // alway using warehouse of PR request.
+                    $this->warehouse = $prSnapshot->getWarehouse();
+                }
+            }
+        }
+
+        if ($this->getPoRow() != null && $this->getPo() == null) {
+
+            /**
+             *
+             * @var PrQueryRepositoryInterface $rep
+             */
+            $rep = $queryService->getPOQueryRepository();
+            if ($rep != null) {
+                $this->po = $rep->getHeaderIdByRowId($this->getPoRow());
+            }
+        }
+    }
+
+    /**
+     *
+     * @param InventoryQueryService $queryService
+     * @throws \InvalidArgumentException
+     */
+    public function updateInventoryRef(InventoryQueryService $queryService)
+    {
+        if ($queryService instanceof InventoryQueryService) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($this->getItem() != null) {
+
+            /**
+             *
+             * @var ItemQueryRepositoryInterface $rep
+             */
+            $rep = $queryService->getItemQueryRepository();
+            if ($rep != null) {
+                $itemSnapshot = $rep->getItemSnapshotById($this->getItem());
+                if ($itemSnapshot instanceof ItemSnapshot) {
+                    $this->isFixedAsset = $itemSnapshot->getIsFixedAsset();
+                    $this->isInventoryItem = $itemSnapshot->getIsStocked();
+                }
+            }
+        }
+    }
 
     public function convertTo(RowSnapshot $targetObj)
     {

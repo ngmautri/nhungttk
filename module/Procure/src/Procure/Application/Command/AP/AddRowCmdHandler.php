@@ -3,6 +3,7 @@ namespace Procure\Application\Command\AP;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
@@ -10,7 +11,6 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApRowCreateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
-use Procure\Application\Service\FXService;
 use Procure\Application\Service\AP\RowSnapshotReference;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
@@ -84,7 +84,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
 
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $sharedService = new SharedService($sharedSpecificationFactory, $fxService);
 
             $headerValidators = new HeaderValidatorCollection();

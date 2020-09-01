@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Service;
+namespace Application\Application\Service\Shared;
 
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Infrastructure\AggregateRepository\DoctrinePostingPeriodQueyrRepository;
@@ -7,11 +7,12 @@ use Application\Service\AbstractService;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
 
 /**
+ * FX Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FXService extends AbstractService implements FXServiceInterface
+class FXServiceImpl extends AbstractService implements FXServiceInterface
 {
 
     /**

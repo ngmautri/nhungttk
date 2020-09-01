@@ -20,6 +20,29 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
     /**
      *
      * {@inheritdoc}
+     * @see \Procure\Domain\AccountPayable\Repository\APQueryRepositoryInterface::getHeaderIdByRowId()
+     */
+    public function getHeaderIdByRowId($id)
+    {
+        $criteria = array(
+            'id' => $id
+        );
+
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\FinVendorInvoiceRow')->findOneBy($criteria);
+        if ($doctrineEntity == null) {
+            return null;
+        }
+
+        if ($doctrineEntity->getPr() != null) {
+            return $doctrineEntity->getPr()->getId();
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Procure\Domain\AccountPayable\Repository\APQueryRepositoryInterface::getVersion()
      */
     public function getVersion($id, $token = null)

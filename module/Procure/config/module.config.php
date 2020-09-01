@@ -30,6 +30,10 @@ use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImpl;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchIndexImplFactory;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImpl;
 use Procure\Application\Service\Search\ZendSearch\PR\PrSearchQueryImplFactory;
+use Procure\Application\Service\Shared\SharedCmdServiceImpl;
+use Procure\Application\Service\Shared\SharedCmdServiceImplFactory;
+use Procure\Application\Service\Shared\SharedQueryServiceImpl;
+use Procure\Application\Service\Shared\SharedQueryServiceImplFactory;
 use Procure\Infrastructure\Cache\CacheFactory;
 use Procure\Infrastructure\Cache\RedisCacheFactory;
 use Procure\Infrastructure\Logging\LoggerFactory;
@@ -293,6 +297,10 @@ return array(
             PrReportRepositoryImpl::class => PrReporterRepositoryImplFactory::class,
             PoReportRepositoryImpl::class => PoReporterRepositoryImplFactory::class,
             ProcureReportRepositoryImpl::class => ProcureReporterRepositoryImplFactory::class,
+
+            // Shared Service
+            SharedQueryServiceImpl::class => SharedQueryServiceImplFactory::class,
+            SharedCmdServiceImpl::class => SharedCmdServiceImplFactory::class,
 
             // Reporing Service
             'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',

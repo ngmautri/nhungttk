@@ -26,23 +26,20 @@ class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQuer
      */
     public function getHeaderIdByRowId($id)
     {
-        $sql = "
-SELECT
-nmt_procure_po_row.po_id AS poId
-FROM nmt_procure_po_row
-WHERE id = %s";
+        $criteria = array(
+            'id' => $id
+        );
 
-        $sql = sprintf($sql, $id);
-
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
-            $rsm->addScalarResult("poId", "poId");
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            return $query->getSingleResult()["poId"];
-        } catch (NoResultException $e) {
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
+        if ($doctrineEntity == null) {
             return null;
         }
+
+        if ($doctrineEntity->getPr() != null) {
+            return $doctrineEntity->getPr()->getId();
+        }
+
+        return null;
     }
 
     /**

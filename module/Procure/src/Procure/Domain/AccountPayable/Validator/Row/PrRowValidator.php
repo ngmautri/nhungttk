@@ -51,7 +51,7 @@ class PrRowValidator extends AbstractValidator implements RowValidatorInterface
 
                 $spec = $this->getProcureSpecificationFactory()->getPrRowSpecification();
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $localEntity->addError(sprintf("[AP] PR and Warehouse not matched!", $localEntity->getPrRow(), $rootEntity->getWarehouse()));
+                    $localEntity->addError(sprintf("[AP] Warehouse not matched with that on PR!", $localEntity->getPrRow(), $rootEntity->getWarehouse()));
                 }
             }
         } catch (\Exception $e) {

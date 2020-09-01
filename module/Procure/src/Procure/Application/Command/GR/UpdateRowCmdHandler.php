@@ -3,12 +3,12 @@ namespace Procure\Application\Command\GR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\GrRowUpdateOptions;
 use Procure\Application\DTO\Gr\GrRowDTO;
-use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\PoRowUpdateException;
 use Procure\Domain\Exception\PoVersionChangedException;
 use Procure\Domain\Exception\Gr\GrRowUpdateException;
@@ -119,7 +119,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $headerValidators = new HeaderValidatorCollection();
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);

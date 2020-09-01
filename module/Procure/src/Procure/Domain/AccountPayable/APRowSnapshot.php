@@ -2,14 +2,23 @@
 namespace Procure\Domain\AccountPayable;
 
 use Procure\Domain\RowSnapshot;
+use Procure\Domain\Service\Contracts\SharedQueryServiceInterface as ProcureQueryService;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class APRowSnapshot extends RowSnapshot
 {
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\RowSnapshot::updateProcureRef()
+     */
+    public function updateProcureRef(ProcureQueryService $queryService)
+    {}
 
     public $reversalReason;
 

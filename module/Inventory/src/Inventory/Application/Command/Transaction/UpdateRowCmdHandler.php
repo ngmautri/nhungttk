@@ -3,6 +3,7 @@ namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
@@ -20,7 +21,6 @@ use Inventory\Domain\Transaction\TrxRowSnapshot;
 use Inventory\Domain\Transaction\TrxRowSnapshotAssembler;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
-use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use InvalidArgumentException;
 
@@ -105,7 +105,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
 
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());

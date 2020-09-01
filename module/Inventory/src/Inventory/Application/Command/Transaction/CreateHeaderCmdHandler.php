@@ -3,6 +3,7 @@ namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
@@ -17,7 +18,6 @@ use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
-use Procure\Application\Service\FXService;
 use InvalidArgumentException;
 
 /**
@@ -71,7 +71,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
 
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());

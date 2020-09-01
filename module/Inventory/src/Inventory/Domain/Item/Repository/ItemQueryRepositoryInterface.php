@@ -18,4 +18,8 @@ Interface ItemQueryRepositoryInterface extends QueryRepositoryInterface
     public function getRootEntityByTokenId($id, $token);
 
     public function getRootEntityById($id);
+
+    public function getItemTypeById($id);
+
+    public function getItemSnapshotById($id, $needDetails = false);
 }

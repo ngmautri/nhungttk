@@ -1,18 +1,20 @@
 <?php
 namespace Procure\Domain\AccountPayable\Validator;
 
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\TrxValidationService;
-use Inventory\Domain\Transaction\GI\Validator\Row\DefaultGIRowValidator;
-use Inventory\Domain\Transaction\GI\Validator\Row\OnHandQuantityValidator;
-use Inventory\Domain\Transaction\GR\Validator\Header\DefaultGRHeaderValidator;
-use Inventory\Domain\Transaction\GR\Validator\Row\DefaultGRRowValidator;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Header\DefaultHeaderValidator;
-use Inventory\Domain\Transaction\Validator\Header\TrxDateAndWarehouseValidator;
-use Inventory\Domain\Transaction\Validator\Header\TrxPostingValidator;
-use Inventory\Domain\Transaction\Validator\Row\DefaultRowValidator;
+use Procure\Domain\AccountPayable\Validator\Header\APPostingValidator;
+use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
+use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\Header\IncotermValidator;
+use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
+use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
+use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\PrRowValidator;
+use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
+use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\ValidationServiceImp;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use InvalidArgumentException;
 
 /**
@@ -43,69 +45,149 @@ class ValidatorFactory
         $fxService = $sharedService->getFxService();
 
         $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
+        $domainSpecsFactory = $sharedService->getDomainSpecificationFactory();
 
         $rowValidators = null;
         $headerValidators = null;
 
-        // Goods Issue Validator
-        // ===========================
-        $giHeaderValidators = new HeaderValidatorCollection();
-
+        $headerValidators = new HeaderValidatorCollection();
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-        $giHeaderValidators->add($validator);
+        $headerValidators->add($validator);
 
-        $validator = new TrxDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
-        $giHeaderValidators->add($validator);
-
-        // $validator = new DefaultGIHeaderValidator($sharedSpecsFactory, $fxService);
-        // $giHeaderValidators->add($validator);
-
-        // Goods issues row validators
-        $giRowValidators = new RowValidatorCollection();
-
+        $rowValidators = new RowValidatorCollection();
         $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-        $giRowValidators->add($validator);
+        $rowValidators->add($validator);
 
-        $validator = new DefaultGIRowValidator($sharedSpecsFactory, $fxService);
-        $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-        $giRowValidators->add($validator);
+        $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
+        $rowValidators->add($validator);
 
-        $validator = new OnHandQuantityValidator($sharedSpecsFactory, $fxService);
-        $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-        $giRowValidators->add($validator);
+        $validator = new PrRowValidator($sharedSpecsFactory, $fxService, $domainSpecsFactory);
+        $rowValidators->add($validator);
 
-        // Goods Receipt Validator
-        // ==========================
-
-        $grHeaderValidators = new HeaderValidatorCollection();
-        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-        $grHeaderValidators->add($validator);
-
-        $validator = new TrxDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
-        $grHeaderValidators->add($validator);
-
-        $validator = new DefaultGRHeaderValidator($sharedSpecsFactory, $fxService);
-        $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-        $grHeaderValidators->add($validator);
-
-        // Goods Receipt row validators
-        $grRowValidators = new RowValidatorCollection();
-        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-
-        $grRowValidators->add($validator);
-
-        $validator = new DefaultGRRowValidator($sharedSpecsFactory, $fxService);
-        $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
-        $grRowValidators->add($validator);
+        $validator = new GLAccountValidator($sharedSpecsFactory, $fxService);
+        $rowValidators->add($validator);
 
         if ($isPosting) {
-            $validator = new TrxPostingValidator($sharedSpecsFactory, $fxService);
-            $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
+            $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
+            $headerValidators->add($validator);
+            $validator = new APPostingValidator($sharedSpecsFactory, $fxService);
             $headerValidators->add($validator);
         }
 
-        return new TrxValidationService($headerValidators, $rowValidators);
+        return new ValidationServiceImp($headerValidators, $rowValidators);
+    }
+
+    public static function createForHeader(SharedService $sharedService, $isPosting = false)
+    {
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($sharedService->getSharedSpecificationFactory() == null) {
+            throw new InvalidArgumentException("Shared spec service not found");
+        }
+
+        $fxService = $sharedService->getFxService();
+
+        $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
+
+        $rowValidators = null;
+        $headerValidators = null;
+        $headerValidators = new HeaderValidatorCollection();
+
+        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new IncotermValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new InvoiceAndPaymentTermValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new APPostingValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        return new ValidationServiceImp($headerValidators, $rowValidators);
+    }
+
+    public static function createForPosting(SharedService $sharedService, $isPosting = false)
+    {
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($sharedService->getSharedSpecificationFactory() == null) {
+            throw new InvalidArgumentException("Shared spec service not found");
+        }
+
+        $fxService = $sharedService->getFxService();
+
+        $sharedSpecFactory = $sharedService->getSharedSpecificationFactory();
+        $domainSpecFactory = $sharedService->getDomainSpecificationFactory();
+
+        $headerValidators = new HeaderValidatorCollection();
+
+        $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new APPostingValidator($sharedSpecFactory, $fxService);
+        $headerValidators->add($validator);
+
+        // =======================
+
+        $rowValidators = new RowValidatorCollection();
+
+        $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
+        $rowValidators->add($validator);
+
+        $validator = new PoRowValidator($sharedSpecFactory, $fxService, $domainSpecFactory);
+        $rowValidators->add($validator);
+
+        $validator = new WarehouseValidator($sharedSpecFactory, $fxService);
+        $rowValidators->add($validator);
+
+        $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
+        $rowValidators->add($validator);
+
+        return new ValidationServiceImp($headerValidators, $rowValidators);
+    }
+
+    public static function createForCopyFromPO(SharedService $sharedService, $isPosting = false)
+    {
+        if ($sharedService == null) {
+            throw new InvalidArgumentException("SharedService service not found");
+        }
+
+        if ($sharedService->getSharedSpecificationFactory() == null) {
+            throw new InvalidArgumentException("Shared spec service not found");
+        }
+
+        $fxService = $sharedService->getFxService();
+
+        $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
+
+        // Header validator
+        $headerValidators = new HeaderValidatorCollection();
+        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new InvoiceAndPaymentTermValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
+        $headerValidators->add($validator);
+
+        // Row validator
+        $rowValidators = new RowValidatorCollection();
+        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
+        $rowValidators->add($validator);
+
+        return new ValidationServiceImp($headerValidators, $rowValidators);
     }
 }

@@ -15,16 +15,11 @@ use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
+use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 
 /**
@@ -116,31 +111,16 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
             $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService);
 
-            // Header validator
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
+            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
 
-            $validator = new InvoiceAndPaymentTermValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
+            $validationService = ValidatorFactory::createForCopyFromPO($sharedService, true);
 
-            $validator = new GrDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-
-            // Row validator
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
-
-            $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $validationService, $sharedService);
 
             $dto->id = $rootSnapshot->getId();
             $dto->token = $rootSnapshot->getToken();

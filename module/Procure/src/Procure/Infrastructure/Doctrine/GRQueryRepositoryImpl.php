@@ -2,6 +2,7 @@
 namespace Procure\Infrastructure\Doctrine;
 
 use Application\Domain\Util\SimpleCollection;
+use Application\Entity\NmtProcureGrRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
@@ -22,23 +23,24 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
 
     public function getHeaderIdByRowId($id)
     {
-        $sql = "
-SELECT
-nmt_procure_gr_row.gr_id AS grId
-FROM nmt_procure_gr_row
-WHERE id = %s";
+        $criteria = array(
+            'id' => $id
+        );
 
-        $sql = sprintf($sql, $id);
-
-        try {
-            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGrRow', 'nmt_procure_gr_row');
-            $rsm->addScalarResult("grId", "grId");
-            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            return $query->getSingleResult()["grId"];
-        } catch (NoResultException $e) {
+        /**
+         *
+         * @var NmtProcureGrRow $doctrineEntity
+         */
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+        if ($doctrineEntity == null) {
             return null;
         }
+
+        if ($doctrineEntity->getGr() != null) {
+            return $doctrineEntity->getGr()->getId();
+        }
+
+        return null;
     }
 
     /**

@@ -14,8 +14,8 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
-use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
@@ -29,42 +29,45 @@ use Procure\Domain\Validator\RowValidatorCollection;
 abstract class GenericAP extends AbstractAP
 {
 
-    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService);
+    abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
     /**
      *
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
+     * @param ValidationServiceInterface $validationService
      * @param boolean $isPosting
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\GenericAP
      */
-    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
+    public function validate(ValidationServiceInterface $validationService, $isPosting = false)
     {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
+        if ($validationService == null) {
+            throw new InvalidArgumentException("Validation service not given!");
         }
 
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("GR Validators not given!");
+        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
+            throw new InvalidArgumentException("Headers Validators not given!");
+        }
+
+        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
+            throw new InvalidArgumentException("Rows Validators not given!");
         }
 
         // Clear Notification.
         $this->clearNotification();
 
-        $this->validateHeader($headerValidators, $isPosting);
+        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
 
         if ($this->hasErrors()) {
             return $this;
@@ -76,29 +79,28 @@ abstract class GenericAP extends AbstractAP
         }
 
         foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $rowValidators, $isPosting);
+            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
         }
 
         return $this;
     }
 
-    public function deactivateRow(APRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function deactivateRow(APRow $row, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
     /**
      *
      * @param APRowSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @param CommandOptions $options
+     * @param ValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidOperationException
+     * @throws InvalidArgumentException
+     * @throws ValidationFailedException
+     * @throws OperationFailedException
      * @return \Procure\Domain\AccountPayable\APRowSnapshot
      */
-    public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("AP is posted! %s", $this->getId()));
@@ -112,7 +114,7 @@ abstract class GenericAP extends AbstractAP
             throw new InvalidArgumentException("Options not found");
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
 
         $snapshot->docType = $this->docType;
 
@@ -122,10 +124,10 @@ abstract class GenericAP extends AbstractAP
 
         $row = APRow::makeFromSnapshot($snapshot);
 
-        $this->validateRow($row, $rowValidators);
+        $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getNotification()->errorMessage());
+            throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -134,10 +136,11 @@ abstract class GenericAP extends AbstractAP
          *
          * @var APRowSnapshot $localSnapshot
          */
-        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
+            throw new \RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
         $params = [
@@ -163,18 +166,16 @@ abstract class GenericAP extends AbstractAP
     /**
      *
      * @param APRowSnapshot $snapshot
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
+     * @param CommandOptions $options
      * @param array $params
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @param ValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidOperationException
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
      * @return \Procure\Domain\AccountPayable\APRowSnapshot
      */
-    public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(sprintf("PO is posted! %s", $this->getId()));
@@ -188,7 +189,7 @@ abstract class GenericAP extends AbstractAP
             throw new InvalidArgumentException("Options not found");
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -196,10 +197,10 @@ abstract class GenericAP extends AbstractAP
 
         $row = APRow::makeFromSnapshot($snapshot);
 
-        $this->validateRow($row, $rowValidators);
+        $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getNotification()->errorMessage());
+            throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
@@ -208,10 +209,11 @@ abstract class GenericAP extends AbstractAP
          *
          * @var APRowSnapshot $localSnapshot
          */
-        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
+            throw new \RuntimeException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
         }
 
         $target = $this->makeSnapshot();
@@ -242,33 +244,31 @@ abstract class GenericAP extends AbstractAP
 
     /**
      *
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidOperationException
-     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @param CommandOptions $options
+     * @param ValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidOperationException
+     * @throws \RuntimeException
      * @return \Procure\Domain\AccountPayable\GenericAP
      */
-    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function post(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
 
-        $this->validate($headerValidators, $rowValidators);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();
 
-        $this->prePost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->prePost($options, $validationService, $sharedService);
+        $this->doPost($options, $validationService, $sharedService);
+        $this->afterPost($options, $validationService, $sharedService);
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -289,33 +289,31 @@ abstract class GenericAP extends AbstractAP
 
     /**
      *
-     * @param \Application\Domain\Shared\Command\CommandOptions $options
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     * @throws \Procure\Domain\Exception\OperationFailedException
+     * @param CommandOptions $options
+     * @param ValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidOperationException
+     * @throws ValidationFailedException
      * @return \Procure\Domain\AccountPayable\GenericAP
      */
-    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function reverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->_checkParams($validationService, $sharedService);
 
-        $this->validate($headerValidators, $rowValidators);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getErrorMessage());
         }
 
         $this->clearEvents();
 
-        $this->preReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->preReserve($options, $validationService, $sharedService);
+        $this->doReverse($options, $validationService, $sharedService);
+        $this->afterReserve($options, $validationService, $sharedService);
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -422,28 +420,18 @@ abstract class GenericAP extends AbstractAP
 
     /**
      *
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
+     * @param ValidationServiceInterface $validationService
+     * @param SharedService $sharedService
+     * @throws InvalidArgumentException
      */
-    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    private function _checkParams(ValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
+        if ($validationService == null) {
+            throw new InvalidArgumentException('Validation service not found!');
         }
 
         if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
+            throw new InvalidArgumentException('SharedService service not found');
         }
     }
 }

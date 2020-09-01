@@ -2,7 +2,11 @@
 namespace Procure\Application\Service\AP;
 
 use Doctrine\ORM\EntityManager;
+use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\Contracts\ItemType;
+use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use Procure\Domain\AccountPayable\APRowSnapshot;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
@@ -10,7 +14,7 @@ use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class RowSnapshotReference
 {
@@ -27,31 +31,41 @@ class RowSnapshotReference
             return null;
         }
 
-        // updating referrence.
-        if ($snapshot->getPoRow() > 0) {
-            $poQuery = new POQueryRepositoryImpl($doctrineEM);
-            $snapshot->po = $poQuery->getHeaderIdByRowId($snapshot->getPoRow());
+        if ($snapshot->getPrRow() > 0) {
+            $rep = new PRQueryRepositoryImpl($doctrineEM);
+
+            $prSnapshot = $rep->getHeaderSnapshotByRowId($snapshot->getPrRow());
+
+            if ($prSnapshot instanceof PRSnapshot) {
+                $snapshot->pr = $prSnapshot->getId();
+                // Always use PR warehouse.
+                $snapshot->warehouse = $prSnapshot->getWarehouse();
+            }
         }
 
-        if ($snapshot->getPrRow() > 0) {
-            $poQuery = new PRQueryRepositoryImpl($doctrineEM);
-            $snapshot->pr = $poQuery->getHeaderIdByRowId($snapshot->getPrRow());
+        // updating referrence.
+        if ($snapshot->getPoRow() > 0) {
+            $rep = new POQueryRepositoryImpl($doctrineEM);
+            $snapshot->po = $rep->getHeaderIdByRowId($snapshot->getPoRow());
         }
 
         if ($snapshot->getGrRow() > 0) {
-            $apQuery = new GRQueryRepositoryImpl($doctrineEM);
-            // $snapshot-> = $apQuery->getHeaderIdByRowId($snapshot->getApInvoiceRow());
+            $rep = new GRQueryRepositoryImpl($doctrineEM);
+            $snapshot->grId = $rep->getHeaderIdByRowId($snapshot->getGrRow());
         }
 
         if ($snapshot->getItem() > 0) {
-            $entity = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->getItem());
+            $rep = new ItemQueryRepositoryImpl($doctrineEM);
+            $itemSnapshot = $rep->getItemSnapshotById($snapshot->getItem());
 
-            if ($entity->getIsFixedAsset() == 1) {
-                $snapshot->isFixedAsset = 1;
-            }
+            if ($itemSnapshot instanceof ItemSnapshot) {
 
-            if ($entity->getIsStocked() == 1) {
-                $snapshot->isInventoryItem = 1;
+                switch ($itemSnapshot->getItemTypeId()) {
+                    case ItemType::FIXED_ASSET_ITEM_TYPE:
+                        $snapshot->isFixedAsset = 1;
+                    case ItemType::INVENTORY_ITEM_TYPE:
+                        $snapshot->isInventoryItem = 1;
+                }
             }
         }
 

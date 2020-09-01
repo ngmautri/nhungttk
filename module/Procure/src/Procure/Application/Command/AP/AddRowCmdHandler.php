@@ -15,18 +15,11 @@ use Procure\Application\Service\AP\RowSnapshotReference;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRowSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\PrRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
@@ -81,33 +74,17 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APRowSnapshot());
             $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
-            $sharedSpecificationFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-
+            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
             $fxService = new FXServiceImpl();
-            $sharedService = new SharedService($sharedSpecificationFactory, $fxService);
 
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecificationFactory, $fxService);
-            $headerValidators->add($validator);
+            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
 
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecificationFactory, $fxService);
-            $rowValidators->add($validator);
+            $validationService = ValidatorFactory::create($sharedService);
 
-            $validator = new WarehouseValidator($sharedSpecificationFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new PrRowValidator($sharedSpecificationFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
-
-            $validator = new GLAccountValidator($sharedSpecificationFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
-
-            $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $validationService, $sharedService);
 
             // event dispatch
             // event dispatcher
@@ -129,7 +106,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

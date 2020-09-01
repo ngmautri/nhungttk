@@ -21,10 +21,10 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
 
     /**
      *
-     * {@inheritdoc}
-     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getHeaderSnapshotById()
+     * @param int $id
+     * @return NULL|\Application\Entity\NmtProcurePr
      */
-    public function getHeaderSnapshotById($id)
+    private function _getHeaderEntityById($id)
     {
         if ($id == null) {
             return null;
@@ -34,11 +34,45 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
             'id' => $id
         );
 
-        $rootEntityDoctrine = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtProcurePr')
-            ->findOneBy($criteria);
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePr $entity ;
+         */
+        $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        return $entity;
+    }
 
-        return PrMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+    /**
+     *
+     * @param int $rowId
+     * @return NULL|\Application\Entity\NmtProcurePr
+     */
+    private function _getHeaderEntityByRowId($rowId)
+    {
+        $criteria = array(
+            'id' => $rowId
+        );
+
+        /**
+         *
+         * @var \Application\Entity\NmtProcurePrRow $doctrineEntity ;
+         */
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
+        if ($doctrineEntity == null) {
+            return null;
+        }
+
+        return $doctrineEntity->getPr();
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\PurchaseRequest\Repository\PrQueryRepositoryInterface::getHeaderSnapshotById()
+     */
+    public function getHeaderSnapshotById($id)
+    {
+        return PrMapper::createSnapshot($this->getDoctrineEM(), $this->_getHeaderEntityById($id));
     }
 
     /**
@@ -48,21 +82,13 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
      */
     public function getHeaderSnapshotByRowId($rowId)
     {
-        if ($rowId == null) {
-            return null;
-        }
-
-        $criteria = array(
-            'id' => $rowId
-        );
-
-        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
+        $doctrineEntity = $this->_getHeaderEntityByRowId($rowId);
 
         if ($doctrineEntity == null) {
             return null;
         }
 
-        return PrMapper::createSnapshot($this->getDoctrineEM(), $doctrineEntity->getPr());
+        return PrMapper::createSnapshot($this->getDoctrineEM(), $doctrineEntity);
     }
 
     /**
@@ -72,20 +98,13 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
      */
     public function getHeaderIdByRowId($id)
     {
-        $criteria = array(
-            'id' => $id
-        );
+        $doctrineEntity = $this->_getHeaderEntityByRowId($id);
 
-        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
         if ($doctrineEntity == null) {
             return null;
         }
 
-        if ($doctrineEntity->getPr() != null) {
-            return $doctrineEntity->getPr()->getId();
-        }
-
-        return null;
+        return $doctrineEntity->getId();
     }
 
     /**
@@ -95,17 +114,8 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
      */
     public function getVersion($id, $token = null)
     {
-        $criteria = array(
-            'id' => $id
-        );
-
-        /**
-         *
-         * @var \Application\Entity\NmtProcurePr $doctrineEntity ;
-         */
-
-        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
-        if ($doctrineEntity !== null) {
+        $doctrineEntity = $this->_getHeaderEntityById($id);
+        if ($doctrineEntity != null) {
             return $doctrineEntity->getRevisionNo();
         }
         return null;
@@ -118,16 +128,7 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
      */
     public function getVersionArray($id, $token = null)
     {
-        $criteria = array(
-            'id' => $id
-        );
-
-        /**
-         *
-         * @var \Application\Entity\NmtProcurePr $doctrineEntity ;
-         */
-
-        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $doctrineEntity = $this->_getHeaderEntityById($id);
         if ($doctrineEntity !== null) {
             return [
                 "revisionNo" => $doctrineEntity->getRevisionNo(),
@@ -194,18 +195,7 @@ class PRQueryRepositoryImpl extends AbstractDoctrineRepository implements PrQuer
      */
     public function getRootEntityById($id)
     {
-        if ($id == null) {
-            return null;
-        }
-
-        $criteria = array(
-            'id' => $id
-        );
-
-        $rootEntityDoctrine = $this->getDoctrineEM()
-            ->getRepository('\Application\Entity\NmtProcurePr')
-            ->findOneBy($criteria);
-
+        $rootEntityDoctrine = $this->_getHeaderEntityById($id);
         return $this->_createRootEntity($rootEntityDoctrine, $id);
     }
 

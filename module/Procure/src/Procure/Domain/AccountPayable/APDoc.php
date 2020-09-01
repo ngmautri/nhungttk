@@ -8,19 +8,16 @@ use Procure\Domain\Event\Ap\ApHeaderCreated;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\Event\Ap\ApReservalCreated;
 use Procure\Domain\Event\Ap\ApReversed;
-use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  *
@@ -85,12 +82,11 @@ class APDoc extends GenericAP
      *
      * @param PODoc $sourceObj
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
+     * @param ValidationServiceInterface $validationService
      * @throws InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\APDoc
      */
-    public static function createFromPo(PODoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
+    public static function createFromPo(PODoc $sourceObj, CommandOptions $options, ValidationServiceInterface $validationService)
     {
         if (! $sourceObj instanceof PODoc) {
             throw new InvalidArgumentException("PO Entity is required");
@@ -126,7 +122,7 @@ class APDoc extends GenericAP
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->validateHeader($headerValidators);
+        $instance->validateHeader($validationService->getHeaderValidators());
 
         foreach ($rows as $r) {
 
@@ -134,14 +130,10 @@ class APDoc extends GenericAP
              *
              * @var APRow $r ;
              */
-
-            // ignore completed row;
-
             $localEntity = APRow::createFromPoRow($instance, $r, $options);
-            // echo sprintf("\n %s, PoRowId %s, %s" , $grRow->getItemName(), $grRow->getPoRow(), $grRow->getPrRow());
             $instance->addRow($localEntity);
 
-            $instance->validateRow($localEntity, $rowValidators);
+            $instance->validateRow($localEntity, $validationService->getRowValidators());
         }
         return $instance;
     }
@@ -151,13 +143,12 @@ class APDoc extends GenericAP
      * @param APDoc $sourceObj
      * @param APSnapshot $snapshot
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
+     * @param ValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @param APPostingService $postingService
      * @throws InvalidArgumentException
      * @throws InvalidOperationException
      * @throws OperationFailedException
+     * @throws \RuntimeException
      * @return \Procure\Domain\AccountPayable\APDoc
      */
     public static function createAndPostReserval(APDoc $sourceObj, APSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
@@ -226,11 +217,11 @@ class APDoc extends GenericAP
         }
 
         if ($instance->hasErrors()) {
-            throw new OperationFailedException($instance->getErrorMessage());
+            throw new \RuntimeException($instance->getErrorMessage());
         }
 
         if ($sourceObj->hasErrors()) {
-            throw new OperationFailedException($sourceObj->getErrorMessage());
+            throw new RuntimeException($sourceObj->getErrorMessage());
         }
 
         $instance->clearEvents();
@@ -242,7 +233,7 @@ class APDoc extends GenericAP
             ->post($instance, true);
 
         if (! $snapshot instanceof APSnapshot) {
-            throw new OperationFailedException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when reveral AP #%s", $sourceObj->getId()));
         }
 
         $instance->setId($snapshot->getId());
@@ -288,17 +279,14 @@ class APDoc extends GenericAP
      *
      * @param APSnapshot $snapshot
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
+     * @param ValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @param APPostingService $postingService
      * @throws InvalidOperationException
      * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
+     * @throws \RuntimeException
      * @return \Procure\Domain\AccountPayable\APSnapshot
      */
-    public function saveFromPO(APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    public function saveFromPO(APSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if (! $this->getDocStatus() == ProcureDocStatus::DOC_STATUS_DRAFT) {
             throw new InvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
@@ -312,15 +300,11 @@ class APDoc extends GenericAP
             throw new InvalidOperationException(sprintf("Doctype is not vadid! %s", __FUNCTION__));
         }
 
-        $this->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
         if ($options == null) {
             throw new InvalidArgumentException("Comnand Options not found!");
         }
+
+        $this->_checkParams($snapshot, $validationService, $sharedService);
 
         // Entity from Snapshot
         if ($snapshot !== null) {
@@ -341,16 +325,17 @@ class APDoc extends GenericAP
         $createdDate = new \Datetime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $this->validate($headerValidators, $rowValidators);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();
-        $rootSnapshot = $postingService->getCmdRepository()->store($this);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->store($this);
 
         if (! $rootSnapshot instanceof APSnapshot) {
-            throw new OperationFailedException(\sprintf("Errors occured when saving AP"));
+            throw new \RuntimeException(\sprintf("Errors occured when saving AP"));
         }
 
         $target = $rootSnapshot;
@@ -414,17 +399,17 @@ class APDoc extends GenericAP
      *
      * @param APSnapshot $snapshot
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
+     * @param ValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @param APPostingService $postingService
      * @throws InvalidArgumentException
-     * @throws OperationFailedException
+     * @throws \RangeException
+     * @throws \RuntimeException
      * @return \Procure\Domain\AccountPayable\APDoc
      */
-    public static function createFrom(APSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
+    public static function createFrom(APSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         $instance = new self();
-        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
+        $instance->_checkParams($snapshot, $validationService, $sharedService);
 
         if ($options == null) {
             throw new InvalidArgumentException("Options is null");
@@ -435,10 +420,10 @@ class APDoc extends GenericAP
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
 
-        $instance->validateHeader($headerValidators);
+        $instance->validateHeader($validationService->getHeaderValidators());
 
         if ($instance->hasErrors()) {
-            throw new ValidationFailedException($instance->getNotification()->errorMessage());
+            throw new \RangeException($instance->getNotification()->errorMessage());
         }
 
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE);
@@ -453,10 +438,11 @@ class APDoc extends GenericAP
          *
          * @var APSnapshot $rootSnapshot
          */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error orcured when creating AP #%s", $instance->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when creating AP #%s", $instance->getId()));
         }
 
         $instance->id = $rootSnapshot->getId();
@@ -488,10 +474,10 @@ class APDoc extends GenericAP
      * @throws \Procure\Domain\Exception\OperationFailedException
      * @return \Procure\Domain\AccountPayable\APDoc
      */
-    public static function updateFrom(APSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
+    public static function updateFrom(APSnapshot $snapshot, CommandOptions $options, $params, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         $instance = new self();
-        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
+        $instance->_checkParams($snapshot, $validationService, $sharedService);
 
         if ($options == null) {
             throw new InvalidArgumentException("Opptions is null");
@@ -502,10 +488,10 @@ class APDoc extends GenericAP
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
 
-        $instance->validateHeader($headerValidators);
+        $instance->validateHeader($validationService->getHeaderValidators());
 
         if ($instance->hasErrors()) {
-            throw new ValidationFailedException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
+            throw new \RangeException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
         }
 
         $createdDate = new \Datetime();
@@ -520,10 +506,11 @@ class APDoc extends GenericAP
          *
          * @var APSnapshot $rootSnapshot
          */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("%s-%s", "Error orcured when creating AP!", __FUNCTION__));
+            throw new \RuntimeException(sprintf("%s-%s", "Error orcured when creating AP!", __FUNCTION__));
         }
 
         $instance->id = $rootSnapshot->getId();
@@ -591,7 +578,7 @@ class APDoc extends GenericAP
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
      */
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         /**
          *
@@ -610,21 +597,22 @@ class APDoc extends GenericAP
             $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
-        $this->validate($headerValidators, $rowValidators, true);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
+            throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
-        $postingService->getCmdRepository()->post($this, true);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->post($this, true);
     }
 
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\GoodsReceipt\GenericGR::doReverse()
+     * @see \Procure\Domain\AccountPayable\GenericAP::doReverse()
      */
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
+    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         /**
          *
@@ -642,40 +630,32 @@ class APDoc extends GenericAP
             $row->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
-        $this->validate($headerValidators, $rowValidators, true);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
+            throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
         }
 
-        $postingService->getCmdRepository()->post($this, false);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->post($this, true);
     }
 
-    /**
-     *
-     * @param APSnapshot $snapshot
-     * @param \Procure\Domain\Validator\HeaderValidatorCollection $headerValidators
-     * @param \Procure\Domain\Service\SharedService $sharedService
-     * @param \Procure\Domain\Service\APPostingService $postingService
-     * @throws \Procure\Domain\Exception\Gr\GrInvalidArgumentException
-     */
-    private function _checkInputParams(APSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, APPostingService $postingService)
-    {
-        if (! $snapshot instanceof APSnapshot) {
-            throw new InvalidArgumentException("APSnapshot not found!");
-        }
+    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
 
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
+    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
 
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
-    }
+    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    {}
+
+    protected function raiseEvent()
+    {}
+
+    // =============================
 
     /**
      *
@@ -701,21 +681,6 @@ class APDoc extends GenericAP
             throw new InvalidArgumentException("SharedService service not found");
         }
     }
-
-    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
-    {}
-
-    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
-    {}
-
-    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
-    {}
-
-    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, APPostingService $postingService)
-    {}
-
-    protected function raiseEvent()
-    {}
 
     /**
      *

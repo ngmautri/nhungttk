@@ -13,20 +13,12 @@ use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\ReversalValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
-use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
+use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Service\ValidationServiceImp;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
@@ -83,40 +75,15 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
             $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
-            // Validation Service
-            $headerValidators = new HeaderValidatorCollection();
+            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
 
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new ReversalValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-
-            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
-
-            $validator = new WarehouseValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
-
-            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validationService = new ValidationServiceImp($headerValidators, $rowValidators);
-
-            // Shared Service
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
-            $sharedService->setPostingService($postingService);
+            $validationService = ValidatorFactory::createForPosting($sharedService, true);
 
             $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $validationService, $sharedService);
 

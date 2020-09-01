@@ -9,13 +9,11 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\AccountPayable\Validator\Header\IncotermValidator;
-use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidator;
+use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\InvalidOperationException;
@@ -23,7 +21,6 @@ use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
@@ -140,29 +137,17 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             // do change
             $newSnapshot->lastchangeBy = $userId;
 
-            $headerValidators = new HeaderValidatorCollection();
-
-            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
+            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
             $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
+            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
+            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
 
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
+            $validationService = ValidatorFactory::createForHeader($sharedService);
 
-            $validator = new InvoiceAndPaymentTermValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $validator = new IncotermValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $cmdRepository = new APCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new APPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
-
-            $newRootEntity = APDoc::updateFrom($newSnapshot, $options, $params, $headerValidators, $sharedService, $postingService);
+            $newRootEntity = APDoc::updateFrom($newSnapshot, $options, $params, $validationService, $sharedService);
 
             // event dispatch
             // ================

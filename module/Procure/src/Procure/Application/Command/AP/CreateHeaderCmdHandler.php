@@ -91,6 +91,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
             $fxService = new FXServiceImpl();
+            $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
             $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());

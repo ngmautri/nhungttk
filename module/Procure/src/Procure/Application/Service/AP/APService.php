@@ -1,11 +1,11 @@
 <?php
 namespace Procure\Application\Service\AP;
 
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\Service\FXService;
 use Procure\Application\Service\AP\Output\ApRowFormatter;
 use Procure\Application\Service\AP\Output\ApSaveAsExcel;
 use Procure\Application\Service\AP\Output\ApSaveAsOpenOffice;
@@ -20,10 +20,10 @@ use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
+use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
+use Procure\Domain\Service\APPostingService;
+use Procure\Domain\Service\SharedService;
+use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
@@ -138,21 +138,18 @@ class APService extends AbstractService
 
         $po = $rep->getOpenItems($id, $token);
 
-        $headerValidators = new HeaderValidatorCollection();
-
         $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $fxService = new FXService();
+        $postingService = new APPostingService(new APCmdRepositoryImpl($this->getDoctrineEM()));
+        $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($this->getDoctrineEM());
 
-        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
-        $headerValidators->add($validator);
+        $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+        $domainSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
+        $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
 
-        $rowValidators = new RowValidatorCollection();
-        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
+        $validationService = ValidatorFactory::createForCopyFromPO($sharedService, false);
 
-        $rootEntity = APDoc::createFromPo($po, $options, $headerValidators, $rowValidators);
+        $rootEntity = APDoc::createFromPo($po, $options, $validationService);
         return $rootEntity;
     }
 }

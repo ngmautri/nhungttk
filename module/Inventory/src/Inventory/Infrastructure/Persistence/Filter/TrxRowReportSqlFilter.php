@@ -13,10 +13,6 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
 
     public $isActive;
 
-    public $docYear;
-
-    public $docMonth;
-
     public $movementType;
 
     public $docStatus;
@@ -33,64 +29,10 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
 
     public $warehouseId;
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getItemId()
-    {
-        return $this->itemId;
-    }
-
-    /**
-     *
-     * @param mixed $itemId
-     */
-    public function setItemId($itemId)
-    {
-        $this->itemId = $itemId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getWarehouseId()
-    {
-        return $this->warehouseId;
-    }
-
-    /**
-     *
-     * @param mixed $warehouseId
-     */
-    public function setWarehouseId($warehouseId)
-    {
-        $this->warehouseId = $warehouseId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
-     *
-     * @param mixed $item
-     */
-    public function setItem($item)
-    {
-        $this->item = $item;
-    }
-
     public function __toString()
     {
-        $f = "TrxRowReportSqlFilter_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s";
-        return \sprintf($f, $this->getWarehouseId(), $this->getItemId(), $this->isActive, $this->docYear, $this->docMonth, $this->movementType, $this->docStatus, $this->fromDate, $this->toDate, $this->flow);
+        $f = "TrxRowReportSqlFilter_%s_%s_%s_%s_%s_%s_%s";
+        return \sprintf($f, $this->getWarehouseId(), $this->getFromDate(), $this->getToDate(), $this->getIsActive(), $this->getDocStatus(), $this->getFlow(), $this->getWarehouseId());
     }
 
     /**
@@ -100,24 +42,6 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
     public function getIsActive()
     {
         return $this->isActive;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocYear()
-    {
-        return $this->docYear;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getDocMonth()
-    {
-        return $this->docMonth;
     }
 
     /**
@@ -167,29 +91,38 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
 
     /**
      *
+     * @return mixed
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseId()
+    {
+        return $this->warehouseId;
+    }
+
+    /**
+     *
      * @param mixed $isActive
      */
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $docYear
-     */
-    public function setDocYear($docYear)
-    {
-        $this->docYear = $docYear;
-    }
-
-    /**
-     *
-     * @param mixed $docMonth
-     */
-    public function setDocMonth($docMonth)
-    {
-        $this->docMonth = $docMonth;
     }
 
     /**
@@ -235,5 +168,32 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
     public function setFlow($flow)
     {
         $this->flow = $flow;
+    }
+
+    /**
+     *
+     * @param mixed $item
+     */
+    public function setItem($item)
+    {
+        $this->item = $item;
+    }
+
+    /**
+     *
+     * @param mixed $itemId
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+    }
+
+    /**
+     *
+     * @param mixed $warehouseId
+     */
+    public function setWarehouseId($warehouseId)
+    {
+        $this->warehouseId = $warehouseId;
     }
 }

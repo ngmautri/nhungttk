@@ -52,7 +52,7 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
                 $rootEntity->addError("PR Date is not correct or empty");
             }
 
-            // ===== USER ID =======
+            // ===== Department ID =======
             $spec = $this->sharedSpecificationFactory->getDepartmentSpecification();
             $subject = array(
                 "companyId" => $rootEntity->getCompany(),
@@ -61,6 +61,16 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 
             if (! $spec->isSatisfiedBy($subject)) {
                 $rootEntity->addError("Department is not correct or empty");
+            }
+
+            // ===== Warehouse ID =======
+            $spec = $this->getSharedSpecificationFactory()->getWarehouseExitsSpecification();
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "warehouseId" => $rootEntity->getWarehouse()
+            );
+            if (! $spec->isSatisfiedBy($subject)) {
+                $rootEntity->addError(sprintf("Warehouse is required! %s", $rootEntity->getWarehouse()));
             }
 
             // ===== USER ID =======

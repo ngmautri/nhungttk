@@ -38,8 +38,12 @@ class RowSnapshotReference
 
             if ($prSnapshot instanceof PRSnapshot) {
                 $snapshot->pr = $prSnapshot->getId();
-                // Always use PR warehouse.
-                $snapshot->warehouse = $prSnapshot->getWarehouse();
+
+                if ($snapshot->getWarehouse() != $prSnapshot->getWarehouse()) {
+                    throw new \InvalidArgumentException("Warehouse must match with Warehouse of PR!" . $prSnapshot->getWarehouse());
+                    // Always use PR warehouse.
+                    $snapshot->warehouse = $prSnapshot->getWarehouse();
+                }
             }
         }
 
@@ -63,8 +67,15 @@ class RowSnapshotReference
                 switch ($itemSnapshot->getItemTypeId()) {
                     case ItemType::FIXED_ASSET_ITEM_TYPE:
                         $snapshot->isFixedAsset = 1;
+                        break;
+
                     case ItemType::INVENTORY_ITEM_TYPE:
                         $snapshot->isInventoryItem = 1;
+                        break;
+                    case ItemType::SERVICE_ITEM_TYPE:
+                        // throw new \InvalidArgumentException("SERVICE_ITEM_TYPE!");
+                        $snapshot->warehouse = null;
+                        break;
                 }
             }
         }

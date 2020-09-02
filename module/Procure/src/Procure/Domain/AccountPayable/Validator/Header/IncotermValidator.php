@@ -2,12 +2,12 @@
 namespace Procure\Domain\AccountPayable\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Application\Domain\Util\Translator;
 use Procure\Domain\AbstractDoc;
 use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Validator\AbstractValidator;
 use Procure\Domain\Validator\HeaderValidatorInterface;
-use Application\Domain\Util\Translator;
 
 /**
  *
@@ -42,14 +42,13 @@ class IncotermValidator extends AbstractValidator implements HeaderValidatorInte
                     "incotermId" => $rootEntity->getIncoterm()
                 );
                 if (! $spec->isSatisfiedBy($subject)) {
-                    $rootEntity->addError(Translator::translate(sprintf("Incoterm not found!C#%s", $rootEntity->getIncoterm())));
+                    $rootEntity->addError(Translator::translate(sprintf("Incoterm not found! #%s", $rootEntity->getIncoterm())));
                 }
 
                 if ($rootEntity->getIncotermPlace() == null or $rootEntity->getIncotermPlace() == "") {
                     $rootEntity->addError(Translator::translate(sprintf("Incoterm place not set")));
                 }
             }
-         
         } catch (\Exception $e) {
             $rootEntity->addError($e->getMessage());
         }

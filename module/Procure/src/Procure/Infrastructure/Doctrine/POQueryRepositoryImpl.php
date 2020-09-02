@@ -35,8 +35,8 @@ class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQuer
             return null;
         }
 
-        if ($doctrineEntity->getPr() != null) {
-            return $doctrineEntity->getPr()->getId();
+        if ($doctrineEntity->getPo() != null) {
+            return $doctrineEntity->getPo()->getId();
         }
 
         return null;

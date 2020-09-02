@@ -3,6 +3,7 @@ namespace Inventory\Application\Command\Item;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
@@ -13,7 +14,6 @@ use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Domain\Service\ItemPostingService;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Infrastructure\Doctrine\ItemCmdRepositoryImpl;
-use Procure\Application\Service\FXService;
 use InvalidArgumentException;
 
 /**
@@ -58,7 +58,7 @@ class ItemTypeChangeCmdHandler extends AbstractCommandHandler
             $cmdRepository = new ItemCmdRepositoryImpl($cmd->getDoctrineEM());
             $postingService = new ItemPostingService($cmdRepository);
 
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);

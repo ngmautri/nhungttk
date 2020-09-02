@@ -60,10 +60,6 @@ class ApController extends AbstractGenericController
             return $this->redirect()->toRoute('access_denied    ');
         }
 
-        $localCurrencyId = $u->getCompany()
-            ->getDefaultCurrency()
-            ->getId();
-
         $this->layout("Procure/layout-fullscreen");
 
         $nmtPlugin = $this->Nmtplugin();
@@ -115,7 +111,8 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -174,7 +171,8 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -231,7 +229,8 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -264,7 +263,8 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -578,7 +578,8 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -625,7 +626,9 @@ class ApController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -677,7 +680,9 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -734,7 +739,9 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -842,7 +849,9 @@ class ApController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
@@ -900,7 +909,9 @@ class ApController extends AbstractGenericController
             'headerDTO' => $rootEntity->makeDTOForGrid(new ApDTO()),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId()
         ));
         $viewModel->setTemplate($viewTemplete);
 
@@ -953,7 +964,9 @@ class ApController extends AbstractGenericController
             'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId()
         ));
         $viewModel->setTemplate($viewTemplete);
 
@@ -991,7 +1004,9 @@ class ApController extends AbstractGenericController
             'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId()
         ));
         $viewModel->setTemplate("procure/po/review-v1");
         return $viewModel;

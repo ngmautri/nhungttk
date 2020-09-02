@@ -76,7 +76,7 @@ class RowsSaveAsArray extends AbstractSaveAs implements RowsSaveAsInterface
 
             return $output;
         } catch (\Exception $e) {
-            echo $e->getTraceAsString();
+            $this->logException($e);
         }
     }
 }

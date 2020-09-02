@@ -2,6 +2,7 @@
 namespace Inventory\Application\Export\Transaction;
 
 use Application\Application\Service\Document\Spreadsheet\AbstractBuilder;
+use Inventory\Application\Export\Transaction\Contracts\AbstractSaveAs;
 use Inventory\Application\Export\Transaction\Contracts\RowsSaveAsInterface;
 
 /**
@@ -10,7 +11,7 @@ use Inventory\Application\Export\Transaction\Contracts\RowsSaveAsInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractRowsSaveAsSpreadsheet implements RowsSaveAsInterface
+abstract class AbstractRowsSaveAsSpreadsheet extends AbstractSaveAs implements RowsSaveAsInterface
 {
 
     protected $builder;

@@ -259,7 +259,8 @@ abstract class GenericAP extends AbstractAP
 
         $this->_checkParams($validationService, $sharedService);
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+        $this->validate($validationService);
+
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());
         }

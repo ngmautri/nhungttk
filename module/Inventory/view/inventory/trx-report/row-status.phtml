@@ -27,21 +27,36 @@ endif;
  */
 
 $baseUrl = "/inventory/trx-report/row-status";
-
-$link = "?docMonth=%s&docYear=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
-$base = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort, $file_type);
-
-// $toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $toogleFileType);
-
-$link1 = "/inventory/trx-report/row-status-gird?docMonth=%s&docYear=%s&is_active=%s&sort_by=%s&sort=%s";
-$girdUrl = $this->baseUrl . sprintf($link1, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort);
-
 $filter_url = $baseUrl;
-$filtered1 = "M=%s,Y=%s";
-$filtered = sprintf($filtered1, $filter->getDocMonth(), $filter->getDocYear());
 
-$url_excel = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
-$url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$link1 = "/inventory/trx-report/row-status-gird?fromDate=%s&toDate=%s&warehouseId=%s&is_active=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $filter->getFromDate(), $filter->getToDate(), $filter->getWarehouseId(), $filter->getIsActive(), $sort_by, $sort);
+
+$wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $filter->getWarehouseId());
+
+$f = "/inventory/trx-report/row-status?warehouseId=%s&fromDate=%s&toDate=%s&is_active=%s&file_type=%s";
+$save_as_excel = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate(), $filter->getIsActive(), SaveAsSupportedType::OUTPUT_IN_EXCEL);
+
+$f = "/inventory/trx-report/row-status?warehouseId=%s&fromDate=%s&toDate=%s&is_active=%s&file_type=%s";
+$save_as_openoffice = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate(), $filter->getIsActive(), SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+
+$format = '<a style="font-size: 9.5pt; margin-bottom: 2pt;
+padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:
+;" onclick="%s">
+  &nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;</a>&nbsp;';
+$refresh_btn = sprintf($format, "refreshGird();");
+
+$dropDownList = [
+    sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> &nbsp;Excel (*.xlxs)</a>', $save_as_excel),
+    sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> Open Office (*.ods)</a>', $save_as_openoffice)
+];
+
+$f = 'WH: %s | From %s to %s';
+$summary_tmp = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate());
+
+$f = '<span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">%s</span>';
+$summary_txt = sprintf($f, $summary_tmp);
+$dropDownMenu = \Application\Application\Helper\FormHelper::createCustomDropDownMenu($dropDownList, 'dropdownMenu1');
 
 // ===============================================================================
 ?>
@@ -50,7 +65,7 @@ $url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDo
       <li>
          <a href="#general">
             <i class="glyphicon glyphicon-shopping-cart"></i>
-            &nbsp;PR Row
+            &nbsp;Trx Report
          </a>
       </li>
    </ul>
@@ -66,55 +81,69 @@ $url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDo
             <form id="filter_form" class="form-horizontal" action="<?php
             echo $filter_url;
             ?>" method="get" enctype="multipart/form-data">
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Doc Year</label>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2"><?php
+                echo $this->translate("Warehouse");
+                ?>:</label>
                   <div class="col-sm-3">
-                     <select name="docYear" class="form-control input-sm">
-                        <option value="0">All</option>
-                        <?php
-                        echo OptionList::createYearOption($filter->getDocYear());
-                        ?>
-                     </select>
+                     <select name="warehouseId" id="wh_id" class="form-control input-sm">
+                        <option value="0"><?php
+                        echo $this->translate("...");
+                        ?></option>
+<?php
+// ================
+echo $wh_option;
+// ================
+?>
+                                        </select>
                   </div>
                </div>
-               <div class="form-group margin-bottom">
-                  <label class="control-label col-sm-2" for="inputTag">Month</label>
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2 required">From Date:</label>
                   <div class="col-sm-3">
-                     <select name="docMonth" class="form-control input-sm">
-                        <option value="all">All</option>
-                          <?php
-                        echo \Application\Application\Helper\OptionList::createMonthOption($filter->getDocMonth());
-                        ?>
-                     </select>
+                     <input class="form-control input-sm" type="text" id="fromDate" name="fromDate" value="<?php
+                    if (! $filter == null) :
+                        echo $filter->getFromDate(); endif;
+
+                    ?>" placeholder=" please select" />
                   </div>
                </div>
-              
-              
+               <div class="form-group margin-bottom required">
+                  <label class="control-label col-sm-2">To Date:</label>
+                  <div class="col-sm-3">
+                     <input class="form-control input-sm" type="text" id="toDate" name="toDate" value="<?php
+                    if (! $filter == null) :
+                        echo $filter->getToDate(); endif;
+
+                    ?>" placeholder=" please select" />
+                  </div>
+               </div>
                <div class="form-group margin-bottom">
                   <label class="control-label col-sm-2" for="inputTag">Sort by</label>
                   <div class="col-sm-3">
                      <select class="form-control input-sm" name="sort_by">
                         <option value="">None</option>
-                      /select>
-                     <input <?php
+                        /select>
+                        <input <?php
 
-                    if (! $sort == null) :
-                        echo ($sort == 'ASC') ? "checked" : "";
-                    else :
-                        echo "checked";
-                    endif;
-                    ?> type="radio" name="sort"
-                        value="ASC">
-                     &nbsp;ASC&nbsp;&nbsp;
-                     <input <?php
+                        if (! $sort == null) :
+                            echo ($sort == 'ASC') ? "checked" : "";
+                        else :
+                            echo "checked";
+                        endif;
+                        ?> type="radio" name="sort"
+                           value="ASC">
+                        &nbsp;ASC&nbsp;&nbsp;
+                        <input <?php
 
-                    if (! $sort == null) :
-                        echo ($sort == 'DESC') ? "checked" : "";
-                    else :
-                        echo "";
-                    endif;
-                    ?> type="radio" name="sort" value="DESC">
-                     &nbsp;DESC&nbsp;&nbsp;
+                        if (! $sort == null) :
+                            echo ($sort == 'DESC') ? "checked" : "";
+                        else :
+                            echo "";
+                        endif;
+                        ?> type="radio" name="sort" value="DESC">
+                        &nbsp;DESC&nbsp;&nbsp; 
+                  
                   </div>
                </div>
                <div class="form-group margin-bottom">
@@ -146,15 +175,9 @@ $url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDo
                      </a>
                   </div>
                </div>
-               <hr style="margin: 5pt 1pt 10pt 1pt;">
             </form>
          </div>
       </div>
-      <div style="color: gray; font-size: 9pt; margin-top: 8px">
-     <?php
-    echo $filtered;
-    ?>
-	  </div>
       <hr style="font-size: 9.5pt; margin: 3pt 1pt 5pt 1pt;">
       <div id="transaction" class="collapse in">
          <div id="pr_rows">
@@ -165,53 +188,15 @@ $url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDo
                      &nbsp;Download &nbsp;
                      <span class="caret"></span>
                   </button>
-	<?php
-if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
-    ?>
-						<a style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="
-						<?php
-    echo $this->translate("Refresh");
-    ?>" class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();">
-                     &nbsp;
-                     <i class="fa fa-refresh" aria-hidden="true"></i>
-                     &nbsp;
-                  </a> 
-<?php 
-endif;
+	                                         <?php
+                                        echo $refresh_btn;
+                                        echo $summary_txt;
+                                        echo $dropDownMenu;
+                                        ?>
 
-?>
-				 <a class="btn btn-default btn-sm" style="color: black; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="<?php
-    echo $toggleViewTitle;
-    ?>" href="<?php
-    echo $toggleUrl;
-    ?>">
-                     <i class="<?php
-                    echo $icon;
-                    ?>" aria-hidden="true"></i>
-                  </a>
-                  <ul style="font-size: 9.5pt;" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                     <li>
-                        <a class="" href="<?php
-                        echo $url_excel;
-                        ?>">
-                           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                           &nbsp;&nbsp;Excel (*.xlxs)
-                        </a>
-                     </li>
-                     <li>
-                        <a class="" href="<?php
-
-                        echo $url_oo;
-                        ?>">
-                           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                           &nbsp;&nbsp;OpenOffice (*.ods)
-                        </a>
-                     </li>
-                  </ul>
-               </div>
+            </div>
             </div>
          </div>
-      </div>
 
 <?php
 if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
@@ -227,9 +212,15 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     ?>
 
 <div id="gird_div" style="margin: 1px; font-size: 9pt"></div>
+      </div>
    </div>
-</div>
-<script>
+   <script type="text/javascript">
+
+
+$( "input[id='fromDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='toDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+</script>
+   <script>
 
     var columns = [
       

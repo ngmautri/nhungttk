@@ -140,13 +140,13 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
             $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
             $fxService = new FXServiceImpl();
+            $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
             $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
             $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
 
             $validationService = ValidatorFactory::createForHeader($sharedService);
-
             $newRootEntity = APDoc::updateFrom($newSnapshot, $options, $params, $validationService, $sharedService);
 
             // event dispatch

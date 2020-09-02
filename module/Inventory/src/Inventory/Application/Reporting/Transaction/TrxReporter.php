@@ -3,6 +3,7 @@ namespace Inventory\Application\Reporting\Transaction;
 
 use Application\Service\AbstractService;
 use Inventory\Application\Export\Transaction\RowsSaveAsArray;
+use Inventory\Application\Export\Transaction\TrxRowsSaveAsArray;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Transaction\Formatter\NullRowFormatter;
 use Inventory\Application\Export\Transaction\Formatter\TrxRowFormatter;
@@ -116,7 +117,7 @@ class TrxReporter extends AbstractService
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new TrxRowFormatter(new NullRowFormatter());
-                $factory = new RowsSaveAsArray();
+                $factory = new TrxRowsSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
                 $builder = new ExcelBuilder();
@@ -131,10 +132,11 @@ class TrxReporter extends AbstractService
                 break;
             default:
                 $formatter = new TrxRowFormatter(new NullRowFormatter());
-                $factory = new RowsSaveAsArray();
+                $factory = new TrxRowsSaveAsArray();
                 break;
         }
 
+        $factory->setFilter($filter);
         $factory->setLogger($this->getLogger());
         return $factory->saveAs($results, $formatter);
     }

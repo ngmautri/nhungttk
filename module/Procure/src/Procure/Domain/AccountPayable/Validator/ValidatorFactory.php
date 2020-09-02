@@ -9,7 +9,6 @@ use Procure\Domain\AccountPayable\Validator\Header\InvoiceAndPaymentTermValidato
 use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
-use Procure\Domain\AccountPayable\Validator\Row\PrRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\ValidationServiceImp;
@@ -61,9 +60,10 @@ class ValidatorFactory
         $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
         $rowValidators->add($validator);
 
-        $validator = new PrRowValidator($sharedSpecsFactory, $fxService, $domainSpecsFactory);
-        $rowValidators->add($validator);
-
+        /*
+         * $validator = new PrRowValidator($sharedSpecsFactory, $fxService, $domainSpecsFactory);
+         * $rowValidators->add($validator);
+         */
         $validator = new GLAccountValidator($sharedSpecsFactory, $fxService);
         $rowValidators->add($validator);
 
@@ -77,6 +77,13 @@ class ValidatorFactory
         return new ValidationServiceImp($headerValidators, $rowValidators);
     }
 
+    /**
+     *
+     * @param SharedService $sharedService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\Service\ValidationServiceImp
+     */
     public static function createForHeader(SharedService $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
@@ -84,15 +91,13 @@ class ValidatorFactory
         }
 
         if ($sharedService->getSharedSpecificationFactory() == null) {
-            throw new InvalidArgumentException("Shared spec service not found");
+            throw new InvalidArgumentException("Shared specs service not found!");
         }
 
         $fxService = $sharedService->getFxService();
-
         $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
 
-        $rowValidators = null;
-        $headerValidators = null;
+        // Header Validators
         $headerValidators = new HeaderValidatorCollection();
 
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
@@ -107,10 +112,7 @@ class ValidatorFactory
         $validator = new InvoiceAndPaymentTermValidator($sharedSpecsFactory, $fxService);
         $headerValidators->add($validator);
 
-        $validator = new APPostingValidator($sharedSpecsFactory, $fxService);
-        $headerValidators->add($validator);
-
-        return new ValidationServiceImp($headerValidators, $rowValidators);
+        return new ValidationServiceImp($headerValidators);
     }
 
     public static function createForPosting(SharedService $sharedService, $isPosting = false)

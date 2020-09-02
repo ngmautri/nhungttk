@@ -14,6 +14,13 @@ abstract class AbstractSaveAs
 
     protected $logger;
 
+    protected $filter;
+
+    public function __toString()
+    {
+        return get_class($this->getFilter());
+    }
+
     /**
      *
      * @return \Psr\Log\LoggerInterface
@@ -51,5 +58,23 @@ abstract class AbstractSaveAs
         if ($this->getLogger() != null) {
             $this->getLogger()->alert($e->getMessage());
         }
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFilter()
+    {
+        return $this->filter;
+    }
+
+    /**
+     *
+     * @param mixed $filter
+     */
+    public function setFilter($filter)
+    {
+        $this->filter = $filter;
     }
 }

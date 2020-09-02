@@ -62,6 +62,20 @@ class AbstractGenericController extends AbstractActionController
         return $c->getId();
     }
 
+    protected function getDefautWarehouseId()
+    {
+        $c = $this->getCompany();
+        if ($c == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $wh = $c->getDefaultWarehouse();
+        if ($wh == null) {
+            return null;
+        }
+
+        return $wh->getId();
+    }
+
     protected function logInfo($m)
     {
         if ($this->getLogger() == null) {

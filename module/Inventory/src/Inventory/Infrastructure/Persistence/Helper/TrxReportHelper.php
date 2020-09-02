@@ -139,14 +139,6 @@ class TrxReportHelper
             $sql = $sql . \sprintf(" AND nmt_inventory_trx.doc_status ='%s'", $filter->getDocStatus());
         }
 
-        if ($filter->getDocYear() > 0) {
-            $sql = $sql . " AND YEAR(nmt_inventory_mv.posting_date)=" . $filter->getDocYear();
-        }
-
-        if ($filter->getDocMonth() > 0) {
-            $sql = $sql . " AND MONTH(nmt_inventory_mv.posting_date)=" . $filter->getDocMonth();
-        }
-
         if ($filter->getItemId() > 0) {
             $sql = $sql . " AND nmt_inventory_trx.item_id=" . $filter->getItemId();
         }
@@ -159,22 +151,23 @@ class TrxReportHelper
             $sql = $sql . \sprintf(" AND nmt_inventory_mv.posting_date <='%s'", $filter->getToDate());
         }
 
-        if (! $filter->getItem() == null) {
+        if ($filter->getItem() != null) {
             $sql = $sql . \sprintf(" AND nmt_inventory_trx.item_id =%s", $filter->getItem());
         }
 
-        if (! $filter->getWarehouseId() == null) {
+        if ($filter->getWarehouseId() > 0) {
             $sql = $sql . \sprintf(" AND nmt_inventory_trx.wh_id =%s", $filter->getWarehouseId());
         }
 
         $sql = $sql . " ORDER BY nmt_inventory_trx.wh_id";
+
         switch ($sort_by) {
             case "vendorName":
                 // $sql = $sql . " ORDER BY nmt_inventory_trx.vendor_name " . $sort;
                 break;
 
             case "postingDate":
-                $sql = $sql . ",nmt_inventory_mv.posting_date " . $sort;
+                $sql = $sql . ", nmt_inventory_mv.posting_date " . $sort;
                 break;
         }
 

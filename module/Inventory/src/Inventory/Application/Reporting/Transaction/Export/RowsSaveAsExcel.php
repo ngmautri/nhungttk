@@ -45,15 +45,19 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
             "#",
             "Ref.",
             "Date",
-            "SKU",
+            "itemSKU",
             "SysNo.",
             "ItemName",
             "Flow",
-            "PR",
             "WH",
-            "Pr",
-            "Po",
-            "SAP"
+            "WH Loc",
+            "quantity",
+            "Cost",
+            "UP",
+            "prNumber",
+            "po",
+            "invoiceId",
+            "vendorInvoice"
         );
 
         $n = 0;
@@ -77,14 +81,16 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
             $columnValues = array(
                 $i,
                 $row->sysNumber,
-                $row->getTrxDate(),
-                $row->getTrxDate(),
+                $row->docDate,
                 $row->itemSKU,
                 $row->itemSysNumber,
                 $row->itemName,
                 $row->flow,
                 $row->warehouseName,
-                $row->prNumber,
+                $row->whLocation,
+                $row->quantity,
+                $row->cogsLocal,
+                $row->convertedStandardUnitPrice,
                 $row->po,
                 $row->invoiceId,
                 $row->vendorInvoice

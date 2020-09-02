@@ -12,6 +12,7 @@ use Inventory\Infrastructure\Persistence\Filter\TrxRowReportSqlFilter;
 use MLA\Paginator;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\View\Model\ViewModel;
+use DateTime;
 
 /**
  *
@@ -23,6 +24,10 @@ class TrxReportController extends AbstractGenericController
 
     protected $trxReporter;
 
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
     public function headerStatusAction()
     {
         $isActive = (int) $this->params()->fromQuery('is_active');
@@ -105,6 +110,7 @@ class TrxReportController extends AbstractGenericController
      */
     public function rowStatusAction()
     {
+        $nmtPlugin = $this->Nmtplugin();
 
         // $this->layout("layout/fluid");
         $file_type = (int) $this->params()->fromQuery('file_type');
@@ -166,7 +172,8 @@ class TrxReportController extends AbstractGenericController
             'result' => $result,
             'per_pape' => $resultsPerPage,
             'paginator' => $paginator,
-            'filter' => $filter
+            'filter' => $filter,
+            'nmtPlugin' => $nmtPlugin
         ));
     }
 
@@ -243,18 +250,26 @@ class TrxReportController extends AbstractGenericController
      */
     public function rowStatusGirdAction()
     {
-        $itemId = null;
-        $warehouseId = null;
         $sort_by = "postingDate";
         $sort = "ASC";
         $isActive = 1;
-        $docYear = date('Y');
         $docStatus = 'posted';
-        $docMonth = date('M');
         $pq_curPage = 1;
         $pq_rPP = 100;
         $limit = null;
         $offset = null;
+        $itemId = null;
+        $warehouseId = null;
+        $fromDate = null;
+        $toDate = null;
+
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        }
+
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        }
 
         if (isset($_GET['sort_by'])) {
             $sort_by = $_GET['sort_by'];
@@ -268,23 +283,8 @@ class TrxReportController extends AbstractGenericController
             $isActive = (int) $_GET['is_active'];
         }
 
-        if (isset($_GET['docYear'])) {
-            $docYear = $_GET['docYear'];
-        }
-
         if (isset($_GET['docStatus'])) {
             $docStatus = $_GET['docStatus'];
-        }
-
-        if (isset($_GET['docMonth'])) {
-            $docMonth = $_GET['docMonth'];
-        }
-        if (isset($_GET["pq_curpage"])) {
-            $pq_curPage = $_GET["pq_curpage"];
-        }
-
-        if (isset($_GET["pq_rpp"])) {
-            $pq_rPP = $_GET["pq_rpp"];
         }
 
         if (isset($_GET['itemId'])) {
@@ -292,13 +292,33 @@ class TrxReportController extends AbstractGenericController
         }
 
         if (isset($_GET['warehouseId'])) {
-            $warehouseId = $_GET['warehouseId'];
+            $warehouseId = (int) $_GET['warehouseId'];
+        }
+
+        if (isset($_GET['fromDate'])) {
+            $fromDate = $_GET['fromDate'];
+        }
+
+        if (isset($_GET['toDate'])) {
+            $toDate = $_GET['toDate'];
+        }
+
+        $date = new DateTime();
+
+        if ($fromDate == null) {
+            $d = $date->modify('first day of this month');
+            $fromDate = $d->format('Y-m-d');
+        }
+
+        if ($toDate == null) {
+            $d = $date->modify('last day of this month');
+            $toDate = $d->format('Y-m-d');
         }
 
         $filter = new TrxRowReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setDocMonth($docMonth);
-        $filter->setDocYear($docYear);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
         $filter->setDocStatus($docStatus);
         $filter->setItem($itemId);
         $filter->setWarehouseId($warehouseId);
@@ -555,23 +575,30 @@ class TrxReportController extends AbstractGenericController
     private function _createRowFilter(AbstractController $controller)
     {
         $isActive = $controller->params()->fromQuery('isActive');
-        $docYear = $controller->params()->fromQuery('docYear');
-        $docMonth = $controller->params()->fromQuery('docMonth');
         $itemId = $controller->params()->fromQuery('itemId');
         $warehouseId = $controller->params()->fromQuery('warehouseId');
+        $fromDate = $controller->params()->fromQuery('fromDate');
+        $toDate = $controller->params()->fromQuery('toDate');
 
-        if ($docYear == null) {
-            $docYear = date('Y');
+        $date = new DateTime();
+
+        if ($fromDate == null) {
+            $d = $date->modify('first day of this month');
+            $fromDate = $d->format('Y-m-d');
         }
 
+        if ($toDate == null) {
+            $d = $date->modify('last day of this month');
+            $toDate = $d->format('Y-m-d');
+        }
         if ($isActive == null) {
             $isActive = 1;
         }
 
         $filter = new TrxRowReportSqlFilter();
         $filter->setIsActive($isActive);
-        $filter->setDocMonth($docMonth);
-        $filter->setDocYear($docYear);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
         $filter->setItemId($itemId);
         $filter->setWarehouseId($warehouseId);
         $filter->setDocStatus(Constants::DOC_STATUS_POSTED);

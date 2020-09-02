@@ -13,9 +13,9 @@ use Procure\Domain\Shared\Constants;
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 $docStatus = null;
-$wh_id = null;
-$pmtTermId = null;
+$wh_id = $defaultWarehouseId;
 $currencyId = $localCurrencyId;
+$pmtTermId = null;
 $incotermId = null;
 $review_url = sprintf($this->baseUrl . "/procure/ap/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
 $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);

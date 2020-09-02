@@ -325,7 +325,7 @@ class APDoc extends GenericAP
         $createdDate = new \Datetime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+        $this->validate($validationService);
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());
         }
@@ -597,7 +597,7 @@ class APDoc extends GenericAP
             $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
+        $this->validate($validationService, true);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
@@ -630,7 +630,7 @@ class APDoc extends GenericAP
             $row->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
+        $this->validate($validationService, true);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));

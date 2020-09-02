@@ -27,15 +27,16 @@ class ReportRepTest extends PHPUnit_Framework_TestCase
             // $filter = new TrxReportSqlFilter();
             $filter = new TrxRowReportSqlFilter();
             $filter->setIsActive(1);
-            $filter->setItem(2427);
+            $filter->setWarehouseId(0);
             $filter->setDocStatus("posted");
+            $filter->setFromDate('2020-08-01');
+            $filter->setToDate('2020-09-30');
             $sort_by = null;
             $sort = null;
             $limit = null;
             $offset = null;
-
             $result = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
-            \var_dump($result);
+            \var_dump(count($result));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

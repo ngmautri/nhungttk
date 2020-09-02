@@ -2,6 +2,7 @@
 namespace Inventory\Application\Export\Transaction;
 
 use Application\Application\Service\Document\Pdf\AbstractBuilder;
+use Inventory\Application\Export\Transaction\Contracts\AbstractSaveAs;
 use Inventory\Application\Export\Transaction\Contracts\DocSaveAsInterface;
 
 /**
@@ -10,7 +11,7 @@ use Inventory\Application\Export\Transaction\Contracts\DocSaveAsInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractDocSaveAsPdf implements DocSaveAsInterface
+abstract class AbstractDocSaveAsPdf extends AbstractSaveAs implements DocSaveAsInterface
 {
 
     protected $builder;

@@ -6,6 +6,7 @@ use Inventory\Application\Export\Item\SaveAsArray;
 use Inventory\Application\Export\Item\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Item\Formatter\InOutOnHandFormatter;
 use Inventory\Application\Export\Item\Formatter\NullFormatter;
+use Inventory\Application\Reporting\Item\Export\InOutOnHandSaveAsArray;
 use Inventory\Application\Reporting\Item\Export\InOutOnhandSaveAsExcel;
 use Inventory\Application\Reporting\Item\Export\InOutOnhandSaveAsOpenOffice;
 use Inventory\Application\Reporting\Item\Export\SaveAsExcel;
@@ -94,7 +95,7 @@ class ItemReporter extends AbstractService
         switch ($file_type) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
                 $formatter = new InOutOnHandFormatter();
-                $factory = new SaveAsArray();
+                $factory = new InOutOnHandSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
 
@@ -112,7 +113,7 @@ class ItemReporter extends AbstractService
 
             default:
                 $formatter = new InOutOnHandFormatter();
-                $factory = new SaveAsArray();
+                $factory = new InOutOnHandSaveAsArray();
                 break;
         }
 

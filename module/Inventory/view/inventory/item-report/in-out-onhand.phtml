@@ -144,7 +144,7 @@ echo $wh_option;
          <div class="dropdown">
             <!-- button -->
             <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-               <i class="fa fa-download" aria-hidden="true"></i>
+               <i class="fa fa-download" aria-hidden="true"></i> Download
                <span class="caret"></span>
             </button>
                              
@@ -170,10 +170,12 @@ $( "input[id='toDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeT
     var columns = [
       
         { title: "Id", dataType: "string", dataIndx: "#", align: 'left',minWidth: 10,editable: true},
+        { title: "WH", dataType: "integer", dataIndx: "warehouseName", width: 100,editable: false, align: 'left'},        
+        
         { title: "#", dataType: "string", dataIndx: "sysNumber", width: 40,editable: false },
         { title: "Item", dataType: "string", dataIndx: "itemSku", width: 12,editable: false },        
         { title: "Item", dataType: "string", dataIndx: "itemName", width: 200,editable: false },
-        { title: "Begin Qty", dataType: "integer", dataIndx: "beginQty", width: 100,editable: false, align: 'right'},
+         { title: "Begin Qty", dataType: "integer", dataIndx: "beginQty", width: 100,editable: false, align: 'right'},
         { title: "GR", dataType: "integer", dataIndx: "grQty", width: 100,editable: false,align: 'right' },
         { title: "GI", dataType: "integer", dataIndx: "giQty", width: 100,editable: false,align: 'right' },
         { title: "End Qty", dataType: "integer", dataIndx: "endQty", width: 100,editable: false,align: 'right' },

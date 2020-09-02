@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Application\Export\Transaction;
 
+use Application\Domain\Util\JsonErrors;
 use Inventory\Application\Export\Transaction\Contracts\AbstractSaveAs;
 use Inventory\Application\Export\Transaction\Contracts\RowsSaveAsInterface;
 use Inventory\Application\Export\Transaction\Formatter\AbstractRowFormatter;
@@ -24,7 +25,15 @@ class TrxRowsSaveAsArray extends AbstractSaveAs implements RowsSaveAsInterface
 
             $n = 0;
             foreach ($rows as $row) {
-                $output[] = $formatter->format($row);
+
+                $formattedRow = $formatter->format($row);
+
+                json_encode($formattedRow);
+                if (JsonErrors::getErrorMessage(json_last_error()) != null) {
+                    $this->logInfo(\sprintf("%s=> %s", $row->getId() . $row->getItemName1(), JsonErrors::getErrorMessage(json_last_error())));
+                }
+
+                $output[] = $formattedRow;
                 $n ++;
             }
             $this->logInfo(\sprintf("TrxRowsSaveAsArray: %s formatted!", $n));

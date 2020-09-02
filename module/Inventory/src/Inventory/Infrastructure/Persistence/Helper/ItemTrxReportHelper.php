@@ -57,7 +57,7 @@ class ItemTrxReportHelper
             $sql2 = $sql2 . \sprintf(" AND nmt_inventory_mv.posting_date <='%s'", $filter->getToDate());
         }
 
-        if (! $filter->getWarehouseId() == null) {
+        if ($filter->getWarehouseId() > 0) {
             $sql1 = $sql1 . \sprintf(" AND nmt_inventory_trx.wh_id =%s", $filter->getWarehouseId());
             $sql2 = $sql2 . \sprintf(" AND nmt_inventory_trx.wh_id =%s", $filter->getWarehouseId());
             $sql3 = $sql3 . \sprintf(" AND nmt_inventory_trx.wh_id =%s", $filter->getWarehouseId());
@@ -77,9 +77,21 @@ class ItemTrxReportHelper
 
         try {
             $rsm = new ResultSetMappingBuilder($doctrineEM);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("item_name", "item_name");
+            $rsm->addScalarResult("item_type_id", "item_type_id");
+
+            $rsm->addScalarResult("item_sku", "item_sku");
+            $rsm->addScalarResult("sys_number", "sys_number");
+            $rsm->addScalarResult("token", "token");
+            $rsm->addScalarResult("manufacturer_code", "manufacturer_code");
+            $rsm->addScalarResult("manufacturer_serial", "manufacturer_serial");
+            $rsm->addScalarResult("manufacturer_model", "manufacturer_model");
+
             $rsm->addScalarResult("item_id", "item_id");
             $rsm->addScalarResult("wh_id", "wh_id");
+
+            $rsm->addScalarResult("wh_name", "wh_name");
+
             $rsm->addScalarResult("begin_qty", "begin_qty");
             $rsm->addScalarResult("gr_qty", "gr_qty");
             $rsm->addScalarResult("gi_qty", "gi_qty");

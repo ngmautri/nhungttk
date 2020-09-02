@@ -45,13 +45,13 @@ class InOutOnhandSaveAsExcel extends AbstractSaveAsSpreadsheet
             "#",
             "ID",
             "SysNo",
-
             "SKU",
-
+            "T",
             "ItemName",
             "Mfg Model",
             "Mfg S/N",
-
+            "WH",
+            "WH Name",
             "Begin Qty",
             "GR Qty",
             "GI Qty",
@@ -70,14 +70,30 @@ class InOutOnhandSaveAsExcel extends AbstractSaveAsSpreadsheet
             $n ++;
         }
 
-        foreach ($rows as $row) {
+        foreach ($rows as $r) {
+
+            $row = new ItemInOutOnhandDTO();
+            $row->setId($r['item_id']);
+            $row->setItemType($r['item_type_id']);
+            $row->setItemName($r['item_name']);
+            $row->setItemSku($r['item_sku']);
+            $row->setSysNumber($r['sys_number']);
+            $row->setToken($r['token']);
+            $row->setManufacturerCode($r['manufacturer_code']);
+            $row->setManufacturerSerial($r['manufacturer_serial']);
+            $row->setManufacturerModel($r['manufacturer_model']);
+            $row->setWarehouseId($r['wh_id']);
+            $row->setWarehouseName($r['wh_name']);
+            $row->setBeginQty($r['begin_qty']);
+            $row->setBeginValue($r['begin_vl']);
+            $row->setGrQty($r['gr_qty']);
+            $row->setGrValue($r['gr_vl']);
+            $row->setGiQty($r['gi_qty']);
+            $row->setGiValue($r['gi_vl']);
+            $row->setEndQty($r['end_qty']);
+            $row->setEndValue($r['end_vl']);
 
             $formatter->format($row);
-
-            /**
-             *
-             * @var ItemInOutOnhandDTO $row ;
-             */
 
             $i ++;
             $l = $header + $i;
@@ -87,9 +103,12 @@ class InOutOnhandSaveAsExcel extends AbstractSaveAsSpreadsheet
                 $row->id,
                 $row->sysNumber,
                 $row->itemSku,
+                $row->itemType,
                 $row->itemName,
                 $row->manufacturerModel,
                 $row->manufacturerCode,
+                $row->warehouseId,
+                $row->warehouseName,
                 $row->beginQty,
                 $row->grQty,
                 $row->giQty,

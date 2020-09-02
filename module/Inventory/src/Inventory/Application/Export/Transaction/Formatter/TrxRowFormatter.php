@@ -21,6 +21,7 @@ class TrxRowFormatter extends RowFormatterDecorator
          * @var TrxRowSnapshot $row ;
          */
         $trxName = '';
+        $row->itemName1 = "xx";
         $trxArray = null;
         if ($row->getFlow() == TrxFlow::WH_TRANSACTION_IN) {
             $trxArray = TrxType::getGoodReceiptTrx();

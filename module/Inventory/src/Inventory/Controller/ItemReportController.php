@@ -320,13 +320,13 @@ class ItemReportController extends AbstractGenericController
     // ====================================
     private function _createInOutOnhandFilter(AbstractController $controller)
     {
-        $isActive = $controller->params()->fromQuery('isActive');
+        $isActive = (int) $controller->params()->fromQuery('isActive');
         $itemId = $controller->params()->fromQuery('itemId');
         $warehouseId = $controller->params()->fromQuery('warehouseId');
         $fromDate = $controller->params()->fromQuery('fromDate');
         $toDate = $controller->params()->fromQuery('toDate');
 
-        if ($isActive == null) {
+        if ($isActive == 0) {
             $isActive = 1;
         }
 
@@ -343,7 +343,7 @@ class ItemReportController extends AbstractGenericController
         }
 
         $filter = new InOutOnhandSqlFilter();
-        $filter->setIsActive($isActive);
+        $filter->setIsActive(1);
         $filter->setItemId($itemId);
         $filter->setWarehouseId($warehouseId);
         $filter->setDocStatus(Constants::DOC_STATUS_POSTED);

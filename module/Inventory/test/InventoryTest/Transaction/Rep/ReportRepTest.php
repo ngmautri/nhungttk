@@ -35,6 +35,7 @@ class ReportRepTest extends PHPUnit_Framework_TestCase
             $sort = null;
             $limit = null;
             $offset = null;
+            echo $filter;
             $result = $rep->getAllRow($filter, $sort_by, $sort, $limit, $offset);
             \var_dump(count($result));
         } catch (InvalidArgumentException $e) {

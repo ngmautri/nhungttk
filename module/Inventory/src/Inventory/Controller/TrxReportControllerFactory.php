@@ -28,6 +28,9 @@ class TrxReportControllerFactory implements FactoryInterface
         $sv = $sm->get(TrxReporter::class);
         $controller->setTrxReporter($sv);
 
+        $sv = $sm->get('AppLogger');
+        $controller->setLogger($sv);
+
         return $controller;
     }
 }

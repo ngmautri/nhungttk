@@ -5,7 +5,6 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
-use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Infrastructure\Persistence\Filter\TrxRowReportSqlFilter;
 
 /**
@@ -15,20 +14,10 @@ use Inventory\Infrastructure\Persistence\Filter\TrxRowReportSqlFilter;
 
 $baseUrl = "/inventory/trx-report/item-trx";
 
-$link = "?docMonth=%s&docYear=%s&is_active=%s&sort_by=%s&sort=%s&file_type=%s";
-$base = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort, $file_type);
-
 // $toggleUrl = $this->baseUrl . sprintf($link, $baseUrl, $docYear, $balance, $is_active, $sort_by, $sort, $toogleFileType);
 
-$link1 = "/inventory/trx-report/row-status-gird?itemId=%s&docMonth=%s&docYear=%s&is_active=%s&sort_by=%s&sort=%s";
-$girdUrl = $this->baseUrl . sprintf($link1, $filter->getItemId(), $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort);
-
-$filter_url = $baseUrl;
-$filtered1 = "M=%s,Y=%s";
-$filtered = sprintf($filtered1, $filter->getDocMonth(), $filter->getDocYear());
-
-$url_excel = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_EXCEL);
-$url_oo = $this->baseUrl . sprintf($link, $filter->getDocMonth(), $filter->getDocYear(), $filter->getIsActive(), $sort_by, $sort, SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE);
+$link1 = "/inventory/trx-report/row-status-gird?itemId=%s&fromDate=%s&toDate=%s&warehouseId=%s&is_active=%s&sort_by=%s&sort=%s";
+$girdUrl = $this->baseUrl . sprintf($link1, $filter->getItemId(), $filter->getFromDate(), $filter->getToDate(), $filter->getWarehouseId(), $filter->getIsActive(), $sort_by, $sort);
 
 // ===============================================================================
 ?>

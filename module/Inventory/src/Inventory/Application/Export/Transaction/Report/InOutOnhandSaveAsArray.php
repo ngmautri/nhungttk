@@ -31,7 +31,7 @@ class InOutOnhandSaveAsArray extends AbstractSaveAs implements RowsSaveAsInterfa
 
             foreach ($rows as $rowArray) {
 
-                $this->logInfo(\json_encode($rowArray));
+                // $this->logInfo(\json_encode($rowArray));
 
                 $row = new InOutOnhandDTO();
                 if (isset($rowArray['item_id'])) {

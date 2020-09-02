@@ -51,8 +51,8 @@ $dropDownList = [
     sprintf('<a target="_blank" class="" href="%s"><i class="fa fa-file-excel-o fa-lg" aria-hidden="true"></i> Open Office (*.ods)</a>', $save_as_openoffice)
 ];
 
-$f = 'WH: %s | From %s to %s';
-$summary_tmp = sprintf($f, $filter->getWarehouseId(), $filter->getFromDate(), $filter->getToDate());
+$f = 'WH: %s -%s | From %s to %s';
+$summary_tmp = sprintf($f, $filter->getWarehouseId(), $filter->getIsActive(), $filter->getFromDate(), $filter->getToDate());
 
 $f = '<span class="" style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">%s</span>';
 $summary_txt = sprintf($f, $summary_tmp);

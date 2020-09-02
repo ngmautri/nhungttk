@@ -31,8 +31,8 @@ class TrxRowReportSqlFilter implements SqlFilterInterface
 
     public function __toString()
     {
-        $f = "TrxRowReportSqlFilter_%s_%s_%s_%s_%s_%s_%s";
-        return \sprintf($f, $this->getWarehouseId(), $this->getFromDate(), $this->getToDate(), $this->getIsActive(), $this->getDocStatus(), $this->getFlow(), $this->getWarehouseId());
+        $f = "TrxRowReportSqlFilter_I%s_WH%s_FD%s_TD%s_A%s_S%s_F%s";
+        return \sprintf($f, $this->getItemId(), $this->getWarehouseId(), $this->getFromDate(), $this->getToDate(), $this->getIsActive(), $this->getDocStatus(), $this->getFlow());
     }
 
     /**

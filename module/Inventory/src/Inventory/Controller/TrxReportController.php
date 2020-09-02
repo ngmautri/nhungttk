@@ -3,6 +3,7 @@ namespace Inventory\Controller;
 
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Shared\Constants;
+use Application\Domain\Util\JsonErrors;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Reporting\Transaction\TrxReporter;
 use Inventory\Infrastructure\Persistence\Filter\BeginGrGiEndSqlFilter;
@@ -303,18 +304,6 @@ class TrxReportController extends AbstractGenericController
             $toDate = $_GET['toDate'];
         }
 
-        $date = new DateTime();
-
-        if ($fromDate == null) {
-            $d = $date->modify('first day of this month');
-            $fromDate = $d->format('Y-m-d');
-        }
-
-        if ($toDate == null) {
-            $d = $date->modify('last day of this month');
-            $toDate = $d->format('Y-m-d');
-        }
-
         $filter = new TrxRowReportSqlFilter();
         $filter->setIsActive($isActive);
         $filter->setFromDate($fromDate);
@@ -344,6 +333,7 @@ class TrxReportController extends AbstractGenericController
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($a_json_final));
+        $this->logInfo('...' . JsonErrors::getErrorMessage(json_last_error()));
         return $response;
     }
 
@@ -467,7 +457,7 @@ class TrxReportController extends AbstractGenericController
         $limit = null;
         $offset = null;
 
-        $filter = $this->_createRowFilter($this);
+        $filter = $this->_createRowItemFilter($this);
 
         $total_records = $this->getTrxReporter()->getAllRowTotal($filter);
 
@@ -574,7 +564,7 @@ class TrxReportController extends AbstractGenericController
      */
     private function _createRowFilter(AbstractController $controller)
     {
-        $isActive = $controller->params()->fromQuery('isActive');
+        $isActive = (int) $controller->params()->fromQuery('isActive');
         $itemId = $controller->params()->fromQuery('itemId');
         $warehouseId = $controller->params()->fromQuery('warehouseId');
         $fromDate = $controller->params()->fromQuery('fromDate');
@@ -591,6 +581,27 @@ class TrxReportController extends AbstractGenericController
             $d = $date->modify('last day of this month');
             $toDate = $d->format('Y-m-d');
         }
+        if ($isActive == 0) {
+            $isActive = 1;
+        }
+
+        $filter = new TrxRowReportSqlFilter();
+        $filter->setIsActive($isActive);
+        $filter->setFromDate($fromDate);
+        $filter->setToDate($toDate);
+        $filter->setItemId($itemId);
+        $filter->setWarehouseId($warehouseId);
+        $filter->setDocStatus(Constants::DOC_STATUS_POSTED);
+        return $filter;
+    }
+
+    private function _createRowItemFilter(AbstractController $controller)
+    {
+        $isActive = $controller->params()->fromQuery('isActive');
+        $itemId = $controller->params()->fromQuery('itemId');
+        $warehouseId = $controller->params()->fromQuery('warehouseId');
+        $fromDate = $controller->params()->fromQuery('fromDate');
+        $toDate = $controller->params()->fromQuery('toDate');
         if ($isActive == null) {
             $isActive = 1;
         }

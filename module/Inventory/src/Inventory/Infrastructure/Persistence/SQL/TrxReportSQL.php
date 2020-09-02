@@ -21,13 +21,10 @@ WHERE 1
 
     const TRX_ROWS = "
 SELECT
-
-nmt_inventory_trx.*
-FROM nmt_inventory_trx
-        
+        nmt_inventory_trx.*
+FROM nmt_inventory_trx        
 LEFT JOIN nmt_inventory_mv
-ON nmt_inventory_mv.id = nmt_inventory_trx.movement_id
-        
+        ON nmt_inventory_mv.id = nmt_inventory_trx.movement_id        
 WHERE 1
 ";
 

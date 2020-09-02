@@ -11,6 +11,12 @@ use Inventory\Application\DTO\Item\ItemDTO;
 class ItemInOutOnhandDTO extends ItemDTO
 {
 
+    public $counter;
+
+    public $warehouseName;
+
+    public $itemTypeId;
+
     public $beginQty;
 
     public $beginValue;
@@ -169,5 +175,59 @@ class ItemInOutOnhandDTO extends ItemDTO
     public function setEndValue($endValue)
     {
         $this->endValue = $endValue;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCounter()
+    {
+        return $this->counter;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemTypeId()
+    {
+        return $this->itemTypeId;
+    }
+
+    /**
+     *
+     * @param mixed $counter
+     */
+    public function setCounter($counter)
+    {
+        $this->counter = $counter;
+    }
+
+    /**
+     *
+     * @param mixed $itemTypeId
+     */
+    public function setItemTypeId($itemTypeId)
+    {
+        $this->itemTypeId = $itemTypeId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getWarehouseName()
+    {
+        return $this->warehouseName;
+    }
+
+    /**
+     *
+     * @param mixed $warehouseName
+     */
+    public function setWarehouseName($warehouseName)
+    {
+        $this->warehouseName = $warehouseName;
     }
 }

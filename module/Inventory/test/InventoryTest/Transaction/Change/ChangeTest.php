@@ -1,9 +1,9 @@
 <?php
-namespace InventoryTest\Item\Change;
+namespace InventoryTest\Transaction\Change;
 
+use Application\Domain\Shared\Constants;
 use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
-use Inventory\Domain\Item\Contracts\ItemType;
 use PHPUnit_Framework_TestCase;
 
 class ChangeTest extends PHPUnit_Framework_TestCase
@@ -29,22 +29,26 @@ class ChangeTest extends PHPUnit_Framework_TestCase
         $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         $items = include $file;
+
         foreach ($items as $id) {
+
             $criteria = array(
-                'id' => $id
+                'item' => $id
             );
 
             /**
              *
-             * @var \Application\Entity\NmtInventoryItem $entity ;
+             * @var \Application\Entity\NmtInventoryTrx $entity ;
              */
 
-            $entity = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-            $entity->setItemTypeId(ItemType::INVENTORY_ITEM_TYPE);
-            $entity->setIsStocked(1);
-            $entity->setIsSparepart(1);
-            $entity->setIsFixedAsset(0);
-            $doctrineEM->persist($entity);
+            $results = $doctrineEM->getRepository('\Application\Entity\NmtInventoryTrx')->findBy($criteria);
+
+            if (count($results) > 0) {
+                foreach ($results as $entity) {
+                    $entity->setDocStatus(Constants::DOC_STATUS_ARCHIVED);
+                    $doctrineEM->persist($entity);
+                }
+            }
         }
 
         $doctrineEM->flush();

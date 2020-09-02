@@ -13,7 +13,7 @@ class JsonErrors
     {
         switch ($errorCode) {
             case JSON_ERROR_NONE:
-                return ' - No errors';
+                return null;
                 break;
             case JSON_ERROR_DEPTH:
                 return 'ERROR - Maximum stack depth exceeded';
@@ -38,7 +38,7 @@ class JsonErrors
                 return 'ERROR JSON_ERROR_INVALID_PROPERTY_NAME';
                 break;
             default:
-                return ' - Unknown error';
+                return '- Unknown error';
                 break;
         }
     }

@@ -11,7 +11,9 @@ class ItemTrxReportSQL
 
     const IN_OUT_ONHAND = "
 SELECT
-*
+nmt_inventory_item.*,
+nmt_inventory_trx.*,
+nmt_inventory_warehouse.wh_name
 FROM
 nmt_inventory_item
 JOIN
@@ -19,7 +21,7 @@ JOIN
 SELECT	
 	nmt_inventory_trx.item_id,
 	nmt_inventory_trx.wh_id,
-	(IFNULL(nmt_inventory_trx1.total_gr,0)- IFNULL(nmt_inventory_trx1.total_gi,0)) AS begin_qty,
+  	(IFNULL(nmt_inventory_trx1.total_gr,0)- IFNULL(nmt_inventory_trx1.total_gi,0)) AS begin_qty,
 	IFNULL(nmt_inventory_trx2.total_gr,0) AS gr_qty,
 	IFNULL(nmt_inventory_trx2.total_gi,0) AS gi_qty,
 	(IFNULL(nmt_inventory_trx1.total_gr,0) - IFNULL(nmt_inventory_trx1.total_gi,0)+IFNULL(nmt_inventory_trx2.total_gr,0) - IFNULL(nmt_inventory_trx2.total_gi,0)) AS end_qty,
@@ -62,11 +64,16 @@ LEFT JOIN
 )
 AS nmt_inventory_trx2
 ON nmt_inventory_trx2.item_id = nmt_inventory_trx.item_id AND nmt_inventory_trx2.wh_id = nmt_inventory_trx.wh_id
+
 WHERE 1 %s
 GROUP BY nmt_inventory_trx.wh_id, nmt_inventory_trx.item_id
 )
 AS nmt_inventory_trx
 ON nmt_inventory_trx.item_id = nmt_inventory_item.id
+
+LEFT JOIN nmt_inventory_warehouse
+on nmt_inventory_warehouse.id = nmt_inventory_trx.wh_id
+
 WHERE 1 %s
 ";
 }

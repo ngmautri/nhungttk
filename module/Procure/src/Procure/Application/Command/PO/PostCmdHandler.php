@@ -3,12 +3,12 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
@@ -85,7 +85,7 @@ class PostCmdHandler extends AbstractCommandHandler
              */
 
             $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $headerValidators = new HeaderValidatorCollection();

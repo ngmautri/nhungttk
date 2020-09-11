@@ -416,6 +416,7 @@ return array(
             'Inventory\Controller\ItemReport' => 'Inventory\Controller\ItemReportControllerFactory',
             'Inventory\Controller\TrxReport' => 'Inventory\Controller\TrxReportControllerFactory',
             'Inventory\Controller\ItemOpeningBalance' => 'Inventory\Controller\ItemOpeningBalanceControllerFactory',
+            'Inventory\Controller\TransferWh' => 'Inventory\Controller\TransferWhControllerFactory',
 
             // API
             'Inventory\API\ItemController' => 'Inventory\API\ItemControllerFactory',

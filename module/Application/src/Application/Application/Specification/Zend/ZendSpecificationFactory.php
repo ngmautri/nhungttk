@@ -298,4 +298,9 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new AssociationExitsSpecification($this->doctrineEM);
     }
+
+    public function getNoneNegativeNumberSpecification()
+    {
+        return new NoneNegativeNumberSpecification($this->doctrineEM);
+    }
 }

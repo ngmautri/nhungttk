@@ -12,7 +12,7 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class SaveAsPdf extends AbstractDocSaveAsPdf
+class SaveAsPdfDefault extends AbstractDocSaveAsPdf
 {
 
     /**
@@ -222,6 +222,9 @@ EOF;
              */
             $row = $formatter->format($r->makeSnapshot());
 
+            $format = '<img alt="" height="" src="/inventory/item/barcode?barcode=%s">';
+            $barcode = \sprintf($format, $row->getRowIdentifer());
+
             $itemDetails = \sprintf('<span class="itemDetail">Id: %s</span>', $row->getItemSKU());
 
             if ($row->getItemManufacturerCode() !== null) {
@@ -254,6 +257,7 @@ EOF;
             $details .= sprintf('<td class="text-left">%s</td>', $row->getDocQuantity());
             $details .= sprintf('<td class="text-left">%s</td>', $row->getPostedGrQuantity());
             $details .= sprintf('<td class="text-left">%s</td>', $row->getDocQuantity() - $row->getPostedGrQuantity());
+            $details .= sprintf('<td class="text-left">%s</td>', $barcode);
 
             $details .= '</tr>';
         }

@@ -5,7 +5,6 @@ use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
 use Procure\Application\DTO\Pr\PrDTO;
-use Procure\Application\Service\FXService;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;

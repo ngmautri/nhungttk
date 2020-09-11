@@ -114,7 +114,7 @@ class GRFromTransferLocation extends AbstractGoodsReceipt implements GoodsReceip
              * @var TrxRow $r ;
              */
 
-            $grRow = GRFromExchangeRow::createFromGIRow($instance, $r, $options);
+            $grRow = GRFromTransferWarehouseRow::createFromTORow($instance, $r, $options);
             $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
             $instance->addRow($grRow);
         }

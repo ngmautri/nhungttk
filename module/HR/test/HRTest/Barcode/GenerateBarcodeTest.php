@@ -1,25 +1,24 @@
 <?php
-namespace HR\Controller;
+namespace HRTest\Barcode;
 
 use Zend\Barcode\Barcode;
-use Zend\Mvc\Controller\AbstractActionController;
+use PHPUnit_Framework_TestCase;
 
-/**
- *
- * @author Nguyen Mau Tri
- *        
- */
-class IndexController extends AbstractActionController
+class GenerateBarcodeTest extends PHPUnit_Framework_TestCase
+
 {
 
     const BACKUP_FOLDER = "/data/hr/employee-code";
 
-    /**
-     */
-    public function barcodeAction()
+    protected $serviceManager;
+
+    public function setUp()
+    {}
+
+    public function testOther()
     {
-        // take long time
-        set_time_limit(1500);
+        $root = realpath(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))));
+        $folder = $root . self::BACKUP_FOLDER;
 
         for ($i = 4000; $i < 6000; $i ++) {
 
@@ -44,7 +43,7 @@ class IndexController extends AbstractActionController
 
             $file = Barcode::draw('code39', 'image', $barcodeConf, $renderConf);
 
-            $fileName = ROOT . self::BACKUP_FOLDER . '/' . $code . '.png';
+            $fileName = $folder . '/' . $code . '.png';
 
             $store_image = imagepng($file, $fileName);
         }

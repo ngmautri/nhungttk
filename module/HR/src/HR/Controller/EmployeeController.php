@@ -9,27 +9,23 @@
  */
 namespace HR\Controller;
 
-use Doctrine\ORM\EntityManager;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Symfony\Component\Workflow\Exception\LogicException;
-use MLA\Paginator;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtHrEmployee;
-use Zend\Validator\Date;
-use Zend\Math\Rand;
 use HR\Service\EmployeeSearchService;
+use MLA\Paginator;
+use Zend\Math\Rand;
+use Zend\Validator\Date;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author nmt
  *        
  */
-class EmployeeController extends AbstractActionController
+class EmployeeController extends AbstractGenericController
 {
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
-    protected $doctrineEM;
 
     protected $employeeSearchService;
 
@@ -553,17 +549,6 @@ class EmployeeController extends AbstractActionController
     }
 
     // SETTER AND GETTER
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
     public function getEmployeeSearchService()
     {
         return $this->employeeSearchService;

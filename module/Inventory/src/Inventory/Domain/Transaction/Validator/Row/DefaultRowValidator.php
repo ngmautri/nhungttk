@@ -54,18 +54,6 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             if (! $spec->isSatisfiedBy($subject)) {
                 $localEntity->addError(sprintf("Item #%s not exits in the company #%s", $localEntity->getItem(), $rootEntity->getCompany()));
             }
-
-            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
-
-            // ======= QUANTITY ==========
-            if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-                $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
-            }
-
-            // ======= CONVERSION FACTORY ==========
-            if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
-                $localEntity->addError("Convert factor is not valid! #" . $localEntity->getConversionFactor());
-            }
         } catch (RuntimeException $e) {
             $localEntity->addError($e->getMessage());
         }

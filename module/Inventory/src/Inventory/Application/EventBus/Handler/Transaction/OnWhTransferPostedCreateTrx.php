@@ -4,9 +4,9 @@ namespace Inventory\Application\EventBus\Handler\Transaction;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Command\GenericCmd;
-use Inventory\Application\Command\Transaction\PostGrFromExchangeCmdHandler;
-use Inventory\Application\Command\Transaction\Options\PostGRFromExchangeOptions;
-use Inventory\Domain\Event\WhGoodsTransferPostedEvent;
+use Inventory\Application\Command\Transaction\PostGrFromTransferWhCmdHandler;
+use Inventory\Application\Command\Transaction\Options\PostGRFromTransferWhOptions;
+use Inventory\Domain\Event\Transaction\GI\WhTransferPosted;
 use Inventory\Domain\Transaction\TrxSnapshot;
 
 /**
@@ -17,7 +17,7 @@ use Inventory\Domain\Transaction\TrxSnapshot;
 class OnWhTransferPostedCreateTrx extends AbstractEventHandler
 {
 
-    public function __invoke(WhGoodsTransferPostedEvent $event)
+    public function __invoke(WhTransferPosted $event)
     {
         try {
 
@@ -27,9 +27,9 @@ class OnWhTransferPostedCreateTrx extends AbstractEventHandler
                 Throw new \InvalidArgumentException("TrxSnapshot not give for creating WH Trx");
             }
 
-            $options = new PostGRFromExchangeOptions($snapshot->getCompany(), $snapshot->getCreatedBy(), __METHOD__, $event->getTarget());
-            $cmdHanlder = new PostGrFromExchangeCmdHandler();
-            $cmd = new GenericCmd($this->getDoctrineEM(), new TrxSnapshot(), $options, $cmdHanlder);
+            $options = new PostGRFromTransferWhOptions($snapshot->getCompany(), $snapshot->getCreatedBy(), __METHOD__, $event->getTarget());
+            $cmdHandler = new PostGrFromTransferWhCmdHandler();
+            $cmd = new GenericCmd($this->getDoctrineEM(), new TrxSnapshot(), $options, $cmdHandler);
             $cmd->setLogger($this->getLogger());
             $cmd->execute();
             $this->logInfo(\sprintf("GR created for WH-Transfer Warehouse #%s", $event->getTarget()
@@ -48,6 +48,6 @@ class OnWhTransferPostedCreateTrx extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return WhGoodsTransferPostedEvent::class;
+        return WhTransferPosted::class;
     }
 }

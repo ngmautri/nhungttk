@@ -49,9 +49,6 @@ class ChangeSKUTest extends PHPUnit_Framework_TestCase
                 $rootEntityId = $id;
                 $version = '';
 
-                $dto = new ItemDTO();
-                $dto->itemS = $v;
-
                 $queryRep = new ItemQueryRepositoryImpl($doctrineEM);
                 $rootEntity = $queryRep->getRootEntityById($rootEntityId);
 

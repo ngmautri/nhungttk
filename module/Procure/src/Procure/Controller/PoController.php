@@ -10,19 +10,14 @@ use Application\Entity\NmtProcureQo;
 use MLA\Paginator;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
-use Procure\Application\Command\PO\AcceptAmendmentCmd;
 use Procure\Application\Command\PO\AcceptAmendmentCmdHandler;
-use Procure\Application\Command\PO\AddRowCmd;
 use Procure\Application\Command\PO\AddRowCmdHandler;
-use Procure\Application\Command\PO\CreateHeaderCmd;
 use Procure\Application\Command\PO\CreateHeaderCmdHandler;
-use Procure\Application\Command\PO\EditHeaderCmd;
 use Procure\Application\Command\PO\EditHeaderCmdHandler;
 use Procure\Application\Command\PO\EnableAmendmentCmdHandler;
 use Procure\Application\Command\PO\InlineUpdateRowCmdHandler;
 use Procure\Application\Command\PO\PostCmdHandler;
 use Procure\Application\Command\PO\SaveCopyFromQuoteCmdHandler;
-use Procure\Application\Command\PO\UpdateRowCmd;
 use Procure\Application\Command\PO\UpdateRowCmdHandler;
 use Procure\Application\Command\PO\Options\CopyFromQuoteOptions;
 use Procure\Application\Command\PO\Options\PoAmendmentAcceptOptions;
@@ -42,7 +37,6 @@ use Procure\Application\Service\PO\POService;
 use Procure\Domain\Shared\Constants;
 use Zend\Escaper\Escaper;
 use Zend\Math\Rand;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -257,7 +251,7 @@ class PoController extends AbstractGenericController
 
             $cmdHandler = new CreateHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new CreateHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -378,7 +372,7 @@ class PoController extends AbstractGenericController
             $options = new PoRowCreateOptions($rootEntity, $target_id, $target_token, $version, $userId, __METHOD__);
             $cmdHandler = new AddRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new AddRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
@@ -542,7 +536,7 @@ class PoController extends AbstractGenericController
             $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
             $cmdHandler = new UpdateRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -632,7 +626,7 @@ class PoController extends AbstractGenericController
                 $options = new PoRowUpdateOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
                 $cmdHandler = new InlineUpdateRowCmdHandler();
                 $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-                $cmd = new UpdateRowCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+                $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
                 $cmd->execute();
 
                 $notification = $dto->getNotification();
@@ -798,7 +792,7 @@ class PoController extends AbstractGenericController
 
             $cmdHandler = new EditHeaderCmdHandler();
             $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new EditHeaderCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
 
             $cmd->execute();
             $notification = $dto->getNotification();
@@ -867,9 +861,6 @@ class PoController extends AbstractGenericController
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
-            // echo memory_get_usage();
-            // var_dump($po->makeDTOForGrid());
-            // echo memory_get_usage();
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -892,11 +883,9 @@ class PoController extends AbstractGenericController
 
         // POSTING
         // ====================================
-
-        $response = $this->getResponse();
+        $notification = new Notification();
 
         try {
-            $notification = new Notification();
 
             $data = $prg;
 
@@ -927,55 +916,39 @@ class PoController extends AbstractGenericController
             $notification = $dto->getNotification();
             $msg = sprintf("PO #%s is posted", $entity_id);
             $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
-
             $this->getLogger()->info($msg);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         }
 
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
         $this->layout("layout/user/ajax");
         $this->flashMessenger()->addMessage($msg);
 
-        $result = array();
-        $result['redirectUrl'] = $redirectUrl;
-        $result['resultMsg'] = $msg;
-
-        $json_result = json_encode($result, JSON_UNESCAPED_SLASHES);
-        $json_errors = '';
-        switch (json_last_error()) {
-            case JSON_ERROR_NONE:
-                $json_errors = ' - No errors';
-                break;
-            case JSON_ERROR_DEPTH:
-                $json_errors = ' - Maximum stack depth exceeded';
-                break;
-            case JSON_ERROR_STATE_MISMATCH:
-                $json_errors = ' - Underflow or the modes mismatch';
-                break;
-            case JSON_ERROR_CTRL_CHAR:
-                $json_errors = ' - Unexpected control character found';
-                break;
-            case JSON_ERROR_SYNTAX:
-                $json_errors = ' - Syntax error, malformed JSON';
-                break;
-            case JSON_ERROR_UTF8:
-                $json_errors = ' - Malformed UTF-8 characters, possibly incorrectly encoded';
-                break;
-            default:
-                $json_errors = ' - Unknown error';
-                break;
-        }
-
-        $this->getLogger()->error($json_errors);
-
-        $viewTemplete = "procure/blank";
-        $model = new JsonModel(array(
-            'redirectUrl' => $redirectUrl,
-            'msg' => $msg
-        ));
-        $model->setTemplate($viewTemplete);
-        return $model;
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        $this->flashMessenger()->addMessage($notification->successMessage(true));
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
@@ -1169,9 +1142,8 @@ class PoController extends AbstractGenericController
 
             $cmdHandler = new AcceptAmendmentCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new AcceptAmendmentCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
-
             $this->getLogger()->info(\sprintf("PO amendment #%s accepted by #%s", $entity_id, $u->getId()));
         } catch (\Exception $e) {
             $msg = $e->getMessage();

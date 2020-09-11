@@ -225,6 +225,8 @@ $( "input[id='toDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeT
     var columns = [
       
         { title: "Id", dataType: "string", dataIndx: "#", align: 'left',minWidth: 50,editable: true},
+        { title: "Ref", dataType: "string", dataIndx: "transactionType", align: 'left',minWidth: 80,editable: false},
+        
         { title: "Ref", dataType: "string", dataIndx: "sysNumber", align: 'left',minWidth: 80,editable: false},
         { title: "Date", dataType: "string", dataIndx: "docDate", width: 80,editable: false },
         { title: "SKU", dataType: "string", dataIndx: "itemSKU", width: 60,editable: false },

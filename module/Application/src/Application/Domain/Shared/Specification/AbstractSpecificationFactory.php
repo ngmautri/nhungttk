@@ -17,6 +17,8 @@ abstract class AbstractSpecificationFactory
 
     abstract function getPositiveNumberSpecification();
 
+    abstract function getNoneNegativeNumberSpecification();
+
     abstract function getCurrencyExitsSpecification();
 
     abstract function getCanPostOnDateSpecification();

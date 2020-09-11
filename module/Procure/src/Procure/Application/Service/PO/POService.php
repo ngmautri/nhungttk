@@ -1,10 +1,10 @@
 <?php
 namespace Procure\Application\Service\PO;
 
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
-use Procure\Application\Service\FXService;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
@@ -49,7 +49,7 @@ class POService extends AbstractService
 
         $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $fxService = new FXService();
+        $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($this->getDoctrineEM());
 
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);

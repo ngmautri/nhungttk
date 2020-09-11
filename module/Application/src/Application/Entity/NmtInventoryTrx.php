@@ -59,7 +59,7 @@ class NmtInventoryTrx
     /**
      * @var float
      *
-     * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=true)
      */
     private $quantity;
 

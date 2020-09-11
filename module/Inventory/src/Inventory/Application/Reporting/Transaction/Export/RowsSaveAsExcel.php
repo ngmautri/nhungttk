@@ -81,6 +81,7 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
             $columnValues = array(
                 $i,
                 $row->sysNumber,
+                $row->transactionType,
                 $row->docDate,
                 $row->itemSKU,
                 $row->itemSysNumber,

@@ -40,11 +40,35 @@ class PdfBuilder extends AbstractBuilder
             $doc = $params["doc"];
         }
 
+        // define barcode style
+        $style = array(
+            'position' => 'R',
+            'align' => 'C',
+            'stretch' => false,
+            'fitwidth' => true,
+            'cellfitalign' => '',
+            'border' => true,
+            'hpadding' => 'auto',
+            'vpadding' => 'auto',
+            'fgcolor' => array(
+                0,
+                0,
+                0
+            ),
+            'bgcolor' => false, // array(255,255,255),
+            'text' => true,
+            'font' => 'helvetica',
+            'fontsize' => 8,
+            'stretchtext' => 4
+        );
+        $pdf->write1DBarcode($doc->getSysNumber(), 'C39', '', '', '', 18, 0.4, $style, 'N');
+
         $pdf->writeHTML($header, true, false, false, false, '');
 
         // output the HTML content
         // $pdf->SetFont('helvetica', '', 10);
         $pdf->writeHTML($detail, true, false, false, false, '');
+
         // $pdf->SetFont('helvetica', '', 9);
 
         // $pdf->Image($pr_code, 170 , 5, 20, '', 'PNG', '', 'T', false, 100, '', false, false, 0, false, false, false);

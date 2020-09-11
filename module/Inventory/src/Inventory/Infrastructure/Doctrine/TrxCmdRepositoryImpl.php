@@ -500,7 +500,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         $f = "UPDATE nmt_inventory_trx SET nmt_inventory_trx.doc_status='%s'";
         $f = $f . " WHERE nmt_inventory_trx.movement_id <> %s AND nmt_inventory_trx.wh_id=%s AND nmt_inventory_trx.item_id IN(%s)";
         $sql = sprintf($f, Constants::DOC_STATUS_CLOSED, $rootEntity->getId(), $rootEntity->getWarehouse(), $inString);
-        echo $sql;
+        // echo $sql;
         try {
             $conn = $this->getDoctrineEM()->getConnection();
             return $conn->executeUpdate($sql);

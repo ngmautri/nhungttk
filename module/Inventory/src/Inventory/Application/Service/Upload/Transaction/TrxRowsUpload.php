@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Application\Service\Upload\Transaction;
 
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Service\AbstractService;
 use Inventory\Application\Command\Transaction\Options\TrxRowCreateOptions;
@@ -13,7 +14,6 @@ use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRowSnapshot;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use Procure\Application\Service\FXService;
 
 /**
  *
@@ -43,7 +43,7 @@ class TrxRowsUpload extends AbstractService
 
         $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
 
-        $fxService = new FXService();
+        $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($this->getDoctrineEM());
 
         $cmdRepository = new TrxCmdRepositoryImpl($this->getDoctrineEM());
@@ -127,6 +127,7 @@ class TrxRowsUpload extends AbstractService
                 return $trx;
             }
         } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
             $this->logException($e);
             throw new \RuntimeException("Upload failed. The file might be not wrong.");
         }

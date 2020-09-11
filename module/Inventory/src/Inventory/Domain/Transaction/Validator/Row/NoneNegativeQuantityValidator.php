@@ -1,21 +1,22 @@
 <?php
-namespace Inventory\Domain\Transaction\GR\Validator\Row;
+namespace Inventory\Domain\Transaction\Validator\Row;
 
+use Application\Domain\Shared\Specification\AbstractSpecification;
 use Inventory\Domain\Transaction\AbstractTrx;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface;
-use Exception;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class DefaultGRRowValidator extends AbstractValidator implements RowValidatorInterface
+class NoneNegativeQuantityValidator extends AbstractValidator implements RowValidatorInterface
 {
 
     /**
@@ -33,9 +34,27 @@ class DefaultGRRowValidator extends AbstractValidator implements RowValidatorInt
             throw new InvalidArgumentException('TrxRow Row not given!');
         }
 
+        // do verification now
+
         Try {
-            // need to implement.
-        } catch (Exception $e) {
+
+            /**
+             *
+             * @var AbstractSpecification $spec ;
+             */
+            $spec = $this->sharedSpecificationFactory->getNoneNegativeNumberSpecification();
+
+            // ======= QUANTITY ==========
+
+            if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
+                $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
+            }
+
+            // ======= CONVERSION FACTORY ==========
+            if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {
+                $localEntity->addError("Convert factor is not valid! #" . $localEntity->getConversionFactor());
+            }
+        } catch (RuntimeException $e) {
             $localEntity->addError($e->getMessage());
         }
     }

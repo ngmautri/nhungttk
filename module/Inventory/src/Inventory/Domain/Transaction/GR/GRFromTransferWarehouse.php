@@ -13,7 +13,6 @@ use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Warehouse\GenericWarehouse;
-use Inventory\Domain\Warehouse\Location\BaseLocation;
 use Inventory\Domain\Warehouse\Repository\WhQueryRepositoryInterface;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
@@ -39,7 +38,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
     }
 
     /**
-     * TO: Transfer Order.
+     * TO: Transer Order;
      *
      * @param GenericTrx $sourceObj
      * @param CommandOptions $options
@@ -47,7 +46,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
      * @throws InvalidArgumentException
      * @throws \RuntimeException
      * @throws RuntimeException
-     * @return \Inventory\Domain\Transaction\GR\GRFromExchange
+     * @return \Inventory\Domain\Transaction\GR\GRFromTransferWarehouse
      */
     public static function postCopyFromTO(GenericTrx $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
@@ -60,6 +59,11 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
         if ($rows == null) {
             throw new InvalidArgumentException("GenericTrx Entity is empty!");
         }
+
+        if ($sourceObj->getMovementType() != TrxType::GI_FOR_TRANSFER_WAREHOUSE) {
+            throw new InvalidArgumentException("WH-TO is required!");
+        }
+
         if ($options == null) {
             throw new InvalidArgumentException("No Options is found");
         }
@@ -74,27 +78,31 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
             throw new InvalidArgumentException("WH Query is required!");
         }
 
-        $wh = $whQueryRep->getById($sourceObj->getWarehouse());
-
-        if (! $wh instanceof GenericWarehouse) {
+        $sourceWH = $whQueryRep->getById($sourceObj->getWarehouse());
+        if (! $sourceWH instanceof GenericWarehouse) {
             throw new InvalidArgumentException("WH not found");
         }
 
-        $recycleLocation = $wh->getRecycleLocation();
+        $targeWH = $whQueryRep->getById($sourceObj->getTargetWarehouse());
 
-        if (! $recycleLocation instanceof BaseLocation) {
-            throw new InvalidArgumentException("WH Recycle bin not found");
+        if (! $targeWH instanceof GenericWarehouse) {
+            throw new InvalidArgumentException("WH not found");
+        }
+
+        if (! $sourceWH instanceof GenericWarehouse) {
+            throw new InvalidArgumentException("WH not found");
         }
 
         /**
          *
-         * @var \Inventory\Domain\Transaction\GR\GRFromTransferLocation $instance
+         * @var \Inventory\Domain\Transaction\GR\GRFromTransferWarehouse $instance
          */
-        $instance = new GRFromTransferWarehouse();
+
+        $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
-        // Important: Update Recycle Location:
-        $instance->setTartgetLocation($recycleLocation->getId());
+        // Important: Source Warehouse
+        $instance->setWarehouse($sourceWH->getId());
 
         $instance->specify();
         $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
@@ -105,7 +113,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
 
         // overwrite.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
-        $instance->setRemarks($instance->getRemarks() . \sprintf('Auto./WH-GE %s', $sourceObj->getId()));
+        $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto] WH-TO from ', $sourceObj->getSysNumber()));
 
         foreach ($rows as $r) {
 
@@ -114,7 +122,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
              * @var TrxRow $r ;
              */
 
-            $grRow = GRFromExchangeRow::createFromGIRow($instance, $r, $options);
+            $grRow = GRFromTransferWarehouseRow::createFromTORow($instance, $r, $options);
             $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
             $instance->addRow($grRow);
         }
@@ -133,11 +141,10 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
             ->post($instance, true);
 
         if (! $snapshot instanceof TrxSnapshot) {
-            throw new RuntimeException(sprintf("Error orcured when creating GE-Exchange #%s", $instance->getId()));
+            throw new RuntimeException(sprintf("Error orcured when creating WH-TO #%s", $instance->getId()));
         }
 
-        $instance->setId($snapshot->getId());
-        $instance->setToken($snapshot->getToken());
+        $instance->updateIdentityFrom($snapshot);
         return $instance;
     }
 }

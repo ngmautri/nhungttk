@@ -199,10 +199,11 @@ EOF;
         <tr class="text-left" style="color:black;">
         <th class="text-left" style="width: 30px;">#</th>
         <th class="text-left" style="width: 40%;">Item</th>
-        <th class="text-left" style="width: 50px;">Unit</th>
+        <th class="text-left" style="width: 5px;">Unit</th>
         <th class="text-left">Requested</th>
         <th class="text-left">Reveived</th>
         <th class="text-left">Open</th>
+     
           </tr>';
         $n = 0;
 
@@ -220,6 +221,7 @@ EOF;
              *
              * @var PRRowSnapshot $row ;
              */
+
             $row = $formatter->format($r->makeSnapshot());
 
             $itemDetails = \sprintf('<span class="itemDetail">Id: %s</span>', $row->getItemSKU());

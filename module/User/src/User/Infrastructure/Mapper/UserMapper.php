@@ -94,6 +94,14 @@ class UserMapper
             $snapshot = new UserSnapshot();
         }
 
+        if ($entity->getRoleList()->count() > 0) {
+            foreach ($entity->getRoleList() as $role) {
+                $snapshot->roleList[] = $role->getRole()->getId();
+            }
+        }
+
+        // $snapshot->roleList = $entity->getRoleList();
+
         // =================================
         // Mapping None-Object Field
         // =================================

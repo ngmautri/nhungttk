@@ -9,6 +9,8 @@ namespace User\Infrastructure\Persistence\Contracts;
 interface UserReportRepositoryInterface
 {
 
+    public function getUserList($idList);
+
     public function isAdministrator($userId);
 
     public function getRoleByUserId($userId);

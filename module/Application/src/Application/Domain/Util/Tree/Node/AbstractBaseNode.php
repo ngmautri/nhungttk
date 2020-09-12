@@ -14,6 +14,8 @@ abstract class AbstractBaseNode extends AbstractNode
 
     protected $visited = [];
 
+    protected $chilrendId = [];
+
     public function getChildCount()
     {
         $total = 1;
@@ -22,6 +24,15 @@ abstract class AbstractBaseNode extends AbstractNode
         }
 
         return $total;
+    }
+
+    public function getAllChildrenId()
+    {
+        foreach ($this->children as $child) {
+            $this->chilrendId[] = \array_merge($this->chilrendId, $child->getAllChildrenId());
+        }
+
+        return $this->chilrendId;
     }
 
     public function isLeaf()
@@ -255,6 +266,39 @@ abstract class AbstractBaseNode extends AbstractNode
     public function getPath()
     {
         return $this->getPathToRoot($this, 0);
+    }
+
+    public function getPathArray()
+    {
+        $pathArray = [];
+        $path = $this->getPath();
+        if ($path == null) {
+            return;
+        }
+
+        foreach ($path as $n) {
+            $pathArray[] = [
+                $n->getId(),
+                $n->getNodeCode()
+            ];
+        }
+
+        return $pathArray;
+    }
+
+    public function getPathId()
+    {
+        $pathArray = [];
+        $path = $this->getPath();
+        if ($path == null) {
+            return;
+        }
+
+        foreach ($path as $n) {
+            $pathArray[] = $n->getId();
+        }
+
+        return $pathArray;
     }
 
     /**

@@ -29,6 +29,8 @@ class PRSnapshot extends DocSnapshot
 
     public $department;
 
+    public $attachmentList;
+
     /**
      *
      * @return mixed
@@ -108,5 +110,14 @@ class PRSnapshot extends DocSnapshot
     public function getDepartment()
     {
         return $this->department;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAttachmentList()
+    {
+        return $this->attachmentList;
     }
 }

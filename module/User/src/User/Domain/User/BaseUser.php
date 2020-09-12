@@ -1,6 +1,9 @@
 <?php
 namespace User\Domain\User;
 
+use Application\Domain\Util\Tree\AbstractTree;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -8,6 +11,23 @@ namespace User\Domain\User;
  */
 class BaseUser extends AbstractUser
 {
+
+    // addtional attribute.
+    // =======================================
+    protected $roleList;
+
+    public function getRoleTree(AbstractTree $builder)
+    {
+        $builder->initTree();
+
+        $trees = [];
+
+        foreach ($this->roleList as $roleId) {
+            $trees[] = $builder->createTree($roleId, 0);
+        }
+
+        return $trees;
+    }
 
     public static function createSnapshotProps()
     {
@@ -43,5 +63,23 @@ class BaseUser extends AbstractUser
                 print "\n" . "public $" . $propertyName . ";";
             }
         }
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRoleList()
+    {
+        return $this->roleList;
+    }
+
+    /**
+     *
+     * @param mixed $roleList
+     */
+    public function setRoleList($roleList)
+    {
+        $this->roleList = $roleList;
     }
 }

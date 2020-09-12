@@ -8,6 +8,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 use UserTest\Bootstrap;
 use User\Application\Service\ACLRole\Tree\ACLRoleTree;
 use PHPUnit_Framework_TestCase;
+use Application\Domain\Util\Tree\Output\ArrayFormatter;
 
 class TreeTest extends PHPUnit_Framework_TestCase
 {
@@ -34,9 +35,11 @@ class TreeTest extends PHPUnit_Framework_TestCase
              */
             $builder = Bootstrap::getServiceManager()->get(ACLRoleTree::class);
             $builder->initTree();
-            $tree2 = $builder->createTree(15, 0);
+            $tree2 = $builder->createTree(8, 0);
 
-            var_dump($tree2->getPath());
+            // var_dump($tree2->display(new ArrayFormatter()));
+
+            var_dump($tree2->isRoot());
 
             $timer = $stopWatch->stop("test");
             echo $timer;

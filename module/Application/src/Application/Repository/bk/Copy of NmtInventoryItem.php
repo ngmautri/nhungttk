@@ -2,6 +2,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Application\BaseEntity\BaseNmtInventoryItem;
 
 /**
@@ -15,12 +16,11 @@ use Application\BaseEntity\BaseNmtInventoryItem;
 class NmtInventoryItem extends BaseNmtInventoryItem
 {
 
+    // ================================
     public function __construct()
     {
         parent::__construct();
     }
-
-    // ================================
 
     /**
      *

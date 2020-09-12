@@ -9,6 +9,8 @@ namespace User\Infrastructure\Persistence;
 interface UserRepositoryInterface
 {
 
+    public function getUserList($idList);
+
     public function isAdministrator($userId);
 
     public function getRoleByUserId($userId);

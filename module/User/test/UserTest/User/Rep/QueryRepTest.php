@@ -2,10 +2,12 @@
 namespace UserTest\Warehouse\Rep;
 
 use Doctrine\ORM\EntityManager;
-use ProcureTest\Bootstrap;
-use Procure\Domain\Exception\InvalidArgumentException;
+use UserTest\Bootstrap;
+use User\Application\Service\ACLRole\Tree\ACLRoleTree;
 use User\Infrastructure\Doctrine\UserQueryRepositoryImpl;
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
+use Application\Domain\Util\Tree\Output\ArrayFormatter;
 
 class QueryRepTest extends PHPUnit_Framework_TestCase
 {
@@ -23,10 +25,13 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new UserQueryRepositoryImpl($doctrineEM);
 
-            $id = 39;
+            $id = 47;
 
             $rootEntity = $rep->getById($id);
-            \var_dump($rootEntity);
+
+            $builder = Bootstrap::getServiceManager()->get(ACLRoleTree::class);
+            $trees = $rootEntity->getRoleTree($builder);
+            \var_dump($trees[0]->getPathId());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

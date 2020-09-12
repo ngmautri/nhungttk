@@ -25,7 +25,7 @@ $attachment_url = null;
 $status_url = null;
 $log_url = null;
 $view_url = null;
-
+$tabs = null;
 $hoverMode = "row";
 
 $isViewing = false;
@@ -96,6 +96,17 @@ if (! $headerDTO == null) {
     $pmtTermId = $headerDTO->getPmtTerm();
     $currencyId = $headerDTO->getDocCurrency();
     $incotermId = $headerDTO->getIncoterm();
+
+    $format = '/procure/pr-attachment/list1?token=%s&target_id=%s';
+    $url1 = sprintf($format, $headerDTO->getToken(), $headerDTO->getId());
+    $attachTab = sprintf('<a title="Attachment" href="%s"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;(%s)</a></li></a>', $url1, $headerDTO->getAttachmentList()->count());
+
+    $tabsList = [
+        // $logisticTab,
+        $attachTab
+    ];
+
+    $tabs = \Application\Application\Helper\FormHelper::createTabs($tabsList);
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
@@ -171,26 +182,11 @@ include (ROOT . '/module/Procure/view/procure/pr_summary.php');
                      &nbsp;Picture
                   </a>
                </li>
-               <li>
-                  <a href="<?php
-
-                echo $attachment_url;
-                ?>">
-                     <small>
-                        <span class="glyphicon glyphicon-paperclip"></span>
-                     </small>
-                     &nbsp;Attachment
-                  </a>
-               </li>
-               <li>
-                  <a href="<?php
-
-                echo $log_url;
-                ?>">
-                     <span class="glyphicon glyphicon-list"></span>
-                     &nbsp;Log
-                  </a>
-               </li>
+              
+                <?php
+                echo $tabs;
+                ?>
+    
             </ul>
             <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
                <!-- Tab1 -->

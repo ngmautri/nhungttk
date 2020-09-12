@@ -29,6 +29,10 @@ class BaseDoc extends AbstractPR
 
     protected $department;
 
+    // addtional attribute.
+    // =======================================
+    protected $attachmentList;
+
     // ===================
 
     /**
@@ -191,5 +195,23 @@ class BaseDoc extends AbstractPR
     protected function setDepartment($department)
     {
         $this->department = $department;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAssociationList()
+    {
+        return $this->associationList;
+    }
+
+    /**
+     *
+     * @param mixed $associationList
+     */
+    public function setAssociationList($associationList)
+    {
+        $this->associationList = $associationList;
     }
 }

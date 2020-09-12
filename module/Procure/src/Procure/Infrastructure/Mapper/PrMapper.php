@@ -274,7 +274,7 @@ class PrMapper
         return $entity;
     }
 
-    public static function createSnapshot(EntityManager $doctrineEM, NmtProcurePr $entity, $snapshot = null)
+    public static function createSnapshot(EntityManager $doctrineEM, NmtProcurePr $entity, $snapshot = null, $needDetails = true)
     {
         if ($entity == null || $doctrineEM == null) {
             return null;
@@ -282,6 +282,10 @@ class PrMapper
 
         if (! $snapshot instanceof PRSnapshot) {
             $snapshot = new PRSnapshot();
+        }
+
+        if ($needDetails == true) {
+            $snapshot->attachmentList = $entity->getAttachmentList();
         }
 
         // =================================

@@ -193,8 +193,7 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         $spec = new WarehouseACLSpecification($this->doctrineEM);
 
-        $userRep = new DoctrineUserRepository();
-        $userRep->setDoctrineEM($this->doctrineEM);
+        $userRep = new DoctrineUserRepository($this->doctrineEM);
         $spec->setUserRepository($userRep);
         return $spec;
     }

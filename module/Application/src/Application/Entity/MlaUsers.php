@@ -2,6 +2,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Application\BaseEntity\BaseMlaUsers;
 
 /**
  * MlaUsers
@@ -10,8 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\MlaUsersRepository")
  */
-class MlaUsers
+class MlaUsers extends BaseMlaUsers
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      *

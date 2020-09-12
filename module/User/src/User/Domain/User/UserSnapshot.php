@@ -8,4 +8,15 @@ namespace User\Domain\User;
  */
 class UserSnapshot extends BaseUserSnapshot
 {
+
+    public $roleList;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRoleList()
+    {
+        return $this->roleList;
+    }
 }

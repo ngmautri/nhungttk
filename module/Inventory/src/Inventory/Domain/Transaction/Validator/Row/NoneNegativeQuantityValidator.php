@@ -45,10 +45,11 @@ class NoneNegativeQuantityValidator extends AbstractValidator implements RowVali
             $spec = $this->sharedSpecificationFactory->getNoneNegativeNumberSpecification();
 
             // ======= QUANTITY ==========
-
             if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-                $localEntity->addError("Quantity is not valid! " . $localEntity->getDocQuantity());
+                $localEntity->addError("Quantity is not valid! It should be greated or equal 0" . $localEntity->getDocQuantity());
             }
+
+            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
 
             // ======= CONVERSION FACTORY ==========
             if (! $spec->isSatisfiedBy($localEntity->getConversionFactor())) {

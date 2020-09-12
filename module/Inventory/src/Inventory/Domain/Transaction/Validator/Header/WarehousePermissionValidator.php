@@ -1,11 +1,10 @@
 <?php
-namespace Inventory\Domain\Transaction\Validator\Row;
+namespace Inventory\Domain\Transaction\Validator\Header;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
 use Inventory\Domain\Transaction\AbstractTrx;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
-use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface;
 use InvalidArgumentException;
@@ -16,7 +15,7 @@ use RuntimeException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PositiveQuantityValidator extends AbstractValidator implements RowValidatorInterface
+class WarehousePermissionValidator extends AbstractValidator implements RowValidatorInterface
 {
 
     /**
@@ -30,8 +29,8 @@ class PositiveQuantityValidator extends AbstractValidator implements RowValidato
             throw new InvalidArgumentException('GenericTrx entity not given!');
         }
 
-        if (! $localEntity instanceof TrxRow) {
-            throw new InvalidArgumentException('TrxRow Row not given!');
+        if (! $localEntity instanceof BaseRow) {
+            throw new InvalidArgumentException('TrxRow not given!');
         }
 
         try {
@@ -40,11 +39,19 @@ class PositiveQuantityValidator extends AbstractValidator implements RowValidato
              *
              * @var AbstractSpecification $spec ;
              */
-            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
 
-            // ======= Unit Price ==========
-            if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-                $localEntity->addError("Quantity is not valid! It should be greater 0" . $localEntity->getDocQuantity());
+            // ===== WAREHOUSE =======
+            if (! $localEntity->getIsInventoryItem() && $localEntity->getIsFixedAsset() == 1) {
+                $localEntity->addError(\sprintf("Item is not kept stocked! %s", $localEntity->getItemName()));
+            }
+
+            $spec = $this->sharedSpecificationFactory->getWarehouseACLSpecification();
+            $subject = array(
+                "companyId" => $rootEntity->getCompany(),
+                "warehouseId" => $localEntity->getWarehouse()
+            );
+            if (! $spec->isSatisfiedBy($subject)) {
+                $localEntity->addError(sprintf("Warehouse is required for inventory item! %s", $localEntity->getItemName()));
             }
         } catch (RuntimeException $e) {
             $localEntity->addError($e->getMessage());

@@ -29,7 +29,7 @@ class OnWhTransferPostedCreateTrx extends AbstractEventHandler
 
             $options = new PostGRFromTransferWhOptions($snapshot->getCompany(), $snapshot->getCreatedBy(), __METHOD__, $event->getTarget());
             $cmdHandler = new PostGrFromTransferWhCmdHandler();
-            $cmd = new GenericCmd($this->getDoctrineEM(), new TrxSnapshot(), $options, $cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), new TrxSnapshot(), $options, $cmdHandler, $this->getEventBusService());
             $cmd->setLogger($this->getLogger());
             $cmd->execute();
             $this->logInfo(\sprintf("GR created for WH-Transfer Warehouse #%s", $event->getTarget()

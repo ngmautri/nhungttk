@@ -1,7 +1,9 @@
 <?php
 namespace Inventory\Domain\Transaction\GR;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\AbstractGoodsReceipt;
 use Inventory\Domain\Transaction\GenericTrx;
@@ -102,7 +104,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
         $instance = $sourceObj->convertTo($instance);
 
         // Important: Source Warehouse
-        $instance->setWarehouse($sourceWH->getId());
+        $instance->setWarehouse($targeWH->getId());
 
         $instance->specify();
         $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
@@ -145,6 +147,20 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
         }
 
         $instance->updateIdentityFrom($snapshot);
+
+        $target = $instance;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($snapshot->getId());
+        $defaultParams->setTargetToken($snapshot->getToken());
+        $defaultParams->setTargetDocVersion($snapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($snapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new WhGrPosted($target, $defaultParams, $params);
+
+        $instance->addEvent($event);
         return $instance;
     }
 }

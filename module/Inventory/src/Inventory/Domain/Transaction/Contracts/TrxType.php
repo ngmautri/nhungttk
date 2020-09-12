@@ -34,6 +34,8 @@ class TrxType
 
     const GI_FOR_TRANSFER_LOCATION = 'GI109';
 
+    const GI_FOR_ADJUSTMENT_AFTER_COUNTING = 'GI900';
+
     const GI_FOR_DISPOSAL = 'GI999';
 
     // ========================================
@@ -53,6 +55,8 @@ class TrxType
 
     const GR_WITHOUT_INVOICE = 'GR105';
 
+    const GR_FROM_ADJUSTMENT_AFTER_COUNTING = 'GR106';
+
     public static function getSupportedTransaction()
     {
         $list = array();
@@ -65,6 +69,7 @@ class TrxType
         $list[] = self::GI_FOR_ASSET;
         $list[] = self::GI_FOR_TRANSFER_WAREHOUSE;
         $list[] = self::GI_FOR_TRANSFER_LOCATION;
+        $list[] = self::GI_FOR_ADJUSTMENT_AFTER_COUNTING;
         $list[] = self::GI_FOR_DISPOSAL;
 
         $list[] = self::GR_FROM_OPENNING_BALANCE;
@@ -73,6 +78,7 @@ class TrxType
         $list[] = self::GR_FROM_PURCHASING_REVERSAL;
         $list[] = self::GR_FROM_EXCHANGE;
         $list[] = self::GR_WITHOUT_INVOICE;
+        $list[] = self::GR_FOR_ADJUSTMENT_AFTER_COUNTING;
 
         return $list;
     }
@@ -118,7 +124,7 @@ class TrxType
 
             self::GI_FOR_MAINTENANCE_WORK => array(
                 "type_name" => Translator::translate("Issue for Maintenance Work"),
-                "type_description" => Translator::translate("Spare part, materials will be issued for maintenance  worked.")
+                "type_description" => Translator::translate("Spare part, materials will be issued for maintenance worked.")
             ),
 
             self::GI_FOR_ASSET => array(
@@ -141,6 +147,11 @@ class TrxType
                 "type_description" => Translator::translate("goods will be issued for other location in warehouse.")
             ),
 
+            self::GI_FOR_ADJUSTMENT_AFTER_COUNTING => array(
+                "type_name" => Translator::translate("Goods issue after counting (Adjustment)"),
+                "type_description" => Translator::translate("Stock quantity decreases after after actual counting!")
+            ),
+
             self::GI_FOR_DISPOSAL => array(
                 "type_name" => Translator::translate("Issue for diposal"),
                 "type_description" => Translator::translate("goods will be disposed.PO is required!")
@@ -158,21 +169,25 @@ class TrxType
             ],
 
             self::GR_FROM_PURCHASING => [
-                "type_name" => Translator::translate("Good Receipt from purchasing"),
+                "type_name" => Translator::translate("Goods receipt from purchasing"),
                 "type_description" => Translator::translate("Good Receipt from purchasing. This transaction is created automatically when procurment enter goods receipt. if goods does not meat requirment, please create return transaction!")
             ],
             self::GR_FROM_TRANSFER_WAREHOUSE => [
-                "type_name" => Translator::translate("Good Receipt from warehouse transfer"),
+                "type_name" => Translator::translate("Goods Receipt from warehouse transfer"),
                 "type_description" => Translator::translate("Good Receipt from warehouse transfer")
             ],
             self::GR_FROM_EXCHANGE => [
-                "type_name" => Translator::translate("Good Receipt from exchange)"),
+                "type_name" => Translator::translate("Goods Receipt from exchange"),
                 "type_description" => Translator::translate("Good Receipt from exchange")
             ],
             self::GR_WITHOUT_INVOICE => [
-                "type_name" => Translator::translate("Good Receipt of free spare part)"),
-                "type_description" => Translator::translate("Receipt free spare part - Zero Valua invoice")
-            ]
+                "type_name" => Translator::translate("Receipt of free items"),
+                "type_description" => Translator::translate("Receipt of free items - Zero Valua invoice")
+            ],
+            self::GR_FROM_ADJUSTMENT_AFTER_COUNTING => array(
+                "type_name" => Translator::translate("Goods receipt after counting (Adjustment)"),
+                "type_description" => Translator::translate("Stock quantity increase after after actual counting!")
+            )
         ];
     }
 }

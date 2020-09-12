@@ -208,42 +208,6 @@ class HRTest extends phpunit_framework_testcase
         }
     }
 
-    function arraysAreIdentical(array $arr1, array $arr2): bool
-    {
-        $count = count($arr1);
-
-        // Require that they have the same size.
-        if (count($arr2) !== $count) {
-            return false;
-        }
-
-        // Require that they have the same keys.
-        $arrKeysInCommon = array_intersect_key($arr1, $arr2);
-        if (count($arrKeysInCommon) !== $count) {
-            return false;
-        }
-
-        // Require that their keys be in the same order.
-        $arrKeys1 = array_keys($arr1);
-        $arrKeys2 = array_keys($arr2);
-        foreach ($arrKeys1 as $key => $val) {
-            if ($arrKeys1[$key] !== $arrKeys2[$key]) {
-                return false;
-            }
-        }
-
-        // They do have same keys and in same order.
-        foreach ($arr1 as $key => $val) {
-            $bool = valuesAreIdentical($arr1[$key], $arr2[$key]);
-            if ($bool === false) {
-                return false;
-            }
-        }
-
-        // All tests passed.
-        return true;
-    }
-
     function valuesAreIdentical($v1, $v2): bool
     {
         $type1 = gettype($v1);

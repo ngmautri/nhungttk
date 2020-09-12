@@ -16,7 +16,7 @@ use RuntimeException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PositiveQuantityValidator extends AbstractValidator implements RowValidatorInterface
+class PositivePriceValidator extends AbstractValidator implements RowValidatorInterface
 {
 
     /**
@@ -43,8 +43,8 @@ class PositiveQuantityValidator extends AbstractValidator implements RowValidato
             $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
 
             // ======= Unit Price ==========
-            if (! $spec->isSatisfiedBy($localEntity->getDocQuantity())) {
-                $localEntity->addError("Quantity is not valid! It should be greater 0" . $localEntity->getDocQuantity());
+            if (! $spec->isSatisfiedBy($localEntity->getDocUnitPrice())) {
+                $localEntity->addError("Unit price is not valid! It should be greater 0." . $localEntity->getDocUnitPrice());
             }
         } catch (RuntimeException $e) {
             $localEntity->addError($e->getMessage());

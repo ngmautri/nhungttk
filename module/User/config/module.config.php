@@ -1,15 +1,18 @@
 <?php
+use User\Application\Service\ACLRole\Tree\ACLRoleTree;
+use User\Application\Service\ACLRole\Tree\Factory\ACLRoleTreeFactory;
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+ * @link http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 return array(
     'router' => array(
         'routes' => array(
-            
+
             'user' => array(
                 'type' => 'Literal',
                 'options' => array(
@@ -35,7 +38,7 @@ return array(
                     )
                 )
             ),
-            
+
             'login' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -47,7 +50,7 @@ return array(
                     )
                 )
             ),
-            
+
             'logout' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -59,7 +62,7 @@ return array(
                     )
                 )
             ),
-            
+
             'user_register' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -71,7 +74,7 @@ return array(
                     )
                 )
             ),
-            
+
             'access_denied' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -83,7 +86,7 @@ return array(
                     )
                 )
             ),
-            
+
             'not_found' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -106,15 +109,13 @@ return array(
                     )
                 )
             )
-        
         )
-    
     ),
-    
+
     'console' => array(
         'router' => array(
             'routes' => array(
-                
+
                 'test_console' => array(
                     'options' => array(
                         'route' => 'users',
@@ -127,15 +128,15 @@ return array(
             )
         )
     ),
-    
+
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'User\Service\UserService' => 'User\Service\UserServiceFactory'
-            
+            'User\Service\UserService' => 'User\Service\UserServiceFactory',
+            ACLRoleTree::class => ACLRoleTreeFactory::class
         )
     ),
-   
+
     'controllers' => array(
         'invokables' => array(
             'User\Controller\Index' => 'User\Controller\IndexController',
@@ -145,9 +146,8 @@ return array(
             'User\Controller\Role' => 'User\Controller\RoleControllerFactory',
             'User\Controller\Auth' => 'User\Controller\AuthControllerFactory',
             'User\Controller\Profile' => 'User\Controller\ProfileControllerFactory',
-            'User\Controller\Inbox' => 'User\Controller\InboxControllerFactory',
+            'User\Controller\Inbox' => 'User\Controller\InboxControllerFactory'
         )
-    
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -158,9 +158,9 @@ return array(
         'template_map' => array(
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'User/login' => __DIR__ . '/../view/layout/login.phtml',
-            
+
             'User/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
-            
+
             'layout/user/ajax' => __DIR__ . '/../view/layout/ajax.phtml',
             'layout/user/login' => __DIR__ . '/../view/layout/layout-login.phtml',
             'user/index/index' => __DIR__ . '/../view/user/index/index.phtml',
@@ -172,7 +172,7 @@ return array(
             __DIR__ . '/../view'
         )
     ),
-    
+
     // Plugin
     'controller_plugins' => array(
         'invokables' => array(

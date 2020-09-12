@@ -42,10 +42,13 @@ class GRFromTransferWarehouseRow extends TrxRow
         // Overwrite
         $instance->setFlow($rootEntity->getMovementFlow());
         $instance->setWh($rootEntity->getWarehouse());
-        $instance->setUnitPrice($sourceObj->getCogsLocal() / $sourceObj->getQuantity());
-
-        $f = '[Auto.] WH-TO %s';
-        $instance->setRemarks(\sprintf($f, $rootEntity->getWarehouse()));
+        $instance->setUnitPrice($instance->getCogsLocal() / $instance->getQuantity());
+        $instance->setConvertedStandardUnitPrice($instance->getCogsLocal() / $instance->getQuantity());
+        $instance->setDocUnitPrice($instance->getCogsLocal() / $instance->getQuantity());
+        $instance->setCogsDoc(0);
+        $instance->setCogsLocal(0);
+        $f = '[Auto.] Ref.%s';
+        $instance->setRemarks(\sprintf($f, $sourceObj->getSysNumber()));
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

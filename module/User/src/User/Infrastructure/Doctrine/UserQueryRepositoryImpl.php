@@ -59,6 +59,9 @@ class UserQueryRepositoryImpl extends AbstractDoctrineRepository implements User
          * @var \Application\Entity\MlaUsers $entity ;
          */
         $entity = $this->doctrineEM->getRepository('\Application\Entity\MlaUsers')->findOneBy($criteria);
+        if ($entity == null) {
+            return null;
+        }
         $snapshot = UserMapper::createSnapshot($this->doctrineEM, $entity);
 
         if ($snapshot == null) {

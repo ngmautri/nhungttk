@@ -1,13 +1,35 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
+use User\Infrastructure\Persistence\UserRepositoryInterface;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseACLSpecification extends DoctrineSpecification
+class WarehouseACLSpecification1 extends DoctrineSpecification
 {
+
+    private $userRepository;
+
+    /**
+     *
+     * @return \User\Infrastructure\Persistence\UserRepositoryInterface
+     */
+    public function getUserRepository()
+    {
+        return $this->userRepository;
+    }
+
+    /**
+     *
+     * @param UserRepositoryInterface $userRepository
+     */
+    public function setUserRepository(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     /**
      *
@@ -31,9 +53,8 @@ class WarehouseACLSpecification extends DoctrineSpecification
             $userId = $subject["userId"];
         }
 
-        if ($this->doctrineEM == null || $warehouseId == null || $companyId == null || $userId == null) {
+        if ($this->doctrineEM == null || $warehouseId == null || $companyId == null || $userId == null)
             return false;
-        }
 
         $criteria = array(
             "id" => $warehouseId,
@@ -45,21 +66,37 @@ class WarehouseACLSpecification extends DoctrineSpecification
          * @var \Application\Entity\NmtInventoryWarehouse $wh ;
          */
         $wh = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryWarehouse")->findOneBy($criteria);
-        if ($wh == null) {
+        if ($wh == null)
             return false;
-        }
 
-        if ($wh->getWhController() == null) {
-            // public warehouse.
+        if ($wh->getWhController() == null)
             return true;
-        }
 
         $spec = new IsParentSpecification($this->doctrineEM);
+        $spec->setUserRepository($this->userRepository);
 
         $subject = array(
             "userId1" => $userId,
             "userId2" => $wh->getWhController()->getId()
         );
         return $spec->isSatisfiedBy($subject);
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     *
+     * @param mixed $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
     }
 }

@@ -26,15 +26,6 @@ abstract class AbstractBaseNode extends AbstractNode
         return $total;
     }
 
-    public function getAllChildrenId()
-    {
-        foreach ($this->children as $child) {
-            $this->chilrendId[] = \array_merge($this->chilrendId, $child->getAllChildrenId());
-        }
-
-        return $this->chilrendId;
-    }
-
     public function isLeaf()
     {
         return $this->getChildren()->count() == 0;
@@ -76,10 +67,11 @@ abstract class AbstractBaseNode extends AbstractNode
         $node->setParent($this);
 
         if ($this->searchDescendant($node)) {
-            throw new \InvalidArgumentException(\sprintf("node {%s} is decendent {%s}!.", $node->getId() . $node->getNodeName(), $this->getNodeName()));
+            // $f = 'Node {%s-%s} is decendent {%s-%s}!.';
+            // throw new \InvalidArgumentException(\sprintf($f, $node->getId(), $node->getNodeName(), $this->getId(), $this->getNodeName()));
+        } else {
+            $this->getChildren()->attach($node);
         }
-
-        $this->getChildren()->attach($node);
     }
 
     /**

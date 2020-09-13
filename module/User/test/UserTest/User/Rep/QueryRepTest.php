@@ -25,13 +25,15 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new UserQueryRepositoryImpl($doctrineEM);
 
-            $id = 47;
+            $id = 39;
 
             $rootEntity = $rep->getById($id);
 
             $builder = Bootstrap::getServiceManager()->get(ACLRoleTree::class);
-            $trees = $rootEntity->getRoleTree($builder);
-            \var_dump($trees[0]->getPathId());
+            \var_dump($rootEntity->isParentOf(47, $rep, $builder));
+
+            // $parents = $rootEntity->getParentRoles($builder);
+            // \var_dump($parents);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

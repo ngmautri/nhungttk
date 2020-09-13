@@ -177,10 +177,6 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     public function getIsParentSpecification()
     {
         $spec = new IsParentSpecification($this->doctrineEM);
-
-        $userRep = new DoctrineUserRepository();
-        $userRep->setDoctrineEM($this->doctrineEM);
-        $spec->setUserRepository($userRep);
         return $spec;
     }
 
@@ -192,9 +188,6 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     public function getWarehouseACLSpecification()
     {
         $spec = new WarehouseACLSpecification($this->doctrineEM);
-
-        $userRep = new DoctrineUserRepository($this->doctrineEM);
-        $spec->setUserRepository($userRep);
         return $spec;
     }
 

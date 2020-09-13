@@ -89,4 +89,7 @@ class DoctrineUserRepository extends AbstractDoctrineRepository implements UserR
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function getUserList($idList)
+    {}
 }

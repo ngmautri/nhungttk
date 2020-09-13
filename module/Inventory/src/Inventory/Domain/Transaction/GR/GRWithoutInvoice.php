@@ -24,9 +24,4 @@ class GRWithoutInvoice extends AbstractGoodsReceipt implements GoodsReceiptInter
         $this->movementType = TrxType::GR_WITHOUT_INVOICE;
         $this->movementFlow = TrxFlow::WH_TRANSACTION_IN;
     }
-
-    public function __construct()
-    {
-        $this->specify();
-    }
 }

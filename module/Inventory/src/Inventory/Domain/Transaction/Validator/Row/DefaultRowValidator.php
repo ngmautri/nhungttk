@@ -34,9 +34,7 @@ class DefaultRowValidator extends AbstractValidator implements RowValidatorInter
             throw new InvalidArgumentException('TrxRow Row not given!');
         }
 
-        // do verification now
-
-        Try {
+        try {
 
             /**
              *

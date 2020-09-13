@@ -10,11 +10,13 @@ use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\TrxType;
+use Inventory\Domain\Transaction\GI\GIforAdjustment;
 use Inventory\Domain\Transaction\GI\GIforCostCenter;
 use Inventory\Domain\Transaction\GI\GIforExchangePartForMachine;
 use Inventory\Domain\Transaction\GI\GIforMachineNoExchange;
 use Inventory\Domain\Transaction\GI\GIforTransferLocation;
 use Inventory\Domain\Transaction\GI\GIforTransferWarehouse;
+use Inventory\Domain\Transaction\GR\GRFromAdjustment;
 use Inventory\Domain\Transaction\GR\GRFromExchange;
 use Inventory\Domain\Transaction\GR\GRFromOpening;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
@@ -24,8 +26,7 @@ use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
-use Inventory\Domain\Transaction\GR\GRFromAdjustment;
-use Inventory\Domain\Transaction\GI\GIforAdjustment;
+use Inventory\Domain\Transaction\GR\GRWithoutInvoice;
 
 /**
  *
@@ -254,16 +255,21 @@ class TransactionFactory
         $trx = null;
         switch ($typeId) {
 
+            // ============
             case TrxType::GR_FROM_OPENNING_BALANCE:
                 $trx = new GRFromOpening();
                 break;
 
             case TrxType::GR_FROM_PURCHASING:
-                $trx = new GRFromOpening();
+                $trx = new GRFromOpening(); // auto
                 break;
 
             case TrxType::GR_FROM_EXCHANGE:
-                $trx = new GRFromExchange();
+                $trx = new GRFromExchange(); // auto
+                break;
+
+            case TrxType::GR_WITHOUT_INVOICE:
+                $trx = new GRWithoutInvoice(); // manual
                 break;
 
             case TrxType::GR_FROM_TRANSFER_LOCATION:
@@ -271,7 +277,7 @@ class TransactionFactory
                 break;
 
             case TrxType::GR_FROM_TRANSFER_WAREHOUSE:
-                $trx = new GRFromTransferWarehouse();
+                $trx = new GRFromTransferWarehouse(); // auto
                 break;
 
             case TrxType::GR_FOR_ADJUSTMENT_AFTER_COUNTING:
@@ -297,6 +303,9 @@ class TransactionFactory
                 $trx = new GIforTransferWarehouse();
                 break;
 
+            case TrxType::GI_FOR_RETURN_PO:
+                $trx = new GIforTransferWarehouse();
+                break;
             case TrxType::GI_FOR_ADJUSTMENT_AFTER_COUNTING:
                 $trx = new GIforAdjustment();
                 break;

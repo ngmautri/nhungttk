@@ -51,7 +51,7 @@ class TrxDateAndWarehouseValidator extends AbstractValidator implements HeaderVa
                     "warehouseId" => $rootEntity->getWarehouse()
                 );
                 if (! $spec1->isSatisfiedBy($subject))
-                    $rootEntity->addError(sprintf("Warehouse not found or insuffient authority for this Warehouse!C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));
+                    $rootEntity->addError(sprintf("Warehouse not found !C#%s, WH#%s, U#%s", $rootEntity->getCompany(), $rootEntity->getWarehouse(), $rootEntity->getCreatedBy()));
             }
         } catch (Exception $e) {
             $rootEntity->addError($e->getMessage());

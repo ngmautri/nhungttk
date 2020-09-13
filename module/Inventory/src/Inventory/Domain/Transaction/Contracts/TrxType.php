@@ -55,7 +55,7 @@ class TrxType
 
     const GR_WITHOUT_INVOICE = 'GR105';
 
-    const GR_FROM_ADJUSTMENT_AFTER_COUNTING = 'GR106';
+    const GR_FOR_ADJUSTMENT_AFTER_COUNTING = 'GR106';
 
     public static function getSupportedTransaction()
     {
@@ -184,7 +184,7 @@ class TrxType
                 "type_name" => Translator::translate("Receipt of free items"),
                 "type_description" => Translator::translate("Receipt of free items - Zero Valua invoice")
             ],
-            self::GR_FROM_ADJUSTMENT_AFTER_COUNTING => array(
+            self::GR_FOR_ADJUSTMENT_AFTER_COUNTING => array(
                 "type_name" => Translator::translate("Goods receipt after counting (Adjustment)"),
                 "type_description" => Translator::translate("Stock quantity increase after after actual counting!")
             )

@@ -19,6 +19,7 @@ use Inventory\Domain\Transaction\Validator\Header\TrxDateAndWarehouseValidator;
 use Inventory\Domain\Transaction\Validator\Header\TrxPostingValidator;
 use Inventory\Domain\Transaction\Validator\Row\DefaultRowValidator;
 use InvalidArgumentException;
+use Inventory\Domain\Transaction\Validator\Header\WarehousePermissionValidator;
 
 /**
  *
@@ -60,6 +61,9 @@ class ValidatorFactory
         $giHeaderValidators->add($validator);
 
         $validator = new TrxDateAndWarehouseValidator($sharedSpecsFactory, $fxService);
+        $giHeaderValidators->add($validator);
+
+        $validator = new WarehousePermissionValidator($sharedSpecsFactory, $fxService);
         $giHeaderValidators->add($validator);
 
         // $validator = new DefaultGIHeaderValidator($sharedSpecsFactory, $fxService);
@@ -146,11 +150,20 @@ class ValidatorFactory
                 $rowValidators = $grRowValidators;
                 // add more,if needed
                 break;
+            case TrxType::GR_FOR_ADJUSTMENT_AFTER_COUNTING:
+                $headerValidators = $grHeaderValidators;
+                $validator = new WarehousePermissionValidator($sharedSpecsFactory, $fxService);
+                $headerValidators->add($validator);
+
+                $rowValidators = $grRowValidators;
+                // add more,if needed
+                break;
 
             // ==============
 
             case TrxType::GI_FOR_COST_CENTER:
                 $headerValidators = $giHeaderValidators;
+
                 $rowValidators = $giRowValidators;
                 $validator = new CostCenterValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
@@ -159,8 +172,8 @@ class ValidatorFactory
 
             case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
                 $headerValidators = $giHeaderValidators;
-                $rowValidators = $giRowValidators;
 
+                $rowValidators = $giRowValidators;
                 $validator = new GIForMachineValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
                 $rowValidators->add($validator);
@@ -168,6 +181,7 @@ class ValidatorFactory
 
             case TrxType::GI_FOR_REPAIR_MACHINE:
                 $headerValidators = $giHeaderValidators;
+
                 $rowValidators = $giRowValidators;
                 $validator = new GIForMachineValidator($sharedSpecsFactory, $fxService);
                 $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
@@ -176,6 +190,7 @@ class ValidatorFactory
 
             case TrxType::GI_FOR_TRANSFER_LOCATION:
                 $headerValidators = $giHeaderValidators;
+
                 $rowValidators = $giRowValidators;
                 break;
 

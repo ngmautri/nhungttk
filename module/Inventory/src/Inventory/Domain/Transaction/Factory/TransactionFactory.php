@@ -24,6 +24,8 @@ use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
+use Inventory\Domain\Transaction\GR\GRFromAdjustment;
+use Inventory\Domain\Transaction\GI\GIforAdjustment;
 
 /**
  *
@@ -59,49 +61,7 @@ class TransactionFactory
             throw new InvalidArgumentException("SharedService service not found");
         }
 
-        $trx = null;
-
-        switch ($typeId) {
-
-            case TrxType::GR_FROM_OPENNING_BALANCE:
-                $trx = new GRFromOpening();
-                break;
-
-            case TrxType::GR_FROM_PURCHASING:
-                $trx = new GRFromOpening();
-                break;
-
-            case TrxType::GR_FROM_EXCHANGE:
-                $trx = new GRFromExchange();
-                break;
-
-            case TrxType::GR_FROM_TRANSFER_LOCATION:
-                $trx = new GRFromTransferLocation();
-                break;
-
-            case TrxType::GR_FROM_TRANSFER_WAREHOUSE:
-                $trx = new GRFromTransferWarehouse();
-                break;
-
-            // ============
-            case TrxType::GI_FOR_COST_CENTER:
-                $trx = new GIforCostCenter();
-                break;
-            case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
-                $trx = new GIforExchangePartForMachine();
-                break;
-            case TrxType::GI_FOR_REPAIR_MACHINE:
-                $trx = new GIforMachineNoExchange();
-                break;
-
-            case TrxType::GI_FOR_TRANSFER_LOCATION:
-                $trx = new GIforTransferLocation();
-                break;
-
-            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
-                $trx = new GIforTransferWarehouse();
-                break;
-        }
+        $trx = self::createTrx($typeId);
 
         if ($trx == null) {
             throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
@@ -164,6 +124,17 @@ class TransactionFactory
         return $trx;
     }
 
+    /**
+     *
+     * @param TrxSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @param array $params
+     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws RuntimeException
+     * @return \Inventory\Domain\Transaction\GenericTrx
+     */
     public static function updateFrom(TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $params)
     {
         if (! $snapshot instanceof TrxSnapshot) {
@@ -180,49 +151,7 @@ class TransactionFactory
             throw new InvalidArgumentException("SharedService service not found");
         }
 
-        $trx = null;
-
-        switch ($typeId) {
-
-            case TrxType::GR_FROM_OPENNING_BALANCE:
-                $trx = new GRFromOpening();
-                break;
-
-            case TrxType::GR_FROM_PURCHASING:
-                $trx = new GRFromOpening();
-                break;
-
-            case TrxType::GR_FROM_TRANSFER_LOCATION:
-                $trx = new GRFromTransferLocation();
-                break;
-
-            case TrxType::GR_FROM_TRANSFER_WAREHOUSE:
-                $trx = new GRFromTransferWarehouse();
-                break;
-
-            case TrxType::GR_FROM_EXCHANGE:
-                $trx = new GRFromExchange();
-                break;
-
-            // ============
-            case TrxType::GI_FOR_COST_CENTER:
-                $trx = new GIforCostCenter();
-                break;
-            case TrxType::GI_FOR_REPAIR_MACHINE_WITH_EX:
-                $trx = new GIforExchangePartForMachine();
-                break;
-            case TrxType::GI_FOR_REPAIR_MACHINE:
-                $trx = new GIforMachineNoExchange();
-                break;
-
-            case TrxType::GI_FOR_TRANSFER_LOCATION:
-                $trx = new GIforTransferLocation();
-                break;
-
-            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
-                $trx = new GIforTransferWarehouse();
-                break;
-        }
+        $trx = self::createTrx($typeId);
 
         if ($trx == null) {
             throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
@@ -299,8 +228,30 @@ class TransactionFactory
             throw new InvalidArgumentException("Movemement type empty or not supported! TransactionFactory #" . $snapshot->getMovementType());
         }
 
-        $trx = null;
+        $trx = self::createTrx($typeId);
 
+        if ($trx == null) {
+            throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
+        }
+
+        /**
+         *
+         * @var GenericTrx $trx
+         */
+        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
+
+        // Important
+        $trx->specify();
+        return $trx;
+    }
+
+    /**
+     *
+     * @param string $typeId
+     */
+    private static function createTrx($typeId)
+    {
+        $trx = null;
         switch ($typeId) {
 
             case TrxType::GR_FROM_OPENNING_BALANCE:
@@ -311,6 +262,10 @@ class TransactionFactory
                 $trx = new GRFromOpening();
                 break;
 
+            case TrxType::GR_FROM_EXCHANGE:
+                $trx = new GRFromExchange();
+                break;
+
             case TrxType::GR_FROM_TRANSFER_LOCATION:
                 $trx = new GRFromTransferLocation();
                 break;
@@ -319,8 +274,8 @@ class TransactionFactory
                 $trx = new GRFromTransferWarehouse();
                 break;
 
-            case TrxType::GR_FROM_EXCHANGE:
-                $trx = new GRFromExchange();
+            case TrxType::GR_FOR_ADJUSTMENT_AFTER_COUNTING:
+                $trx = new GRFromAdjustment();
                 break;
 
             // ============
@@ -341,20 +296,12 @@ class TransactionFactory
             case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
                 $trx = new GIforTransferWarehouse();
                 break;
+
+            case TrxType::GI_FOR_ADJUSTMENT_AFTER_COUNTING:
+                $trx = new GIforAdjustment();
+                break;
         }
 
-        if ($trx == null) {
-            throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
-        }
-
-        /**
-         *
-         * @var GenericTrx $trx
-         */
-        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
-
-        // Important
-        $trx->specify();
         return $trx;
     }
 }

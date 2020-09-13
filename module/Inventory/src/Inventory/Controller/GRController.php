@@ -276,6 +276,10 @@ class GRController extends AbstractGenericController
                 $f = '/inventory/item-opening-balance/view?entity_id=%s&entity_token=%s';
                 $redirectUrl = sprintf($f, $rootEntity->getId(), $rootEntity->getToken());
                 return $this->redirect()->toUrl($redirectUrl);
+                break;
+
+            Default:
+                break;
         }
 
         $headerDTO = $rootEntity->makeDTOForGrid(new TrxDTO());

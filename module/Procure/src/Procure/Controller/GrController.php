@@ -585,7 +585,7 @@ class GrController extends AbstractActionController
             $options = new SaveCopyFromPOOptions($companyId, $userId, __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromPOCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new SaveCopyFromPOCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
             $notification = $dto->getNotification();

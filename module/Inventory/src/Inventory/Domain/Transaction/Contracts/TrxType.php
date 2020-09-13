@@ -175,7 +175,7 @@ class TrxType
 
             self::GR_FROM_PURCHASING => [
                 "type_name" => Translator::translate("Goods receipt from purchasing"),
-                "type_description" => Translator::translate("Good Receipt from purchasing. This transaction is created automatically when procurment enter goods receipt. if goods does not meat requirment, please create return transaction!")
+                "type_description" => Translator::translate("Good Receipt from purchasing. This transaction is created automatically when procurment enter goods receipt. if goods does not meet requirment, please create return transaction!")
             ],
             self::GR_FROM_TRANSFER_WAREHOUSE => [
                 "type_name" => Translator::translate("Goods Receipt from warehouse transfer"),

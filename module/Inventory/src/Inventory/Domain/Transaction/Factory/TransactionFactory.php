@@ -27,6 +27,7 @@ use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
+use Inventory\Domain\Transaction\GR\GRFromPurchasing;
 
 /**
  *
@@ -261,7 +262,7 @@ class TransactionFactory
                 break;
 
             case TrxType::GR_FROM_PURCHASING:
-                $trx = new GRFromOpening(); // auto
+                $trx = new GRFromPurchasing(); // auto
                 break;
 
             case TrxType::GR_FROM_EXCHANGE:

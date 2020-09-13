@@ -119,7 +119,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             ->post($instance, true);
 
         if (! $snapshot instanceof TrxSnapshot) {
-            throw new OperationFailedException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
         }
 
         $instance->updateIdentityFrom($snapshot);

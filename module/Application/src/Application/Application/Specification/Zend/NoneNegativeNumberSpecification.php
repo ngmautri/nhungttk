@@ -19,11 +19,12 @@ class NoneNegativeNumberSpecification extends AbstractSpecification
     public function isSatisfiedBy($subject)
     {
         if ($subject == null) {
-            $subject = 0;
+            return true;
         }
 
-        if (! is_numeric($subject))
+        if (! is_numeric($subject)) {
             return false;
+        }
 
         return ($subject >= 0);
     }

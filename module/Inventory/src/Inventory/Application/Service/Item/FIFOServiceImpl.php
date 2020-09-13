@@ -216,7 +216,7 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
         $fifoLayer->setLocalCurrency($row->getCurrency());
         $fifoLayer->setExchangeRate($row->getExchangeRate());
         $fifoLayer->setSourceClass(get_class($row));
-        $fifoLayer->setSourceId($row->getID());
+        $fifoLayer->setSourceId($row->getId());
         $fifoLayer->setSourceToken($$row->getToken());
 
         $fifoLayer->setPostingDate($trx->getPostingDate());

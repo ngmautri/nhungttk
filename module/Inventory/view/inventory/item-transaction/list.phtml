@@ -343,18 +343,7 @@ else :
 
             if ($a->getMovementFlow() == \Inventory\Model\Constants::WH_TRANSACTION_OUT) :
                 ?>
-						<a href="<?php
-
-                echo $this->baseUrl?>/inventory/gi/show?token=<?php
-
-                echo $a->getToken();
-                ?>&entity_id=<?php
-
-                echo $a->getId();
-                ?>"><?php
-
-                echo $this->translate("Show");
-                ?></a>
+						
                   <a href="<?php
 
                 echo $this->baseUrl?>/inventory/gi/view?entity_token=<?php

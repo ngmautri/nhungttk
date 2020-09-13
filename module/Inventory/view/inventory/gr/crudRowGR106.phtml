@@ -215,79 +215,7 @@ $current_step = "STEP2";
                      </div>
                      
                      
-                      <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
-
-                            echo (! $dto == null) ? $dto->getDocQuantity() : "";
-                            ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Unit:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit" value="<?php
-                            echo (! $dto == null) ? $dto->getDocUnit() : "each";
-                            ?>">
-                           </div>
-                           <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
-                           <div class="col-sm-1">
-                              <input tabindex="6" id="conversionFactor" class="form-control input-sm" type="text" name="conversionFactor" value="<?php
-
-                            echo (! $dto == null) ? $dto->getConversionFactor() : "1";
-                            ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
-                           </div>
-                        </div>
-                        <hr style="margin: 5pt 1pt 5pt 1pt;">
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="7" class="form-control input-sm" type="text" id="docUnitPrice" name="docUnitPrice" value="<?php
-
-                            echo (! $dto == null) ? $dto->getDocUnitPrice() : "";
-                            ?>">
-                           </div>
-                           <div class="col-sm-1" style="margin-left: 0px">
-                              <strong><?php
-
-                            if (! $rootDto == null) :
-                                echo $rootDto->getCurrencyIso3(); endif;
-
-                            ?></strong>
-                           </div>
-                           <label class="control-label col-sm-1" for="inputTag">Exw Price (info):</label>
-                           <div class="col-sm-3">
-                              <input tabindex="8" class="form-control input-sm" type="text" id="exw_unit_price" name="exwUnitPrice" value="<?php
-
-                            echo (! $dto == null) ? $dto->getExwUnitPrice() : "";
-                            ?>">
-                           </div>
-                        </div>
-                        <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Net Amount:</label>
-                           <div class="col-sm-3">
-                              <input readonly class="form-control input-sm" type="text" id="net_amount" name="netAmount" value="<?php
-
-                            echo (! $dto == null) ? $dto->getNetAmount() : "";
-                            ?>">
-                           </div>
-                           <div class="col-sm-3">
-                              <strong><?php
-
-                            if (! $rootDto == null) :
-                                echo $rootDto->getCurrencyIso3(); endif;
-
-                            ?></strong>
-                           </div>
-                        </div>
-                     
+                      
                      
                      <div class="form-group margin-bottom required">
                         <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
@@ -306,23 +234,7 @@ $current_step = "STEP2";
                         </div>
                      </div>
                    
-                     <div class="form-group margin-bottom required">
-                        <label class="control-label col-sm-2" for="inputTag"><?php
-
-                        echo $this->translate("Cost Center");
-                        ?>:</label>
-                        <div class="col-sm-3">
-                           <select name="costCenter" class="form-control input-sm">
-                              <option value=""><?php
-
-                            echo $this->translate("Select Cost Center");
-                            ?></option>
-   	    							<?php
-            echo $cost_center_option;
-            ?>
-   					</select>
-                        </div>
-                     </div>
+                    
                      <div class="form-group margin-bottom">
                         <label class="control-label col-sm-2">Remark:</label>
                         <div class="col-sm-8">

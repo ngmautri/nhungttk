@@ -16,17 +16,17 @@ use Inventory\Domain\Transaction\GI\GIforExchangePartForMachine;
 use Inventory\Domain\Transaction\GI\GIforMachineNoExchange;
 use Inventory\Domain\Transaction\GI\GIforTransferLocation;
 use Inventory\Domain\Transaction\GI\GIforTransferWarehouse;
-use Inventory\Domain\Transaction\GR\GRFromAdjustment;
+use Inventory\Domain\Transaction\GR\GRForAdjustment;
 use Inventory\Domain\Transaction\GR\GRFromExchange;
 use Inventory\Domain\Transaction\GR\GRFromOpening;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Transaction\GR\GRFromTransferWarehouse;
+use Inventory\Domain\Transaction\GR\GRWithoutInvoice;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
-use Inventory\Domain\Transaction\GR\GRWithoutInvoice;
 
 /**
  *
@@ -281,7 +281,7 @@ class TransactionFactory
                 break;
 
             case TrxType::GR_FOR_ADJUSTMENT_AFTER_COUNTING:
-                $trx = new GRFromAdjustment();
+                $trx = new GRForAdjustment();
                 break;
 
             // ============

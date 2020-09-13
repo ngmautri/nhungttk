@@ -190,7 +190,8 @@ class GRController extends AbstractGenericController
             'form_title' => $form_title,
             'action' => $action,
             'transactionType' => $transactionType,
-            'rowOutput' => $rootEntity->getRowsOutput()
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'localCurrencyId' => $this->getLocalCurrencyId()
         ));
         $viewModel->setTemplate($viewTemplete);
         return $viewModel;
@@ -289,7 +290,8 @@ class GRController extends AbstractGenericController
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'transactionType' => $transactionType
+            'transactionType' => $transactionType,
+            'localCurrencyId' => $this->getLocalCurrencyId()
         ));
         $viewModel->setTemplate($viewTemplete);
         $this->getLogger()->info(\sprintf("Trx #%s viewed by #%s", $id, $this->getUserId()));
@@ -336,7 +338,8 @@ class GRController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'transactionType' => $transactionType,
                 'isAllowed' => $isAllowed,
-                'errors' => null
+                'errors' => null,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -389,7 +392,8 @@ class GRController extends AbstractGenericController
                 'headerDTO' => $dto,
                 'nmtPlugin' => $nmtPlugin,
                 'transactionType' => $transactionType,
-                'errors' => $notification->getErrors()
+                'errors' => $notification->getErrors(),
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -456,7 +460,8 @@ class GRController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+
                 'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete);
@@ -576,7 +581,8 @@ class GRController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'transactionType' => $transactionType
+                'transactionType' => $transactionType,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
             $viewModel->setTemplate($viewTemplete . $rootEntity->getMovementType());
             return $viewModel;
@@ -629,7 +635,8 @@ class GRController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'transactionType' => $transactionType
+                'transactionType' => $transactionType,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
             $this->logInfo(\sprintf("Row Trx #%s is not created by %s. Error: %s", $rootEntityId, $this->getUserId(), $notification->errorMessage()));
 
@@ -701,7 +708,8 @@ class GRController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'transactionType' => $transactionType
+                'transactionType' => $transactionType,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
             $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
             return $viewModel;
@@ -780,7 +788,8 @@ class GRController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'transactionType' => $transactionType
+                'transactionType' => $transactionType,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
             $viewModel->setTemplate($viewTemplete . $rootDTO->getMovementType());
             $this->getLogger()->error(\sprintf("Row Trx #%s is not updated by %s. Error: %s", $target_id, $userId, $notification->errorMessage()));
@@ -832,7 +841,8 @@ class GRController extends AbstractGenericController
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
-            'transactionType' => $transactionType
+            'transactionType' => $transactionType,
+            'localCurrencyId' => $this->getLocalCurrencyId()
         ));
         $viewModel->setTemplate($viewTemplete);
 
@@ -884,7 +894,8 @@ class GRController extends AbstractGenericController
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
                 'action' => $action,
-                'transactionType' => $transactionType
+                'transactionType' => $transactionType,
+                'localCurrencyId' => $this->getLocalCurrencyId()
             ));
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;

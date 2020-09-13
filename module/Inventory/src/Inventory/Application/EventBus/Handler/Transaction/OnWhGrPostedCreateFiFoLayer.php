@@ -33,6 +33,8 @@ class OnWhGrPostedCreateFiFoLayer extends AbstractEventHandler
 
             $this->logInfo(\sprintf("FIFO Layer for WH-GR #%s-%s created!", $trx->getId(), $trx->getSysNumber()));
         } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+
             throw $e;
         }
     }

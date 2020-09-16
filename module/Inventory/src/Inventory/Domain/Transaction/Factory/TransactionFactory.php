@@ -244,6 +244,7 @@ class TransactionFactory
 
         // Important
         $trx->specify();
+        $trx->updateStatus();
         return $trx;
     }
 
@@ -312,6 +313,7 @@ class TransactionFactory
                 break;
         }
 
+        $trx->updateStatus();
         return $trx;
     }
 }

@@ -13,6 +13,12 @@ class BaseDoc extends AbstractTrx
 {
 
     // Specific Attribute, that are not on generic doc.
+    protected $unusedRows;
+
+    protected $exhaustedRows;
+
+    protected $zeroQtyRows;
+
     // ===================
     protected $lazyRowSnapshotCollection;
 
@@ -419,5 +425,59 @@ class BaseDoc extends AbstractTrx
     public function getTartgetLocation()
     {
         return $this->tartgetLocation;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUnusedRows()
+    {
+        return $this->unusedRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getExhaustedRows()
+    {
+        return $this->exhaustedRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getZeroQtyRows()
+    {
+        return $this->zeroQtyRows;
+    }
+
+    /**
+     *
+     * @param mixed $unusedRows
+     */
+    public function setUnusedRows($unusedRows)
+    {
+        $this->unusedRows = $unusedRows;
+    }
+
+    /**
+     *
+     * @param mixed $exhaustedRows
+     */
+    public function setExhaustedRows($exhaustedRows)
+    {
+        $this->exhaustedRows = $exhaustedRows;
+    }
+
+    /**
+     *
+     * @param mixed $zeroQtyRows
+     */
+    public function setZeroQtyRows($zeroQtyRows)
+    {
+        $this->zeroQtyRows = $zeroQtyRows;
     }
 }

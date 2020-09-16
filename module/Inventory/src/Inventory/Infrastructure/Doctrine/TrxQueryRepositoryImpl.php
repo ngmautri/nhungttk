@@ -238,7 +238,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
     {
         return function () use ($rootEntity) {
 
-            $rows = TrxHelper::getRowsById($this->getDoctrineEM(), $rootEntity->getId());
+            $rows = TrxHelper::getDetailRowsById($this->getDoctrineEM(), $rootEntity->getId());
 
             if (count($rows) == 0) {
                 return null;
@@ -249,8 +249,13 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
             foreach ($rows as $r) {
 
                 $rowClosure = function () use ($r) {
-                    /**@var \Application\Entity\NmtInventoryTrx $r ;*/
-                    return TrxMapper::createRowSnapshot($this->getDoctrineEM(), $r);
+
+                    $entityDoctrine = $r[0];
+
+                    /**@var \Application\Entity\NmtInventoryTrx $entityDoctrine ;*/
+                    $rowSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $entityDoctrine);
+                    $rowSnapshot->stockQty = $r['onhand_qty'];
+                    return $rowSnapshot;
                 };
 
                 $collection->add($rowClosure);

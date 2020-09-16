@@ -87,6 +87,10 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         $row->uuid = '';
         $row->itemToken = '';
         $row->itemName1 = '';
+
+        if ($row->stockQty !== null) {
+            $row->stockQty = number_format($row->stockQty, 0);
+        }
         return $row;
     }
 }

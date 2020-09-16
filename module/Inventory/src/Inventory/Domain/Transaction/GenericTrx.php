@@ -25,6 +25,8 @@ use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
 use RuntimeException;
+use Inventory\Domain\Transaction\Contracts\TrxFlow;
+use Inventory\Domain\Transaction\Contracts\TrxStatus;
 
 /**
  *
@@ -39,6 +41,18 @@ abstract class GenericTrx extends BaseDoc
     public function updateExchangeRate($exchangeRate)
     {
         $this->exchangeRate = $exchangeRate;
+    }
+
+    public function updateStatus()
+    {
+        if ($this->getMovementFlow() == TrxFlow::WH_TRANSACTION_IN) {
+
+            if ($this->getTotalRows() == $this->getUnusedRows()) {
+                $this->setTransactionStatus(TrxStatus::GR_UN_USED);
+            } elseif ($this->getTotalRows() == $this->getExhaustedRows()) {
+                $this->setTransactionStatus(TrxStatus::GR_FULLY_USED);
+            } elseif ($this->getTotalRows() == $this->getExhaustedRows()) {}
+        }
     }
 
     abstract protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);

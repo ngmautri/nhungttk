@@ -794,7 +794,8 @@ class TrxMapper
      * @param EntityManager $doctrineEM
      * @param NmtInventoryTrx $entity
      * @param object $snapshot
-     * @return NULL|string|\Procure\Domain\AccountPayable\APRowSnapshot
+     * @param boolean $lazyLoading
+     * @return NULL|\Inventory\Domain\Transaction\TrxRowSnapshot|string|\Inventory\Domain\Transaction\TrxRowSnapshot
      */
     public static function createRowSnapshot(EntityManager $doctrineEM, NmtInventoryTrx $entity, $snapshot = null, $lazyLoading = false)
     {

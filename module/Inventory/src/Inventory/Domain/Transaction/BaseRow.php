@@ -123,6 +123,10 @@ class BaseRow extends GenericRow
 
     protected $invoiceRow;
 
+    protected $stockQty;
+
+    protected $stockValue;
+
     /**
      *
      * @param mixed $checksum
@@ -1111,5 +1115,41 @@ class BaseRow extends GenericRow
     public function getInvoiceRow()
     {
         return $this->invoiceRow;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockQty()
+    {
+        return $this->stockQty;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStockValue()
+    {
+        return $this->stockValue;
+    }
+
+    /**
+     *
+     * @param mixed $stockQty
+     */
+    public function setStockQty($stockQty)
+    {
+        $this->stockQty = $stockQty;
+    }
+
+    /**
+     *
+     * @param mixed $stockValue
+     */
+    public function setStockValue($stockValue)
+    {
+        $this->stockValue = $stockValue;
     }
 }

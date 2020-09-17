@@ -47,8 +47,7 @@ $( "#po_item_name" ).autocomplete({
         $( "#item_id" ).val(ui.item.item_id);
         $( "#item_name" ).val(ui.item.item_name);
 
-        
-
+ 
         $('#item_url').text('/inventory/item/show1?tab_idx=11&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
         $('#po_row_url').text('/procure/po-row/show1?entity_id='+ui.item.po_row_id+'&token='+ui.item.token);
 

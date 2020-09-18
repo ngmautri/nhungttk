@@ -1,7 +1,9 @@
 <?php
 namespace Inventory\Domain\Transaction\GI;
 
+use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\AbstractGoodsIssue;
@@ -16,6 +18,7 @@ use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
+use Inventory\Domain\Event\Transaction\GI\WhGiForReturnPoPosted;
 
 /**
  *
@@ -24,6 +27,22 @@ use InvalidArgumentException;
  */
 class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, StockQtyAdjustmentInterface
 {
+
+    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    {
+        $target = $this->makeDetailsDTO();
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($this->getId());
+        $defaultParams->setTargetToken($this->getToken());
+        $defaultParams->setTargetDocVersion($this->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($this->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new WhGiForReturnPoPosted($target, $defaultParams, $params);
+        $this->addEvent($event);
+    }
 
     /**
      *
@@ -84,6 +103,7 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, S
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         // Important
+        $instance->setMovementFlow(TrxFlow::WH_TRANSACTION_OUT);
         $instance->setRelevantMovementId($sourceObj->getId());
         $instance->setRemarks($instance->getRemarks() . \sprintf('%s', '[Return]'));
 

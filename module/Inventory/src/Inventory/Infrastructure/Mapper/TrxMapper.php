@@ -72,6 +72,7 @@ class TrxMapper
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setPmtTerm($snapshot->pmtTerm);
         $entity->setDiscountRate($snapshot->discountRate);
+        $entity->setRelevantMovementId($snapshot->getRelevantMovementId());
 
         // =================================
         // Mapping None-Object Field
@@ -679,6 +680,7 @@ class TrxMapper
         $snapshot->docVersion = $entity->getDocVersion();
         $snapshot->pmtTerm = $entity->getPmtTerm();
         $snapshot->discountRate = $entity->getDiscountRate();
+        $snapshot->relevantMovementId = $entity->getRelevantMovementId();
 
         // =================================
         // Mapping None-Object Field

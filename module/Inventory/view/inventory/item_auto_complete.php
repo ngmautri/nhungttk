@@ -10,7 +10,7 @@ $item_url_val = null;
 
 if ($dto != null) {
 
-    $format = '$("#item_id" ).val(\'%s\');';
+    $format = '$("#item" ).val(\'%s\');';
     $item_id_val = sprintf($format, $dto->getItem());
 
     $item_url = '/inventory/item/show1?tab_idx=0&entity_id=%s&token=%s';
@@ -32,7 +32,9 @@ $( "#item_name" ).autocomplete({
         $( "#pr_row_url" ).val("");
         $( "#pr_row_detail" ).hide();
         $( "#pr_item_name" ).val("");
+        
         $( "#item" ).val(ui.item.hit.id);
+       // alert($( "#item" ).val());
 
         $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.hit.id+'&token='+ui.item.hit.token);
 
@@ -85,7 +87,7 @@ function selectItem(id, token,target, name, target_name, context = null){
    $("#jquery_dialog").dialog("close");
 
 
-    $("#item_id" ).val(id);
+      $("#item" ).val(id);
       $('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+id+'&token='+token);
 
       $('#item_detail').show();

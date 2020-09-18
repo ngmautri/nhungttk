@@ -14,14 +14,9 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class OnHandQuantityValidator extends AbstractValidator implements RowValidatorInterface
+class GIForReturnPOValidator extends AbstractValidator implements RowValidatorInterface
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface::validate()
-     */
     public function validate(AbstractTrx $rootEntity, BaseRow $localEntity)
     {
         if (! $rootEntity instanceof GenericTrx) {
@@ -32,26 +27,32 @@ class OnHandQuantityValidator extends AbstractValidator implements RowValidatorI
             throw new InvalidArgumentException('BaseRow Row not given!');
         }
 
-        Try {
-            // do verification now
+        try {
 
             /**
              *
              * @var AbstractSpecification $spec ;
              */
-            $spec = $this->getDomainSpecificationFactory()->getOnhandQuantitySpecification();
+            $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();
+
+            if (! $spec->isSatisfiedBy($localEntity->getGr())) {
+                $f = 'PO-GR not found!';
+                $localEntity->addError(sprintf($f, $localEntity->getGr()));
+            }
+
+            $spec = $this->getDomainSpecificationFactory()->getOnhandQuantityOfMovementSpecification();
 
             $subject = [
                 "itemId" => $localEntity->getItem(),
-                "warehouseId" => $rootEntity->getWarehouse(),
-                "movementDate" => $rootEntity->getMovementDate(),
-                "docQuantity" => $localEntity->getDocQuantity()
+                "movementId" => $rootEntity->getRelevantMovementId(),
+                "docQuantity" => $localEntity->getQuantity()
             ];
 
             if (! $spec->isSatisfiedBy($subject)) {
-                $localEntity->addError(\sprintf("Onhand quantity is not enough %s %s %s %s. Pleae review quantity, warehouse and transaction date!", $rootEntity->getMovementDate(), $localEntity->getItem(), $localEntity->getDocQuantity(), $rootEntity->getWarehouse()));
+                $f = 'Good issue not posible! Please check stock quantity!';
+                $localEntity->addError(sprintf($f, $localEntity->getQuantity()));
             }
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }
     }

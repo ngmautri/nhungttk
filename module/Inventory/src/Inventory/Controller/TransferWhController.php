@@ -438,7 +438,6 @@ class TransferWhController extends AbstractGenericController
         $viewTemplete = \sprintf(self::BASE_URL, 'crudHeader');
 
         $userId = $this->getUserId();
-        $localCurrencyId = $this->getLocalCurrencyId();
         $transactionType = $this->_getTransactionType();
 
         $prg = $this->prg($form_action, true);
@@ -469,7 +468,7 @@ class TransferWhController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'localCurrencyId' => $localCurrencyId,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
                 'transactionType' => $transactionType
             ));
             $viewModel->setTemplate($viewTemplete);

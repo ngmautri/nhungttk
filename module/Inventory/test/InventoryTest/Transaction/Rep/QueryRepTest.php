@@ -27,14 +27,19 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new TrxQueryRepositoryImpl($doctrineEM);
 
-            $id = 1416;
-            $token = "1623f80f-c267-4d10-b2f4-0f908a0a2229";
+            /*
+             * $id = 1416;
+             * $token = "1623f80f-c267-4d10-b2f4-0f908a0a2229";
+             */
+            $id = 1504;
+            $token = "9a68efd1-ad6d-4fb7-8e61-814bacb1bc82";
 
-            $id = 1433;
-            $token = "d75323a7-8c6a-4683-8486-3355d34d00c3";
+            $rootEntity = $rep->getDetailLazyRootEntityByTokenId($id, $token);
+            var_dump($rootEntity->getTotalRows());
+            var_dump($rootEntity->getUnusedRows());
+            var_dump($rootEntity->getMovementFlow());
+            var_dump($rootEntity->getTransactionStatus());
 
-            $rootEntity = $rep->getLazyRootEntityByTokenId($id, $token);
-            var_dump($rootEntity->getMovementType());
             $timer = $stopWatch->stop("test");
             echo $timer . "===\n";
 

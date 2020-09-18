@@ -38,6 +38,36 @@ abstract class GenericTrx extends BaseDoc
 
     abstract public function specify();
 
+    /**
+     *
+     * @param int $itemId
+     */
+    public function getOnhandQuantityOf($itemId)
+    {
+        if ($itemId == null) {
+            return null;
+        }
+
+        if ($this->getLazyRowsCollection()->count() == 0) {
+            return;
+        }
+
+        $onhandQty = 0;
+        foreach ($this->getLazyRowSnapshotCollection() as $lazyRowSnapshot) {
+            /**
+             *
+             * @todo
+             * @var TrxRowSnapshot $rowSnapshot ;
+             */
+            $rowSnapshot = $lazyRowSnapshot();
+
+            if ($rowSnapshot->getItem() == $itemId) {
+                $onhandQty = $onhandQty + $rowSnapshot->getStockQty();
+            }
+        }
+        return $onhandQty;
+    }
+
     public function updateExchangeRate($exchangeRate)
     {
         $this->exchangeRate = $exchangeRate;
@@ -45,13 +75,17 @@ abstract class GenericTrx extends BaseDoc
 
     public function updateStatus()
     {
+        $this->setTransactionStatus(TrxStatus::UNKNOW);
+
         if ($this->getMovementFlow() == TrxFlow::WH_TRANSACTION_IN) {
+
+            $this->setTransactionStatus(TrxStatus::GR_PARTIALLY_USED);
 
             if ($this->getTotalRows() == $this->getUnusedRows()) {
                 $this->setTransactionStatus(TrxStatus::GR_UN_USED);
             } elseif ($this->getTotalRows() == $this->getExhaustedRows()) {
                 $this->setTransactionStatus(TrxStatus::GR_FULLY_USED);
-            } elseif ($this->getTotalRows() == $this->getExhaustedRows()) {}
+            }
         }
     }
 

@@ -12,4 +12,6 @@ abstract class AbstractInventorySpecificationFactory
     abstract function getOnhandQuantitySpecification();
 
     abstract function getOnhandQuantityAtLocationSpecification();
+
+    abstract function getOnhandQuantityOfMovementSpecification();
 }

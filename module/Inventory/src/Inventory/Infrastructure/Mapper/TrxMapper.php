@@ -442,7 +442,7 @@ class TrxMapper
              *
              * @var \Application\Entity\FinVendorInvoice $obj ;
              */
-            $obj = $doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->find($snapshot->po);
+            $obj = $doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->find($snapshot->vendorInvoice);
             $entity->setVendorInvoice($obj);
         }
 
@@ -622,6 +622,13 @@ class TrxMapper
         return $entity;
     }
 
+    /**
+     *
+     * @param EntityManager $doctrineEM
+     * @param NmtInventoryMv $entity
+     * @param object $snapshot
+     * @return NULL|string|\Inventory\Domain\Transaction\TrxSnapshot
+     */
     public static function createSnapshot(EntityManager $doctrineEM, NmtInventoryMv $entity, $snapshot = null)
     {
         if ($entity == null) {

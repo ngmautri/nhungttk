@@ -87,6 +87,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 "movementDate",
                 "isActive",
                 "warehouse",
+                "targetWarehouse",
                 "remarks"
             ];
 

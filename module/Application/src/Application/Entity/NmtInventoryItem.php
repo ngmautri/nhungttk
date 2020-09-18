@@ -15,11 +15,12 @@ use Application\BaseEntity\BaseNmtInventoryItem;
 class NmtInventoryItem extends BaseNmtInventoryItem
 {
 
-    // ================================
     public function __construct()
     {
         parent::__construct();
     }
+
+    // ================================
 
     /**
      *

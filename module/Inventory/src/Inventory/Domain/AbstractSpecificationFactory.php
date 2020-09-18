@@ -16,4 +16,6 @@ abstract class AbstractSpecificationFactory
     abstract function getTranactionExitsSpecification();
 
     abstract function getOnhandQuantitySpecification();
+
+    abstract function getOnhandQuantityOfMovementSpecification();
 }

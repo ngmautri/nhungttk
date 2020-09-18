@@ -28,6 +28,7 @@ use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
 use Inventory\Domain\Transaction\GR\GRFromPurchasing;
+use Inventory\Domain\Transaction\GI\GIforReturnPO;
 
 /**
  *
@@ -306,14 +307,12 @@ class TransactionFactory
                 break;
 
             case TrxType::GI_FOR_RETURN_PO:
-                $trx = new GIforTransferWarehouse();
+                $trx = new GIforReturnPO();
                 break;
             case TrxType::GI_FOR_ADJUSTMENT_AFTER_COUNTING:
                 $trx = new GIforAdjustment();
                 break;
         }
-
-        $trx->updateStatus();
         return $trx;
     }
 }

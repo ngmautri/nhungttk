@@ -35,6 +35,7 @@ class BaseDoc extends AbstractTrx
 
     protected $lazyDocRows;
 
+    // Entity MV ========
     protected $movementType;
 
     protected $movementDate;
@@ -50,6 +51,8 @@ class BaseDoc extends AbstractTrx
     protected $isReversable;
 
     protected $isTransferTransaction;
+
+    protected $relevantMovementId;
 
     protected $targetWarehouse;
 
@@ -479,5 +482,23 @@ class BaseDoc extends AbstractTrx
     public function setZeroQtyRows($zeroQtyRows)
     {
         $this->zeroQtyRows = $zeroQtyRows;
+    }
+
+    /**
+     *
+     * @param mixed $relevantMovementId
+     */
+    protected function setRelevantMovementId($relevantMovementId)
+    {
+        $this->relevantMovementId = $relevantMovementId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRelevantMovementId()
+    {
+        return $this->relevantMovementId;
     }
 }

@@ -12,6 +12,7 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
  */
 
 $entityFormInput = '';
+$targetFormInput = '';
 $view_url = sprintf($this->baseUrl . "/inventory/gi/create");
 
 $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
@@ -37,6 +38,20 @@ if ($action == Constants::FORM_ACTION_EDIT) {
 
     $format = '<input type="hidden" id="version" name="version" value="%s">';
     $entityFormInput = $entityFormInput . sprintf($format, $version);
+}
+
+if ($action == Constants::FORM_ACTION_WH_GI_FOR_PO) {
+
+    $view_url = sprintf($this->baseUrl . "/inventory/gi/view?entity_id=%s&entity_token=%s", $target_id, $target_token);
+
+    $format = '<input type="hidden" name="redirectUrl" value="%s">';
+    $targetFormInput = $targetFormInput . sprintf($format, $redirectUrl);
+
+    $format = '<input type="hidden" id="target_id" name="target_id" value="%s">';
+    $targetFormInput = $targetFormInput . sprintf($format, $target_id);
+
+    $format = '<input type="hidden" id="target_token" name="target_token" value="%s">';
+    $targetFormInput = $targetFormInput . sprintf($format, $target_token);
 }
 
 $wh_id = null;
@@ -97,6 +112,7 @@ echo $form_action;
 
 <?php
 echo $entityFormInput;
+echo $targetFormInput;
 ?>
                  
                   <fieldset>

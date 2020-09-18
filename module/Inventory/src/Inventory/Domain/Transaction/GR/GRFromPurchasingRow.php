@@ -4,7 +4,7 @@ namespace Inventory\Domain\Transaction\GR;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Warehouse\Transaction\TransactionFlow;
+use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Procure\Domain\GoodsReceipt\GRRow;
 use InvalidArgumentException;
 
@@ -43,7 +43,7 @@ class GRFromPurchasingRow extends TrxRow
 
         // $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
         $instance->setGrRow($sourceObj->getId()); // Important
-        $instance->setFlow(TransactionFlow::WH_TRANSACTION_IN);
+        $instance->setFlow(TrxFlow::WH_TRANSACTION_IN);
         $instance->setWh($instance->getWarehouse());
         $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] ref. %s', $sourceObj->getRowIdentifer()));
 
@@ -84,7 +84,7 @@ class GRFromPurchasingRow extends TrxRow
 
         // $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
         $instance->setGrRow($sourceObj->getId()); // Important
-        $instance->setFlow(TransactionFlow::WH_TRANSACTION_OUT);
+        $instance->setFlow(TrxFlow::WH_TRANSACTION_OUT);
         $instance->setWh($instance->getWarehouse());
 
         $createdDate = new \Datetime();

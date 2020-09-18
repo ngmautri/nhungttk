@@ -23,6 +23,8 @@ Interface TrxQueryRepositoryInterface
 
     public function getLazyRootEntityByTokenId($id, $token = null);
 
+    public function getLazyRootEntityById($id);
+
     /**
      *
      * @param int $id

@@ -351,6 +351,13 @@ class NmtInventoryMv
     private $discountRate;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="relevant_movement_id", type="integer", nullable=true)
+     */
+    private $relevantMovementId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1598,6 +1605,30 @@ class NmtInventoryMv
     public function getDiscountRate()
     {
         return $this->discountRate;
+    }
+
+    /**
+     * Set relevantMovementId
+     *
+     * @param integer $relevantMovementId
+     *
+     * @return NmtInventoryMv
+     */
+    public function setRelevantMovementId($relevantMovementId)
+    {
+        $this->relevantMovementId = $relevantMovementId;
+
+        return $this;
+    }
+
+    /**
+     * Get relevantMovementId
+     *
+     * @return integer
+     */
+    public function getRelevantMovementId()
+    {
+        return $this->relevantMovementId;
     }
 
     /**

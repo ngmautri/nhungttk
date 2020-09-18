@@ -10,7 +10,9 @@ namespace Inventory\Domain\Transaction\Contracts;
 class TrxStatus
 {
 
-    const GR_UN_USED = 'Unused';
+    const UNKNOW = 'n/a';
+
+    const GR_UN_USED = 'unused';
 
     const GR_FULLY_USED = 'fully used';
 

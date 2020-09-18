@@ -64,4 +64,14 @@ class InventorySpecificationFactoryImpl extends AbstractInventorySpecificationFa
     {
         return new OnhandQuantityAtLocationSpecification($this->doctrineEM);
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Validator\AbstractInventorySpecificationFactory::getOnhandQuantityOfMovementSpecification()
+     */
+    public function getOnhandQuantityOfMovementSpecification()
+    {
+        return new OnhandQuantityOfMovementSpecification($this->doctrineEM);
+    }
 }

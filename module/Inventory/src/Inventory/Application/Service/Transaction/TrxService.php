@@ -126,7 +126,7 @@ class TrxService extends AbstractService
     public function getLazyDocOutputByTokenId($id, $token, $offset, $limit, $outputStrategy)
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
-        $rootEntity = $rep->getLazyRootEntityByTokenId($id, $token);
+        $rootEntity = $rep->getDetailLazyRootEntityByTokenId($id, $token);
 
         if (! $rootEntity instanceof GenericTrx) {
             return null;
@@ -146,7 +146,7 @@ class TrxService extends AbstractService
     public function getLazyDocDetailsByTokenId($id, $token)
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
-        $trx = $rep->getLazyRootEntityByTokenId($id, $token);
+        $trx = $rep->getDetailLazyRootEntityByTokenId($id, $token);
 
         if ($trx == null) {
             return null;

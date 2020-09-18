@@ -239,6 +239,8 @@ class Constants
 
     const FORM_ACTION_PO_FROM_QO = 'QO-PO';
 
+    const FORM_ACTION_WH_GI_FOR_PO = 'WH_GI_FOR_PO';
+
     const AJAX_OK = '1';
 
     const AJAX_FAILED = '-1';

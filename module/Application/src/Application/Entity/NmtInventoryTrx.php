@@ -575,6 +575,13 @@ class NmtInventoryTrx
     private $invoiceId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="relevant_movement_id", type="integer", nullable=true)
+     */
+    private $relevantMovementId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2736,6 +2743,30 @@ class NmtInventoryTrx
     public function getInvoiceId()
     {
         return $this->invoiceId;
+    }
+
+    /**
+     * Set relevantMovementId
+     *
+     * @param integer $relevantMovementId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setRelevantMovementId($relevantMovementId)
+    {
+        $this->relevantMovementId = $relevantMovementId;
+
+        return $this;
+    }
+
+    /**
+     * Get relevantMovementId
+     *
+     * @return integer
+     */
+    public function getRelevantMovementId()
+    {
+        return $this->relevantMovementId;
     }
 
     /**

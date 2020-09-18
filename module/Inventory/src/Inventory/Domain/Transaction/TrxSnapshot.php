@@ -11,6 +11,26 @@ use Procure\Domain\DocSnapshot;
 class TrxSnapshot extends DocSnapshot
 {
 
+    public $unusedRows;
+
+    public $exhaustedRows;
+
+    public $zeroQtyRows;
+
+    public $lazyRowSnapshotCollection;
+
+    public $lazyRowSnapshotCollectionReference;
+
+    public $rowsCollectionReference;
+
+    public $rowsCollection;
+
+    public $rowsReference;
+
+    public $rawRows;
+
+    public $lazyDocRows;
+
     public $movementType;
 
     public $movementDate;
@@ -26,6 +46,8 @@ class TrxSnapshot extends DocSnapshot
     public $isReversable;
 
     public $isTransferTransaction;
+
+    public $relevantMovementId;
 
     public $targetWarehouse;
 
@@ -130,5 +152,104 @@ class TrxSnapshot extends DocSnapshot
     public function getTartgetLocation()
     {
         return $this->tartgetLocation;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUnusedRows()
+    {
+        return $this->unusedRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getExhaustedRows()
+    {
+        return $this->exhaustedRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getZeroQtyRows()
+    {
+        return $this->zeroQtyRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollection()
+    {
+        return $this->lazyRowSnapshotCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollectionReference()
+    {
+        return $this->lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowsCollectionReference()
+    {
+        return $this->rowsCollectionReference;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowsCollection()
+    {
+        return $this->rowsCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowsReference()
+    {
+        return $this->rowsReference;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRawRows()
+    {
+        return $this->rawRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyDocRows()
+    {
+        return $this->lazyDocRows;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRelevantMovementId()
+    {
+        return $this->relevantMovementId;
     }
 }

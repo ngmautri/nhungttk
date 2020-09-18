@@ -24,7 +24,7 @@ echo $alert;
             echo $this->translate($transactionTypeArray['type_name']); endif;
 
         ?></b>
-      </li> 
+      </li>
       <li>-----</li>
       <li>
          <i><?php
@@ -39,6 +39,13 @@ echo $alert;
 
     if (! $headerDTO == null) :
         echo $headerDTO->getDocStatus(); endif;
+
+    ?> </li>
+    
+     <li>Trx Status: <?php
+
+    if (! $headerDTO == null) :
+        echo $headerDTO->getTransactionStatus(); endif;
 
     ?> </li>
       <li>Total rows: <?php

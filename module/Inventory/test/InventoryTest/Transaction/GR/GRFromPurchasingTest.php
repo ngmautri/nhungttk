@@ -19,6 +19,7 @@ use Procure\Application\Service\FXService;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
+use Application\Application\Service\Shared\FXServiceImpl;
 
 class GRFromPurchasingTest extends PHPUnit_Framework_TestCase
 {
@@ -58,7 +59,7 @@ class GRFromPurchasingTest extends PHPUnit_Framework_TestCase
             $options = new CopyFromGROptions($companyId, $userId, __METHOD__);
 
             $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($doctrineEM);
             $sharedService = new SharedService($sharedSpecsFactory, $fxService);
 

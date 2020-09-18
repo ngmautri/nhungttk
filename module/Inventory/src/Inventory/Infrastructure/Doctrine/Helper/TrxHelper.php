@@ -124,4 +124,38 @@ WHERE 1 %s
             return null;
         }
     }
+
+    static public function getDetailHeaderByTokenId(EntityManager $doctrineEM, $id, $token)
+    {
+        if (! $doctrineEM instanceof EntityManager) {
+            return null;
+        }
+
+        $sql = TrxSQL::MV_DETAIL;
+
+        $tmp1 = sprintf("AND nmt_inventory_trx.movement_id=%s", $id);
+        $tmp2 = sprintf("AND nmt_inventory_mv.id=%s", $id);
+
+        $sql = sprintf($sql, $tmp1, $tmp2);
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($doctrineEM);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryMv', 'nmt_inventory_mv');
+            $rsm->addScalarResult("total_active_row", "total_active_row");
+            $rsm->addScalarResult("total_posted_row", "total_posted_row");
+            $rsm->addScalarResult("total_draft_row", "total_draft_row");
+            $rsm->addScalarResult("total_net_amount", "total_net_amount");
+            $rsm->addScalarResult("total_gross_amount", "total_gross_amount");
+
+            $rsm->addScalarResult("total_rows", "total_rows");
+            $rsm->addScalarResult("zero_qty_rows", "zero_qty_rows");
+            $rsm->addScalarResult("un_used_rows", "un_used_rows");
+            $rsm->addScalarResult("exhausted_rows", "exhausted_rows");
+
+            $query = $doctrineEM->createNativeQuery($sql, $rsm);
+            return $query->getSingleResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }

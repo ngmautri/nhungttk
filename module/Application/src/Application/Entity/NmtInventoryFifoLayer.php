@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryFifoLayer
  *
- * @ORM\Table(name="nmt_inventory_fifo_layer", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK2_idx", columns={"doc_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK3_idx", columns={"local_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK6_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK7_idx", columns={"inventory_trx_id"})})
+ * @ORM\Table(name="nmt_inventory_fifo_layer", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK2_idx", columns={"doc_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK3_idx", columns={"local_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK6_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK7_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_IDX1", columns={"source_token"})})
  * @ORM\Entity
  */
 class NmtInventoryFifoLayer

@@ -24,6 +24,8 @@ use Inventory\Domain\Transaction\Validator\Row\NoneNegativePriceValidator;
 use Inventory\Domain\Transaction\Validator\Row\NoneNegativeQuantityValidator;
 use Inventory\Domain\Transaction\Validator\Row\PositiveQuantityValidator;
 use InvalidArgumentException;
+use Inventory\Application\Specification\Inventory\OnhandQuantityOfMovementSpecification;
+use Inventory\Domain\Transaction\GI\Validator\Row\GIForReturnPOValidator;
 
 /**
  *
@@ -224,6 +226,10 @@ class ValidatorFactory
             case TrxType::GI_FOR_RETURN_PO:
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
+                $validator = new GIForReturnPOValidator($sharedSpecsFactory, $fxService);
+                $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
+                $rowValidators->add($validator);
+
                 break;
 
             case TrxType::GI_FOR_REPAIR_MACHINE:

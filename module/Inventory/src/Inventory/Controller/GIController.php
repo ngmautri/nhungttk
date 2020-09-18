@@ -33,6 +33,8 @@ use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Exception;
+use Inventory\Application\Command\Transaction\Options\CreateTrxFromGRFromPurchasingOptions;
+use Inventory\Application\Command\Transaction\CreateGIForReturnPOCmdHandler;
 
 /**
  * Goods Issue
@@ -54,6 +56,133 @@ class GIController extends AbstractGenericController
     protected $trxService;
 
     protected $trxUploadService;
+
+    public function createReturnAction()
+    {
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        /**@var TrxDTO $dto ;*/
+        $this->layout("Inventory/layout-fullscreen");
+
+        $nmtPlugin = $this->Nmtplugin();
+        $form_action = "/inventory/gi/create-return";
+        $form_title = "Goods return from PO";
+        $action = Constants::FORM_ACTION_WH_GI_FOR_PO;
+        $viewTemplete = "inventory/gi/crudHeader";
+
+        $prg = $this->prg($form_action, true);
+        $transactionType = TrxType::getGoodIssueTrx($nmtPlugin->getTranslator());
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $errors = null;
+            $dto = null;
+            $version = null;
+
+            try {
+                $source_id = (int) $this->params()->fromQuery('target_id');
+                $source_token = $this->params()->fromQuery('target_token');
+                $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($source_id, $source_token);
+
+                if ($rootEntity == null) {
+                    return $this->redirect()->toRoute('not_found');
+                }
+
+                $dto = $rootEntity->makeDetailsDTO();
+                $dto->movementType = TrxType::GI_FOR_RETURN_PO;
+                $version = $dto->getRevisionNo();
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => $errors,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'target_id' => $source_id,
+                'target_token' => $source_token,
+                'headerDTO' => $dto,
+                'version' => $version,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'transactionType' => $transactionType
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // POSTING
+        // ===============================
+
+        $notification = new Notification();
+
+        try {
+            $data = $prg;
+
+            $source_id = $data['target_id'];
+            $source_token = $data['target_id'];
+
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($source_id, $source_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $dto = DTOFactory::createDTOFromArray($data, new TrxDTO());
+            $options = new CreateTrxFromGRFromPurchasingOptions($this->getCompanyId(), $this->getUserId(), __METHOD__, $rootEntity);
+            $cmdHandler = new CreateGIForReturnPOCmdHandler();
+
+            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+            $cmd->execute();
+
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'target_id' => $source_id,
+                'target_token' => $source_token,
+                'headerDTO' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'transactionType' => $transactionType
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = sprintf("/inventory/gi/view?entity_token=%s&entity_id=%s", $dto->getToken(), $dto->getId());
+        $this->flashMessenger()->addMessage($notification->successMessage(true));
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
 
     public function uploadRowsAction()
     {

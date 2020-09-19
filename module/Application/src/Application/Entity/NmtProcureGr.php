@@ -309,6 +309,20 @@ class NmtProcureGr
     private $docNumber;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="flow", type="string", length=10, nullable=true)
+     */
+    private $flow;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="relevant_doc_id", type="integer", nullable=true)
+     */
+    private $relevantDocId;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1392,6 +1406,54 @@ class NmtProcureGr
     public function getDocNumber()
     {
         return $this->docNumber;
+    }
+
+    /**
+     * Set flow
+     *
+     * @param string $flow
+     *
+     * @return NmtProcureGr
+     */
+    public function setFlow($flow)
+    {
+        $this->flow = $flow;
+
+        return $this;
+    }
+
+    /**
+     * Get flow
+     *
+     * @return string
+     */
+    public function getFlow()
+    {
+        return $this->flow;
+    }
+
+    /**
+     * Set relevantDocId
+     *
+     * @param integer $relevantDocId
+     *
+     * @return NmtProcureGr
+     */
+    public function setRelevantDocId($relevantDocId)
+    {
+        $this->relevantDocId = $relevantDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get relevantDocId
+     *
+     * @return integer
+     */
+    public function getRelevantDocId()
+    {
+        return $this->relevantDocId;
     }
 
     /**

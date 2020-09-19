@@ -4,23 +4,23 @@ namespace Procure\Domain\Shared;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ProcureDocStatus
 
 {
 
-    const DOC_STATUS_DRAFT = 'draft';
+    const DRAFT = 'draft';
 
-    const DOC_STATUS_OPEN = 'open';
+    const OPEN = 'open';
 
-    const DOC_STATUS_CLOSED = 'closed';
+    const CLOSED = 'closed';
 
-    const DOC_STATUS_POSTED = 'posted';
+    const POSTED = 'posted';
 
-    const DOC_STATUS_AMENDING = 'amending';
+    const AMENDING = 'amending';
 
-    const DOC_STATUS_ARCHIVED = 'archived';
+    const ARCHIVED = 'archived';
 
-    const DOC_STATUS_REVERSED = 'reversed';
+    const REVERSED = 'reversed';
 }

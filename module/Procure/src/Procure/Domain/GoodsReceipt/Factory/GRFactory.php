@@ -16,6 +16,7 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  *
@@ -63,7 +64,7 @@ class GRFactory
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
-        $instance->setDocType(\Application\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR);
+        $instance->setDocType(ProcureDocType::GR);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $instance->setRevisionNo(1);

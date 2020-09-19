@@ -32,7 +32,7 @@ use Ramsey;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GRDoc extends GenericGR
+class GRReturn extends GenericGR
 {
 
     private static $instance = null;
@@ -59,7 +59,7 @@ class GRDoc extends GenericGR
      */
     protected static function setInstance($instance)
     {
-        GRDoc::$instance = $instance;
+        GRReturn::$instance = $instance;
     }
 
     // =====================
@@ -116,7 +116,7 @@ class GRDoc extends GenericGR
          *
          * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
          */
-        $instance = new self();
+        $instance = new GRReturn();
         $instance = $sourceObj->convertTo($instance);
 
         // overwrite.
@@ -181,7 +181,7 @@ class GRDoc extends GenericGR
          *
          * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
          */
-        $instance = new self();
+        $instance = new GRReturn();
         $instance = $sourceObj->convertTo($instance);
 
         // overwrite.
@@ -242,7 +242,7 @@ class GRDoc extends GenericGR
          *
          * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
          */
-        $instance = new self();
+        $instance = new GRReturn();
 
         $instance->_checkParams($validationService, $sharedService);
 
@@ -345,7 +345,7 @@ class GRDoc extends GenericGR
          *
          * @var \Procure\Domain\GoodsReceipt\GRDoc $instance
          */
-        $instance = new self();
+        $instance = new GRReturn();
         $instance->_checkParams($validationService, $sharedService);
         // also row validation needed.
         if ($validationService->getRowValidators() == null) {
@@ -471,16 +471,16 @@ class GRDoc extends GenericGR
      */
     public static function getInstance()
     {
-        if (self::$instance == null) {
-            self::$instance = new self();
+        if (GRReturn::$instance == null) {
+            GRReturn::$instance = new GRReturn();
         }
-        return self::$instance;
+        return GRReturn::$instance;
     }
 
     public static function createSnapshotProps()
     {
         $baseClass = "Procure\Domain\GoodsReceipt\BaseDoc";
-        $entity = new self();
+        $entity = new GRReturn();
         $reflectionClass = new \ReflectionClass($entity);
 
         $props = $reflectionClass->getProperties();
@@ -497,7 +497,7 @@ class GRDoc extends GenericGR
 
     public static function createAllSnapshotProps()
     {
-        $entity = new self();
+        $entity = new GRReturn();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -521,7 +521,7 @@ class GRDoc extends GenericGR
      */
     public static function createFrom(GRSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        $instance = new self();
+        $instance = new GRReturn();
         $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
@@ -591,7 +591,7 @@ class GRDoc extends GenericGR
      */
     public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        $instance = new self();
+        $instance = new GRReturn();
         $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);

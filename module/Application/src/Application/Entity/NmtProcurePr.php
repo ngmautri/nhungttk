@@ -1,8 +1,8 @@
 <?php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Application\BaseEntity\BaseNmtProcurePr;
 
 /**
  * NmtProcurePr
@@ -10,16 +10,9 @@ use Application\BaseEntity\BaseNmtProcurePr;
  * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"}), @ORM\Index(name="nmt_procure_pr_KF4_idx", columns={"company_id"}), @ORM\Index(name="nmt_procure_pr_KF5_idx", columns={"warehouse_id"})})
  * @ORM\Entity
  */
-class NmtProcurePr extends BaseNmtProcurePr
+class NmtProcurePr
 {
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -29,7 +22,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $id;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="pr_auto_number", type="string", length=45, nullable=true)
@@ -37,7 +29,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $prAutoNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="pr_number", type="string", length=45, nullable=false)
@@ -45,7 +36,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $prNumber;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="pr_name", type="string", length=45, nullable=false)
@@ -53,7 +43,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $prName;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
@@ -61,7 +50,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $keywords;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -69,7 +57,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $remarks;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -77,7 +64,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $createdOn;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -85,7 +71,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $lastchangeOn;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -93,7 +78,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $isDraft;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -101,7 +85,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $isActive;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -109,7 +92,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $status;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -117,7 +99,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $token;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -125,7 +106,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $checksum;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="submitted_on", type="datetime", nullable=true)
@@ -133,7 +113,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $submittedOn;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -141,7 +120,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $currentState;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="total_row_manual", type="integer", nullable=true)
@@ -149,7 +127,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $totalRowManual;
 
     /**
-     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -157,7 +134,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $revisionNo;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -165,7 +141,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $docStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -173,7 +148,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $workflowStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
@@ -181,7 +155,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $transactionStatus;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -189,7 +162,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $docType;
 
     /**
-     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -197,7 +169,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $reversalBlocked;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -205,7 +176,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $uuid;
 
     /**
-     *
      * @var string
      *
      * @ORM\Column(name="doc_number", type="string", length=100, nullable=true)
@@ -213,7 +183,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $docNumber;
 
     /**
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="doc_date", type="datetime", nullable=true)
@@ -221,7 +190,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $docDate;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -232,7 +200,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $createdBy;
 
     /**
-     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -243,7 +210,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $lastchangeBy;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationDepartment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
@@ -254,7 +220,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $department;
 
     /**
-     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -265,7 +230,6 @@ class NmtProcurePr extends BaseNmtProcurePr
     private $company;
 
     /**
-     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -274,6 +238,8 @@ class NmtProcurePr extends BaseNmtProcurePr
      * })
      */
     private $warehouse;
+
+
 
     /**
      * Get id

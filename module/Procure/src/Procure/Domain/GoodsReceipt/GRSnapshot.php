@@ -6,25 +6,20 @@ use Procure\Domain\DocSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRSnapshot extends DocSnapshot
 {
-
-    public $reversalDoc;
 
     public $targetWhList;
 
     public $targetDepartmentList;
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getTargetDepartmentList()
-    {
-        return $this->targetDepartmentList;
-    }
+    public $reversalDoc;
+
+    public $flow;
+
+    public $relevantDocId;
 
     /**
      *
@@ -39,8 +34,35 @@ class GRSnapshot extends DocSnapshot
      *
      * @return mixed
      */
+    public function getTargetDepartmentList()
+    {
+        return $this->targetDepartmentList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getReversalDoc()
     {
         return $this->reversalDoc;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getFlow()
+    {
+        return $this->flow;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRelevantDocId()
+    {
+        return $this->relevantDocId;
     }
 }

@@ -43,7 +43,11 @@
 			"ApplicationTest" : "module/Application/test",
 			"InventoryTest" : "module/Inventory/test",
 			"Procure" : "module/Procure/src",
-			"ProcureTest" : "module/Procure/test"
+			"ProcureTest" : "module/Procure/test",
+			"UserTest" : "module/User/test",
+			"User" : "module/User/src",
+			"HR" : "module/HR/src",
+			"HRTest" : "module/HR/test/HRTest"
 		}
 	},
 	"authors" : [{

@@ -12,7 +12,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ValidationServiceImp implements ValidationServiceInterface
+class ValidationServiceImpl implements ValidationServiceInterface
 {
 
     protected $headerValidators;

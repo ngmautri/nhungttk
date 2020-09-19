@@ -11,7 +11,7 @@ use Procure\Domain\AccountPayable\Validator\Row\GLAccountValidator;
 use Procure\Domain\AccountPayable\Validator\Row\PoRowValidator;
 use Procure\Domain\AccountPayable\Validator\Row\WarehouseValidator;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Service\ValidationServiceImp;
+use Procure\Domain\Service\ValidationServiceImpl;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use InvalidArgumentException;
@@ -26,10 +26,10 @@ class ValidatorFactory
 
     /**
      *
-     * @param int $trxTypeId
      * @param SharedService $sharedService
+     * @param boolean $isPosting
      * @throws InvalidArgumentException
-     * @return \Inventory\Domain\Service\TrxValidationService
+     * @return \Procure\Domain\Service\ValidationServiceImpl
      */
     public static function create(SharedService $sharedService, $isPosting = false)
     {
@@ -74,7 +74,7 @@ class ValidatorFactory
             $headerValidators->add($validator);
         }
 
-        return new ValidationServiceImp($headerValidators, $rowValidators);
+        return new ValidationServiceImpl($headerValidators, $rowValidators);
     }
 
     /**
@@ -82,7 +82,7 @@ class ValidatorFactory
      * @param SharedService $sharedService
      * @param boolean $isPosting
      * @throws InvalidArgumentException
-     * @return \Procure\Domain\Service\ValidationServiceImp
+     * @return \Procure\Domain\Service\ValidationServiceImpl
      */
     public static function createForHeader(SharedService $sharedService, $isPosting = false)
     {
@@ -112,9 +112,16 @@ class ValidatorFactory
         $validator = new InvoiceAndPaymentTermValidator($sharedSpecsFactory, $fxService);
         $headerValidators->add($validator);
 
-        return new ValidationServiceImp($headerValidators);
+        return new ValidationServiceImpl($headerValidators);
     }
 
+    /**
+     *
+     * @param SharedService $sharedService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\Service\ValidationServiceImpl
+     */
     public static function createForPosting(SharedService $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
@@ -157,9 +164,16 @@ class ValidatorFactory
         $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
         $rowValidators->add($validator);
 
-        return new ValidationServiceImp($headerValidators, $rowValidators);
+        return new ValidationServiceImpl($headerValidators, $rowValidators);
     }
 
+    /**
+     *
+     * @param SharedService $sharedService
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     * @return \Procure\Domain\Service\ValidationServiceImpl
+     */
     public static function createForCopyFromPO(SharedService $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
@@ -190,6 +204,6 @@ class ValidatorFactory
         $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
         $rowValidators->add($validator);
 
-        return new ValidationServiceImp($headerValidators, $rowValidators);
+        return new ValidationServiceImpl($headerValidators, $rowValidators);
     }
 }

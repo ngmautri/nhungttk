@@ -6,8 +6,8 @@ use Application\Entity\NmtProcureGrRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\Factory\GRFactory;
 use Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Infrastructure\Doctrine\SQL\GrSQL;
@@ -71,7 +71,7 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
         $rows = $this->getRowsById($id);
 
         if (count($rows) == 0) {
-            $rootEntity = GRDoc::makeFromSnapshot($rootSnapshot);
+            $rootEntity = GRFactory::constructFromDB($rootSnapshot);
             return $rootEntity;
         }
 
@@ -154,7 +154,8 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
         $rootSnapshot->billedAmount = $billedAmount;
         $rootSnapshot->completedRows = $completedRows;
 
-        $rootEntity = GRDoc::makeFromSnapshot($rootSnapshot);
+        $rootEntity = GRFactory::constructFromDB($rootSnapshot);
+
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;
@@ -212,7 +213,7 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
             return null;
         }
 
-        return GRDoc::makeFromSnapshot($snapshot);
+        return GRFactory::constructFromDB($snapshot);
     }
 
     /**

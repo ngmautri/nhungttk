@@ -23,7 +23,7 @@ use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\WarehouseValidator;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Service\ValidationServiceImp;
+use Procure\Domain\Service\ValidationServiceImpl;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
@@ -106,7 +106,7 @@ class PostCopyFromAPReservalCmdHandler extends AbstractCommandHandler
             $sharedService = new SharedService($sharedSpecFactory, $fxService);
             $sharedService->setPostingService($postingService);
 
-            $validationService = new ValidationServiceImp($headerValidators, $rowValidators);
+            $validationService = new ValidationServiceImpl($headerValidators, $rowValidators);
             $rootEntity = GRDoc::postCopyFromAPRerveral($sourceObj, $options, $validationService, $sharedService);
 
             // event dispatch

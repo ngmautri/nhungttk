@@ -11,11 +11,8 @@ use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Gr\GrReversed;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\InvalidOperationException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
-use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
@@ -24,7 +21,10 @@ use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use InvalidArgumentException;
 use Ramsey;
+use RuntimeException;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  *
@@ -181,25 +181,25 @@ class GRDoc extends GenericGR
     public static function createFromPo(PODoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
     {
         if (! $sourceObj instanceof PODoc) {
-            throw new InvalidArgumentException("PO Entity is required");
+            throw new \InvalidArgumentException("PO Entity is required");
         }
 
         $rows = $sourceObj->getDocRows();
 
         if ($rows == null) {
-            throw new InvalidArgumentException("PO Entity is empty!");
+            throw new \InvalidArgumentException("PO Entity is empty!");
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidArgumentException("PO document is not posted!");
+            throw new \RuntimeException("PO document is not posted!");
         }
 
         if ($sourceObj->getTransactionStatus() == \Procure\Domain\Shared\Constants::TRANSACTION_STATUS_COMPLETED) {
-            throw new InvalidArgumentException("GR is completed!");
+            throw new \RuntimeException("GR is completed!");
         }
 
         if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
+            throw new \InvalidArgumentException("No Options is found");
         }
         /**
          *
@@ -243,27 +243,27 @@ class GRDoc extends GenericGR
      * @param CommandOptions $options
      * @param HeaderValidatorCollection $headerValidators
      * @param RowValidatorCollection $rowValidators
-     * @throws InvalidArgumentException
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
     public static function copyFromAP(APDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
     {
         if (! $sourceObj instanceof APDoc) {
-            throw new InvalidArgumentException("AP Entity is required");
+            throw new \InvalidArgumentException("AP Entity is required");
         }
 
         $rows = $sourceObj->getDocRows();
 
         if ($rows == null) {
-            throw new InvalidArgumentException("AP Entity is empty!");
+            throw new \InvalidArgumentException("AP Entity is empty!");
         }
         if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
+            throw new \InvalidArgumentException("No Options is found");
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException("AP document is not posted!");
+            throw new \RuntimeException("AP document is not posted!");
         }
 
         /**
@@ -303,29 +303,28 @@ class GRDoc extends GenericGR
      * @param CommandOptions $options
      * @param ValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
     public static function postCopyFromAP(APDoc $sourceObj, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if (! $sourceObj instanceof APDoc) {
-            throw new InvalidArgumentException("AP Entity is required");
+            throw new \InvalidArgumentException("AP Entity is required");
         }
 
         $rows = $sourceObj->getDocRows();
 
         if ($rows == null) {
-            throw new InvalidArgumentException("AP Entity is empty!");
+            throw new \InvalidArgumentException("AP Entity is empty!");
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidArgumentException("AP document is not posted yet!");
+            throw new \RuntimeException("AP document is not posted yet!");
         }
 
         if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
+            throw new \InvalidArgumentException("No Options is found");
         }
 
         /**
@@ -338,7 +337,7 @@ class GRDoc extends GenericGR
 
         // also row validation needed.
         if ($validationService->getRowValidators() == null) {
-            throw new InvalidArgumentException("Rows validators not found");
+            throw new \InvalidArgumentException("Rows validators not found");
         }
 
         $instance = $sourceObj->convertTo($instance);
@@ -364,12 +363,12 @@ class GRDoc extends GenericGR
         }
 
         $instance->setInvoiceNo($sourceObj->getDocNumber());
-        $instance->setRemarks(\sprintf("Auto. generated from AP %s", $sourceObj->getId()));
+        $instance->setRemarks(\sprintf("[Auto.] Ref.AP %s", $sourceObj->getSysNumber()));
 
         $instance->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
 
         if ($instance->hasErrors()) {
-            throw new ValidationFailedException($instance->getErrorMessage());
+            throw new \RuntimeException($instance->getErrorMessage());
         }
 
         $instance->clearEvents();
@@ -379,7 +378,7 @@ class GRDoc extends GenericGR
             ->post($instance, true);
 
         if (! $snapshot instanceof GRSnapshot) {
-            throw new OperationFailedException(sprintf("Error orcured when creating GR #%s", $instance->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when creating GR #%s", $instance->getId()));
         }
 
         $instance->setId($snapshot->getId());
@@ -406,22 +405,20 @@ class GRDoc extends GenericGR
      * @param CommandOptions $options
      * @param ValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
      * @return \Procure\Domain\GoodsReceipt\GRDoc
      */
     public static function postCopyFromAPRerveral(APDoc $sourceObj, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if (! $sourceObj instanceof APDoc) {
-            throw new InvalidArgumentException("AP Entity is required");
+            throw new \InvalidArgumentException("AP Entity is required");
         }
 
         $rows = $sourceObj->getDocRows();
 
         if ($rows == null) {
-            throw new InvalidArgumentException("AP Entity is empty!");
+            throw new \InvalidArgumentException("AP Entity is empty!");
         }
 
         if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_REVERSED) {
@@ -429,7 +426,7 @@ class GRDoc extends GenericGR
         }
 
         if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
+            throw new \InvalidArgumentException("No Options is found");
         }
 
         /**
@@ -440,7 +437,7 @@ class GRDoc extends GenericGR
         $instance->_checkParams($validationService, $sharedService);
         // also row validation needed.
         if ($validationService->getRowValidators() == null) {
-            throw new InvalidArgumentException("Rows validators not found");
+            throw new \InvalidArgumentException("Rows validators not found");
         }
 
         $instance = $sourceObj->convertTo($instance);
@@ -465,12 +462,12 @@ class GRDoc extends GenericGR
             $instance->addRow($grRow);
         }
         $instance->setInvoiceNo($sourceObj->getDocNumber());
-        $instance->setRemarks(\sprintf("Auto. generated from AP Reversal %s", $sourceObj->getId()));
+        $instance->setRemarks(\sprintf("[Auto.] Ref.AP Reversal %s", $sourceObj->getId()));
 
         $instance->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
 
         if ($instance->hasErrors()) {
-            throw new ValidationFailedException($instance->getErrorMessage());
+            throw new \RuntimeException($instance->getErrorMessage());
         }
 
         $instance->clearEvents();
@@ -480,7 +477,7 @@ class GRDoc extends GenericGR
             ->post($instance, true);
 
         if (! $snapshot instanceof GRSnapshot) {
-            throw new OperationFailedException(sprintf("Error orcured when creating GR from AP reversal #%s", $sourceObj->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when creating GR from AP reversal #%s", $sourceObj->getId()));
         }
 
         $target = $snapshot;
@@ -514,7 +511,7 @@ class GRDoc extends GenericGR
      */
     public function saveFromPO(GRSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, GrPostingService $postingService)
     {
-        if (! $this->getDocStatus() == GRDocStatus::DOC_STATUS_DRAFT) {
+        if (! $this->getDocStatus() == ProcureDocStatus::DOC_STATUS_DRAFT) {
             throw new InvalidArgumentException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         }
 
@@ -563,7 +560,7 @@ class GRDoc extends GenericGR
     public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new GRDoc();
+            self::$instance = new self();
         }
         return self::$instance;
     }
@@ -627,8 +624,8 @@ class GRDoc extends GenericGR
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(GRDocStatus::DOC_STATUS_DRAFT);
-        $instance->setDocType(GRDocType::PO);
+        $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $instance->setDocType(ProcureDocType::GR);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $instance->setRevisionNo(1);
@@ -645,7 +642,7 @@ class GRDoc extends GenericGR
         $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
         if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
+            throw new \RuntimeException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
         }
 
         $instance->id = $rootSnapshot->getId();

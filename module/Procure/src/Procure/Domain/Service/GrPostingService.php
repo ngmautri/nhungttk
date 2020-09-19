@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Domain\Service;
 
-use Procure\Domain\Exception\Gr\GrInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
 use Procure\Domain\Service\Contracts\PostingServiceInterface;
 
@@ -18,7 +17,7 @@ class GrPostingService implements PostingServiceInterface
     public function __construct(GrCmdRepositoryInterface $cmdRepository)
     {
         if ($cmdRepository == null) {
-            throw new GrInvalidArgumentException("GR cmd repository not set!");
+            throw new \InvalidArgumentException("GR cmd repository not set!");
         }
         $this->cmdRepository = $cmdRepository;
     }

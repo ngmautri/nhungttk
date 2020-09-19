@@ -12,12 +12,11 @@ use Inventory\Domain\Event\Transaction\TrxPosted;
 use Inventory\Domain\Event\Transaction\TrxReversed;
 use Inventory\Domain\Event\Transaction\TrxRowAdded;
 use Inventory\Domain\Event\Transaction\TrxRowUpdated;
-use Inventory\Domain\Exception\InvalidOperationException;
-use Inventory\Domain\Exception\OperationFailedException;
-use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
+use Inventory\Domain\Transaction\Contracts\TrxFlow;
+use Inventory\Domain\Transaction\Contracts\TrxStatus;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
@@ -25,8 +24,6 @@ use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
 use RuntimeException;
-use Inventory\Domain\Transaction\Contracts\TrxFlow;
-use Inventory\Domain\Transaction\Contracts\TrxStatus;
 
 /**
  *
@@ -156,32 +153,18 @@ abstract class GenericTrx extends BaseDoc
     public function deactivateRow(TrxRow $row, CommandOptions $options, TrxValidationServiceInterface $validationSerive, SharedService $sharedService)
     {}
 
-    /**
-     *
-     * @param TrxRowSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param PostingServiceInterface $postingService
-     * @throws InvalidOperationException
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
-     * @return \Inventory\Domain\Transaction\TrxRowSnapshot
-     */
     public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
-            throw new \InvalidArgumentException(sprintf("PR is posted! %s", $this->getId()));
+            throw new \RuntimeException(sprintf("PR is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
-            throw new InvalidArgumentException("Row Snapshot not found");
+            throw new \InvalidArgumentException("Row Snapshot not found");
         }
 
         if ($options == null) {
-            throw new InvalidArgumentException("Options not found");
+            throw new \InvalidArgumentException("Options not found");
         }
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
@@ -261,16 +244,15 @@ abstract class GenericTrx extends BaseDoc
      * @param CommandOptions $options
      * @param array $params
      * @param SharedService $sharedService
-     * @throws InvalidOperationException
+     * @throws \RuntimeException
      * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
+     * @throws RuntimeException
      * @return \Inventory\Domain\Transaction\TrxRowSnapshot
      */
     public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
         if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException(sprintf("Trx is posted! %s", $this->getId()));
+            throw new \RuntimeException(sprintf("Trx is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
@@ -335,12 +317,9 @@ abstract class GenericTrx extends BaseDoc
     /**
      *
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
      * @param SharedService $sharedService
-     * @param PostingServiceInterface $postingService
-     * @throws InvalidOperationException
-     * @throws ValidationFailedException
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
     public function post(CommandOptions $options, SharedService $sharedService)
@@ -435,30 +414,28 @@ abstract class GenericTrx extends BaseDoc
     /**
      *
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
+     * @param TrxValidationServiceInterface $validationService
      * @param SharedService $sharedService
-     * @param PostingServiceInterface $postingService
-     * @throws InvalidOperationException
-     * @throws ValidationFailedException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
     public function reverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
         if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
-            throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
+            throw new \RuntimeException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
 
         $this->_checkParams($validationService, $sharedService);
 
         if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validators not given!");
+            throw new \InvalidArgumentException("Row Validators not given!");
         }
 
         $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();

@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 
 /**
- * PO Domain Service
+ * PO Shared Domain Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

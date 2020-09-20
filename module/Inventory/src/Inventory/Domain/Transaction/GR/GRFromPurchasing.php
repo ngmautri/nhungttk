@@ -27,11 +27,16 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInterface, BackGroundTrxInterface
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\GenericTrx::specify()
+     */
     public function specify()
     {
         $this->movementType = TrxType::GR_FROM_PURCHASING;

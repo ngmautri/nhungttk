@@ -23,10 +23,10 @@ class RepTest extends PHPUnit_Framework_TestCase
 
             $rep = new GRQueryRepositoryImpl($doctrineEM);
 
-            $id = 94;
-            $token = "cc15908b-e12f-4403-bbda-ceb5d824f1f5";
+            $id = 589;
+            $token = "dac6f3ee-df5b-4c46-87d5-fb13f5234087";
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            var_dump($rootEntity->getDocRows());
+            var_dump($rootEntity->getDocType());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

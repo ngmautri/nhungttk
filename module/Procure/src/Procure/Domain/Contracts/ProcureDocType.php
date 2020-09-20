@@ -5,7 +5,7 @@ namespace Procure\Domain\Contracts;
  * Document Type
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ProcureDocType
 {
@@ -44,14 +44,16 @@ class ProcureDocType
 
     const GR_REVERSAL = 'AP-130-1';
 
+    const GR_REVERSAL_FROM_AP_RESERVAL = 'AP-130-140-1';
+
     // ==================================
     // Goods Return
     // ==================================
-    const RETURN = 'AP-135';
+    const GOODS_RETURN = 'AP-135';
 
-    const RETURN_REVERSAL = 'AP-135-1';
+    const GOODS_RETURN_REVERSAL = 'AP-135-1';
 
-    const RETURN_FROM_WH_RETURN = 'AP-135-2';
+    const GOODS_RETURN_FROM_WH_RETURN = 'AP-135-2';
 
     // ==================================
     // AP Invoice

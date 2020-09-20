@@ -173,89 +173,12 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
     include (ROOT . '/module/Procure/view/procure/create-wizard.php');
     endif;
 
+include (ROOT . '/module/Procure/view/procure/gr_summary.php');
+
 ?>
-  					
-  		<hr>
-      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
 
-    echo $this->translate('Summary:');
-    ?></span>
-      <div class="alert alert-<?php
 
-    echo $alert;
-    ?>" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-            <li>
-               <b><?php
 
-            if (! $headerDTO == null) :
-                echo sprintf("PO #%s (Version #%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion()); endif;
-
-            ?></b>
-            </li>
-            <li>-----</li>
-            <li>
-               <b><?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->vendorName; endif;
-
-            ?></b>
-            </li>
-            <li>
-               <i><?php
-
-            if (! $headerDTO == null) :
-                echo sprintf("%s %s", $headerDTO->getVendorAddress(), $headerDTO->getVendorCountry()); endif;
-
-            ?></i>
-            </li>
-            <li>-----</li>
-            <li><?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;
-
-            ?> </li>
-            <li>Status: <?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getDocStatus(); endif;
-
-            ?> </li>
-            <li>Total rows: <?php
-
-            echo ($headerDTO->totalRows);
-            ?></li>
-            <li>Status: <?php
-
-            echo $transactionStatus;
-            ?> </li>
-            <li>-----</li>
-            <li>Net: <?php
-
-            echo number_format($headerDTO->netAmount, 2) . " " . $headerDTO->currencyIso3;
-            ?></li>
-            <li>Tax: <?php
-
-            echo number_format($headerDTO->taxAmount, 2);
-            ?></li>
-            <li>Gross: <?php
-
-            echo number_format($headerDTO->grossAmount, 2) . " " . $headerDTO->currencyIso3;
-            ?></li>
-            <li>Billed: <?php
-
-            echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->currencyIso3;
-            ?></li>
-            <li>-----</li>
-            <li>Created by: <?php
-
-            echo $headerDTO->getCreatedByName();
-            ?></li>
-         </ul>
-      </div>
-		
 	<?php
 
 if ($action == Constants::FORM_ACTION_REVIEW) :
@@ -280,7 +203,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 9.5pt">
             <ul>
@@ -352,14 +275,14 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
             </ul>
             <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
                <!-- Tab1 -->
-	
-	
+
+
 <?php
 // ================================
 echo $error_msg;
 // ===============================
 ?>
-	
+
  			<form id="Posting_Form" class="form-horizontal" action="<?php
 
     echo $form_action;
@@ -380,12 +303,12 @@ echo $error_msg;
                 echo $version;
                 ?>" />
                   <div style="position: relative; float: right;">
-					
+
 				<?php
 
     if ($isViewing == false) :
         ?>
-						  		
+
 						<?php
 
         if ($canPost) :
@@ -398,7 +321,7 @@ echo $error_msg;
 		  				<?php endif;
 
         ?>
-		  				
+
 		  				<?php
 
         if ($canAcceptAmendment) :
@@ -435,11 +358,11 @@ if ($isViewing) :
         echo $this->translate("Review");
         ?>
 </a>
-					
+
 					<?php endif;
 
     ?>
-					
+
 					  <?php
 
     if ($canAmend) :
@@ -455,12 +378,12 @@ if ($isViewing) :
 		  				<?php endif;
 
     ?>
-	
-					
+
+
 					<?php
 
     if ($isPosted) :
-        ?>					
+        ?>
 							<a title="<?php
 
         echo $this->translate("Pay P/O");
@@ -490,16 +413,16 @@ if ($isViewing) :
         ?>">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         &nbsp;&nbsp;A/P Invoice
-                     </a>      	
+                     </a>
 					<?php endif;
 
     ?>
-					
-					
+
+
 					<?php
 
     if ($isAmending) :
-        ?>					
+        ?>
 							<a class="btn btn-default btn-sm" href="<?php
 
         echo $review_amendment_url;
@@ -515,11 +438,11 @@ if ($isViewing) :
 					<?php endif;
 
     ?>
-					
+
 				<?php endif;
 
 ?>
-							
+
 						</div>
                   <fieldset>
                      <legend style="font-size: 9.5pt; color: gray;">
@@ -545,47 +468,42 @@ if ($isViewing) :
 
                                 if ($headerDTO->getCurrentState() == "draftPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
-                                
-                                
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
-                                
-                                
+
+
                                  value="finalPo">Final</option>
                               </select>
                            </div>
                            <div class="col-sm-3">
-                              <input <?php
+                              <input
+                                 <?php
 
-                            if (! $headerDTO == null) :
-                                echo ($headerDTO->getIsActive() == "1") ? "checked" : "";
-                            else :
-                                echo "checked";
-                            endif;
-                            ?> type="checkbox" name="isActive" value="1">
+                                if (! $headerDTO == null) :
+                                    echo ($headerDTO->getIsActive() == "1") ? "checked" : "";
+                                else :
+                                    echo "checked";
+                                endif;
+                                ?>
+                                 type="checkbox" name="isActive" value="1">
                               &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2 ">Vendor:</label>
                            <div class="col-sm-3">
-                              <input class="form-control input-sm input-sm" type="text" id="vendor_name_1" placeholder="Enter term to search vendor" name="vendor_name" value="<?php
+                              <input class="form-control input-sm input-sm" type="text" id="vendor_name_1" placeholder="Enter term to search vendor" name="vendor_name"
+                                 value="<?php
 
-                            if (! $headerDTO == null) :
-                                echo $headerDTO->getVendorName();endif;
+                                if (! $headerDTO == null) :
+                                    echo $headerDTO->getVendorName();endif;
 
-                            ?>">
+                                ?>">
                               <input type="hidden" id="vendor_id" placeholder="" name="vendor_id" value="<?php
 
                             if (! $headerDTO == null) :
@@ -610,12 +528,13 @@ if ($isViewing) :
                            </div>
                            <label class="control-label col-sm-2">Contract /PO Date:</label>
                            <div class="col-sm-3">
-                              <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate" value="<?php
+                              <input class="form-control input-sm" type="text" placeholder="" id="contractDate" name="contractDate"
+                                 value="<?php
 
-                            if (! $headerDTO == null) :
-                                echo ($headerDTO->getContractDate() !== null); endif;
+                                if (! $headerDTO == null) :
+                                    echo ($headerDTO->getContractDate() !== null); endif;
 
-                            ?>">
+                                ?>">
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
@@ -689,10 +608,11 @@ if ($isViewing) :
                               <a title="<?php
 
                             echo $this->translate('Update document hearder');
-                            ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;" href="<?php
+                            ?>" class="btn btn-default btn-sm" style="color: navy; font-weight: bold;"
+                                 href="<?php
 
-                            echo $update_header_url;
-                            ?>">
+                                echo $update_header_url;
+                                ?>">
                                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php
 
                                 echo $this->translate('Edit');
@@ -777,26 +697,31 @@ if ($isViewing) :
                                        &nbsp;Pdf (*.pdf)
                                     </a>
                                  </li>
-                                       <li class="divider"></li>
-                                <li class="dropdown-submenu">
+                                 <li class="divider"></li>
+                                 <li class="dropdown-submenu">
                                     <a class="test" tabindex="-1" href="#">
-                                    <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp;Pdf (*.pdf) by department. &nbsp; &nbsp; &nbsp; &nbsp; 
+                                       <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                       &nbsp;Pdf (*.pdf) by department. &nbsp; &nbsp; &nbsp; &nbsp;
                                        <i class="fa fa-caret-right" aria-hidden="true"></i>
                                     </a>
                                     <ul style="font-size: 9pt;" class="dropdown-menu">
                                        <li>
-                                          <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with price <i class="fa fa-lock" aria-hidden="true"></i></a>
+                                          <a tabindex="-1" href="#">
+                                             <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                             Details with price
+                                             <i class="fa fa-lock" aria-hidden="true"></i>
+                                          </a>
                                        </li>
-                                          <li class="divider"></li>
-                            
+                                       <li class="divider"></li>
                                        <li>
-                                           <a tabindex="-1" href="#"><i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Details with picture</a>
-                                      </li>
+                                          <a tabindex="-1" href="#">
+                                             <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>
+                                             Details with picture
+                                          </a>
+                                       </li>
                                     </ul>
                                  </li>
-                                 
-                                              <li class="divider"></li>
-                         
+                                 <li class="divider"></li>
                                  <li>
                                     <a class="" href="<?php
 
@@ -806,8 +731,7 @@ if ($isViewing) :
                                        &nbsp;Excel (*.xlxs)
                                     </a>
                                  </li>
-                                       <li class="divider"></li>
-                          
+                                 <li class="divider"></li>
                                  <li>
                                     <a class="" href="<?php
 
@@ -821,7 +745,7 @@ if ($isViewing) :
                            </div>
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
-                  
+
                   </fieldset>
                </form>
             </div>
@@ -966,7 +890,7 @@ var data = <?php
 
 echo json_encode($rowOutput);
 ?>
-    
+
 $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 $("#Posting_Form :input").attr("disabled", "disabled");
@@ -986,9 +910,9 @@ function confirmAmendment() {
 }
 
 function doAmendment() {
-	$('#amendment_confirm_modal_sm').modal('hide');		
+	$('#amendment_confirm_modal_sm').modal('hide');
 	$('#b_modal_no_header').modal();
-	
+
 	var url="/procure/po/enable-amendment";
 	var entity_id="<?php
 
@@ -1019,9 +943,9 @@ function confirmPostAmendment() {
 }
 
 function doPostAmendment() {
-	$('#post_amendment_confirm_modal_sm').modal('hide');		
+	$('#post_amendment_confirm_modal_sm').modal('hide');
 	$('#b_modal_no_header').modal();
-	
+
 	var url="/procure/po/review-amendment";
 	var entity_id="<?php
 
@@ -1050,7 +974,7 @@ $( "#pr_item_name" ).autocomplete({
     minLength: 3,
     select: function( event, ui ) {
   	  $( "#pr_row_id" ).val(ui.item.pr_row_id);
-  	  
+
      alert	( ui.item.pr_row_id );
   	  //alert($( "#vendor_id" ).val());
 
@@ -1071,20 +995,20 @@ $( "#pr_item_name" ).autocomplete({
         minLength: 2,
         select: function( event, ui ) {
       	  $( "#item_id" ).val(ui.item.id);
-        
+
       	 	$('#global-notice').show();
       		$('#global-notice').html('"' + ui.item.value + '" selected');
       		$('#global-notice').fadeOut(5000);
       		//$("#jquery_dialog").dialog("close");
         }
-       
+
       })
       .autocomplete( "instance" )._renderItem = function( ul, item ) {
    	  var serial_no = "";
    	  if(item.item_serial!=""){
    		  serial_no = " : " + item.item_serial;
    	  }
-    	   
+
          return $( "<li>" )
            .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
            .appendTo( ul );
@@ -1113,14 +1037,14 @@ $( "#vendor_name_1" ).autocomplete({
       .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
       .appendTo( ul );
     };
-	
+
 	//$("#Create_PR_Form :input").attr("disabled", "disabled");
 
 
 	    var autoCompleteEditor = function (ui) {
         var $inp = ui.$cell.find("input");
         var rowData = ui.rowData;
-      
+
         //initialize the editor
         $inp.autocomplete({
         	source: "/bp/vendor-search/auto-complete",
@@ -1144,13 +1068,13 @@ $( "#vendor_name_1" ).autocomplete({
               .appendTo( ul );
           };
     }
-    
+
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-    
-   
-       
+
+
+
 	var obj = { width: "auto", height: $(window).height()-300, showTitle : false,
 			resizable:true,
 			//draggable:true,
@@ -1174,7 +1098,7 @@ echo $hoverMode;
 				  	 	<?php
 
         if (! $isViewing) :
-            ?> 
+            ?>
                     	<?php
 
             if ($canPost || $canAcceptAmendment) :
@@ -1216,13 +1140,13 @@ echo $hoverMode;
                      	<?php endif;
 
                     ?>
-                        
-                    
-                },
-        			 
 
-        change: function (evt, ui) {                
-            
+
+                },
+
+
+        change: function (evt, ui) {
+
             if (ui.source == 'commit' || ui.source == 'rollback') {
                 return;
             }
@@ -1234,20 +1158,20 @@ echo $hoverMode;
                 recIndx = grid.option('dataModel').recIndx,
                 deleteList = [],
                 updateList = [];
-            
+
             for (var i = 0; i < rowList.length; i++) {
                 var obj = rowList[i],
                     rowIndx = obj.rowIndx,
                     newRow = obj.newRow,
                     type = obj.type,
                     rowData = obj.rowData;
-                 if (type == 'add') {                        
+                 if (type == 'add') {
                     var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
                     if (valid) {
                         addList.push(newRow);
                     }
                 }
-                else if (type == 'update') {                        
+                else if (type == 'update') {
                     var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
                     if (valid) {
                         if (rowData[recIndx] == null) {
@@ -1257,7 +1181,7 @@ echo $hoverMode;
                         else {
                             updateList.push(rowData);
                       		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
-                             
+
                         }
                     }
                 }
@@ -1270,7 +1194,7 @@ echo $hoverMode;
                     deleteList: deleteList
                 });
                 //alert(sent_list);
-                  
+
                   $.ajax({
                       url: '/procure/po/update-row',
                       data: {
@@ -1282,22 +1206,22 @@ echo $hoverMode;
                       beforeSend: function (jqXHR, settings) {
                           //$(".saving", $grid).show();
 
-						  	
+
                           //$("#global-notice").text("Updating...").show();
                           //alert(updateList[0].item_name  +  updateList[0].row_id);
                       },
                       success: function (changes) {
                           //commit the changes.
-                      
+
                       	  if(changes.status == <?php
 
                         echo Constants::AJAX_FAILED;
                         ?>){
                       		$("#global-notice").text(changes.message).show();
                       	  }else{
-                      		$("#global-notice").text("[OK] Updated...").show();  
+                      		$("#global-notice").text("[OK] Updated...").show();
                       	  }
-            		      //alert('it is ok');                
+            		      //alert('it is ok');
                           /* grid.commit({ type: 'add', rows: changes.addList });
                           grid.commit({ type: 'update', rows: changes.updateList });
                           grid.commit({ type: 'delete', rows: changes.deleteList }); */
@@ -1310,9 +1234,9 @@ echo $hoverMode;
                   });
               }
             //alert(updateList.length);
-           
-        },     
-	              
+
+        },
+
 	};
 
     obj.dataModel = {
@@ -1326,7 +1250,7 @@ echo $hoverMode;
     	<?php
 
     if (! $isViewing) :
-        ?>   
+        ?>
       	<?php
 
         if ($canPost || $canAcceptAmendment) :
@@ -1347,18 +1271,18 @@ echo $hoverMode;
 
        <?php
     // $rowDTO->convertedStandardQuantity; ?>
-       
+
        { title: "FA Remarks", dataType: "string", dataIndx: "faRemarks", align: 'left',minWidth: 150,editable: true},
-   	   { title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },		
-	
+   	   { title: "Status", dataType: "string", dataIndx: "transactionStatus", width:120,editable: false },
+
        { title: "Ref", dataType: "integer", dataIndx: "rowIdentifer", width:120,editable: false},
-       
+
        { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
   		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
        { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
        { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
        { title: "Code", dataType: "interger", dataIndx: "vendorItemCode", width:100,editable: false },
-       
+
       	<?php
 
     if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
@@ -1376,9 +1300,9 @@ echo $hoverMode;
     endif;
     ?>
 
-       
+
        { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
-       
+
        { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
        { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
        { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
@@ -1391,19 +1315,19 @@ echo $hoverMode;
 
        { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
        { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
-        
- 
+
+
 		{ title: "PR", dataType: "string", dataIndx: "prNumber", width:120,editable: false },
 		{ title: "Dept", dataType: "string", dataIndx: "prDepartmentName", width:120,editable: false },
 		{ title: "WH", dataType: "string", dataIndx: "warehouse", width:120,editable: false },
-			      
+
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
 	    { title: "S", dataType: "string", dataIndx: "isInventoryItem", align: 'left',minWidth: 15,editable: false},
-	               
+
       ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);
-    
+
 
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;
@@ -1418,18 +1342,18 @@ echo $hoverMode;
 
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-    
+
             redirectUrl="/procure/po/update-row?token="+rowData['poToken']+"&entity_id="+rowData['id']+"&target_id="+rowData['po']+"&entity_token="+rowData['token'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');
         });
 
-     });        
+     });
 
 	// important for datamodel: local.
     $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
-     
+
     function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
     }

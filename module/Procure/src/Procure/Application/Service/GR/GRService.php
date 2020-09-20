@@ -4,7 +4,6 @@ namespace Procure\Application\Service\GR;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
-use Procure\Application\Service\FXService;
 use Procure\Application\Service\GR\Output\SaveAsOpenOffice;
 use Procure\Application\Service\GR\Output\SaveAsPdf;
 use Procure\Application\Service\GR\Output\Pdf\PdfBuilder;
@@ -17,18 +16,20 @@ use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
 use Procure\Application\Service\PR\Output\RowFormatter;
 use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\GoodsReceipt\GRDoc;
+use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
 use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Application\Application\Service\Shared\FXServiceImpl;
 
 /**
  * GR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRService extends AbstractService
 {
@@ -40,7 +41,7 @@ class GRService extends AbstractService
         $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-        if (! $rootEntity instanceof GRDoc) {
+        if (! $rootEntity instanceof GenericGR) {
             return null;
         }
 
@@ -148,7 +149,7 @@ class GRService extends AbstractService
 
         $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $fxService = new FXService();
+        $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($this->getDoctrineEM());
 
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);

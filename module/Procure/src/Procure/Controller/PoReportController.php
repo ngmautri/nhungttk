@@ -15,7 +15,7 @@ use Application\Controller\Contracts\AbstractGenericController;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoReportController extends AbstractGenericController
 {
@@ -38,7 +38,7 @@ class PoReportController extends AbstractGenericController
         }
 
         if ($docStatus == null) {
-            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+            $docStatus = ProcureDocStatus::POSTED;
         }
 
         if ($balance == null) {
@@ -140,7 +140,7 @@ class PoReportController extends AbstractGenericController
         }
 
         if ($docStatus == null) {
-            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+            $docStatus = ProcureDocStatus::POSTED;
         }
 
         if ($balance == null) {
@@ -443,7 +443,7 @@ class PoReportController extends AbstractGenericController
         if (isset($_GET['docStatus'])) {
             $docStatus = $_GET['docStatus'];
         } else {
-            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+            $docStatus = ProcureDocStatus::POSTED;
         }
 
         if (isset($_GET["pq_curpage"])) {

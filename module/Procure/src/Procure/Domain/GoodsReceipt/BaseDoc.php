@@ -13,7 +13,7 @@ class BaseDoc extends AbstractGR
 
     protected $targetDepartmentList;
 
-    // Specific Attribute
+    // Addtional Attributes
     // ===================
     protected $reversalDoc;
 

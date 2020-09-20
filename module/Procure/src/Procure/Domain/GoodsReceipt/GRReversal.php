@@ -3,20 +3,20 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Contracts\ProcureGoodsFlow;
-use Procure\Domain\GoodsReceipt\Contracts\DocInterface;
+use Procure\Domain\GoodsReceipt\Contracts\ReversalDocInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GRDoc extends GenericGoodsReceipt implements DocInterface
+class GRReversal extends GenericGoodsReceipt implements ReversalDocInterface
 {
 
     public function specify()
     {
-        $this->flow = ProcureGoodsFlow::IN;
-        $this->docType = ProcureDocType::GR;
+        $this->flow = ProcureGoodsFlow::OUT;
+        $this->docType = ProcureDocType::GR_REVERSAL;
     }
 
     // =====================
@@ -25,7 +25,7 @@ class GRDoc extends GenericGoodsReceipt implements DocInterface
 
     /**
      *
-     * @return \Procure\Domain\GoodsReceipt\GRDoc
+     * @return \Procure\Domain\GoodsReceipt\GRReversal
      */
     public static function getInstance()
     {

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\GoodsReceipt\;
+namespace Procure\Domain\GoodsReceipt;
 
 use Procure\Domain\GenericRow;
 

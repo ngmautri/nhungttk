@@ -153,7 +153,7 @@ abstract class GenericGR extends BaseDoc
             $snapshot->uuid = $snapshot->getToken();
         }
 
-        $snapshot->docStatus = ProcureDocStatus::DOC_STATUS_DRAFT;
+        $snapshot->docStatus = ProcureDocStatus::DRAFT;
         $snapshot->isActive = 1;
         $snapshot->docType = $this->docType;
         $snapshot->isDraft = 1;
@@ -295,7 +295,7 @@ abstract class GenericGR extends BaseDoc
             throw new \InvalidArgumentException((sprintf($f, $this->getDocStatus())));
         }
 
-        $validationService = ValidatorFactory::create($this->getDocType(), $sharedService);
+        $validationService = ValidatorFactory::createForPosting($this->getDocType(), $sharedService);
 
         $this->validate($validationService);
         if ($this->hasErrors()) {
@@ -350,7 +350,7 @@ abstract class GenericGR extends BaseDoc
             throw new \InvalidArgumentException((sprintf($f, $this->getDocStatus())));
         }
 
-        $validationService = ValidatorFactory::create($this->getDocType(), $sharedService);
+        $validationService = ValidatorFactory::createForPosting($this->getDocType(), $sharedService);
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());
         }

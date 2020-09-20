@@ -27,7 +27,7 @@ use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class EditHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -53,7 +53,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
          * @var PRDoc $rootEntity ;
          * @var PRSnapshot $rootSnapshot ;
          * @var UpdateOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -72,7 +72,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            if ($rootEntity->getDocStatus() == ProcureDocStatus::DOC_STATUS_POSTED) {
+            if ($rootEntity->getDocStatus() == ProcureDocStatus::POSTED) {
                 throw new InvalidOperationException(sprintf("AP is already posted! %s", $rootEntity->getId()));
             }
 

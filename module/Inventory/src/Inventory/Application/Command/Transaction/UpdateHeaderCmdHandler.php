@@ -27,7 +27,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -53,7 +53,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
          * @var TrxDoc $rootEntity ;
          * @var TrxSnapshot $rootSnapshot ;
          * @var TrxUpdateOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -71,7 +71,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            if ($rootEntity->getDocStatus() == ProcureDocStatus::DOC_STATUS_POSTED) {
+            if ($rootEntity->getDocStatus() == ProcureDocStatus::POSTED) {
                 throw new \RuntimeException(sprintf("Trx is already posted! %s", $rootEntity->getId()));
             }
 

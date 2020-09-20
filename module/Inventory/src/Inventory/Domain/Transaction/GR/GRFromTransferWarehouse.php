@@ -23,7 +23,7 @@ use RuntimeException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsReceiptInterface, BackGroundTrxInterface
 {
@@ -70,7 +70,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
             throw new InvalidArgumentException("No Options is found");
         }
 
-        if ($sourceObj->getDocStatus() != ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() != ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("GR document is not posted yet!");
         }
 

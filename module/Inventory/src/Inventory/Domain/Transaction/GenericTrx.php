@@ -161,7 +161,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() == Constants::POSTED) {
             throw new \RuntimeException(sprintf("PR is posted! %s", $this->getId()));
         }
 
@@ -256,7 +256,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() == Constants::POSTED) {
             throw new \RuntimeException(sprintf("Trx is posted already! %s", $this->getId()));
         }
 
@@ -329,7 +329,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function post(CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
             throw new \InvalidArgumentException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
@@ -385,7 +385,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function store(SharedService $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
             throw new \InvalidArgumentException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
@@ -427,7 +427,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function reverse(CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new \RuntimeException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
 

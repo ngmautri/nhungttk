@@ -202,7 +202,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() == Constants::POSTED) {
             throw new \RuntimeException(sprintf("AP is posted! %s", $this->getId()));
         }
 
@@ -274,7 +274,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() == Constants::POSTED) {
             throw new \RuntimeException(sprintf("PO is posted! %s", $this->getId()));
         }
 
@@ -358,7 +358,7 @@ abstract class GenericAP extends BaseDoc
             throw new \InvalidArgumentException(sprintf($f, $this->getDocType()));
         }
 
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
             $f = Translator::translate("Document is already posted/closed or being amended! %s");
             throw new \RuntimeException(sprintf($f, __FUNCTION__));
         }
@@ -411,7 +411,7 @@ abstract class GenericAP extends BaseDoc
             throw new \InvalidArgumentException(sprintf($f, $this->getDocType()));
         }
 
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new \RuntimeException(sprintf("Document is not posted yet! %s", __METHOD__));
         }
 

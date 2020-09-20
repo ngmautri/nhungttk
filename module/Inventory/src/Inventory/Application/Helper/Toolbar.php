@@ -9,7 +9,7 @@ use Inventory\Domain\Transaction\Contracts\TrxType;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Toolbar
 {
@@ -32,7 +32,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -68,7 +68,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -80,7 +80,7 @@ class Toolbar
 
                 break;
 
-            case ProcureDocStatus::DOC_STATUS_POSTED:
+            case ProcureDocStatus::POSTED:
 
                 if ($headerDTO->getMovementType() == TrxType::GR_FROM_PURCHASING) {
                     $toolbar = $goodReturnBtn;
@@ -110,7 +110,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -144,7 +144,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;

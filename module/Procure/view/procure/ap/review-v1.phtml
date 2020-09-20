@@ -67,17 +67,17 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . "/procure/ap/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/ap/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
     switch ($headerDTO->getDocStatus()) {
-        case ProcureDocStatus::DOC_STATUS_DRAFT:
+        case ProcureDocStatus::DRAFT:
             $isDraft = true;
             $canPost = true;
             break;
-        case ProcureDocStatus::DOC_STATUS_POSTED:
+        case ProcureDocStatus::POSTED:
             $isPosted = true;
             break;
     }
@@ -104,7 +104,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 if ($action == Constants::FORM_ACTION_REVIEW) :
     $current_step = "STEP3";
     include (ROOT . '/module/Procure/view/procure/ap-create-wizard.php');
-     
+
 endif;
 
 include (ROOT . '/module/Procure/view/procure/ap_summary.php');
@@ -133,7 +133,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 9.5pt">
             <ul>
@@ -638,7 +638,7 @@ echo $paymentTerm_option;
                            </div>
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
-                  
+
                   </fieldset>
                </form>
             </div>
@@ -775,7 +775,7 @@ function doPosting() {
    $('#b_modal_no_header').modal();
    submitForm('HEADER_FORM');
 
-   
+
 }
 
 function doPosting1() {
@@ -807,12 +807,12 @@ echo $version;
 }
 
 function confirmReserval() {
-    
+
  	$('#reversal_confirm_modal_sm').modal();
 }
 
 function doReserval() {
-    $('#reversal_confirm_modal_sm').modal('hide');    
+    $('#reversal_confirm_modal_sm').modal('hide');
     submitForm("REVERSAL_FORM");
 }
 
@@ -1194,7 +1194,7 @@ echo $hoverMode;
 
       	<?php
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},

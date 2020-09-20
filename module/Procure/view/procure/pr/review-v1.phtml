@@ -4,8 +4,8 @@ use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  *
@@ -77,17 +77,17 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == Constants::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
     switch ($headerDTO->getDocStatus()) {
-        case ProcureDocStatus::DOC_STATUS_DRAFT:
+        case ProcureDocStatus::DRAFT:
             $isDraft = true;
             $canPost = true;
             break;
-        case ProcureDocStatus::DOC_STATUS_POSTED:
+        case ProcureDocStatus::POSTED:
             $isPosted = true;
             break;
     }
@@ -130,7 +130,7 @@ endif;
 include (ROOT . '/module/Procure/view/procure/pr_summary.php');
 ?>
 
-  		
+
 
   <div class="container_dropzone">
          <input style="display: none;" type="file" name="pictures[]" id="file">
@@ -158,7 +158,7 @@ include (ROOT . '/module/Procure/view/procure/pr_summary.php');
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <!-- end tab -->
          <div id="tabs" style="font-size: 9.5pt">
@@ -182,11 +182,11 @@ include (ROOT . '/module/Procure/view/procure/pr_summary.php');
                      &nbsp;Picture
                   </a>
                </li>
-              
+
                 <?php
                 echo $tabs;
                 ?>
-    
+
             </ul>
             <div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
                <!-- Tab1 -->
@@ -519,7 +519,7 @@ echo $department_option;
                            </div>
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
-                  
+
                   </fieldset>
                </form>
             </div>
@@ -655,7 +655,7 @@ function doPosting() {
    $('#b_modal_no_header').modal();
    submitForm('HEADER_FORM');
 
-   
+
 }
 
 function doPosting1() {
@@ -687,12 +687,12 @@ echo $version;
 }
 
 function confirmReserval() {
-    
+
  	$('#reversal_confirm_modal_sm').modal();
 }
 
 function doReserval() {
-    $('#reversal_confirm_modal_sm').modal('hide');    
+    $('#reversal_confirm_modal_sm').modal('hide');
     submitForm("REVERSAL_FORM");
 }
 
@@ -884,7 +884,7 @@ echo $hoverMode;
 
 				  	  toolbar: {
 	                    items: [
-                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: 
+                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners:
                             [
                                 { "click": function (evt, ui) {
                                     var $grid = $(this).closest('.pq-grid');
@@ -1027,7 +1027,7 @@ echo $hoverMode;
 
       	<?php
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         <?php
@@ -1040,7 +1040,7 @@ echo $hoverMode;
     endif;
     ?>
        { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
-  
+
         { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
        { title: "Received Stock", dataType: "decimal", dataIndx: "postedStockQrQuantity", align: 'right',width:70,editable: false },
        { title: "Billed qty", dataType: "decimal", dataIndx: "postedApQuantity", align: 'right',width:70,editable: false },
@@ -1051,7 +1051,7 @@ echo $hoverMode;
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
       { title: "PR", dataType: "string", dataIndx: "lastApVendor", width:120,editable: false },
       { title: "PR", dataType: "string", dataIndx: "edt", width:120,editable: false },
-           
+
       ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);
@@ -1099,7 +1099,7 @@ echo $hoverMode;
         e.stopPropagation();
         e.preventDefault();
         $("h4").addClass('cat_drag_over');
-            
+
         //$("h4").text("Drop");
     });
 
@@ -1108,7 +1108,7 @@ echo $hoverMode;
         e.stopPropagation();
         e.preventDefault();
         $("h4").removeClass('cat_drag_over');
-            
+
         //$("h4").text("Drop");
     });
 
@@ -1127,12 +1127,12 @@ echo $hoverMode;
 
         //$("h4").text("Uploaded");
         $("h4").removeClass('cat_drag_over');
-        
+
 
         var file = e.originalEvent.dataTransfer.files;
         var fd = new FormData();
 
-        fd.append('attachments', file[0]);         
+        fd.append('attachments', file[0]);
         fd.append('target_id', <?php
         echo (! $headerDTO == null) ? $headerDTO->getId() : "";
         ?>);
@@ -1162,20 +1162,20 @@ echo $hoverMode;
         if(dataArray.length == 0){
      	   return;
         }
-        
+
         var i;
         var selected_file="";
-        
+
         selected_file= "<ul>";
         for (i = 0; i < dataArray.length; i++) {
      	   selected_file = selected_file + "<li>"+ dataArray[i].name +"; "+dataArray[i].size + "</li>";
-        } 
+        }
 
         selected_file= selected_file+"</ul>";
 
         $('#selected_file').html(selected_file);
         $('#uploadBtn').show();
-           
+
         //uploadData(fd);
     });
 
@@ -1199,11 +1199,11 @@ echo $hoverMode;
         fd.append('token', '<?php
 
         echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-        ?>');       
+        ?>');
         fd.append('subject','na');
         fd.append('entity_id','na');
         fd.append('entity_token','na');
-  
+
 
         //uploadData(fd);
     });
@@ -1211,22 +1211,22 @@ echo $hoverMode;
 
  //Sending AJAX request and upload file
  function uploadData(formdata){
- 	
+
     $.ajax({
         url: '/procure/pr-attachment/upload1',
         type: 'POST',
         data: formdata,
         contentType: false,
         processData: false,
-        dataType: 'json',       
+        dataType: 'json',
         success: function( jqXHR, textStatus ){
      	   //alert("ok");
             //alert(response);
      	   location.reload();
         },
     }).fail(function(  jqXHR, textStatus ) {
- 	    
- 		
+
+
  		 alert('false');
 
  		   });
@@ -1238,12 +1238,12 @@ function doUploading(){
  	 if(dataArray.length == 0){
  		alert("No File");
  	  	return;
- 	 }    
+ 	 }
 
- 	 $("#b_modal_no_header").modal(); 
+ 	 $("#b_modal_no_header").modal();
 
  	 //alert(dataArray.length);
- 	 
+
      var fd = new FormData();
      fd.append('attachments',dataArray[0]);
      fd.append('target_id', <?php
@@ -1254,7 +1254,7 @@ function doUploading(){
      fd.append('token', '<?php
 
     echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
-    ?>');       
+    ?>');
      fd.append('documentSubject','na');
      fd.append('entity_id','na');
      fd.append('entity_token','na');
@@ -1266,23 +1266,23 @@ function doUploading(){
      fd.append('markedForDeletion',0);
      fd.append('visibility',1);
      fd.append('filePassword','');
-         
-             
+
+
     $.ajax({
         url: '/procure/pr-attachment/upload1',
         type: 'POST',
         data: fd,
         contentType: false,
         processData: false,
-        dataType: 'json',       
+        dataType: 'json',
         success: function( jqXHR, textStatus ){
      	   //alert("ok");
             //alert(response);
      	   location.reload();
         },
     }).fail(function(  jqXHR, textStatus ) {
- 	    
- 		
+
+
  		 alert(jqXHR.responseText  + textStatus);
 
  		   });
@@ -1290,7 +1290,7 @@ function doUploading(){
 
  //Added thumbnail
  function addThumbnail(data){
-    $("#uploadfile h1").remove(); 
+    $("#uploadfile h1").remove();
     var len = $("#uploadfile div.thumbnail").length;
 
     var num = Number(len);
@@ -1314,7 +1314,7 @@ function doUploading(){
     var i = parseInt(Math.floor(Math.log(size) / Math.log(1024)));
     return Math.round(size / Math.pow(1024, i), 2) + ' ' + sizes[i];
  }
-         
 
-    
+
+
 </script>

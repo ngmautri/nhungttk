@@ -3,34 +3,21 @@ namespace Procure\Application\Command\GR;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
 use Procure\Application\DTO\Gr\GrDTO;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\AccountPayable\APDoc;
+use Procure\Application\Service\SharedServiceFactory;
+use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\GoodsReceipt\GRDoc;
-use Procure\Domain\GoodsReceipt\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrDateAndWarehouseValidator;
-use Procure\Domain\GoodsReceipt\Validator\Header\GrPostingValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\DefaultRowValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\GLAccountValidator;
-use Procure\Domain\GoodsReceipt\Validator\Row\PoRowValidator;
-use Procure\Domain\Service\GrPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Domain\Service\ValidationServiceImpl;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
+use Procure\Domain\GoodsReceipt\Factory\GRFactory;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCopyFromAPCmdHandler extends AbstractCommandHandler
 {
@@ -51,7 +38,7 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
          * @var GrDTO $dto ;
          * @var GRDoc $rootEntity ;
          * @var PostCopyFromAPOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -62,7 +49,7 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
 
         $sourceObj = $options->getSourceObj();
 
-        if (! $sourceObj instanceof APDoc) {
+        if (! $sourceObj instanceof GenericAP) {
             throw new InvalidArgumentException(sprintf("Source object not given! %s", "AP Document required"));
         }
 
@@ -70,37 +57,8 @@ class PostCopyFromAPCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $headerValidators = new HeaderValidatorCollection();
-
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new GrDateAndWarehouseValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-            $validator = new GrPostingValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-
-            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-            $validator = new PoRowValidator($sharedSpecFactory, $fxService, $procureSpecsFactory);
-            $rowValidators->add($validator);
-            $validator = new GLAccountValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new GRCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new GrPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
-            $sharedService->setPostingService($postingService);
-
-            $validationService = new ValidationServiceImpl($headerValidators, $rowValidators);
-
-            $rootEntity = GRDoc::postCopyFromAP($sourceObj, $options, $validationService, $sharedService);
+            $sharedService = SharedServiceFactory::createForGR($cmd->getDoctrineEM());
+            $rootEntity = GRFactory::postCopyFromAP($sourceObj, $options, $sharedService);
 
             // event dispatch
             // ================

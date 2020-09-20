@@ -7,6 +7,7 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Transaction\GenericTrx;
 use Procure\Domain\AccountPayable\APDoc;
+use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
@@ -90,7 +91,7 @@ class GRFactory
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $instance->setDocStatus(ProcureDocStatus::DRAFT);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $instance->setRevisionNo(1);
@@ -187,12 +188,12 @@ class GRFactory
 
     /**
      *
-     * @param APDoc $sourceObj
+     * @param GenericAP $sourceObj
      * @param CommandOptions $options
      * @param SharedService $sharedService
      * @return \Procure\Domain\GoodsReceipt\GRFromAP
      */
-    public static function postCopyFromAP(APDoc $sourceObj, CommandOptions $options, SharedService $sharedService)
+    public static function postCopyFromAP(GenericAP $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
         return GRFromAP::postCopyFromAP($sourceObj, $options, $sharedService);
     }

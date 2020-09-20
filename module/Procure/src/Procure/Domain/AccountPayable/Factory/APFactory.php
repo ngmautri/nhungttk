@@ -14,6 +14,7 @@ use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\SharedService;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\AccountPayable\APFromPO;
 
 /**
  *
@@ -210,7 +211,7 @@ class APFactory
      */
     public static function createFromPo(PODoc $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        return APDoc::createFromPo($sourceObj, $options, $sharedService);
+        return APFromPO::createFromPo($sourceObj, $options, $sharedService);
     }
 
     /**
@@ -230,6 +231,9 @@ class APFactory
                 break;
             case ProcureDocType::INVOICE_REVERSAL:
                 $doc = APReversal::getInstance();
+                break;
+            case ProcureDocType::INVOICE_FROM_PO:
+                $doc = APFromPO::getInstance();
                 break;
         }
         return $doc;

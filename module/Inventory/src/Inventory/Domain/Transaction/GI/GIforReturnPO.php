@@ -23,7 +23,7 @@ use Inventory\Domain\Event\Transaction\GI\WhGiForReturnPoPosted;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, StockQtyAdjustmentInterface
 {
@@ -78,7 +78,7 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, S
         if ($sourceObj->getTransactionStatus() == TrxStatus::GR_FULLY_USED) {
             throw new InvalidArgumentException("Items already used fullly. Return not possible!");
         }
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("GR document is not posted yet!");
         }
 

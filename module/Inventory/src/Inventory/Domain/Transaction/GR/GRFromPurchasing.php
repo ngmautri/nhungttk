@@ -21,7 +21,9 @@ use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\Shared\ProcureDocStatus;
+use function RuntimeException\__construct as sprintf;
 use InvalidArgumentException;
 
 /**
@@ -48,9 +50,9 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
         $this->specify();
     }
 
-    public static function postCopyFromProcureGR(GRDoc $sourceObj, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    public static function postCopyFromProcureGR(GenericGR $sourceObj, CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        if (! $sourceObj instanceof GRDoc) {
+        if (! $sourceObj instanceof GenericGR) {
             throw new InvalidArgumentException("GRDoc Entity is required");
         }
 
@@ -63,7 +65,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             throw new InvalidArgumentException("No Options is found");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("GR document is not posted yet!");
         }
 
@@ -171,7 +173,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             throw new InvalidArgumentException("No Options is found");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_REVERSED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::REVERSED) {
             throw new InvalidArgumentException("GR document is not reversed yet!");
         }
 
@@ -273,7 +275,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             throw new InvalidArgumentException("Source Entity is empty!");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("Source document is not posted!");
         }
 

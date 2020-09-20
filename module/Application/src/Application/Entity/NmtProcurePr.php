@@ -1,8 +1,8 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Application\BaseEntity\BaseNmtProcurePr;
 
 /**
  * NmtProcurePr
@@ -10,9 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"}), @ORM\Index(name="nmt_procure_pr_KF4_idx", columns={"company_id"}), @ORM\Index(name="nmt_procure_pr_KF5_idx", columns={"warehouse_id"})})
  * @ORM\Entity
  */
-class NmtProcurePr
+class NmtProcurePr extends BaseNmtProcurePr
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +29,7 @@ class NmtProcurePr
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="pr_auto_number", type="string", length=45, nullable=true)
@@ -29,6 +37,7 @@ class NmtProcurePr
     private $prAutoNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="pr_number", type="string", length=45, nullable=false)
@@ -36,6 +45,7 @@ class NmtProcurePr
     private $prNumber;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="pr_name", type="string", length=45, nullable=false)
@@ -43,6 +53,7 @@ class NmtProcurePr
     private $prName;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
@@ -50,6 +61,7 @@ class NmtProcurePr
     private $keywords;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -57,6 +69,7 @@ class NmtProcurePr
     private $remarks;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -64,6 +77,7 @@ class NmtProcurePr
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -71,6 +85,7 @@ class NmtProcurePr
     private $lastchangeOn;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
@@ -78,6 +93,7 @@ class NmtProcurePr
     private $isDraft;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -85,6 +101,7 @@ class NmtProcurePr
     private $isActive;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
@@ -92,6 +109,7 @@ class NmtProcurePr
     private $status;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -99,6 +117,7 @@ class NmtProcurePr
     private $token;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
@@ -106,6 +125,7 @@ class NmtProcurePr
     private $checksum;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="submitted_on", type="datetime", nullable=true)
@@ -113,6 +133,7 @@ class NmtProcurePr
     private $submittedOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -120,6 +141,7 @@ class NmtProcurePr
     private $currentState;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="total_row_manual", type="integer", nullable=true)
@@ -127,6 +149,7 @@ class NmtProcurePr
     private $totalRowManual;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
@@ -134,6 +157,7 @@ class NmtProcurePr
     private $revisionNo;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
@@ -141,6 +165,7 @@ class NmtProcurePr
     private $docStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
@@ -148,6 +173,7 @@ class NmtProcurePr
     private $workflowStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
@@ -155,6 +181,7 @@ class NmtProcurePr
     private $transactionStatus;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
@@ -162,6 +189,7 @@ class NmtProcurePr
     private $docType;
 
     /**
+     *
      * @var boolean
      *
      * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
@@ -169,6 +197,7 @@ class NmtProcurePr
     private $reversalBlocked;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
@@ -176,6 +205,7 @@ class NmtProcurePr
     private $uuid;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="doc_number", type="string", length=100, nullable=true)
@@ -183,6 +213,7 @@ class NmtProcurePr
     private $docNumber;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="doc_date", type="datetime", nullable=true)
@@ -190,6 +221,7 @@ class NmtProcurePr
     private $docDate;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -200,6 +232,7 @@ class NmtProcurePr
     private $createdBy;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -210,6 +243,7 @@ class NmtProcurePr
     private $lastchangeBy;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationDepartment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
@@ -220,6 +254,7 @@ class NmtProcurePr
     private $department;
 
     /**
+     *
      * @var \Application\Entity\NmtApplicationCompany
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
@@ -230,6 +265,7 @@ class NmtProcurePr
     private $company;
 
     /**
+     *
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -238,8 +274,6 @@ class NmtProcurePr
      * })
      */
     private $warehouse;
-
-
 
     /**
      * Get id

@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GenericDoc extends BaseDoc
 {
@@ -169,7 +169,7 @@ class GenericDoc extends BaseDoc
     {
         $this->setCreatedOn($createdDate);
         $this->setCreatedBy($createdBy);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
 
         $this->setIsActive(1);
         $this->setIsDraft(1);
@@ -195,7 +195,7 @@ class GenericDoc extends BaseDoc
         $this->setIsPosted(1);
         $this->setIsDraft(0);
         $this->setIsActive(1);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_POSTED);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
     }
 
     /**
@@ -211,7 +211,7 @@ class GenericDoc extends BaseDoc
         $this->setIsDraft(0);
         $this->setIsPosted(0);
         $this->setIsActive(1);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_REVERSED);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
         $this->setLastchangeBy($postedBy);
     }
 

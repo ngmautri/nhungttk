@@ -3,8 +3,8 @@ use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  *
@@ -78,17 +78,17 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/pr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == Constants::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
     switch ($headerDTO->getDocStatus()) {
-        case ProcureDocStatus::DOC_STATUS_DRAFT:
+        case ProcureDocStatus::DRAFT:
             $isDraft = true;
             $canPost = true;
             break;
-        case ProcureDocStatus::DOC_STATUS_POSTED:
+        case ProcureDocStatus::POSTED:
             $isPosted = true;
             break;
     }
@@ -238,7 +238,7 @@ echo $hoverMode;
     obj.colModel = [
 
              { title: "", editable: false, minWidth: 55, sortable: false,
-           
+
        },
 
 
@@ -257,7 +257,7 @@ echo $hoverMode;
 
       	<?php
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         <?php
@@ -270,7 +270,7 @@ echo $hoverMode;
     endif;
     ?>
        { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
-  
+
         { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
        { title: "Received Stock", dataType: "decimal", dataIndx: "postedStockQrQuantity", align: 'right',width:70,editable: false },
        { title: "Billed qty", dataType: "decimal", dataIndx: "postedApQuantity", align: 'right',width:70,editable: false },
@@ -281,7 +281,7 @@ echo $hoverMode;
 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
       { title: "PR", dataType: "string", dataIndx: "lastApVendor", width:120,editable: false },
       { title: "PR", dataType: "string", dataIndx: "edt", width:120,editable: false },
-           
+
       ];
 
     var $grid = $("#pr_row_gird").pqGrid(obj);
@@ -293,5 +293,5 @@ echo $hoverMode;
     function refreshGird(){
     	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
     }
-    
+
 </script>

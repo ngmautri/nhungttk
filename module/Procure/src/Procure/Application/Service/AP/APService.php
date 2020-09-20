@@ -1,11 +1,10 @@
 <?php
 namespace Procure\Application\Service\AP;
 
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
 use Procure\Application\DTO\Ap\ApDTO;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\AP\Output\ApRowFormatter;
 use Procure\Application\Service\AP\Output\ApSaveAsExcel;
 use Procure\Application\Service\AP\Output\ApSaveAsOpenOffice;
@@ -17,13 +16,9 @@ use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
 use Procure\Application\Service\Output\Formatter\RowTextAndNumberFormatter;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
-use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
-use Procure\Domain\Service\APPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
+use Procure\Domain\AccountPayable\GenericAP;
+use Procure\Domain\AccountPayable\Factory\APFactory;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
@@ -31,7 +26,7 @@ use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
  * AP Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APService extends AbstractService
 {
@@ -59,7 +54,7 @@ class APService extends AbstractService
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-        if (! $rootEntity instanceof APDoc) {
+        if (! $rootEntity instanceof GenericAP) {
             return null;
         }
 
@@ -132,24 +127,20 @@ class APService extends AbstractService
         ];
     }
 
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param CommandOptions $options
+     * @return \Procure\Domain\AccountPayable\APDoc
+     */
     public function createFromPO($id, $token, CommandOptions $options)
     {
         $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
 
         $po = $rep->getOpenItems($id, $token);
-
-        $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $postingService = new APPostingService(new APCmdRepositoryImpl($this->getDoctrineEM()));
-        $fxService = new FXServiceImpl();
-        $fxService->setDoctrineEM($this->getDoctrineEM());
-
-        $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-        $domainSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
-
-        $validationService = ValidatorFactory::createForCopyFromPO($sharedService, false);
-
-        $rootEntity = APDoc::createFromPo($po, $options, $validationService);
+        $sharedService = SharedServiceFactory::create($this->getDoctrineEM());
+        $rootEntity = APFactory::createFromPo($po, $options, $sharedService);
         return $rootEntity;
     }
 }

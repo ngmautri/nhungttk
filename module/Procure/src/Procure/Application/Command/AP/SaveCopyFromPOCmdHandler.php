@@ -14,6 +14,7 @@ use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\AccountPayable\APFromPO;
 
 /**
  *
@@ -52,7 +53,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 
         $rootEntity = $options->getRootEntity();
 
-        if (! $rootEntity instanceof APDoc) {
+        if (! $rootEntity instanceof APFromPO) {
             throw new InvalidArgumentException("Root entity not found");
         }
 

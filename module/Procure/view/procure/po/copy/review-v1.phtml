@@ -8,9 +8,9 @@
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
@@ -84,21 +84,21 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == PODocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
     switch ($headerDTO->getDocStatus()) {
-        case ProcureDocStatus::DOC_STATUS_DRAFT:
+        case ProcureDocStatus::DRAFT:
             $isDraft = true;
             $canPost = true;
             break;
-        case ProcureDocStatus::DOC_STATUS_POSTED:
+        case ProcureDocStatus::POSTED:
             $isPosted = true;
             $canAmend = true;
             break;
-        case ProcureDocStatus::DOC_STATUS_AMENDING:
+        case ProcureDocStatus::AMENDING:
             $isAmending = true;
             $canAcceptAmendment = true;
             break;
@@ -242,7 +242,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 9.5pt">
             <ul>
@@ -506,43 +506,51 @@ if ($isViewing) :
 
                                 if ($headerDTO->getCurrentState() == "draftPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                  value="finalPo">Final</option>
                               </select>
                            </div>
@@ -790,7 +798,7 @@ if ($isViewing) :
                            </div>
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
-                  
+
                   </fieldset>
                </form>
             </div>
@@ -1018,7 +1026,7 @@ function doPostAmendment() {
 
     alert("test");
 	$('#post_amendment_confirm_modal_sm').modal('hide');
-	
+
 	var url="/procure/po/review-amendment";
 	var entity_id="<?php
 
@@ -1032,7 +1040,7 @@ echo (! $headerDTO == null) ? $headerDTO->getToken() : "";
 
 echo $version;
 ?>";
-   
+
 
 
 $('#b_modal_no_header').modal();
@@ -1363,7 +1371,7 @@ echo $hoverMode;
 
       	<?php
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         ?>
         { title: "Doc Qty", dataType: "decimal", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
         { title: "Unit Price", dataType: "decimal", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},

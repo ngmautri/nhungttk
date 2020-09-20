@@ -32,7 +32,7 @@ use RuntimeException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterface, BackGroundTrxInterface
 {
@@ -73,7 +73,7 @@ class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterfa
             throw new InvalidArgumentException("No Options is found");
         }
 
-        if ($sourceObj->getDocStatus() != ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() != ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("GR document is not posted yet!");
         }
 
@@ -165,7 +165,7 @@ class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterfa
             throw new InvalidArgumentException("No Options is found");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_REVERSED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::REVERSED) {
             throw new InvalidArgumentException("GR document is not reversed yet!");
         }
 
@@ -267,7 +267,7 @@ class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterfa
             throw new InvalidArgumentException("Source Entity is empty!");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("Source document is not posted!");
         }
 

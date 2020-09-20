@@ -15,7 +15,7 @@ use Procure\Domain\Shared\Constants;
  * Goods Receipt Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRRow extends GenericRow
 {
@@ -156,15 +156,15 @@ class GRRow extends GenericRow
 
     /**
      *
-     * @param GRDoc $rootEntity
+     * @param GenericGR $rootEntity
      * @param APRow $sourceObj
      * @param CommandOptions $options
      * @throws InvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRRow
      */
-    public static function copyFromApRow(GRDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
+    public static function copyFromApRow(GenericGR $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
-        if (! $rootEntity instanceof GRDoc) {
+        if (! $rootEntity instanceof GenericGR) {
             throw new InvalidArgumentException("GR document is required!");
         }
         if (! $sourceObj instanceof APRow) {
@@ -194,15 +194,15 @@ class GRRow extends GenericRow
 
     /**
      *
-     * @param GRDoc $rootEntity
+     * @param GenericGR $rootEntity
      * @param APRow $sourceObj
      * @param CommandOptions $options
      * @throws InvalidArgumentException
      * @return \Procure\Domain\GoodsReceipt\GRRow
      */
-    public static function copyFromApRowReserval(GRDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
+    public static function copyFromApRowReserval(GenericGR $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
-        if (! $rootEntity instanceof GRDoc) {
+        if (! $rootEntity instanceof GenericGR) {
             throw new InvalidArgumentException("GR document is required!");
         }
         if (! $sourceObj instanceof APRow) {

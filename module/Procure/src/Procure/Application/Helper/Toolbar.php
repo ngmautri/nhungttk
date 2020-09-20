@@ -11,7 +11,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Toolbar
 {
@@ -37,7 +37,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -49,7 +49,7 @@ class Toolbar
 
                 break;
 
-            case ProcureDocStatus::DOC_STATUS_POSTED:
+            case ProcureDocStatus::POSTED:
                 $toolbar = \sprintf("%s %s %s", $payBtn, $goodReturnBtn, $reverseBtn);
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
@@ -90,7 +90,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -101,13 +101,13 @@ class Toolbar
                 }
                 break;
 
-            case ProcureDocStatus::DOC_STATUS_POSTED:
+            case ProcureDocStatus::POSTED:
                 $toolbar = \sprintf("%s %s %s %s", $enableAmendmentBtn, $goodsReceiptBtn, $invoiceBtn, $payBtn);
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
                 }
                 break;
-            case ProcureDocStatus::DOC_STATUS_AMENDING:
+            case ProcureDocStatus::AMENDING:
                 $toolbar = \sprintf("%s", $postAmendmentBtn);
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
@@ -132,7 +132,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
                 }
@@ -142,7 +142,7 @@ class Toolbar
                 }
                 break;
 
-            case ProcureDocStatus::DOC_STATUS_POSTED:
+            case ProcureDocStatus::POSTED:
                 $toolbar = \sprintf("%s", $poBtn);
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
@@ -165,7 +165,7 @@ class Toolbar
 
         switch ($headerDTO->getDocStatus()) {
 
-            case ProcureDocStatus::DOC_STATUS_DRAFT:
+            case ProcureDocStatus::DRAFT:
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
                     $toolbar = $reviewBtn;
@@ -176,9 +176,9 @@ class Toolbar
                 }
                 break;
 
-            case ProcureDocStatus::DOC_STATUS_POSTED:
+            case ProcureDocStatus::POSTED:
                 break;
-            case ProcureDocStatus::DOC_STATUS_AMENDING:
+            case ProcureDocStatus::AMENDING:
                 break;
         }
 

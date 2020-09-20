@@ -4,15 +4,15 @@ namespace Procure\Infrastructure\Doctrine;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
+use Procure\Domain\AccountPayable\Factory\APFactory;
 use Procure\Domain\AccountPayable\Repository\APQueryRepositoryInterface;
 use Procure\Infrastructure\Mapper\ApMapper;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQueryRepositoryInterface
 {
@@ -113,7 +113,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
             return null;
         }
 
-        return APDoc::makeFromSnapshot($snapshot);
+        return APFactory::constructFromDB($snapshot);
     }
 
     public function getById($id, $outputStragegy = null)
@@ -160,7 +160,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
         $rows = $this->getRowsById($id);
 
         if (count($rows) == 0) {
-            $rootEntity = APDoc::makeFromSnapshot($rootSnapshot);
+            $rootEntity = APFactory::constructFromDB($rootSnapshot);
             return $rootEntity;
         }
 
@@ -200,7 +200,7 @@ class APQueryRepositoryImpl extends AbstractDoctrineRepository implements APQuer
         $rootSnapshot->taxAmount = $taxAmount;
         $rootSnapshot->grossAmount = $grossAmount;
 
-        $rootEntity = APDoc::makeFromSnapshot($rootSnapshot);
+        $rootEntity = APFactory::constructFromDB($rootSnapshot);
         $rootEntity->setDocRows($docRowsArray);
         $rootEntity->setRowIdArray($rowIdArray);
         return $rootEntity;

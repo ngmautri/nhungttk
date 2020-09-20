@@ -87,7 +87,7 @@ class GRDoc extends GenericGR
             throw new \InvalidArgumentException("PO Entity is empty!");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new \RuntimeException("PO document is not posted!");
         }
 
@@ -412,7 +412,7 @@ class GRDoc extends GenericGR
      */
     public function saveFromPO(GRSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        if (! $this->getDocStatus() == ProcureDocStatus::DOC_STATUS_DRAFT) {
+        if (! $this->getDocStatus() == ProcureDocStatus::DRAFT) {
             throw new InvalidArgumentException(sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         }
 
@@ -523,7 +523,7 @@ class GRDoc extends GenericGR
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $instance->setDocStatus(ProcureDocStatus::DRAFT);
         $instance->setDocType(ProcureDocType::GR);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);

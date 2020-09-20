@@ -9,6 +9,7 @@ use Procure\Domain\GenericRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\Shared\Constants;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  * AP Row
@@ -103,13 +104,13 @@ class APRow extends GenericRow
 
     /**
      *
-     * @param APDoc $rootDoc
+     * @param APFromPO $rootDoc
      * @param PORow $sourceObj
      * @param CommandOptions $options
      * @throws InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\APRow
      */
-    public static function createFromPoRow(APDoc $rootDoc, PORow $sourceObj, CommandOptions $options)
+    public static function createFromPoRow(APFromPO $rootDoc, PORow $sourceObj, CommandOptions $options)
     {
         if (! $sourceObj instanceof PORow) {
             throw new InvalidArgumentException("PO document is required!");
@@ -124,7 +125,7 @@ class APRow extends GenericRow
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
-        $instance->setDocType(Constants::PROCURE_DOC_TYPE_INVOICE_PO); // important.
+        $instance->setDocType(ProcureDocType::INVOICE_FROM_PO); // important.
         $instance->setPoRow($sourceObj->getId()); // Important
 
         $instance->glAccount = $sourceObj->getItemInventoryGL();
@@ -146,9 +147,9 @@ class APRow extends GenericRow
      * @throws InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\APRow
      */
-    public static function createRowReversal(APDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
+    public static function createRowReversal(GenericAP $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
-        if (! $rootEntity instanceof APDoc) {
+        if (! $rootEntity instanceof GenericAP) {
             throw new InvalidArgumentException("AP document is required!");
         }
         if (! $sourceObj instanceof APRow) {

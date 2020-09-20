@@ -10,7 +10,7 @@ use Procure\Domain\Shared\ProcureDocStatus;
  * Generic Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GenericRow extends BaseRow
 {
@@ -66,7 +66,7 @@ class GenericRow extends BaseRow
     {
         $this->setCreatedOn($createdDate);
         $this->setCreatedBy($createdBy);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
 
         $this->setIsActive(1);
         $this->setIsDraft(1);
@@ -82,7 +82,7 @@ class GenericRow extends BaseRow
     {
         $this->setCreatedOn($createdDate);
         $this->setCreatedBy($createdBy);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_DRAFT);
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
 
         $this->setIsActive(1);
         $this->setIsDraft(1);
@@ -201,7 +201,7 @@ class GenericRow extends BaseRow
         $this->setIsActive(1);
         $this->setIsDraft(0);
         $this->setIsReversed(0);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_POSTED);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
     }
 
     /**
@@ -219,7 +219,7 @@ class GenericRow extends BaseRow
         $this->setIsActive(1);
         $this->setIsDraft(0);
         $this->setIsPosted(0);
-        $this->setDocStatus(ProcureDocStatus::DOC_STATUS_REVERSED);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
     }
 
     public function refreshRowsFromNewHeaderSnapshot(APSnapshot $snapshot)

@@ -11,7 +11,7 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Helper\Toolbar;
-use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\Contracts\ProcureDocStatus;
 
 /**@var TrxDTO $headerDTO ;*/
 /**@var TrxRowDTO $rowDTO ;*/
@@ -91,17 +91,17 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . $base_url . "save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . $base_url . "save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == Constants::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
     switch ($headerDTO->getDocStatus()) {
-        case ProcureDocStatus::DOC_STATUS_DRAFT:
+        case ProcureDocStatus::DRAFT:
             $isDraft = true;
             $canPost = true;
             break;
-        case ProcureDocStatus::DOC_STATUS_POSTED:
+        case ProcureDocStatus::POSTED:
             $isPosted = true;
             break;
     }
@@ -185,7 +185,7 @@ if ($action == Constants::FORM_ACTION_REVIEW) :
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 9.5pt">
             <ul>
@@ -473,7 +473,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                               <button style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" title="" class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                  <i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;
                                  <span class="caret"></span>
-                              </button>                             
+                              </button>
                             <?php
                             echo $refresh_btn;
                             echo $fullscreen;
@@ -485,7 +485,7 @@ if ($action == Constants::FORM_ACTION_REVERSE) :
                            <!-- button -->
                         </div>
                         <div id="pr_row_gird" style="font-size: 8pt;"></div>
-                  
+
                   </fieldset>
                </form>
             </div>

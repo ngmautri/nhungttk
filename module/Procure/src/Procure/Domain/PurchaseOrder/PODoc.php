@@ -6,6 +6,7 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\SimpleCollection;
 use Procure\Application\Command\PO\Options\PoPostOptions;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -17,10 +18,8 @@ use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\POSpecService;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey;
@@ -28,7 +27,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PODoc extends GenericPO
 {
@@ -61,7 +60,7 @@ class PODoc extends GenericPO
             throw new InvalidArgumentException("Quote Entity is empty!");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new InvalidArgumentException("Quote document is not posted!");
         }
 
@@ -115,7 +114,7 @@ class PODoc extends GenericPO
      */
     public function saveFromQuotation(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
     {
-        if (! $this->getDocStatus() == ProcureDocStatus::DOC_STATUS_DRAFT) {
+        if (! $this->getDocStatus() == ProcureDocStatus::DRAFT) {
             throw new InvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
         }
 
@@ -366,7 +365,7 @@ class PODoc extends GenericPO
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(PODocStatus::DOC_STATUS_DRAFT);
+        $instance->setDocStatus(PODocStatus::DRAFT);
         $instance->setDocType(PODocType::PO);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
@@ -527,30 +526,6 @@ class PODoc extends GenericPO
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
-    }
-
-    /**
-     *
-     * @deprecated
-     * @param PoSnapshot $snapshot
-     * @param POSpecService $specService
-     * @return void|\Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function updateFromSnapshot(PoSnapshot $snapshot, POSpecService $specService = null)
-    {
-        if (! $snapshot instanceof PoSnapshot) {
-            return;
-        }
-
-        $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $instance->validateHeader($specService);
-        if ($instance->hasErrors()) {
-            throw new PoUpdateException($instance->getErrorMessage());
-        }
-
         return $instance;
     }
 

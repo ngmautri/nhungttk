@@ -23,7 +23,7 @@ use Procure\Domain\Validator\RowValidatorCollection;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class GenericPR extends BaseDoc
 {
@@ -100,7 +100,7 @@ abstract class GenericPR extends BaseDoc
      */
     public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() == Constants::POSTED) {
             throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
         }
 
@@ -177,7 +177,7 @@ abstract class GenericPR extends BaseDoc
      */
     public function updateRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {
-        if ($this->getDocStatus() == Constants::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() == Constants::POSTED) {
             throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
         }
 
@@ -243,7 +243,7 @@ abstract class GenericPR extends BaseDoc
      */
     public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_DRAFT) {
+        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
         }
 
@@ -279,7 +279,7 @@ abstract class GenericPR extends BaseDoc
 
     public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DOC_STATUS_POSTED) {
+        if ($this->getDocStatus() !== ProcureDocStatus::POSTED) {
             throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
         }
 

@@ -12,7 +12,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApReportController extends AbstractGenericController
 {
@@ -35,7 +35,7 @@ class ApReportController extends AbstractGenericController
         }
 
         if ($docStatus == null) {
-            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+            $docStatus = ProcureDocStatus::POSTED;
         }
 
         if ($balance == null) {
@@ -240,7 +240,7 @@ class ApReportController extends AbstractGenericController
         if (isset($_GET['docStatus'])) {
             $docStatus = $_GET['docStatus'];
         } else {
-            $docStatus = ProcureDocStatus::DOC_STATUS_POSTED;
+            $docStatus = ProcureDocStatus::POSTED;
         }
 
         if (isset($_GET["pq_curpage"])) {

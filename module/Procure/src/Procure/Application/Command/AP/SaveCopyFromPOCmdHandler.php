@@ -3,29 +3,22 @@ namespace Procure\Application\Command\AP;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\AP\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 {
@@ -110,18 +103,8 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
-
-            $validationService = ValidatorFactory::createForCopyFromPO($sharedService, true);
-
-            $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $validationService, $sharedService);
+            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $sharedService);
 
             $dto->id = $rootSnapshot->getId();
             $dto->token = $rootSnapshot->getToken();
@@ -137,7 +120,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

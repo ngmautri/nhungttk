@@ -3,7 +3,7 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Contracts\ProcureGoodsFlow;
-use Procure\Domain\GoodsReceipt\Contracts\ReversalDocInterface;
+use Procure\Domain\Contracts\ReversalDocInterface;
 
 /**
  *

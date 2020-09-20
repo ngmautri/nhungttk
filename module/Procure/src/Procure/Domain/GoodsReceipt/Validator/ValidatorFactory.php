@@ -49,17 +49,17 @@ class ValidatorFactory
                 $rowValidators = $defaultHeaderValidators;
                 break;
 
-            case ProcureDocType::RETURN: // manual
+            case ProcureDocType::GOODS_RETURN: // manual
                 $headerValidators = $defaultRowValidators;
                 $rowValidators = $defaultHeaderValidators;
                 break;
 
-            case ProcureDocType::RETURN_FROM_WH_RETURN: // manual
+            case ProcureDocType::GOODS_RETURN_FROM_WH_RETURN: // manual
                 $headerValidators = $defaultRowValidators;
                 $rowValidators = $defaultHeaderValidators;
                 break;
 
-            case ProcureDocType::RETURN_REVERSAL: // manual
+            case ProcureDocType::GOODS_RETURN_REVERSAL: // manual
                 $headerValidators = $defaultRowValidators;
                 $rowValidators = $defaultHeaderValidators;
                 break;

@@ -3,31 +3,24 @@ namespace Procure\Application\Command\AP;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApUpdateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
+use Procure\Domain\AccountPayable\Factory\APFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\InvalidOperationException;
-use Procure\Domain\Service\APPostingService;
-use Procure\Domain\Service\SharedService;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class EditHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -40,11 +33,11 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
+            throw new \InvalidArgumentException(sprintf("% not foundsv!", "AbstractDoctrineCmd"));
         }
 
         if (! $cmd->getDto() instanceof ApDTO) {
-            throw new InvalidArgumentException("ApDTO object not found!");
+            throw new \InvalidArgumentException("ApDTO object not found!");
         }
 
         /**
@@ -53,13 +46,13 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
          * @var APDoc $rootEntity ;
          * @var APSnapshot $rootSnapshot ;
          * @var ApUpdateOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
         if (! $options instanceof ApUpdateOptions) {
-            throw new InvalidArgumentException("No Options given. Pls check command configuration!");
+            throw new \InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
         $options = $cmd->getOptions();
@@ -72,8 +65,8 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            if ($rootEntity->getDocStatus() == ProcureDocStatus::DOC_STATUS_POSTED) {
-                throw new InvalidOperationException(sprintf("AP is already posted! %s", $rootEntity->getId()));
+            if ($rootEntity->getDocStatus() == ProcureDocStatus::POSTED) {
+                throw new \RuntimeException(sprintf("AP Document is already posted! %s", $rootEntity->getId()));
             }
 
             /**
@@ -137,17 +130,8 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             // do change
             $newSnapshot->lastchangeBy = $userId;
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
-
-            $validationService = ValidatorFactory::createForHeader($sharedService);
-            $newRootEntity = APDoc::updateFrom($newSnapshot, $options, $params, $validationService, $sharedService);
+            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $newRootEntity = APFactory::updateFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
             // ================
@@ -171,7 +155,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             }
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw $e;
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

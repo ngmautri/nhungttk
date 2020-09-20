@@ -1,9 +1,9 @@
 <?php
 namespace Procure\Domain\GoodsReceipt;
 
+use Procure\Domain\Contracts\DocInterface;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Contracts\ProcureGoodsFlow;
-use Procure\Domain\GoodsReceipt\Contracts\DocInterface;
 
 /**
  *

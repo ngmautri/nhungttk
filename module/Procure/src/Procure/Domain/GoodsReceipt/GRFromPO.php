@@ -18,7 +18,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GRFromPO extends GenericGoodsReceipt implements DocInterface
+class GRFromPO extends GenericGoodsReceipt
 {
 
     /**

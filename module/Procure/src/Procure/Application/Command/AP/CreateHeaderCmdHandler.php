@@ -3,8 +3,6 @@ namespace Procure\Application\Command\AP;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
@@ -12,20 +10,16 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\AP\Options\ApCreateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Service\APPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
+use Procure\Domain\AccountPayable\Factory\APFactory;
+use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -38,7 +32,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new InvalidArgumentException(sprintf("% not found!", get_class($cmd)));
+            throw new \InvalidArgumentException(sprintf("% not found!", get_class($cmd)));
         }
 
         /**
@@ -88,18 +82,8 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APSnapshot());
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
-
-            $validationService = ValidatorFactory::createForHeader($sharedService);
-
-            $rootEntity = APDoc::createFrom($snapshot, $options, $validationService, $sharedService);
+            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $rootEntity = APFactory::createFrom($snapshot, $options, $sharedService);
 
             $dto->id = $rootEntity->getId();
             $dto->token = $rootEntity->getToken();
@@ -115,7 +99,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

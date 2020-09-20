@@ -3,32 +3,26 @@ namespace Procure\Application\Command\AP;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\AP\Options\ApRowUpdateOptions;
 use Procure\Application\DTO\Ap\ApRowDTO;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\AP\RowSnapshotReference;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
-use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\PoRowUpdateException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
-use Procure\Domain\Service\APPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateRowCmdHandler extends AbstractCommandHandler
 {
@@ -73,7 +67,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
              * @var APRow $snapshot ;
              * @var GRRowSnapshot $newSnapshot ;
              * @var GRRow $row ;
-             *     
+             *
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
@@ -119,18 +113,9 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $rootEntity->updateRowFrom($snapshot, $options, $params, $sharedService);
 
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
-
-            $validationService = ValidatorFactory::create($sharedService);
-
-            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $validationService, $sharedService);
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {

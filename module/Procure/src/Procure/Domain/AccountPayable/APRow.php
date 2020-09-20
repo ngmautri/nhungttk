@@ -14,7 +14,7 @@ use Procure\Domain\Shared\Constants;
  * AP Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class APRow extends GenericRow
 {
@@ -146,7 +146,7 @@ class APRow extends GenericRow
      * @throws InvalidArgumentException
      * @return \Procure\Domain\AccountPayable\APRow
      */
-    public static function createRowReserval(APDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
+    public static function createRowReversal(APDoc $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
         if (! $rootEntity instanceof APDoc) {
             throw new InvalidArgumentException("AP document is required!");

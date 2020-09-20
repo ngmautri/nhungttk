@@ -19,7 +19,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ValidatorFactory
 {
@@ -125,11 +125,11 @@ class ValidatorFactory
     public static function createForPosting(SharedService $sharedService, $isPosting = false)
     {
         if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
+            throw new \InvalidArgumentException("SharedService service not found");
         }
 
         if ($sharedService->getSharedSpecificationFactory() == null) {
-            throw new InvalidArgumentException("Shared spec service not found");
+            throw new \InvalidArgumentException("Shared spec service not found");
         }
 
         $fxService = $sharedService->getFxService();

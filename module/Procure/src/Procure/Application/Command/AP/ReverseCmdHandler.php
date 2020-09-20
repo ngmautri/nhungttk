@@ -21,11 +21,13 @@ use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Application\Service\SharedServiceFactory;
+use Procure\Domain\AccountPayable\Factory\APFactory;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ReverseCmdHandler extends AbstractCommandHandler
 {
@@ -38,7 +40,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
     public function run(CommandInterface $cmd)
     {
         if (! $cmd instanceof AbstractDoctrineCmd) {
-            throw new \Exception(sprintf("% not found!", "AbstractDoctrineCmd"));
+            throw new \InvalidArgumentException(sprintf("% not found!", "AbstractDoctrineCmd"));
         }
 
         /**
@@ -47,17 +49,17 @@ class ReverseCmdHandler extends AbstractCommandHandler
          * @var APDoc $rootEntity ;
          * @var APSnapshot $rootSnapshot ;
          * @var ApReverseOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
 
         if (! $options instanceof ApReverseOptions) {
-            throw new InvalidArgumentException("No Options given. Pls check command configuration!");
+            throw new \InvalidArgumentException("No Options given. Pls check command configuration!");
         }
 
         if (! $dto instanceof ApDTO) {
-            throw new InvalidArgumentException(sprintf("DTO object not found! %s", __FUNCTION__));
+            throw new \InvalidArgumentException(sprintf("DTO object not found! %s", __FUNCTION__));
         }
 
         $options = $cmd->getOptions();
@@ -74,19 +76,8 @@ class ReverseCmdHandler extends AbstractCommandHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, $snapshot);
 
             $notification = new Notification();
-
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $postingService = new APPostingService(new APCmdRepositoryImpl($cmd->getDoctrineEM()));
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $domainSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
-
-            $validationService = ValidatorFactory::createForPosting($sharedService, true);
-
-            $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $validationService, $sharedService);
+            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $reversalEntity = APFactory::createAndPostReversal($rootEntity, $snapshot, $options, $sharedService);
 
             // event dispatch
             // ================
@@ -109,7 +100,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

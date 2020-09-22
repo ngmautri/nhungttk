@@ -145,90 +145,10 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
         include (ROOT . '/module/Procure/view/procure/create-wizard.php');
         endif;
 
+    include (ROOT . '/module/Procure/view/procure/po_summary.php');
+
     ?>
 
-      		<hr>
-      <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
-
-    echo $this->translate('Summary:');
-    ?></span>
-      <div class="alert alert-<?php
-
-    echo $alert;
-    ?>" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
-         <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
-            <li>
-               <b><?php
-
-            if (! $headerDTO == null) :
-                echo sprintf("PO #%s (Version #%s-%s)", $headerDTO->getSysNumber(), $headerDTO->getDocVersion(), $headerDTO->getRevisionNo()); endif;
-
-            ?></b>
-            </li>
-            <li>-----</li>
-            <li>
-               <b><?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->vendorName; endif;
-
-            ?></b>
-            </li>
-            <li>
-               <i><?php
-
-            if (! $headerDTO == null) :
-                echo sprintf("%s %s", $headerDTO->getVendorAddress(), $headerDTO->getVendorCountry()); endif;
-
-            ?></i>
-            </li>
-            <li>-----</li>
-            <li><?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->incotermCode . " " . $headerDTO->incotermPlace; endif;
-
-            ?> </li>
-            <li>Status: <?php
-
-            if (! $headerDTO == null) :
-                echo $headerDTO->getDocStatus(); endif;
-
-            ?> </li>
-            <li>Total rows: <?php
-
-            echo ($headerDTO->totalRows);
-            ?></li>
-            <li>Status: <?php
-
-            echo $transactionStatus;
-            ?> </li>
-            <li>-----</li>
-            <li>Net: <?php
-
-            echo number_format($headerDTO->netAmount, 2) . " " . $headerDTO->currencyIso3;
-            ?></li>
-            <li>Tax: <?php
-
-            echo number_format($headerDTO->taxAmount, 2);
-            ?></li>
-            <li>Gross: <?php
-
-            echo number_format($headerDTO->grossAmount, 2) . " " . $headerDTO->currencyIso3;
-            ?></li>
-            <li>Billed: <?php
-
-            echo number_format($headerDTO->getBilledAmount(), 2) . " " . $headerDTO->currencyIso3;
-            ?></li>
-            <li>-----</li>
-            <li>Created by: <?php
-
-            echo $headerDTO->getCreatedByName();
-            echo $progress_div;
-            ?>
-                </li>
-         </ul>
-      </div>
 
     	<?php
 
@@ -360,10 +280,9 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     ?>
                       </div>
                <!-- ======== TOOL BAR ======= -->
-               <FORM id="Posting_Form" class="form-horizontal" action="<?php
-
+               <form id="Posting_Form" method="post" class="form-horizontal" action="<?php
             echo $form_action;
-            ?>" method="post" enctype="multipart/form-data">
+            ?>" enctype="multipart/form-data">
                   <input type="hidden" name="redirectUrl" value="<?php
 
                 echo $redirectUrl?>" />
@@ -405,33 +324,11 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -825,7 +722,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
     $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
-    $("#Posting_Form :input").attr("disabled", "disabled");
+    //$("#Posting_Form :input").attr("disabled", "disabled");
 
 
     function confirmPost() {
@@ -833,6 +730,12 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     }
 
     function doPosting() {
+    	$('#confirm_modal_sm').modal('hide');
+    	$('#b_modal_no_header').modal();
+    	submitForm('Posting_Form')
+    }
+
+    function doPosting1() {
     	$('#confirm_modal_sm').modal('hide');
     	$('#b_modal_no_header').modal();
 

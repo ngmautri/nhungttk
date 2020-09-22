@@ -2,7 +2,10 @@
 <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
 echo $this->translate('Summary:');
 ?></span>
-<div class="alert alert-info" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
+<div class="alert alert-<?php
+
+echo $alert;
+?>" role="alert" style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
    <ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
       <li>
          <b><?php

@@ -82,7 +82,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APSnapshot());
 
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $rootEntity = APFactory::createFrom($snapshot, $options, $sharedService);
 
             $dto->id = $rootEntity->getId();

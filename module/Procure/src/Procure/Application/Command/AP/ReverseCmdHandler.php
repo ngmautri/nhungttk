@@ -76,7 +76,7 @@ class ReverseCmdHandler extends AbstractCommandHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, $snapshot);
 
             $notification = new Notification();
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $reversalEntity = APFactory::createAndPostReversal($rootEntity, $snapshot, $options, $sharedService);
 
             // event dispatch

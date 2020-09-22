@@ -102,7 +102,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 $dto->setNotification($notification);
                 return;
             }
-            // var_dump($changeLog);
+
             $params = [
                 "rowId" => $row->getId(),
                 "rowToken" => $row->getToken(),
@@ -113,9 +113,10 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
 
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
-            $rootEntity->updateRowFrom($snapshot, $options, $params, $sharedService);
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
 
+            $rootEntity->setLogger($cmd->getLogger());
+            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
@@ -123,7 +124,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
+            $m = sprintf("AP #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
 
             $notification->addSuccess($m);
 
@@ -136,6 +137,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             $dto->setNotification($notification);
         } catch (\Exception $e) {
+            $cmd->getLogger()->alert($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

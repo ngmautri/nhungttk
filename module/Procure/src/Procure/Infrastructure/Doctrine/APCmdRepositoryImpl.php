@@ -31,7 +31,7 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
     public function storeRow(GenericAP $rootEntity, APRow $localEntity, $isPosting = false)
     {
         if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given.");
+            throw new \InvalidArgumentException("Root entity not given.");
         }
 
         /**
@@ -43,7 +43,7 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
         $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
 
         if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Doctrine root entity not found.");
+            throw new \RuntimeException("Doctrine root entity not found.");
         }
 
         $isFlush = true;
@@ -51,7 +51,7 @@ class APCmdRepositoryImpl extends AbstractDoctrineRepository implements APCmdRep
         $rowEntityDoctrine = $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
 
         if ($rowEntityDoctrine == null) {
-            throw new InvalidArgumentException("Something wrong. Row Doctrine Entity not created");
+            throw new \RuntimeException("Something wrong. Row Doctrine Entity not created");
         }
 
         $localSnapshot->id = $rowEntityDoctrine->getId();

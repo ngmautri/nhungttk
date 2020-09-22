@@ -66,7 +66,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APRowSnapshot());
             $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
 
             // event dispatch

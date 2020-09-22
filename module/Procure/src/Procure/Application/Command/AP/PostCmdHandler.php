@@ -61,7 +61,7 @@ class PostCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $rootEntity->post($options, $sharedService);
 
             // event dispatch

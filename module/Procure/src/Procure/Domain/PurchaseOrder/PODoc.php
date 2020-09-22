@@ -23,6 +23,7 @@ use Procure\Domain\Shared\Constants;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  *
@@ -365,8 +366,8 @@ class PODoc extends GenericPO
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(PODocStatus::DRAFT);
-        $instance->setDocType(PODocType::PO);
+        $instance->setDocStatus(ProcureDocStatus::DRAFT);
+        $instance->setDocType(ProcureDocType::PO);
         $instance->setIsActive(1);
         $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
         $instance->setRevisionNo(1);

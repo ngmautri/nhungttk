@@ -64,6 +64,8 @@ class ProcureDocType
 
     const INVOICE_REVERSAL = 'AP-140-1';
 
+    const INVOICE_CORRECTION = 'AP-140-2';
+
     // ==================================
     // AP Credit Memo
     // ==================================

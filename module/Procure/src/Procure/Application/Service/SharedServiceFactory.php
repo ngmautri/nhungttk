@@ -23,7 +23,7 @@ class SharedServiceFactory
      *
      * @param \Doctrine\ORM\EntityManager $doctrineEM
      */
-    static public function create(\Doctrine\ORM\EntityManager $doctrineEM)
+    static public function createForAP(\Doctrine\ORM\EntityManager $doctrineEM)
     {
         if ($doctrineEM == null) {
             throw new \InvalidArgumentException("EntityManager not found!");

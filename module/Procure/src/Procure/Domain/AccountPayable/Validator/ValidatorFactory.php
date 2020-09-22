@@ -46,9 +46,6 @@ class ValidatorFactory
         $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();
         $domainSpecsFactory = $sharedService->getDomainSpecificationFactory();
 
-        $rowValidators = null;
-        $headerValidators = null;
-
         $headerValidators = new HeaderValidatorCollection();
         $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
         $headerValidators->add($validator);
@@ -60,10 +57,6 @@ class ValidatorFactory
         $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
         $rowValidators->add($validator);
 
-        /*
-         * $validator = new PrRowValidator($sharedSpecsFactory, $fxService, $domainSpecsFactory);
-         * $rowValidators->add($validator);
-         */
         $validator = new GLAccountValidator($sharedSpecsFactory, $fxService);
         $rowValidators->add($validator);
 

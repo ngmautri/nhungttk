@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApControllerFactory implements FactoryInterface
 {
@@ -35,7 +35,7 @@ class ApControllerFactory implements FactoryInterface
         $sv = $sm->get(EventBusService::class);
         $controller->setEventBusService($sv);
 
-        $sv = $sm->get("ProcureLogger");
+        $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);
 
         $sv = $sm->get(ApReporter::class);

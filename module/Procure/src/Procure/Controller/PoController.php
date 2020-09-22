@@ -884,7 +884,7 @@ class PoController extends AbstractGenericController
         // POSTING
         // ====================================
         $notification = new Notification();
-
+        $msg = null;
         try {
 
             $data = $prg;
@@ -895,6 +895,9 @@ class PoController extends AbstractGenericController
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $version = $data['version'];
+
+            $redirectUrl = sprintf(self::VIEW_URL, $entity_id, $entity_token);
+            $this->getLogger()->info($redirectUrl);
 
             $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
 
@@ -911,7 +914,6 @@ class PoController extends AbstractGenericController
             $notification = $dto->getNotification();
             $msg = sprintf("PO #%s is posted", $entity_id);
             $redirectUrl = sprintf(self::VIEW_URL, $entity_id, $entity_token);
-            $this->getLogger()->info($msg);
         } catch (\Exception $e) {
             $this->logException($e);
             $msg = $e->getMessage();
@@ -941,9 +943,8 @@ class PoController extends AbstractGenericController
 
         $this->layout("layout/user/ajax");
         $this->flashMessenger()->addMessage($msg);
-
         $redirectUrl = sprintf(self::VIEW_URL, $entity_id, $entity_token);
-        $this->flashMessenger()->addMessage($notification->successMessage(true));
+        $this->logInfo($msg);
         return $this->redirect()->toUrl($redirectUrl);
     }
 

@@ -1,4 +1,4 @@
-<hr>
+   <hr>
 <span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php
 echo $this->translate('Summary:');
 ?></span>
@@ -28,7 +28,9 @@ echo $this->translate('Summary:');
       <li>Status:<?php
 
     if (! $headerDTO == null) :
-        echo $headerDTO->getTransactionStatus(); endif;
+        echo $headerDTO->getTransactionStatus();
+        echo "<br>" . $headerDTO->getDocType();
+        endif;
 
     ?> </li>
       <li>-----</li>

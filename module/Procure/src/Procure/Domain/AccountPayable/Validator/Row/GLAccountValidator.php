@@ -13,7 +13,7 @@ use Procure\Domain\Validator\RowValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GLAccountValidator extends AbstractValidator implements RowValidatorInterface
 {
@@ -28,7 +28,7 @@ class GLAccountValidator extends AbstractValidator implements RowValidatorInterf
         if (! $rootEntity instanceof GenericAP) {
             throw new InvalidArgumentException('Root entity not given!');
         }
-        
+
         if (! $localEntity instanceof APRow) {
             throw new InvalidArgumentException('GR Row not given!');
         }
@@ -66,7 +66,6 @@ class GLAccountValidator extends AbstractValidator implements RowValidatorInterf
                     $localEntity->addError(sprintf("Cost center #%s not exits in company #%s", $localEntity->getCostCenter(), $rootEntity->getCompany()));
                 }
             }
-            
         } catch (\Exception $e) {
             $localEntity->addError($e->getMessage());
         }

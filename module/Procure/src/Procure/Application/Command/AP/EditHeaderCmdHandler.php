@@ -130,7 +130,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
             // do change
             $newSnapshot->lastchangeBy = $userId;
 
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $newRootEntity = APFactory::updateFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch

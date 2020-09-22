@@ -16,7 +16,7 @@ use Procure\Domain\Service\SharedService;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class APFromPO extends GenericAP
+final class InvoiceFromPO extends GenericAP
 {
 
     /**
@@ -41,7 +41,7 @@ final class APFromPO extends GenericAP
      */
     public static function getInstance()
     {
-        return new APFromPO();
+        return new InvoiceFromPO();
     }
 
     /**
@@ -77,9 +77,9 @@ final class APFromPO extends GenericAP
         }
         /**
          *
-         * @var APFromPO $instance ;
+         * @var APDoc $instance
          */
-        $instance = new self();
+        $instance = new InvoiceFromPO();
         $instance = $sourceObj->convertTo($instance);
 
         // overwrite.

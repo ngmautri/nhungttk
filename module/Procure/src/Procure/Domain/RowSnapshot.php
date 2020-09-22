@@ -15,7 +15,7 @@ use InvalidArgumentException;
  * Row Snapshot
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowSnapshot extends BaseRowSnapshot
 {
@@ -142,7 +142,7 @@ class RowSnapshot extends BaseRowSnapshot
             $this->uuid = $this->getToken();
         }
 
-        $this->docStatus = ProcureDocStatus::DOC_STATUS_DRAFT;
+        $this->docStatus = ProcureDocStatus::DRAFT;
         $this->isActive = 1;
         $this->isDraft = 1;
         $this->unitPrice = $this->getDocUnitPrice();

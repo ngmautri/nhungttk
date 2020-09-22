@@ -7,6 +7,7 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Qr\QrDTO;
 use Procure\Domain\AccountPayable\AbstractAP;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Qr\QrPosted;
 use Procure\Domain\Event\Qr\QrRowAdded;
 use Procure\Domain\Event\Qr\QrRowUpdated;
@@ -16,8 +17,6 @@ use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\QrPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 
@@ -101,8 +100,8 @@ abstract class GenericQR extends AbstractAP
      */
     public function createRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
-        if ($this->getDocStatus() == Constants::POSTED) {
-            throw new InvalidOperationException(sprintf("AP is posted! %s", $this->getId()));
+        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
+            throw new InvalidOperationException(sprintf("Quotation is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
@@ -177,7 +176,7 @@ abstract class GenericQR extends AbstractAP
      */
     public function updateRowFrom(QRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, QrPostingService $postingService)
     {
-        if ($this->getDocStatus() == Constants::POSTED) {
+        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
             throw new InvalidOperationException(sprintf("QR is posted! %s", $this->getId()));
         }
 

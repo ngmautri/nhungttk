@@ -13,7 +13,7 @@ use Zend\Math\Rand;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class VInvoiceAttachmentController extends AbstractActionController
 {
@@ -110,7 +110,7 @@ class VInvoiceAttachmentController extends AbstractActionController
             /**
              *
              * @var \Application\Entity\NmtApplicationAttachment $entity ;
-             *     
+             *
              */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
 
@@ -463,12 +463,12 @@ class VInvoiceAttachmentController extends AbstractActionController
          *
          * @todo : Change Target
          * @var \Application\Entity\FinVendorInvoice $target ;
-         *     
+         *
          */
 
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
-        if ($target !== null) {
+        if ($target != null) {
 
             /**
              *
@@ -476,8 +476,7 @@ class VInvoiceAttachmentController extends AbstractActionController
              */
             $criteria = array(
                 'vInvoice' => $target_id,
-                'isActive' => 1,
-                'markedForDeletion' => 0
+                'isActive' => 1
             );
 
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findBy($criteria);
@@ -523,7 +522,7 @@ class VInvoiceAttachmentController extends AbstractActionController
          *
          * @todo : Change Target
          * @var \Application\Entity\FinVendorInvoice $target ;
-         *     
+         *
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
@@ -699,7 +698,7 @@ class VInvoiceAttachmentController extends AbstractActionController
              *
              * @todo : Change Target
              * @var \Application\Entity\FinVendorInvoice $target ;
-             *     
+             *
              */
 
             $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
@@ -993,7 +992,7 @@ class VInvoiceAttachmentController extends AbstractActionController
          *
          * @todo : Change Target
          * @var \Application\Entity\FinVendorInvoice $target ;
-         *     
+         *
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
@@ -1356,7 +1355,7 @@ class VInvoiceAttachmentController extends AbstractActionController
              *
              * @todo : Change Target
              * @var \Application\Entity\FinVendorInvoice $target ;
-             *     
+             *
              */
             $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
@@ -1542,7 +1541,7 @@ class VInvoiceAttachmentController extends AbstractActionController
          *
          * @todo : Change Target
          * @var \Application\Entity\FinVendorInvoice $target ;
-         *     
+         *
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 

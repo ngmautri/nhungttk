@@ -139,7 +139,7 @@ class APService extends AbstractService
         $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
 
         $po = $rep->getOpenItems($id, $token);
-        $sharedService = SharedServiceFactory::create($this->getDoctrineEM());
+        $sharedService = SharedServiceFactory::createForAP($this->getDoctrineEM());
         $rootEntity = APFactory::createFromPo($po, $options, $sharedService);
         return $rootEntity;
     }

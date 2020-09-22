@@ -104,7 +104,7 @@ class SaveCopyFromPOCmdHandler extends AbstractCommandHandler
 
             $snapshot = APSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
 
-            $sharedService = SharedServiceFactory::create($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $rootSnapshot = $rootEntity->saveFromPO($snapshot, $options, $sharedService);
 
             $dto->id = $rootSnapshot->getId();

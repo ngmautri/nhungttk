@@ -4,12 +4,12 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
+use Application\Domain\Shared\Constants;
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\OptionList;
 use Procure\Application\Helper\Toolbar;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Domain\Contracts\ProcureDocStatus;
-use Procure\Domain\Shared\Constants;
 
 /**@var \Procure\Application\DTO\Qr\QrDTO $headerDTO ;*/
 /**@var \Procure\Application\DTO\Qr\QrRowDTO $rowDTO ;*/
@@ -67,7 +67,7 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . "/procure/qr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/qr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == Constants::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;

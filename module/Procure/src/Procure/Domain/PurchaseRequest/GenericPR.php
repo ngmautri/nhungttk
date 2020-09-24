@@ -2,10 +2,12 @@
 namespace Procure\Domain\PurchaseRequest;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Pr\PrDTO;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\Event\Pr\PrRowAdded;
 use Procure\Domain\Event\Pr\PrRowUpdated;
@@ -15,8 +17,6 @@ use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Shared\Constants;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 
@@ -100,7 +100,7 @@ abstract class GenericPR extends BaseDoc
      */
     public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {
-        if ($this->getDocStatus() == Constants::POSTED) {
+        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
             throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
         }
 

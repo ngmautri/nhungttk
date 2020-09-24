@@ -8,7 +8,7 @@ use Application\Domain\Shared\AggregateRootInterface;
  * Abstract Procure Document.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterface
 {

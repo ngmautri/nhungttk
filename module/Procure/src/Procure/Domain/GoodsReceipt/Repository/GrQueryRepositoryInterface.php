@@ -4,7 +4,7 @@ namespace Procure\Domain\GoodsReceipt\Repository;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface GrQueryRepositoryInterface
 {
@@ -22,6 +22,8 @@ Interface GrQueryRepositoryInterface
     public function getByUUID($uuid);
 
     public function getRootEntityByTokenId($id, $token = null);
+
+    public function getLazyRootEntityById($id);
 
     /**
      *

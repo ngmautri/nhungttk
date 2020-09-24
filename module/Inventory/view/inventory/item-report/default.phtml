@@ -25,7 +25,7 @@ if ($filter->getItemType() == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
     $toogleFileType = SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE;
     $toggleViewTitle = "HTML View";
     $icon = 'fa fa-list';
-    
+
 endif;
 
 $baseUrl = "/inventory/item-report/default";
@@ -87,7 +87,7 @@ $url_oo = $this->baseUrl . sprintf($link, $baseUrl, $filter->getIsFixedAsset(), 
                            <div class="col-sm-3">
                               <select class="form-control input-sm" name="itemModel">
                                  <option value="All">All</option>
-                                 <option value="1">Item Model</option>                                
+                                 <option value="1">Item Model</option>
                               </select>
                            </div>
                            <div class="col-sm-4"></div>
@@ -228,8 +228,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                      &nbsp;
                      <i class="fa fa-refresh" aria-hidden="true"></i>
                      &nbsp;
-                  </a> 
-<?php 
+                  </a>
+<?php
 endif;
 
 ?>
@@ -269,7 +269,7 @@ endif;
 <?php
 if ($file_type == SaveAsSupportedType::OUTPUT_IN_HMTL_TABLE) :
     echo $result;
-    echo FormHelper::createPaginator($base, $paginator, "&");    
+    echo FormHelper::createPaginator($base, $paginator, "&");
 endif;
 
 ?>
@@ -293,6 +293,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
        { title: "Model#", dataType: "string", dataIndx: "manufacturerModel", align: 'left',minWidth: 100 ,editable: false},
        { title: "SN#", dataType: "string", dataIndx: "manufacturerSerial", align: 'left',minWidth: 100 ,editable: false},
        { title: "type", dataType: "string", dataIndx: "itemTypeId", align: 'left',minWidth: 100 ,editable: false},
+       { title: "Group", dataType: "string", dataIndx: "itemGroup", align: 'left',minWidth: 100 ,editable: false},
        { title: "HSCode#", dataType: "string", dataIndx: "hsCode", align: 'left',minWidth: 100 ,editable: false},
 
 	    ];
@@ -328,8 +329,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
             editor: {
                 select: true
             },
- 			change: function (evt, ui) {               
-                
+ 			change: function (evt, ui) {
+
                 if (ui.source == 'commit' || ui.source == 'rollback') {
                     return;
                 }
@@ -341,20 +342,20 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                     recIndx = grid.option('dataModel').recIndx,
                     deleteList = [],
                     updateList = [];
-                
+
                 for (var i = 0; i < rowList.length; i++) {
                     var obj = rowList[i],
                         rowIndx = obj.rowIndx,
                         newRow = obj.newRow,
                         type = obj.type,
                         rowData = obj.rowData;
-                     if (type == 'add') {                        
+                     if (type == 'add') {
                         var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
                         if (valid) {
                             addList.push(newRow);
                         }
                     }
-                    else if (type == 'update') {                        
+                    else if (type == 'update') {
                         var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
                         if (valid) {
                             if (rowData[recIndx] == null) {
@@ -364,7 +365,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                             else {
                                 updateList.push(rowData);
                           		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
-                                 
+
                             }
                         }
                     }
@@ -377,7 +378,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                         deleteList: deleteList
                     });
                     //alert(sent_list);
-                      
+
                       $.ajax({
                           url: '/procure/pr-row/update-row',
                           data: {
@@ -389,7 +390,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                           beforeSend: function (jqXHR, settings) {
                               //$(".saving", $grid).show();
 
-							  	
+
                               //$("#global-notice").text("Updating...").show();
                               //alert(updateList[0].item_name  +  updateList[0].row_id);
                           },
@@ -397,7 +398,7 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                               //commit the changes.
                               //alert(changes.updateList);
                                $("#global-notice").text("Updated...").show();
-                		      //alert('it is ok');                
+                		      //alert('it is ok');
                               /* grid.commit({ type: 'add', rows: changes.addList });
                               grid.commit({ type: 'update', rows: changes.updateList });
                               grid.commit({ type: 'delete', rows: changes.deleteList }); */
@@ -405,15 +406,15 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
                           complete: function () {
                               //$(".saving", $grid).hide();
                               $("#global-notice").delay(2200).fadeOut(500);
-                              
+
                           }
                       });
                   }
                 //alert(updateList.length);
-               
-            },     
-	                
-       		
+
+            },
+
+
    	};
 
     var $grid = $("#gird_div").pqGrid(obj);
@@ -422,8 +423,8 @@ if ($file_type == SaveAsSupportedType::OUTPUT_IN_ARRAY) :
 
     function refreshGird(){
     	$( "#gird_div" ).pqGrid( "refreshDataAndView" )
-	} 
-    
+	}
+
 </script>
 <?php
 endif;

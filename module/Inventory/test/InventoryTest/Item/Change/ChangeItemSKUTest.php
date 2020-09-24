@@ -12,7 +12,7 @@ use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Infrastructure\Doctrine\ItemQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
 
-class ChangeSKUTest extends PHPUnit_Framework_TestCase
+class ChangeItemSKUTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;

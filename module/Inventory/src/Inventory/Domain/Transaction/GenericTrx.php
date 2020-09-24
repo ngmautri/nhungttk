@@ -2,12 +2,12 @@
 namespace Inventory\Domain\Transaction;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Inventory\Application\DTO\Transaction\TrxDTO;
+use Inventory\Domain\Contracts\TrxDocStatus;
 use Inventory\Domain\Event\Transaction\TrxPosted;
 use Inventory\Domain\Event\Transaction\TrxReversed;
 use Inventory\Domain\Event\Transaction\TrxRowAdded;
@@ -20,7 +20,7 @@ use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
-use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use InvalidArgumentException;
 
 /**
@@ -161,8 +161,8 @@ abstract class GenericTrx extends BaseDoc
      */
     public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
-        if ($this->getDocStatus() == Constants::POSTED) {
-            throw new \RuntimeException(sprintf("PR is posted! %s", $this->getId()));
+        if ($this->getDocStatus() == TrxDocStatus::POSTED) {
+            throw new \RuntimeException(sprintf("Trx is posted! %s", $this->getId()));
         }
 
         if ($snapshot == null) {
@@ -174,8 +174,6 @@ abstract class GenericTrx extends BaseDoc
         }
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
-
-        $this->_checkParams($validationService, $sharedService);
 
         if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
             throw new \InvalidArgumentException("Row Validators not given!");
@@ -256,7 +254,7 @@ abstract class GenericTrx extends BaseDoc
      */
     public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == Constants::POSTED) {
+        if ($this->getDocStatus() == TrxDocStatus::POSTED) {
             throw new \RuntimeException(sprintf("Trx is posted already! %s", $this->getId()));
         }
 

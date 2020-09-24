@@ -40,14 +40,19 @@ class ChangeTest extends PHPUnit_Framework_TestCase
              */
 
             $entity = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-            $entity->setItemTypeId(ItemType::NONE_INVENTORY_ITEM_TYPE);
-            $entity->setIsFixedAsset(0);
-            $entity->setIsSparepart(0);
-            $entity->setIsStocked(0);
-            $entity->setStockUomConvertFactor(null);
-            $entity->setPurchaseUom($entity->getStandardUom());
-            $entity->setPurchaseUomConvertFactor(1);
-            $doctrineEM->persist($entity);
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItemGroup $group ;
+             */
+
+            $criteria = array(
+                'id' => 14
+            );
+
+            $group = $doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
+
+            $entity->setItemGroup($group);
         }
 
         $doctrineEM->flush();

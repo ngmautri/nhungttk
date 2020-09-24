@@ -11,10 +11,10 @@ use Procure\Application\Command\AP\Options\SaveCopyFromPOOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
+use Procure\Domain\AccountPayable\APFromPO;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\AccountPayable\APFromPO;
 
 /**
  *

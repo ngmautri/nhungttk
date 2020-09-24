@@ -15,6 +15,8 @@ use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\Factory\APFactory;
 use InvalidArgumentException;
+use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  *
@@ -82,6 +84,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APSnapshot());
 
+            $snapshot->setDocType(ProcureDocType::INVOICE);
             $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $rootEntity = APFactory::createFrom($snapshot, $options, $sharedService);
 

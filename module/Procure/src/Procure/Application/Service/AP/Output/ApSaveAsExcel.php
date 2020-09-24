@@ -11,7 +11,7 @@ use Procure\Domain\AccountPayable\APRowSnapshot;
  * Director in builder pattern.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 {
@@ -51,19 +51,24 @@ class ApSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
-            "Vendor",
-            "PO#",
-            "Item",
+            "Remark",
+            "GL",
+            "CC",
+            "RowID",
+            "Row#",
             "SKU",
-            "Item Vendor Name",
-            "Item Vendor code",
+            "ItemName",
+            "Vendor ItemName",
+            "Vendor ItemName",
             "Unit",
             "Qty",
             "UP",
             "Net Amt",
             "CUrr",
+            "remark",
+            "PR row",
             "PR",
-            "PR"
+            "ItemId"
         );
 
         $n = 0;
@@ -85,8 +90,11 @@ class ApSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
-                $row->getVendorName(),
-                $row->getDocNumber(),
+                $row->faRemarks,
+                $row->glAccount,
+                $row->costCenter,
+                $row->rowIdentifer,
+                $row->rowNumber,
                 $row->itemSKU,
                 $row->itemName,
                 $row->vendorItemName,
@@ -98,7 +106,8 @@ class ApSaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $row->docCurrencyISO,
                 $row->remarks,
                 $row->prRowIndentifer,
-                $row->prNumber
+                $row->prNumber,
+                $row->item
             );
 
             $n = 0;

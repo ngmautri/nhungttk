@@ -2,6 +2,7 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\Constants;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 use InvalidArgumentException;
 
@@ -9,7 +10,7 @@ use InvalidArgumentException;
  * Doc Snapshot
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class DocSnapshot extends BaseDocSnapshot
 {
@@ -62,7 +63,7 @@ class DocSnapshot extends BaseDocSnapshot
     {
         $this->setCreatedOn($createdDate);
         $this->setCreatedBy($createdBy);
-        $this->setDocStatus(\Procure\Domain\Shared\Constants::DOC_STATUS_DRAFT);
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
 
         $this->setIsActive(1);
         $this->setIsDraft(1);

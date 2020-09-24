@@ -1,14 +1,40 @@
 <?php
 namespace Procure\Domain;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Abstract Procure Document.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class BaseDoc extends AbstractDoc
 {
+
+    protected $lazyRowSnapshotCollection;
+
+    protected $lazyRowSnapshotCollectionReference;
+
+    public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
+    {
+        $this->lazyRowSnapshotCollectionReference = $lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @return NULL|ArrayCollection
+     */
+    public function getLazyRowSnapshotCollection()
+    {
+        $ref = $this->getLazyRowSnapshotCollectionReference();
+        if ($ref == null) {
+            return null;
+        }
+
+        $this->lazyRowSnapshotCollection = $ref();
+        return $this->lazyRowSnapshotCollection;
+    }
 
     // Addtional attributes
     // =========================
@@ -978,5 +1004,23 @@ abstract class BaseDoc extends AbstractDoc
     public function setLocalCurrencyId($localCurrencyId)
     {
         $this->localCurrencyId = $localCurrencyId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollectionReference()
+    {
+        return $this->lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @param mixed $lazyRowSnapshotCollection
+     */
+    public function setLazyRowSnapshotCollection($lazyRowSnapshotCollection)
+    {
+        $this->lazyRowSnapshotCollection = $lazyRowSnapshotCollection;
     }
 }

@@ -24,6 +24,9 @@ use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
+use Procure\Domain\RowSnapshot;
+use Doctrine\Common\Collections\ArrayCollection;
+use Procure\Domain\GoodsReceipt\Factory\GRFactory;
 
 /**
  *
@@ -49,18 +52,78 @@ abstract class GenericGR extends BaseDoc
 
     abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    public function slipByWarehouse()
-    {
-        $results = [];
+    protected $rowSnapshotCollection;
 
-        if ($this->getTargetWhList() == null) {
+    protected function setRowSnapshotCollection($rowSnapshotCollection)
+    {
+        $this->rowSnapshotCollection = $rowSnapshotCollection;
+    }
+
+    /**
+     *
+     * @return NULL|\Doctrine\Common\Collections\ArrayCollection[]
+     */
+    public function slipRowsByWarehouse()
+    {
+        $rowsCollection = $this->getLazyRowSnapshotCollection();
+        if ($rowsCollection == null) {
             return null;
         }
-        if (count($this->getTargetWhList() > 1)) {
-            foreach ($this->getTargetWhList() as $wh) {
-                $doc = new self();
+
+        $results = [];
+
+        /**
+         *
+         * @var RowSnapshot $fistRowSnapshot
+         */
+
+        $first = $rowsCollection->first();
+        $fistRowSnapshot = $first();
+        $wh = $fistRowSnapshot->getWarehouse();
+        $rowsOfWarehouse = new ArrayCollection();
+        $n = 0;
+        foreach ($rowsCollection as $row) {
+
+            /**
+             *
+             * @var RowSnapshot $rowSnapshot
+             */
+            $rowSnapshot = $row();
+            $n ++;
+
+            if ($rowSnapshot->getWarehouse() == $wh) {
+                $rowsOfWarehouse->add($rowSnapshot);
+            } else {
+                $results[$wh] = $rowsOfWarehouse;
+
+                $wh = $rowSnapshot->getWarehouse();
+                $rowsOfWarehouse = new ArrayCollection();
+                $rowsOfWarehouse->add($rowSnapshot);
+
+                if ($n == $rowsCollection->count()) {
+                    $results[$wh] = $rowsOfWarehouse;
+                }
             }
         }
+
+        return $results;
+    }
+
+    public function createSubDocumentByWarehouse()
+    {
+        $subDocuments = [];
+        $results = $this->slipRowsByWarehouse();
+        foreach ($results as $k => $v) {
+            $doc = GRFactory::createEmptyObject($this->getDocType());
+            $this->convertTo($doc);
+
+            $doc->sysNumber = $this->getSysNumber();
+            $doc->warehouse = $k;
+            $doc->setRowSnapshotCollection($v);
+            $subDocuments[] = $doc;
+        }
+
+        return $subDocuments;
     }
 
     public function slipByDepartment()
@@ -467,5 +530,14 @@ abstract class GenericGR extends BaseDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getRowSnapshotCollection()
+    {
+        return $this->rowSnapshotCollection;
     }
 }

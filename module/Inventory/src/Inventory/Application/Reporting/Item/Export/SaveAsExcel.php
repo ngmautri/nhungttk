@@ -10,7 +10,7 @@ use Inventory\Domain\Item\ItemSnapshot;
  * Director in builder pattern.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SaveAsExcel extends AbstractSaveAsSpreadsheet
 {
@@ -52,6 +52,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
             "Mfg Model",
             "Mfg S/N",
             "Type",
+            "Group",
             "HS Code"
         );
 
@@ -84,6 +85,7 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
                 $row->manufacturerModel,
                 $row->manufacturerSerial,
                 $row->itemTypeId,
+                $row->itemGroup,
                 $row->hsCode
             );
 

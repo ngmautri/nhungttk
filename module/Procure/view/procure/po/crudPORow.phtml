@@ -15,6 +15,7 @@ $message_url = null;
 $review_url = null;
 $rowNumber = null;
 $pr_item_name = null;
+$alert = "info";
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -49,7 +50,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     include (ROOT . '/module/Procure/view/procure/po_summary.php');
     ?>
 
-      				
+
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -60,7 +61,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -419,7 +420,7 @@ echo $error_msg;
 
 	$("#Create_Inv_Form :input").attr("disabled", "disabled");
 
-   
+
     $('#quantity').bind('change', function() {
        	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
@@ -440,7 +441,7 @@ echo $error_msg;
 	  $( this ).next( "span" ).css( "display", "inline" ).fadeOut( 5000 );
   });
 
-   
+
 </script>
 <?php
 include (ROOT . '/module/Procure/view/procure/pr_auto_complete.php');

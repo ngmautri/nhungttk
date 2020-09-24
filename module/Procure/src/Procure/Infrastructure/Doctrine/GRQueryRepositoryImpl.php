@@ -1,26 +1,107 @@
 <?php
 namespace Procure\Infrastructure\Doctrine;
 
-use Application\Domain\Util\SimpleCollection;
+use Application\Domain\Util\Translator;
 use Application\Entity\NmtProcureGrRow;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Procure\Domain\GoodsReceipt\GRRow;
+use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\GoodsReceipt\Factory\GRFactory;
 use Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface;
 use Procure\Domain\Shared\Constants;
+use Procure\Infrastructure\Doctrine\Helper\GrHelper;
 use Procure\Infrastructure\Doctrine\SQL\GrSQL;
 use Procure\Infrastructure\Mapper\GrMapper;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQueryRepositoryInterface
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface::getLazyRootEntityById()
+     */
+    public function getLazyRootEntityById($id)
+    {
+        if ($id == null) {
+            $f = Translator::translate("Could not create GR document. Document Id is empty");
+            throw new \RuntimeException(\sprintf($f, $id));
+        }
+
+        $criteria = array(
+            'id' => $id
+        );
+
+        $rootEntityDoctrine = $this->getDoctrineEM()
+            ->getRepository('\Application\Entity\NmtProcureGr')
+            ->findOneBy($criteria);
+
+        $rootSnapshot = GrMapper::createDetailSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+        if ($rootSnapshot == null) {
+            $f = Translator::translate("Could not create GR Document with #%");
+            throw new \RuntimeException(\sprintf($f, $id));
+        }
+
+        $rootEntity = GRFactory::constructFromDB($rootSnapshot);
+        $rootEntity->setLazyRowSnapshotCollectionReference($this->createLazyRowSnapshotCollectionReference($rootEntity));
+        return $rootEntity;
+    }
+
+    /**
+     *
+     * @param GenericGR $rootEntity
+     * @return \Closure
+     */
+    private function createLazyRowSnapshotCollectionReference(GenericGR $rootEntity)
+    {
+        return function () use ($rootEntity) {
+
+            // $rows = $this->getRowsById($rootEntity->getId());
+
+            $rows = GrHelper::getRows($this->getDoctrineEM(), $rootEntity->getId(), 'warehouse_id, row_number');
+
+            if (count($rows) == 0) {
+                return null;
+            }
+
+            $collection = new ArrayCollection();
+
+            foreach ($rows as $r) {
+
+                $rowClosure = function () use ($r) {
+
+                    $localEnityDoctrine = $r[0];
+
+                    /**@var \Application\Entity\NmtInventoryTrx $entityDoctrine ;*/
+
+                    $rowSnapshot = GrMapper::createRowDetailSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+                    $rowSnapshot->draftAPQuantity = $r["draft_ap_qty"];
+                    $rowSnapshot->postedAPQuantity = $r["posted_ap_qty"];
+                    $rowSnapshot->openAPQuantity = $r["open_ap_qty"];
+                    $rowSnapshot->billedAmount = $r["billed_amount"];
+
+                    return $rowSnapshot;
+                };
+
+                $collection->add($rowClosure);
+            }
+            return $collection;
+        };
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface::getHeaderIdByRowId()
+     */
     public function getHeaderIdByRowId($id)
     {
         $criteria = array(
@@ -83,8 +164,8 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
         $taxAmount = 0;
         $billedAmount = 0;
         $grossAmount = 0;
-        $targetWhList = new SimpleCollection();
-        $targetDepartmentList = new SimpleCollection();
+        $targetWhList = new ArrayCollection();
+        $targetDepartmentList = new ArrayCollection();
 
         foreach ($rows as $r) {
 
@@ -243,18 +324,35 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
         return null;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface::getHeaderDTO()
+     */
     public function getHeaderDTO($id, $token = null)
     {}
 
-    public function getPODetailsById($id, $token = null)
-    {}
-
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface::getById()
+     */
     public function getById($id, $outputStragegy = null)
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface::getByUUID()
+     */
     public function getByUUID($uuid)
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GoodsReceipt\Repository\GrQueryRepositoryInterface::findAll()
+     */
     public function findAll()
     {}
 
@@ -271,12 +369,12 @@ class GRQueryRepositoryImpl extends AbstractDoctrineRepository implements GrQuer
 SELECT
 *
 FROM nmt_procure_gr_row
-            
+
 LEFT JOIN
 (%s)
 AS fin_vendor_invoice_row
 ON fin_vendor_invoice_row.gr_row_id = nmt_procure_gr_row.id
-           
+
 WHERE nmt_procure_gr_row.gr_id=%s AND nmt_procure_gr_row.is_active=1 order by row_number";
 
         /**

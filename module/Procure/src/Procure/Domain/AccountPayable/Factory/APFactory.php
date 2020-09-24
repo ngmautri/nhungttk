@@ -62,17 +62,25 @@ class APFactory
             return null;
         }
 
-        $docType = $snapshot->getDocType();
-        $instance = self::createDoc($docType);
-
         if ($options == null) {
             throw new \InvalidArgumentException("Options is null");
         }
 
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        $docType = $snapshot->getDocType();
+        $instance = self::createDoc($docType);
+
+        if ($instance == null) {
+            throw new \RuntimeException(\sprintf("Could not created document %s", $docType));
+        }
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
+        $snapshot->setExchangeRate($fxRate);
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $snapshot->init($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
         $validationService = ValidatorFactory::createForHeader($sharedService);
         $instance->validateHeader($validationService->getHeaderValidators());
@@ -80,10 +88,6 @@ class APFactory
         if ($instance->hasErrors()) {
             throw new \RuntimeException($instance->getNotification()->errorMessage());
         }
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         $instance->clearEvents();
 

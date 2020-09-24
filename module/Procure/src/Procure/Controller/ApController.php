@@ -33,7 +33,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApController extends AbstractGenericController
 {
@@ -52,11 +52,7 @@ class ApController extends AbstractGenericController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         /**@var \Application\Entity\MlaUsers $u ;*/
         /**@var ApDTO $dto ;*/
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
-
-        if ($u == null) {
+        if ($this->getUserId() == null) {
             return $this->redirect()->toRoute('access_denied    ');
         }
 
@@ -82,10 +78,14 @@ class ApController extends AbstractGenericController
             $version = null;
 
             try {
+
+                $companyId = $this->getCompanyId();
+                $userId = $this->getUserId();
+
                 $source_id = (int) $this->params()->fromQuery('source_id');
                 $source_token = $this->params()->fromQuery('source_token');
 
-                $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+                $options = new CopyFromPOOptions($companyId, $userId, __METHOD__);
                 $rootEntity = $this->getApService()->createFromPO($source_id, $source_token, $options);
 
                 if ($rootEntity == null) {
@@ -124,19 +124,15 @@ class ApController extends AbstractGenericController
 
         try {
             $data = $prg;
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-
-            $userId = $u->getId();
-            $companyId = $u->getCompany()->getId();
             $source_id = $data['source_id'];
             $source_token = $data['source_token'];
             $version = $data['version'];
 
+            $companyId = $this->getCompanyId();
+            $userId = $this->getUserId();
+
             $dto = DTOFactory::createDTOFromArray($data, new ApDTO());
-            $options = new CopyFromPOOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+            $options = new CopyFromPOOptions($companyId, $userId, __METHOD__);
 
             $rootEntity = $this->getApService()->createFromPO($source_id, $source_token, $options);
 

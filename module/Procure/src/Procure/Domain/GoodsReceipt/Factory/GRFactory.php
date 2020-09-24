@@ -58,6 +58,24 @@ class GRFactory
 
     /**
      *
+     * @param string $docType
+     * @throws \RuntimeException
+     * @return NULL|\Procure\Domain\GoodsReceipt\GenericGR
+     */
+    public static function createEmptyObject($docType)
+    {
+        $instance = self::createDoc($docType);
+
+        if ($instance == null) {
+            throw new \RuntimeException(\sprintf("Could not created document %s", $docType));
+        }
+
+        $instance->specify(); // important
+        return $instance;
+    }
+
+    /**
+     *
      * @param GRSnapshot $snapshot
      * @param CommandOptions $options
      * @param SharedService $sharedService

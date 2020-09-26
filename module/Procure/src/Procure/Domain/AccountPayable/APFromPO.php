@@ -29,8 +29,6 @@ final class APFromPO extends GenericAP
         $this->setDocType(ProcureDocType::INVOICE_FROM_PO);
     }
 
-    private static $instance = null;
-
     // ===================
     private function __construct()
     {}
@@ -41,7 +39,7 @@ final class APFromPO extends GenericAP
      */
     public static function getInstance()
     {
-        return new APFromPO();
+        return new self();
     }
 
     /**

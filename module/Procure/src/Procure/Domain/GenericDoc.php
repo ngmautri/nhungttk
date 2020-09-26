@@ -2,10 +2,14 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
+use function Procure\Domain\BaseDoc\getDocRows as count;
+use function Procure\Domain\BaseDoc\getRowIdArray as in_array;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use Closure;
 use InvalidArgumentException;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -27,6 +31,101 @@ class GenericDoc extends BaseDoc
         if ($this->getSysNumber() == Constants::SYS_NUMBER_UNASSIGNED) {
             $this->setSysNumber($snapshot->getSysNumber());
         }
+    }
+
+    /**
+     *
+     * @param Closure $sort
+     */
+    public function sortRowsBy(callable $sort)
+    {
+        if (! $sort instanceof \Closure) {
+            return;
+        }
+
+        $docRows = $this->getDocRows();
+
+        if ($docRows == null) {
+            return;
+        }
+
+        if ($this->getTotalRows() == 1) {
+            return;
+        }
+
+        \usort($docRows, $sort);
+
+        $this->setDocRows($docRows);
+    }
+
+    public function splitRowsByWarehouse()
+    {
+        $docRows = $this->getDocRows();
+        if ($docRows == null) {
+            return null;
+        }
+
+        $this->sortRowsByWarehouse();
+
+        $results = [];
+
+        /**
+         *
+         * @var GenericRow $fistRow
+         */
+
+        $fistRow = $docRows[0];
+        $wh = $fistRow->getWarehouse();
+        $rowsOfWarehouse = [];
+        $n = 0;
+        foreach ($docRows as $row) {
+
+            /**
+             *
+             * @var GenericRow $row
+             */
+            $n ++;
+
+            if ($row->getWarehouse() == $wh) {
+                $rowsOfWarehouse[] = $row;
+            } else {
+                $results[$wh] = $rowsOfWarehouse;
+
+                $wh = $row->getWarehouse();
+                $rowsOfWarehouse = new ArrayCollection();
+                $rowsOfWarehouse[] = $row;
+
+                if ($n == $this->getTotalRows()) {
+                    $results[$wh] = $rowsOfWarehouse;
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    public function sortRowsByWarehouse()
+    {
+        $sort = function ($row1, $row2) {
+
+            if (! $row1 instanceof GenericRow) {
+                throw new \RuntimeException("Invalid procure row");
+            }
+
+            if (! $row2 instanceof GenericRow) {
+                throw new \RuntimeException("Invalid procure row");
+            }
+
+            $wh1 = $row1->getWarehouse();
+            $wh2 = $row2->getWarehouse();
+
+            if ($wh1 == $wh2) {
+                return 0;
+            }
+            return ($wh1 < $wh2) ? - 1 : 1;
+        };
+
+        $this->sortRowsBy($sort);
     }
 
     /**
@@ -147,10 +246,15 @@ class GenericDoc extends BaseDoc
         $props = $reflectionClass->getProperties();
 
         foreach ($props as $prop) {
-            $prop->setAccessible(true);
 
+            $prop->setAccessible(true);
             $propName = $prop->getName();
-            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
+
+            if (\in_array($propName, $exculdedProps)) {
+                continue;
+            }
+
+            if (property_exists($targetObj, $propName)) {
                 $targetObj->$propName = $prop->getValue($sourceObj);
             }
         }

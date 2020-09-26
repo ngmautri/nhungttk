@@ -454,7 +454,7 @@ abstract class BaseDoc extends AbstractDoc
      */
     public function getTotalRows()
     {
-        return $this->totalRows;
+        return count($this->getDocRows());
     }
 
     /**

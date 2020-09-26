@@ -24,6 +24,18 @@ use Procure\Domain\AccountPayable\APFromPO;
 class APFactory
 {
 
+    public static function createEmptyObject($docType)
+    {
+        $instance = self::createDoc($docType);
+
+        if ($instance == null) {
+            throw new \RuntimeException(\sprintf("Could not created document %s", $docType));
+        }
+
+        $instance->specify(); // important
+        return $instance;
+    }
+
     /**
      *
      * @param APSnapshot $snapshot

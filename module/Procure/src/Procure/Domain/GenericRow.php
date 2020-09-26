@@ -50,7 +50,12 @@ class GenericRow extends BaseRow
             $prop->setAccessible(true);
 
             $propName = $prop->getName();
-            if (property_exists($targetObj, $propName) && ! in_array($propName, $exculdedProps)) {
+
+            if (\in_array($propName, $exculdedProps)) {
+                continue;
+            }
+
+            if (property_exists($targetObj, $propName)) {
                 $targetObj->$propName = $prop->getValue($sourceObj);
             }
         }

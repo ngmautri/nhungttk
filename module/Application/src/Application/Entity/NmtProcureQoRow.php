@@ -316,6 +316,13 @@ class NmtProcureQoRow
     private $docVersion;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
+     */
+    private $clearingDocId;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1403,6 +1410,30 @@ class NmtProcureQoRow
     public function getDocVersion()
     {
         return $this->docVersion;
+    }
+
+    /**
+     * Set clearingDocId
+     *
+     * @param integer $clearingDocId
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get clearingDocId
+     *
+     * @return integer
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
     }
 
     /**

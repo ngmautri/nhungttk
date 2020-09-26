@@ -442,6 +442,13 @@ class NmtProcurePoRow
     private $standardConvertFactor;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
+     */
+    private $clearingDocId;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1971,6 +1978,30 @@ class NmtProcurePoRow
     public function getStandardConvertFactor()
     {
         return $this->standardConvertFactor;
+    }
+
+    /**
+     * Set clearingDocId
+     *
+     * @param integer $clearingDocId
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get clearingDocId
+     *
+     * @return integer
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
     }
 
     /**

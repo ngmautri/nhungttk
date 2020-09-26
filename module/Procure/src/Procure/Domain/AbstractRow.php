@@ -7,7 +7,7 @@ use Application\Domain\Shared\AbstractEntity;
  * Abstract Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AbstractRow extends AbstractEntity
 {
@@ -151,6 +151,8 @@ class AbstractRow extends AbstractEntity
     protected $costCenter;
 
     protected $standardConvertFactor;
+
+    protected $clearingDocId;
 
     /**
      *
@@ -1392,5 +1394,23 @@ class AbstractRow extends AbstractEntity
     public function getStandardConvertFactor()
     {
         return $this->standardConvertFactor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
+    }
+
+    /**
+     *
+     * @param mixed $clearingDocId
+     */
+    protected function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
     }
 }

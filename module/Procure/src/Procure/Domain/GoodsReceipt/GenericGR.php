@@ -109,6 +109,10 @@ abstract class GenericGR extends BaseDoc
         return $results;
     }
 
+    /**
+     *
+     * @return NULL[]|\Procure\Domain\GoodsReceipt\GenericGR[]
+     */
     public function createSubDocumentByWarehouse()
     {
         $subDocuments = [];
@@ -117,8 +121,17 @@ abstract class GenericGR extends BaseDoc
             $doc = GRFactory::createEmptyObject($this->getDocType());
             $this->convertTo($doc);
 
-            $doc->sysNumber = $this->getSysNumber();
-            $doc->warehouse = $k;
+            $createdDate = new \DateTimeImmutable();
+
+            // enrichment
+            $doc->setUuid(Uuid::uuid4()->toString());
+            $doc->setToken($this->getUuid());
+            $doc->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+            $doc->setCreatedBy($this->getCreatedBy());
+
+            $doc->setSysNumber(\sprintf("%s-WH%s", $this->getSysNumber(), $k));
+            $doc->setRemarks(\sprintf("%s-WH%s", $this->getRemarks(), $k));
+            $doc->setWarehouse($k);
             $doc->setRowSnapshotCollection($v);
             $subDocuments[] = $doc;
         }

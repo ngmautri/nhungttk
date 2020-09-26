@@ -11,23 +11,18 @@ class PoRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 
     protected $serviceManager;
 
-  
     protected $em;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
         try {
 
             $test = PORowDTOAssembler::createGetMapping();
-            //var_dump($test);
-           } catch (InvalidArgumentException $e) {
+            // var_dump($test);
+        } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

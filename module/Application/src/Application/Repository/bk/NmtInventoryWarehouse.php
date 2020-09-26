@@ -2,7 +2,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\BaseEntity\BaseNmtInventoryWarehouse;
 
 /**
  * NmtInventoryWarehouse
@@ -10,31 +10,13 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table(name="nmt_inventory_warehouse", indexes={@ORM\Index(name="nmt_inventory_warehouse_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK2_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK3_idx", columns={"wh_country"}), @ORM\Index(name="nmt_inventory_warehouse_FK4_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK5_idx", columns={"stockkeeper_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK6_idx", columns={"wh_controller_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK7_idx", columns={"location_id"})})
  * @ORM\Entity
  */
-class NmtInventoryWarehouse
+class NmtInventoryWarehouse extends BaseNmtInventoryWarehouse
 {
 
-    /**
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getLocationList()
-    {
-        return $this->locationList;
-    }
-
-    // ================================
     public function __construct()
     {
-        $this->locationList = new ArrayCollection();
+        parent::__construct();
     }
-
-    /**
-     * One product has many features.
-     * This is the inverse side.
-     *
-     * @ORM\OneToMany(targetEntity="Application\Entity\NmtInventoryWarehouseLocation", mappedBy="warehouse")
-     */
-    private $locationList;
 
     /**
      *

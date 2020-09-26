@@ -5,7 +5,7 @@ use ApplicationTest\Bootstrap;
 use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
 use PHPUnit_Framework_TestCase;
 
-class OnhandTest extends PHPUnit_Framework_TestCase
+class OnhandAtWarehouseTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
@@ -20,8 +20,9 @@ class OnhandTest extends PHPUnit_Framework_TestCase
 
         $subject = [
             "itemId" => 3617,
-            "movementId" => 1527,
-            "docQuantity" => 13
+            "docQuantity" => 12,
+            "movementDate" => '2020-09-24',
+            "warehouseId" => '5'
         ];
 
         var_dump($spec->isSatisfiedBy($subject));

@@ -10,7 +10,7 @@ use Procure\Domain\PurchaseOrder\POSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoMapper
 {
@@ -57,11 +57,13 @@ class PoMapper
         $entity->setTotalLocalTax($snapshot->totalLocalTax);
         $entity->setTotalLocalDiscount($snapshot->totalLocalDiscount);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
+
         $entity->setUuid($snapshot->uuid);
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setIsDraft($snapshot->isDraft);
         $entity->setIsPosted($snapshot->isPosted);
         $entity->setIsReversed($snapshot->isReversed);
+        $entity->setReversalDate($snapshot->reversalDate);
         $entity->setReversalReason($snapshot->reversalReason);
         $entity->setPostingPeriod($snapshot->postingPeriod);
         $entity->setCurrentStatus($snapshot->currentStatus);
@@ -69,6 +71,12 @@ class PoMapper
         $entity->setDiscountRate($snapshot->discountRate);
         $entity->setDiscountAmount($snapshot->discountAmount);
         $entity->setDocNumber($snapshot->docNumber);
+        $entity->setDocDate($snapshot->docDate);
+        $entity->setBaseDocId($snapshot->baseDocId);
+        $entity->setBaseDocType($snapshot->baseDocType);
+        $entity->setTargetDocId($snapshot->targetDocId);
+        $entity->setTargetDocType($snapshot->targetDocType);
+        $entity->setClearingDocId($snapshot->clearingDocId);
 
         // ============================
         // DATE MAPPING
@@ -306,6 +314,7 @@ class PoMapper
         $entity->setVendorItemName($snapshot->vendorItemName);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setDocVersion($snapshot->docVersion);
+
         $entity->setUuid($snapshot->uuid);
         $entity->setLocalUnitPrice($snapshot->localUnitPrice);
         $entity->setExwCurrency($snapshot->exwCurrency);
@@ -316,7 +325,7 @@ class PoMapper
         $entity->setGlAccount($snapshot->glAccount);
         $entity->setCostCenter($snapshot->costCenter);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
-
+        $entity->setClearingDocId($snapshot->clearingDocId);
         // ============================
         // DATE MAPPING
         // ============================
@@ -596,9 +605,26 @@ class PoMapper
         $snapshot->totalLocalTax = $entity->getTotalLocalTax();
         $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->isReversed = $entity->getIsReversed();
+        $snapshot->reversalDate = $entity->getReversalDate();
+        $snapshot->reversalReason = $entity->getReversalReason();
+        $snapshot->postingPeriod = $entity->getPostingPeriod();
+        $snapshot->currentStatus = $entity->getCurrentStatus();
+        $snapshot->transactionType = $entity->getTransactionType();
+        $snapshot->discountRate = $entity->getDiscountRate();
+        $snapshot->discountAmount = $entity->getDiscountAmount();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docDate = $entity->getDocDate();
+        $snapshot->baseDocId = $entity->getBaseDocId();
+        $snapshot->baseDocType = $entity->getBaseDocType();
+        $snapshot->targetDocId = $entity->getTargetDocId();
+        $snapshot->targetDocType = $entity->getTargetDocType();
+        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         return $snapshot;
     }
@@ -682,6 +708,8 @@ class PoMapper
 
         $snapshot->glAccount = $entity->getGlAccount();
         $snapshot->costCenter = $entity->getCostCenter();
+
+        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         if ($entity->getGlAccount() > 0) {
             /**

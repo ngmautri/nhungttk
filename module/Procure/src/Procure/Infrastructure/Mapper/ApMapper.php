@@ -10,7 +10,7 @@ use Procure\Domain\AccountPayable\APSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ApMapper
 {
@@ -71,9 +71,17 @@ class ApMapper
         $entity->setTotalLocalDiscount($snapshot->totalLocalDiscount);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
+
         $entity->setDiscountRate($snapshot->discountRate);
         $entity->setDiscountAmount($snapshot->discountAmount);
-        $entity->setDocNumber($snapshot->getDocNumber());
+        $entity->setDocNumber($snapshot->docNumber);
+        $entity->setDocDate($snapshot->docDate);
+        $entity->setDocVersion($snapshot->docVersion);
+        $entity->setBaseDocId($snapshot->baseDocId);
+        $entity->setBaseDocType($snapshot->baseDocType);
+        $entity->setTargetDocId($snapshot->targetDocId);
+        $entity->setTargetDocType($snapshot->targetDocType);
+        $entity->setClearingDocId($snapshot->clearingDocId);
 
         // ============================
         // DATE MAPPING
@@ -367,6 +375,7 @@ class ApMapper
         $entity->setUuid($snapshot->uuid);
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
+        $entity->setClearingDocId($snapshot->clearingDocId);
 
         // ============================
         // DATE MAPPING
@@ -565,10 +574,18 @@ class ApMapper
         $snapshot->totalLocalTax = $entity->getTotalLocalTax();
         $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+
         $snapshot->uuid = $entity->getUuid();
         $snapshot->discountRate = $entity->getDiscountRate();
         $snapshot->discountAmount = $entity->getDiscountAmount();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docDate = $entity->getDocDate();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->baseDocId = $entity->getBaseDocId();
+        $snapshot->baseDocType = $entity->getBaseDocType();
+        $snapshot->targetDocId = $entity->getTargetDocId();
+        $snapshot->targetDocType = $entity->getTargetDocType();
+        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         // ============================
         // DATE MAPPING
@@ -780,7 +797,7 @@ class ApMapper
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docVersion = $entity->getDocVersion();
         $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
-
+        $snapshot->clearingDocId = $entity->getClearingDocId();
         // ============================
         // DATE MAPPING
         // ============================

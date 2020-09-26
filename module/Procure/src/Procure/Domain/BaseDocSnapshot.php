@@ -7,10 +7,22 @@ use Application\Domain\Shared\AbstractDTO;
  * Doc Snapshot
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class BaseDocSnapshot extends AbstractDTO
 {
+
+    public $lazyRowSnapshotCollection;
+
+    public $lazyRowSnapshotCollectionReference;
+
+    public $pictureList;
+
+    public $attachmentList;
+
+    public $totalPicture;
+
+    public $totalAttachment;
 
     public $docRows;
 
@@ -223,6 +235,70 @@ class BaseDocSnapshot extends AbstractDTO
     public $docNumber;
 
     public $docDate;
+
+    public $baseDocId;
+
+    public $baseDocType;
+
+    public $targetDocId;
+
+    public $targetDocType;
+
+    public $clearingDocId;
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollection()
+    {
+        return $this->lazyRowSnapshotCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getLazyRowSnapshotCollectionReference()
+    {
+        return $this->lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPictureList()
+    {
+        return $this->pictureList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getAttachmentList()
+    {
+        return $this->attachmentList;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalPicture()
+    {
+        return $this->totalPicture;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTotalAttachment()
+    {
+        return $this->totalAttachment;
+    }
 
     /**
      *
@@ -1180,6 +1256,105 @@ class BaseDocSnapshot extends AbstractDTO
 
     /**
      *
+     * @return mixed
+     */
+    public function getBaseDocId()
+    {
+        return $this->baseDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseDocType()
+    {
+        return $this->baseDocType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTargetDocId()
+    {
+        return $this->targetDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTargetDocType()
+    {
+        return $this->targetDocType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
+    }
+
+    /**
+     *
+     * @param mixed $lazyRowSnapshotCollection
+     */
+    public function setLazyRowSnapshotCollection($lazyRowSnapshotCollection)
+    {
+        $this->lazyRowSnapshotCollection = $lazyRowSnapshotCollection;
+    }
+
+    /**
+     *
+     * @param mixed $lazyRowSnapshotCollectionReference
+     */
+    public function setLazyRowSnapshotCollectionReference($lazyRowSnapshotCollectionReference)
+    {
+        $this->lazyRowSnapshotCollectionReference = $lazyRowSnapshotCollectionReference;
+    }
+
+    /**
+     *
+     * @param mixed $pictureList
+     */
+    public function setPictureList($pictureList)
+    {
+        $this->pictureList = $pictureList;
+    }
+
+    /**
+     *
+     * @param mixed $attachmentList
+     */
+    public function setAttachmentList($attachmentList)
+    {
+        $this->attachmentList = $attachmentList;
+    }
+
+    /**
+     *
+     * @param mixed $totalPicture
+     */
+    public function setTotalPicture($totalPicture)
+    {
+        $this->totalPicture = $totalPicture;
+    }
+
+    /**
+     *
+     * @param mixed $totalAttachment
+     */
+    public function setTotalAttachment($totalAttachment)
+    {
+        $this->totalAttachment = $totalAttachment;
+    }
+
+    /**
+     *
      * @param mixed $docRows
      */
     public function setDocRows($docRows)
@@ -2130,5 +2305,50 @@ class BaseDocSnapshot extends AbstractDTO
     public function setDocDate($docDate)
     {
         $this->docDate = $docDate;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocId
+     */
+    public function setBaseDocId($baseDocId)
+    {
+        $this->baseDocId = $baseDocId;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocType
+     */
+    public function setBaseDocType($baseDocType)
+    {
+        $this->baseDocType = $baseDocType;
+    }
+
+    /**
+     *
+     * @param mixed $targetDocId
+     */
+    public function setTargetDocId($targetDocId)
+    {
+        $this->targetDocId = $targetDocId;
+    }
+
+    /**
+     *
+     * @param mixed $targetDocType
+     */
+    public function setTargetDocType($targetDocType)
+    {
+        $this->targetDocType = $targetDocType;
+    }
+
+    /**
+     *
+     * @param mixed $clearingDocId
+     */
+    public function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
     }
 }

@@ -10,7 +10,7 @@ use Procure\Domain\PurchaseRequest\PRSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrMapper
 {
@@ -44,9 +44,15 @@ class PrMapper
         $entity->setTransactionStatus($snapshot->transactionStatus);
         $entity->setDocType($snapshot->docType);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
+
         $entity->setUuid($snapshot->uuid);
         $entity->setDocNumber($snapshot->docNumber);
-
+        $entity->setDocDate($snapshot->docDate);
+        $entity->setBaseDocId($snapshot->baseDocId);
+        $entity->setBaseDocType($snapshot->baseDocType);
+        $entity->setTargetDocId($snapshot->targetDocId);
+        $entity->setTargetDocType($snapshot->targetDocType);
+        $entity->setClearingDocId($snapshot->clearingDocId);
         // ============================
         // DATE MAPPING
         // ============================
@@ -174,7 +180,7 @@ class PrMapper
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
         $entity->setVendorItemName($snapshot->vendorItemName);
         $entity->setVendorItemCode($snapshot->vendorItemCode);
-
+        $entity->setClearingDocId($snapshot->clearingDocId);
         // ============================
         // DATE MAPPING
         // ============================
@@ -311,8 +317,15 @@ class PrMapper
         $snapshot->transactionStatus = $entity->getTransactionStatus();
         $snapshot->docType = $entity->getDocType();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->docDate = $entity->getDocDate();
+        $snapshot->baseDocId = $entity->getBaseDocId();
+        $snapshot->baseDocType = $entity->getBaseDocType();
+        $snapshot->targetDocId = $entity->getTargetDocId();
+        $snapshot->targetDocType = $entity->getTargetDocType();
+        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         // ============================
         // Addtional Mapping
@@ -431,6 +444,7 @@ class PrMapper
         $snapshot->standardConvertFactor = $entity->getStandardConvertFactor();
         $snapshot->vendorItemName = $entity->getVendorItemName();
         $snapshot->vendorItemCode = $entity->getVendorItemCode();
+        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         // ============================
         // DATE MAPPING

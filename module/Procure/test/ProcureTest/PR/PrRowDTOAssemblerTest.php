@@ -18,17 +18,13 @@ class PrRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     protected $em;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
         try {
 
-            PrRowDTOAssembler::createStoreMapping();
+            PrRowDTOAssembler::createGetMapping();
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

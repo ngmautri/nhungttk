@@ -139,6 +139,16 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     protected $docDate;
 
+    protected $baseDocId;
+
+    protected $baseDocType;
+
+    protected $targetDocId;
+
+    protected $targetDocType;
+
+    protected $clearingDocId;
+
     /**
      *
      * @param mixed $id
@@ -1253,5 +1263,95 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     public function getDocDate()
     {
         return $this->docDate;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocId
+     */
+    protected function setBaseDocId($baseDocId)
+    {
+        $this->baseDocId = $baseDocId;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocType
+     */
+    protected function setBaseDocType($baseDocType)
+    {
+        $this->baseDocType = $baseDocType;
+    }
+
+    /**
+     *
+     * @param mixed $targetDocId
+     */
+    protected function setTargetDocId($targetDocId)
+    {
+        $this->targetDocId = $targetDocId;
+    }
+
+    /**
+     *
+     * @param mixed $targetDocType
+     */
+    protected function setTargetDocType($targetDocType)
+    {
+        $this->targetDocType = $targetDocType;
+    }
+
+    /**
+     *
+     * @param mixed $clearingDocId
+     */
+    protected function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseDocId()
+    {
+        return $this->baseDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseDocType()
+    {
+        return $this->baseDocType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTargetDocId()
+    {
+        return $this->targetDocId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTargetDocType()
+    {
+        return $this->targetDocType;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
     }
 }

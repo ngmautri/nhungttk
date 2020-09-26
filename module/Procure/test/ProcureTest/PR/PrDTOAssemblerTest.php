@@ -11,17 +11,13 @@ class PrDTOAssemblerTest extends PHPUnit_Framework_TestCase
     protected $serviceManager;
 
     public function setUp()
-    {
-        $root = realpath(dirname(dirname(dirname(__FILE__))));
-        // echo $root;
-        require ($root . '/Bootstrap.php');
-    }
+    {}
 
     public function testOther()
     {
         try {
 
-            PrDTOAssembler::createStoreMapping();
+            PrDTOAssembler::createGetMapping();
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

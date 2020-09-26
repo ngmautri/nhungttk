@@ -7,7 +7,7 @@ use Application\Domain\Shared\AbstractDTO;
  * Row Snapshot
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class BaseRowSnapshot extends AbstractDTO
 {
@@ -316,23 +316,7 @@ class BaseRowSnapshot extends AbstractDTO
 
     public $standardConvertFactor;
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getPrWarehouse()
-    {
-        return $this->prWarehouse;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPrWarehouseName()
-    {
-        return $this->prWarehouseName;
-    }
+    public $clearingDocId;
 
     /**
      *
@@ -1067,6 +1051,24 @@ class BaseRowSnapshot extends AbstractDTO
      *
      * @return mixed
      */
+    public function getPrWarehouse()
+    {
+        return $this->prWarehouse;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPrWarehouseName()
+    {
+        return $this->prWarehouseName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
@@ -1683,6 +1685,1392 @@ class BaseRowSnapshot extends AbstractDTO
     {
         return $this->standardConvertFactor;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
+    }
+
+    /**
+     *
+     * @param mixed $createdByName
+     */
+    public function setCreatedByName($createdByName)
+    {
+        $this->createdByName = $createdByName;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeByName
+     */
+    public function setLastChangeByName($lastChangeByName)
+    {
+        $this->lastChangeByName = $lastChangeByName;
+    }
+
+    /**
+     *
+     * @param mixed $glAccountName
+     */
+    public function setGlAccountName($glAccountName)
+    {
+        $this->glAccountName = $glAccountName;
+    }
+
+    /**
+     *
+     * @param mixed $glAccountNumber
+     */
+    public function setGlAccountNumber($glAccountNumber)
+    {
+        $this->glAccountNumber = $glAccountNumber;
+    }
+
+    /**
+     *
+     * @param mixed $glAccountType
+     */
+    public function setGlAccountType($glAccountType)
+    {
+        $this->glAccountType = $glAccountType;
+    }
+
+    /**
+     *
+     * @param mixed $costCenterName
+     */
+    public function setCostCenterName($costCenterName)
+    {
+        $this->costCenterName = $costCenterName;
+    }
+
+    /**
+     *
+     * @param mixed $discountAmount
+     */
+    public function setDiscountAmount($discountAmount)
+    {
+        $this->discountAmount = $discountAmount;
+    }
+
+    /**
+     *
+     * @param mixed $convertedDocQuantity
+     */
+    public function setConvertedDocQuantity($convertedDocQuantity)
+    {
+        $this->convertedDocQuantity = $convertedDocQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $convertedDocUnitPrice
+     */
+    public function setConvertedDocUnitPrice($convertedDocUnitPrice)
+    {
+        $this->convertedDocUnitPrice = $convertedDocUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $companyId
+     */
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+    }
+
+    /**
+     *
+     * @param mixed $companyToken
+     */
+    public function setCompanyToken($companyToken)
+    {
+        $this->companyToken = $companyToken;
+    }
+
+    /**
+     *
+     * @param mixed $companyName
+     */
+    public function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+    }
+
+    /**
+     *
+     * @param mixed $vendorId
+     */
+    public function setVendorId($vendorId)
+    {
+        $this->vendorId = $vendorId;
+    }
+
+    /**
+     *
+     * @param mixed $vendorToken
+     */
+    public function setVendorToken($vendorToken)
+    {
+        $this->vendorToken = $vendorToken;
+    }
+
+    /**
+     *
+     * @param mixed $vendorName
+     */
+    public function setVendorName($vendorName)
+    {
+        $this->vendorName = $vendorName;
+    }
+
+    /**
+     *
+     * @param mixed $vendorCountry
+     */
+    public function setVendorCountry($vendorCountry)
+    {
+        $this->vendorCountry = $vendorCountry;
+    }
+
+    /**
+     *
+     * @param mixed $docNumber
+     */
+    public function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+    }
+
+    /**
+     *
+     * @param mixed $docSysNumber
+     */
+    public function setDocSysNumber($docSysNumber)
+    {
+        $this->docSysNumber = $docSysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $docCurrencyISO
+     */
+    public function setDocCurrencyISO($docCurrencyISO)
+    {
+        $this->docCurrencyISO = $docCurrencyISO;
+    }
+
+    /**
+     *
+     * @param mixed $localCurrencyISO
+     */
+    public function setLocalCurrencyISO($localCurrencyISO)
+    {
+        $this->localCurrencyISO = $localCurrencyISO;
+    }
+
+    /**
+     *
+     * @param mixed $docCurrencyId
+     */
+    public function setDocCurrencyId($docCurrencyId)
+    {
+        $this->docCurrencyId = $docCurrencyId;
+    }
+
+    /**
+     *
+     * @param mixed $localCurrencyId
+     */
+    public function setLocalCurrencyId($localCurrencyId)
+    {
+        $this->localCurrencyId = $localCurrencyId;
+    }
+
+    /**
+     *
+     * @param mixed $docToken
+     */
+    public function setDocToken($docToken)
+    {
+        $this->docToken = $docToken;
+    }
+
+    /**
+     *
+     * @param mixed $docId
+     */
+    public function setDocId($docId)
+    {
+        $this->docId = $docId;
+    }
+
+    /**
+     *
+     * @param mixed $exchangeRate
+     */
+    public function setExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
+
+    /**
+     *
+     * @param mixed $docDate
+     */
+    public function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+    }
+
+    /**
+     *
+     * @param mixed $docYear
+     */
+    public function setDocYear($docYear)
+    {
+        $this->docYear = $docYear;
+    }
+
+    /**
+     *
+     * @param mixed $docMonth
+     */
+    public function setDocMonth($docMonth)
+    {
+        $this->docMonth = $docMonth;
+    }
+
+    /**
+     *
+     * @param mixed $docRevisionNo
+     */
+    public function setDocRevisionNo($docRevisionNo)
+    {
+        $this->docRevisionNo = $docRevisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $docWarehouseName
+     */
+    public function setDocWarehouseName($docWarehouseName)
+    {
+        $this->docWarehouseName = $docWarehouseName;
+    }
+
+    /**
+     *
+     * @param mixed $docWarehouseCode
+     */
+    public function setDocWarehouseCode($docWarehouseCode)
+    {
+        $this->docWarehouseCode = $docWarehouseCode;
+    }
+
+    /**
+     *
+     * @param mixed $warehouseName
+     */
+    public function setWarehouseName($warehouseName)
+    {
+        $this->warehouseName = $warehouseName;
+    }
+
+    /**
+     *
+     * @param mixed $warehouseCode
+     */
+    public function setWarehouseCode($warehouseCode)
+    {
+        $this->warehouseCode = $warehouseCode;
+    }
+
+    /**
+     *
+     * @param mixed $docUomName
+     */
+    public function setDocUomName($docUomName)
+    {
+        $this->docUomName = $docUomName;
+    }
+
+    /**
+     *
+     * @param mixed $docUomCode
+     */
+    public function setDocUomCode($docUomCode)
+    {
+        $this->docUomCode = $docUomCode;
+    }
+
+    /**
+     *
+     * @param mixed $docUomDescription
+     */
+    public function setDocUomDescription($docUomDescription)
+    {
+        $this->docUomDescription = $docUomDescription;
+    }
+
+    /**
+     *
+     * @param mixed $itemToken
+     */
+    public function setItemToken($itemToken)
+    {
+        $this->itemToken = $itemToken;
+    }
+
+    /**
+     *
+     * @param mixed $itemChecksum
+     */
+    public function setItemChecksum($itemChecksum)
+    {
+        $this->itemChecksum = $itemChecksum;
+    }
+
+    /**
+     *
+     * @param mixed $itemName
+     */
+    public function setItemName($itemName)
+    {
+        $this->itemName = $itemName;
+    }
+
+    /**
+     *
+     * @param mixed $itemName1
+     */
+    public function setItemName1($itemName1)
+    {
+        $this->itemName1 = $itemName1;
+    }
+
+    /**
+     *
+     * @param mixed $itemSKU
+     */
+    public function setItemSKU($itemSKU)
+    {
+        $this->itemSKU = $itemSKU;
+    }
+
+    /**
+     *
+     * @param mixed $itemSKU1
+     */
+    public function setItemSKU1($itemSKU1)
+    {
+        $this->itemSKU1 = $itemSKU1;
+    }
+
+    /**
+     *
+     * @param mixed $itemSKU2
+     */
+    public function setItemSKU2($itemSKU2)
+    {
+        $this->itemSKU2 = $itemSKU2;
+    }
+
+    /**
+     *
+     * @param mixed $itemUUID
+     */
+    public function setItemUUID($itemUUID)
+    {
+        $this->itemUUID = $itemUUID;
+    }
+
+    /**
+     *
+     * @param mixed $itemSysNumber
+     */
+    public function setItemSysNumber($itemSysNumber)
+    {
+        $this->itemSysNumber = $itemSysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $itemStandardUnit
+     */
+    public function setItemStandardUnit($itemStandardUnit)
+    {
+        $this->itemStandardUnit = $itemStandardUnit;
+    }
+
+    /**
+     *
+     * @param mixed $itemStandardUnitName
+     */
+    public function setItemStandardUnitName($itemStandardUnitName)
+    {
+        $this->itemStandardUnitName = $itemStandardUnitName;
+    }
+
+    /**
+     *
+     * @param mixed $itemStandardUnitCode
+     */
+    public function setItemStandardUnitCode($itemStandardUnitCode)
+    {
+        $this->itemStandardUnitCode = $itemStandardUnitCode;
+    }
+
+    /**
+     *
+     * @param mixed $itemVersion
+     */
+    public function setItemVersion($itemVersion)
+    {
+        $this->itemVersion = $itemVersion;
+    }
+
+    /**
+     *
+     * @param mixed $isInventoryItem
+     */
+    public function setIsInventoryItem($isInventoryItem)
+    {
+        $this->isInventoryItem = $isInventoryItem;
+    }
+
+    /**
+     *
+     * @param mixed $isFixedAsset
+     */
+    public function setIsFixedAsset($isFixedAsset)
+    {
+        $this->isFixedAsset = $isFixedAsset;
+    }
+
+    /**
+     *
+     * @param mixed $itemMonitorMethod
+     */
+    public function setItemMonitorMethod($itemMonitorMethod)
+    {
+        $this->itemMonitorMethod = $itemMonitorMethod;
+    }
+
+    /**
+     *
+     * @param mixed $itemModel
+     */
+    public function setItemModel($itemModel)
+    {
+        $this->itemModel = $itemModel;
+    }
+
+    /**
+     *
+     * @param mixed $itemSerial
+     */
+    public function setItemSerial($itemSerial)
+    {
+        $this->itemSerial = $itemSerial;
+    }
+
+    /**
+     *
+     * @param mixed $itemDefaultManufacturer
+     */
+    public function setItemDefaultManufacturer($itemDefaultManufacturer)
+    {
+        $this->itemDefaultManufacturer = $itemDefaultManufacturer;
+    }
+
+    /**
+     *
+     * @param mixed $itemManufacturerModel
+     */
+    public function setItemManufacturerModel($itemManufacturerModel)
+    {
+        $this->itemManufacturerModel = $itemManufacturerModel;
+    }
+
+    /**
+     *
+     * @param mixed $itemManufacturerSerial
+     */
+    public function setItemManufacturerSerial($itemManufacturerSerial)
+    {
+        $this->itemManufacturerSerial = $itemManufacturerSerial;
+    }
+
+    /**
+     *
+     * @param mixed $itemManufacturerCode
+     */
+    public function setItemManufacturerCode($itemManufacturerCode)
+    {
+        $this->itemManufacturerCode = $itemManufacturerCode;
+    }
+
+    /**
+     *
+     * @param mixed $itemKeywords
+     */
+    public function setItemKeywords($itemKeywords)
+    {
+        $this->itemKeywords = $itemKeywords;
+    }
+
+    /**
+     *
+     * @param mixed $itemAssetLabel
+     */
+    public function setItemAssetLabel($itemAssetLabel)
+    {
+        $this->itemAssetLabel = $itemAssetLabel;
+    }
+
+    /**
+     *
+     * @param mixed $itemAssetLabel1
+     */
+    public function setItemAssetLabel1($itemAssetLabel1)
+    {
+        $this->itemAssetLabel1 = $itemAssetLabel1;
+    }
+
+    /**
+     *
+     * @param mixed $itemDescription
+     */
+    public function setItemDescription($itemDescription)
+    {
+        $this->itemDescription = $itemDescription;
+    }
+
+    /**
+     *
+     * @param mixed $itemInventoryGL
+     */
+    public function setItemInventoryGL($itemInventoryGL)
+    {
+        $this->itemInventoryGL = $itemInventoryGL;
+    }
+
+    /**
+     *
+     * @param mixed $itemCogsGL
+     */
+    public function setItemCogsGL($itemCogsGL)
+    {
+        $this->itemCogsGL = $itemCogsGL;
+    }
+
+    /**
+     *
+     * @param mixed $itemCostCenter
+     */
+    public function setItemCostCenter($itemCostCenter)
+    {
+        $this->itemCostCenter = $itemCostCenter;
+    }
+
+    /**
+     *
+     * @param mixed $pr
+     */
+    public function setPr($pr)
+    {
+        $this->pr = $pr;
+    }
+
+    /**
+     *
+     * @param mixed $prToken
+     */
+    public function setPrToken($prToken)
+    {
+        $this->prToken = $prToken;
+    }
+
+    /**
+     *
+     * @param mixed $prChecksum
+     */
+    public function setPrChecksum($prChecksum)
+    {
+        $this->prChecksum = $prChecksum;
+    }
+
+    /**
+     *
+     * @param mixed $prNumber
+     */
+    public function setPrNumber($prNumber)
+    {
+        $this->prNumber = $prNumber;
+    }
+
+    /**
+     *
+     * @param mixed $prSysNumber
+     */
+    public function setPrSysNumber($prSysNumber)
+    {
+        $this->prSysNumber = $prSysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $prRowIndentifer
+     */
+    public function setPrRowIndentifer($prRowIndentifer)
+    {
+        $this->prRowIndentifer = $prRowIndentifer;
+    }
+
+    /**
+     *
+     * @param mixed $prRowCode
+     */
+    public function setPrRowCode($prRowCode)
+    {
+        $this->prRowCode = $prRowCode;
+    }
+
+    /**
+     *
+     * @param mixed $prRowName
+     */
+    public function setPrRowName($prRowName)
+    {
+        $this->prRowName = $prRowName;
+    }
+
+    /**
+     *
+     * @param mixed $prRowConvertFactor
+     */
+    public function setPrRowConvertFactor($prRowConvertFactor)
+    {
+        $this->prRowConvertFactor = $prRowConvertFactor;
+    }
+
+    /**
+     *
+     * @param mixed $prRowUnit
+     */
+    public function setPrRowUnit($prRowUnit)
+    {
+        $this->prRowUnit = $prRowUnit;
+    }
+
+    /**
+     *
+     * @param mixed $prRowVersion
+     */
+    public function setPrRowVersion($prRowVersion)
+    {
+        $this->prRowVersion = $prRowVersion;
+    }
+
+    /**
+     *
+     * @param mixed $projectId
+     */
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
+
+    /**
+     *
+     * @param mixed $projectToken
+     */
+    public function setProjectToken($projectToken)
+    {
+        $this->projectToken = $projectToken;
+    }
+
+    /**
+     *
+     * @param mixed $projectName
+     */
+    public function setProjectName($projectName)
+    {
+        $this->projectName = $projectName;
+    }
+
+    /**
+     *
+     * @param mixed $prDepartment
+     */
+    public function setPrDepartment($prDepartment)
+    {
+        $this->prDepartment = $prDepartment;
+    }
+
+    /**
+     *
+     * @param mixed $prDepartmentName
+     */
+    public function setPrDepartmentName($prDepartmentName)
+    {
+        $this->prDepartmentName = $prDepartmentName;
+    }
+
+    /**
+     *
+     * @param mixed $prWarehouse
+     */
+    public function setPrWarehouse($prWarehouse)
+    {
+        $this->prWarehouse = $prWarehouse;
+    }
+
+    /**
+     *
+     * @param mixed $prWarehouseName
+     */
+    public function setPrWarehouseName($prWarehouseName)
+    {
+        $this->prWarehouseName = $prWarehouseName;
+    }
+
+    /**
+     *
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $rowNumber
+     */
+    public function setRowNumber($rowNumber)
+    {
+        $this->rowNumber = $rowNumber;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $quantity
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+    }
+
+    /**
+     *
+     * @param mixed $unitPrice
+     */
+    public function setUnitPrice($unitPrice)
+    {
+        $this->unitPrice = $unitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $netAmount
+     */
+    public function setNetAmount($netAmount)
+    {
+        $this->netAmount = $netAmount;
+    }
+
+    /**
+     *
+     * @param mixed $unit
+     */
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
+    }
+
+    /**
+     *
+     * @param mixed $itemUnit
+     */
+    public function setItemUnit($itemUnit)
+    {
+        $this->itemUnit = $itemUnit;
+    }
+
+    /**
+     *
+     * @param mixed $conversionFactor
+     */
+    public function setConversionFactor($conversionFactor)
+    {
+        $this->conversionFactor = $conversionFactor;
+    }
+
+    /**
+     *
+     * @param mixed $converstionText
+     */
+    public function setConverstionText($converstionText)
+    {
+        $this->converstionText = $converstionText;
+    }
+
+    /**
+     *
+     * @param mixed $taxRate
+     */
+    public function setTaxRate($taxRate)
+    {
+        $this->taxRate = $taxRate;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $lastchangeOn
+     */
+    public function setLastchangeOn($lastchangeOn)
+    {
+        $this->lastchangeOn = $lastchangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $currentState
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+    }
+
+    /**
+     *
+     * @param mixed $vendorItemCode
+     */
+    public function setVendorItemCode($vendorItemCode)
+    {
+        $this->vendorItemCode = $vendorItemCode;
+    }
+
+    /**
+     *
+     * @param mixed $traceStock
+     */
+    public function setTraceStock($traceStock)
+    {
+        $this->traceStock = $traceStock;
+    }
+
+    /**
+     *
+     * @param mixed $grossAmount
+     */
+    public function setGrossAmount($grossAmount)
+    {
+        $this->grossAmount = $grossAmount;
+    }
+
+    /**
+     *
+     * @param mixed $taxAmount
+     */
+    public function setTaxAmount($taxAmount)
+    {
+        $this->taxAmount = $taxAmount;
+    }
+
+    /**
+     *
+     * @param mixed $faRemarks
+     */
+    public function setFaRemarks($faRemarks)
+    {
+        $this->faRemarks = $faRemarks;
+    }
+
+    /**
+     *
+     * @param mixed $rowIdentifer
+     */
+    public function setRowIdentifer($rowIdentifer)
+    {
+        $this->rowIdentifer = $rowIdentifer;
+    }
+
+    /**
+     *
+     * @param mixed $discountRate
+     */
+    public function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $targetObject
+     */
+    public function setTargetObject($targetObject)
+    {
+        $this->targetObject = $targetObject;
+    }
+
+    /**
+     *
+     * @param mixed $sourceObject
+     */
+    public function setSourceObject($sourceObject)
+    {
+        $this->sourceObject = $sourceObject;
+    }
+
+    /**
+     *
+     * @param mixed $targetObjectId
+     */
+    public function setTargetObjectId($targetObjectId)
+    {
+        $this->targetObjectId = $targetObjectId;
+    }
+
+    /**
+     *
+     * @param mixed $sourceObjectId
+     */
+    public function setSourceObjectId($sourceObjectId)
+    {
+        $this->sourceObjectId = $sourceObjectId;
+    }
+
+    /**
+     *
+     * @param mixed $docStatus
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+    }
+
+    /**
+     *
+     * @param mixed $workflowStatus
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+    }
+
+    /**
+     *
+     * @param mixed $transactionStatus
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+    }
+
+    /**
+     *
+     * @param mixed $isPosted
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+    }
+
+    /**
+     *
+     * @param mixed $isDraft
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+    }
+
+    /**
+     *
+     * @param mixed $exwUnitPrice
+     */
+    public function setExwUnitPrice($exwUnitPrice)
+    {
+        $this->exwUnitPrice = $exwUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $totalExwPrice
+     */
+    public function setTotalExwPrice($totalExwPrice)
+    {
+        $this->totalExwPrice = $totalExwPrice;
+    }
+
+    /**
+     *
+     * @param mixed $convertFactorPurchase
+     */
+    public function setConvertFactorPurchase($convertFactorPurchase)
+    {
+        $this->convertFactorPurchase = $convertFactorPurchase;
+    }
+
+    /**
+     *
+     * @param mixed $convertedPurchaseQuantity
+     */
+    public function setConvertedPurchaseQuantity($convertedPurchaseQuantity)
+    {
+        $this->convertedPurchaseQuantity = $convertedPurchaseQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $convertedStandardQuantity
+     */
+    public function setConvertedStandardQuantity($convertedStandardQuantity)
+    {
+        $this->convertedStandardQuantity = $convertedStandardQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $convertedStockQuantity
+     */
+    public function setConvertedStockQuantity($convertedStockQuantity)
+    {
+        $this->convertedStockQuantity = $convertedStockQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $convertedStandardUnitPrice
+     */
+    public function setConvertedStandardUnitPrice($convertedStandardUnitPrice)
+    {
+        $this->convertedStandardUnitPrice = $convertedStandardUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $convertedStockUnitPrice
+     */
+    public function setConvertedStockUnitPrice($convertedStockUnitPrice)
+    {
+        $this->convertedStockUnitPrice = $convertedStockUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $docQuantity
+     */
+    public function setDocQuantity($docQuantity)
+    {
+        $this->docQuantity = $docQuantity;
+    }
+
+    /**
+     *
+     * @param mixed $docUnit
+     */
+    public function setDocUnit($docUnit)
+    {
+        $this->docUnit = $docUnit;
+    }
+
+    /**
+     *
+     * @param mixed $docUnitPrice
+     */
+    public function setDocUnitPrice($docUnitPrice)
+    {
+        $this->docUnitPrice = $docUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $convertedPurchaseUnitPrice
+     */
+    public function setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice)
+    {
+        $this->convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $docType
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+    }
+
+    /**
+     *
+     * @param mixed $descriptionText
+     */
+    public function setDescriptionText($descriptionText)
+    {
+        $this->descriptionText = $descriptionText;
+    }
+
+    /**
+     *
+     * @param mixed $vendorItemName
+     */
+    public function setVendorItemName($vendorItemName)
+    {
+        $this->vendorItemName = $vendorItemName;
+    }
+
+    /**
+     *
+     * @param mixed $reversalBlocked
+     */
+    public function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+    }
+
+    /**
+     *
+     * @param mixed $invoice
+     */
+    public function setInvoice($invoice)
+    {
+        $this->invoice = $invoice;
+    }
+
+    /**
+     *
+     * @param mixed $lastchangeBy
+     */
+    public function setLastchangeBy($lastchangeBy)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $prRow
+     */
+    public function setPrRow($prRow)
+    {
+        $this->prRow = $prRow;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $warehouse
+     */
+    public function setWarehouse($warehouse)
+    {
+        $this->warehouse = $warehouse;
+    }
+
+    /**
+     *
+     * @param mixed $po
+     */
+    public function setPo($po)
+    {
+        $this->po = $po;
+    }
+
+    /**
+     *
+     * @param mixed $item
+     */
+    public function setItem($item)
+    {
+        $this->item = $item;
+    }
+
+    /**
+     *
+     * @param mixed $docUom
+     */
+    public function setDocUom($docUom)
+    {
+        $this->docUom = $docUom;
+    }
+
+    /**
+     *
+     * @param mixed $docVersion
+     */
+    public function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $localUnitPrice
+     */
+    public function setLocalUnitPrice($localUnitPrice)
+    {
+        $this->localUnitPrice = $localUnitPrice;
+    }
+
+    /**
+     *
+     * @param mixed $exwCurrency
+     */
+    public function setExwCurrency($exwCurrency)
+    {
+        $this->exwCurrency = $exwCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $localNetAmount
+     */
+    public function setLocalNetAmount($localNetAmount)
+    {
+        $this->localNetAmount = $localNetAmount;
+    }
+
+    /**
+     *
+     * @param mixed $localGrossAmount
+     */
+    public function setLocalGrossAmount($localGrossAmount)
+    {
+        $this->localGrossAmount = $localGrossAmount;
+    }
+
+    /**
+     *
+     * @param mixed $transactionType
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+    }
+
+    /**
+     *
+     * @param mixed $isReversed
+     */
+    public function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+    }
+
+    /**
+     *
+     * @param mixed $reversalDate
+     */
+    public function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+    }
+
+    /**
+     *
+     * @param mixed $glAccount
+     */
+    public function setGlAccount($glAccount)
+    {
+        $this->glAccount = $glAccount;
+    }
+
+    /**
+     *
+     * @param mixed $costCenter
+     */
+    public function setCostCenter($costCenter)
+    {
+        $this->costCenter = $costCenter;
+    }
+
+    /**
+     *
+     * @param mixed $standardConvertFactor
+     */
+    public function setStandardConvertFactor($standardConvertFactor)
+    {
+        $this->standardConvertFactor = $standardConvertFactor;
+    }
+
+    /**
+     *
+     * @param mixed $clearingDocId
+     */
+    public function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+    }
 }
-   
-    
+
+

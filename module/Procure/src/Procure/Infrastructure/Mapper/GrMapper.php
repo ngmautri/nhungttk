@@ -12,7 +12,7 @@ use Procure\Domain\GoodsReceipt\GRSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GrMapper
 {
@@ -65,9 +65,17 @@ class GrMapper
         $entity->setDocType($snapshot->docType);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
         $entity->setUuid($snapshot->uuid);
-        $entity->setDocVersion($snapshot->docVersion);
-        $entity->setDocNumber($snapshot->docNumber);
 
+        $entity->setDocVersion($snapshot->docVersion);
+        $entity->setDocDate($snapshot->docDate);
+        $entity->setDocNumber($snapshot->docNumber);
+        $entity->setFlow($snapshot->flow);
+        $entity->setRelevantDocId($snapshot->relevantDocId);
+        $entity->setBaseDocId($snapshot->baseDocId);
+        $entity->setBaseDocType($snapshot->baseDocType);
+        $entity->setTargetDocId($snapshot->targetDocId);
+        $entity->setTargetDocType($snapshot->targetDocType);
+        $entity->setClearingDocId($snapshot->clearingDocId);
         // ============================
         // DATE MAPPING
         // ============================
@@ -299,7 +307,9 @@ class GrMapper
         $entity->setVendorItemName($snapshot->vendorItemName);
         $entity->setDescriptionText($snapshot->descriptionText);
         $entity->setReversalBlocked($snapshot->reversalBlocked);
+
         $entity->setUuid($snapshot->uuid);
+
         $entity->setConvertFactorPurchase($snapshot->convertFactorPurchase);
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setStandardConvertFactor($snapshot->standardConvertFactor);
@@ -509,9 +519,18 @@ class GrMapper
         $snapshot->reversalReason = $entity->getReversalReason();
         $snapshot->docType = $entity->getDocType();
         $snapshot->reversalBlocked = $entity->getReversalBlocked();
+
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->docDate = $entity->getDocDate();
         $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->flow = $entity->getFlow();
+        $snapshot->relevantDocId = $entity->getRelevantDocId();
+        $snapshot->baseDocId = $entity->getBaseDocId();
+        $snapshot->baseDocType = $entity->getBaseDocType();
+        $snapshot->targetDocId = $entity->getTargetDocId();
+        $snapshot->targetDocType = $entity->getTargetDocType();
+        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         // ============================
         // DATE MAPPING

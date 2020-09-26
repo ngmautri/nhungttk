@@ -4,7 +4,7 @@ namespace ProcureTest\GenericDoc;
 use Procure\Domain\GenericDoc;
 use PHPUnit_Framework_TestCase;
 
-class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
+class DocSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -15,7 +15,7 @@ class RowSnapshotAssemblerTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         // POSnapshotAssembler::findMissingPropertiesOfEntity();
-        // GRSnapshotAssembler::findMissingPropertiesOfEntity();
+        // POSnapshotAssembler::findMissingPropsInGenericDoc();
         // APSnapshotAssembler::findMissingPropertiesOfEntity();
         GenericDoc::printProps();
     }

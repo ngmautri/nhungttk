@@ -18,7 +18,7 @@ use Application\Entity\NmtInventoryOpeningBalance;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class StockController extends AbstractActionController
 {
@@ -600,12 +600,17 @@ class StockController extends AbstractActionController
         $total_records = count($list);
         $paginator = null;
 
-        return new ViewModel(array(
+        $viewTemplete = "inventory/stock/summary1";
+
+        $viewModel = new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
             'target' => $target
         ));
+
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
     }
 
     /**

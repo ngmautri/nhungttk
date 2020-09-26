@@ -582,6 +582,13 @@ class NmtInventoryTrx
     private $relevantMovementId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
+     */
+    private $clearingDocId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2767,6 +2774,30 @@ class NmtInventoryTrx
     public function getRelevantMovementId()
     {
         return $this->relevantMovementId;
+    }
+
+    /**
+     * Set clearingDocId
+     *
+     * @param integer $clearingDocId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get clearingDocId
+     *
+     * @return integer
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
     }
 
     /**

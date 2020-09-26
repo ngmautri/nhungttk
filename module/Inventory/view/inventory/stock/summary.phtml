@@ -23,16 +23,18 @@ if ($target != null) {
 <div id="tabs3" style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
    <ul>
       <li>
-         <a href="#onhand"><i class="fa fa-money" aria-hidden="true"></i> On-Hand</a>
+         <a href="#onhand">
+            <i class="fa fa-money" aria-hidden="true"></i>
+            On-Hand
+         </a>
       </li>
-     
-       <li>
+      <li>
         <?php
 
         echo $itemTrxUrl;
         ?>
       </li>
-       <li>
+      <li>
          <a
             href="<?php
             echo $this->baseUrl?>/inventory/stock/returned-item?token=<?php
@@ -44,7 +46,8 @@ if ($target != null) {
             ?>&checksum=<?php
 
             echo (! $target == null) ? $target->getChecksum() : "";
-            ?>"><i class="fa fa-recycle" aria-hidden="true"></i> <?php
+            ?>">
+            <i class="fa fa-recycle" aria-hidden="true"></i> <?php
 
             echo $this->translate("Recycle Bin");
             ?></a>
@@ -137,7 +140,7 @@ else :
             </tr>
          </thead>
          <tbody>
- 
+
 	 <?php
 
     $count = 0;
@@ -218,9 +221,9 @@ endif;
 $("#create_item_form :input").attr("disabled", "disabled");
 $( "#tabs3" ).tabs({
 	beforeLoad:function(e,ui){
-		$( ui.panel ).html('<p>Loading...</p>');       
+		$( ui.panel ).html('<p>Loading...</p>');
 	    },
-	   
+
 });
 $( "#tabs3" ).tabs( "option", "active", 0 );
 

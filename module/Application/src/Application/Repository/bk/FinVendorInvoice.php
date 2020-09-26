@@ -2,6 +2,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Application\BaseEntity\BaseFinVendorInvoice;
 
 /**
  * FinVendorInvoice
@@ -10,8 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  *  @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
  */
-class FinVendorInvoice
+class FinVendorInvoice extends BaseFinVendorInvoice
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      *
@@ -67,7 +73,7 @@ class FinVendorInvoice
      *
      * @var string
      *
-     * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
+     * @ORM\Column(name="exchange_rate", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $exchangeRate;
 
@@ -430,6 +436,46 @@ class FinVendorInvoice
      * @ORM\Column(name="doc_version", type="integer", nullable=true)
      */
     private $docVersion;
+
+    /**
+     *
+     * @var integer
+     *
+     * @ORM\Column(name="base_doc_id", type="integer", nullable=true)
+     */
+    private $baseDocId;
+
+    /**
+     *
+     * @var string
+     *
+     * @ORM\Column(name="base_doc_type", type="string", length=45, nullable=true)
+     */
+    private $baseDocType;
+
+    /**
+     *
+     * @var integer
+     *
+     * @ORM\Column(name="target_doc_id", type="integer", nullable=true)
+     */
+    private $targetDocId;
+
+    /**
+     *
+     * @var string
+     *
+     * @ORM\Column(name="target_doc_type", type="string", length=45, nullable=true)
+     */
+    private $targetDocType;
+
+    /**
+     *
+     * @var integer
+     *
+     * @ORM\Column(name="clearing_doc_id", type="integer", nullable=true)
+     */
+    private $clearingDocId;
 
     /**
      *
@@ -1828,6 +1874,126 @@ class FinVendorInvoice
     public function getDocVersion()
     {
         return $this->docVersion;
+    }
+
+    /**
+     * Set baseDocId
+     *
+     * @param integer $baseDocId
+     *
+     * @return FinVendorInvoice
+     */
+    public function setBaseDocId($baseDocId)
+    {
+        $this->baseDocId = $baseDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get baseDocId
+     *
+     * @return integer
+     */
+    public function getBaseDocId()
+    {
+        return $this->baseDocId;
+    }
+
+    /**
+     * Set baseDocType
+     *
+     * @param string $baseDocType
+     *
+     * @return FinVendorInvoice
+     */
+    public function setBaseDocType($baseDocType)
+    {
+        $this->baseDocType = $baseDocType;
+
+        return $this;
+    }
+
+    /**
+     * Get baseDocType
+     *
+     * @return string
+     */
+    public function getBaseDocType()
+    {
+        return $this->baseDocType;
+    }
+
+    /**
+     * Set targetDocId
+     *
+     * @param integer $targetDocId
+     *
+     * @return FinVendorInvoice
+     */
+    public function setTargetDocId($targetDocId)
+    {
+        $this->targetDocId = $targetDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get targetDocId
+     *
+     * @return integer
+     */
+    public function getTargetDocId()
+    {
+        return $this->targetDocId;
+    }
+
+    /**
+     * Set targetDocType
+     *
+     * @param string $targetDocType
+     *
+     * @return FinVendorInvoice
+     */
+    public function setTargetDocType($targetDocType)
+    {
+        $this->targetDocType = $targetDocType;
+
+        return $this;
+    }
+
+    /**
+     * Get targetDocType
+     *
+     * @return string
+     */
+    public function getTargetDocType()
+    {
+        return $this->targetDocType;
+    }
+
+    /**
+     * Set clearingDocId
+     *
+     * @param integer $clearingDocId
+     *
+     * @return FinVendorInvoice
+     */
+    public function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
+
+        return $this;
+    }
+
+    /**
+     * Get clearingDocId
+     *
+     * @return integer
+     */
+    public function getClearingDocId()
+    {
+        return $this->clearingDocId;
     }
 
     /**

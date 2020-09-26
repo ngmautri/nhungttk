@@ -1,0 +1,131 @@
+<?php
+
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+$itemTrxUrl = null;
+$textResult = '<h5 style="color: gray;margin-top:20px;"> No thing found! </h5>';
+$stock_value = 0;
+$total_onhand = 0;
+
+if ($target != null) {
+    $f = '/inventory/trx-report/item-trx?itemId=%s';
+    $tmp = sprintf($f, $target->getId());
+
+    $f = '<a href="%s"><i class="fa fa-list-ul" aria-hidden="true"></i>  %s</a>';
+    $itemTrxUrl = sprintf($f, $tmp, $this->translate("Journal"));
+}
+
+if ($total_records > 0) {
+
+    $tbl = '<table style="font-size: 9pt; margin-top:20px;" class="table table-bordered table-hover">';
+    $tbl = $tbl . '<thead>';
+    $tbl = $tbl . '<tr>';
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', '#');
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("Warehouse"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("Posting Date"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("Posted Qty"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("UP"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("On-hand Qty"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("Stock Value"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("Stock Value"));
+    $tbl = $tbl . sprintf('<td><b>%s</b></td>', $this->translate("Remark"));
+    $tbl = $tbl . '</thead>';
+    $tbl = $tbl . '</tr>';
+
+    $count = 0;
+
+    $bodyTbl = '';
+
+    foreach ($list as $a) {
+
+        /**@var \Application\Entity\NmtInventoryFifoLayer $a ; */
+        $count ++;
+        $total_onhand = $total_onhand + $a->getOnhandQuantity();
+
+        if ($a->getOnhandQuantity() * $a->getDocUnitPrice() * $a->getExchangeRate() !== null) {
+            $stock_value = $stock_value + $a->getOnhandQuantity() * $a->getDocUnitPrice() * $a->getExchangeRate();
+        }
+
+        if ($a->getWarehouse() !== null) {
+            $whName = $a->getWarehouse()->getWhName();
+        }
+
+        if ($a->getUnitPrice() !== null) {
+            $up = number_format($a->getUnitPrice(), 2);
+        }
+
+        if ($a->getOnhandQuantity() * $a->getUnitPrice() !== null) {
+            $stockValue = number_format($a->getOnhandQuantity() * $a->getUnitPrice(), 2);
+        }
+
+        if ($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate() !== null) {
+            $stockValueLocal = number_format($a->getOnhandQuantity() * $a->getUnitPrice() * $a->getExchangeRate(), 2);
+        }
+
+        $bodyTbl = $bodyTbl . '<tr>';
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', ($paginator === null) ? $count : $paginator->minInPage - 1 + $count);
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $whName);
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', date_format($a->getPostingDate(), "m-d-Y"));
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $a->getQuantity());
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $a->getOnhandQuantity());
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $up);
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $stockValue);
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $stockValueLocal);
+        $bodyTbl = $bodyTbl . sprintf('<td>%s</td>', $a->getRemarks());
+
+        $bodyTbl = $bodyTbl . '</tr>';
+    }
+    $tbl = $tbl . $bodyTbl . '</table>';
+
+    $textResult = $tbl;
+}
+
+?>
+<h4>
+   Total onhand:
+   <span id="total_onhand"><?php
+
+echo $total_onhand;
+?></span>
+   Stock value:
+   <span id="stock_value"><?php
+
+echo $stock_value;
+?></span>
+</h4>
+
+<div id="tabs3" style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
+   <ul>
+      <li>
+         <a href="#onhand">
+            <i class="fa fa-money" aria-hidden="true"></i>
+            On-Hand
+         </a>
+      </li>
+      <li>
+        <?php
+        echo $itemTrxUrl;
+        ?>
+      </li>
+
+   </ul>
+   <div id="onhand" style="font-size: 9.5pt; padding: 2pt 10pt 10pt 2pt"">
+<?php
+echo $textResult;
+?>
+   </div>
+</div>
+<script type="text/javascript">
+$("#create_item_form :input").attr("disabled", "disabled");
+$( "#tabs3" ).tabs({
+	beforeLoad:function(e,ui){
+		$( ui.panel ).html('<p>Loading...</p>');
+	    },
+
+});
+$( "#tabs3" ).tabs( "option", "active", 0 );
+
+</script>

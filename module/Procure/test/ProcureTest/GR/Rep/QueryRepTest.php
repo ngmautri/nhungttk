@@ -32,25 +32,13 @@ class RepTest extends PHPUnit_Framework_TestCase
             // var_dump(count($rootEntity->slipByWarehouse()));
             // var_dump(($rootEntity->slipByWarehouse()[5]));
 
-            $results = $rootEntity->slipRowsByWarehouse();
-
-            foreach ($results as $k => $v) {
-
-                foreach ($v as $rowSnapshot) {
-
-                /**
-                 *
-                 * @var RowSnapshot $rowSnapshot
-                 */
-                    // echo \sprintf("%s=>%s, %s \n", $k, $rowSnapshot->getItem(), $rowSnapshot->getItemName());
-                }
-            }
+            // $results = $rootEntity->slipRowsByWarehouse();
 
             $results = $rootEntity->createSubDocumentByWarehouse();
 
             foreach ($results as $doc) {
 
-                echo \sprintf("%s;%s-WH%s, %s\n", $doc->getDocType(), $doc->getSysNumber(), $doc->getWarehouse(), $doc->getRowSnapshotCollection()->count());
+                echo \sprintf("%s;%s,%s; %s, %s\n", $doc->getRemarks(), $doc->getDocStatus(), $doc->getSysNumber(), $doc->getCreatedBy(), $doc->getRowSnapshotCollection()->count());
             }
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

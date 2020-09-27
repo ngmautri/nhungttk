@@ -12,11 +12,12 @@ use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedClos
 use Inventory\Application\EventBus\Handler\Transaction\OnWhOpenBalancePostedCloseTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferLocationPostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferPostedCreateTrx;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGiForPoReturnPostedCalculateCost;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class HandlerMapper extends AbstractService
 {
@@ -29,12 +30,18 @@ class HandlerMapper extends AbstractService
     {
         $handlers = [
             OnWhGiPostedCalculateCost::class,
+            OnWhGiForPoReturnPostedCalculateCost::class,
+
             OnWhGrPostedCreateFiFoLayer::class,
+
             OnItemCreatedCreateIndex::class,
             OnItemUpdatedUpdateIndex::class,
+
             OnWhOpenBalancePostedCloseFifoLayer::class,
             OnWhOpenBalancePostedCloseTrx::class,
+
             OnWhGoodsExchagePostedCreateTrx::class,
+
             OnWhTransferLocationPostedCreateTrx::class,
             OnWhTransferPostedCreateTrx::class
         ];

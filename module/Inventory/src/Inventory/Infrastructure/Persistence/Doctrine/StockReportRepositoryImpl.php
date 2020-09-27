@@ -12,7 +12,7 @@ use Inventory\Infrastructure\Persistence\Filter\StockOnhandReportSqlFilter;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class StockReportRepositoryImpl extends AbstractDoctrineRepository implements StockReportRepositoryInterface
 {
@@ -90,6 +90,81 @@ WHERE 1 %s";
         }
     }
 
+    public function getDetailsFifoLayer(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        if (! $filter instanceof StockFifoLayerReportSqlFilter) {
+            throw new \InvalidArgumentException("StockFifoLayerReportSqlFilter object not valid!");
+        }
+
+        $sql = "
+SELECT
+nmt_inventory_fifo_layer.*
+FROM nmt_inventory_fifo_layer
+Left join nmt_inventory_trx
+on nmt_inventory_trx.uuid = nmt_inventory_fifo_layer.source_token
+
+WHERE 1 %s";
+
+        $sql_tmp = '';
+        if ($filter->getItemId() > 0) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.item_id=%s", $filter->getItemId());
+        }
+        if ($filter->getWarehouseId() > 0) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.warehouse_id=%s", $filter->getWarehouseId());
+        }
+        if ($filter->getFromDate() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.posting_date >='%s'", $filter->getFromDate());
+        }
+
+        if ($filter->getToDate() != null) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.posting_date <='%s'", $filter->getToDate());
+        }
+
+        if ($filter->getMovementId() > 0) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_trx.movement_id =%s", $filter->getMovementId());
+        }
+
+        if ($filter->getIsClosed() == null) {
+            $filter->setIsClosed(0);
+        }
+
+        if ($filter->getIsClosed() == 1) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.is_closed=%s", 1);
+        } elseif ($filter->getIsClosed() == 0) {
+            $sql_tmp = $sql_tmp . \sprintf(" AND nmt_inventory_fifo_layer.is_closed=%s", 0);
+        }
+
+        switch ($sort_by) {
+            case "postingDate":
+                $sql_tmp = $sql_tmp . " ORDER BY nmt_inventory_fifo_layer.posting_date " . $sort;
+                break;
+        }
+
+        if ($limit > 0) {
+            $sql_tmp = $sql_tmp . $sql_tmp . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+
+        $sql = \sprintf($sql, $sql_tmp);
+
+        $sql = $sql . ";";
+
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryFifoLayer', 'nmt_inventory_fifo_layer');
+            // $rsm->addScalarResult("movement_id", "movement_id");
+
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     /**
      *
      * {@inheritdoc}
@@ -152,7 +227,7 @@ FROM nmt_inventory_trx
 Left join nmt_inventory_mv
 On nmt_inventory_mv.id = nmt_inventory_trx.movement_id
 WHERE 1 %s
-GROUP BY nmt_inventory_trx.item_id, nmt_inventory_trx.wh_id, nmt_inventory_trx.wh_location 
+GROUP BY nmt_inventory_trx.item_id, nmt_inventory_trx.wh_id, nmt_inventory_trx.wh_location
 
 
 ";

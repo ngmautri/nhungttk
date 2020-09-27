@@ -49,7 +49,7 @@ class GenericDoc extends BaseDoc
             return;
         }
 
-        if ($this->getTotalRows() == 1) {
+        if (count($docRows) == 1) {
             return;
         }
 
@@ -96,7 +96,7 @@ class GenericDoc extends BaseDoc
                 $rowsOfWarehouse[] = $row;
             }
 
-            if ($n == $this->getTotalRows()) {
+            if ($n == count($docRows)) {
                 $results[$wh] = $rowsOfWarehouse;
             }
         }
@@ -162,11 +162,11 @@ class GenericDoc extends BaseDoc
      */
     public function getRowbyTokenId($id, $token)
     {
-        if ($id == null || $token == null || count($this->getDocRows()) == 0) {
+        $rows = $this->getDocRows();
+
+        if ($id == null || $token == null || $rows == null) {
             return null;
         }
-
-        $rows = $this->getDocRows();
 
         foreach ($rows as $r) {
 

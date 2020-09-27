@@ -44,13 +44,13 @@ class SharedServiceFactory
         $fifoService = new FIFOServiceImpl();
         $fifoService->setDoctrineEM($doctrineEM);
         $fifoService->setLogger($logger);
+
         $valuationService = new TrxValuationService($fifoService);
 
         $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
         $sharedService->setValuationService($valuationService);
         $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($doctrineEM));
-        $fifoService->setLogger($logger);
-
+        $sharedService->setLogger($logger);
         return $sharedService;
     }
 }

@@ -3,6 +3,7 @@ namespace Inventory\Domain\Transaction\GI;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
+use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
 use Inventory\Domain\Event\Transaction\GI\WhGiforPoReturnPosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
@@ -11,10 +12,10 @@ use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\GoodsIssueInterface;
-use Inventory\Domain\Transaction\Contracts\StockQtyAdjustmentInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxStatus;
 use Inventory\Domain\Transaction\Contracts\TrxType;
+use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
@@ -24,12 +25,46 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, StockQtyAdjustmentInterface
+class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface
 {
 
-    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\AbstractGoodsIssue::doPost()
+     */
+    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
     {
-        $target = $this->makeSnapshot();
+
+        /**
+         *
+         * @var TrxRow $row ;
+         */
+        $postedDate = new \Datetime();
+
+        $this->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+
+        foreach ($this->getDocRows() as $row) {
+            $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+        }
+
+        $this->validate($validationService, true);
+
+        if ($this->hasErrors()) {
+            throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
+        }
+
+        /**
+         *
+         * @var TrxCmdRepositoryInterface $rep ;
+         * @var TrxSnapshot $snapshot ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $snapshot = $rep->post($this, true);
+        $this->updateIdentityFrom($snapshot);
+
+        $target = $this;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($this->getId());
         $defaultParams->setTargetToken($this->getToken());
@@ -97,13 +132,16 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, S
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
+        // Important
+        $instance->specify();
+        $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
+
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
-        // Important
-        $instance->setMovementFlow(TrxFlow::WH_TRANSACTION_OUT);
         $instance->setRelevantMovementId($sourceObj->getId());
+        $instance->setBaseDocId($sourceObj->getId());
+        $instance->setBaseDocType($sourceObj->getMovementType());
         $instance->setRemarks($instance->getRemarks() . \sprintf('%s', '[Return]'));
 
         foreach ($rows as $r) {
@@ -117,9 +155,6 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, S
             $instance->addRow($grRow);
         }
 
-        $instance->specify();
-        $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
-
         $instance->validate($validationService);
 
         if ($instance->hasErrors()) {
@@ -127,9 +162,9 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface, S
         }
 
         $instance->clearEvents();
-        $snapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->store($instance);
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $snapshot = $rep->store($instance);
 
         if (! $snapshot instanceof TrxSnapshot) {
             throw new \RuntimeException(sprintf("Error orcured when creating WH-GI for return PO #%s", $instance->getId()));

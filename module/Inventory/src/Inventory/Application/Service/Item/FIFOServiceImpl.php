@@ -13,11 +13,136 @@ use InvalidArgumentException;
 
 /**
  *
+ * @todo
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
 {
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Service\Contracts\FIFOServiceInterface::calculateCostForReturn()
+     */
+    public function calculateCostForReturn(GenericTrx $trx, TrxRow $row)
+    {
+        $cogs = 0;
+        if ($this->getDoctrineEM() == null || $trx == null || $row == null) {
+            return $cogs;
+        }
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'id' => $trx->getCreatedBy()
+        ));
+
+        $rep = new StockReportRepositoryImpl($this->getDoctrineEM());
+        $filter = new StockFifoLayerReportSqlFilter();
+        $filter->setItemId($row->getItem());
+        $filter->setMovementId($trx->getRelevantMovementId());
+        $filter->setWarehouseId($trx->getWarehouse());
+        $filter->setIsClosed(0);
+        $sort_by = 'postingDate';
+        $sort = 'ASC';
+        $limit = null;
+        $offset = null;
+        $layers = $rep->getDetailsFifoLayer($filter, $sort_by, $sort, $limit, $offset);
+
+        if (count($layers) == 0) {
+            $m = Translator::translate("Goods Issue imposible. Please check the stock quantity and the issue date");
+            throw new \RuntimeException($m);
+        }
+
+        $issuedQuantity = $row->getDocQuantity();
+
+        $total_onhand = 0;
+        $totalIssueQty = $issuedQuantity;
+
+        /**
+         *
+         * @todo Get Layer and caculate Consumption.
+         */
+        foreach ($layers as $layer) {
+            /**@var \Application\Entity\NmtInventoryFIFOLayer $layer ;*/
+
+            $on_hand = $layer->getOnhandQuantity();
+            $total_onhand += $on_hand;
+
+            if ($issuedQuantity == 0) {
+                break;
+            }
+
+            $consumpted_qty = 0;
+
+            if ($on_hand <= $issuedQuantity) {
+
+                // create comsuption of all, close this layer
+                $consumpted_qty = $on_hand;
+
+                $layer->setOnhandQuantity(0);
+                $layer->setIsClosed(1);
+                $layer->setClosedOn(new \DateTime($trx->getMovementDate()));
+
+                $issuedQuantity = $issuedQuantity - $consumpted_qty;
+            } else {
+                $consumpted_qty = $issuedQuantity;
+
+                // deduct layer onhand
+                $layer->setOnhandQuantity($on_hand - $issuedQuantity);
+                $issuedQuantity = 0;
+            }
+
+            // unit price is converted standard price
+            $cogs = $cogs + $consumpted_qty * $layer->getUnitPrice() * $layer->getExchangeRate();
+
+            $this->getDoctrineEM()->persist($layer);
+
+            /**
+             *
+             * @todo Create Layer Consumption
+             */
+            if ($consumpted_qty > 0) {
+                $fifo_consume = new \Application\Entity\NmtInventoryFifoLayerConsume();
+                $fifo_consume->setLayer($layer);
+
+                $fifo_consume->setItem($layer->getItem());
+                $fifo_consume->setQuantity($consumpted_qty);
+
+                $fifo_consume->setDocCurrency($layer->getDocCurrency());
+                $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
+
+                $fifo_consume->setDocTotalValue($fifo_consume->getQuantity() * $fifo_consume->getDocUnitPrice());
+
+                $fifo_consume->setExchangeRate($layer->getExchangeRate());
+                $fifo_consume->setTotalValue($fifo_consume->getDocTotalValue() * $fifo_consume->getExchangeRate());
+
+                // $fifo_consume->setInventoryTrx($trx); // important
+                $fifo_consume->setCreatedOn(new \DateTime($trx->getMovementDate()));
+                $fifo_consume->setCreatedBy($u);
+
+                $fifo_consume->setToken(Uuid::uuid4()->toString());
+                $this->getDoctrineEM()->persist($fifo_consume);
+                $this->logInfo(sprintf("row #%s- consume layer #%s quantity %s*%s \n", $row->getId(), $layer->getId(), $consumpted_qty, $layer->getDocUnitPrice()));
+            }
+        }
+
+        if ($total_onhand < $totalIssueQty) {
+            $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
+            $m = sprintf($m . ' (%s>%s)', $totalIssueQty, $total_onhand);
+            $this->logAlert(sprintf("row #%s-  quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
+            throw new \Exception($m);
+        }
+
+        if ($cogs < 0) {
+            $m = sprintf('Cost is not valid! Cost=%s Quantity=%s Onhand=%s)', $cogs, $totalIssueQty, $total_onhand);
+            $this->logAlert($m);
+            throw new \Exception($m);
+        }
+
+        $this->logInfo(sprintf("Row #%s - Quantity %s=>cost %s \n", $row->getId(), $row->getDocQuantity(), $cogs));
+        return $cogs;
+    }
 
     public function calculateCostOfTrx(GenericTrx $trx)
     {

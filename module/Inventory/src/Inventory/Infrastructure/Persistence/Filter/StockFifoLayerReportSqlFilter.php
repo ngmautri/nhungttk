@@ -6,7 +6,7 @@ use Inventory\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class StockFifoLayerReportSqlFilter implements SqlFilterInterface
 {
@@ -20,6 +20,8 @@ class StockFifoLayerReportSqlFilter implements SqlFilterInterface
     public $fromDate;
 
     public $toDate;
+
+    public $movementId;
 
     /**
      *
@@ -115,5 +117,23 @@ class StockFifoLayerReportSqlFilter implements SqlFilterInterface
     public function setWarehouseId($warehouseId)
     {
         $this->warehouseId = $warehouseId;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getMovementId()
+    {
+        return $this->movementId;
+    }
+
+    /**
+     *
+     * @param mixed $movementId
+     */
+    public function setMovementId($movementId)
+    {
+        $this->movementId = $movementId;
     }
 }

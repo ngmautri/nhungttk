@@ -13,6 +13,7 @@ use Inventory\Application\EventBus\Handler\Item\Factory\OnItemUpdatedUpdateIndex
 use Inventory\Application\EventBus\Handler\Item\Factory\OnProcureGrPostedCreateSerialNoFactory;
 use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
 use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrReversedCreateWhGi;
+use Inventory\Application\EventBus\Handler\Transaction\OnWhGiForPoReturnPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGiPostedCalculateCost;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGoodsExchagePostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\OnWhGrPostedCreateFiFoLayer;
@@ -23,6 +24,7 @@ use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferLocationPoste
 use Inventory\Application\EventBus\Handler\Transaction\OnWhTransferPostedCreateTrx;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrPostedCreateWhGrFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnProcureGrReversedCreateWhGiFactory;
+use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiForPoReturnPostedCalculateCostFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGiPostedCalculateCostFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGoodsExchangePostedCreateTrxFactory;
 use Inventory\Application\EventBus\Handler\Transaction\Factory\OnWhGrPostedCreateFiFoLayerFactory;
@@ -347,6 +349,7 @@ return array(
             OnProcureGrReversedCreateWhGi::class => OnProcureGrReversedCreateWhGiFactory::class,
 
             OnWhGiPostedCalculateCost::class => OnWhGiPostedCalculateCostFactory::class,
+            OnWhGiForPoReturnPostedCalculateCost::class => OnWhGiForPoReturnPostedCalculateCostFactory::class,
             OnWhGoodsExchagePostedCreateTrx::class => OnWhGoodsExchangePostedCreateTrxFactory::class,
 
             OnWhTransferLocationPostedCreateTrx::class => OnWhTransferLocationPostedCreateTrxFactory::class,

@@ -67,11 +67,9 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
              * @var TrxDoc $rootEntity ;
              */
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new TrxSnapshot());
-
             $notification = new Notification();
 
-            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
-            $sharedService->setLogger($cmd->getLogger());
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM(), $cmd->getLogger());
 
             $rootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
 

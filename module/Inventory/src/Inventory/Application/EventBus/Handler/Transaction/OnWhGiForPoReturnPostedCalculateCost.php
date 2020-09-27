@@ -5,32 +5,31 @@ use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
-use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Transaction\TrxSnapshot;
-use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
+use Inventory\Domain\Event\Transaction\GI\WhGiforPoReturnPosted;
 use Inventory\Domain\Transaction\GenericTrx;
-use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
+use Inventory\Domain\Transaction\TrxRow;
+use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class OnWhGiPostedCalculateCost extends AbstractEventHandler
+class OnWhGiForPoReturnPostedCalculateCost extends AbstractEventHandler
 {
 
     /**
      *
      * @param WhGiPosted $event
      */
-    public function __invoke(WhGiPosted $event)
+    public function __invoke(WhGiforPoReturnPosted $event)
     {
         try {
 
             $target = $event->getTarget();
 
             if (! $target instanceof GenericTrx) {
-                Throw new \InvalidArgumentException("GenericTrx not found! OnWhGiPostedCalculateCost");
+                Throw new \InvalidArgumentException("GenericTrx not found! OnWhGiForPoReturnPostedCalculateCost");
             }
 
             $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
@@ -55,13 +54,13 @@ class OnWhGiPostedCalculateCost extends AbstractEventHandler
 
                 // caculate COGS
                 $valuationSrv = $sharedService->getValuationService()->getFifoService();
-                $cogs = $valuationSrv->calculateCOGS($rootEntity, $row);
+                $cogs = $valuationSrv->calculateCostForReturn($rootEntity, $row);
                 $row->setCalculatedCost($cogs);
             }
 
             $rootEntity->saveAfterCalculationCost($sharedService);
 
-            $this->logInfo(\sprintf("COGS for WH-GI #%s caculated and saved!", $rootEntity->getId()));
+            $this->logInfo(\sprintf("COGS for WH-GI for PO Return#%s caculated and saved!", $rootEntity->getId()));
         } catch (\Exception $e) {
             throw $e;
         }
@@ -74,6 +73,6 @@ class OnWhGiPostedCalculateCost extends AbstractEventHandler
 
     public static function subscribedTo()
     {
-        return WhGiPosted::class;
+        return WhGiforPoReturnPosted::class;
     }
 }

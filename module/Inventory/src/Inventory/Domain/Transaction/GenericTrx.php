@@ -69,6 +69,10 @@ abstract class GenericTrx extends BaseDoc
         $this->exchangeRate = $exchangeRate;
     }
 
+    /**
+     *
+     * @return \Inventory\Domain\Transaction\GenericTrx
+     */
     public function updateStatus()
     {
         $this->setTransactionStatus(TrxStatus::UNKNOW);
@@ -83,6 +87,8 @@ abstract class GenericTrx extends BaseDoc
                 $this->setTransactionStatus(TrxStatus::GR_FULLY_USED);
             }
         }
+
+        return $this;
     }
 
     abstract protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
@@ -268,8 +274,6 @@ abstract class GenericTrx extends BaseDoc
         }
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
-
-        $this->_checkParams($validationService, $sharedService);
 
         if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
             throw new \InvalidArgumentException("Row Validators not given!");

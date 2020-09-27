@@ -7,7 +7,7 @@ use Inventory\Domain\Transaction\TrxRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface FIFOServiceInterface
 {
@@ -20,6 +20,8 @@ Interface FIFOServiceInterface
     public function calculateCOGS(GenericTrx $trx, TrxRow $row);
 
     public function calculateCostOfTrx(GenericTrx $trx);
+
+    public function calculateCostForReturn(GenericTrx $trx, TrxRow $row);
 
     /**
      *

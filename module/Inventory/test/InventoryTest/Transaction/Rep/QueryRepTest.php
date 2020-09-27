@@ -31,8 +31,8 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
              * $id = 1416;
              * $token = "1623f80f-c267-4d10-b2f4-0f908a0a2229";
              */
-            $id = 1504;
-            $token = "9a68efd1-ad6d-4fb7-8e61-814bacb1bc82";
+            $id = 1572;
+            $token = "ee1d2ecc-98d2-4a56-b7a6-ff11e36fa9bd";
 
             $rootEntity = $rep->getDetailLazyRootEntityByTokenId($id, $token);
             var_dump($rootEntity->getTotalRows());

@@ -19,11 +19,12 @@ use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
+use Inventory\Application\Service\SharedServiceFactory;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateHeaderCmdHandler extends AbstractCommandHandler
 {
@@ -43,7 +44,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
          *
          * @var \Inventory\Application\DTO\Transaction\TrxDTO $dto ;
          * @var TrxCreateOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -69,21 +70,7 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            $fifoService = new FIFOServiceImpl();
-            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
-            $valuationService = new TrxValuationService($fifoService);
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $sharedService->setValuationService($valuationService);
-            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
             $rootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch

@@ -10,6 +10,7 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\TrxRowCreateOptions;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
+use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
 use Inventory\Application\Service\Transaction\RowSnapshotReference;
 use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
@@ -26,7 +27,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateRowCmdHandler extends AbstractCommandHandler
 {
@@ -74,26 +75,7 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new TrxRowSnapshot());
             $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            $fifoService = new FIFOServiceImpl();
-            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
-            $valuationService = new TrxValuationService($fifoService);
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            // create share service.
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $sharedService->setValuationService($valuationService);
-            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
-
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
 
             // event dispatcher

@@ -3,22 +3,15 @@ namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\TrxUpdateOptions;
 use Inventory\Application\DTO\Transaction\TrxDTO;
-use Inventory\Application\Service\Item\FIFOServiceImpl;
-use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\TrxPostingService;
-use Inventory\Domain\Service\TrxValuationService;
+use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\TrxSnapshotAssembler;
 use Inventory\Domain\Transaction\Factory\TransactionFactory;
-use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Shared\ProcureDocStatus;
@@ -113,22 +106,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
 
             // do change
 
-            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-
-            $fifoService = new FIFOServiceImpl();
-            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
-            $valuationService = new TrxValuationService($fifoService);
-
-            $postingService = new TrxPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService, $postingService);
-            $sharedService->setValuationService($valuationService);
-
-            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
-
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
             $newRootEntity = TransactionFactory::updateFrom($newSnapshot, $options, $sharedService, $params);
 
             // event dispatch

@@ -11,7 +11,7 @@ use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractGoodsIssue extends GenericTrx
 {

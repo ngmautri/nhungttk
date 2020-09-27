@@ -10,6 +10,7 @@ use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Contracts\ProcureGoodsFlow;
 use Procure\Domain\Contracts\ReversalDocInterface;
 use Procure\Domain\Event\Gr\GrReversed;
+use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
 use Procure\Domain\GoodsReceipt\Validator\ValidatorFactory;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
@@ -42,8 +43,8 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
      */
     public function specify()
     {
-        $this->flow = ProcureGoodsFlow::IN;
-        $this->docType = ProcureDocType::GR_FROM_INVOICE;
+        $this->flow = ProcureGoodsFlow::OUT;
+        $this->docType = ProcureDocType::GR_REVERSAL_FROM_AP_RESERVAL;
     }
 
     /**
@@ -89,6 +90,8 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         // overwrite.
+        $instance->setBaseDocId($sourceObj->getId()); // important.
+        $instance->setBaseDocType($sourceObj->getDocType()); // important.
         $instance->setDocType(ProcureDocType::GR_REVERSAL_FROM_AP_RESERVAL); // important.
         $instance->markAsReversed($createdBy, $sourceObj->getReversalDate());
 
@@ -99,7 +102,7 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
              * @var APRow $r ;
              */
 
-            $grRow = GrRow::copyFromApRow($instance, $r, $options);
+            $grRow = GrRow::copyFromApRowReserval($instance, $r, $options);
             $grRow->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
             $instance->addRow($grRow);
         }
@@ -107,7 +110,6 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
         $instance->setRemarks(\sprintf("[Auto.] Ref.AP Reversal %s", $sourceObj->getId()));
 
         $validationService = ValidatorFactory::create($instance->getDocType(), $sharedService);
-
         $instance->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
 
         if ($instance->hasErrors()) {
@@ -116,9 +118,14 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
 
         $instance->clearEvents();
 
-        $snapshot = $sharedService->getPostingService()
-            ->getCmdRepository()
-            ->post($instance, true);
+        /**
+         *
+         * @var GRSnapshot $rootSnapshot
+         * @var GrCmdRepositoryInterface $rep
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $snapshot = $rep->post($instance, true);
 
         if (! $snapshot instanceof GRSnapshot) {
             throw new \RuntimeException(sprintf("Error orcured when creating GR from AP reversal #%s", $sourceObj->getId()));

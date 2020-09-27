@@ -32,6 +32,10 @@ use Ramsey\Uuid\Uuid;
 abstract class GenericAP extends BaseDoc
 {
 
+    /**
+     *
+     * @return NULL[]|\Procure\Domain\AccountPayable\GenericAP[]
+     */
     public function generateDocumentByWarehouse()
     {
         $subDocuments = [];
@@ -39,21 +43,13 @@ abstract class GenericAP extends BaseDoc
 
         foreach ($results as $k => $v) {
             $doc = APFactory::createEmptyObject($this->getDocType());
-            $this->convertTo($doc);
+            $this->convertAllTo($doc);
 
-            // enrichment
-            $doc->setId($this->getId());
-            $doc->setUuid(Uuid::uuid4()->toString());
-            $doc->setToken($this->getUuid());
-
-            $doc->setCreatedOn($this->getCreatedOn());
-            $doc->setCreatedBy($this->getCreatedBy());
-
-            $doc->setSysNumber($this->getSysNumber());
-            $doc->setRemarks(\sprintf("%s-WH%s", $this->getSysNumber(), $k));
+            // Enrichment and overwrite.
             $doc->setWarehouse($k);
             $doc->setDocRows($v);
-
+            $doc->setRemarks(\sprintf("%s-WH%s", $this->getSysNumber(), $k));
+            $doc->setRowIdArray(null);
             $subDocuments[] = $doc;
         }
 

@@ -30,7 +30,7 @@ use Inventory\Domain\Transaction\GI\Validator\Row\GIForReturnPOValidator;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ValidatorFactory
 {
@@ -255,6 +255,11 @@ class ValidatorFactory
                 break;
 
             case TrxType::GI_FOR_DISPOSAL:
+                $headerValidators = $giHeaderValidators;
+                $rowValidators = $giRowValidators;
+                break;
+
+            case TrxType::GI_FOR_PURCHASING_REVERSAL:
                 $headerValidators = $giHeaderValidators;
                 $rowValidators = $giRowValidators;
                 break;

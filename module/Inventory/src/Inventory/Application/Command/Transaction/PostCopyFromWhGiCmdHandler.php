@@ -3,27 +3,20 @@ namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\PostCopyFromGIOptions;
-use Inventory\Application\Service\Item\FIFOServiceImpl;
-use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\TrxPostingService;
-use Inventory\Domain\Service\TrxValuationService;
+use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\GR\GRFromExchange;
-use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCopyFromWhGiCmdHandler extends AbstractCommandHandler
 {
@@ -44,7 +37,7 @@ class PostCopyFromWhGiCmdHandler extends AbstractCommandHandler
          * @var \Inventory\Application\DTO\Transaction\TrxDTO $dto ;
          * @var GenericTrx $rootEntity ;
          * @var PostCopyFromGIOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -63,23 +56,7 @@ class PostCopyFromWhGiCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            $fifoService = new FIFOServiceImpl();
-            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
-            $valuationService = new TrxValuationService($fifoService);
-            $fifoService->setLogger($cmd->getLogger());
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $sharedService->setValuationService($valuationService);
-            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
-            $sharedService->setLogger($cmd->getLogger());
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
 
             $id = $sourceObj->getId();
             $token = $sourceObj->getToken();

@@ -218,6 +218,56 @@ class GRFactory
 
     /**
      *
+     * @param GenericAP $sourceObj
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws \RuntimeException
+     * @return \Procure\Domain\GoodsReceipt\GRFromAP[]
+     */
+    public static function postCopyFromAPByWarehouse(GenericAP $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        $results = [];
+
+        $docs = $sourceObj->generateDocumentByWarehouse();
+        if ($docs == null) {
+            throw new \RuntimeException(\sprintf("Can not create PO Goods Receipt from %s", $sourceObj->getId()));
+        }
+
+        foreach ($docs as $doc) {
+            $gr = GRFromAP::postCopyFromAP($doc, $options, $sharedService);
+            $results[] = $gr;
+        }
+
+        return $results;
+    }
+
+    /**
+     *
+     * @param GenericAP $sourceObj
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @throws \RuntimeException
+     * @return \Procure\Domain\GoodsReceipt\GRDoc[]
+     */
+    public static function postCopyFromAPReversalByWarehouse(GenericAP $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        $results = [];
+
+        $docs = $sourceObj->generateDocumentByWarehouse();
+        if ($docs == null) {
+            throw new \RuntimeException(\sprintf("Can not create PO Goods Receipt Reversal from %s", $sourceObj->getId()));
+        }
+
+        foreach ($docs as $doc) {
+            $gr = GRReversalFromAPReserval::postCopyFromAPReversal($doc, $options, $sharedService);
+            $results[] = $gr;
+        }
+
+        return $results;
+    }
+
+    /**
+     *
      * @param APDoc $sourceObj
      * @param CommandOptions $options
      * @param SharedService $sharedService

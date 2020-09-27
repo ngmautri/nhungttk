@@ -9,6 +9,7 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\CopyFromGROptions;
 use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
+use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\TrxPostingService;
@@ -28,7 +29,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
 {
@@ -49,7 +50,7 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
          * @var \Inventory\Application\DTO\Transaction\TrxDTO $dto ;
          * @var GRDoc $rootEntity ;
          * @var CopyFromGROptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -68,37 +69,14 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new WarehouseValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $validationService = new TrxValidationService($headerValidators, $rowValidators);
-
             $id = $sourceObj->getId();
             $token = $sourceObj->getToken();
 
             $rep = new GRQueryRepositoryImpl($cmd->getDoctrineEM());
             $sourceObj = $rep->getRootEntityByTokenId($id, $token);
 
-            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $validationService, $sharedService);
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
+            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $sharedService);
 
             // event dispatch
             // ================

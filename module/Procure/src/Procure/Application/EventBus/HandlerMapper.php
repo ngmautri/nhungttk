@@ -11,11 +11,13 @@ use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
 use Procure\Application\EventBus\Handler\GR\CreateGrReversalOnApReversed;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
+use Procure\Application\EventBus\Handler\GR\OnApPostedCreateGrByWarehouse;
+use Procure\Application\EventBus\Handler\GR\OnApReversedCreateGrReversal;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class HandlerMapper extends AbstractService
 {
@@ -31,8 +33,8 @@ class HandlerMapper extends AbstractService
             UpdateIndexOnPoPosted::class,
             UpdateIndexOnApPosted::class,
 
-            CreateGrOnApPosted::class,
-            CreateGrReversalOnApReversed::class,
+            OnApPostedCreateGrByWarehouse::class,
+            OnApReversedCreateGrReversal::class,
 
             OnProcureGrPostedCreateWhGr::class,
             OnProcureGrPostedCreateSerialNo::class,

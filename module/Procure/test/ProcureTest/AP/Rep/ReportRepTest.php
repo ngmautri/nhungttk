@@ -46,8 +46,9 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
             echo count($results);
             echo "=\n========\n";
 
+            // \var_dump($results[0]);
             foreach ($results as $doc) {
-                echo \sprintf("%s-  %s  %s\n", $doc->getDocType(), $doc->getSysNumber(), $doc->getTotalRows() . $doc->getRemarks());
+                echo \sprintf("%s %s %s %s // %s \n", $doc->getDocType(), $doc->getRemarks(), $doc->getTotalRows(), $doc->getUuid(), \spl_object_hash($doc));
             }
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

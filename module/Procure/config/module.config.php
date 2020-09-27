@@ -8,8 +8,12 @@ use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPostedFactory;
 use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
 use Procure\Application\EventBus\Handler\GR\CreateGrReversalOnApReversed;
+use Procure\Application\EventBus\Handler\GR\OnApPostedCreateGrByWarehouse;
+use Procure\Application\EventBus\Handler\GR\OnApReversedCreateGrReversalByWarehouse;
 use Procure\Application\EventBus\Handler\GR\Factory\CreateGrOnApPostedFactory;
 use Procure\Application\EventBus\Handler\GR\Factory\CreateGrReversalOnApReversedFactory;
+use Procure\Application\EventBus\Handler\GR\Factory\OnApPostedCreateGrByWarehouseFactory;
+use Procure\Application\EventBus\Handler\GR\Factory\OnApReversedCreateGrReversalByWarehouseFactory;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPostedFactory;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
@@ -71,8 +75,8 @@ return array(
                 'action' => 'header-status',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
-          
+
+
            /*  array(
                 'label' => 'All PR',
                 // 'uri' => "/procure/pr/all?pr_year=0&balance=0&is_active=1&sort_by=prNumber&sort=ASC&perPage=15",
@@ -340,6 +344,8 @@ return array(
             UpdateIndexOnPrSubmitted::class => UpdateIndexOnPrSubmittedFactory::class,
             CreateGrOnApPosted::class => CreateGrOnApPostedFactory::class,
             CreateGrReversalOnApReversed::class => CreateGrReversalOnApReversedFactory::class,
+            OnApPostedCreateGrByWarehouse::class => OnApPostedCreateGrByWarehouseFactory::class,
+            OnApReversedCreateGrReversalByWarehouse::class => OnApReversedCreateGrReversalByWarehouseFactory::class,
 
             // Logger
             "ProcureLogger" => LoggerFactory::class,

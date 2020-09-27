@@ -3,23 +3,16 @@ namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\TrxRowUpdateOptions;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
-use Inventory\Application\Service\Item\FIFOServiceImpl;
+use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Application\Service\Transaction\RowSnapshotReference;
-use Inventory\Application\Specification\Inventory\InventorySpecificationFactoryImpl;
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\TrxPostingService;
-use Inventory\Domain\Service\TrxValuationService;
 use Inventory\Domain\Transaction\TrxDoc;
 use Inventory\Domain\Transaction\TrxRow;
 use Inventory\Domain\Transaction\TrxRowSnapshot;
 use Inventory\Domain\Transaction\TrxRowSnapshotAssembler;
-use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use InvalidArgumentException;
@@ -27,7 +20,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateRowCmdHandler extends AbstractCommandHandler
 {
@@ -69,7 +62,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
              * @var TrxRowSnapshot $snapshot ;
              * @var TrxRowSnapshot $newSnapshot ;
              * @var TrxRow $row ;
-             *     
+             *
              */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
@@ -99,31 +92,11 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "changeLog" => $changeLog
             ];
 
-            // \var_dump($params);
-
             // do change
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            $fifoService = new FIFOServiceImpl();
-            $fifoService->setDoctrineEM($cmd->getDoctrineEM());
-            $valuationService = new TrxValuationService($fifoService);
-
-            $cmdRepository = new TrxCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new TrxPostingService($cmdRepository);
-
-            // create share service.
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
-            $sharedService->setValuationService($valuationService);
-            $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($cmd->getDoctrineEM()));
-
             $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
+
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch

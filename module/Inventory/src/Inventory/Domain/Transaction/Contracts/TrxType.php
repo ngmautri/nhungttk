@@ -7,7 +7,7 @@ use Application\Domain\Util\Translator;
  * Goods Movement Type (GM, WT)
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxType
 {
@@ -34,6 +34,10 @@ class TrxType
 
     const GI_FOR_TRANSFER_LOCATION = 'GI109';
 
+    const GI_FOR_PURCHASING_REVERSAL = 'GI110';
+
+    const GI_FOR_GR_REVERSAL = 'GI110';
+
     const GI_FOR_ADJUSTMENT_AFTER_COUNTING = 'GI900';
 
     const GI_FOR_DISPOSAL = 'GI999';
@@ -55,6 +59,8 @@ class TrxType
 
     const GR_WITHOUT_INVOICE = 'GR105';
 
+    const GR_FOR_GI_REVERSAL = 'GR106';
+
     const GR_FOR_ADJUSTMENT_AFTER_COUNTING = 'GR106';
 
     public static function getSupportedTransaction()
@@ -69,6 +75,8 @@ class TrxType
         $list[] = self::GI_FOR_ASSET;
         $list[] = self::GI_FOR_TRANSFER_WAREHOUSE;
         $list[] = self::GI_FOR_TRANSFER_LOCATION;
+        $list[] = self::GI_FOR_PURCHASING_REVERSAL;
+        $list[] = self::GI_FOR_GR_REVERSAL;
         $list[] = self::GI_FOR_ADJUSTMENT_AFTER_COUNTING;
         $list[] = self::GI_FOR_DISPOSAL;
 
@@ -78,6 +86,7 @@ class TrxType
         $list[] = self::GR_FROM_PURCHASING_REVERSAL;
         $list[] = self::GR_FROM_EXCHANGE;
         $list[] = self::GR_WITHOUT_INVOICE;
+        $list[] = self::GR_FOR_GI_REVERSAL;
         $list[] = self::GR_FOR_ADJUSTMENT_AFTER_COUNTING;
 
         return $list;
@@ -152,6 +161,16 @@ class TrxType
                 "type_description" => Translator::translate("goods will be issued for other location in warehouse.")
             ),
 
+            self::GI_FOR_PURCHASING_REVERSAL => array(
+                "type_name" => Translator::translate("Goods issue from purchasing reversal"),
+                "type_description" => Translator::translate("This is automatically post when AP, PO GR reversal posted")
+            ),
+
+            self::GI_FOR_GR_REVERSAL => array(
+                "type_name" => Translator::translate("Goods issue from WH GR reversal"),
+                "type_description" => Translator::translate("This is automatically post when WH-GR reversal posted")
+            ),
+
             self::GI_FOR_ADJUSTMENT_AFTER_COUNTING => array(
                 "type_name" => Translator::translate("Goods issue after counting (Adjustment)"),
                 "type_description" => Translator::translate("Stock quantity decreases after after actual counting!")
@@ -189,6 +208,11 @@ class TrxType
                 "type_name" => Translator::translate("Receipt of free items"),
                 "type_description" => Translator::translate("Receipt of free items - Zero Valua invoice")
             ],
+
+            self::GR_FOR_GI_REVERSAL => array(
+                "type_name" => Translator::translate("Goods receipt from WH GI reversal"),
+                "type_description" => Translator::translate("This is automatically post when WH-GI reversal posted")
+            ),
             self::GR_FOR_ADJUSTMENT_AFTER_COUNTING => array(
                 "type_name" => Translator::translate("Goods receipt after counting (Adjustment)"),
                 "type_description" => Translator::translate("Stock quantity increase after after actual counting!")

@@ -164,15 +164,7 @@ class GRRow extends GenericRow
      */
     public static function copyFromApRow(GenericGR $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
-        if (! $rootEntity instanceof GenericGR) {
-            throw new InvalidArgumentException("GR document is required!");
-        }
-        if (! $sourceObj instanceof APRow) {
-            throw new InvalidArgumentException("AP document is required!");
-        }
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
+        self::ensureValidParams($rootEntity, $sourceObj, $options);
 
         /**
          *
@@ -185,6 +177,7 @@ class GRRow extends GenericRow
         $createdBy = $options->getUserId();
         $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
+        // overwrite
         $instance->setApInvoiceRow($sourceObj->getId()); // important
         $instance->setInvoice($sourceObj->getDocId());
         $instance->setDocType($rootEntity->getDocType()); // important.
@@ -202,6 +195,35 @@ class GRRow extends GenericRow
      */
     public static function copyFromApRowReserval(GenericGR $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
+        self::ensureValidParams($rootEntity, $sourceObj, $options);
+
+        /**
+         *
+         * @var \Procure\Domain\GoodsReceipt\GRRow $instance
+         */
+        $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
+        // overwrite
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->setApInvoiceRow($sourceObj->getId()); // important
+        $instance->setInvoice($sourceObj->getDocId()); // important
+        $instance->setDocType($rootEntity->getDocType()); // important.
+        $instance->setRemarks("[Auto] Reversed"); // important.
+
+        return $instance;
+    }
+
+    /**
+     *
+     * @param GenericGR $rootEntity
+     * @param APRow $sourceObj
+     * @param CommandOptions $options
+     * @throws InvalidArgumentException
+     */
+    static private function ensureValidParams(GenericGR $rootEntity, APRow $sourceObj, CommandOptions $options)
+    {
         if (! $rootEntity instanceof GenericGR) {
             throw new InvalidArgumentException("GR document is required!");
         }
@@ -211,22 +233,6 @@ class GRRow extends GenericRow
         if ($options == null) {
             throw new InvalidArgumentException("No Options is found");
         }
-
-        /**
-         *
-         * @var \Procure\Domain\GoodsReceipt\GRRow $instance
-         */
-        $instance = new self();
-        $instance = $sourceObj->convertTo($instance);
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
-        $instance->setApInvoiceRow($sourceObj->getId()); // important
-        $instance->setInvoice($sourceObj->getDocId()); // important
-        $instance->setDocType($rootEntity->getDocType()); // important.
-        return $instance;
     }
 
     /**
@@ -235,9 +241,6 @@ class GRRow extends GenericRow
      */
     public static function getInstance()
     {
-        if (self::$instance == null) {
-            self::$instance = new GRRow();
-        }
         return self::$instance;
     }
 

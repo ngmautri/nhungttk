@@ -9,16 +9,22 @@ use Inventory\Domain\Event\Transaction\TrxHeaderUpdated;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
+use Inventory\Domain\Transaction\GI\GIFromGRReversal;
+use Inventory\Domain\Transaction\GI\GIFromPurchasingReversal;
 use Inventory\Domain\Transaction\GI\GIforAdjustment;
 use Inventory\Domain\Transaction\GI\GIforCostCenter;
 use Inventory\Domain\Transaction\GI\GIforExchangePartForMachine;
 use Inventory\Domain\Transaction\GI\GIforMachineNoExchange;
+use Inventory\Domain\Transaction\GI\GIforReturnPO;
 use Inventory\Domain\Transaction\GI\GIforTransferLocation;
 use Inventory\Domain\Transaction\GI\GIforTransferWarehouse;
 use Inventory\Domain\Transaction\GR\GRForAdjustment;
 use Inventory\Domain\Transaction\GR\GRFromExchange;
+use Inventory\Domain\Transaction\GR\GRFromGIReversal;
 use Inventory\Domain\Transaction\GR\GRFromOpening;
+use Inventory\Domain\Transaction\GR\GRFromPurchasing;
 use Inventory\Domain\Transaction\GR\GRFromTransferLocation;
 use Inventory\Domain\Transaction\GR\GRFromTransferWarehouse;
 use Inventory\Domain\Transaction\GR\GRWithoutInvoice;
@@ -27,16 +33,33 @@ use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use InvalidArgumentException;
 use RuntimeException;
-use Inventory\Domain\Transaction\GR\GRFromPurchasing;
-use Inventory\Domain\Transaction\GI\GIforReturnPO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TransactionFactory
 {
+
+    /**
+     *
+     * @param GenericTrx $sourceObj
+     * @param TrxSnapshot $snapshot
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Inventory\Domain\Transaction\GR\GRFromExchange
+     */
+    public static function createAndPostReversal(GenericTrx $sourceObj, TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    {
+        if ($sourceObj->getMovementFlow() == TrxFlow::WH_TRANSACTION_IN) {
+            return GIFromGRReversal::postCopyFromTrxReversal($sourceObj, $options, $sharedService);
+        }
+
+        if ($sourceObj->getMovementFlow() == TrxFlow::WH_TRANSACTION_OUT) {
+            return GRFromGIReversal::postCopyFromTrxReversal($sourceObj, $options, $sharedService);
+        }
+    }
 
     /**
      *
@@ -311,6 +334,10 @@ class TransactionFactory
                 break;
             case TrxType::GI_FOR_ADJUSTMENT_AFTER_COUNTING:
                 $trx = new GIforAdjustment();
+                break;
+
+            case TrxType::GI_FOR_PURCHASING_REVERSAL:
+                $trx = new GIFromPurchasingReversal(); // auto
                 break;
         }
         return $trx;

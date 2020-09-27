@@ -92,7 +92,7 @@ class GenericDoc extends BaseDoc
                 $results[$wh] = $rowsOfWarehouse;
 
                 $wh = $row->getWarehouse();
-                $rowsOfWarehouse = new ArrayCollection();
+                $rowsOfWarehouse = [];
                 $rowsOfWarehouse[] = $row;
 
                 if ($n == $this->getTotalRows()) {
@@ -239,6 +239,40 @@ class GenericDoc extends BaseDoc
             "docNumber",
             "docDate",
             "reversalDoc"
+        ];
+
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+
+            $prop->setAccessible(true);
+            $propName = $prop->getName();
+
+            if (\in_array($propName, $exculdedProps)) {
+                continue;
+            }
+
+            if (property_exists($targetObj, $propName)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
+
+    public function convertAllTo(AbstractDoc $targetObj)
+    {
+        if (! $targetObj instanceof AbstractDoc) {
+            throw new InvalidArgumentException("Convertion input invalid!");
+        }
+
+        // Converting
+        // ==========================
+
+        $exculdedProps = [
+            "rowIdArray",
+            "instance"
         ];
 
         $sourceObj = $this;

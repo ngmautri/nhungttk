@@ -16,7 +16,7 @@ use Closure;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQueryRepositoryInterface
 {
@@ -305,8 +305,55 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         };
     }
 
-    public function getById($id, $outputStragegy = null)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface::getById()
+     */
+    public function getById($id)
+    {
+        if ($id == null) {
+            return null;
+        }
+
+        $result = TrxHelper::getDetailHeaderByTokenId($this->getDoctrineEM(), $id, null);
+
+        if ($result == null) {
+            return null;
+        }
+
+        $rootEntityDoctrine = $result[0];
+
+        $rootSnapshot = TrxMapper::createSnapshot($this->getDoctrineEM(), $rootEntityDoctrine);
+        if ($rootSnapshot == null) {
+            return null;
+        }
+
+        $rows = TrxHelper::getRowsById($this->getDoctrineEM(), $id);
+
+        if (count($rows) == 0) {
+            $rootEntity = TrxDoc::constructFromSnapshot($rootSnapshot);
+            return $rootEntity;
+        }
+
+        $docRowsArray = [];
+        foreach ($rows as $r) {
+
+            /**@var \Application\Entity\NmtInventoryTrx $localEnityDoctrine ;*/
+            $localEnityDoctrine = $r;
+            $localSnapshot = TrxMapper::createRowSnapshot($this->getDoctrineEM(), $localEnityDoctrine);
+
+            if ($localSnapshot == null) {
+                continue;
+            }
+            $localEntity = TrxRow::makeFromSnapshot($localSnapshot);
+            $docRowsArray[] = $localEntity;
+        }
+
+        $rootEntity = TransactionFactory::contructFromDB($rootSnapshot);
+        $rootEntity->setDocRows($docRowsArray);
+        return $rootEntity;
+    }
 
     public function getHeaderDTO($id, $token = null)
     {}

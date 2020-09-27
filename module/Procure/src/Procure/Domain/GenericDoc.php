@@ -94,10 +94,10 @@ class GenericDoc extends BaseDoc
                 $wh = $row->getWarehouse();
                 $rowsOfWarehouse = [];
                 $rowsOfWarehouse[] = $row;
+            }
 
-                if ($n == $this->getTotalRows()) {
-                    $results[$wh] = $rowsOfWarehouse;
-                }
+            if ($n == $this->getTotalRows()) {
+                $results[$wh] = $rowsOfWarehouse;
             }
         }
 

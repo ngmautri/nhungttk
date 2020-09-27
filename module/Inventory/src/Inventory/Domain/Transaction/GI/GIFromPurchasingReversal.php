@@ -59,8 +59,8 @@ class GIFromPurchasingReversal extends AbstractGoodsIssue implements GoodsReceip
             throw new \InvalidArgumentException("No Options is found");
         }
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
-            throw new \InvalidArgumentException("GR document is not posted yet!");
+        if ($sourceObj->getDocStatus() != ProcureDocStatus::REVERSED) {
+            throw new \InvalidArgumentException("GR document is not reversed yet!");
         }
 
         /**
@@ -72,7 +72,8 @@ class GIFromPurchasingReversal extends AbstractGoodsIssue implements GoodsReceip
 
         // overwrite.
         $instance->specify(); // important.
-        $validationService = ValidatorFactory::create($instance->getDocType(), $sharedService);
+        $instance->setMovementDate($sourceObj->getPostingDate());
+        $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
 
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
@@ -96,6 +97,12 @@ class GIFromPurchasingReversal extends AbstractGoodsIssue implements GoodsReceip
 
             $grRow = GIFromPurchasingReversalRow::createFromPurchaseGrRowReversal($instance, $r, $options);
             $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+
+            // caculate COGS
+            $valuattionSrv = $sharedService->getValuationService()->getFifoService();
+            $cogs = $valuattionSrv->calculateCOGS($instance, $grRow);
+            $grRow->setCalculatedCost($cogs);
+
             $instance->addRow($grRow);
         }
 
@@ -114,8 +121,6 @@ class GIFromPurchasingReversal extends AbstractGoodsIssue implements GoodsReceip
             throw new \RuntimeException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
         }
 
-        $instance->updateIdentityFrom($snapshot);
-
         $target = $instance;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($snapshot->getId());
@@ -129,7 +134,6 @@ class GIFromPurchasingReversal extends AbstractGoodsIssue implements GoodsReceip
         $event = new WhGiPosted($target, $defaultParams, $params);
 
         $instance->addEvent($event);
-
         $instance->updateIdentityFrom($snapshot);
 
         return $instance;

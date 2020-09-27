@@ -16,7 +16,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdRepositoryInterface
 {
@@ -101,6 +101,22 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
      */
     public function store(GenericTrx $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
+        $isFlush = true;
+        $increaseVersion = true;
+        return $this->_store($rootEntity, $increaseVersion, $generateSysNumber, $isFlush, $isPosting);
+    }
+
+    public function storeWithoutUpdateVersion(GenericTrx $rootEntity)
+    {
+        $isFlush = true;
+        $isPosting = false;
+        $increaseVersion = false;
+        $generateSysNumber = false;
+        return $this->_store($rootEntity, $increaseVersion, $generateSysNumber, $isFlush, $isPosting);
+    }
+
+    private function _store(GenericTrx $rootEntity, $increaseVersion, $generateSysNumber, $isFlush, $isPosting)
+    {
         if ($rootEntity == null) {
             throw new InvalidArgumentException("GenericTrx not retrieved.");
         }
@@ -113,8 +129,6 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
 
         $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
-        $isFlush = true;
-        $increaseVersion = true;
         $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
 
         if ($rootEntityDoctrine == null) {
@@ -220,7 +234,7 @@ class TrxCmdRepositoryImpl extends AbstractDoctrineRepository implements TrxCmdR
         /**
          *
          * @var \Application\Entity\NmtInventoryMv $entity ;
-         *     
+         *
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());

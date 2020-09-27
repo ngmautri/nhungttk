@@ -13,7 +13,7 @@ use Exception;
  * All Service shall extend this.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractService implements EventManagerAwareInterface
 {
@@ -197,7 +197,7 @@ abstract class AbstractService implements EventManagerAwareInterface
      *
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }

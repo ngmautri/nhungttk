@@ -71,6 +71,8 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $notification = new Notification();
 
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
+            $sharedService->setLogger($cmd->getLogger());
+
             $rootEntity = TransactionFactory::createFrom($snapshot, $options, $sharedService);
 
             // event dispatch

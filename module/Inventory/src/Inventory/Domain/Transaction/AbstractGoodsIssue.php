@@ -33,16 +33,6 @@ abstract class AbstractGoodsIssue extends GenericTrx
         $this->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
 
         foreach ($this->getDocRows() as $row) {
-
-            if ($row->getDocQuantity() == 0) {
-                continue;
-            }
-
-            // caculate COGS
-            $cogs = $sharedService->getValuationService()
-                ->getFifoService()
-                ->calculateCOGS($this, $row);
-            $row->setCalculatedCost($cogs);
             $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 

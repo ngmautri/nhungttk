@@ -44,7 +44,7 @@ final class APReversal extends GenericAP implements ReversalDocInterface
 
     /**
      *
-     * @param APDoc $sourceObj
+     * @param GenericAP $sourceObj
      * @param APSnapshot $snapshot
      * @param CommandOptions $options
      * @param SharedService $sharedService
@@ -52,9 +52,9 @@ final class APReversal extends GenericAP implements ReversalDocInterface
      * @throws \RuntimeException
      * @return \Procure\Domain\AccountPayable\APReversal
      */
-    public static function createAndPostReversal(APDoc $sourceObj, APSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
+    public static function createAndPostReversal(GenericAP $sourceObj, APSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $sourceObj instanceof APDoc) {
+        if (! $sourceObj instanceof GenericAP) {
             throw new \InvalidArgumentException("AP Doc is required");
         }
 
@@ -74,12 +74,14 @@ final class APReversal extends GenericAP implements ReversalDocInterface
          * @var APRow $r ;
          */
         $instance = new self();
+        $instance = $sourceObj->convertTo($instance);
 
+        $instance->specify(); // important
         $validationService = ValidatorFactory::createForPosting($sharedService);
 
-        // check params
-        $instance->_checkParams($snapshot, $validationService, $sharedService);
-
+        if ($validationService->getHeaderValidators() == null) {
+            throw new \InvalidArgumentException("Header validators not found");
+        }
         // also row validation needed.
         if ($validationService->getRowValidators() == null) {
             throw new \InvalidArgumentException("Rows validators not found");
@@ -89,18 +91,17 @@ final class APReversal extends GenericAP implements ReversalDocInterface
             throw new \InvalidArgumentException("No Options is found");
         }
 
+        // overwrite.
+
+        $instance->setBaseDocId($sourceObj->getId());
+        $instance->setBaseDocType($sourceObj->getDocType());
+
         $reversalDate = $snapshot->getReversalDate();
         $createdDate = new \DateTime();
         $createdBy = $options->getUserId();
 
-        $instance = $sourceObj->convertTo($instance);
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->markAsReversed($createdBy, $reversalDate);
-
-        // overwrite.
-        $instance->setReversalDoc($sourceObj->getId()); // Important
-        $instance->setDocType(ProcureDocType::INVOICE_REVERSAL); // important.
-
         $instance->validateHeader($validationService->getHeaderValidators());
 
         // $sourceObj

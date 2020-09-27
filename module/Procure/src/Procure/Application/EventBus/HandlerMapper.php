@@ -7,12 +7,10 @@ use Inventory\Application\EventBus\Handler\Item\OnProcureGrPostedCreateSerialNo;
 use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrPostedCreateWhGr;
 use Inventory\Application\EventBus\Handler\Transaction\OnProcureGrReversedCreateWhGi;
 use Procure\Application\EventBus\Handler\AP\UpdateIndexOnApPosted;
-use Procure\Application\EventBus\Handler\GR\CreateGrOnApPosted;
-use Procure\Application\EventBus\Handler\GR\CreateGrReversalOnApReversed;
+use Procure\Application\EventBus\Handler\GR\OnApPostedCreateGrByWarehouse;
+use Procure\Application\EventBus\Handler\GR\OnApReversedCreateGrReversalByWarehouse;
 use Procure\Application\EventBus\Handler\PO\UpdateIndexOnPoPosted;
 use Procure\Application\EventBus\Handler\PR\UpdateIndexOnPrSubmitted;
-use Procure\Application\EventBus\Handler\GR\OnApPostedCreateGrByWarehouse;
-use Procure\Application\EventBus\Handler\GR\OnApReversedCreateGrReversal;
 
 /**
  *
@@ -34,10 +32,11 @@ class HandlerMapper extends AbstractService
             UpdateIndexOnApPosted::class,
 
             OnApPostedCreateGrByWarehouse::class,
-            OnApReversedCreateGrReversal::class,
+            OnApReversedCreateGrReversalByWarehouse::class,
 
             OnProcureGrPostedCreateWhGr::class,
             OnProcureGrPostedCreateSerialNo::class,
+
             OnProcureGrReversedCreateWhGi::class
         ];
 

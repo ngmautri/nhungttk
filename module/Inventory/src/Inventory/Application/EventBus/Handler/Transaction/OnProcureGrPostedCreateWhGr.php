@@ -14,7 +14,7 @@ use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class OnProcureGrPostedCreateWhGr extends AbstractEventHandler
 {
@@ -28,9 +28,9 @@ class OnProcureGrPostedCreateWhGr extends AbstractEventHandler
     {
         try {
 
-            // throw new \RuntimeException(\sprintf("Tesing.. %s", __METHOD__));
+            $target = $event->getTarget();
 
-            if (! $event->getTarget() instanceof GRSnapshot) {
+            if (! $target instanceof GRSnapshot) {
                 Throw new \InvalidArgumentException("GRSnapshot not give for creating WH Trx");
             }
 
@@ -42,11 +42,11 @@ class OnProcureGrPostedCreateWhGr extends AbstractEventHandler
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
             $options = new PostCopyFromProcureGROptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $event->getTarget());
             $dto = new TrxDTO();
+
             $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
             $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
             $cmd->execute();
-            $this->logInfo(\sprintf("WH-GR created from PO-GR!  #%s ", $event->getTarget()
-                ->getId()));
+            $this->logInfo(\sprintf("WH-GR created from PO-GR!  #%s ", $target->getId()));
         } catch (\Exception $e) {
 
             // There might be nothing to receive in stock, so do not throw exception, just log it.

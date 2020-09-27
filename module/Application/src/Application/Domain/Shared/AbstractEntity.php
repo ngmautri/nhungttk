@@ -7,7 +7,7 @@ use Psr\Log\LoggerInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractEntity
 {
@@ -52,7 +52,7 @@ abstract class AbstractEntity
      *
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }

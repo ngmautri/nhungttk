@@ -4,14 +4,14 @@ namespace Inventory\Domain\Transaction\Repository;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface TrxQueryRepositoryInterface
 {
 
     public function findAll();
 
-    public function getById($id, $outputStragegy = null);
+    public function getById($id);
 
     public function getHeaderById($id, $token = null);
 

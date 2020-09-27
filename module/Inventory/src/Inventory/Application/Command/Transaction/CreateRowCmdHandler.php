@@ -76,6 +76,8 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
 
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
+            $sharedService->setLogger($cmd->getLogger());
+
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
 
             // event dispatcher

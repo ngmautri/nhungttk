@@ -60,6 +60,7 @@ class PostGrFromExchangeCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
+            $sharedService->setLogger($cmd->getLogger());
 
             $id = $sourceObj->getId();
             $token = $sourceObj->getToken();

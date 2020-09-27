@@ -52,6 +52,8 @@ class ValidatorFactory
             throw new InvalidArgumentException("Shared spec service not found");
         }
 
+        // echo ($trxTypeId);
+
         $fxService = $sharedService->getFxService();
 
         $sharedSpecsFactory = $sharedService->getSharedSpecificationFactory();

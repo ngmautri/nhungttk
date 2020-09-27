@@ -3,24 +3,13 @@ namespace Inventory\Application\Command\Transaction;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Transaction\Options\CopyFromGROptions;
 use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
 use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Domain\Exception\OperationFailedException;
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\TrxPostingService;
-use Inventory\Domain\Service\TrxValidationService;
-use Inventory\Domain\Transaction\GR\GRFromPurchasing;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
-use Inventory\Domain\Transaction\Validator\Header\DefaultHeaderValidator;
-use Inventory\Domain\Transaction\Validator\Row\DefaultRowValidator;
-use Inventory\Domain\Transaction\Validator\Row\WarehouseValidator;
-use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
+use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Procure\Domain\GoodsReceipt\GRDoc;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
@@ -76,7 +65,9 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
             $sourceObj = $rep->getRootEntityByTokenId($id, $token);
 
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
-            $rootEntity = GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $sharedService);
+            $sharedService->setLogger($cmd->getLogger());
+
+            $rootEntity = TransactionFactory::postCopyFromProcureGR($sourceObj, $options, $sharedService);
 
             // event dispatch
             // ================
@@ -89,7 +80,7 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
             $notification->addSuccess($m);
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

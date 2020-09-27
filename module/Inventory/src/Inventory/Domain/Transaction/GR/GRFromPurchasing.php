@@ -77,7 +77,9 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
 
         // Overwrite
         $instance->specify(); // important.
-        $validationService = ValidatorFactory::create($instance->getDocType(), $sharedService);
+
+        $instance->setMovementDate($sourceObj->getPostingDate());
+        $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
         $instance->setBaseDocId($sourceObj->getId());
         $instance->setBaseDocType($sourceObj->getDocType());
 

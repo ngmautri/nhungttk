@@ -12,7 +12,7 @@ use InvalidArgumentException;
  * PO Domain Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SharedService
 {
@@ -40,7 +40,7 @@ class SharedService
      *
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }

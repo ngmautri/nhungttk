@@ -332,7 +332,7 @@ class NmtProcurePoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     * @ORM\Column(name="doc_type", type="string", length=45, nullable=true)
      */
     private $docType;
 

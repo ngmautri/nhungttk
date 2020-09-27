@@ -7,12 +7,14 @@ use Inventory\Domain\Transaction\GenericTrx;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 Interface TrxCmdRepositoryInterface
 {
 
     public function store(GenericTrx $rootEntity, $generateSysNumber = false, $isPosting = false);
+
+    public function storeWithoutUpdateVersion(GenericTrx $rootEntity);
 
     public function post(GenericTrx $rootEntity, $generateSysNumber = True);
 

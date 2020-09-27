@@ -387,10 +387,14 @@ abstract class GenericTrx extends BaseDoc
      * @throws \RuntimeException
      * @return \Inventory\Domain\Transaction\GenericTrx
      */
-    public function store(SharedService $sharedService)
+    public function saveAfterCalculationCost(SharedService $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
-            throw new \InvalidArgumentException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
+        if ($this->getDocStatus() != TrxDocStatus::POSTED) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("Document should be posted ! %s", __FUNCTION__)));
+        }
+
+        if ($this->getMovementFlow() != TrxFlow::WH_TRANSACTION_OUT) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("Flow in not correct%s", __FUNCTION__)));
         }
 
         if ($sharedService == null) {
@@ -405,18 +409,16 @@ abstract class GenericTrx extends BaseDoc
 
         $this->setLogger($sharedService->getLogger());
 
-        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, false);
+        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
 
-        $this->validate($validationService, false);
-
+        $this->validate($validationService);
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());
         }
 
-        $this->clearEvents();
-        $rep->store($this);
+        $rep->storeWithoutUpdateVersion($this);
 
-        $this->logInfo(\sprintf("WH Trx %s saved! %s", $this->getId(), __METHOD__));
+        $this->logInfo(\sprintf("Trx saved after calculation cost%s", __METHOD__));
         return $this;
     }
 

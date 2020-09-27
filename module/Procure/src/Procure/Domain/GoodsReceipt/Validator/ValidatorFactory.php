@@ -170,6 +170,11 @@ class ValidatorFactory
                 $rowValidators = $defaultRowValidators;
                 break;
 
+            case ProcureDocType::GR_REVERSAL_FROM_AP_RESERVAL: // manual
+                $headerValidators = $defaultHeaderValidators;
+                $rowValidators = $defaultRowValidators;
+                break;
+
             case ProcureDocType::GOODS_RETURN: // manual
                 $headerValidators = $defaultHeaderValidators;
                 $rowValidators = $defaultRowValidators;

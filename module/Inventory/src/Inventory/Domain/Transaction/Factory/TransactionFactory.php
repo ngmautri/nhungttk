@@ -31,6 +31,7 @@ use Inventory\Domain\Transaction\GR\GRWithoutInvoice;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
+use Procure\Domain\GoodsReceipt\GenericGR;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -270,6 +271,29 @@ class TransactionFactory
         $trx->specify();
         $trx->updateStatus();
         return $trx;
+    }
+
+    /**
+     *
+     * @param GenericGR $sourceObj
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     */
+    public static function postCopyFromProcureGR(GenericGR $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        return GRFromPurchasing::postCopyFromProcureGR($sourceObj, $options, $sharedService);
+    }
+
+    /**
+     *
+     * @param GenericGR $sourceObj
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Inventory\Domain\Transaction\GI\GIFromPurchasingReversal
+     */
+    public static function postCopyFromProcureGRReversal(GenericGR $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        return GIFromPurchasingReversal::postCopyFromProcureGRReversal($sourceObj, $options, $sharedService);
     }
 
     /**

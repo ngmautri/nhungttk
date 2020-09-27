@@ -97,6 +97,8 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
 
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
+            $sharedService->setLogger($cmd->getLogger());
+
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch

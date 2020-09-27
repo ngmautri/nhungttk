@@ -69,6 +69,8 @@ class ReverseCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
+            $sharedService->setLogger($cmd->getLogger());
+
             $reversalEntity = APDoc::createAndPostReserval($rootEntity, $snapshot, $options, $sharedService);
 
             // event dispatch

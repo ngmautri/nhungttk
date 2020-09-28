@@ -24,8 +24,8 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new APQueryRepositoryImpl($doctrineEM);
 
-            $id = 3298;
-            $token = "793ab28b-95e5-42ec-98b4-93c1426c9080";
+            $id = 3366;
+            $token = "e110b32a-7b70-4575-a0c4-937bacb878cf";
 
             $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
@@ -33,11 +33,11 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
                 // echo \sprintf("%s- %s \n", $doc->getWarehouse(), $doc->getItemName());
             }
 
-            $rootEntity->sortRowsByWarehouse();
+            // $rootEntity->sortRowsByWarehouse();
 
             echo "========\n";
             foreach ($rootEntity->getDocRows() as $doc) {
-                // echo \sprintf("%s- %s \n", $doc->getWarehouse(), $doc->getItemName());
+                echo \sprintf("%s- %s \n", $doc->getWarehouse(), $doc->getItemName());
             }
 
             $results = $rootEntity->generateDocumentByWarehouse();
@@ -48,7 +48,11 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             // \var_dump($results[0]);
             foreach ($results as $doc) {
-                echo \sprintf("%s %s %s %s // %s \n", $doc->getDocType(), $doc->getRemarks(), $doc->getTotalRows(), $doc->getUuid(), \spl_object_hash($doc));
+                echo count(($doc->getDocRows()));
+                echo \sprintf("%s %s %s %s // %s \n", $doc->getDocType(), "", $doc->getDocRowsCount(), $doc->getUuid(), \spl_object_hash($doc));
+                foreach ($doc->getDocRows() as $row) {
+                    echo $row->getItemName() . "\n";
+                }
             }
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());

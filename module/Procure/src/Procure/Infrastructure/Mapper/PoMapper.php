@@ -71,7 +71,6 @@ class PoMapper
         $entity->setDiscountRate($snapshot->discountRate);
         $entity->setDiscountAmount($snapshot->discountAmount);
         $entity->setDocNumber($snapshot->docNumber);
-        $entity->setDocDate($snapshot->docDate);
         $entity->setBaseDocId($snapshot->baseDocId);
         $entity->setBaseDocType($snapshot->baseDocType);
         $entity->setTargetDocId($snapshot->targetDocId);
@@ -466,6 +465,60 @@ class PoMapper
             $snapshot = new POSnapshot();
         }
 
+        // =================================
+        // Mapping None-Object Field
+        // =================================
+
+        $snapshot->id = $entity->getId();
+        $snapshot->token = $entity->getToken();
+        $snapshot->vendorName = $entity->getVendorName();
+        $snapshot->invoiceNo = $entity->getInvoiceNo();
+        $snapshot->exchangeRate = $entity->getExchangeRate();
+        $snapshot->remarks = $entity->getRemarks();
+        $snapshot->currentState = $entity->getCurrentState();
+        $snapshot->isActive = $entity->getIsActive();
+        $snapshot->trxType = $entity->getTrxType();
+        $snapshot->sapDoc = $entity->getSapDoc();
+        $snapshot->contractNo = $entity->getContractNo();
+        $snapshot->quotationNo = $entity->getQuotationNo();
+        $snapshot->sysNumber = $entity->getSysNumber();
+        $snapshot->revisionNo = $entity->getRevisionNo();
+        $snapshot->deliveryMode = $entity->getDeliveryMode();
+        $snapshot->incoterm = $entity->getIncoterm();
+        $snapshot->incotermPlace = $entity->getIncotermPlace();
+        $snapshot->paymentTerm = $entity->getPaymentTerm();
+        $snapshot->docStatus = $entity->getDocStatus();
+        $snapshot->workflowStatus = $entity->getWorkflowStatus();
+        $snapshot->transactionStatus = $entity->getTransactionStatus();
+        $snapshot->docType = $entity->getDocType();
+        $snapshot->paymentStatus = $entity->getPaymentStatus();
+        $snapshot->totalDocValue = $entity->getTotalDocValue();
+        $snapshot->totalDocTax = $entity->getTotalDocTax();
+        $snapshot->totalDocDiscount = $entity->getTotalDocDiscount();
+        $snapshot->totalLocalValue = $entity->getTotalLocalValue();
+        $snapshot->totalLocalTax = $entity->getTotalLocalTax();
+        $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
+        $snapshot->reversalBlocked = $entity->getReversalBlocked();
+
+        $snapshot->uuid = $entity->getUuid();
+        $snapshot->docVersion = $entity->getDocVersion();
+        $snapshot->isDraft = $entity->getIsDraft();
+        $snapshot->isPosted = $entity->getIsPosted();
+        $snapshot->isReversed = $entity->getIsReversed();
+        $snapshot->reversalDate = $entity->getReversalDate();
+        $snapshot->reversalReason = $entity->getReversalReason();
+        $snapshot->postingPeriod = $entity->getPostingPeriod();
+        $snapshot->currentStatus = $entity->getCurrentStatus();
+        $snapshot->transactionType = $entity->getTransactionType();
+        $snapshot->discountRate = $entity->getDiscountRate();
+        $snapshot->discountAmount = $entity->getDiscountAmount();
+        $snapshot->docNumber = $entity->getDocNumber();
+        $snapshot->baseDocId = $entity->getBaseDocId();
+        $snapshot->baseDocType = $entity->getBaseDocType();
+        $snapshot->targetDocId = $entity->getTargetDocId();
+        $snapshot->targetDocType = $entity->getTargetDocType();
+        $snapshot->clearingDocId = $entity->getClearingDocId();
+
         // ============================
         // REFERRENCE MAPPING
         // ============================
@@ -570,61 +623,6 @@ class PoMapper
         if (! $entity->getDocDate() == null) {
             $snapshot->docDate = $entity->getDocDate()->format("Y-m-d");
         }
-
-        // =================================
-        // Mapping None-Object Field
-        // =================================
-
-        $snapshot->id = $entity->getId();
-        $snapshot->token = $entity->getToken();
-        $snapshot->vendorName = $entity->getVendorName();
-        $snapshot->invoiceNo = $entity->getInvoiceNo();
-        $snapshot->exchangeRate = $entity->getExchangeRate();
-        $snapshot->remarks = $entity->getRemarks();
-        $snapshot->currentState = $entity->getCurrentState();
-        $snapshot->isActive = $entity->getIsActive();
-        $snapshot->trxType = $entity->getTrxType();
-        $snapshot->sapDoc = $entity->getSapDoc();
-        $snapshot->contractNo = $entity->getContractNo();
-        $snapshot->quotationNo = $entity->getQuotationNo();
-        $snapshot->sysNumber = $entity->getSysNumber();
-        $snapshot->revisionNo = $entity->getRevisionNo();
-        $snapshot->deliveryMode = $entity->getDeliveryMode();
-        $snapshot->incoterm = $entity->getIncoterm();
-        $snapshot->incotermPlace = $entity->getIncotermPlace();
-        $snapshot->paymentTerm = $entity->getPaymentTerm();
-        $snapshot->docStatus = $entity->getDocStatus();
-        $snapshot->workflowStatus = $entity->getWorkflowStatus();
-        $snapshot->transactionStatus = $entity->getTransactionStatus();
-        $snapshot->docType = $entity->getDocType();
-        $snapshot->paymentStatus = $entity->getPaymentStatus();
-        $snapshot->totalDocValue = $entity->getTotalDocValue();
-        $snapshot->totalDocTax = $entity->getTotalDocTax();
-        $snapshot->totalDocDiscount = $entity->getTotalDocDiscount();
-        $snapshot->totalLocalValue = $entity->getTotalLocalValue();
-        $snapshot->totalLocalTax = $entity->getTotalLocalTax();
-        $snapshot->totalLocalDiscount = $entity->getTotalLocalDiscount();
-        $snapshot->reversalBlocked = $entity->getReversalBlocked();
-
-        $snapshot->uuid = $entity->getUuid();
-        $snapshot->docVersion = $entity->getDocVersion();
-        $snapshot->isDraft = $entity->getIsDraft();
-        $snapshot->isPosted = $entity->getIsPosted();
-        $snapshot->isReversed = $entity->getIsReversed();
-        $snapshot->reversalDate = $entity->getReversalDate();
-        $snapshot->reversalReason = $entity->getReversalReason();
-        $snapshot->postingPeriod = $entity->getPostingPeriod();
-        $snapshot->currentStatus = $entity->getCurrentStatus();
-        $snapshot->transactionType = $entity->getTransactionType();
-        $snapshot->discountRate = $entity->getDiscountRate();
-        $snapshot->discountAmount = $entity->getDiscountAmount();
-        $snapshot->docNumber = $entity->getDocNumber();
-        $snapshot->docDate = $entity->getDocDate();
-        $snapshot->baseDocId = $entity->getBaseDocId();
-        $snapshot->baseDocType = $entity->getBaseDocType();
-        $snapshot->targetDocId = $entity->getTargetDocId();
-        $snapshot->targetDocType = $entity->getTargetDocType();
-        $snapshot->clearingDocId = $entity->getClearingDocId();
 
         return $snapshot;
     }

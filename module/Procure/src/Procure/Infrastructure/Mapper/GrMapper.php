@@ -67,7 +67,6 @@ class GrMapper
         $entity->setUuid($snapshot->uuid);
 
         $entity->setDocVersion($snapshot->docVersion);
-        $entity->setDocDate($snapshot->docDate);
         $entity->setDocNumber($snapshot->docNumber);
         $entity->setFlow($snapshot->flow);
         $entity->setRelevantDocId($snapshot->relevantDocId);
@@ -522,7 +521,7 @@ class GrMapper
 
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docVersion = $entity->getDocVersion();
-        $snapshot->docDate = $entity->getDocDate();
+        // $snapshot->docDate = $entity->getDocDate();
         $snapshot->docNumber = $entity->getDocNumber();
         $snapshot->flow = $entity->getFlow();
         $snapshot->relevantDocId = $entity->getRelevantDocId();

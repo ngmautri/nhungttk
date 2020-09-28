@@ -49,7 +49,7 @@ class GenericDoc extends BaseDoc
             return;
         }
 
-        if (count($docRows) == 1) {
+        if ($this->getDocRowsCount() == 1) {
             return;
         }
 
@@ -58,14 +58,18 @@ class GenericDoc extends BaseDoc
         $this->setDocRows($docRows);
     }
 
+    /**
+     *
+     * @return NULL|\Procure\Domain\GenericRow[][]|array[]
+     */
     public function splitRowsByWarehouse()
     {
-        $docRows = $this->getDocRows();
-        if ($docRows == null) {
+        if ($this->getDocRowsCount() == 0) {
             return null;
         }
 
-        $this->sortRowsByWarehouse();
+        $this->sortRowsByWarehouse(); // sort first.
+        $docRows = $this->getDocRows();
 
         $results = [];
 
@@ -96,7 +100,7 @@ class GenericDoc extends BaseDoc
                 $rowsOfWarehouse[] = $row;
             }
 
-            if ($n == count($docRows)) {
+            if ($n == $this->getDocRowsCount()) {
                 $results[$wh] = $rowsOfWarehouse;
             }
         }

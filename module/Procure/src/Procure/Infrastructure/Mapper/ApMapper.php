@@ -75,7 +75,6 @@ class ApMapper
         $entity->setDiscountRate($snapshot->discountRate);
         $entity->setDiscountAmount($snapshot->discountAmount);
         $entity->setDocNumber($snapshot->docNumber);
-        $entity->setDocDate($snapshot->docDate);
         $entity->setDocVersion($snapshot->docVersion);
         $entity->setBaseDocId($snapshot->baseDocId);
         $entity->setBaseDocType($snapshot->baseDocType);
@@ -579,7 +578,7 @@ class ApMapper
         $snapshot->discountRate = $entity->getDiscountRate();
         $snapshot->discountAmount = $entity->getDiscountAmount();
         $snapshot->docNumber = $entity->getDocNumber();
-        $snapshot->docDate = $entity->getDocDate();
+        // $snapshot->docDate = $entity->getDocDate();
         $snapshot->docVersion = $entity->getDocVersion();
         $snapshot->baseDocId = $entity->getBaseDocId();
         $snapshot->baseDocType = $entity->getBaseDocType();

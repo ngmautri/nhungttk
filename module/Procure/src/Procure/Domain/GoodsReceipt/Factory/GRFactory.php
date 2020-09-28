@@ -229,11 +229,13 @@ class GRFactory
         $results = [];
 
         $docs = $sourceObj->generateDocumentByWarehouse();
+
         if ($docs == null) {
             throw new \RuntimeException(\sprintf("Can not create PO Goods Receipt from %s", $sourceObj->getId()));
         }
 
         foreach ($docs as $doc) {
+
             $gr = GRFromAP::postCopyFromAP($doc, $options, $sharedService);
             $results[] = $gr;
         }

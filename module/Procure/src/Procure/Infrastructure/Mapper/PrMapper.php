@@ -47,7 +47,6 @@ class PrMapper
 
         $entity->setUuid($snapshot->uuid);
         $entity->setDocNumber($snapshot->docNumber);
-        $entity->setDocDate($snapshot->docDate);
         $entity->setBaseDocId($snapshot->baseDocId);
         $entity->setBaseDocType($snapshot->baseDocType);
         $entity->setTargetDocId($snapshot->targetDocId);
@@ -320,7 +319,7 @@ class PrMapper
 
         $snapshot->uuid = $entity->getUuid();
         $snapshot->docNumber = $entity->getDocNumber();
-        $snapshot->docDate = $entity->getDocDate();
+        // $snapshot->docDate = $entity->getDocDate();
         $snapshot->baseDocId = $entity->getBaseDocId();
         $snapshot->baseDocType = $entity->getBaseDocType();
         $snapshot->targetDocId = $entity->getTargetDocId();

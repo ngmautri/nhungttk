@@ -57,6 +57,7 @@ class PostCopyFromAPByWarehouseCmdHandler extends AbstractCommandHandler
             $notification = new Notification();
 
             $sharedService = SharedServiceFactory::createForGR($cmd->getDoctrineEM());
+            $sharedService->setLogger($cmd->getLogger());
 
             $docs = GRFactory::postCopyFromAPByWarehouse($sourceObj, $options, $sharedService);
 

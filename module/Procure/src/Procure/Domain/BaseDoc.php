@@ -36,6 +36,11 @@ abstract class BaseDoc extends AbstractDoc
         return $this->lazyRowSnapshotCollection;
     }
 
+    public function getDocRowsCount()
+    {
+        return count($this->getDocRows());
+    }
+
     // Addtional attributes
     // =========================
     protected $pictureList;

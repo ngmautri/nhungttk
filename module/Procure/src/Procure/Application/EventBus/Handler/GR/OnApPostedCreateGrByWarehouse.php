@@ -37,11 +37,13 @@ class OnApPostedCreateGrByWarehouse extends AbstractEventHandler
 
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-        $options = new PostCopyFromAPOptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
+
+        $options = new PostCopyFromAPOptions($rootEntity->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
 
         $dto = new GrDTO();
         $cmdHandler = new PostCopyFromAPByWarehouseCmdHandler();
         $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
+        $cmd->setLogger($this->getLogger());
         $cmd->execute();
     }
 

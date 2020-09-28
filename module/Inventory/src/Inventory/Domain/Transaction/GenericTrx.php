@@ -134,7 +134,7 @@ abstract class GenericTrx extends BaseDoc
             return $this;
         }
 
-        if (count($this->getDocRows()) == 0) {
+        if ($this->getDocRowsCount() == 0) {
             $this->addError("Documment is empty. Please add line!");
             return $this;
         }

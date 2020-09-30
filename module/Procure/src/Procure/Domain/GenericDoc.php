@@ -19,6 +19,83 @@ use Doctrine\Common\Collections\ArrayCollection;
 class GenericDoc extends BaseDoc
 {
 
+    /**
+     *
+     * @param GenericRow $row
+     */
+    protected function calculateRowQuantity(GenericRow $row)
+    {
+        if ($row->hasErrors()) {
+            return;
+        }
+
+        try {
+            // $this->convertedDocQuantity = $this->getDocQuantity() * $this->getConversionFactor();
+            // $this->convertedDocUnitPrice = $this->getDocUnitPrice() / $this->getConvertedDocQuantity();
+
+            // actuallly converted doc quantity /price.
+            $row->set = $row->getDocQuantity() * $row->getConversionFactor();
+            $row->unitPrice = $row->getDocUnitPrice() / $row->getConversionFactor();
+
+            $netAmount = $row->getDocUnitPrice() * $row->getDocQuantity();
+
+            $discountAmount = 0;
+            if ($row->getDiscountRate() > 0) {
+                $discountAmount = $netAmount * ($row->getDiscountRate() / 100);
+                $this->setDiscountAmount($discountAmount);
+                $netAmount = $netAmount - $discountAmount;
+            }
+
+            $taxAmount = $netAmount * $row->getTaxRate() / 100;
+            $grosAmount = $netAmount + $taxAmount;
+
+            $row->setNetAmount($netAmount);
+            $row->setTaxAmount($taxAmount);
+            $row->setGrossAmount($grosAmount);
+
+            $convertedPurchaseQuantity = $row->getDocQuantity();
+            $convertedPurchaseUnitPrice = $row->getDocUnitPrice();
+
+            $conversionFactor = $row->getConversionFactor();
+
+            $standardCF = 1;
+
+            if ($row->getStandardConvertFactor() > 0) {
+                $standardCF = $this->getStandardConvertFactor();
+            }
+
+            $prRowConvertFactor = $row->getPrRowConvertFactor();
+
+            if ($row->getPrRow() > 0) {
+                $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+                $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+                $standardCF = $standardCF * $prRowConvertFactor;
+            }
+
+            // quantity /unit price is converted purchase quantity to clear PR
+
+            // $entity->setQuantity($convertedPurchaseQuantity);
+            // $entity->setUnitPrice($convertedPurchaseUnitPrice);
+
+            $convertedStandardQuantity = $row->getQuantity();
+            $convertedStandardUnitPrice = $row->getUnitPrice();
+
+            if ($row->getItem() > 0) {
+                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+            }
+
+            // calculate standard quantity
+            $row->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+            $this->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
+            $row->setConvertedStandardQuantity($convertedStandardQuantity);
+            $row->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+        } catch (\Exception $e) {
+            $row->addError($e->getMessage());
+        }
+    }
+
     public function updateIdentityFrom($snapshot)
     {
         if (! $snapshot instanceof DocSnapshot) {

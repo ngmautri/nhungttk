@@ -8,7 +8,7 @@ use Zend\Escaper\Escaper;
  * PR Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PORowInExcel extends PORowOutputStrategy
 {
@@ -16,7 +16,7 @@ class PORowInExcel extends PORowOutputStrategy
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy::createOutput()
+     * @see \Procure\Application\DTO\Po\Output\PORowOutputStrategy::createOutput()
      */
     public function createOutput($result)
     {

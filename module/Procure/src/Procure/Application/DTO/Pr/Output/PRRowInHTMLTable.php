@@ -1,22 +1,21 @@
 <?php
 namespace Procure\Application\DTO\Pr\Output;
 
-use Zend\Escaper\Escaper;
 
 /**
  * PR Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PRRowInHTMLTable extends PRRowOutputStrategy
 {
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy::createOutput()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\DTO\Pr\Output\PRRowOutputStrategy::createOutput()
+     */
     public function createOutput($result)
     {
         if (count($result) == 0)
@@ -33,13 +32,13 @@ class PRRowInHTMLTable extends PRRowOutputStrategy
 			<td><b>PR<br>Q\'ty</b></td>
 			<td><b>PO<br>Q\'ty</b></td>
             <td><b>Posted<br>PO<br>Q\'ty</b></td>
-                
+
             <td><b>GR<br>Q\'ty</b></td>
             <td><b>Posted<br>GR<br>Q\'ty</b></td>
-                
+
             <td><b>Stock<br>GR<br>Q\'ty</b></td>
             <td><b>Posted<br>Stock<br>GR<br>Q\'ty</b></td>
-                
+
             <td><b>AP<br>Q\'ty</b></td>
             <td><b>Posted <br>AP<br>Q\'ty</b></td>
 			<td><b>Action</b></td>

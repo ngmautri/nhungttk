@@ -94,6 +94,79 @@ class GenericRow extends BaseRow
         $this->setIsPosted(0);
     }
 
+    public function calculateQuantity()
+    {
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        try {
+            // $this->convertedDocQuantity = $this->getDocQuantity() * $this->getConversionFactor();
+            // $this->convertedDocUnitPrice = $this->getDocUnitPrice() / $this->getConvertedDocQuantity();
+
+            // actuallly converted doc quantity /price.
+            $this->quantity = $this->getDocQuantity() * $this->getConversionFactor();
+            $this->unitPrice = $this->getDocUnitPrice() / $this->getConversionFactor();
+
+            $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+
+            $discountAmount = 0;
+            if ($this->getDiscountRate() > 0) {
+                $discountAmount = $netAmount * ($this->getDiscountRate() / 100);
+                $this->setDiscountAmount($discountAmount);
+                $netAmount = $netAmount - $discountAmount;
+            }
+
+            $taxAmount = $netAmount * $this->getTaxRate() / 100;
+            $grosAmount = $netAmount + $taxAmount;
+
+            $this->setNetAmount($netAmount);
+            $this->setTaxAmount($taxAmount);
+            $this->setGrossAmount($grosAmount);
+
+            $convertedPurchaseQuantity = $this->getDocQuantity();
+            $convertedPurchaseUnitPrice = $this->getDocUnitPrice();
+
+            $conversionFactor = $this->getConversionFactor();
+
+            $standardCF = 1;
+
+            if ($this->getStandardConvertFactor() > 0) {
+                $standardCF = $this->getStandardConvertFactor();
+            }
+
+            $prRowConvertFactor = $this->getPrRowConvertFactor();
+
+            if ($this->getPrRow() > 0) {
+                $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+                $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+                $standardCF = $standardCF * $prRowConvertFactor;
+            }
+
+            // quantity /unit price is converted purchase quantity to clear PR
+
+            // $entity->setQuantity($convertedPurchaseQuantity);
+            // $entity->setUnitPrice($convertedPurchaseUnitPrice);
+
+            $convertedStandardQuantity = $this->getQuantity();
+            $convertedStandardUnitPrice = $this->getUnitPrice();
+
+            if ($this->getItem() > 0) {
+                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+            }
+
+            // calculate standard quantity
+            $this->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+            $this->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
+            $this->setConvertedStandardQuantity($convertedStandardQuantity);
+            $this->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+        } catch (\Exception $e) {
+            $this->addError($e->getMessage());
+        }
+    }
+
     /**
      *
      * @return void|\Procure\Domain\GenericRow

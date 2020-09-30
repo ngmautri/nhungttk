@@ -2,13 +2,12 @@
 namespace Procure\Application\DTO\Pr\Output;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Zend\Escaper\Escaper;
 
 /**
  * PR Row Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PRRowInExcel extends PRRowOutputStrategy
 {
@@ -16,7 +15,7 @@ class PRRowInExcel extends PRRowOutputStrategy
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Application\DTO\Ap\Output\APDocRowOutputStrategy::createOutput()
+     * @see \Procure\Application\DTO\Pr\Output\PRRowOutputStrategy::createOutput()
      */
     public function createOutput($result)
     {

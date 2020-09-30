@@ -1,12 +1,11 @@
 <?php
 namespace Inventory\Application\DTO\Transaction;
 
-use Inventory\Application\DTO\Warehouse\Transaction\TrxRowDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxRowDTOAssembler
 {

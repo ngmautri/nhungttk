@@ -12,7 +12,7 @@ use Ramsey;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class FIFOServiceImpl1 extends AbstractService implements FIFOServiceInterface
 {
@@ -355,4 +355,10 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getMovementDate(), $row->ge
 
         $this->getDoctrineEM()->flush();
     }
+    public function calculateCostForReturn(GenericTrx $trx, TrxRow $row)
+    {}
+
+    public function calculateCostOfTrx(GenericTrx $trx)
+    {}
+
 }

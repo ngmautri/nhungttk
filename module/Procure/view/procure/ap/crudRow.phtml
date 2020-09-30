@@ -101,7 +101,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     ?>
 
 
-      
+
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -112,7 +112,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -333,8 +333,10 @@ echo $wh_option;
                                         </select>
                            </div>
                         </div>
+                        <!-- ///// -->
+                        <hr style="margin: 5pt 1pt 5pt 1pt;">
                         <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+                           <label class="control-label col-sm-2" for="inputTag">Doc Quantity:</label>
                            <div class="col-sm-3">
                               <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
 
@@ -363,6 +365,7 @@ echo $wh_option;
                               <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
                            </div>
                         </div>
+                        <!-- ///// -->
                         <hr style="margin: 5pt 1pt 5pt 1pt;">
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
@@ -445,6 +448,8 @@ echo $wh_option;
                             ?>">
                            </div>
                         </div>
+                        <!-- ============================= -->
+                        <hr style="margin: 5pt 1pt 5pt 1pt;">
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2"><?php
                         echo $this->translate("GL Account");
@@ -543,7 +548,7 @@ echo $cost_center_option;
 <!-- /#wrapper -->
 <script type="text/javascript">
 
-    
+
 $('#quantity').bind('change', function() {
    	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
@@ -554,7 +559,7 @@ $('#docUnitPrice').bind('change', function() {
 	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
 	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
    	$('#exw_unit_price').val($('#docUnitPrice').val());
-    
+
 });
 
 $('#tax_rate').bind('change', function() {

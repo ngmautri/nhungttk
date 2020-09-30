@@ -17,11 +17,12 @@ use Inventory\Domain\Warehouse\Factory\WarehouseFactory;
 use Inventory\Infrastructure\Doctrine\WhCmdRepositoryImpl;
 use Procure\Application\Service\FXService;
 use InvalidArgumentException;
+use Application\Application\Service\Shared\FXServiceImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateWarehouseCmdHandler extends AbstractCommandHandler
 {
@@ -41,7 +42,7 @@ class CreateWarehouseCmdHandler extends AbstractCommandHandler
          *
          * @var WarehouseDTO $dto ;
          * @var WhCreateOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -68,7 +69,7 @@ class CreateWarehouseCmdHandler extends AbstractCommandHandler
 
             $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
 
-            $fxService = new FXService();
+            $fxService = new FXServiceImpl();
             $fxService->setDoctrineEM($cmd->getDoctrineEM());
 
             $cmdRepository = new WhCmdRepositoryImpl($cmd->getDoctrineEM());

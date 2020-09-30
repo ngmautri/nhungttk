@@ -86,6 +86,8 @@ final class APFromPO extends GenericAP
         $createdDate = new \DateTime();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->setDocType(ProcureDocType::INVOICE_FROM_PO);
+        $instance->setBaseDocId($sourceObj->getId());
+        $instance->setBaseDocType($sourceObj->getDocType());
         $validationService = ValidatorFactory::createForCopyFromPO($sharedService);
         $instance->validateHeader($validationService->getHeaderValidators());
 

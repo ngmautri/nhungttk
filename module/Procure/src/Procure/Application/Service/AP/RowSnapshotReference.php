@@ -14,7 +14,7 @@ use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowSnapshotReference
 {
@@ -74,7 +74,7 @@ class RowSnapshotReference
                         break;
                     case ItemType::SERVICE_ITEM_TYPE:
                         // throw new \InvalidArgumentException("SERVICE_ITEM_TYPE!");
-                        $snapshot->warehouse = null;
+                        // $snapshot->warehouse = null;
                         break;
                 }
             }

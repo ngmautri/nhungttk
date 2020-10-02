@@ -6,7 +6,7 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
-use Procure\Application\DTO\Ap\ApDetailsDTO;
+use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Domain\AccountPayable\Factory\APFactory;
 use Procure\Domain\AccountPayable\Repository\APCmdRepositoryInterface;
 use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
@@ -22,7 +22,6 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -530,7 +529,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function makeDetailsDTO()
     {
-        $dto = new ApDetailsDTO();
+        $dto = new ApDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }
@@ -541,7 +540,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function makeHeaderDTO()
     {
-        $dto = new ApDetailsDTO();
+        $dto = new ApDTO();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         return $dto;
     }

@@ -1,27 +1,18 @@
 <?php
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Application\Model\AclRoleTable;
-use Application\Service\DepartmentService;
-use Application\Entity\NmtApplicationAclRole;
-use Doctrine\ORM\EntityManager;
-use Application\Entity\NmtApplicationAclUserRole;
-use User\Model\UserTable;
-use Application\Entity\NmtApplicationAclRoleResource;
-use Application\Entity\NmtApplicationDepartment;
+use Application\Controller\Contracts\AbstractGenericController;
 use Application\Entity\NmtApplicationUom;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class UomController extends AbstractActionController
+class UomController extends AbstractGenericController
 {
 
-    protected $doctrineEM;
 
     /*
      * Defaul Action
@@ -40,7 +31,7 @@ class UomController extends AbstractActionController
      *
      * @version 3.0
      * @author Ngmautri
-     *        
+     *
      *         Create new Department
      */
     public function addAction()
@@ -162,14 +153,4 @@ class UomController extends AbstractActionController
         ));
     }
 
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
 }

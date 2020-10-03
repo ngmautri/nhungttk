@@ -13,7 +13,7 @@ class QuantityConvertTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $qty = new Quantity(650, Uom::LITER());
+        $qty = new Quantity(600, Uom::LITER());
         $uomPair = new UomPair(Uom::LITER(), Uom::TANK(), 200);
         $result =  $qty->convert($uomPair);
         echo $qty;

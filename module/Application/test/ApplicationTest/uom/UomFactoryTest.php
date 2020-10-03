@@ -16,13 +16,12 @@ class UomFactoryTest extends PHPUnit_Framework_TestCase
     {
 
         //$qtyUom= new QuantityUomGroup();
-        $collection = new UomGroups();
+        $collection = new Uoms();
 
         /**
          * @var Uom $um ;
          */
-        $um = $collection->last();
-        \var_dump($um);
+        \var_dump($collection->toArray());
     }
 
 }

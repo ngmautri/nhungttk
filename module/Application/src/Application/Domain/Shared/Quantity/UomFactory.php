@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Domain\Shared\Uom;
 
 /**
@@ -12,6 +11,7 @@ namespace Application\Domain\Shared\Uom;
  */
 trait UomFactory
 {
+
     /**
      *
      * @param string $method
@@ -19,7 +19,7 @@ trait UomFactory
      *
      * @throws \InvalidArgumentException If amount is not integer(ish)
      */
-    public static function __callStatic($method)
+    public static function __callStatic($method, $arguments)
     {
         return new Uom($method);
     }

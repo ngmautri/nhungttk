@@ -1,5 +1,5 @@
 <?php
-namespace Application\Domain\Shared\Quantity\Contracts;
+namespace Application\Domain\Shared\Calculator\Contracts;
 
 /**
  *

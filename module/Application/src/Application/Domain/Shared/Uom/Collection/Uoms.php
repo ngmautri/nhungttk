@@ -1,10 +1,9 @@
 <?php
 namespace Application\Domain\Shared\Uom\Collection;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Uom\Contracts\UomsInterface;
 use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Shared\Uom\UomSnapshot;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Implement this to provide a list of currencies.
@@ -47,5 +46,13 @@ final class Uoms extends ArrayCollection
         }
 
     }
+    /**
+     * @return mixed
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
 
 }

@@ -10,34 +10,33 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class QuantityUomGroup extends AbstractUomGroup implements \JsonSerializable
+final class LengthUomGroup extends AbstractUomGroup implements \JsonSerializable
 {
 
     public function __construct()
     {
+        $this->groupName = DefaultUomGroup::LENGHT;
         $this->members = new ArrayCollection();
 
-        $this->groupName = DefaultUomGroup::QUANTITY;
-
-        $baseUom = Uom::EACH();
+        $baseUom = Uom::MILILITER();
         $this->baseUom = $baseUom;
 
-        $m = new UomPair($baseUom, $this->baseUom, 1, 'Each');
+        $m = new UomPair($baseUom, $this->baseUom, 1, 'mm');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::PIECES(), 1, 'pcs');
+        $m = new UomPair($baseUom, Uom::CENTIMETER(), 100, 'cm');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::PAIR(), 2, 'pair');
+        $m = new UomPair($baseUom, Uom::METER(), 1000, 'm');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::DOZEN(), 12, 'dozen');
+        $m = new UomPair($baseUom, Uom::INCH(), 25.4, 'in');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::BOX(), 25, 'Box of 25');
+        $m = new UomPair($baseUom, Uom::YARD(), 914.4, 'yd');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::BOX(), 100, 'Box of 100');
+        $m = new UomPair($baseUom, Uom::FEET(), 304.8, 'ft');
         $this->members->add($m);
 
         return $this;

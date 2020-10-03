@@ -1,7 +1,8 @@
 <?php
-namespace Application\Domain\Shared\Quantity\Calculator;
+namespace Application\Domain\Shared\Calculator;
 
-use Application\Domain\Shared\Quantity\Contracts\Calculator;
+
+use Application\Domain\Shared\Calculator\Contracts\Calculator;
 use Webmozart\Assert\Assert;
 
 final class DefaultCalculator implements Calculator

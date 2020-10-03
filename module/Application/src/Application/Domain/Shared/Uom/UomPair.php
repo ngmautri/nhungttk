@@ -1,6 +1,8 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
+use Webmozart\Assert\Assert;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -24,8 +26,10 @@ final class UomPair implements \JsonSerializable
      * @param int $convertFactor
      * @param string $description
      */
-    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description)
+    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description=null)
     {
+        Assert::numeric($convertFactor);
+
         $this->baseUom = $baseUom;
         $this->counterUom = $counterUom;
         $this->convertFactor = $convertFactor;

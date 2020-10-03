@@ -13,7 +13,7 @@ class UomTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         $uoms = new Uoms();
-        $uoms = $uoms->loadUomsFromFile();
+        $uoms = $uoms->getInput();
         $methodBuffer = '';
 
         $buffer = <<<PHP
@@ -25,17 +25,20 @@ namespace Application\Domain\Shared\Uom;
  * This is a automatically generated file.
  *
 PHPDOC
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  */
 trait UomFactory
 {
     /**
      *
      * @param string \$method
+       @param string \$arguments
      * @return Uom
      *
      * @throws \InvalidArgumentException If amount is not integer(ish)
      */
-    public static function __callStatic(\$method)
+    public static function __callStatic(\$method, \$arguments)
     {
         return new Uom(\$method);
     }
@@ -48,8 +51,9 @@ PHP;
         }
 
         $buffer = str_replace('PHPDOC', rtrim($methodBuffer), $buffer);
+        $root = realpath(dirname(dirname(dirname(dirname(__FILE__)))));
 
-        file_put_contents(__DIR__ . '/UomFactory.php', $buffer);
-
+        $file = $root . '/src/Application/Domain/Shared/Uom/UomFactory.php';
+        file_put_contents($file, $buffer);
     }
 }

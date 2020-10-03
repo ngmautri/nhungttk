@@ -103,4 +103,5 @@ final class Uom implements \JsonSerializable
     {
         return $this->symbol;
     }
+
 }

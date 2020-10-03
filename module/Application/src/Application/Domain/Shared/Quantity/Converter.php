@@ -10,6 +10,7 @@ use Application\Domain\Shared\Uom\UomPair;
  */
 final class Converter
 {
+
     /**
      *
      * @param Quantity $qty
@@ -23,11 +24,16 @@ final class Converter
         }
 
         if ($qty->getUom() == $uomPair->getBaseUom()) {
-            return $qty;
+
+            if ($qty->getAmount() % $uomPair->getConvertFactor() == 0) {
+                return new Quantity($qty->getAmount() / $uomPair->getConvertFactor(), $uomPair->getCounterUom());
+            } else {
+                return $qty;
+            }
         }
 
         if ($qty->getUom() == $uomPair->getCounterUom()) {
-            return new Quantity($qty->getAmount() * $uomPair->getConvertFactor(), $uomPair->getCounterUom());
+            return new Quantity($qty->getAmount() * $uomPair->getConvertFactor(), $uomPair->getBaseUom());
         }
 
         throw new \RuntimeException("Can not convert quantity");

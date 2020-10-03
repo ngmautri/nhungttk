@@ -2,15 +2,15 @@
 namespace Application\Domain\Shared\Uom\Collection;
 
 use Application\Domain\Shared\Uom\QuantityUomGroup;
-use Doctrine\Common\Collections\ArrayCollection;
 use Application\Domain\Shared\Uom\VolumnUomGroup;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Implement this to provide a list of currencies.
  *
  * @author Mathias Verraes
  */
-Final Class UomGroups extends ArrayCollection
+Final Class QtyGroups extends ArrayCollection
 {
 
 

@@ -1,36 +1,35 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Application\Domain\Shared\Uom\Contracts\AbstractUomGroup;
 use Application\Domain\Shared\Uom\Contracts\DefaultUomGroup;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class VolumnUomGroup extends AbstractUomGroup implements \JsonSerializable
+final class TimeUomGroup extends AbstractUomGroup implements \JsonSerializable
 {
 
     public function __construct()
     {
-        $this->groupName = DefaultUomGroup::VOLUMN;
+        $this->groupName = DefaultUomGroup::TIME;
         $this->members = new ArrayCollection();
 
-        $baseUom = Uom::CUBICMETER();
+        $baseUom = Uom::SECOND();
         $this->baseUom = $baseUom;
 
-        $m = new UomPair($baseUom, $this->baseUom, 1, 'Each');
+        $m = new UomPair($baseUom, $this->baseUom, 1, 'second');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::BOX(), 25, 'Box of 25');
+        $m = new UomPair($baseUom, Uom::MINUTE(), 60, 'minute');
         $this->members->add($m);
 
-        $m = new UomPair($baseUom, Uom::BOX(), 100, 'Box of 100');
+        $m = new UomPair($baseUom, Uom::HOUR(), 3600, 'hour');
         $this->members->add($m);
 
         return $this;
     }
-
 }

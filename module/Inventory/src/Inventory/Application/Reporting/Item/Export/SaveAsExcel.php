@@ -53,7 +53,10 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
             "Mfg S/N",
             "Type",
             "Group",
-            "HS Code"
+            "HS Code",
+            "Std.Uom",
+            "Stock.Uom",
+            "Purchase.Uom"
         );
 
         $n = 0;
@@ -86,7 +89,10 @@ class SaveAsExcel extends AbstractSaveAsSpreadsheet
                 $row->manufacturerSerial,
                 $row->itemTypeId,
                 $row->itemGroup,
-                $row->hsCode
+                $row->hsCode,
+                $row->standardUom,
+                $row->stockUom,
+                $row->purchaseUom,
             );
 
             $n = 0;

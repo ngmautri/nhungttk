@@ -9,7 +9,6 @@ use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Inventory\Application\Command\Item\Options\CreateItemOptions;
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Domain\Exception\OperationFailedException;
 use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Domain\Service\ItemPostingService;
 use Inventory\Domain\Service\SharedService;
@@ -19,7 +18,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateCmdHandler extends AbstractCommandHandler
 {
@@ -39,7 +38,7 @@ class CreateCmdHandler extends AbstractCommandHandler
          *
          * @var ItemDTO $dto ;
          * @var CreateItemOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -77,7 +76,7 @@ class CreateCmdHandler extends AbstractCommandHandler
             $notification->addSuccess($m);
             $dto->setNotification($notification);
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

@@ -177,7 +177,7 @@ abstract class GenericPR extends BaseDoc
      */
     public function updateRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {
-        if ($this->getDocStatus() == Constants::POSTED) {
+        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
             throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
         }
 

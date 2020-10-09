@@ -60,8 +60,8 @@ final class DefaultCalculator implements Calculator
         Assert::numeric($amount);
         Assert::numeric($multiplier);
 
-        $result = $amount * $multiplier;
-        $this->assertIntegerBounds($result);
+        (int) $result = $amount * $multiplier;
+        //$this->assertIntegerBounds($result);
 
         return $result;
     }

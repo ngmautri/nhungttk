@@ -10,7 +10,7 @@ use Inventory\Domain\Transaction\TrxRowSnapshot;
  * Director in builder pattern.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 {
@@ -43,15 +43,18 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
         $headerValues = array(
             "#",
+            "id",
+            "Type",
             "Ref.",
             "Date",
             "itemSKU",
             "SysNo.",
+            "Item Id",
             "ItemName",
             "Flow",
             "WH",
             "WH Loc",
-            "quantity",
+            "Qty",
             "Cost",
             "UP",
             "prNumber",
@@ -80,10 +83,12 @@ class RowsSaveAsExcel extends AbstractRowsSaveAsSpreadsheet
 
             $columnValues = array(
                 $i,
-                $row->sysNumber,
+                '',
                 $row->transactionType,
+                $row->sysNumber,
                 $row->docDate,
                 $row->itemSKU,
+                $row->item,
                 $row->itemSysNumber,
                 $row->itemName,
                 $row->flow,

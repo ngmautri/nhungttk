@@ -6,6 +6,8 @@ use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Shared\Uom\UomPair;
 use Money\Money;
 use PHPUnit_Framework_TestCase;
+use Money\CurrencyPair;
+use Money\Currency;
 
 
 class PriceTest extends PHPUnit_Framework_TestCase
@@ -16,36 +18,44 @@ class PriceTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $p = Money::LAK(7500000);
-        $q = new Quantity(5, Uom::box());
+        echo PHP_INT_MAX;
+        echo "\n===\n";
+
+        //echo (7500000*9900);
+        $p = Money::USD('1573');
+        $q = new Quantity(1, Uom::BOX());
         $price = new Price($p, $q);
         echo $price . "\n";
-
-
-        echo "\n=== UP\n";
-
+        echo "\n===UP \n";
         echo $price->getUnitPrice();
         echo "\n===\n";
 
-        $p = Money::LAK(15000000);
-        $q = new Quantity(1, Uom::BOX());
+        $uomPair = new UomPair(Uom::EACH(), Uom::box(),25);
 
-        $price1 = new Price($p, $q);
-        echo $price1;
-        // \var_dump($price->compare($price1));
+        echo $uomPair->getPairName();
+        $result = $price->convertQuantiy($uomPair);
 
-        \var_dump($price->equals($price1));
 
-       // echo ($price->multiply(12));
         echo "\n===\n";
 
-        $uomPair = new UomPair(Uom::EACH(), Uom::box(),26);
-        $result = $price->convert($uomPair);
-        echo "\n===\n";
         echo $result;
 
         echo "\n===\n";
-
         echo $result->getUnitPrice();
+
+        echo "\n===\n";
+
+
+        $currencyPair = new CurrencyPair(new Currency('USD'), new Currency('LAK'), 9900);
+        $result1 = $result->convertCurrency($currencyPair);
+        echo "\n===\n";
+
+
+
+        echo $result1;
+        echo "\n===\n";
+        echo $result1->getUnitPrice();
+
+
     }
 }

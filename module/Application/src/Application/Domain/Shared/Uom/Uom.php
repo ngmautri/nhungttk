@@ -16,6 +16,8 @@ final class Uom implements \JsonSerializable
 
     private $symbol;
 
+    private $alias;
+
     /**
      *
      * @param UomSnapshot $snapshot
@@ -26,6 +28,7 @@ final class Uom implements \JsonSerializable
         $instance = new self($snapshot->getUomName());
         $instance->symbol = $snapshot->getSymbol();
         $instance->uomCode = $snapshot->getUomName();
+        $instance->alias = $snapshot->getAlias();
         return $instance;
     }
 
@@ -63,7 +66,7 @@ final class Uom implements \JsonSerializable
      */
     public function __toString()
     {
-        return $this->code;
+        return $this->uomName;
     }
 
     /**
@@ -74,7 +77,7 @@ final class Uom implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->code;
+        return $this->uomName;
     }
 
     /**
@@ -103,5 +106,13 @@ final class Uom implements \JsonSerializable
     {
         return $this->symbol;
     }
+    /**
+     * @return mixed
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
 
 }

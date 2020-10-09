@@ -2,11 +2,11 @@
 namespace ProcureTest\GR\Command;
 
 use Doctrine\ORM\EntityManager;
+use Inventory\Application\Command\GenericCmd;
 use ProcureTest\Bootstrap;
 use Procure\Application\Command\TransactionalCmdHandlerDecoratorTest;
 use Procure\Application\Command\AP\ReverseCmdHandler;
 use Procure\Application\Command\AP\Options\ApReverseOptions;
-use Procure\Application\Command\Ap\ReverseCmd;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use PHPUnit_Framework_TestCase;
@@ -45,7 +45,7 @@ class PostCmdTest extends PHPUnit_Framework_TestCase
 
             $cmdHandler = new ReverseCmdHandler();
             $cmdHandlerDecorator = new TransactionalCmdHandlerDecoratorTest($cmdHandler);
-            $cmd = new ReverseCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCmd($doctrineEM, $dto, $options, $cmdHandlerDecorator);
             $cmd->execute();
             var_dump($dto->getNotification());
             var_dump($rootEntity->getRecordedEvents());

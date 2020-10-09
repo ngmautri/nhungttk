@@ -5,6 +5,7 @@ use Application\Domain\Shared\Calculator\DefaultCalculator;
 use Application\Domain\Shared\Calculator\Contracts\Calculator;
 use Application\Domain\Shared\Quantity\Quantity;
 use Application\Domain\Shared\Uom\UomPair;
+use Money\CurrencyPair;
 use Money\Money;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
@@ -48,17 +49,32 @@ final class Price implements \jsonserializable
         $this->quantity = $quantity;
     }
 
-    /**
-     *
-     * @param UomPair $uomPair
-     * @return void|\Application\Domain\Shared\Quantity\Quantity
-     */
-    public function convert(UomPair $uomPair)
+   /**
+    *
+    * @param UomPair $uomPair
+    * @return \Application\Domain\Shared\Price\Price
+    */
+    public function convertQuantiy(UomPair $uomPair)
     {
         $qty = $this->getQuantity()->convert($uomPair);
-        $amount = $this->getPriceMoney()->getAmount();
+        return new self($this->getPriceMoney(), $qty);
+    }
 
-        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $qty);
+    /**
+     *
+     * @param CurrencyPair $currencyPair
+     * @throws \RuntimeException
+     * @return \Application\Domain\Shared\Price\Price
+     */
+    public function convertCurrency(CurrencyPair $currencyPair)
+    {
+        if ($currencyPair->getBaseCurrency() == $this->getPriceMoney()->getCurrency()) {
+
+            $m = $this->getPriceMoney()->multiply($currencyPair->getConversionRatio());
+            return new self(new Money($m->getAmount(), $currencyPair->getCounterCurrency()), $this->getQuantity());
+        }
+
+        throw new \RuntimeException('can not conver currency');
     }
 
     /**
@@ -73,11 +89,12 @@ final class Price implements \jsonserializable
 
         $qty = new Quantity(1, $this->getQuantity()->getUom());
         $a = $this->getQuantity()->getAmount();
-        $m= $this->divide($a);
+        $m = $this->divideMoney($a);
         return new self($m->getPriceMoney(), $qty);
     }
 
     /**
+     * Add money and quantity
      *
      * @param Price ...$addends
      * @return \Application\Domain\Shared\Price\Price
@@ -87,82 +104,102 @@ final class Price implements \jsonserializable
         $calculator = $this->getCalculator();
 
         foreach ($addends as $addend) {
-            $this->assertSameQuantity($addend);
+            $this->assertSameUnit($addend);
             $this->assertSameCurrency($addend);
 
             $a1 = $this->getPriceMoney()->getAmount();
             $a2 = $addend->getPriceMoney()->getAmount();
             $amount = $calculator->add($a1, $a2);
+
+            $qty = $this->getQuantity()->add($addend->getQuantity());
         }
 
-        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $this->getQuantity());
+        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $qty);
     }
 
     /**
-     *
-     * @param Price ...$subtrahends
-     * @return \Application\Domain\Shared\Price\Price
-     */
-    public function subtract(Price ...$subtrahends)
-    {
-        $calculator = $this->getCalculator();
-
-        foreach ($subtrahends as $subtrahend) {
-            $this->assertSameQuantity($subtrahend);
-            $this->assertSameCurrency($subtrahend);
-
-            $a1 = $this->getPriceMoney()->getAmount();
-            $a2 = $subtrahend->getPriceMoney()->getAmount();
-            $amount = $calculator->subtract($a1, $a2);
-
-            Assert::greaterThan($amount, 0, 'Price can not be negative!');
-        }
-
-        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $this->getQuantity());
-    }
-
-    /**
+     * Multiply money and quantity
      *
      * @param int $multiplier
      * @param string $roundingMode
-     * @return \Application\Domain\Shared\Quantity\Quantity
+     * @return \Application\Domain\Shared\Price\Price
      */
     public function multiply($multiplier, $roundingMode = null)
     {
         Assert::greaterThan($multiplier, 0, 'Multipler must greater than zero');
-        $amount = $this->getPriceMoney()->getAmount();
-        $amount = $this->getCalculator()->multiply($amount, $multiplier);
+        $a1 = $this->getPriceMoney();
+        $m = $a1->multiply($multiplier);
 
         $qty = $this->getQuantity()->multiply($multiplier);
 
-        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $qty);
-    }
-
-    public function totalPriceFor($multiplier, $roundingMode = null)
-    {
-        Assert::greaterThan($multiplier, 0, 'Multipler must greater than zero');
-        $amount = $this->getPriceMoney()->getAmount();
-        $amount = $this->getCalculator()->multiply($amount, $multiplier);
-
-        $qty = $this->getQuantity()->multiply($multiplier);
-
-        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $qty);
+        return new self($m, $qty);
     }
 
     /**
+     * Add money, Same quantity
+     *
+     * @param Money ...$addends
+     * @return \Application\Domain\Shared\Price\Price
+     */
+    public function addMoney(Money ...$addends)
+    {
+        foreach ($addends as $addend) {
+            $a1 = $this->getPriceMoney();
+            $m = $a1->add($addend);
+        }
+
+        return new self($m, $this->getQuantity());
+    }
+
+    /**
+     * Subtruct money, Same quantity
+     *
+     * @param Price ...$subtrahends
+     * @return \Application\Domain\Shared\Price\Price
+     */
+    public function subtractMoney(Money ...$subtrahends)
+    {
+        foreach ($subtrahends as $subtrahend) {
+            $a1 = $this->getPriceMoney();
+            $m = $a1->subtract($subtrahend);
+
+            Assert::greaterThan($m->getAmount(), 0, 'Price can not be negative!');
+        }
+
+        return new self($m, $this->getQuantity());
+    }
+
+    /**
+     * Multily money, Same quantity
+     *
+     * @param int $multiplier
+     * @param string $roundingMode
+     * @return \Application\Domain\Shared\Price\Price
+     */
+    public function multiplyMoney($multiplier, $roundingMode = null)
+    {
+        Assert::greaterThan($multiplier, 0, 'Multipler must greater than zero');
+        $a1 = $this->getPriceMoney();
+        $m = $a1->multiply($multiplier);
+        return new self($m, $this->getQuantity());
+    }
+
+    /**
+     * Divide money, Same quantity
      *
      * @param int $divisor
      * @param string $roundingMode
      * @return \Application\Domain\Shared\Price\Price
      */
-    public function divide($divisor, $roundingMode = null)
+    public function divideMoney($divisor, $roundingMode = null)
     {
         Assert::greaterThan($divisor, 0, 'Division by zero');
-        $amount = $this->getPriceMoney()->getAmount();
-        $amount = $this->getCalculator()->divide($amount, $divisor);
+        $a1 = $this->getPriceMoney();
+        $m = $a1->divide($divisor);
+
         $qty = $this->getQuantity();
 
-        return new self(new Money($amount, $this->getPriceMoney()->getCurrency()), $qty);
+        return new self($m, $qty);
     }
 
     /**
@@ -258,6 +295,15 @@ final class Price implements \jsonserializable
     private function assertSameCurrency(Price $other)
     {
         if (! $this->isSameCurrency($other)) {
+            throw new \InvalidArgumentException('Currency must be identical');
+        }
+    }
+
+    private function assertSameMoneyCurrency(Money $other)
+    {
+        if (! $this->getPriceMoney()
+            ->getCurrency()
+            ->equals($other->getCurrency())) {
             throw new \InvalidArgumentException('Currency must be identical');
         }
     }

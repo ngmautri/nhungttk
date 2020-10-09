@@ -1,8 +1,8 @@
 <?php
 namespace Application\Domain\Shared\Calculator;
 
-
 use Application\Domain\Shared\Calculator\Contracts\Calculator;
+use Money\Number;
 use Webmozart\Assert\Assert;
 
 final class DefaultCalculator implements Calculator
@@ -30,8 +30,7 @@ final class DefaultCalculator implements Calculator
         $result = $amount - $subtrahend;
 
         $this->assertIntegerBounds($result);
-
-        return (string) $result;
+        return $result;
     }
 
     /**
@@ -47,7 +46,6 @@ final class DefaultCalculator implements Calculator
         $result = $amount / $divisor;
 
         $this->assertIntegerBounds($result);
-
         return $result;
     }
 
@@ -63,7 +61,6 @@ final class DefaultCalculator implements Calculator
 
         $result = $amount * $multiplier;
         $this->assertIntegerBounds($result);
-
         return $result;
     }
 
@@ -102,6 +99,7 @@ final class DefaultCalculator implements Calculator
      */
     private function assertIntegerBounds($amount)
     {
+        \var_dump($amount);
         if ($amount > PHP_INT_MAX) {
             throw new \OverflowException('the maximum allowed integer (PHP_INT_MAX) overflowed ');
         } elseif ($amount < ~ PHP_INT_MAX) {

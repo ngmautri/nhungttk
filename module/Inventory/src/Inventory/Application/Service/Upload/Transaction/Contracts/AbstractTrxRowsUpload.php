@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Application\Service\Upload\Transaction\Contracts;
 
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Service\AbstractService;
 use Inventory\Application\Service\Item\FIFOServiceImpl;
@@ -10,12 +11,11 @@ use Inventory\Domain\Service\TrxPostingService;
 use Inventory\Domain\Service\TrxValuationService;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
-use Procure\Application\Service\FXService;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractTrxRowsUpload extends AbstractService implements TrxRowsUploadInterface
 {
@@ -37,7 +37,7 @@ abstract class AbstractTrxRowsUpload extends AbstractService implements TrxRowsU
     {
         $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
 
-        $fxService = new FXService();
+        $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($this->getDoctrineEM());
 
         $cmdRepository = new TrxCmdRepositoryImpl($this->getDoctrineEM());
@@ -83,4 +83,3 @@ abstract class AbstractTrxRowsUpload extends AbstractService implements TrxRowsU
         }
     }
 }
-    

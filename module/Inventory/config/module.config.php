@@ -66,8 +66,8 @@ use Inventory\Application\Service\Upload\ItemSerialUploadService;
 use Inventory\Application\Service\Upload\ItemSerialUploadServiceFactory;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUpload;
 use Inventory\Application\Service\Upload\HSCode\HSCodeUploadServiceFactory;
-use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
-use Inventory\Application\Service\Upload\Transaction\TrxRowsUploadFactory;
+use Inventory\Application\Service\Upload\Item\UploadItem;
+use Inventory\Application\Service\Upload\Item\UploadItemFactory;
 use Inventory\Infrastructure\Persistence\Doctrine\ItemReportRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Doctrine\TrxReportRepositoryImpl;
 use Inventory\Infrastructure\Persistence\Doctrine\Factory\ItemReportRepositoryImplFactory;
@@ -315,7 +315,7 @@ return array(
             HSCodeTree::class => HSCodeTreeFactory::class,
             MfgCatalogTree::class => MfgCatalogTreeFactory::class,
             TrxService::class => TrxServiceFactory::class,
-            TrxRowsUpload::class => TrxRowsUploadFactory::class,
+            UploadItem::class => UploadItemFactory::class,
 
             // Reporting
             ItemReporter::class => ItemReporterFactory::class,

@@ -14,6 +14,9 @@ final class UomSnapshot
     private $uomName;
 
     private $symbol;
+
+    private $alias;
+
     /**
      * @return mixed
      */
@@ -61,6 +64,22 @@ final class UomSnapshot
     {
         $this->symbol = $symbol;
     }
+    /**
+     * @return mixed
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param mixed $alias
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
+
 
 
   }

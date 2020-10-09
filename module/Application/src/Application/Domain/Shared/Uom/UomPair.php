@@ -11,6 +11,8 @@ use Webmozart\Assert\Assert;
 final class UomPair implements \JsonSerializable
 {
 
+    private $pairName;
+
     private $baseUom;
 
     private $counterUom;
@@ -26,14 +28,22 @@ final class UomPair implements \JsonSerializable
      * @param int $convertFactor
      * @param string $description
      */
-    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description=null)
+    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description = null)
     {
         Assert::numeric($convertFactor);
 
         $this->baseUom = $baseUom;
         $this->counterUom = $counterUom;
+
         $this->convertFactor = $convertFactor;
         $this->description = $description;
+
+        $this->pairName = \sprintf("%s", $this->baseUom);
+        if(!$baseUom->equals($counterUom)){
+            $this->pairName = \sprintf("%s (%s %s)",  $this->counterUom,$this->convertFactor, $this->baseUom) ;
+        }
+
+
     }
 
     /**
@@ -47,7 +57,13 @@ final class UomPair implements \JsonSerializable
     }
 
     public function jsonSerialize()
-    {}
+    {
+        return [
+            'baseUom' => $this->baseUom,
+            'counterUom' => $this->counterUom,
+            'convertFactor' => $this->convertFactor
+        ];
+    }
 
     /**
      *
@@ -84,4 +100,12 @@ final class UomPair implements \JsonSerializable
     {
         return $this->description;
     }
+    /**
+     * @return string
+     */
+    public function getPairName()
+    {
+        return $this->pairName;
+    }
+
 }

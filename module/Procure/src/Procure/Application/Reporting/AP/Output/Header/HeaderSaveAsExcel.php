@@ -17,7 +17,7 @@ class HeaderSaveAsExcel extends AbstractHeadersSaveAsSpreadsheet
 
     /**
      *
-     * @param unknown $headers
+     * @param array $headers
      * @param AbstractHeaderFormatter $formatter
      * @return NULL
      */

@@ -1,5 +1,5 @@
 <?php
-namespace ApplicationTest\uom;
+namespace ApplicationTest\UomTest;
 
 use Application\Domain\Shared\Uom\QuantityUomGroup;
 use Application\Domain\Shared\Uom\Uom;

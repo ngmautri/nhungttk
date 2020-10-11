@@ -1,5 +1,5 @@
 <?php
-namespace ApplicationTest\oom;
+namespace ApplicationTest\UomTest;
 
 use Application\Application\Contracts\GenericSnapshotAssembler;
 use Application\Domain\Shared\Uom\UomSnapshot;

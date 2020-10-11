@@ -8,7 +8,7 @@ use Inventory\Domain\Item\ItemSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemMapper
 {

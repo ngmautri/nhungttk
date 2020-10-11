@@ -1,5 +1,5 @@
 <?php
-namespace ApplicationTest\Attachment;
+namespace ApplicationTest\UomTest;
 
 use Application\Domain\Shared\Uom\Collection\Uoms;
 use PHPUnit_Framework_TestCase;

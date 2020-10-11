@@ -1,5 +1,5 @@
 <?php
-namespace ApplicationTest\uom;
+namespace ApplicationTest\UomTest;
 
 use Application\Application\Contracts\GenericDTOAssembler;
 use Application\Entity\NmtApplicationUom;
@@ -18,7 +18,7 @@ class UomDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = GenericDTOAssembler::createStoreMapping(NmtApplicationUom::class);
+            $result = GenericDTOAssembler::createGetMapping(NmtApplicationUom::class);
             \var_dump(($result));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

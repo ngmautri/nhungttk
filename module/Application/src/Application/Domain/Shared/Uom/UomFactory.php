@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Domain\Shared\Uom;
 
 /**
@@ -33,15 +32,16 @@ namespace Application\Domain\Shared\Uom;
  * @method static Uom TANK()
  * @method static Uom TON()
  * @method static Uom YARD()
- * 
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  */
 trait UomFactory
 {
+
     /**
      *
      * @param string $method
-       @param string $arguments
+     * @param string $arguments
      * @return Uom
      *
      * @throws \InvalidArgumentException If amount is not integer(ish)

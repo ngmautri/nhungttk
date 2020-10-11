@@ -2,11 +2,12 @@
 namespace Inventory\Domain\Item\Factory;
 
 use Inventory\Domain\Item\FixedAssetItem;
+use Inventory\Domain\Item\GenericItem;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class FixedAssetItemFactory extends AbstractItemFactory
 {

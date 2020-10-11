@@ -5,11 +5,12 @@ use Application\Domain\Shared\AbstractEntity;
 use Application\Domain\Shared\AggregateRootInterface;
 use Application\Domain\Shared\SnapshotAssembler;
 use Inventory\Application\DTO\Item\ItemAssembler;
+use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractItem extends AbstractEntity implements AggregateRootInterface
 {

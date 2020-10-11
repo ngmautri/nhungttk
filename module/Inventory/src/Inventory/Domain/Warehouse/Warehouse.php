@@ -3,13 +3,11 @@ namespace Inventory\Domain\Warehouse;
 
 use Application\Notification;
 use Inventory\Domain\Warehouse\Location\GenericLocation;
-use Inventory\Domain\Warehouse\Validation\GeneralLocationValidation;
-use Inventory\Domain\Warehouse\Validation\GeneralWarehouseValidation;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Warehouse
 {
@@ -82,40 +80,8 @@ class Warehouse
         return $notification;
     }
 
-    /**
-     *
-     * @param Notification $notification
-     */
-    private function generalHeaderValidation(Notification $notification = null)
-    {
-        $validator = new GeneralWarehouseValidation();
-        return $validator->doValidation($notification, $this);
-    }
 
-    /**
-     *
-     * @param Notification $notification
-     */
-    private function generalLocationValidation(GenericLocation $location, Notification $notification = null)
-    {
-        $validator = new GeneralLocationValidation();
-        return $validator->doValidation($this, $location, $notification);
-    }
 
-    /**
-     *
-     * @param Notification $notification
-     */
-    private function defaultLocationValidation(Notification $notification = null)
-    {
-        if ($notification == null)
-            $notification = new Notification();
-
-        if ($this->rootLocation == null || $this->returnLocation == null || $this->scrapLocation == null)
-            $notification->addError("Default location (root, return, scrap) not set for this warehouse!");
-
-        return $notification;
-    }
 
     /**
      *

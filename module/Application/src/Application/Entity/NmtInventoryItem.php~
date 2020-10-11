@@ -526,6 +526,13 @@ class NmtInventoryItem
     private $standardWidth;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uom_group", type="string", length=45, nullable=true)
+     */
+    private $uomGroup;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

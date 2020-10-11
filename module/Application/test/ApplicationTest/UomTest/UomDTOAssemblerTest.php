@@ -1,12 +1,14 @@
 <?php
-namespace InventoryTest\Item;
+namespace ApplicationTest\uom;
 
 use Application\Application\Contracts\GenericDTOAssembler;
-use Application\Entity\NmtInventoryItem;
+use Application\Entity\NmtApplicationUom;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
+use Application\Entity\AppUomGroup;
+use Application\Entity\AppUomGroupMember;
 
-class ItemDTOAssemblerTest extends PHPUnit_Framework_TestCase
+class UomDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
@@ -16,10 +18,8 @@ class ItemDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            //$result = ItemDTOAssembler::createGetMapping();
-            $result = GenericDTOAssembler::createGetMapping(NmtInventoryItem::class);
-
-            //var_dump($result);
+            $result = GenericDTOAssembler::createStoreMapping(NmtApplicationUom::class);
+            \var_dump(($result));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

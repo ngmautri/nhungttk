@@ -2,13 +2,14 @@
 namespace Inventory\Domain\Item\Factory;
 
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Item\ItemType;
+use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractItemFactory
 {

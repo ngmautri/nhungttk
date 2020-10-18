@@ -6,6 +6,7 @@ use Application\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 use Application\Infrastructure\Persistence\Contracts\UomQueryRepositoryInterface;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Application\Infrastructure\Mapper\UomMapper;
 
 /**
  *
@@ -23,9 +24,11 @@ class UomQueryRepositoryImpl extends AbstractDoctrineRepository implements UomQu
 
         $sql = "SELECT * FROM nmt_application_uom WHERE 1";
 
+
+
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryAssociation', 'nmt_application_uom');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtApplicationUom', 'nmt_application_uom');
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             return $query->getResult();
         } catch (NoResultException $e) {

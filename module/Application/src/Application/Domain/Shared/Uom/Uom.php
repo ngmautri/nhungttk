@@ -1,12 +1,17 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
+use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\SnapshotAssembler;
+use Procure\Domain\AccountPayable\APSnapshot;
+use Webmozart\Assert\Assert;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class Uom implements \JsonSerializable
+final class Uom extends AbstractValueObject implements \JsonSerializable
 {
     use UomFactory;
 
@@ -32,32 +37,22 @@ final class Uom implements \JsonSerializable
         return $instance;
     }
 
+    public function makeSnapshot()
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new UomSnapshot());
+    }
     /**
      *
      * @param string $uomName
      * @throws \InvalidArgumentException
      */
-    public function __construct($uomName)
+    public function __construct($uomName, $uomCode=null)
     {
-        if (! is_string($uomName)) {
-            throw new \InvalidArgumentException('Uom code should be string');
-        }
+        Assert::stringNotEmpty($uomName);
 
-        if ($uomName === '') {
-            throw new \InvalidArgumentException('Uom code should not be empty string');
-        }
-
-        $this->uomName = \strtolower($uomName);
-    }
-
-    /**
-     *
-     * @param Uom $other
-     * @return boolean
-     */
-    public function equals(Uom $other)
-    {
-        return $this->uomName == $other->uomName;
+        // ignore case incentive.
+        $this->uomName = trim(\strtolower($uomName));
+        $this->uomCode = trim(\strtolower($uomCode));
     }
 
     /**
@@ -106,7 +101,9 @@ final class Uom implements \JsonSerializable
     {
         return $this->symbol;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getAlias()
@@ -114,5 +111,15 @@ final class Uom implements \JsonSerializable
         return $this->alias;
     }
 
-
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\AbstractValueObject::getAttributesToCompare()
+     */
+    public function getAttributesToCompare()
+    {
+        return [
+            $this->uomName
+        ];
+    }
 }

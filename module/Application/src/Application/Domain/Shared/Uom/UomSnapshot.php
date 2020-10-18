@@ -8,16 +8,32 @@ namespace Application\Domain\Shared\Uom;
  */
 final class UomSnapshot
 {
+    public $id;
 
-    private $uomCode;
+    public $uomCode;
 
-    private $uomName;
+    public $uomName;
 
-    private $symbol;
+    public $symbol;
 
-    private $alias;
+    public $alias;
+
+    public $uomDescription;
+
+    public $conversionFactor;
+
+    public $sector;
+
+    public $status;
+
+    public $createdOn;
+
+    public $createdBy;
+
+    public $company;
 
     /**
+     *
      * @return mixed
      */
     public function getUomCode()
@@ -26,6 +42,7 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getUomName()
@@ -34,6 +51,7 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getSymbol()
@@ -42,6 +60,7 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @param mixed $uomCode
      */
     public function setUomCode($uomCode)
@@ -50,6 +69,7 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @param mixed $uomName
      */
     public function setUomName($uomName)
@@ -58,13 +78,16 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @param mixed $symbol
      */
     public function setSymbol($symbol)
     {
         $this->symbol = $symbol;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getAlias()
@@ -73,12 +96,85 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @param mixed $alias
      */
     public function setAlias($alias)
     {
         $this->alias = $alias;
     }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUomDescription()
+    {
+        return $this->uomDescription;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getConversionFactor()
+    {
+        return $this->conversionFactor;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getSector()
+    {
+        return $this->sector;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
 
 
 

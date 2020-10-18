@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIControllerFactory implements FactoryInterface
 {
@@ -38,9 +38,6 @@ class GIControllerFactory implements FactoryInterface
 
         $sv = $container->get("AppLogger");
         $controller->setLogger($sv);
-
-        $sv = $container->get(TrxRowsUpload::class);
-        $controller->setTrxUploadService($sv);
 
         return $controller;
     }

@@ -8,11 +8,13 @@ use Application\Application\Eventbus\PsrHandlerResolverFactory;
 use Application\Application\Logger\LoggerFactory;
 use Application\Infrastructure\Doctrine\MessageStoreRepository;
 use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
+use Application\Application\Service\Uom\UomService;
+use Application\Application\Service\Uom\UomServiceFactory;
 
 /**
  *
  * @author Nguyen Mau Tri
- *        
+ *
  */
 return array(
 
@@ -312,6 +314,7 @@ return array(
             "AppLogger" => LoggerFactory::class,
             "AppCache" => CacheFactory::class,
             "RedisCache" => RedisCacheFactory::class,
+            UomService::class => UomServiceFactory::class,
 
             // Event Handler Register
             DummyEventHandler::class => DummyEventHandlerFactory::class,

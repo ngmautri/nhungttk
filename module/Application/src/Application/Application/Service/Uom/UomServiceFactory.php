@@ -1,16 +1,15 @@
 <?php
-namespace Inventory\Application\Service\Upload\Transaction;
+namespace Application\Application\Service\Uom;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
- * @deprecated
- * @au thor Nguyen Mau Tri - ngmautri@gmail.com
+ * @author Nguyen Mau Tri
  *
  */
-class TrxRowsUploadFactory implements FactoryInterface
+class UomServiceFactory implements FactoryInterface
 {
 
     /**
@@ -22,7 +21,7 @@ class TrxRowsUploadFactory implements FactoryInterface
     {
         $container = $serviceLocator;
 
-        $service = new TrxRowsUpload();
+        $service = new UomService();
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);

@@ -1,6 +1,7 @@
 <?php
 namespace Application\Infrastructure\Persistence\Contracts;
 
+use Application\Domain\Shared\Uom\UomSnapshot;
 
 /**
  *
@@ -9,4 +10,6 @@ namespace Application\Infrastructure\Persistence\Contracts;
  */
 Interface UomCmdRepositoryInterface
 {
+
+    public function store(UomSnapshot $snapshot);
 }

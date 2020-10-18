@@ -19,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
  *
  * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxRowsUpload extends AbstractService
 {
@@ -133,4 +133,3 @@ class TrxRowsUpload extends AbstractService
         }
     }
 }
-    

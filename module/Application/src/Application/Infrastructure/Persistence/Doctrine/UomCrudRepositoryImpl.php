@@ -4,7 +4,10 @@ namespace Application\Infrastructure\Persistence\Doctrine;
 use Application\Domain\Shared\Uom\UomSnapshot;
 use Application\Infrastructure\Mapper\UomMapper;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
-use Application\Infrastructure\Persistence\Contracts\UomCmdRepositoryInterface;
+use Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface;
+use Application\Infrastructure\Persistence\Contracts\SqlFilterInterface;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use InvalidArgumentException;
 
 /**
@@ -12,19 +15,37 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UomCmdRepositoryImpl extends AbstractDoctrineRepository implements UomCmdRepositoryInterface
+class UomCrudRepositoryImpl extends AbstractDoctrineRepository implements CrudRepositoryInterface
 {
 
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtApplicationUom";
 
+    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    {
+        if (! $filter instanceof SqlFilterInterface) {
+            return null;
+        }
+
+        $sql = "SELECT * FROM nmt_application_uom WHERE 1";
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtApplicationUom', 'nmt_application_uom');
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Infrastructure\Persistence\Contracts\UomCmdRepositoryInterface::store()
+     * @see \Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface::save()
      */
-    public function store(UomSnapshot $snapshot)
+    public function save($snapshot)
     {
-        if ($snapshot == null) {
+        if ($snapshot instanceof UomSnapshot) {
             throw new InvalidArgumentException("Root snapshot not given.");
         }
 
@@ -50,4 +71,10 @@ class UomCmdRepositoryImpl extends AbstractDoctrineRepository implements UomCmdR
 
         return $entity;
     }
+
+    public function update($valueObject)
+    {}
+
+    public function delete($valueObject)
+    {}
 }

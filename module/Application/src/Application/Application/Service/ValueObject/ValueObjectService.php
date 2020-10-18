@@ -17,8 +17,6 @@ abstract class ValueObjectService extends AbstractService
      */
     private static $valueCollecion;
 
-    private static $instanceCounter;
-
     protected $crudRepository;
 
     protected $filter;
@@ -87,29 +85,33 @@ abstract class ValueObjectService extends AbstractService
         }
 
         $this->getCrudRepository()->save($valueObject->makeSnapshot());
-
         $collection->add($valueObject);
-
         static::$valueCollecion = $collection;
     }
 
-    public function update(AbstractValueObject $valueObject, $snapshot)
+    public function getByKey($key)
     {
-        $collection = $this->getUomCollecion();
+        $results = $this->getCrudRepository()->get(key);
+        return $results;
+    }
+
+    /**
+     *
+     * @param string $key
+     * @param object $snapshot
+     */
+    public function update($key, $snapshot)
+    {
+        $collection = $this->getValueCollecion();
+        $valueObject = $this->getCrudRepository()->getByKey($key);
         foreach ($collection as $e) {
             if ($valueObject->equals($e)) {
                 return;
             }
         }
 
-        $this->getCrudRepository()->update($valueObject);
-
+        $this->getCrudRepository()->save($valueObject->makeSnapshot);
         static::$valueCollecion = $collection;
-    }
-
-    public static function getInstanceCounter()
-    {
-        return static::$instanceCounter;
     }
 
     /**

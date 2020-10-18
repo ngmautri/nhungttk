@@ -16,7 +16,6 @@ class UomService extends ValueObjectService implements UomServiceInterface
     protected function setCrudRepository()
     {
         $this->crudRepository = new UomCrudRepositoryImpl($this->getDoctrineEM());
-        ;
     }
 
     /**

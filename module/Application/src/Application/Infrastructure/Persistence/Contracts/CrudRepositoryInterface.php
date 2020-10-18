@@ -14,6 +14,8 @@ interface CrudRepositoryInterface
 
     public function update($valueObject);
 
+    public function getByKey($key);
+
     public function delete($valueObject);
 
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);

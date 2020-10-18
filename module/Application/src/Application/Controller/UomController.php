@@ -1,7 +1,7 @@
 <?php
 namespace Application\Controller;
 
-use Application\Controller\Contracts\AbstractGenericController;
+use Application\Controller\Contracts\CRUDController;
 use Application\Entity\NmtApplicationUom;
 use Zend\View\Model\ViewModel;
 
@@ -10,29 +10,38 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UomController extends AbstractGenericController
+class UomController extends CRUDController
 {
 
-
-    /*
-     * Defaul Action
-     */
-    public function indexAction()
-    {}
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function initAction()
-    {}
+    public function __construct(){
+        $this->setBaseUrl();
+        $this->setAjaxLayout();
+        $this->setDefaultLayout();
+    }
 
     /**
      *
-     * @version 3.0
-     * @author Ngmautri
+     * {@inheritdoc}
+     * @see \Application\Controller\Contracts\CRUDController::setBaseUrl()
+     */
+    protected function setBaseUrl()
+    {
+        $this->baseUrl = '/application/uom';
+    }
+
+    protected function setAjaxLayout()
+    {
+        $this->ajaxLayout = "layout/user/ajax";
+    }
+
+    protected function setDefaultLayout()
+    {
+        $this->defaultLayout = "Application/layout-fluid";
+    }
+
+    /**
      *
-     *         Create new Department
+     * @deprecated
      */
     public function addAction()
     {
@@ -101,6 +110,8 @@ class UomController extends AbstractGenericController
     }
 
     /**
+     *
+     * @return \Zend\View\Model\ViewModel
      */
     public function listAction()
     {
@@ -115,6 +126,8 @@ class UomController extends AbstractGenericController
     }
 
     /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function list1Action()
     {
@@ -152,5 +165,4 @@ class UomController extends AbstractGenericController
             'context' => $context
         ));
     }
-
 }

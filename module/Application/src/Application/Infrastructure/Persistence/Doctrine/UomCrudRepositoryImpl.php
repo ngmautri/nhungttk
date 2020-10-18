@@ -9,6 +9,7 @@ use Application\Infrastructure\Persistence\Contracts\SqlFilterInterface;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use InvalidArgumentException;
+use Application\Domain\Shared\Uom\Uom;
 
 /**
  *
@@ -19,6 +20,27 @@ class UomCrudRepositoryImpl extends AbstractDoctrineRepository implements CrudRe
 {
 
     const ROOT_ENTITY_NAME = "\Application\Entity\NmtApplicationUom";
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface::getByKey()
+     */
+    public function getByKey($key)
+    {
+        $criteria = array(
+            'uomName' => $key
+        );
+
+        /**
+         *
+         * @var \Application\Entity\NmtApplicationUom $doctrineEntity ;
+         */
+
+        $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationUom')->findOneBy($criteria);
+        $snapshot = UomMapper::createSnapshot($this->getDoctrineEM(), $entity, new UomSnapshot());
+        return Uom::createFrom($snapshot);
+    }
 
     public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
     {

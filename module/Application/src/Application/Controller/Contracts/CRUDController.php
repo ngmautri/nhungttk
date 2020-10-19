@@ -63,7 +63,7 @@ abstract class CRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'key' => null
+                'dto' => null
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -71,12 +71,13 @@ abstract class CRUDController extends AbstractGenericController
         }
 
         try {
-            $data = $prg;
-            $this->getValueObjectService()->add($data);
+
+            $prg['createdBy'] = $this->getUserId();
+            $prg['company'] = $this->getCompanyId();
+            $this->getValueObjectService()->addFrom($prg);
         } catch (\Exception $e) {
 
             $this->logException($e);
-
             $viewModel = new ViewModel(array(
                 'errors' => [
                     $e->getMessage()
@@ -89,7 +90,7 @@ abstract class CRUDController extends AbstractGenericController
                 'form_title' => $form_title,
                 'action' => $action,
                 'key' => null,
-                'valueObject' => null
+                'dto' => null
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -97,7 +98,7 @@ abstract class CRUDController extends AbstractGenericController
         }
 
         $redirectUrl = sprintf($this->getBaseUrl() . "/list");
-        $this->getLogger()->info(\sprintf("%s", ""));
+        $this->logInfo(\sprintf("%s", ""));
 
         return $this->redirect()->toUrl($redirectUrl);
     }

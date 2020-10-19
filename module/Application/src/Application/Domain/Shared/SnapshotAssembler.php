@@ -1,10 +1,12 @@
 <?php
 namespace Application\Domain\Shared;
 
+use Webmozart\Assert\Assert;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SnapshotAssembler
 {
@@ -89,6 +91,36 @@ class SnapshotAssembler
         }
 
         return $snapshot;
+    }
+
+    /**
+     *
+     * @param object $obj
+     * @param array $data
+     * @return object
+     */
+    public static function makeFromArray($obj, $data)
+    {
+        Assert::object($obj);
+        Assert::isArray($data);
+
+        $refObject = new \ReflectionObject($obj);
+
+        foreach ($data as $property => $value) {
+
+            if (property_exists($obj, $property)) {
+
+                $refProperty = $refObject->getProperty($property);
+                $refProperty->setAccessible(true);
+
+                if ($value == null || $value == "") {
+                    $refProperty->setValue($obj, null);
+                } else {
+                    $refProperty->setValue($obj, $value);
+                }
+            }
+        }
+        return $obj;
     }
 
     /**

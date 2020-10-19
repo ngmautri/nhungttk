@@ -1,9 +1,8 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
-use Application\Domain\Shared\AbstractValueObject;
 use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\AccountPayable\APSnapshot;
+use Application\Domain\Shared\ValueObjectInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -11,15 +10,9 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class Uom extends AbstractValueObject implements \JsonSerializable
+final class Uom extends BaseUom implements \JsonSerializable, ValueObjectInterface
 {
     use UomFactory;
-
-    private $uomCode;
-
-    private $uomName;
-
-    private $symbol;
 
     private $alias;
 
@@ -31,22 +24,43 @@ final class Uom extends AbstractValueObject implements \JsonSerializable
     final public static function createFrom(UomSnapshot $snapshot)
     {
         $instance = new self($snapshot->getUomName());
-        $instance->symbol = $snapshot->getSymbol();
-        $instance->uomCode = $snapshot->getUomName();
-        $instance->alias = $snapshot->getAlias();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         return $instance;
     }
 
+    /**
+     *
+     * @param array $data
+     * @return object
+     */
+    public static function createFromArray($data)
+    {
+        $instance = new self("tmp");
+        $instance = SnapshotAssembler::makeFromArray($instance, $data);
+
+        Assert::stringNotEmpty($instance->getUomName());
+        Assert::stringNotEmpty($instance->getUomCode());
+        $instance->uomName = trim(\strtolower($instance->getUomName()));
+        $instance->uomCode = trim(\strtolower($instance->getUomCode()));
+        return $instance;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\AbstractValueObject::makeSnapshot()
+     */
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new UomSnapshot());
     }
+
     /**
      *
      * @param string $uomName
      * @throws \InvalidArgumentException
      */
-    public function __construct($uomName, $uomCode=null)
+    public function __construct($uomName, $uomCode = null)
     {
         Assert::stringNotEmpty($uomName);
 
@@ -73,42 +87,6 @@ final class Uom extends AbstractValueObject implements \JsonSerializable
     public function jsonSerialize()
     {
         return $this->uomName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getUomCode()
-    {
-        return $this->uomCode;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getUomName()
-    {
-        return $this->uomName;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getSymbol()
-    {
-        return $this->symbol;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getAlias()
-    {
-        return $this->alias;
     }
 
     /**

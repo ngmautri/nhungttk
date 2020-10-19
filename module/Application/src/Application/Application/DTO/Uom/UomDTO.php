@@ -1,13 +1,13 @@
 <?php
 namespace Application\Application\DTO\Uom;
 
-use Application\Domain\MessageStore\MessageSnapshot;
+use Application\Domain\Shared\Uom\UomSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UomDTO extends MessageSnapshot
+class UomDTO extends UomSnapshot
 {
 }

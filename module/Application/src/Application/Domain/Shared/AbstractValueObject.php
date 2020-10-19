@@ -11,6 +11,8 @@ abstract class AbstractValueObject
 
     abstract function getAttributesToCompare();
 
+    abstract public function makeSnapshot();
+
     /**
      *
      * @param AbstractValueObject $other

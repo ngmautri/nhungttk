@@ -10,6 +10,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use InvalidArgumentException;
 use Application\Domain\Shared\Uom\Uom;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -54,7 +55,17 @@ class UomCrudRepositoryImpl extends AbstractDoctrineRepository implements CrudRe
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtApplicationUom', 'nmt_application_uom');
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
-            return $query->getResult();
+            $results = $query->getResult();
+            if ($results == null) {
+                return null;
+            }
+
+            $uoms = new ArrayCollection();
+            foreach ($results as $result) {
+                $snapshot = UomMapper::createSnapshot($this->getDoctrineEM(), $result, new UomSnapshot());
+                $uoms->add(Uom::createFrom($snapshot));
+            }
+            return $uoms;
         } catch (NoResultException $e) {
             return null;
         }
@@ -67,8 +78,8 @@ class UomCrudRepositoryImpl extends AbstractDoctrineRepository implements CrudRe
      */
     public function save($snapshot)
     {
-        if ($snapshot instanceof UomSnapshot) {
-            throw new InvalidArgumentException("Root snapshot not given.");
+        if (! $snapshot instanceof UomSnapshot) {
+            throw new InvalidArgumentException("UomSnapshot not given.");
         }
 
         /**
@@ -90,7 +101,7 @@ class UomCrudRepositoryImpl extends AbstractDoctrineRepository implements CrudRe
         $entity = UomMapper::mapSnapshotEntity($this->getDoctrineEM(), $snapshot, $entity);
 
         $this->doctrineEM->persist($entity);
-
+        $this->doctrineEM->flush();
         return $entity;
     }
 

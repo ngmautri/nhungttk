@@ -15,23 +15,17 @@ abstract class ValueObjectService extends AbstractService
      *
      * @var ArrayCollection $valueCollecion;
      */
-    private static $valueCollecion;
+    protected static $valueCollecion;
 
     protected $crudRepository;
 
     protected $filter;
 
-    /**
-     *
-     * @param CrudRepositoryInterface $crudRepository
-     */
-    abstract protected function setCrudRepository();
+    abstract protected function getCrudRepository();
 
-    /**
-     *
-     * @param SqlFilterInterface $filter
-     */
-    abstract protected function setFilter();
+    abstract protected function createValueObjectFrom($data);
+
+    abstract protected function getFilter();
 
     /**
      *
@@ -80,9 +74,33 @@ abstract class ValueObjectService extends AbstractService
         $collection = $this->getValueCollecion();
         foreach ($collection as $e) {
             if ($valueObject->equals($e)) {
-                return;
+                throw new \RuntimeException("Value object exits");
             }
         }
+
+        $this->getCrudRepository()->save($valueObject->makeSnapshot());
+        $collection->add($valueObject);
+        static::$valueCollecion = $collection;
+    }
+
+    /**
+     *
+     * @param array $data
+     * @throws \RuntimeException
+     */
+    public function addFrom($data)
+    {
+        Assert::isArray($data);
+
+        $collection = $this->getValueCollecion();
+        $valueObject = $this->createValueObjectFrom($data);
+
+        foreach ($collection as $e) {
+            if ($valueObject->equals($e)) {
+                throw new \RuntimeException("Value object exits already");
+            }
+        }
+        // \var_dump($valueObject->makeSnapshot());
 
         $this->getCrudRepository()->save($valueObject->makeSnapshot());
         $collection->add($valueObject);
@@ -106,29 +124,11 @@ abstract class ValueObjectService extends AbstractService
         $valueObject = $this->getCrudRepository()->getByKey($key);
         foreach ($collection as $e) {
             if ($valueObject->equals($e)) {
-                return;
+                throw new \RuntimeException("Value object exits");
             }
         }
 
-        $this->getCrudRepository()->save($valueObject->makeSnapshot);
+        $this->getCrudRepository()->save($valueObject->makeSnapshot());
         static::$valueCollecion = $collection;
-    }
-
-    /**
-     *
-     * @return \Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface
-     */
-    public function getCrudRepository()
-    {
-        return $this->crudRepository;
-    }
-
-    /**
-     *
-     * @return \Application\Infrastructure\Persistence\Contracts\SqlFilterInterface
-     */
-    public function getFilter()
-    {
-        return $this->filter;
     }
 }

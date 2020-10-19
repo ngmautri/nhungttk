@@ -6,8 +6,9 @@ namespace Application\Domain\Shared\Uom;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class UomSnapshot
+class UomSnapshot
 {
+
     public $id;
 
     public $uomCode;
@@ -168,14 +169,11 @@ final class UomSnapshot
     }
 
     /**
+     *
      * @return mixed
      */
     public function getCompany()
     {
         return $this->company;
     }
-
-
-
-
-  }
+}

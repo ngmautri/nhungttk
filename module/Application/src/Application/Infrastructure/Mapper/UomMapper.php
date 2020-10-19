@@ -40,9 +40,7 @@ class UomMapper
         // ============================
         // $entity->setCreatedOn($snapshot->createdOn);
 
-        if ($snapshot->createdOn !== null) {
-            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
-        }
+        $entity->setCreatedOn(new \DateTime());
 
         // ============================
         // REFERRENCE MAPPING
@@ -101,8 +99,8 @@ class UomMapper
         // ============================
         // $snapshot->createdOn = $entity->getCreatedOn();
 
-        if ($snapshot->createdOn !== null) {
-            $entity->setCreatedOn(new \DateTime($snapshot->createdOn));
+        if (! $entity->getCreatedOn() == null) {
+            $snapshot->createdOn = $entity->getCreatedOn()->format("Y-m-d");
         }
 
         // ============================
@@ -112,22 +110,12 @@ class UomMapper
         // $snapshot->createdBy = $entity->getCreatedBy();
         // $snapshot->company = $entity->getCompany();
 
-        if ($snapshot->createdBy > 0) {
-            /**
-             *
-             * @var \Application\Entity\MlaUsers $obj ;
-             */
-            $obj = $doctrineEM->getRepository('Application\Entity\MlaUsers')->find($snapshot->createdBy);
-            $entity->setCreatedBy($obj);
+        if ($entity->getCreatedBy() !== null) {
+            $snapshot->createdBy = $entity->getCreatedBy()->getId();
         }
 
-        if ($snapshot->company > 0) {
-            /**
-             *
-             * @var \Application\Entity\NmtApplicationCompany $obj ;
-             */
-            $obj = $doctrineEM->getRepository('Application\Entity\NmtApplicationCompany')->find($snapshot->company);
-            $entity->setCreatedBy($obj);
+        if ($entity->getCompany() !== null) {
+            $snapshot->company = $entity->getCompany()->getId();
         }
         return $snapshot;
     }

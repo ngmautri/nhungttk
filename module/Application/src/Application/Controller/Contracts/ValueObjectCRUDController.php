@@ -72,7 +72,7 @@ abstract class ValueObjectCRUDController extends AbstractGenericController
 
         try {
             $data = $prg;
-            $this->getValueObjectService()->add($data);
+            $this->getValueObjectService()->addFrom($data);
         } catch (\Exception $e) {
 
             $this->logException($e);

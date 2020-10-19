@@ -14,67 +14,34 @@ class GenericSnapshotAssembler
 
     /**
      *
-     * @return array;
+     * @param string $class1
+     * @param string $class2
+     * @return array[]
      */
-    public static function findMissingPropertiesOfSnapshot($entityClass, $snapshotClass)
+    public static function findMissingProps($class1, $class2)
     {
-        $missingProperties = array();
-        $entity = new $entityClass();
-        $dto = new $snapshotClass();
+        Assert::notNull($class1);
+        Assert::notNull($class2);
 
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
+        $missingProperties = array();
+
+        $reflectionClass2 = new \ReflectionClass($class2);
+        $props2 = $reflectionClass2->getProperties();
+
+        $props2Array = [];
+        foreach ($props2 as $property) {
+            $property->setAccessible(true);
+            $props2Array[] = $property->getName();
+        }
+
+        $reflectionClass2 = new \ReflectionClass($class1);
+        $props1 = $reflectionClass2->getProperties();
+
+        foreach ($props1 as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
 
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
-    }
-
-    public static function findMissingPropsInEntity($entityClass, $targetClass)
-    {
-        $missingProperties = array();
-        $baseObj = new $targetClass();
-
-        $reflectionClass = new \ReflectionClass($baseObj);
-        $baseProps = $reflectionClass->getProperties();
-
-        $entity = GenericDTOAssembler::getEntity($entityClass);
-
-        foreach ($baseProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($entity, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
-    }
-
-    /**
-     *
-     * @param string $entityClass
-     * @param string $baseClass
-     * @return array
-     */
-    public static function findMissingPropsInTargetObject($entityClass, $targetClass)
-    {
-        Assert::notNull($entityClass);
-        Assert::notNull($targetClass);
-
-        $missingProperties = array();
-
-        $entityProps = GenericDTOAssembler::createDTOProperities($entityClass);
-        $dto = new $targetClass();
-
-        foreach ($entityProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
+            if (! \in_array($propertyName, $props2Array)) {
                 echo (sprintf("\n protected $%s;", $propertyName));
                 $missingProperties[] = $propertyName;
             }

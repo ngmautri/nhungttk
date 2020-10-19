@@ -27,16 +27,16 @@ class UomServiceTest extends PHPUnit_Framework_TestCase
              * @var UomService $uomService ;
              */
             $uomService = Bootstrap::getServiceManager()->get(UomService::class);
-            $uom = new Uom("kg");
-            $uomService->add($uom);
+            $data = [
+                'uomName' => 'kg2',
+                'uomCode' => 'kg',
+                'createdBy' => 39,
+                'company' => 1
+            ];
+            // $uomService->addFrom($data);
 
-            $uom = new Uom("kg");
-            $uomService->add($uom);
-
-            $result = $uomService->getUomCollecion();
-            \var_dump(count($result));
-
-
+            $result = $uomService->getValueCollecion();
+            \var_dump($result->current());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

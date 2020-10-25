@@ -35,8 +35,8 @@ class UomServiceTest extends PHPUnit_Framework_TestCase
             ];
             // $uomService->addFrom($data);
 
-            $result = $uomService->getValueCollecion();
-            \var_dump($result->current());
+            $result = $uomService->generateResFile();
+            // \var_dump($result->current());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

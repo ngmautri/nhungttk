@@ -8,7 +8,7 @@ use Application\Infrastructure\Persistence\Contracts\SqlFilterInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UomSqlFilter implements SqlFilterInterface
+class UomSqlFilter extends DefaultListSqlFilter
 {
 
     public $itemId;

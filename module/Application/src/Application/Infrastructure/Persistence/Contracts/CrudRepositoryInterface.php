@@ -1,6 +1,8 @@
 <?php
 namespace Application\Infrastructure\Persistence\Contracts;
 
+use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
+
 /**
  * Value Object
  *
@@ -18,5 +20,5 @@ interface CrudRepositoryInterface
 
     public function delete($valueObject);
 
-    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset);
+    public function getList(DefaultListSqlFilter $filter);
 }

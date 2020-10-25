@@ -4,7 +4,9 @@ namespace Application\Controller\Contracts;
 use Application\Application\Service\ValueObject\ValueObjectService;
 use Application\Domain\Contracts\FormActions;
 use Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface;
+use MLA\Paginator;
 use Zend\View\Model\ViewModel;
+use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
 
 /**
  *
@@ -18,6 +20,8 @@ abstract class CRUDController extends AbstractGenericController
 
     protected $defaultLayout;
 
+    protected $listTemplate;
+
     protected $ajaxLayout;
 
     protected $valueObjectService;
@@ -29,6 +33,52 @@ abstract class CRUDController extends AbstractGenericController
     abstract protected function setDefaultLayout();
 
     abstract protected function setAjaxLayout();
+
+    abstract protected function setListTemplate();
+
+    public function listAction()
+    {
+        $sortBy = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $page = $this->params()->fromQuery('page');
+        $resultsPerPage = $this->params()->fromQuery('perPage');
+
+        if ($resultsPerPage == null) {
+            $resultsPerPage = 15;
+        }
+
+        if ($page == null) {
+            $page = 1;
+        }
+
+        $limit = null;
+        $offset = null;
+        $paginator = null;
+
+        $total_records = $this->getValueObjectService()->getTotal();
+
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $limit = ($paginator->maxInPage - $paginator->minInPage) + 1;
+            $offset = $paginator->minInPage - 1;
+        }
+
+        $filter = new DefaultListSqlFilter();
+        $filter->setSortBy($sortBy);
+        $filter->setSort($sort);
+        $filter->setLimit($limit);
+        $filter->setOffset($offset);
+        $list = $this->getValueObjectService()->getValueCollecion($filter);
+
+        $viewModel = new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'filter' => $filter
+        ));
+        $viewModel->setTemplate($this->getListTemplate());
+        return $viewModel;
+    }
 
     /**
      *
@@ -63,6 +113,7 @@ abstract class CRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
+                'key' => null,
                 'dto' => null
             ));
 
@@ -129,8 +180,8 @@ abstract class CRUDController extends AbstractGenericController
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
 
-            $key = (int) $this->params()->fromQuery('key');
-            $valueObject = $this->getValueObjectService()->add($key);
+            $key = $this->params()->fromQuery('key');
+            $valueObject = $this->getValueObjectService()->getByKey($key);
 
             if ($valueObject == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -144,8 +195,8 @@ abstract class CRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'key' => null,
-                'valueObject' => $valueObject
+                'key' => $key,
+                'dto' => $valueObject->makeSnapshot()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -154,11 +205,39 @@ abstract class CRUDController extends AbstractGenericController
         try {
 
             // POSTING
-            $data = $prg;
-            $this->getValueObjectService()->update($key, $data);
-        } catch (\Exception $e) {}
 
-        $redirectUrl = sprintf("%s", "");
+            $data = $prg;
+            $key = $data['key'];
+            $valueObject = $this->getValueObjectService()->getByKey($key);
+
+            if ($valueObject == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $prg['createdBy'] = $this->getUserId();
+            $prg['company'] = $this->getCompanyId();
+
+            $this->getValueObjectService()->update($data['key'], $data);
+        } catch (\Exception $e) {
+            $viewModel = new ViewModel(array(
+                'errors' => [
+                    $e->getMessage()
+                ],
+                'redirectUrl' => null,
+                'version' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'key' => $key,
+                'dto' => $valueObject->makeSnapshot()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $redirectUrl = $this->getBaseUrl() . '/list';
 
         return $this->redirect()->toUrl($redirectUrl);
     }
@@ -206,9 +285,6 @@ abstract class CRUDController extends AbstractGenericController
     }
 
     public function deleteAction()
-    {}
-
-    public function getListAction()
     {}
 
     /**
@@ -272,5 +348,14 @@ abstract class CRUDController extends AbstractGenericController
     public function getAjaxLayout()
     {
         return $this->ajaxLayout;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getListTemplate()
+    {
+        return $this->listTemplate;
     }
 }

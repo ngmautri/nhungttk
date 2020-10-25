@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
+use Application\Application\Contracts\GenericSnapshotAssembler;
 
 class UomRep1Test extends PHPUnit_Framework_TestCase
 {
@@ -23,7 +24,20 @@ class UomRep1Test extends PHPUnit_Framework_TestCase
 
             $rep = new UomCrudRepositoryImpl($doctrineEM);
             $result = $rep->getByKey("ton");
-            \var_dump($result);
+            $snapShot = $result->makeSnapshot();
+
+            $snapShot1 = clone $snapShot;
+
+            $data = [
+                "uomCode" => "ton",
+                "uomName" => "ton"
+            ];
+            $excludedProperties = [];
+            $snapShot1 = GenericSnapshotAssembler::updateSnapshotFromArrayExcludeFields($snapShot1, $data, $excludedProperties);
+
+            \var_dump($snapShot->compare($snapShot1));
+
+            // \var_dump($snapShot1);
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

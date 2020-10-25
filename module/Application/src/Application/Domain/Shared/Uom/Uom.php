@@ -2,7 +2,6 @@
 namespace Application\Domain\Shared\Uom;
 
 use Application\Domain\Shared\SnapshotAssembler;
-use Application\Domain\Shared\ValueObjectInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -10,7 +9,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class Uom extends BaseUom implements \JsonSerializable, ValueObjectInterface
+final class Uom extends BaseUom implements \JsonSerializable
 {
     use UomFactory;
 

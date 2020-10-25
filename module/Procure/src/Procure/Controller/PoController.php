@@ -1191,14 +1191,12 @@ class PoController extends AbstractGenericController
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
-        ;
 
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
-        ;
 
         $is_active = (int) $this->params()->fromQuery('is_active');
 

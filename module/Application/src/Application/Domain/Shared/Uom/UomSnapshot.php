@@ -1,12 +1,14 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
+use Application\Domain\Shared\AbstractDTO;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UomSnapshot
+class UomSnapshot extends AbstractDTO
 {
 
     public $id;

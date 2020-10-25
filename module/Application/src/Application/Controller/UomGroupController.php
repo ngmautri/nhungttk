@@ -9,7 +9,7 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UomController extends CRUDController
+class UomGroupController extends CRUDController
 {
 
     public function __construct()
@@ -27,7 +27,7 @@ class UomController extends CRUDController
      */
     protected function setBaseUrl()
     {
-        $this->baseUrl = '/application/uom';
+        $this->baseUrl = '/application/uom-group';
     }
 
     protected function setAjaxLayout()
@@ -42,7 +42,7 @@ class UomController extends CRUDController
 
     protected function setListTemplate()
     {
-        $this->listTemplate = $this->getBaseUrl() . '/list3';
+        $this->listTemplate = $this->getBaseUrl() . '/list';
     }
 
     /**

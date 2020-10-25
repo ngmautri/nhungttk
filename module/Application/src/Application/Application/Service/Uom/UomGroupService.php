@@ -7,7 +7,7 @@ use Application\Domain\Shared\Uom\Uom;
 use Application\Infrastructure\Persistence\Doctrine\UomCrudRepositoryImpl;
 use Application\Infrastructure\Persistence\Filter\UomSqlFilter;
 
-class UomService extends ValueObjectService implements UomServiceInterface
+class UomGroupService extends ValueObjectService implements UomServiceInterface
 {
 
     /**

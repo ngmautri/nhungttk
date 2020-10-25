@@ -1,7 +1,7 @@
 <?php
 namespace InventoryTest\Item\Rep;
 
-use Application\Infrastructure\Persistence\Doctrine\UomQueryRepositoryImpl;
+use Application\Infrastructure\Persistence\Doctrine\UomCrudRepositoryImpl;
 use Application\Infrastructure\Persistence\Filter\UomSqlFilter;
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
@@ -22,16 +22,13 @@ class UomRepTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $doctrineEM ; */
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-            $rep = new UomQueryRepositoryImpl($doctrineEM);
+            $rep = new UomCrudRepositoryImpl($doctrineEM);
             $filter = new UomSqlFilter();
+            $filter->setSortBy('uomName');
+            $filter->setLimit(1);
 
-            $sort_by = 'postingDate';
-            $sort = 'DESC';
-            $limit = null;
-            $offset = null;
-
-            $result = $rep->getList($filter, $sort_by, $sort, $limit, $offset);
-            var_dump(count($result));
+            $result = $rep->getList($filter);
+            var_dump(($result->last()));
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

@@ -83,6 +83,64 @@ class GenericSnapshotAssembler
     /**
      *
      * @param AbstractDTO $snapShot
+     * @param array $data
+     * @param array $editableProperties
+     * @return NULL|\Application\Domain\Shared\AbstractDTO
+     */
+    public static function updateSnapshotFieldsFromArray(AbstractDTO $snapShot, $data, $editableProperties)
+    {
+        if ($data == null || ! $snapShot instanceof AbstractDTO || $editableProperties == null) {
+            return null;
+        }
+
+        foreach ($data as $propertyName => $v) {
+
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
+
+                if ($v == null || $v == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $v;
+                }
+            }
+        }
+        return $snapShot;
+    }
+
+    /**
+     *
+     * @param AbstractDTO $snapShot
+     * @param array $data
+     * @param array $excludedProperties
+     * @return NULL|\Application\Domain\Shared\AbstractDTO
+     */
+    public static function updateSnapshotFromArrayExcludeFields(AbstractDTO $snapShot, $data, $excludedProperties)
+    {
+        $excludedProperties = [
+            "id"
+        ];
+
+        if ($data == null || ! $snapShot instanceof AbstractDTO || $excludedProperties == null) {
+            return null;
+        }
+
+        foreach ($data as $propertyName => $v) {
+
+            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
+
+                if ($v == null || $v == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $v;
+                }
+            }
+        }
+        return $snapShot;
+    }
+
+    /**
+     *
+     * @param AbstractDTO $snapShot
      * @param AbstractDTO $dto
      * @param array $excludedProperties
      * @return NULL|\Application\Domain\Shared\AbstractDTO
@@ -93,19 +151,14 @@ class GenericSnapshotAssembler
             return null;
         }
 
-        $reflectionClass = new \ReflectionClass($dto);
-        $props = $reflectionClass->getProperties();
+        foreach ($data as $propertyName => $v) {
 
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
+            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
 
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
-
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                if ($v == null || $v == "") {
                     $snapShot->$propertyName = null;
                 } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
+                    $snapShot->$propertyName = $v;
                 }
             }
         }

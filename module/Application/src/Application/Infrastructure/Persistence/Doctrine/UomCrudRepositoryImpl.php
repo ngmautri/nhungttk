@@ -1,16 +1,17 @@
 <?php
 namespace Application\Infrastructure\Persistence\Doctrine;
 
+use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Shared\Uom\UomSnapshot;
 use Application\Infrastructure\Mapper\UomMapper;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface;
-use Application\Infrastructure\Persistence\Contracts\SqlFilterInterface;
+use Application\Infrastructure\Persistence\Contracts\SqlKeyWords;
+use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use InvalidArgumentException;
-use Application\Domain\Shared\Uom\Uom;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -39,36 +40,78 @@ class UomCrudRepositoryImpl extends AbstractDoctrineRepository implements CrudRe
          */
 
         $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationUom')->findOneBy($criteria);
+        if ($entity == null) {
+            return null;
+        }
+
         $snapshot = UomMapper::createSnapshot($this->getDoctrineEM(), $entity, new UomSnapshot());
         return Uom::createFrom($snapshot);
     }
 
-    public function getList(SqlFilterInterface $filter, $sort_by, $sort, $limit, $offset)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface::getList()
+     */
+    public function getList(DefaultListSqlFilter $filter)
     {
-        if (! $filter instanceof SqlFilterInterface) {
+        if (! $filter instanceof DefaultListSqlFilter) {
             return null;
         }
 
         $sql = "SELECT * FROM nmt_application_uom WHERE 1";
+
+        if ($filter->getSortBy() == null) {
+            $filter->setSortBy('uomName');
+        }
+
+        if ($filter->getSort() == null) {
+            $filter->setSort(SqlKeyWords::ASC);
+        }
+
+        switch ($filter->getSortBy()) {
+            case "uomName":
+                $sql = $sql . " ORDER BY nmt_application_uom.uom_name " . $filter->getSort();
+                break;
+
+            case "uomCode":
+                $sql = $sql . " ORDER BY nmt_application_uom.uom_code " . $filter->getSort();
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY nmt_application_uom.created_on " . $filter->getSort();
+                break;
+        }
+
+        if ($filter->getOffset() > 0) {
+            $sql = $sql . ' OFFSET ' . $filter->getOffset();
+        }
+
+        if ($filter->getLimit() > 0) {
+            $sql = $sql . ' LIMIT ' . $filter->getLimit();
+        }
+        $sql = $sql . ";";
+
+        $uoms = new ArrayCollection();
 
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtApplicationUom', 'nmt_application_uom');
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $results = $query->getResult();
+
             if ($results == null) {
-                return null;
+                return $uoms;
             }
 
-            $uoms = new ArrayCollection();
             foreach ($results as $result) {
                 $snapshot = UomMapper::createSnapshot($this->getDoctrineEM(), $result, new UomSnapshot());
                 $uoms->add(Uom::createFrom($snapshot));
             }
-            return $uoms;
         } catch (NoResultException $e) {
-            return null;
+            // left blank
         }
+
+        return $uoms;
     }
 
     /**

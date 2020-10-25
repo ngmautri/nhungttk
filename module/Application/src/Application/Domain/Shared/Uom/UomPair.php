@@ -1,6 +1,7 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
+use Application\Domain\Shared\ValueObject;
 use Webmozart\Assert\Assert;
 
 /**
@@ -8,7 +9,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class UomPair implements \JsonSerializable
+final class UomPair extends ValueObject implements \JsonSerializable
 {
 
     private $pairName;
@@ -20,6 +21,18 @@ final class UomPair implements \JsonSerializable
     private $convertFactor;
 
     private $description;
+
+    public function makeSnapshot()
+    {}
+
+    public function getAttributesToCompare()
+    {
+        return [
+            $this->getBaseUom()->getUomName(),
+            $this->getCounterUom()->getUomName(),
+            $this->getConvertFactor()
+        ];
+    }
 
     /**
      *
@@ -39,11 +52,9 @@ final class UomPair implements \JsonSerializable
         $this->description = $description;
 
         $this->pairName = \sprintf("%s", $this->baseUom);
-        if(!$baseUom->equals($counterUom)){
-            $this->pairName = \sprintf("%s (%s %s)",  $this->counterUom,$this->convertFactor, $this->baseUom) ;
+        if (! $baseUom->equals($counterUom)) {
+            $this->pairName = \sprintf("%s (%s %s)", $this->counterUom, $this->convertFactor, $this->baseUom);
         }
-
-
     }
 
     /**
@@ -51,7 +62,7 @@ final class UomPair implements \JsonSerializable
      * @param UomPair $other
      * @return boolean
      */
-    public function equals(UomPair $other)
+    public function compareTo(UomPair $other)
     {
         return $this->baseUom->equals($other->baseUom) && $this->counterUom->equals($other->counterUom) && $this->convertFactor === $other->convertFactor;
     }
@@ -100,12 +111,13 @@ final class UomPair implements \JsonSerializable
     {
         return $this->description;
     }
+
     /**
+     *
      * @return string
      */
     public function getPairName()
     {
         return $this->pairName;
     }
-
 }

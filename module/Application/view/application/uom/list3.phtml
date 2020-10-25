@@ -1,0 +1,125 @@
+<?php
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *         ===================================
+ */
+use Application\Domain\Shared\Uom\Uom;
+use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
+use Procure\Application\Helper\FormHelper;
+
+$table_body = "";
+$count = 0;
+$n = 0;
+
+/**
+ *
+ * @var DefaultListSqlFilter $filter ;
+ */
+$f = '/application/uom/list?sort_by=%s&sort=%s';
+$base = sprintf($f, $filter->getSortBy(), $filter->getSort());
+$result_msg = sprintf('<span style="color: graytext">%s</span>', 'No record found!');
+
+if ($total_records > 0) {
+
+    $result_msg = sprintf("%s records found!", $total_records);
+
+    if ($paginator !== null) {
+        $tmp = sprintf('Records %s to %s of %s found!', $paginator->minInPage, $paginator->maxInPage, $total_records);
+        $result_msg = sprintf('<span style="color:graytext;">%s</span>', $tmp);
+    }
+
+    foreach ($list as $item) {
+
+        $n ++;
+
+        if ($paginator !== null) {
+            $count = $paginator->minInPage - 1 + $n;
+        } else {
+            $count = $n;
+        }
+
+        /**
+         *
+         * @var Uom $item ;
+         */
+        $format = '<a href="/application/uom/update?key=%s">edit</a>';
+        $actionUrl = sprintf($format, $item->getUomName());
+
+        $table_body = $table_body . "<tr>";
+        $table_body = $table_body . sprintf("<td>%s</td>", $count);
+        $table_body = $table_body . sprintf("<td>%s</td>", strtoupper($item->getUomName()));
+        $table_body = $table_body . sprintf("<td>%s</td>", strtoupper($item->getUomCode()));
+        $table_body = $table_body . sprintf("<td>%s</td>", ucwords($item->getSymbol()));
+        $table_body = $table_body . sprintf("<td>%s</td>", $item->getStatus());
+        $table_body = $table_body . sprintf("<td>%s</td>", $actionUrl);
+        $table_body = $table_body . "</tr>";
+    }
+}
+?>
+<hr>
+<div id="tabs" style="font-size: 9.5pt">
+   <ul>
+      <li>
+         <a href="#general">List</a>
+      </li>
+   </ul>
+   <div id="general" style="padding: 10px 10px 1px 3px">
+      <ul class="nav nav-pills">
+         <li>
+            <a style="color: #0080ff;" href="<?php
+
+            echo $this->baseUrl?>/application/uom/create">Add UoM</a>
+         </li>
+         <li>
+            <a style="color: #0080ff;" href="javascript:;" onclick="showBootstrapDialog('UOM List','/application/uom/list1','loaded_data');">
+               <i class="icon-list"> </i>
+               Test Ajax List
+            </a>
+         </li>
+      </ul>
+      <hr style="margin: 1pt 1pt 5pt 1pt;">
+<?php
+echo $result_msg;
+?>
+
+
+      <table id="mytable26" style="font-size: 9.5pt; color: graytext; font-family: Courier, monospace;" class="table table-bordered table-striped table-hover">
+         <thead>
+            <tr>
+               <td>
+                  <b>Unit of Measurement</b>
+               </td>
+               <td>
+                  <b>Unit Code </b>
+               </td>
+               <td>
+                  <b>Description</b>
+               </td>
+               <td>
+                  <b>Symbol</b>
+               </td>
+               <td>
+                  <b>Status</b>
+               </td>
+               <td>
+                  <b>Action</b>
+               </td>
+            </tr>
+         </thead>
+         <tbody>
+         <?php
+
+        echo $table_body;
+        ?>
+   </tbody>
+      </table>
+<?php
+
+// ===============================
+echo FormHelper::createPaginator($base, $paginator, "&");
+// ===============================
+?>
+
+</div>
+</div>

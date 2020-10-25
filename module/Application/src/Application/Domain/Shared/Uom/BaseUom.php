@@ -1,7 +1,7 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\ValueObject;
 use Application\Domain\Shared\ValueObjectInterface;
 
 /**
@@ -9,7 +9,7 @@ use Application\Domain\Shared\ValueObjectInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class BaseUom extends AbstractValueObject implements \JsonSerializable, ValueObjectInterface
+abstract class BaseUom extends ValueObject implements \JsonSerializable, ValueObjectInterface
 {
 
     protected $id;

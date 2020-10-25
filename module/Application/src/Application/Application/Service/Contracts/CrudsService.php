@@ -1,15 +1,12 @@
 <?php
-namespace Application\Application\Service\ValueObject;
+namespace Application\Application\Service\Contracts;
 
-use Application\Application\Contracts\GenericSnapshotAssembler;
-use Application\Application\Service\Contracts\AbstractService;
 use Application\Domain\Shared\AbstractValueObject;
 use Application\Infrastructure\Persistence\Contracts\CrudRepositoryInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Webmozart\Assert\Assert;
-use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
 
-abstract class ValueObjectService extends AbstractService
+abstract class CrudsService extends AbstractService
 {
 
     /**
@@ -32,9 +29,7 @@ abstract class ValueObjectService extends AbstractService
      */
     abstract protected function getCrudRepository();
 
-    abstract protected function createValueObjectFromArray($data);
-
-    abstract protected function createValueObjectFromSnapshot($snapshot);
+    abstract protected function createValueObjectFrom($data);
 
     abstract protected function getFilter();
 
@@ -42,28 +37,22 @@ abstract class ValueObjectService extends AbstractService
      *
      * @return ArrayCollection
      */
-    public function getValueCollecion(DefaultListSqlFilter $filter)
+    public function getValueCollecion()
     {
         if (static::$valueCollecion != null) {
-
-            /**
-             *
-             * @var ArrayCollection $collection
-             */
-            $collection = static::$valueCollecion;
-            return $collection->slice($filter->getOffset(), $filter->getLimit());
+            return static::$valueCollecion;
         }
 
         Assert::notNull($this->getDoctrineEM());
-        $results = $this->getCrudRepository()->getList($filter);
+        $sort_by = null;
+        $sort_by = null;
+        $sort = null;
+        $limit = null;
+        $offset = null;
+        $results = $this->getCrudRepository()->getList($this->getFilter(), $sort_by, $sort, $limit, $offset);
         Assert::notNull($results);
         static::$valueCollecion = $results;
         return static::$valueCollecion;
-    }
-
-    public function getTotal()
-    {
-        return $this->getValueCollecion(new DefaultListSqlFilter())->count();
     }
 
     /**
@@ -73,7 +62,7 @@ abstract class ValueObjectService extends AbstractService
      */
     public function exits(AbstractValueObject $valueObject)
     {
-        $collection = $this->getValueCollecion(new DefaultListSqlFilter());
+        $collection = $this->getValueCollecion();
         foreach ($collection as $e) {
             if ($valueObject->equals($e)) {
                 return true;
@@ -88,7 +77,7 @@ abstract class ValueObjectService extends AbstractService
      */
     public function add(AbstractValueObject $valueObject)
     {
-        $collection = $this->getValueCollecion(new DefaultListSqlFilter());
+        $collection = $this->getValueCollecion();
         foreach ($collection as $e) {
             if ($valueObject->equals($e)) {
                 throw new \RuntimeException("Value object exits");
@@ -109,8 +98,8 @@ abstract class ValueObjectService extends AbstractService
     {
         Assert::isArray($data);
 
-        $collection = $this->getValueCollecion(new DefaultListSqlFilter());
-        $valueObject = $this->createValueObjectFromArray($data);
+        $collection = $this->getValueCollecion();
+        $valueObject = $this->createValueObjectFrom($data);
 
         foreach ($collection as $e) {
             if ($valueObject->equals($e)) {
@@ -135,35 +124,17 @@ abstract class ValueObjectService extends AbstractService
      * @param string $key
      * @param object $snapshot
      */
-    public function update($key, $data)
+    public function update($key, $snapshot)
     {
-        $collection = $this->getValueCollecion(new DefaultListSqlFilter());
+        $collection = $this->getValueCollecion();
         $valueObject = $this->getCrudRepository()->getByKey($key);
-        Assert::notNull($valueObject);
-        $snapshot = $valueObject->makeSnapshot();
-        $snapshot1 = clone $snapshot;
-
-        $excludedProperties = [];
-        $snapshot1 = GenericSnapshotAssembler::updateSnapshotFromArrayExcludeFields($snapshot1, $data, $excludedProperties);
-        $changes = $snapshot->compare($snapshot1);
-        if ($changes == null) {
-            throw new \RuntimeException("Nothing change");
-        }
-
-        $valueObject1 = $this->createValueObjectFromSnapshot($snapshot1);
-
-        if ($valueObject1->equals($valueObject)) {
-            $this->getCrudRepository()->save($valueObject1->makeSnapshot());
-            return;
-        }
-
         foreach ($collection as $e) {
-            if ($valueObject1->equals($e)) {
+            if ($valueObject->equals($e)) {
                 throw new \RuntimeException("Value object exits");
             }
         }
 
-        $this->getCrudRepository()->save($valueObject1->makeSnapshot());
+        $this->getCrudRepository()->save($valueObject->makeSnapshot());
         static::$valueCollecion = $collection;
     }
 }

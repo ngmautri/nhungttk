@@ -1,4 +1,3 @@
-
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general">UoM List</a></li>
@@ -8,9 +7,12 @@
 
 		<ul class="nav nav-pills">
 			<li><a style="color: #0080ff;"
-				href="<?php echo $this->baseUrl ?>/application/uom/add">Add New UoM</a></li>
+				href="<?php
+    echo $this->baseUrl?>/application/uom/add">Add New UoM</a></li>
                <li><a style="color: #0080ff;"
-            href="<?php echo $this->baseUrl ?>/application/uom/create">Add UoM</a></li>
+            href="<?php
+
+            echo $this->baseUrl?>/application/uom/create">Add UoM</a></li>
 			<li><a style="color: #0080ff;" href="javascript:;"
 				onclick="showBootstrapDialog('UOM List','/application/uom/list1','loaded_data');">
 					<i class="icon-list"> </i> Test Ajax List
@@ -43,11 +45,14 @@ if ($total_records <= 0) {
 					<td><b>Description</b></td>
 					<td><b>Status</b></td>
 					<td><b>Date</b></td>
+                    <td><b>Date</b></td>
+                     <td><b>Date</b></td>
+
 				</tr>
 			</thead>
 
 			<tbody>
- 
+
 	 <?php
 
     $count = 0;
@@ -55,18 +60,42 @@ if ($total_records <= 0) {
         $count ++;
         // echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
         // $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-
         ?>
 	 <tr>
-					<td><?php echo $this->escapeHtml($a->getUomName());?></td>
-					<td><?php echo $this->escapeHtml($a->getUomCode());?></td>
-					<td><?php echo $this->escapeHtml($a->getUomDescription());?></td>
-					<td><?php echo $this->escapeHtml($a->getStatus());?></td>
-					<td><?php echo $this->escapeHtml($a->getStatus());?></td>
-					<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
+					<td><?php
 
+        echo $this->escapeHtml($a->getUomName());
+        ?></td>
+					<td><?php
+
+        echo $this->escapeHtml($a->getUomCode());
+        ?></td>
+					<td><?php
+
+        echo $this->escapeHtml($a->getUomDescription());
+        ?></td>
+					<td><?php
+
+        echo $this->escapeHtml($a->getStatus());
+        ?></td>
+					<td><?php
+
+        echo $this->escapeHtml($a->getStatus());
+        ?></td>
+					<td><?php
+
+        echo date_format($a->getCreatedOn(), "d/m/Y  h:m");
+        ?> </td>
+
+   <td><?php
+
+        echo date_format($a->getCreatedOn(), "d/m/Y  h:m");
+        ?> </td>
 				</tr>
-<?php endforeach; ?>
+<?php
+    endforeach
+    ;
+    ?>
 
  </tbody>
 		</table>

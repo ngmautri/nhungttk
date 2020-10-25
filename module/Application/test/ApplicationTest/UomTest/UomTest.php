@@ -36,7 +36,7 @@ trait UomFactory
        @param string \$arguments
      * @return Uom
      *
-     * @throws \InvalidArgumentException If amount is not integer(ish)
+     * @throws \InvalidArgumentException
      */
     public static function __callStatic(\$method, \$arguments)
     {

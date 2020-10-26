@@ -4,12 +4,11 @@ namespace Application\Application\Specification\Zend;
 use Application\Domain\Exception\InvalidArgumentException;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Doctrine\ORM\EntityManager;
-use User\Infrastructure\Persistence\DoctrineUserRepository;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ZendSpecificationFactory extends AbstractSpecificationFactory
 {

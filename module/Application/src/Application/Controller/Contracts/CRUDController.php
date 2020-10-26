@@ -36,6 +36,10 @@ abstract class CRUDController extends AbstractGenericController
 
     abstract protected function setListTemplate();
 
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
     public function listAction()
     {
         $sortBy = $this->params()->fromQuery('sort_by');
@@ -74,7 +78,8 @@ abstract class CRUDController extends AbstractGenericController
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'filter' => $filter
+            'filter' => $filter,
+            'sharedCollection' => $this->getSharedCollection()
         ));
         $viewModel->setTemplate($this->getListTemplate());
         return $viewModel;
@@ -109,12 +114,13 @@ abstract class CRUDController extends AbstractGenericController
                 'errors' => null,
                 'redirectUrl' => null,
                 'version' => null,
-                'nmtPlugin' => $nmtPlugin,
+                'sharedCollection' => $this->getSharedCollection(),
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
                 'key' => null,
-                'dto' => null
+                'dto' => null,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -136,12 +142,13 @@ abstract class CRUDController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => null,
                 'version' => null,
-                'nmtPlugin' => $nmtPlugin,
+                'sharedCollection' => $this->getSharedCollection(),
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
                 'key' => null,
-                'dto' => null
+                'dto' => null,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -191,7 +198,7 @@ abstract class CRUDController extends AbstractGenericController
                 'errors' => null,
                 'redirectUrl' => null,
                 'version' => null,
-                'nmtPlugin' => $nmtPlugin,
+                'sharedCollection' => $this->getSharedCollection(),
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
@@ -225,7 +232,7 @@ abstract class CRUDController extends AbstractGenericController
                 ],
                 'redirectUrl' => null,
                 'version' => null,
-                'nmtPlugin' => $nmtPlugin,
+                'sharedCollection' => $this->getSharedCollection(),
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,

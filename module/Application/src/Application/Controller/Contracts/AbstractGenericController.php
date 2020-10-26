@@ -11,7 +11,7 @@ use Exception;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AbstractGenericController extends AbstractActionController
 {
@@ -23,6 +23,11 @@ class AbstractGenericController extends AbstractActionController
     protected $eventBusService;
 
     protected $cache;
+
+    protected function getSharedCollection()
+    {
+        return $this->sharedCollection();
+    }
 
     /**
      *

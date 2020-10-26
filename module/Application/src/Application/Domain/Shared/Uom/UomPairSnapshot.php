@@ -1,102 +1,65 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
-use Application\Domain\Shared\ValueObject;
-use Webmozart\Assert\Assert;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class UomPair extends ValueObject implements \JsonSerializable
+class UomPairSnapshot extends AbstractDTO
 {
 
-    private $id;
+    public $id;
 
-    private $pairName;
+    public $pairName;
 
-    private $baseUom;
+    public $baseUom;
 
-    private $counterUom;
+    public $counterUom;
 
-    private $convertFactor;
+    public $convertFactor;
 
-    private $description;
+    public $description;
 
-    private $isActive;
+    public $isActive;
 
-    private $remarks;
+    public $remarks;
 
-    private $createdOn;
+    public $createdOn;
 
-    private $lastChangeOn;
+    public $lastChangeOn;
 
-    private $groupName;
+    public $groupName;
 
-    private $group;
+    public $group;
 
-    private $createdBy;
+    public $createdBy;
 
-    private $lastChangeBy;
-
-    public function makeSnapshot()
-    {}
-
-    public function getAttributesToCompare()
-    {
-        return [
-            $this->getBaseUom()->getUomName(),
-            $this->getCounterUom()->getUomName(),
-            $this->getConvertFactor()
-        ];
-    }
+    public $lastChangeBy;
 
     /**
      *
-     * @param Uom $baseUom
-     * @param Uom $counterUom
-     * @param int $convertFactor
-     * @param string $description
+     * @return mixed
      */
-    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description = null)
+    public function getId()
     {
-        Assert::numeric($convertFactor);
-
-        $this->baseUom = $baseUom;
-        $this->counterUom = $counterUom;
-
-        $this->convertFactor = $convertFactor;
-        $this->description = $description;
-
-        $this->pairName = \sprintf("%s", $this->baseUom);
-        if (! $baseUom->equals($counterUom)) {
-            $this->pairName = \sprintf("%s (%s %s)", $this->counterUom, $this->convertFactor, $this->baseUom);
-        }
+        return $this->id;
     }
 
     /**
      *
-     * @param UomPair $other
-     * @return boolean
+     * @return mixed
      */
-    public function compareTo(UomPair $other)
+    public function getPairName()
     {
-        return $this->baseUom->equals($other->baseUom) && $this->counterUom->equals($other->counterUom) && $this->convertFactor === $other->convertFactor;
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'baseUom' => $this->baseUom,
-            'counterUom' => $this->counterUom,
-            'convertFactor' => $this->convertFactor
-        ];
+        return $this->pairName;
     }
 
     /**
      *
-     * @return \Application\Domain\Shared\Uom\Uom
+     * @return mixed
      */
     public function getBaseUom()
     {
@@ -105,7 +68,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     /**
      *
-     * @return \Application\Domain\Shared\Uom\Uom
+     * @return mixed
      */
     public function getCounterUom()
     {
@@ -114,7 +77,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     /**
      *
-     * @return int
+     * @return mixed
      */
     public function getConvertFactor()
     {
@@ -123,20 +86,11 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     /**
      *
-     * @return string
+     * @return mixed
      */
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getPairName()
-    {
-        return $this->pairName;
     }
 
     /**
@@ -213,45 +167,54 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     /**
      *
-     * @param string $pairName
+     * @param mixed $id
      */
-    private function setPairName($pairName)
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $pairName
+     */
+    public function setPairName($pairName)
     {
         $this->pairName = $pairName;
     }
 
     /**
      *
-     * @param \Application\Domain\Shared\Uom\Uom $baseUom
+     * @param mixed $baseUom
      */
-    private function setBaseUom($baseUom)
+    public function setBaseUom($baseUom)
     {
         $this->baseUom = $baseUom;
     }
 
     /**
      *
-     * @param \Application\Domain\Shared\Uom\Uom $counterUom
+     * @param mixed $counterUom
      */
-    private function setCounterUom($counterUom)
+    public function setCounterUom($counterUom)
     {
         $this->counterUom = $counterUom;
     }
 
     /**
      *
-     * @param int $convertFactor
+     * @param mixed $convertFactor
      */
-    private function setConvertFactor($convertFactor)
+    public function setConvertFactor($convertFactor)
     {
         $this->convertFactor = $convertFactor;
     }
 
     /**
      *
-     * @param string $description
+     * @param mixed $description
      */
-    private function setDescription($description)
+    public function setDescription($description)
     {
         $this->description = $description;
     }
@@ -260,7 +223,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $isActive
      */
-    private function setIsActive($isActive)
+    public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
     }
@@ -269,7 +232,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $remarks
      */
-    private function setRemarks($remarks)
+    public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
     }
@@ -278,7 +241,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $createdOn
      */
-    private function setCreatedOn($createdOn)
+    public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
     }
@@ -287,7 +250,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $lastChangeOn
      */
-    private function setLastChangeOn($lastChangeOn)
+    public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
     }
@@ -296,7 +259,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $groupName
      */
-    private function setGroupName($groupName)
+    public function setGroupName($groupName)
     {
         $this->groupName = $groupName;
     }
@@ -305,7 +268,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $group
      */
-    private function setGroup($group)
+    public function setGroup($group)
     {
         $this->group = $group;
     }
@@ -314,7 +277,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $createdBy
      */
-    private function setCreatedBy($createdBy)
+    public function setCreatedBy($createdBy)
     {
         $this->createdBy = $createdBy;
     }
@@ -323,7 +286,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @param mixed $lastChangeBy
      */
-    private function setLastChangeBy($lastChangeBy)
+    public function setLastChangeBy($lastChangeBy)
     {
         $this->lastChangeBy = $lastChangeBy;
     }

@@ -1,19 +1,23 @@
 <?php
-use Application\Application\DTO\Uom\UomDTO;
+use Application\Application\DTO\Uom\UomGroupDTO;
 use Application\Application\Helper\ErrorMessage;
 use Application\Application\Helper\OptionHelper;
 use Application\Controller\Plugin\SharedCollectionPlugin;
 
 /**
  *
- * @var UomDTO $dto ;
+ * @var UomGroupDTO $dto ;
  * @var SharedCollectionPlugin $sharedCollection ;
  */
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
 
+$baseUom = null;
+if ($dto != null) {
+    $baseUom = $dto->getBaseUom();
+}
 $uomList = $sharedCollection->getUomCollection();
-$uom_option = OptionHelper::createUoMOption($uomList, null);
+$uom_option = OptionHelper::createUoMOption($uomList, $baseUom);
 
 ?>
 <div id="tabs" style="font-size: 9.5pt">
@@ -40,29 +44,20 @@ echo $error_msg;
         echo $key;
         ?>" />
          <div class="form-group margin-bottom">
-            <label class="control-label col-sm-2" for="inputTag">Unit of Measurement</label>
+            <label class="control-label col-sm-2" for="inputTag">Group Name</label>
             <div class="col-sm-3">
-               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="uomName" value="<?php
-            echo (! $dto == null) ? $dto->getUomName() : "";
+               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="groupName" value="<?php
+            echo (! $dto == null) ? $dto->getGroupName() : "";
             ?>">
             </div>
          </div>
-         <div class="form-group margin-bottom">
-            <label class="control-label col-sm-2" for="inputTag">Code</label>
-            <div class="col-sm-3">
-               <input class="form-control input-sm" type="text" id="inputTag" placeholder="" name="uomCode" value="<?php
-            echo (! $dto == null) ? $dto->getUomCode() : "";
-            ?>">
-            </div>
-         </div>
-
-          <div class="form-group margin-bottom required">
+         <div class="form-group margin-bottom required">
             <label class="control-label col-sm-2"><?php
 
-            echo $this->translate("Standard Unit");
+            echo $this->translate("Base Unit of Measurment");
             ?></label>
             <div class="col-sm-3">
-               <select name="standardUom" id="standardUom_id" class="form-control input-sm">
+               <select name="baseUom" id="baseUom_id" class="form-control input-sm">
                   <option value=""><?php
 
                 echo $this->translate("Select Standard unit");
@@ -73,7 +68,6 @@ echo $error_msg;
    				</select>
             </div>
          </div>
-
          <div class="form-group margin-bottom">
             <label class="control-label col-sm-2" for="inputDescription">remarks</label>
             <div class="col-sm-3">

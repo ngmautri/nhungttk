@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AppUomGroupMember
  *
- * @ORM\Table(name="app_uom_group_member", uniqueConstraints={@ORM\UniqueConstraint(name="idtable1_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="app_uom_group_member_FK1_idx", columns={"group_id"}), @ORM\Index(name="app_uom_group_member_FK2_idx", columns={"uom_id"}), @ORM\Index(name="app_uom_group_member_FK3_idx", columns={"base_uom_id"}), @ORM\Index(name="app_uom_group_member_FK4_idx", columns={"created_by"}), @ORM\Index(name="app_uom_group_member_FK5_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="app_uom_group_member", uniqueConstraints={@ORM\UniqueConstraint(name="idtable1_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="app_uom_group_member_FK1_idx", columns={"group_id"}), @ORM\Index(name="app_uom_group_member_FK4_idx", columns={"created_by"}), @ORM\Index(name="app_uom_group_member_FK5_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class AppUomGroupMember
@@ -20,6 +20,20 @@ class AppUomGroupMember
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="uom_id", type="integer", nullable=true)
+     */
+    private $uomId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="base_uom_id", type="integer", nullable=true)
+     */
+    private $baseUomId;
 
     /**
      * @var boolean
@@ -43,11 +57,39 @@ class AppUomGroupMember
     private $createdOn;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
-     * @ORM\Column(name="last_change_on", type="integer", nullable=true)
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="counter_uom", type="string", length=45, nullable=true)
+     */
+    private $counterUom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="convert_factor", type="decimal", precision=15, scale=0, nullable=true)
+     */
+    private $convertFactor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="group_name", type="string", length=45, nullable=true)
+     */
+    private $groupName;
 
     /**
      * @var \Application\Entity\AppUomGroup
@@ -58,26 +100,6 @@ class AppUomGroupMember
      * })
      */
     private $group;
-
-    /**
-     * @var \Application\Entity\NmtApplicationUom
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="uom_id", referencedColumnName="id")
-     * })
-     */
-    private $uom;
-
-    /**
-     * @var \Application\Entity\NmtApplicationUom
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="base_uom_id", referencedColumnName="id")
-     * })
-     */
-    private $baseUom;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -109,6 +131,54 @@ class AppUomGroupMember
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set uomId
+     *
+     * @param integer $uomId
+     *
+     * @return AppUomGroupMember
+     */
+    public function setUomId($uomId)
+    {
+        $this->uomId = $uomId;
+
+        return $this;
+    }
+
+    /**
+     * Get uomId
+     *
+     * @return integer
+     */
+    public function getUomId()
+    {
+        return $this->uomId;
+    }
+
+    /**
+     * Set baseUomId
+     *
+     * @param integer $baseUomId
+     *
+     * @return AppUomGroupMember
+     */
+    public function setBaseUomId($baseUomId)
+    {
+        $this->baseUomId = $baseUomId;
+
+        return $this;
+    }
+
+    /**
+     * Get baseUomId
+     *
+     * @return integer
+     */
+    public function getBaseUomId()
+    {
+        return $this->baseUomId;
     }
 
     /**
@@ -186,7 +256,7 @@ class AppUomGroupMember
     /**
      * Set lastChangeOn
      *
-     * @param integer $lastChangeOn
+     * @param \DateTime $lastChangeOn
      *
      * @return AppUomGroupMember
      */
@@ -200,11 +270,107 @@ class AppUomGroupMember
     /**
      * Get lastChangeOn
      *
-     * @return integer
+     * @return \DateTime
      */
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set counterUom
+     *
+     * @param string $counterUom
+     *
+     * @return AppUomGroupMember
+     */
+    public function setCounterUom($counterUom)
+    {
+        $this->counterUom = $counterUom;
+
+        return $this;
+    }
+
+    /**
+     * Get counterUom
+     *
+     * @return string
+     */
+    public function getCounterUom()
+    {
+        return $this->counterUom;
+    }
+
+    /**
+     * Set convertFactor
+     *
+     * @param string $convertFactor
+     *
+     * @return AppUomGroupMember
+     */
+    public function setConvertFactor($convertFactor)
+    {
+        $this->convertFactor = $convertFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get convertFactor
+     *
+     * @return string
+     */
+    public function getConvertFactor()
+    {
+        return $this->convertFactor;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return AppUomGroupMember
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set groupName
+     *
+     * @param string $groupName
+     *
+     * @return AppUomGroupMember
+     */
+    public function setGroupName($groupName)
+    {
+        $this->groupName = $groupName;
+
+        return $this;
+    }
+
+    /**
+     * Get groupName
+     *
+     * @return string
+     */
+    public function getGroupName()
+    {
+        return $this->groupName;
     }
 
     /**
@@ -229,54 +395,6 @@ class AppUomGroupMember
     public function getGroup()
     {
         return $this->group;
-    }
-
-    /**
-     * Set uom
-     *
-     * @param \Application\Entity\NmtApplicationUom $uom
-     *
-     * @return AppUomGroupMember
-     */
-    public function setUom(\Application\Entity\NmtApplicationUom $uom = null)
-    {
-        $this->uom = $uom;
-
-        return $this;
-    }
-
-    /**
-     * Get uom
-     *
-     * @return \Application\Entity\NmtApplicationUom
-     */
-    public function getUom()
-    {
-        return $this->uom;
-    }
-
-    /**
-     * Set baseUom
-     *
-     * @param \Application\Entity\NmtApplicationUom $baseUom
-     *
-     * @return AppUomGroupMember
-     */
-    public function setBaseUom(\Application\Entity\NmtApplicationUom $baseUom = null)
-    {
-        $this->baseUom = $baseUom;
-
-        return $this;
-    }
-
-    /**
-     * Get baseUom
-     *
-     * @return \Application\Entity\NmtApplicationUom
-     */
-    public function getBaseUom()
-    {
-        return $this->baseUom;
     }
 
     /**

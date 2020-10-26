@@ -2,13 +2,12 @@
 namespace ApplicationTest\UomTest;
 
 use Application\Application\Contracts\GenericDTOAssembler;
-use Application\Entity\NmtApplicationUom;
+use Application\Entity\AppUomGroup;
 use Procure\Domain\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
-use Application\Entity\AppUomGroup;
 use Application\Entity\AppUomGroupMember;
 
-class UomDTOAssemblerTest extends PHPUnit_Framework_TestCase
+class DTOCodeGenerateTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
@@ -18,8 +17,8 @@ class UomDTOAssemblerTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            $result = GenericDTOAssembler::createGetMapping(AppUomGroup::::class);
-            \var_dump(($result));
+            $result = GenericDTOAssembler::createGetMapping(AppUomGroupMember::class);
+            // \var_dump(($result));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

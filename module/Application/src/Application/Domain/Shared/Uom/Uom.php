@@ -62,6 +62,7 @@ final class Uom extends BaseUom implements \JsonSerializable
     public function __construct($uomName, $uomCode = null)
     {
         Assert::stringNotEmpty($uomName);
+        Assert::maxLength($uomName, 45);
 
         // ignore case incentive.
         $this->uomName = trim(\strtolower($uomName));

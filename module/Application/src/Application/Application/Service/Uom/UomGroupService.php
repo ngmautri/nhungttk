@@ -1,13 +1,12 @@
 <?php
 namespace Application\Application\Service\Uom;
 
-use Application\Application\Service\Uom\Contracts\UomServiceInterface;
-use Application\Application\Service\ValueObject\ValueObjectService;
-use Application\Domain\Shared\Uom\Uom;
-use Application\Infrastructure\Persistence\Doctrine\UomCrudRepositoryImpl;
-use Application\Infrastructure\Persistence\Filter\UomSqlFilter;
+use Application\Application\Service\ValueObject\CompositeValueObjectService;
+use Application\Domain\Shared\Uom\UomGroup;
+use Application\Infrastructure\Persistence\Doctrine\UomGroupCrudRepositoryImpl;
+use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
 
-class UomGroupService extends ValueObjectService implements UomServiceInterface
+class UomGroupService extends CompositeValueObjectService
 {
 
     /**
@@ -17,7 +16,7 @@ class UomGroupService extends ValueObjectService implements UomServiceInterface
      */
     protected function getCrudRepository()
     {
-        return new UomCrudRepositoryImpl($this->getDoctrineEM());
+        return new UomGroupCrudRepositoryImpl($this->getDoctrineEM());
     }
 
     /**
@@ -27,17 +26,17 @@ class UomGroupService extends ValueObjectService implements UomServiceInterface
      */
     protected function getFilter()
     {
-        return new UomSqlFilter();
+        return new DefaultListSqlFilter();
     }
 
     protected function createValueObjectFromArray($data)
     {
-        return Uom::createFromArray($data);
+        return UomGroup::createFromArray($data);
     }
 
     protected function createValueObjectFromSnapshot($snapshot)
     {
-        return Uom::createFrom($snapshot);
+        return UomGroup::createFrom($snapshot);
     }
 
     public function generateCode()

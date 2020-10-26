@@ -16,7 +16,7 @@ abstract class ValueObjectService extends AbstractService
      *
      * @var ArrayCollection $valueCollecion;
      */
-    protected static $valueCollecion;
+    protected $valueCollecion;
 
     /**
      *
@@ -44,21 +44,23 @@ abstract class ValueObjectService extends AbstractService
      */
     public function getValueCollecion(DefaultListSqlFilter $filter)
     {
-        if (static::$valueCollecion != null) {
+        Assert::notNull($filter);
+
+        if ($this->valueCollecion != null) {
 
             /**
              *
              * @var ArrayCollection $collection
              */
-            $collection = static::$valueCollecion;
+            $collection = $this->valueCollecion;
             return $collection->slice($filter->getOffset(), $filter->getLimit());
         }
 
         Assert::notNull($this->getDoctrineEM());
         $results = $this->getCrudRepository()->getList($filter);
         Assert::notNull($results);
-        static::$valueCollecion = $results;
-        return static::$valueCollecion;
+        $this->valueCollecion = $results;
+        return $this->valueCollecion;
     }
 
     public function getTotal()
@@ -97,7 +99,7 @@ abstract class ValueObjectService extends AbstractService
 
         $this->getCrudRepository()->save($valueObject->makeSnapshot());
         $collection->add($valueObject);
-        static::$valueCollecion = $collection;
+        $this->valueCollecion = $collection;
     }
 
     /**
@@ -121,7 +123,7 @@ abstract class ValueObjectService extends AbstractService
 
         $this->getCrudRepository()->save($valueObject->makeSnapshot());
         $collection->add($valueObject);
-        static::$valueCollecion = $collection;
+        $this->valueCollecion = $collection;
     }
 
     public function getByKey($key)
@@ -164,6 +166,6 @@ abstract class ValueObjectService extends AbstractService
         }
 
         $this->getCrudRepository()->save($valueObject1->makeSnapshot());
-        static::$valueCollecion = $collection;
+        $this->valueCollecion = $collection;
     }
 }

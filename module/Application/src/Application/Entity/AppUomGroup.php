@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AppUomGroup
  *
- * @ORM\Table(name="app_uom_group", indexes={@ORM\Index(name="app_uom_group_FK1_idx", columns={"created_by"}), @ORM\Index(name="app_uom_group_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="app_uom_group", indexes={@ORM\Index(name="app_uom_group_FK1_idx", columns={"created_by"}), @ORM\Index(name="app_uom_group_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="app_uom_group_FK3_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class AppUomGroup
@@ -57,6 +57,13 @@ class AppUomGroup
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="base_uom", type="string", length=45, nullable=true)
+     */
+    private $baseUom;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -75,6 +82,16 @@ class AppUomGroup
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -209,6 +226,30 @@ class AppUomGroup
     }
 
     /**
+     * Set baseUom
+     *
+     * @param string $baseUom
+     *
+     * @return AppUomGroup
+     */
+    public function setBaseUom($baseUom)
+    {
+        $this->baseUom = $baseUom;
+
+        return $this;
+    }
+
+    /**
+     * Get baseUom
+     *
+     * @return string
+     */
+    public function getBaseUom()
+    {
+        return $this->baseUom;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -254,5 +295,29 @@ class AppUomGroup
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return AppUomGroup
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

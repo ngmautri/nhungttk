@@ -6,10 +6,14 @@ use Application\Application\Event\Handler\DummyEventHandlerFactory;
 use Application\Application\Eventbus\PsrHandlerResolver;
 use Application\Application\Eventbus\PsrHandlerResolverFactory;
 use Application\Application\Logger\LoggerFactory;
-use Application\Infrastructure\Doctrine\MessageStoreRepository;
-use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
+use Application\Application\Service\Shared\CommonCollection;
+use Application\Application\Service\Shared\CommonCollectionFactory;
+use Application\Application\Service\Uom\UomGroupService;
+use Application\Application\Service\Uom\UomGroupServiceFactory;
 use Application\Application\Service\Uom\UomService;
 use Application\Application\Service\Uom\UomServiceFactory;
+use Application\Infrastructure\Doctrine\MessageStoreRepository;
+use Application\Infrastructure\Doctrine\Factory\MessageStoreRepositoryFactory;
 
 /**
  *
@@ -151,6 +155,13 @@ return array(
                 'label' => 'Unit Of Measures',
                 'route' => 'application/default',
                 'controller' => 'uom',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            array(
+                'label' => 'Unit Of Measures Group',
+                'route' => 'application/default',
+                'controller' => 'uom-group',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
@@ -315,6 +326,9 @@ return array(
             "AppCache" => CacheFactory::class,
             "RedisCache" => RedisCacheFactory::class,
             UomService::class => UomServiceFactory::class,
+            UomGroupService::class => UomGroupServiceFactory::class,
+
+            CommonCollection::class => CommonCollectionFactory::class,
 
             // Event Handler Register
             DummyEventHandler::class => DummyEventHandlerFactory::class,
@@ -339,7 +353,8 @@ return array(
     'controller_plugins' => array(
         'factories' => array(
             'AttachmentPlugin' => 'Application\Controller\Plugin\AttachmentPluginFactory',
-            'Nmtplugin' => 'Application\Controller\Plugin\NmtPluginFactory'
+            'Nmtplugin' => 'Application\Controller\Plugin\NmtPluginFactory',
+            'sharedCollection' => 'Application\Controller\Plugin\SharedCollectionPluginFactory'
         )
     ),
 
@@ -361,6 +376,8 @@ return array(
             'Application\Controller\Department' => 'Application\Controller\DepartmentControllerFactory',
             'Application\Controller\Currency' => 'Application\Controller\CurrencyControllerFactory',
             'Application\Controller\Uom' => 'Application\Controller\UomControllerFactory',
+            'Application\Controller\UomGroup' => 'Application\Controller\UomGroupControllerFactory',
+
             'Application\Controller\Company' => 'Application\Controller\CompanyControllerFactory',
             'Application\Controller\PmtMethod' => 'Application\Controller\PmtMethodControllerFactory',
             'Application\Controller\ItemCategory' => 'Application\Controller\ItemCategoryControllerFactory',

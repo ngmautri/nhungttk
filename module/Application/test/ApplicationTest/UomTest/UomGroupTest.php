@@ -1,10 +1,13 @@
 <?php
 namespace ApplicationTest\UomTest;
 
-use PHPUnit_Framework_TestCase;
-use Application\Domain\Shared\Uom\Uom;
-use Application\Domain\Shared\Uom\UomGroupSnapshot;
+use ApplicationTest\Bootstrap;
 use Application\Domain\Shared\Uom\UomGroup;
+use Application\Domain\Shared\Uom\UomGroupSnapshot;
+use Application\Domain\Shared\Uom\UomPairSnapshot;
+use Application\Infrastructure\Persistence\Doctrine\UomCrudRepositoryImpl;
+use PHPUnit_Framework_TestCase;
+use Application\Infrastructure\Persistence\Doctrine\UomGroupCrudRepositoryImpl;
 
 class UomGroupTest extends PHPUnit_Framework_TestCase
 {
@@ -14,9 +17,31 @@ class UomGroupTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $snapshot = new UomGroupSnapshot();
-        $snapshot->setGroupName("Volumn Group");
-        $snapshot->setBaseUom("each");
-        \var_dump(UomGroup::createFrom($snapshot));
+        /*
+         * $snapshot = new UomGroupSnapshot();
+         * $snapshot->setGroupName("Volumn Group");
+         * $snapshot->setBaseUom("each");
+         * $snapshot->setCompany(1);
+         * $g = UomGroup::createFrom($snapshot);
+         */
+        $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $rep = new UomGroupCrudRepositoryImpl($doctrineEM);
+        $g = $rep->getByKey('volumn uom');
+        \var_dump($g);
+
+        $pairSnapshot = new UomPairSnapshot();
+        $pairSnapshot->counterUom = 'each';
+        $pairSnapshot->convertFactor = 12;
+
+        $g->createPairFrom($pairSnapshot, $rep);
+        /*
+         * $baseUom = new Uom('each', 'm');
+         * $counterUom = new Uom('meter1', 'm');
+         * $convertFactor = 12;
+         *
+         * $pair = new UomPair($baseUom, $counterUom, $convertFactor);
+         * $g->addUomPair($pair);
+         */
+        \var_dump($g);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Application\Domain\Shared\Uom;
 
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\ValueObject;
 use Webmozart\Assert\Assert;
 
@@ -11,6 +12,10 @@ use Webmozart\Assert\Assert;
  */
 final class UomPair extends ValueObject implements \JsonSerializable
 {
+
+    private $baseUomObject;
+
+    private $counterUomObject;
 
     private $id;
 
@@ -40,16 +45,35 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     private $lastChangeBy;
 
+    final public static function createFrom(UomPairSnapshot $snapshot)
+    {
+        Assert::notNull($snapshot);
+        $baseUom = new Uom($snapshot->getBaseUom());
+        $counterUom = new Uom($snapshot->getCounterUom());
+        $convertFactor = $snapshot->getConvertFactor();
+
+        $instance = new self($baseUom, $counterUom, $convertFactor);
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        return $instance;
+    }
+
     public function makeSnapshot()
-    {}
+    {
+        return SnapshotAssembler::createSnapshotFrom($this, new UomPairSnapshot());
+    }
 
     public function getAttributesToCompare()
     {
         return [
-            $this->getBaseUom()->getUomName(),
-            $this->getCounterUom()->getUomName(),
+            $this->getBaseUom(),
+            $this->getCounterUom(),
             $this->getConvertFactor()
         ];
+    }
+
+    public function __toString()
+    {
+        return \sprintf("%s,%s,%s", $this->getBaseUom()->getUomName(), $this->getBaseUom()->getUomName(), $this->getConvertFactor());
     }
 
     /**
@@ -63,15 +87,21 @@ final class UomPair extends ValueObject implements \JsonSerializable
     {
         Assert::numeric($convertFactor);
 
-        $this->baseUom = $baseUom;
-        $this->counterUom = $counterUom;
+        $this->baseUom = $baseUom->getUomName();
+        $this->baseUomObject = $baseUom;
+
+        $this->counterUom = $counterUom->getUomName();
+        $this->counterUomObject = $counterUom;
 
         $this->convertFactor = $convertFactor;
         $this->description = $description;
 
         $this->pairName = \sprintf("%s", $this->baseUom);
+
         if (! $baseUom->equals($counterUom)) {
             $this->pairName = \sprintf("%s (%s %s)", $this->counterUom, $this->convertFactor, $this->baseUom);
+        } else {
+            $this->convertFactor = 1;
         }
     }
 
@@ -82,7 +112,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      */
     public function compareTo(UomPair $other)
     {
-        return $this->baseUom->equals($other->baseUom) && $this->counterUom->equals($other->counterUom) && $this->convertFactor === $other->convertFactor;
+        return $this->baseUomOject->equals($other->baseUom) && $this->counterUomObject->equals($other->counterUom) && $this->convertFactor === $other->convertFactor;
     }
 
     public function jsonSerialize()
@@ -98,6 +128,42 @@ final class UomPair extends ValueObject implements \JsonSerializable
      *
      * @return \Application\Domain\Shared\Uom\Uom
      */
+    public function getBaseUomObject()
+    {
+        return $this->baseUomObject;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Uom\Uom
+     */
+    public function getCounterUomObject()
+    {
+        return $this->counterUomObject;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getPairName()
+    {
+        return $this->pairName;
+    }
+
+    /**
+     *
+     * @return Ambigous <mixed, string>
+     */
     public function getBaseUom()
     {
         return $this->baseUom;
@@ -105,7 +171,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     /**
      *
-     * @return \Application\Domain\Shared\Uom\Uom
+     * @return Ambigous <mixed, string>
      */
     public function getCounterUom()
     {
@@ -114,7 +180,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     /**
      *
-     * @return int
+     * @return Ambigous <number, int>
      */
     public function getConvertFactor()
     {
@@ -128,15 +194,6 @@ final class UomPair extends ValueObject implements \JsonSerializable
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getPairName()
-    {
-        return $this->pairName;
     }
 
     /**
@@ -209,122 +266,5 @@ final class UomPair extends ValueObject implements \JsonSerializable
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
-    }
-
-    /**
-     *
-     * @param string $pairName
-     */
-    private function setPairName($pairName)
-    {
-        $this->pairName = $pairName;
-    }
-
-    /**
-     *
-     * @param \Application\Domain\Shared\Uom\Uom $baseUom
-     */
-    private function setBaseUom($baseUom)
-    {
-        $this->baseUom = $baseUom;
-    }
-
-    /**
-     *
-     * @param \Application\Domain\Shared\Uom\Uom $counterUom
-     */
-    private function setCounterUom($counterUom)
-    {
-        $this->counterUom = $counterUom;
-    }
-
-    /**
-     *
-     * @param int $convertFactor
-     */
-    private function setConvertFactor($convertFactor)
-    {
-        $this->convertFactor = $convertFactor;
-    }
-
-    /**
-     *
-     * @param string $description
-     */
-    private function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     *
-     * @param mixed $isActive
-     */
-    private function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $remarks
-     */
-    private function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     *
-     * @param mixed $createdOn
-     */
-    private function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeOn
-     */
-    private function setLastChangeOn($lastChangeOn)
-    {
-        $this->lastChangeOn = $lastChangeOn;
-    }
-
-    /**
-     *
-     * @param mixed $groupName
-     */
-    private function setGroupName($groupName)
-    {
-        $this->groupName = $groupName;
-    }
-
-    /**
-     *
-     * @param mixed $group
-     */
-    private function setGroup($group)
-    {
-        $this->group = $group;
-    }
-
-    /**
-     *
-     * @param mixed $createdBy
-     */
-    private function setCreatedBy($createdBy)
-    {
-        $this->createdBy = $createdBy;
-    }
-
-    /**
-     *
-     * @param mixed $lastChangeBy
-     */
-    private function setLastChangeBy($lastChangeBy)
-    {
-        $this->lastChangeBy = $lastChangeBy;
     }
 }

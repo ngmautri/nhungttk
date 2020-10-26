@@ -1,6 +1,8 @@
 <?php
 namespace Application\Infrastructure\Persistence\Contracts;
 
+use Application\Domain\Shared\ValueObject;
+
 /**
  * Value Object
  *
@@ -10,7 +12,7 @@ namespace Application\Infrastructure\Persistence\Contracts;
 interface CompositeCrudRepositoryInterface extends CrudRepositoryInterface
 {
 
-    public function saveMember($rootObject, $localObject);
+    public function saveMember(ValueObject $rootObject, ValueObject $localObject);
 
     public function saveAll($valueObject);
 }

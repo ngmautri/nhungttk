@@ -154,8 +154,6 @@ final class UomGroupMapper
         }
 
         // $entity->setId($snapshot->id);
-        $entity->setUomId($snapshot->uomId);
-        $entity->setBaseUomId($snapshot->baseUomId);
         $entity->setIsActive($snapshot->isActive);
         $entity->setRemarks($snapshot->remarks);
         $entity->setCounterUom($snapshot->counterUom);

@@ -11,8 +11,6 @@ use Application\Domain\Shared\AbstractDTO;
 class UomGroupSnapshot extends AbstractDTO
 {
 
-    public $baseUomObject;
-
     public $id;
 
     public $uuid;
@@ -32,15 +30,6 @@ class UomGroupSnapshot extends AbstractDTO
     public $lastChangeBy;
 
     public $company;
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getBaseUomObject()
-    {
-        return $this->baseUomObject;
-    }
 
     /**
      *

@@ -1,10 +1,12 @@
 <?php
 namespace Application\Domain\Company;
 
+use Webmozart\Assert\Assert;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CompanyId
 {
@@ -15,20 +17,18 @@ class CompanyId
      */
     private $id;
 
-    /**
-     *
-     * @var string
-     */
-    private $uuid;
+    public function __construct($id)
+    {
+        Assert::integer($id, "Company Id not valid!");
+        $this->id = $id;
+    }
 
     /**
      *
-     * @param string $id
-     * @param string $uuid
+     * @return string
      */
-    public function __construct($uuid, $id = null)
+    public function getId()
     {
-        $this->id = $id;
-        $this->uuid = $uuid;
+        return $this->id;
     }
 }

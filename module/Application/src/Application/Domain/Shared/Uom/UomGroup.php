@@ -4,6 +4,8 @@ namespace Application\Domain\Shared\Uom;
 use Application\Domain\Shared\SnapshotAssembler;
 use Webmozart\Assert\Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Ramsey\Uuid\Uuid;
+use Application\Infrastructure\Persistence\Contracts\CompositeCrudRepositoryInterface;
 
 /**
  *
@@ -17,8 +19,23 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
 
     private $members;
 
+    private $companyId;
+
     public function addUomPair(UomPair $pair)
     {
+        Assert::notNull($pair);
+        if ($this->getMembers()->contains($pair)) {
+            throw new \InvalidArgumentException(\sprintf("UOM exits [%s]", $pair->__toString()));
+        }
+
+        if (! $pair->getBaseUomObject()->equals($this->getBaseUomObject())) {
+            throw new \InvalidArgumentException(\sprintf("Base UoM not valid %s", ""));
+        }
+
+        if (! $pair->getBaseUomObject()->equals($this->getBaseUomObject())) {
+            throw new \InvalidArgumentException(\sprintf("Base UoM not valid %s", ""));
+        }
+
         $this->getMembers()->add($pair);
     }
 
@@ -27,14 +44,24 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
      * @param UomGroupSnapshot $snapshot
      * @return \Application\Domain\Shared\Uom\UomGroup
      */
+    public function createPairFrom(UomPairSnapshot $snapshot, CompositeCrudRepositoryInterface $repository)
+    {
+        Assert::notNull($repository, 'Repsository  not found!');
+        Assert::notNull($snapshot, 'Input data not found!');
+
+        $snapshot->groupName = $this->getGroupName();
+        $snapshot->baseUom = $this->getBaseUom();
+        $pair = UomPair::createFrom($snapshot);
+        $this->addUomPair($pair);
+        $repository->saveMember($this, $pair);
+    }
+
     public static function createFrom(UomGroupSnapshot $snapshot)
     {
-        $instance = new UomGroup('tmp', new Uom('tmp'));
+        $baseUom = new Uom($snapshot->baseUom);
+        $instance = new self($snapshot->groupName, $baseUom);
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
-        Assert::stringNotEmpty($instance->getGroupName());
-        $baseUom = new Uom($instance->getBaseUom());
-        $instance->baseUomObject = $baseUom;
         return $instance;
     }
 
@@ -80,6 +107,8 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
         // ignore case incentive.
         $this->groupName = trim(\strtolower($groupName));
         $this->baseUomObject = $baseUom;
+        $this->baseUom = $baseUom->getUomName();
+        $this->uuid = Uuid::uuid4()->toString();
     }
 
     /**
@@ -129,10 +158,10 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
      */
     public function getMembers()
     {
-        if ($this->members != null) {
-            return $this->members;
+        if ($this->members == null) {
+            $this->members = new ArrayCollection();
         }
 
-        return new ArrayCollection();
+        return $this->members;
     }
 }

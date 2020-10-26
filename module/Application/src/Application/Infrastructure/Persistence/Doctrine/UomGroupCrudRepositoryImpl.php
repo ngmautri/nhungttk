@@ -1,8 +1,11 @@
 <?php
 namespace Application\Infrastructure\Persistence\Doctrine;
 
+use Application\Domain\Shared\ValueObject;
 use Application\Domain\Shared\Uom\UomGroup;
 use Application\Domain\Shared\Uom\UomGroupSnapshot;
+use Application\Domain\Shared\Uom\UomPair;
+use Application\Domain\Shared\Uom\UomPairSnapshot;
 use Application\Infrastructure\Mapper\UomGroupMapper;
 use Application\Infrastructure\Persistence\AbstractDoctrineRepository;
 use Application\Infrastructure\Persistence\Contracts\CompositeCrudRepositoryInterface;
@@ -11,6 +14,7 @@ use Application\Infrastructure\Persistence\Filter\DefaultListSqlFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
 /**
@@ -22,6 +26,8 @@ class UomGroupCrudRepositoryImpl extends AbstractDoctrineRepository implements C
 {
 
     const ROOT_ENTITY_NAME = "\Application\Entity\AppUomGroup";
+
+    const LOCAL_ENTITY_NAME = "\Application\Entity\AppUomGroupMember";
 
     /**
      *
@@ -150,9 +156,69 @@ class UomGroupCrudRepositoryImpl extends AbstractDoctrineRepository implements C
     public function delete($valueObject)
     {}
 
-    public function saveMember($rootObject, $localObject)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Infrastructure\Persistence\Contracts\CompositeCrudRepositoryInterface::saveMember()
+     */
+    public function saveMember(ValueObject $rootObject, ValueObject $localObject)
+    {
+        Assert::isInstanceOf($rootObject, UomGroup::class, 'UomGroup entity not found!');
+        $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootObject->getId());
+        Assert::notNull($rootEntityDoctrine, 'Doctrine UomGroup entity not found!');
+
+        $localSnapshot = $this->_getLocalSnapshot($localObject);
+
+        $isFlush = true;
+        $rowEntityDoctrine = $this->_storeMember($rootEntityDoctrine, $localSnapshot, $isFlush);
+
+        Assert::notNull($rowEntityDoctrine, 'Something wrong. Row Doctrine Entity not created');
+
+        $localSnapshot->id = $rowEntityDoctrine->getId();
+        return $localSnapshot;
+    }
 
     public function saveAll($valueObject)
     {}
+
+    private function _storeMember($rootEntityDoctrine, UomPairSnapshot $localSnapshot, $isFlush)
+    {
+
+        /**
+         *
+         * @var \Application\Entity\AppUomGroupMember $rowEntityDoctrine ;
+         */
+        if ($localSnapshot->getId() > 0) {
+
+            $rowEntityDoctrine = $this->doctrineEM->find(self::LOCAL_ENTITY_NAME, $localSnapshot->getId());
+            Assert::notNull($rowEntityDoctrine, sprintf("Doctrine row entity not found! #%s", $localSnapshot->getId()));
+        } else {
+            $localClassName = self::LOCAL_ENTITY_NAME;
+            $rowEntityDoctrine = new $localClassName();
+            $rowEntityDoctrine->setGroup($rootEntityDoctrine);
+        }
+
+        $rowEntityDoctrine = UomGroupMapper::mapUomPairSnapshotEntity($this->getDoctrineEM(), $localSnapshot, $rowEntityDoctrine);
+        $this->doctrineEM->persist($rowEntityDoctrine);
+
+        if ($isFlush) {
+            $this->doctrineEM->flush();
+        }
+
+        return $rowEntityDoctrine;
+    }
+
+    /**
+     *
+     * @param UomPair $localObject
+     * @return UomPairSnapshot
+     */
+    private function _getLocalSnapshot(UomPair $localObject)
+    {
+        Assert::notNull($localObject);
+        $localSnapshot = $localObject->makeSnapshot();
+        Assert::notNull($localSnapshot);
+
+        return $localSnapshot;
+    }
 }

@@ -24,9 +24,6 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
     public function addUomPair(UomPair $pair)
     {
         Assert::notNull($pair);
-        if ($this->getMembers()->contains($pair)) {
-            throw new \InvalidArgumentException(\sprintf("UOM exits [%s]", $pair->__toString()));
-        }
 
         if (! $pair->getBaseUomObject()->equals($this->getBaseUomObject())) {
             throw new \InvalidArgumentException(\sprintf("Base UoM not valid %s", ""));
@@ -34,6 +31,12 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
 
         if (! $pair->getBaseUomObject()->equals($this->getBaseUomObject())) {
             throw new \InvalidArgumentException(\sprintf("Base UoM not valid %s", ""));
+        }
+
+        foreach ($this->getMembers() as $m) {
+            if ($pair->equals($m)) {
+                throw new \InvalidArgumentException(\sprintf("Pair exits [%s]", $pair->__toString()));
+            }
         }
 
         $this->getMembers()->add($pair);
@@ -52,6 +55,7 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
         $snapshot->groupName = $this->getGroupName();
         $snapshot->baseUom = $this->getBaseUom();
         $pair = UomPair::createFrom($snapshot);
+
         $this->addUomPair($pair);
         $repository->saveMember($this, $pair);
     }

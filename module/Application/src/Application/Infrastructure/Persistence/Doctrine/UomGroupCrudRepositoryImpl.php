@@ -45,13 +45,30 @@ class UomGroupCrudRepositoryImpl extends AbstractDoctrineRepository implements C
          * @var \Application\Entity\AppUomGroup $doctrineEntity ;
          */
 
-        $entity = $this->doctrineEM->getRepository('\Application\Entity\AppUomGroup')->findOneBy($criteria);
-        if ($entity == null) {
+        $doctrineEntity = $this->doctrineEM->getRepository('\Application\Entity\AppUomGroup')->findOneBy($criteria);
+        if ($doctrineEntity == null) {
             return null;
         }
 
-        $snapshot = UomGroupMapper::createSnapshot($this->getDoctrineEM(), $entity, new UomGroupSnapshot());
-        return UomGroup::createFrom($snapshot);
+        $snapshot = UomGroupMapper::createSnapshot($this->getDoctrineEM(), $doctrineEntity, new UomGroupSnapshot());
+
+        $rootObject = UomGroup::createFrom($snapshot);
+        $rows = $this->getMemberById($doctrineEntity->getId());
+
+        if (count($rows) == 0) {
+            return $rootObject;
+        }
+
+        foreach ($rows as $r) {
+            /**@var \Application\Entity\AppUomGroupMember $localEnityDoctrine ;*/
+            $localEnityDoctrine = $r;
+            $localSnapshot = UomGroupMapper::createUomPairSnapshot($this->getDoctrineEM(), $localEnityDoctrine, new UomPairSnapshot());
+            $localSnapshot->baseUom = $rootObject->getBaseUom();
+            $localObject = UomPair::createFrom($localSnapshot);
+            $rootObject->getMembers()->add($localObject);
+        }
+
+        return $rootObject;
     }
 
     /**
@@ -180,6 +197,27 @@ class UomGroupCrudRepositoryImpl extends AbstractDoctrineRepository implements C
 
     public function saveAll($valueObject)
     {}
+
+    private function getMemberById($id)
+    {
+        $sql = "
+select
+*
+from app_uom_group_member
+where app_uom_group_member.group_id=%s";
+
+        $sql = sprintf($sql, $id);
+
+        // echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\AppUomGroupMember', 'app_uom_group_member');
+            $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
+            return $query->getResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 
     private function _storeMember($rootEntityDoctrine, UomPairSnapshot $localSnapshot, $isFlush)
     {

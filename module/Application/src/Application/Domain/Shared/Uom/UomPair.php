@@ -48,12 +48,19 @@ final class UomPair extends ValueObject implements \JsonSerializable
     final public static function createFrom(UomPairSnapshot $snapshot)
     {
         Assert::notNull($snapshot);
+
         $baseUom = new Uom($snapshot->getBaseUom());
         $counterUom = new Uom($snapshot->getCounterUom());
         $convertFactor = $snapshot->getConvertFactor();
+        Assert::numeric($convertFactor);
 
         $instance = new self($baseUom, $counterUom, $convertFactor);
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+
+        $instance->counterUomObject = $baseUom;
+        $instance->counterUomObject = $counterUom;
+        $instance->convertFactor = $convertFactor;
+
         return $instance;
     }
 
@@ -65,15 +72,16 @@ final class UomPair extends ValueObject implements \JsonSerializable
     public function getAttributesToCompare()
     {
         return [
-            $this->getBaseUom(),
-            $this->getCounterUom(),
-            $this->getConvertFactor()
+            \strtolower($this->getGroupName()),
+            \strtolower($this->getBaseUom()),
+            \strtolower($this->getCounterUom()),
+            (int) $this->getConvertFactor()
         ];
     }
 
     public function __toString()
     {
-        return \sprintf("%s,%s,%s", $this->getBaseUom()->getUomName(), $this->getBaseUom()->getUomName(), $this->getConvertFactor());
+        return \sprintf("%s,%s,%s", $this->getBaseUom(), $this->getCounterUom(), $this->getConvertFactor());
     }
 
     /**
@@ -87,11 +95,11 @@ final class UomPair extends ValueObject implements \JsonSerializable
     {
         Assert::numeric($convertFactor);
 
-        $this->baseUom = $baseUom->getUomName();
         $this->baseUomObject = $baseUom;
+        $this->baseUom = $baseUom->getUomName();
 
-        $this->counterUom = $counterUom->getUomName();
         $this->counterUomObject = $counterUom;
+        $this->counterUom = $counterUom->getUomName();
 
         $this->convertFactor = $convertFactor;
         $this->description = $description;

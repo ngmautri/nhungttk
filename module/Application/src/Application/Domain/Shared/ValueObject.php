@@ -24,6 +24,7 @@ abstract class ValueObject extends AbstractValueObject
         if ($other == null) {
             return false;
         }
+
         return $this->getAttributesToCompare() === $other->getAttributesToCompare();
     }
 }

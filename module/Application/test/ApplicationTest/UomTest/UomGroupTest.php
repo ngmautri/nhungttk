@@ -26,12 +26,12 @@ class UomGroupTest extends PHPUnit_Framework_TestCase
          */
         $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $rep = new UomGroupCrudRepositoryImpl($doctrineEM);
-        $g = $rep->getByKey('volumn uom');
-        \var_dump($g);
+        $g = $rep->getByKey('QUANTITY UOM');
+        // \var_dump($g);
 
         $pairSnapshot = new UomPairSnapshot();
-        $pairSnapshot->counterUom = 'each';
-        $pairSnapshot->convertFactor = 12;
+        $pairSnapshot->counterUom = 'box';
+        $pairSnapshot->convertFactor = '100';
 
         $g->createPairFrom($pairSnapshot, $rep);
         /*
@@ -42,6 +42,6 @@ class UomGroupTest extends PHPUnit_Framework_TestCase
          * $pair = new UomPair($baseUom, $counterUom, $convertFactor);
          * $g->addUomPair($pair);
          */
-        \var_dump($g);
+        // \var_dump($g);
     }
 }

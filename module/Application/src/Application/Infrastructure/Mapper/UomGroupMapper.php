@@ -8,6 +8,7 @@ use Application\Entity\AppUomGroup;
 use Application\Entity\AppUomGroupMember;
 use Application\Entity\NmtApplicationUom;
 use Doctrine\ORM\EntityManager;
+use Application\Domain\Shared\Uom\UomPair;
 
 /**
  *
@@ -209,7 +210,7 @@ final class UomGroupMapper
         return $entity;
     }
 
-    public static function createUomPairSnapshot(EntityManager $doctrineEM, AppUomGroupMember $entity, UomSnapshot $snapshot)
+    public static function createUomPairSnapshot(EntityManager $doctrineEM, AppUomGroupMember $entity, UomPairSnapshot $snapshot)
     {
         if ($entity == null || $snapshot == null) {
             return null;

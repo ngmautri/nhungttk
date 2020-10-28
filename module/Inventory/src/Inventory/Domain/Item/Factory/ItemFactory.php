@@ -15,13 +15,14 @@ use Inventory\Domain\Item\ServiceItem;
 use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Domain\Item\Validator\ValidatorFactory;
 use Inventory\Domain\Service\SharedService;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemFactory
 {
@@ -38,29 +39,10 @@ class ItemFactory
             throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
         }
 
-        switch ($itemTypeId) {
-
-            case ItemType::INVENTORY_ITEM_TYPE:
-                $instance = new InventoryItem();
-                break;
-
-            case ItemType::NONE_INVENTORY_ITEM_TYPE:
-                $instance = new NoneInventoryItem();
-                break;
-
-            case ItemType::SERVICE_ITEM_TYPE:
-                $instance = new ServiceItem();
-                break;
-
-            case ItemType::FIXED_ASSET_ITEM_TYPE:
-                $instance = new FixedAssetItem();
-                break;
-            default:
-                $instance = new InventoryItem();
-                break;
-        }
-
+        $instance = self::_createItem($itemTypeId);
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        $instance->createUom();
+
         return $instance;
     }
 
@@ -109,40 +91,16 @@ class ItemFactory
      */
     public static function createFrom(ItemSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $snapshot instanceof ItemSnapshot) {
-            throw new InvalidArgumentException("ItemSnapshot not found!");
-        }
-
+        Assert::notNull($snapshot, "ItemSnapshot not found");
         $itemTypeId = $snapshot->getItemTypeId();
 
         if (! \in_array($itemTypeId, ItemType::getSupportedType())) {
             throw new InvalidArgumentException("Item type empty or not supported! #" . $snapshot->getItemTypeId());
         }
 
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
+        Assert::notNull($sharedService, "SharedService service not found");
 
-        $item = null;
-
-        switch ($itemTypeId) {
-
-            case ItemType::INVENTORY_ITEM_TYPE:
-                $item = new InventoryItem();
-                break;
-
-            case ItemType::NONE_INVENTORY_ITEM_TYPE:
-                $item = new NoneInventoryItem();
-                break;
-
-            case ItemType::SERVICE_ITEM_TYPE:
-                $item = new ServiceItem();
-                break;
-
-            case ItemType::FIXED_ASSET_ITEM_TYPE:
-                $item = new FixedAssetItem();
-                break;
-        }
+        $item = self::_createItem($itemTypeId);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -154,7 +112,8 @@ class ItemFactory
          */
         SnapshotAssembler::makeFromSnapshot($item, $snapshot);
 
-        $item->specifyItem();
+        $item->specifyItem(); // important
+        $item->updateUom();
 
         $validators = ValidatorFactory::create($itemTypeId, $sharedService);
         $item->validate($validators);
@@ -163,7 +122,7 @@ class ItemFactory
             throw new \RuntimeException($item->getNotification()->errorMessage());
         }
 
-        $item->recordedEvents = array();
+        $item->clearEvents();
 
         /**
          *
@@ -217,28 +176,7 @@ class ItemFactory
             throw new InvalidArgumentException("SharedService service not found");
         }
 
-        $item = null;
-        switch ($itemTypeId) {
-
-            case ItemType::INVENTORY_ITEM_TYPE:
-                $item = new InventoryItem();
-                break;
-
-            case ItemType::NONE_INVENTORY_ITEM_TYPE:
-                $item = new NoneInventoryItem();
-                break;
-
-            case ItemType::SERVICE_ITEM_TYPE:
-                $item = new ServiceItem();
-                break;
-
-            case ItemType::FIXED_ASSET_ITEM_TYPE:
-                $item = new FixedAssetItem();
-                break;
-            default:
-                $item = new InventoryItem();
-                break;
-        }
+        $item = self::_createItem($itemTypeId);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -284,6 +222,34 @@ class ItemFactory
         $event = new ItemUpdated($target, $defaultParams, $params);
         $item->addEvent($event);
 
+        return $item;
+    }
+
+    private static function _createItem($itemTypeId)
+    {
+        $item = null;
+        switch ($itemTypeId) {
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+                $item = new InventoryItem();
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $item = new NoneInventoryItem();
+                break;
+
+            case ItemType::SERVICE_ITEM_TYPE:
+                $item = new ServiceItem();
+                break;
+
+            case ItemType::FIXED_ASSET_ITEM_TYPE:
+                $item = new FixedAssetItem();
+                break;
+            default:
+                $item = new InventoryItem();
+                break;
+        }
+        Assert::notNull($item, 'Can not create item!');
         return $item;
     }
 }

@@ -26,14 +26,14 @@ final class Converter
         if ($qty->getUom() == $uomPair->getBaseUom()) {
 
             if ($qty->getAmount() % $uomPair->getConvertFactor() == 0) {
-                return new Quantity($qty->getAmount() / $uomPair->getConvertFactor(), $uomPair->getCounterUom());
+                return new Quantity($qty->getAmount() / $uomPair->getConvertFactor(), $uomPair->getCounterUomObject());
             } else {
                 return $qty;
             }
         }
 
         if ($qty->getUom() == $uomPair->getCounterUom()) {
-            return new Quantity($qty->getAmount() * $uomPair->getConvertFactor(), $uomPair->getBaseUom());
+            return new Quantity($qty->getAmount() * $uomPair->getConvertFactor(), $uomPair->getBaseUomObject());
         }
 
         throw new \RuntimeException("Can not convert quantity");

@@ -1,13 +1,12 @@
 <?php
 namespace Inventory\Domain\Item;
 
-use Application\Notification;
 use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ServiceItem extends GenericItem
 {
@@ -21,14 +20,6 @@ class ServiceItem extends GenericItem
         $this->setIsSparepart(0);
         $this->setMonitoredBy(null); // ignore monitoring smethod.
     }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Item\GenericItem::specificValidation()
-     */
-    public function specificValidation(Notification $notification = null)
-    {}
 
     /**
      *

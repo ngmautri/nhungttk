@@ -10,8 +10,6 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\Shared\Constants;
 use Webmozart\Assert\Assert;
-use Procure\Domain\Contracts\ProcureDocStatus;
-use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  * PO Row
@@ -41,11 +39,12 @@ class PORow extends BaseRow
 
         $exculdedProps = [
             'invoice',
-            'po'
+            'po',
+            'rowIdentifer'
         ];
 
         // $r = new PORowSnapshot();
-
+        // $r->prRow
         $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

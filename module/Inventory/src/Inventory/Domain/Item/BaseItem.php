@@ -1,13 +1,23 @@
 <?php
 namespace Inventory\Domain\Item;
 
+use Application\Domain\Shared\Uom\Uom;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class BaseItem extends AbstractItem
 {
+
+    /**
+     *
+     * @var Uom $baseUom;
+     */
+    protected $baseUom;
+
+    protected $inventoryUom;
 
     // addtional serial number.
     // =======================================
@@ -688,5 +698,14 @@ class BaseItem extends AbstractItem
     public function setStandardUnitName($standardUnitName)
     {
         $this->standardUnitName = $standardUnitName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getBaseUom()
+    {
+        return $this->baseUom;
     }
 }

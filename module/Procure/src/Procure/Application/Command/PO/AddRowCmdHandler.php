@@ -3,6 +3,7 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
+use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoRowCreateOptions;
@@ -62,6 +63,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
         try {
             $dto->createdBy = $userId;
             $dto->company = $rootEntity->getCompany();
+            $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new PORowSnapshot());
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);

@@ -510,6 +510,7 @@ class ItemMapper
 
         if ($entity->getStandardUom() !== null) {
             $snapshot->standardUom = $entity->getStandardUom()->getId();
+            $snapshot->standardUnitName = $entity->getStandardUom()->getUomName();
         }
 
         if ($entity->getCompany() !== null) {

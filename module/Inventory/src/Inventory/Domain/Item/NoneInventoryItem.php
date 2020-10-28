@@ -1,24 +1,15 @@
 <?php
 namespace Inventory\Domain\Item;
 
-use Application\Notification;
 use Inventory\Domain\Item\Contracts\ItemType;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class NoneInventoryItem extends GenericItem
 {
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Item\GenericItem::specificValidation()
-     */
-    public function specificValidation(Notification $notification = null)
-    {}
 
     /**
      *

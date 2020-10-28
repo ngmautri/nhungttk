@@ -43,23 +43,13 @@ final class Quantity implements \jsonserializable
 
     public function isOneUnit()
     {
-        return $this->getAmount()==1;
+        return $this->getAmount() == 1;
     }
 
-    /**
-     *
-     * @param string $uomname
-     * @throws \invalidargumentexception
-     */
     public function __construct($amount, Uom $uom)
     {
-        if ($uom == null) {
-            throw new \invalidargumentexception('uom should be string');
-        }
-
-        if ($amount == null) {
-            throw new \invalidargumentexception('UoM code should not be empty string');
-        }
+        Assert::notNull($uom, 'uom should be string');
+        Assert::notNull($amount, 'uom should be string');
 
         $this->amount = $amount;
         $this->uom = $uom;
@@ -223,7 +213,6 @@ final class Quantity implements \jsonserializable
         return self::$calculator;
     }
 
-
     private static function initializeConverter()
     {
         $converters = self::$converters;
@@ -235,10 +224,10 @@ final class Quantity implements \jsonserializable
         throw new \RuntimeException('Cannot find any quantity converter!');
     }
 
-   /**
-    *
-    * @return Converter
-    */
+    /**
+     *
+     * @return Converter
+     */
     private function getConverter()
     {
         if (null === self::$converter) {
@@ -247,6 +236,4 @@ final class Quantity implements \jsonserializable
 
         return self::$converter;
     }
-
-
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain;
 
+use Application\Domain\Shared\SnapshotAssembler;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Exception\InvalidArgumentException;
 
@@ -329,7 +330,7 @@ class GenericRow extends BaseRow
         $this->setDocStatus(ProcureDocStatus::REVERSED);
     }
 
-    public function refreshRowsFromNewHeaderSnapshot(APSnapshot $snapshot)
+    public function refreshRowsFromNewHeaderSnapshot(DocSnapshot $snapshot)
     {
         $this->setWarehouse($snapshot->getWarehouse());
     }

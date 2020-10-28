@@ -470,15 +470,6 @@ abstract class AbstractItem extends AbstractEntity implements AggregateRootInter
         $this->itemType = $itemType;
     }
 
-    /**
-     *
-     * @return string
-     */
-    public function getItemType()
-    {
-        return ItemType::UNKNOWN_ITEM_TYPE;
-    }
-
     public function getId()
     {
         return $this->id;

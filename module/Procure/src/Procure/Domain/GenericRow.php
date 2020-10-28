@@ -1,10 +1,8 @@
 <?php
 namespace Procure\Domain;
 
-use Application\Domain\Shared\SnapshotAssembler;
-use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Shared\ProcureDocStatus;
 
 /**
  * Generic Row
@@ -14,6 +12,20 @@ use Procure\Domain\Shared\ProcureDocStatus;
  */
 class GenericRow extends BaseRow
 {
+
+    private $exculdedProps = [
+        "id",
+        "uuid",
+        "token",
+        "instance",
+        "sysNumber",
+        "createdBy",
+        "lastchangeBy",
+        "docId",
+        "docToken",
+        "revisionNo",
+        "docVersion"
+    ];
 
     /**
      *
@@ -29,19 +41,7 @@ class GenericRow extends BaseRow
 
         // Converting
         // ==========================
-        $exculdedProps = [
-            "id",
-            "uuid",
-            "token",
-            "instance",
-            "sysNumber",
-            "createdBy",
-            "lastchangeBy",
-            "docId",
-            "docToken",
-            "revisionNo",
-            "docVersion"
-        ];
+
         $sourceObj = $this;
         $reflectionClass = new \ReflectionClass(get_class($sourceObj));
         $props = $reflectionClass->getProperties();
@@ -51,7 +51,36 @@ class GenericRow extends BaseRow
 
             $propName = $prop->getName();
 
-            if (\in_array($propName, $exculdedProps)) {
+            if (\in_array($propName, $this->exculdedProps)) {
+                continue;
+            }
+
+            if (property_exists($targetObj, $propName)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
+
+    public function convertExcludeFieldsTo(GenericRow $targetObj, $exculdedProps)
+    {
+        if (! $targetObj instanceof GenericRow) {
+            throw new InvalidArgumentException("Convertion input invalid!");
+        }
+
+        // Converting
+        // ==========================
+
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+            $prop->setAccessible(true);
+
+            $propName = $prop->getName();
+
+            if (\in_array($propName, $this->exculdedProps) || \in_array($propName, $exculdedProps)) {
                 continue;
             }
 

@@ -3,30 +3,22 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCmdHandler extends AbstractCommandHandler
 {
@@ -52,7 +44,7 @@ class PostCmdHandler extends AbstractCommandHandler
          * @var PODoc $rootEntity ;
          * @var POSnapshot $rootSnapshot ;
          * @var PoPostOptions $options ;
-         *     
+         *
          */
         $options = $cmd->getOptions();
         $dto = $cmd->getDto();
@@ -84,23 +76,9 @@ class PostCmdHandler extends AbstractCommandHandler
              * @var PODoc $rootEntity ;
              */
 
-            $sharedSpecFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
+            $rootEntity->post($options, $sharedService);
 
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecFactory, $fxService);
-            $headerValidators->add($validator);
-
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new POPostingService($cmdRepository);
-            $sharedService = new SharedService($sharedSpecFactory, $fxService);
-
-            $rootEntity->post($options, $headerValidators, $rowValidators, $sharedService, $postingService);
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {

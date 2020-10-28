@@ -31,7 +31,8 @@ class UomGroupTest extends PHPUnit_Framework_TestCase
 
         $pairSnapshot = new UomPairSnapshot();
         $pairSnapshot->counterUom = 'box';
-        $pairSnapshot->convertFactor = '100';
+        \var_dump(\strlen($pairSnapshot->counterUom));
+        $pairSnapshot->convertFactor = "25";
 
         $g->createPairFrom($pairSnapshot, $rep);
         /*

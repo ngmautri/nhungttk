@@ -9,12 +9,15 @@ use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\QuotationRequest\QRRow;
 use Procure\Domain\Shared\Constants;
+use Webmozart\Assert\Assert;
+use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  * PO Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PORow extends BaseRow
 {
@@ -23,6 +26,32 @@ class PORow extends BaseRow
 
     private function __construct()
     {}
+
+    public static function cloneFrom(PODoc $rootDoc, PoRow $sourceObj, CommandOptions $options)
+    {
+        Assert::isInstanceOf($rootDoc, PODoc::class, "PO is required!");
+        Assert::isInstanceOf($sourceObj, PoRow::class, "PO row is required!");
+        Assert::notNull($options, "No Options is found");
+
+        /**
+         *
+         * @var PORow $instance
+         */
+        $instance = new self();
+
+        $exculdedProps = [
+            'invoice',
+            'po'
+        ];
+
+        // $r = new PORowSnapshot();
+
+        $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        return $instance;
+    }
 
     public static function createFromQuoteRow(QRRow $sourceObj, CommandOptions $options)
     {
@@ -60,39 +89,6 @@ class PORow extends BaseRow
             self::$instance = new PORow();
         }
         return self::$instance;
-    }
-
-    /**
-     * Create properities
-     */
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Procure\Domain\PurchaseOrder\BaseRow";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
     }
 
     /**

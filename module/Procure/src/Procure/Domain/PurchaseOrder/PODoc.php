@@ -7,6 +7,7 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\SimpleCollection;
 use Procure\Application\Command\PO\Options\PoPostOptions;
 use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Po\PoHeaderCreated;
 use Procure\Domain\Event\Po\PoHeaderUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
@@ -16,14 +17,17 @@ use Procure\Domain\Exception\PoCreateException;
 use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\Exception\PoUpdateException;
 use Procure\Domain\Exception\ValidationFailedException;
+use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
+use Procure\Domain\PurchaseOrder\Validator\ValidatorFactory;
 use Procure\Domain\QuotationRequest\QRDoc;
 use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Webmozart\Assert\Assert;
 use Ramsey;
-use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  *
@@ -39,6 +43,91 @@ class PODoc extends GenericPO
     private $grCollection;
 
     private $apCollection;
+
+    private function __construct()
+    {}
+
+    /**
+     *
+     * @return \Procure\Domain\PurchaseOrder\PODoc
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new PODoc();
+        }
+        return self::$instance;
+    }
+
+    public function cloneAndSave(CommandOptions $options, SharedService $sharedService)
+    {
+        $rows = $this->getDocRows();
+        Assert::notNull($rows, "PO Entity is empty!");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
+
+        $instance = new self();
+
+        $exculdedProps = [
+            "id",
+            "uuid",
+            "token",
+            "docRows",
+            "rowIdArray",
+            "instance",
+            "reversalDoc",
+            "grCollection",
+            "apCollection"
+        ];
+
+        $instance = $this->convertExcludeFieldsTo($instance, $exculdedProps);
+
+        // overwrite.
+        $createdBy = $options->getUserId();
+        $createdDate = new \DateTime();
+        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->setDocType(ProcureDocType::PO);
+        $instance->setBaseDocId($this->getId());
+        $instance->setBaseDocType($this->getDocType());
+
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        foreach ($rows as $r) {
+
+            $localEntity = PORow::cloneFrom($instance, $r, $options);
+            $instance->addRow($localEntity);
+            $instance->validateRow($localEntity, $validationService->getRowValidators());
+        }
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getErrorMessage());
+        }
+
+        $this->clearEvents();
+        /**
+         *
+         * @var PORowSnapshot $localSnapshot
+         * @var POCmdRepositoryInterface $rep ;
+         */
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->store($instance);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when cloning PO #%s", $instance->getId()));
+
+        $target = $rootSnapshot;
+        $defaultParams = new DefaultParameter();
+        $defaultParams->setTargetId($rootSnapshot->getId());
+        $defaultParams->setTargetToken($rootSnapshot->getToken());
+        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
+        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
+        $defaultParams->setTriggeredBy($options->getTriggeredBy());
+        $defaultParams->setUserId($options->getUserId());
+        $params = null;
+
+        $event = new PoHeaderCreated($target, $defaultParams, $params);
+        $this->addEvent($event);
+        return $instance;
+    }
 
     /**
      *
@@ -113,29 +202,15 @@ class PODoc extends GenericPO
      * @throws OperationFailedException
      * @return \Procure\Domain\AccountPayable\APSnapshot
      */
-    public function saveFromQuotation(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    public function saveFromQuotation(POSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $this->getDocStatus() == ProcureDocStatus::DRAFT) {
-            throw new InvalidOperationException(sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
-        }
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
+        Assert::notNull($this->getDocRows(), sprintf("Documment is empty! %s", __FUNCTION__));
+        Assert::notNull($options, "command options not found");
+        Assert::eq($this->getDocType(), Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE, sprintf("Doctype is not vadid! %s", __FUNCTION__));
 
-        if ($this->getDocRows() == null) {
-            throw new InvalidOperationException(sprintf("Documment is empty! %s", __FUNCTION__));
-        }
-
-        if (! $this->getDocType() == Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE) {
-            throw new InvalidOperationException(sprintf("Doctype is not vadid! %s", __FUNCTION__));
-        }
-
-        $this->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Comnand Options not found!");
-        }
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
 
         // Entity from Snapshot
         if ($snapshot !== null) {
@@ -151,45 +226,23 @@ class PODoc extends GenericPO
         $createdDate = new \Datetime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $this->validate($headerValidators, $rowValidators);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();
-        $rootSnapshot = $postingService->getCmdRepository()->store($this);
 
-        if (! $rootSnapshot instanceof POSnapshot) {
-            throw new OperationFailedException(\sprintf("Errors occured when saving PO"));
-        }
+        /**
+         *
+         * @var POSnapshot $rootSnapshot
+         * @var POCmdRepositoryInterface $rep ;
+         */
+        $rep = $sharedService->getPostingService()->getCmdRepository();
 
+        $rootSnapshot = $rep->store($this);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when saving PO", $instance->getId()));
         return $rootSnapshot;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGrCollection()
-    {
-        if ($this->grCollection == null) {
-            $this->grCollection = new SimpleCollection();
-            return $this->grCollection;
-        }
-        return $this->grCollection;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getApCollection()
-    {
-        if ($this->apCollection == null) {
-            $this->apCollection = new SimpleCollection();
-            return $this->apCollection;
-        }
-        return $this->apCollection;
     }
 
     /**
@@ -241,57 +294,12 @@ class PODoc extends GenericPO
         $this->apList = $apList;
     }
 
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Procure\Domain\PurchaseOrder\BaseDoc";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
-    }
-
-    private function __construct()
-    {}
-
-    /**
-     *
-     * @return \Procure\Domain\PurchaseOrder\PODoc
-     */
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new PODoc();
-        }
-        return self::$instance;
-    }
-
     /**
      *
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
      */
-    protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {
 
         /**
@@ -313,56 +321,35 @@ class PODoc extends GenericPO
             $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
-        $this->validate($headerValidators, $rowValidators, true);
+        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
 
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
-
-        $postingService->getCmdRepository()->post($this, true);
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rep->post($this, true);
     }
 
     /**
      *
      * @param POSnapshot $snapshot
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
+     * @param CommandOptions $options
      * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     * @throws PoInvalidArgumentException
-     * @throws PoCreateException
-     * @throws PoUpdateException
+     * @throws \RuntimeException
      * @return \Procure\Domain\PurchaseOrder\PODoc
      */
-    public static function createFrom(POSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    public static function createFrom(POSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $snapshot instanceof POSnapshot) {
-            throw new PoInvalidArgumentException("PO snapshot not found!");
-        }
-
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("Header Validator not found!");
-        }
-
-        if (! $sharedService instanceof SharedService) {
-            throw new PoInvalidArgumentException("Shared service not found!");
-        }
-
-        if (! $postingService instanceof POPostingService) {
-            throw new PoInvalidArgumentException("Posting service not found!");
-        }
+        Assert::notNull($snapshot, "PO snapshot not found");
+        Assert::notNull($options, "command options not found");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
-
-        $instance->validateHeader($headerValidators);
-
-        if ($instance->hasErrors()) {
-            throw new PoCreateException($instance->getNotification()->errorMessage());
-        }
 
         $createdDate = new \Datetime();
         $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
@@ -375,17 +362,23 @@ class PODoc extends GenericPO
         $instance->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
         $instance->setToken($instance->getUuid());
 
-        $instance->recordedEvents = array();
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getNotification()->errorMessage());
+        }
+
+        $instance->clearEvents();
 
         /**
          *
          * @var POSnapshot $rootSnapshot
+         * @var POCmdRepositoryInterface $rep ;
          */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
-        if ($rootSnapshot == null) {
-            throw new PoUpdateException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
-        }
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->storeHeader($instance, false);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
 
         $instance->id = $rootSnapshot->getId();
 
@@ -417,50 +410,38 @@ class PODoc extends GenericPO
      * @throws PoUpdateException
      * @return \Procure\Domain\PurchaseOrder\PODoc
      */
-    public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
+    public static function updateFrom(POSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if (! $snapshot instanceof POSnapshot) {
-            throw new PoInvalidArgumentException("PO snapshot not found!");
-        }
-
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new PoInvalidArgumentException("Header Validator not found!");
-        }
-
-        if (! $sharedService instanceof SharedService) {
-            throw new PoInvalidArgumentException("Shared service not found!");
-        }
-
-        if (! $postingService instanceof POPostingService) {
-            throw new PoInvalidArgumentException("Posting service not found!");
-        }
+        Assert::notNull($snapshot, "PO snapshot not found");
+        Assert::notNull($options, "command options not found");
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
 
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
-
-        $instance->validateHeader($headerValidators);
-
-        if ($instance->hasErrors()) {
-            throw new PoCreateException($instance->getNotification()->errorMessage());
-        }
-
         $createdDate = new \Datetime();
         $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $instance->recordedEvents = array();
+        $instance->validateHeader($validationService->getHeaderValidators());
+
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getNotification()->errorMessage());
+        }
+
+        $instance->clearEvents();
 
         /**
          *
          * @var POSnapshot $rootSnapshot
+         * @var POCmdRepositoryInterface $rep ;
          */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
 
-        if ($rootSnapshot == null) {
-            throw new PoUpdateException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
-        }
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $rootSnapshot = $rep->storeHeader($instance, false);
+        Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
 
         $instance->id = $rootSnapshot->getId();
 
@@ -548,21 +529,47 @@ class PODoc extends GenericPO
         }
     }
 
-    protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
-    protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, POPostingService $postingService)
+    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
     protected function raiseEvent()
     {}
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrCollection()
+    {
+        if ($this->grCollection == null) {
+            $this->grCollection = new SimpleCollection();
+            return $this->grCollection;
+        }
+        return $this->grCollection;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getApCollection()
+    {
+        if ($this->apCollection == null) {
+            $this->apCollection = new SimpleCollection();
+            return $this->apCollection;
+        }
+        return $this->apCollection;
+    }
 }

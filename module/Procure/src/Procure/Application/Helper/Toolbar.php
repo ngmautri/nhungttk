@@ -64,6 +64,9 @@ class Toolbar
     {
         $toolbar = "";
 
+        $clone_url = sprintf("/procure/po/clone?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $cloneBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $clone_url, $view->translate("Clone"));
+
         $review_url = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
         $reviewBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $review_url, $view->translate("Review & Post"));
 
@@ -102,7 +105,7 @@ class Toolbar
                 break;
 
             case ProcureDocStatus::POSTED:
-                $toolbar = \sprintf("%s %s %s %s", $enableAmendmentBtn, $goodsReceiptBtn, $invoiceBtn, $payBtn);
+                $toolbar = \sprintf("%s %s %s %s %s", $cloneBtn, $enableAmendmentBtn, $goodsReceiptBtn, $invoiceBtn, $payBtn, $cloneBtn);
                 if ($action == Constants::FORM_ACTION_REVERSE) {
                     $toolbar = "";
                 }
@@ -111,7 +114,7 @@ class Toolbar
                 $toolbar = \sprintf("%s", $postAmendmentBtn);
 
                 if ($action == Constants::FORM_ACTION_SHOW) {
-                    $toolbar = \sprintf("%s", $reviewAmendmentBtn);
+                    $toolbar = \sprintf("%s %s", $cloneBtn, $reviewAmendmentBtn);
                 }
                 break;
 

@@ -17,14 +17,28 @@ final class Uom extends BaseUom implements \JsonSerializable
 
     /**
      *
+     * @param string $uomName
+     * @throws \InvalidArgumentException
+     */
+    public function __construct($uomName, $uomCode = null)
+    {
+        // ignore case incentive.
+        $this->uomName = trim(\strtolower($uomName));
+        $this->uomCode = trim(\strtolower($uomCode));
+        Assert::stringNotEmpty($uomName);
+        Assert::maxLength($uomName, 45);
+    }
+
+    /**
+     *
      * @param UomSnapshot $snapshot
      * @return \Application\Domain\Shared\Uom\Uom
      */
     final public static function createFrom(UomSnapshot $snapshot)
     {
-        $instance = new self($snapshot->getUomName());
+        $instance = new self('temp');
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        return $instance;
+        return static::assertInstance($instance);
     }
 
     /**
@@ -36,11 +50,15 @@ final class Uom extends BaseUom implements \JsonSerializable
     {
         $instance = new self("tmp");
         $instance = SnapshotAssembler::makeFromArray($instance, $data);
+        return static::assertInstance($instance);
+    }
 
-        Assert::stringNotEmpty($instance->getUomName());
-        Assert::stringNotEmpty($instance->getUomCode());
+    private static function assertInstance(Uom $instance)
+    {
         $instance->uomName = trim(\strtolower($instance->getUomName()));
         $instance->uomCode = trim(\strtolower($instance->getUomCode()));
+        Assert::stringNotEmpty($instance->getUomName());
+        Assert::maxLength($instance->getUomName(), 45);
         return $instance;
     }
 
@@ -52,21 +70,6 @@ final class Uom extends BaseUom implements \JsonSerializable
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new UomSnapshot());
-    }
-
-    /**
-     *
-     * @param string $uomName
-     * @throws \InvalidArgumentException
-     */
-    public function __construct($uomName, $uomCode = null)
-    {
-        Assert::stringNotEmpty($uomName);
-        Assert::maxLength($uomName, 45);
-
-        // ignore case incentive.
-        $this->uomName = trim(\strtolower($uomName));
-        $this->uomCode = trim(\strtolower($uomCode));
     }
 
     /**

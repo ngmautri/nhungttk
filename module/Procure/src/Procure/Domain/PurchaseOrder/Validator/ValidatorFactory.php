@@ -1,8 +1,6 @@
 <?php
-namespace Procure\Domain\AccountPayable\Validator;
+namespace Procure\Domain\PurchaseOrder\Validator;
 
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\ValidationServiceImpl;
 use Procure\Domain\Validator\HeaderValidatorCollection;

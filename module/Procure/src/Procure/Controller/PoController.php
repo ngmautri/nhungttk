@@ -34,6 +34,8 @@ use Procure\Application\Service\PO\POService;
 use Procure\Domain\Shared\Constants;
 use Zend\Escaper\Escaper;
 use Zend\View\Model\ViewModel;
+use Procure\Application\Command\PO\CloneAndSavePOCmdHandler;
+use Application\Domain\Contracts\FormActions;
 
 /**
  *
@@ -798,6 +800,106 @@ class PoController extends AbstractGenericController
             $notification = $dto->getNotification();
         } catch (\Exception $e) {
 
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'headerDTO' => $dto,
+                'version' => $rootEntity->getRevisionNo(), // get current version.
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        // $this->flashMessenger()->addMessage($redirectUrl);
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    public function cloneAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = "/procure/po/clone";
+        $form_title = "Clone PO";
+        $action = FormActions::EDIT;
+        $viewTemplete = "procure/po/crudHeader";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('entity_token');
+            $dto = $this->purchaseOrderService->getPOHeaderById($entity_id, $token);
+
+            if ($dto == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $token,
+                'headerDTO' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        try {
+
+            // POSTING
+            $data = $prg;
+            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PoUpdateOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__, False);
+
+            $cmdHandler = new CloneAndSavePOCmdHandler();
+            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
+            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+            $cmd->execute();
+            $notification = $dto->getNotification();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }

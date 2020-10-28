@@ -1,20 +1,21 @@
 <?php
 namespace Procure\Infrastructure\Doctrine;
 
+use Application\Entity\NmtProcurePo;
 use Application\Infrastructure\AggregateRepository\AbstractDoctrineRepository;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Infrastructure\Mapper\PoMapper;
-use Procure\Domain\PurchaseOrder\POSnapshot;
-use Application\Entity\NmtProcurePo;
+use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRepositoryInterface
 {
@@ -30,9 +31,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
      */
     public function storeRow(GenericPO $rootEntity, PORow $localEntity, $isPosting = false)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given.");
-        }
+        Assert::notNull($rootEntity, sprintf("GenericPO Root entity not given %s", __METHOD__));
 
         /**
          *
@@ -41,18 +40,12 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
         $localSnapshot = $this->_getLocalSnapshot($localEntity);
 
         $rootEntityDoctrine = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootEntity->getId());
-
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Doctrine root entity not found.");
-        }
+        Assert::notNull($rootEntityDoctrine, sprintf("Doctrine root entity not found. %s", __METHOD__));
 
         $isFlush = true;
         $increaseVersion = true;
         $rowEntityDoctrine = $this->_storeRow($rootEntityDoctrine, $localSnapshot, $isPosting, $isFlush, $increaseVersion);
-
-        if ($rowEntityDoctrine == null) {
-            throw new InvalidArgumentException("Something wrong. Row Doctrine Entity not created");
-        }
+        Assert::notNull($rowEntityDoctrine, sprintf("Something wrong. Row Doctrine Entity not created. %s", __METHOD__));
 
         $localSnapshot->id = $rowEntityDoctrine->getId();
         $localSnapshot->rowIdentifer = $rowEntityDoctrine->getRowIdentifer();
@@ -69,16 +62,10 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
      */
     public function post(GenericPO $rootEntity, $generateSysNumber = True)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given.");
-        }
+        Assert::notNull($rootEntity, sprintf("GenericPO Root entity not given %s", __METHOD__));
 
         $rows = $rootEntity->getDocRows();
-
-        if (count($rows) == null) {
-            throw new InvalidArgumentException("Document is empty.");
-        }
-
+        Assert::notNull($rows, sprintf("Document is empty %s", __METHOD__));
         $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
         $isPosting = true;
@@ -86,10 +73,7 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
         $increaseVersion = true;
 
         $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
-
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Root doctrine entity not found.");
-        }
+        Assert::notNull($rootEntity, sprintf("Root doctrine entity not found %s", __METHOD__));
 
         $increaseVersion = false;
         $isFlush = false;
@@ -144,25 +128,17 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
      */
     public function store(GenericPO $rootEntity, $generateSysNumber = false, $isPosting = false)
     {
-        if ($rootEntity == null) {
-            throw new InvalidArgumentException("Root entity not given!");
-        }
+        Assert::notNull($rootEntity, sprintf("GenericPO Root entity not given %s", "GenericPO"));
 
         $rows = $rootEntity->getDocRows();
-
-        if (count($rows) == null) {
-            throw new InvalidArgumentException("Document is empty.");
-        }
+        Assert::notNull($rows, sprintf("Document is empty. %s", $rootEntity->getId()));
 
         $rootSnapshot = $this->_getRootSnapshot($rootEntity);
 
         $isFlush = true;
         $increaseVersion = true;
         $rootEntityDoctrine = $this->_storeHeader($rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion);
-
-        if ($rootEntityDoctrine == null) {
-            throw new InvalidArgumentException("Root doctrine entity not created!");
-        }
+        Assert::notNull($rootEntityDoctrine, sprintf("Root doctrine entity not created. %s", $rootEntity->getId()));
 
         $increaseVersion = false;
         $isFlush = false;
@@ -194,20 +170,16 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
      */
     private function _storeHeader(POSnapshot $rootSnapshot, $generateSysNumber, $isPosting, $isFlush, $increaseVersion)
     {
-        if ($rootSnapshot == null) {
-            throw new InvalidArgumentException("Root snapshot not given.");
-        }
+        Assert::notNull($rootSnapshot, sprintf("POSnapshot not given %s", "POSnapshot"));
 
         /**
          *
          * @var \Application\Entity\NmtProcurePo $entity ;
-         *     
+         *
          */
         if ($rootSnapshot->getId() > 0) {
             $entity = $this->getDoctrineEM()->find(self::ROOT_ENTITY_NAME, $rootSnapshot->getId());
-            if ($entity == null) {
-                throw new InvalidArgumentException(sprintf("Doctrine entity not found. %s", $rootSnapshot->getId()));
-            }
+            Assert::notNull($entity, sprintf("Doctrine not given %s", $rootSnapshot->getId()));
 
             // just in case, it is not updated.
             if ($entity->getToken() == null) {
@@ -315,50 +287,24 @@ class POCmdRepositoryImpl extends AbstractDoctrineRepository implements POCmdRep
     /**
      *
      * @param GenericPO $rootEntity
-     * @throws InvalidArgumentException
-     * @return \Procure\Domain\PurchaseOrder\POSnapshot
+     * @return NULL|\Procure\Domain\PurchaseOrder\POSnapshot
      */
     private function _getRootSnapshot(GenericPO $rootEntity)
     {
-        if (! $rootEntity instanceof GenericPO) {
-            throw new InvalidArgumentException("Root entity not given!");
-        }
-
-        /**
-         *
-         * @todo
-         * @var POSnapshot $rootSnapshot ;
-         */
-        $rootSnapshot = $rootEntity->makeSnapshot();
-        if ($rootSnapshot == null) {
-            throw new InvalidArgumentException("Root snapshot not created!");
-        }
-
-        return $rootSnapshot;
+        Assert::isInstanceOf($rootEntity, GenericPO::class, sprintf("GenericPO entity not given %s", __METHOD__));
+        Assert::notNull($rootEntity->makeSnapshot(), "Root snapshot not created!");
+        return $rootEntity->makeSnapshot();
     }
 
     /**
      *
      * @param PORow $localEntity
-     * @throws InvalidArgumentException
-     * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
+     * @return NULL|\Procure\Domain\PurchaseOrder\PORowSnapshot
      */
     private function _getLocalSnapshot(PORow $localEntity)
     {
-        if (! $localEntity instanceof PORow) {
-            throw new InvalidArgumentException("Local entity not given!");
-        }
-
-        /**
-         *
-         * @todo
-         * @var PORowSnapshot $localSnapshot ;
-         */
-        $localSnapshot = $localEntity->makeSnapshot();
-        if ($localSnapshot == null) {
-            throw new InvalidArgumentException("Root snapshot not created!");
-        }
-
-        return $localSnapshot;
+        Assert::isInstanceOf($localEntity, PORow::class, sprintf("GenericPO entity not given %s", __METHOD__));
+        Assert::notNull($localEntity->makeSnapshot(), "Local snapshot not created!");
+        return $localEntity->makeSnapshot();
     }
 }

@@ -3,32 +3,23 @@ namespace Procure\Application\Command\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\PO\Options\SaveCopyFromQuoteOptions;
 use Procure\Application\DTO\Po\PoDTO;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\Service\POPostingService;
-use Procure\Domain\Service\SharedService;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
 {
@@ -111,26 +102,8 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
 
             $snapshot = POSnapshotAssembler::updateSnapshotFieldsFromDTO($snapshot, $dto, $editableProperties);
 
-            $sharedSpecsFactory = new ZendSpecificationFactory($cmd->getDoctrineEM());
-            $procureSpecsFactory = new ProcureSpecificationFactory($cmd->getDoctrineEM());
-            $fxService = new FXServiceImpl();
-            $fxService->setDoctrineEM($cmd->getDoctrineEM());
-            $sharedService = new SharedService($sharedSpecsFactory, $fxService);
-
-            // Header validator
-            $headerValidators = new HeaderValidatorCollection();
-            $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService);
-            $headerValidators->add($validator);
-
-            // Row validator
-            $rowValidators = new RowValidatorCollection();
-            $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-            $rowValidators->add($validator);
-
-            $cmdRepository = new POCmdRepositoryImpl($cmd->getDoctrineEM());
-            $postingService = new POPostingService($cmdRepository);
-
-            $rootSnapshot = $rootEntity->saveFromQuotation($snapshot, $options, $headerValidators, $rowValidators, $sharedService, $postingService);
+            $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
+            $rootSnapshot = $rootEntity->saveFromQuotation($snapshot, $options, $sharedService);
 
             $dto->id = $rootSnapshot->getId();
             $dto->token = $rootSnapshot->getToken();

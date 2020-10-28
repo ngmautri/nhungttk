@@ -2,12 +2,12 @@
 namespace Procure\Application\Command\PO\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
-use Procure\Domain\Exception\PoUpdateException;
+use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoUpdateOptions implements CommandOptions
 {
@@ -30,17 +30,9 @@ class PoUpdateOptions implements CommandOptions
 
     public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy, $isPosting = false)
     {
-        if ($rootEntity == null) {
-            throw new PoUpdateException(sprintf("Root Entity not given! %s", $rootEntity));
-        }
-
-        if ($userId == null) {
-            throw new PoUpdateException(sprintf("User ID not given! %s", $userId));
-        }
-
-        if ($triggeredBy == null || $triggeredBy == "") {
-            throw new PoUpdateException(sprintf("Trigger not given! %s", $userId));
-        }
+        Assert::notNull($rootEntity, sprintf("Root doctrine entity not found %s", __METHOD__));
+        Assert::notNull($userId, sprintf("User ID not given! %s", __METHOD__));
+        Assert::notNull($triggeredBy, sprintf("Trigger not found! %s", __METHOD__));
 
         $this->rootEntity = $rootEntity;
         $this->rootEntityId = $rootEntityId;
@@ -113,14 +105,13 @@ class PoUpdateOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
     /**
+     *
      * @return string
      */
     public function getIsPosting()
     {
         return $this->isPosting;
     }
-
-
-
 }

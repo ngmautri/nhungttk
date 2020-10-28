@@ -11,7 +11,7 @@ use Procure\Domain\Validator\HeaderValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class DefaultHeaderValidator extends AbstractValidator implements HeaderValidatorInterface
 {
@@ -56,12 +56,12 @@ class DefaultHeaderValidator extends AbstractValidator implements HeaderValidato
 
             $spec = $this->sharedSpecificationFactory->getDateSpecification();
             if (! $spec->isSatisfiedBy($rootEntity->getDocDate())) {
-                $rootEntity->addError("Document date is not correct or empty");
+                $rootEntity->addError("Document date is not correct or empty. " . $rootEntity->getDocDate());
             }
 
             // ==== CK CONTRACT NO =======
             if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($rootEntity->getDocNumber())) {
-                $rootEntity->addError("Document number is not correct or empty");
+                $rootEntity->addError("Document number is not correct or empty" . $rootEntity->getDocNumber());
             }
 
             // ===== DOC CURRENCY =======

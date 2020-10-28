@@ -2,10 +2,10 @@
 namespace Application\Domain\Shared\Uom;
 
 use Application\Domain\Shared\SnapshotAssembler;
-use Webmozart\Assert\Assert;
+use Application\Infrastructure\Persistence\Contracts\CompositeCrudRepositoryInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramsey\Uuid\Uuid;
-use Application\Infrastructure\Persistence\Contracts\CompositeCrudRepositoryInterface;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -21,6 +21,60 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
 
     private $companyId;
 
+    /**
+     *
+     * @param string $groupName
+     * @param Uom $baseUom
+     */
+    public function __construct($groupName, Uom $baseUom)
+    {
+        Assert::stringNotEmpty($groupName);
+        Assert::maxLength($groupName, 45);
+        Assert::notNull($baseUom);
+
+        // ignore case incentive.
+        $this->groupName = trim(\strtolower($groupName));
+        $this->baseUomObject = $baseUom;
+        $this->baseUom = $baseUom->getUomName();
+        $this->uuid = Uuid::uuid4()->toString();
+    }
+
+    /**
+     *
+     * @param UomGroupSnapshot $snapshot
+     * @return \Application\Domain\Shared\Uom\UomGroup
+     */
+    public static function createFrom(UomGroupSnapshot $snapshot)
+    {
+        $baseUom = new Uom($snapshot->baseUom);
+        $instance = new self($snapshot->groupName, $baseUom);
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+
+        return static::assertInstance($instance);
+    }
+
+    public static function createFromArray($data)
+    {
+        $instance = new UomGroup('tmp', new Uom('tmp'));
+        SnapshotAssembler::makeFromArray($instance, $data);
+
+        $baseUom = new Uom($instance->getBaseUom());
+        $instance->baseUomObject = $baseUom;
+
+        return static::assertInstance($instance);
+    }
+
+    private static function assertInstance(UomGroup $instance)
+    {
+        $instance->groupName = trim(\strtolower($instance->getGroupName()));
+        Assert::stringNotEmpty($instance->getGroupName());
+        Assert::maxLength($instance->getGroupName(), 45);
+        Assert::notNull($instance->getBaseUomObject());
+        Assert::notNull($instance->getBaseUom());
+
+        return $instance;
+    }
+
     public function addUomPair(UomPair $pair)
     {
         Assert::notNull($pair);
@@ -29,13 +83,9 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
             throw new \InvalidArgumentException(\sprintf("Base UoM not valid %s", ""));
         }
 
-        if (! $pair->getBaseUomObject()->equals($this->getBaseUomObject())) {
-            throw new \InvalidArgumentException(\sprintf("Base UoM not valid %s", ""));
-        }
-
         foreach ($this->getMembers() as $m) {
             if ($pair->equals($m)) {
-                throw new \InvalidArgumentException(\sprintf("Pair exits [%s]", $pair->__toString()));
+                throw new \InvalidArgumentException(\sprintf("UoM pair exits [%s]", $pair->__toString()));
             }
         }
 
@@ -60,33 +110,6 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
         $repository->saveMember($this, $pair);
     }
 
-    public static function createFrom(UomGroupSnapshot $snapshot)
-    {
-        $baseUom = new Uom($snapshot->baseUom);
-        $instance = new self($snapshot->groupName, $baseUom);
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        return $instance;
-    }
-
-    /**
-     *
-     * @param array $data
-     * @return object
-     */
-    public static function createFromArray($data)
-    {
-        $instance = new UomGroup('tmp', new Uom('tmp'));
-        SnapshotAssembler::makeFromArray($instance, $data);
-
-        Assert::stringNotEmpty($instance->getGroupName());
-        $instance->groupName = trim(\strtolower($instance->getGroupName()));
-        $baseUom = new Uom($instance->getBaseUom());
-        $instance->baseUomObject = $baseUom;
-
-        return $instance;
-    }
-
     /**
      *
      * {@inheritdoc}
@@ -95,24 +118,6 @@ final class UomGroup extends BaseUomGroup implements \JsonSerializable
     public function makeSnapshot()
     {
         return SnapshotAssembler::createSnapshotFrom($this, new UomGroupSnapshot());
-    }
-
-    /**
-     *
-     * @param string $groupName
-     * @param Uom $baseUom
-     */
-    public function __construct($groupName, Uom $baseUom)
-    {
-        Assert::stringNotEmpty($groupName);
-        Assert::maxLength($groupName, 45);
-        Assert::notNull($baseUom);
-
-        // ignore case incentive.
-        $this->groupName = trim(\strtolower($groupName));
-        $this->baseUomObject = $baseUom;
-        $this->baseUom = $baseUom->getUomName();
-        $this->uuid = Uuid::uuid4()->toString();
     }
 
     /**

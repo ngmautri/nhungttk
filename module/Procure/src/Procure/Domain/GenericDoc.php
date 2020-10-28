@@ -2,14 +2,11 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
-use function Procure\Domain\BaseDoc\getDocRows as count;
-use function Procure\Domain\BaseDoc\getRowIdArray as in_array;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 use Closure;
 use InvalidArgumentException;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -18,6 +15,13 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class GenericDoc extends BaseDoc
 {
+
+    private $exculdedProps = [
+        "rowIdArray",
+        "instance",
+        "grCollection",
+        "apCollection"
+    ];
 
     /**
      *
@@ -319,7 +323,9 @@ class GenericDoc extends BaseDoc
             "lastchangeBy",
             "docNumber",
             "docDate",
-            "reversalDoc"
+            "reversalDoc",
+            "grCollection",
+            "apCollection"
         ];
 
         $sourceObj = $this;
@@ -351,10 +357,34 @@ class GenericDoc extends BaseDoc
         // Converting
         // ==========================
 
-        $exculdedProps = [
-            "rowIdArray",
-            "instance"
-        ];
+        $sourceObj = $this;
+        $reflectionClass = new \ReflectionClass(get_class($sourceObj));
+        $props = $reflectionClass->getProperties();
+
+        foreach ($props as $prop) {
+
+            $prop->setAccessible(true);
+            $propName = $prop->getName();
+
+            if (\in_array($propName, $this->exculdedProps)) {
+                continue;
+            }
+
+            if (property_exists($targetObj, $propName)) {
+                $targetObj->$propName = $prop->getValue($sourceObj);
+            }
+        }
+        return $targetObj;
+    }
+
+    public function convertExcludeFieldsTo(AbstractDoc $targetObj, $exculdedProps)
+    {
+        if (! $targetObj instanceof AbstractDoc) {
+            throw new InvalidArgumentException("Convertion input invalid!");
+        }
+
+        // Converting
+        // ==========================
 
         $sourceObj = $this;
         $reflectionClass = new \ReflectionClass(get_class($sourceObj));
@@ -365,7 +395,7 @@ class GenericDoc extends BaseDoc
             $prop->setAccessible(true);
             $propName = $prop->getName();
 
-            if (\in_array($propName, $exculdedProps)) {
+            if (\in_array($propName, $this->exculdedProps) || (\in_array($propName, $exculdedProps))) {
                 continue;
             }
 

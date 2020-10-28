@@ -45,7 +45,36 @@ final class UomPair extends ValueObject implements \JsonSerializable
 
     private $lastChangeBy;
 
-    final public static function createFrom(UomPairSnapshot $snapshot)
+    /**
+     *
+     * @param Uom $baseUom
+     * @param Uom $counterUom
+     * @param int $convertFactor
+     * @param string $description
+     */
+    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description = null)
+    {
+        Assert::greaterThan($convertFactor, 0);
+
+        $this->baseUomObject = $baseUom;
+        $this->baseUom = $baseUom->getUomName();
+
+        $this->counterUomObject = $counterUom;
+        $this->counterUom = $counterUom->getUomName();
+
+        $this->convertFactor = $convertFactor;
+        $this->description = $description;
+
+        $this->pairName = \sprintf("%s", $this->baseUom);
+
+        if (! $baseUom->equals($counterUom)) {
+            $this->pairName = \sprintf("%s (%s %s)", $this->counterUom, $this->convertFactor, $this->baseUom);
+        } else {
+            $this->convertFactor = 1;
+        }
+    }
+
+    public static function createFrom(UomPairSnapshot $snapshot)
     {
         Assert::notNull($snapshot);
 
@@ -82,35 +111,6 @@ final class UomPair extends ValueObject implements \JsonSerializable
     public function __toString()
     {
         return \sprintf("%s,%s,%s", $this->getBaseUom(), $this->getCounterUom(), $this->getConvertFactor());
-    }
-
-    /**
-     *
-     * @param Uom $baseUom
-     * @param Uom $counterUom
-     * @param int $convertFactor
-     * @param string $description
-     */
-    public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description = null)
-    {
-        Assert::numeric($convertFactor);
-
-        $this->baseUomObject = $baseUom;
-        $this->baseUom = $baseUom->getUomName();
-
-        $this->counterUomObject = $counterUom;
-        $this->counterUom = $counterUom->getUomName();
-
-        $this->convertFactor = $convertFactor;
-        $this->description = $description;
-
-        $this->pairName = \sprintf("%s", $this->baseUom);
-
-        if (! $baseUom->equals($counterUom)) {
-            $this->pairName = \sprintf("%s (%s %s)", $this->counterUom, $this->convertFactor, $this->baseUom);
-        } else {
-            $this->convertFactor = 1;
-        }
     }
 
     /**
@@ -168,28 +168,16 @@ final class UomPair extends ValueObject implements \JsonSerializable
         return $this->pairName;
     }
 
-    /**
-     *
-     * @return Ambigous <mixed, string>
-     */
     public function getBaseUom()
     {
         return $this->baseUom;
     }
 
-    /**
-     *
-     * @return Ambigous <mixed, string>
-     */
     public function getCounterUom()
     {
         return $this->counterUom;
     }
 
-    /**
-     *
-     * @return Ambigous <number, int>
-     */
     public function getConvertFactor()
     {
         return $this->convertFactor;

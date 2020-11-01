@@ -18,10 +18,12 @@ use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
 use Procure\Domain\Event\Ap\ApRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -226,17 +228,9 @@ abstract class GenericAP extends BaseDoc
      */
     public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == \Procure\Domain\Contracts\ProcureDocStatus::POSTED) {
-            throw new \RuntimeException(sprintf("AP is posted! %s", $this->getId()));
-        }
-
-        if ($snapshot == null) {
-            throw new \InvalidArgumentException("Row Snapshot not found");
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("Options not found");
-        }
+        Assert::eq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is posted %s", $this->getId()));
+        Assert::notNull($snapshot, "Row Snapshot not founds");
+        Assert::notNull($options, "Options not founds");
 
         $validationService = ValidatorFactory::create($sharedService);
         $snapshot->docType = $this->getDocType();
@@ -253,7 +247,7 @@ abstract class GenericAP extends BaseDoc
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
         /**
          *

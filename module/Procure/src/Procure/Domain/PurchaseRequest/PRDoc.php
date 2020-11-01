@@ -19,7 +19,7 @@ use Ramsey\Uuid\Uuid;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 final class PRDoc extends GenericPR
 {
@@ -75,36 +75,6 @@ final class PRDoc extends GenericPR
             self::$instance = new PRDoc();
         }
         return self::$instance;
-    }
-
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Procure\Domain\PurchaseRequest\BaseDoc";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
     }
 
     /**

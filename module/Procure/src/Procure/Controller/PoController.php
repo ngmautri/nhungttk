@@ -341,7 +341,8 @@ class PoController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -397,7 +398,8 @@ class PoController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -479,7 +481,8 @@ class PoController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -562,7 +565,8 @@ class PoController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);

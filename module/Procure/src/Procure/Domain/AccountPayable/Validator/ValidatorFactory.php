@@ -14,6 +14,7 @@ use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\ValidationServiceImpl;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
 /**
@@ -33,13 +34,7 @@ class ValidatorFactory
      */
     public static function create(SharedService $sharedService, $isPosting = false)
     {
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($sharedService->getSharedSpecificationFactory() == null) {
-            throw new InvalidArgumentException("Shared spec service not found");
-        }
+        Assert::notNull($sharedService, "SharedService not found");
 
         $fxService = $sharedService->getFxService();
 

@@ -9,7 +9,7 @@ use Procure\Application\DTO\Pr\PrRowDTO;
  * PR Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PRRow extends BaseRow
 {
@@ -181,46 +181,16 @@ class PRRow extends BaseRow
         return new PRRow();
     }
 
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Procure\Domain\PurchaseRequest\BaseRow";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
-    }
+    s
 
     /**
      *
      * @return mixed
      */
     public function getDraftPoQuantity()
-    {
-        return $this->draftPoQuantity;
-    }
+{
+    return $this->draftPoQuantity;
+}
 
     /**
      *

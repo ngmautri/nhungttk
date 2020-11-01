@@ -2,6 +2,7 @@
 namespace Procure\Domain\PurchaseRequest;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
@@ -127,7 +128,7 @@ abstract class GenericPR extends BaseDoc
             throw new ValidationFailedException($this->getNotification()->errorMessage());
         }
 
-        $this->clearEvents();
+        $this->recordedEvents = array();
 
         /**
          *

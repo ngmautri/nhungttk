@@ -6,13 +6,14 @@ use Procure\Domain\Service\Contracts\FXServiceInterface;
 use Procure\Domain\Service\Contracts\PostingServiceInterface;
 use Procure\Domain\Shared\Specification\AbstractSpecificationFactory as DomainSpecFactory;
 use Psr\Log\LoggerInterface;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
 /**
  * PO Shared Domain Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class SharedService
 {
@@ -35,13 +36,8 @@ class SharedService
      */
     public function __construct(SharedSpecFactory $sharedSpecificationFactory, FXServiceInterface $fxService, PostingServiceInterface $postingService = null)
     {
-        if ($sharedSpecificationFactory == null) {
-            throw new InvalidArgumentException("Shared Specification not found");
-        }
-
-        if ($fxService == null) {
-            throw new InvalidArgumentException("FX service not found");
-        }
+        Assert::notNull($sharedSpecificationFactory, "Shared Specification not found");
+        Assert::notNull($fxService, "FX service not found");
 
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;
         $this->fxService = $fxService;

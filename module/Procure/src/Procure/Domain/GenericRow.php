@@ -2,16 +2,15 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Money\MoneyParser;
 use Application\Domain\Shared\Price\Price;
 use Application\Domain\Shared\Quantity\Quantity;
 use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Shared\Uom\UomPair;
+use Money\Currency;
 use Money\CurrencyPair;
-use Money\Money;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Money\Currency;
-use Application\Domain\Shared\Money\MoneyParser;
 
 /**
  * Generic Row

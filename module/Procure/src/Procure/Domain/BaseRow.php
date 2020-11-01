@@ -10,6 +10,8 @@ namespace Procure\Domain;
 class BaseRow extends AbstractRow
 {
 
+    protected $standardQuantity;
+
     protected $standardUnitPriceInDocCurrency;
 
     protected $standardUnitPriceInLocCurrency;
@@ -1684,5 +1686,32 @@ class BaseRow extends AbstractRow
     public function setPrDepartmentName($prDepartmentName)
     {
         $this->prDepartmentName = $prDepartmentName;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardQuantity()
+    {
+        return $this->standardQuantity;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardUnitPriceInDocCurrency()
+    {
+        return $this->standardUnitPriceInDocCurrency;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardUnitPriceInLocCurrency()
+    {
+        return $this->standardUnitPriceInLocCurrency;
     }
 }

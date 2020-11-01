@@ -6,10 +6,12 @@ use Application\Domain\Shared\Price\Price;
 use Application\Domain\Shared\Quantity\Quantity;
 use Application\Domain\Shared\Uom\Uom;
 use Application\Domain\Shared\Uom\UomPair;
-use Application\Model\Domain\Shared\Money;
 use Money\CurrencyPair;
+use Money\Money;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Exception\InvalidArgumentException;
+use Money\Currency;
+use Application\Domain\Shared\Money\MoneyParser;
 
 /**
  * Generic Row
@@ -22,30 +24,27 @@ class GenericRow extends BaseRow
 
     public function calculatePriceAndQuanity()
     {
-        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
-        $taxAmount = $netAmount * $this->getTaxRate();
-        $grosAmount = $netAmount + $taxAmount;
-
-        $this->netAmount = $netAmount;
-        $this->taxAmount = $taxAmount;
-        $this->grossAmount = $grosAmount;
-
         $docUom = new Uom($this->getDocUnit());
-        $docQuantity = new Quantity($this->getDocQuantity(), $docUom);
+        $docQuantity = new Quantity($this->getQuantity(), $docUom);
         $docUnitQuantiy = $docQuantity->getUnitQuantity();
 
         $baseUom = new Uom($this->getItemStandardUnitName());
         $baseUomPair = new UomPair($baseUom, $docUom, $this->getStandardConvertFactor());
-        $this->convertedStandardQuantity = $docQuantity->convert($baseUomPair);
+        $this->standardQuantity = $docQuantity->convert($baseUomPair);
 
-        $docUnitPrice = new Price(new Money($this->getDocUnitPrice(), $this->getDocCurrencyISO()), $docUnitQuantiy);
+        $docCurrency = new Currency($this->getDocCurrencyISO());
+
+        $docUnitPriceMoney = MoneyParser::parseFromDecimal($this->getUnitPrice(), $docCurrency);
+        $docUnitPrice = new Price($docUnitPriceMoney, $docUnitQuantiy);
         $baseDocUnitPrice = $docUnitPrice->convertQuantiy($baseUomPair);
-        $this->localStandardUnitPrice = $baseDocUnitPrice;
+        $this->standardUnitPriceInDocCurrency = $baseDocUnitPrice;
 
-        $currencyPair = new CurrencyPair($this->getDocCurrencyISO(), $this->getLocalCurrencyISO(), $this->getExchangeRate());
+        $locCurrency = new Currency($this->getLocalCurrencyISO());
+        $currencyPair = new CurrencyPair($docCurrency, $locCurrency, $this->getExchangeRate());
         $localUnitPrice = $docUnitPrice->convertCurrency($currencyPair);
         $baseLocalUnitPrice = $localUnitPrice->convertQuantiy($baseUomPair);
-        $this->localUnitPrice = $baseLocalUnitPrice->convertQuantiy($baseUomPair);
+        $this->standardUnitPriceInLocCurrency = $baseLocalUnitPrice->convertQuantiy($baseUomPair);
+        return $this;
     }
 
     private $exculdedProps = [

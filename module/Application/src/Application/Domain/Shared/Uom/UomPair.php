@@ -54,7 +54,7 @@ final class UomPair extends ValueObject implements \JsonSerializable
      */
     public function __construct(Uom $baseUom, Uom $counterUom, $convertFactor, $description = null)
     {
-        Assert::greaterThan($convertFactor, 0);
+        Assert::greaterThan($convertFactor, 0, 'Convert factor should > 0');
 
         $this->baseUomObject = $baseUom;
         $this->baseUom = $baseUom->getUomName();

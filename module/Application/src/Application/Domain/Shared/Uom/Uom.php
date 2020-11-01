@@ -25,7 +25,7 @@ final class Uom extends BaseUom implements \JsonSerializable
         // ignore case incentive.
         $this->uomName = trim(\strtolower($uomName));
         $this->uomCode = trim(\strtolower($uomCode));
-        Assert::stringNotEmpty($uomName);
+        Assert::stringNotEmpty($uomName, 'Uom Name should not be null');
         Assert::maxLength($uomName, 45);
     }
 

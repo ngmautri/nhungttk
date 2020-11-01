@@ -10,6 +10,7 @@ use Money\Money;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
 use Webmozart\Assert\Assert;
+use Application\Domain\Shared\Money\MoneyFormatter;
 
 /**
  *
@@ -29,31 +30,25 @@ final class Price implements \jsonserializable
         DefaultCalculator::class
     ];
 
-    private static $converter;
-
-    private static $converters = [
-        Converter::class
-    ];
-
+    /**
+     *
+     * @param Money $priceMoney
+     * @param Quantity $quantity
+     */
     public function __construct(Money $priceMoney, Quantity $quantity)
     {
-        if ($quantity == null) {
-            throw new \invalidargumentexception('Quantity should be string');
-        }
-
-        if ($priceMoney == null) {
-            throw new \invalidargumentexception('UoM code should not be empty string');
-        }
+        Assert::notNull($quantity, 'Quantity should not be null');
+        Assert::notNull($priceMoney, 'Price should not be null');
 
         $this->priceMoney = $priceMoney;
         $this->quantity = $quantity;
     }
 
-   /**
-    *
-    * @param UomPair $uomPair
-    * @return \Application\Domain\Shared\Price\Price
-    */
+    /**
+     *
+     * @param UomPair $uomPair
+     * @return \Application\Domain\Shared\Price\Price
+     */
     public function convertQuantiy(UomPair $uomPair)
     {
         $qty = $this->getQuantity()->convert($uomPair);
@@ -68,13 +63,15 @@ final class Price implements \jsonserializable
      */
     public function convertCurrency(CurrencyPair $currencyPair)
     {
-        if ($currencyPair->getBaseCurrency() == $this->getPriceMoney()->getCurrency()) {
+        Assert::greaterThan($currencyPair->getConversionRatio(), 0, 'Exchange rate must greate zero!');
 
+        $cur = $this->getPriceMoney()->getCurrency();
+        if ($currencyPair->getBaseCurrency()->equals($cur)) {
             $m = $this->getPriceMoney()->multiply($currencyPair->getConversionRatio());
             return new self(new Money($m->getAmount(), $currencyPair->getCounterCurrency()), $this->getQuantity());
         }
 
-        throw new \RuntimeException('can not conver currency');
+        throw new \RuntimeException('Can not conver currency');
     }
 
     /**
@@ -258,11 +255,8 @@ final class Price implements \jsonserializable
 
     public function __toString()
     {
-        $currencies = new ISOCurrencies();
-        $moneyFormatter = new DecimalMoneyFormatter($currencies);
-        $moneyFormatter->format($this->getPriceMoney()); // outputs 1.00
-
-        return \sprintf('%s %s per %s', $moneyFormatter->format($this->getPriceMoney()), $this->getPriceMoney()->getCurrency(), $this->getQuantity()->__toString());
+        $formattedMoney = MoneyFormatter::formatDecimal($this->getPriceMoney());
+        return \sprintf('%s %s per %s', $formattedMoney, $this->getPriceMoney()->getCurrency(), $this->getQuantity()->__toString());
     }
 
     public function jsonserialize()
@@ -338,30 +332,6 @@ final class Price implements \jsonserializable
         }
 
         return self::$calculator;
-    }
-
-    private static function initializeConverter()
-    {
-        $converters = self::$converters;
-
-        foreach ($converters as $converter) {
-            return new $converter();
-        }
-
-        throw new \RuntimeException('Cannot find any quantity converter!');
-    }
-
-    /**
-     *
-     * @return Converter
-     */
-    private function getConverter()
-    {
-        if (null === self::$converter) {
-            self::$converter = self::initializeConverter();
-        }
-
-        return self::$converter;
     }
 
     /**

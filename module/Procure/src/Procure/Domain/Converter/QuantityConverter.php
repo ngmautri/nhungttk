@@ -1,29 +1,24 @@
 <?php
-namespace Application\Domain\Shared\Price;
+namespace Procure\Domain\Converter;
 
+use Application\Domain\Shared\Quantity\Quantity;
 use Application\Domain\Shared\Uom\UomPair;
+use Webmozart\Assert\Assert;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-final class Converter
+final class QuantityConverter
 {
 
-    /**
-     *
-     * @param Quantity $qty
-     * @param UomPair $uomPair
-     * @return void|\Application\Domain\Shared\Quantity\Quantity
-     */
-    public function convertToBaseUom(Price $qty, UomPair $uomPair)
+    public function convertToBaseUom(Quantity $docQty, UomPair $uomPair)
     {
-        if ($qty == null || $uomPair == null) {
-            return;
-        }
+        Assert::notNull($docQty, 0);
+        Assert::notNull($uomPair, 0);
 
-        if ($qty->getUom() == $uomPair->getBaseUom()) {
+        if ($docQty->getUom() == $uomPair->getBaseUom()) {
 
             if ($qty->getAmount() % $uomPair->getConvertFactor() == 0) {
                 return new Quantity($qty->getAmount() / $uomPair->getConvertFactor(), $uomPair->getCounterUom());

@@ -46,10 +46,19 @@ final class Quantity implements \jsonserializable
         return $this->getAmount() == 1;
     }
 
+    public function getUnitQuantity()
+    {
+        if ($this->isOneUnit()) {
+            return $this;
+        }
+
+        return new Quantity(1, $this->getUom());
+    }
+
     public function __construct($amount, Uom $uom)
     {
-        Assert::notNull($uom, 'uom should be string');
-        Assert::notNull($amount, 'uom should be string');
+        Assert::notNull($uom, 'Uom should not be null');
+        Assert::numeric($amount, 'Amount should not be numeric');
 
         $this->amount = $amount;
         $this->uom = $uom;

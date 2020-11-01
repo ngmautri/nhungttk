@@ -2,6 +2,12 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Price\Price;
+use Application\Domain\Shared\Quantity\Quantity;
+use Application\Domain\Shared\Uom\Uom;
+use Application\Domain\Shared\Uom\UomPair;
+use Application\Model\Domain\Shared\Money;
+use Money\CurrencyPair;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Exception\InvalidArgumentException;
 
@@ -13,6 +19,34 @@ use Procure\Domain\Exception\InvalidArgumentException;
  */
 class GenericRow extends BaseRow
 {
+
+    public function calculatePriceAndQuanity()
+    {
+        $netAmount = $this->getDocUnitPrice() * $this->getDocQuantity();
+        $taxAmount = $netAmount * $this->getTaxRate();
+        $grosAmount = $netAmount + $taxAmount;
+
+        $this->netAmount = $netAmount;
+        $this->taxAmount = $taxAmount;
+        $this->grossAmount = $grosAmount;
+
+        $docUom = new Uom($this->getDocUnit());
+        $docQuantity = new Quantity($this->getDocQuantity(), $docUom);
+        $docUnitQuantiy = $docQuantity->getUnitQuantity();
+
+        $baseUom = new Uom($this->getItemStandardUnitName());
+        $baseUomPair = new UomPair($baseUom, $docUom, $this->getStandardConvertFactor());
+        $this->convertedStandardQuantity = $docQuantity->convert($baseUomPair);
+
+        $docUnitPrice = new Price(new Money($this->getDocUnitPrice(), $this->getDocCurrencyISO()), $docUnitQuantiy);
+        $baseDocUnitPrice = $docUnitPrice->convertQuantiy($baseUomPair);
+        $this->localStandardUnitPrice = $baseDocUnitPrice;
+
+        $currencyPair = new CurrencyPair($this->getDocCurrencyISO(), $this->getLocalCurrencyISO(), $this->getExchangeRate());
+        $localUnitPrice = $docUnitPrice->convertCurrency($currencyPair);
+        $baseLocalUnitPrice = $localUnitPrice->convertQuantiy($baseUomPair);
+        $this->localUnitPrice = $baseLocalUnitPrice->convertQuantiy($baseUomPair);
+    }
 
     private $exculdedProps = [
         "id",
@@ -333,18 +367,6 @@ class GenericRow extends BaseRow
     public function refreshRowsFromNewHeaderSnapshot(DocSnapshot $snapshot)
     {
         $this->setWarehouse($snapshot->getWarehouse());
-    }
-
-    public static function printProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $props = $reflectionClass->getProperties();
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print sprintf("\n public $%s;", $propertyName);
-        }
     }
 
     /**

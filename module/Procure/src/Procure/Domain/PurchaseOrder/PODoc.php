@@ -241,7 +241,7 @@ class PODoc extends GenericPO
         $rep = $sharedService->getPostingService()->getCmdRepository();
 
         $rootSnapshot = $rep->store($this);
-        Assert::notNull($rootSnapshot, sprintf("Error occured when saving PO", $instance->getId()));
+        Assert::notNull($rootSnapshot, sprintf("Error occured when saving PO", $this->getId()));
         return $rootSnapshot;
     }
 

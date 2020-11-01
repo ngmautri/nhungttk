@@ -108,7 +108,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
              * @var PODoc $rootEntity ;
              */
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $newRootEntity = PODoc::updateFrom($snapshot, $options, $params, $sharedService);
+            $newRootEntity = PODoc::updateFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
             // ================

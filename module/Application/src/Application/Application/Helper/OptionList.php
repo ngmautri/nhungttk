@@ -16,7 +16,7 @@ use Inventory\Domain\Item\Contracts\MonitorMethod;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class OptionList
 {
@@ -271,12 +271,12 @@ class OptionList
              */
 
             if ($id == null) {
-                $option = $option . sprintf('<option value="%s">%s  %s</option>', $l->getId(), $l->getUomCode(), "");
+                $option = $option . sprintf('<option value="%s">%s (%s)</option>', $l->getId(), \ucwords($l->getUomName()), $l->getUomCode());
             } else {
                 if ($id == $l->getId()) {
-                    $option = $option . sprintf('<option selected value="%s">%s  %s</option>', $l->getId(), $l->getUomCode(), "");
+                    $option = $option . sprintf('<option selected value="%s">%s (%s)</option>', $l->getId(), \ucwords($l->getUomName()), $l->getUomCode());
                 } else {
-                    $option = $option . sprintf('<option value="%s">%s  %s</option>', $l->getId(), $l->getUomCode(), "");
+                    $option = $option . sprintf('<option value="%s">%s (%s)</option>', $l->getId(), \ucwords($l->getUomName()), $l->getUomCode());
                 }
             }
         }

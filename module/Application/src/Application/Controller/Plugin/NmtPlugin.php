@@ -9,7 +9,7 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class NmtPlugin extends AbstractPlugin
 {
@@ -354,7 +354,7 @@ class NmtPlugin extends AbstractPlugin
             // 'isActive' => 1
         );
         $sort_criteria = array(
-            'uomCode' => 'ASC'
+            'uomName' => 'ASC'
         );
 
         $list = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationUom')->findBy($criteria, $sort_criteria);

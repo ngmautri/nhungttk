@@ -2,6 +2,7 @@
 namespace Application\Domain\Shared\Money;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Formatter\DecimalMoneyFormatter;
 use Money\Formatter\IntlMoneyFormatter;
 
 /**
@@ -18,5 +19,12 @@ final class MoneyFormatter
         $numberFormatter = new \NumberFormatter($local, \NumberFormatter::DECIMAL);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
         return $moneyFormatter->format($money);
+    }
+
+    public static function formatDecimal($money)
+    {
+        $currencies = new ISOCurrencies();
+        $moneyFormatter = new DecimalMoneyFormatter($currencies);
+        return $moneyFormatter->format($money); // outputs 1.00
     }
 }

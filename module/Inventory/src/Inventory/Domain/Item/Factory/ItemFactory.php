@@ -113,7 +113,7 @@ class ItemFactory
         SnapshotAssembler::makeFromSnapshot($item, $snapshot);
 
         $item->specifyItem(); // important
-        $item->updateUom();
+        $item->createUom();
 
         $validators = ValidatorFactory::create($itemTypeId, $sharedService);
         $item->validate($validators);

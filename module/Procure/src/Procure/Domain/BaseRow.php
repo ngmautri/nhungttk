@@ -5,10 +5,30 @@ namespace Procure\Domain;
  * Abstract Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class BaseRow extends AbstractRow
 {
+
+    protected $standardUnitPriceInDocCurrency;
+
+    protected $standardUnitPriceInLocCurrency;
+
+    protected $docQuantityObject;
+
+    protected $baseUomPair;
+
+    protected $docUnitPriceObject;
+
+    protected $baseDocUnitPriceObject;
+
+    protected $currencyPair;
+
+    protected $localUnitPriceObject;
+
+    protected $baseLocalUnitPriceObject;
+
+    protected $localStandardUnitPrice;
 
     // Row Details
     // ====================

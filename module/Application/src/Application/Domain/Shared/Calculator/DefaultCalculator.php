@@ -2,7 +2,6 @@
 namespace Application\Domain\Shared\Calculator;
 
 use Application\Domain\Shared\Calculator\Contracts\Calculator;
-use Money\Number;
 use Webmozart\Assert\Assert;
 
 final class DefaultCalculator implements Calculator
@@ -103,8 +102,7 @@ final class DefaultCalculator implements Calculator
         if ($amount > PHP_INT_MAX) {
             throw new \OverflowException('the maximum allowed integer (PHP_INT_MAX) overflowed ');
         } elseif ($amount < ~ PHP_INT_MAX) {
-            throw new \UnderflowException('the minimum allowed integer (PHP_INT_MAX) underflowed' );
+            throw new \UnderflowException('the minimum allowed integer (PHP_INT_MAX) underflowed');
         }
     }
-
 }

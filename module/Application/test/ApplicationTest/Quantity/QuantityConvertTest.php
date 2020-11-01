@@ -1,5 +1,6 @@
 <?php
 namespace ApplicationTest\Quantity;
+
 use Application\Domain\Shared\Quantity\Quantity;
 use PHPUnit_Framework_TestCase;
 use Application\Domain\Shared\Uom\Uom;
@@ -13,9 +14,9 @@ class QuantityConvertTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $qty = new Quantity(600, Uom::LITER());
-        $uomPair = new UomPair(Uom::LITER(), Uom::TANK(), 200);
-        $result =  $qty->convert($uomPair);
+        $qty = new Quantity(1, Uom::TANK());
+        $uomPair = new UomPair(Uom::LITER(), $qty->getUom(), 17);
+        $result = $qty->convert($uomPair);
         echo $qty;
         echo "\n";
         echo $result;

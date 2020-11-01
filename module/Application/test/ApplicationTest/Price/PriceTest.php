@@ -29,7 +29,7 @@ class PriceTest extends PHPUnit_Framework_TestCase
         echo $price . "\n";
         echo "\n===UP \n";
         echo $price->getUnitPrice();
-        echo "\n===\n";
+        echo "\n Converting Qty ===\n";
 
         $uomPair = new UomPair(Uom::EACH(), Uom::box(), 25);
 
@@ -41,11 +41,12 @@ class PriceTest extends PHPUnit_Framework_TestCase
         echo $result;
 
         echo "\n===\n";
+
         echo $result->getUnitPrice();
 
-        echo "\n===\n";
+        echo "\n Converting Currency ===\n";
 
-        $currencyPair = new CurrencyPair(new Currency('USD'), new Currency('LAK'), 9900);
+        $currencyPair = new CurrencyPair(new Currency('USD'), new Currency('LAK'), 9200);
         $result1 = $result->convertCurrency($currencyPair);
         echo "\n===\n";
 

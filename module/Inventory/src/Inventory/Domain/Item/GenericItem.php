@@ -20,6 +20,10 @@ abstract class GenericItem extends BaseItem
 
     public function createUom()
     {
+        if ($this->getStandardUnitName() == null)
+        {
+            return;
+        }
         $this->baseUom = new Uom($this->getStandardUnitName());
     }
 

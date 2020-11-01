@@ -111,7 +111,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $newSnapshot->revisionNo ++;
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $rootEntity->updateRowFrom($snapshot, $options, $params, $sharedService);
+            $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
             // ================

@@ -68,6 +68,11 @@ abstract class AbstractCommand implements CommandInterface
         $this->eventBus = $eventBus;
     }
 
+    private function clearNotification()
+    {
+        $this->notification = null;
+    }
+
     /**
      *
      * {@inheritdoc}
@@ -77,6 +82,7 @@ abstract class AbstractCommand implements CommandInterface
     {
         $stopWatch = new Stopwatch();
         $stopWatch->start("cmd_run");
+        $this->clearNotification();
         $this->handler->run($this);
         $timer = $stopWatch->stop("cmd_run");
         $this->setEstimatedDuration($timer->getDuration());

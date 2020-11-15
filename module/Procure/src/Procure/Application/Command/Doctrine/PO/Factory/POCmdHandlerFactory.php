@@ -2,12 +2,12 @@
 namespace Procure\Application\Command\Doctrine\PO\Factory;
 
 use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
-use Procure\Application\Command\DoctrinePO\UpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\PO\CreateHeaderCmdHandler;
 use Procure\Application\Command\Doctrine\PO\CreateRowCmdHandler;
-use Procure\Application\Command\Doctrine\PO\InlineUpdateRowCmdHandler;
 use Procure\Application\Command\Doctrine\PO\PostCmdHandler;
 use Procure\Application\Command\Doctrine\PO\UpdateHeaderCmdHandler;
+use Procure\Application\Command\Doctrine\PO\UpdateRowCmdHandler;
+use Procure\Application\Command\Doctrine\PO\UpdateRowInlineCmdHandler;
 
 /**
  *
@@ -37,7 +37,7 @@ class POCmdHandlerFactory extends CmdHandlerAbstractFactory
         return new PostCmdHandler();
     }
 
-    public function getAddRowCmdHandler()
+    public function getCreateRowCmdHandler()
     {
         return new CreateRowCmdHandler();
     }
@@ -49,6 +49,9 @@ class POCmdHandlerFactory extends CmdHandlerAbstractFactory
 
     public function getInlineUpdateRowCmdHandler()
     {
-        return new InlineUpdateRowCmdHandler();
+        return new UpdateRowInlineCmdHandler();
     }
+
+    public function getCloneCmdHandler()
+    {}
 }

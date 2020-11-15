@@ -2,17 +2,19 @@
 namespace Procure\Controller\Contracts;
 
 use Application\Notification;
+use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Contracts\FormActions;
-use Procure\Application\Command\GenericCmd;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
-use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
-use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Application\Service\Contracts\ProcureServiceInterface;
-use Zend\View\Model\ViewModel;
-use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\TransactionalCommandHandler;
-use Application\Application\Command\Doctrine\GenericCommand;
+use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
+use Procure\Application\Command\Options\CreateHeaderCmdOptions;
+use Procure\Application\Command\Options\CreateRowCmdOptions;
+use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
+use Procure\Application\Command\Options\UpdateRowCmdOptions;
+use Procure\Application\Service\Contracts\ProcureServiceInterface;
+use Procure\Domain\GenericDoc;
+use Zend\Escaper\Escaper;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -42,9 +44,13 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
     abstract protected function setListTemplate();
 
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
     public function createAction()
     {
-        $this->layout("Procure/layout-fullscreen");
+        $this->layout($this->getDefaultLayout());
 
         $form_action = $this->getBaseUrl() . "/create";
         $form_title = "Create Form";
@@ -120,8 +126,544 @@ abstract class ProcureCRUDController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_token=%s&target_id=%s", $dto->getToken(), $dto->getId());
-        $this->getLogger()->info(\sprintf("PO #%s is created by #%s", $dto->getId(), $this->getId()));
+
+        $header = $cmd->getOutput();
+        if ($header instanceof GenericDoc) {
+            $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_token=%s&target_id=%s", $header->getToken(), $header->getId());
+        } else {
+            $redirectUrl = $this->getBaseUrl() . "/list";
+        }
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function updateAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/update";
+        $form_title = "Edit Form";
+        $action = FormActions::EDIT;
+        $viewTemplete = $this->getBaseUrl() . "/crudHeader";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('entity_token');
+            $dto = $this->getProcureService()->getDocHeaderByTokenId($entity_id, $token);
+
+            if ($dto == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $token,
+                'headerDTO' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $notification = null;
+
+        try {
+
+            // POSTING
+            $data = $prg;
+
+            $rootEntityId = $data['entity_id'];
+            $rootEntityToken = $data['entity_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->getProcureService()->getDocHeaderByTokenId($rootEntityId, $rootEntityToken);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new UpdateHeaderCmdOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+
+            $cmdHandler = $this->getCmdHandlerFactory()->getUpdateHeaderCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $notification = $cmd->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $rootEntityId,
+                'entity_token' => $rootEntityToken,
+                'headerDTO' => $dto,
+                'version' => $rootEntity->getRevisionNo(), // get current version.
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $rootEntityId, $rootEntityId);
+        // $this->flashMessenger()->addMessage($redirectUrl);
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function addRowAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/add-row";
+        $form_title = "Add row rorm";
+        $action = FormActions::EDIT;
+        $viewTemplete = $this->getBaseUrl() . "/crudRow";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $target_id = (int) $this->params()->fromQuery('target_id');
+            $target_token = $this->params()->fromQuery('target_token');
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($target_id, $target_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+
+                'entity_id' => null,
+                'entity_token' => null,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'dto' => null,
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
+                'docRevisionNo' => $rootEntity->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // ==============
+        $notification = null;
+        try {
+
+            $data = $prg;
+
+            $target_id = $data['target_id'];
+            $target_token = $data['target_token'];
+            $version = $data['docRevisionNo'];
+
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($target_id, $target_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new CreateRowCmdOptions($rootEntity, $target_id, $target_token, $version, $this->getUserId(), __METHOD__);
+
+            $cmdHandler = $this->getCmdHandlerFactory()->getCreateRowCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+
+            $cmd->execute();
+            $notification = $cmd->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'entity_token' => null,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'dto' => $cmd->getOutput(),
+                'headerDTO' => $rootEntity->makeHeaderDTO(),
+                'docRevisionNo' => $rootEntity->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_id=%s&target_token=%s", $target_id, $target_token);
+        $this->getLogger()->info(\sprintf("PO Row of %s is created by #%s", $target_id, $this->getUserId()));
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function updateRowAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/update-row";
+        $form_title = "Update row form";
+        $action = FormActions::EDIT;
+        $viewTemplete = $this->getBaseUrl() . "/crudRow";
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+            $target_id = (int) $this->params()->fromQuery('target_id');
+            $target_token = $this->params()->fromQuery('target_token');
+
+            $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+
+            $rootDTO = null;
+            $localDTO = null;
+
+            if (isset($result["rootDTO"])) {
+                $rootDTO = $result["rootDTO"];
+            }
+
+            if (isset($result["localDTO"])) {
+                $localDTO = $result["localDTO"];
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'docRevisionNo' => $rootDTO->getRevisionNo(),
+                'headerDTO' => $rootDTO,
+                'dto' => $localDTO, // row
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // Posting
+        // =============================
+
+        try {
+
+            $data = $prg;
+
+            $target_id = $data['target_id'];
+            $target_token = $data['target_token'];
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['docRevisionNo'];
+
+            $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+
+            $rootEntity = null;
+            $localEntity = null;
+            $rootDTO = null;
+            $localDTO = null;
+
+            if (isset($result["rootEntity"])) {
+                $rootEntity = $result["rootEntity"];
+            }
+
+            if (isset($result["localEntity"])) {
+                $localEntity = $result["localEntity"];
+            }
+            if (isset($result["rootDTO"])) {
+                $rootDTO = $result["rootDTO"];
+            }
+
+            if (isset($result["localDTO"])) {
+                $localDTO = $result["localDTO"];
+            }
+
+            if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
+                $this->flashMessenger()->addMessage($redirectUrl);
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new UpdateRowCmdOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = $this->getCmdHandlerFactory()->getUpdateRowCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+
+            $cmd->execute();
+            $notification = $cmd->getNotification();
+        } catch (\Exception $e) {
+
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'target_id' => $target_id,
+                'target_token' => $target_token,
+                'docRevisionNo' => $rootEntity->getRevisionNo(), // get current version.
+                'dto' => $cmd->getOutput(),
+                'headerDTO' => $rootDTO,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $this->getLogger()->info(\sprintf("PO Row of %s is updated by #%s", $target_id, $this->getUserId()));
+
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function inlineUpdateRowAction()
+    {
+        $a_json_final = array();
+        $escaper = new Escaper();
+
+        $sent_list = json_decode($_POST['sent_list'], true);
+        $to_update = $sent_list['addList'];
+
+        $this->getLogger()->info(\serialize($to_update));
+        $response = $this->getResponse();
+
+        try {
+            foreach ($to_update as $a) {
+
+                $target_id = $a['docId'];
+                $target_token = $a['docToken'];
+                $entity_id = $a['id'];
+                $entity_token = $a['token'];
+                $version = $a['docRevisionNo'];
+
+                $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+
+                $rootEntity = null;
+                $localEntity = null;
+                $rootDTO = null;
+                $localDTO = null;
+                $this->getLogger()->info(\serialize($a));
+
+                if (isset($result["rootEntity"])) {
+                    $rootEntity = $result["rootEntity"];
+                }
+
+                if (isset($result["localEntity"])) {
+                    $localEntity = $result["localEntity"];
+                }
+                if (isset($result["rootDTO"])) {
+                    $rootDTO = $result["rootDTO"];
+                }
+
+                if (isset($result["localDTO"])) {
+                    $localDTO = $result["localDTO"];
+                }
+
+                $options = new CreateRowCmdOptions($rootEntity, $target_id, $target_token, $version, $this->getUserId(), __METHOD__);
+
+                $cmdHandler = $this->getCmdHandlerFactory()->getInlineUpdateRowCmdHandler();
+                $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+                $cmd = new GenericCommand($this->getDoctrineEM(), $a, $options, $cmdHanderDecorator, $this->getEventBusService());
+                $cmd->execute();
+
+                $notification = $cmd->getNotification();
+            }
+        } catch (\Exception $e) {
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+            $this->getLogger()->error($e->getMessage());
+        }
+
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(\json_encode("[OK] Doc row updated!"));
+        return $response;
+    }
+
+    public function cloneAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $form_action = "/procure/po/clone";
+        $form_title = "Clone PO";
+        $action = FormActions::EDIT;
+        $viewTemplete = "procure/po/crudHeader";
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('entity_token');
+            $dto = $this->procureService->getDocDetailsByTokenId($entity_id, $token);
+
+            if ($dto == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $token,
+                'headerDTO' => $dto,
+                'version' => $dto->getRevisionNo(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+        try {
+
+            // POSTING
+            $data = $prg;
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new UpdateHeaderCmdOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+
+            $cmdHandler = $this->getCmdHandlerFactory()->getCloneCmdHandler();
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd->execute();
+
+            $notification = $cmd->getNotification();
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
+            $notification = new Notification();
+            $notification->addError($e->getMessage());
+        }
+
+        if ($notification->hasErrors()) {
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'headerDTO' => $dto,
+                'version' => $rootEntity->getRevisionNo(), // get current version.
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        // $this->flashMessenger()->addMessage($redirectUrl);
 
         return $this->redirect()->toUrl($redirectUrl);
     }

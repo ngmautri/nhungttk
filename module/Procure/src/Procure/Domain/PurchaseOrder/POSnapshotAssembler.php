@@ -18,6 +18,8 @@ class POSnapshotAssembler
         "vendor",
         "contractNo",
         "contractDate",
+        "docDate",
+        "docNumber",
         "docCurrency",
         "exchangeRate",
         "incoterm",

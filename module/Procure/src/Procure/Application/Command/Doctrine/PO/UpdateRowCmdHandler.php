@@ -1,12 +1,10 @@
 <?php
-namespace Procure\Application\Command\DoctrinePO;
+namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
-use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\PurchaseOrder\PODoc;
@@ -35,8 +33,11 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
          *
          * @var PODoc $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
-         * @var CreateHeaderCmdOptions $options ;
          * @var AbstractCommand $cmd ;
+         * @var PORowSnapshot $snapshot ;
+         * @var PORowSnapshot $newSnapshot ;
+         * @var PORow $row ;
+         *
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
@@ -48,24 +49,19 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $rootEntity = $options->getRootEntity();
             $localEntity = $options->getLocalEntity();
 
-            $userId = $options->getUserId();
             $version = $options->getVersion();
 
-            /**
-             *
-             * @var PORowSnapshot $snapshot ;
-             * @var PORowSnapshot $newSnapshot ;
-             * @var PORow $row ;
-             *
-             */
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
             $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromArray($newSnapshot, $cmd->getData());
+            $this->setOutput($newSnapshot);
+
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
+                $cmd->addError("Nothing change on PO#" . $rootEntity->getId());
                 return;
             }
 
@@ -74,10 +70,6 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "rowToken" => $row->getToken(),
                 "changeLog" => $changeLog
             ];
-
-            // do change
-            $newSnapshot->lastchangeBy = $userId;
-            $newSnapshot->revisionNo ++;
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);

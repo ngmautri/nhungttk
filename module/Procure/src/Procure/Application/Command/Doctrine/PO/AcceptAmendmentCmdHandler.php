@@ -4,19 +4,23 @@ namespace Procure\Application\Command\Doctrine\PO;
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\Options\PostCmdOptions;
+use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
+use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\PODocStatus;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
+use Procure\Application\Command\Options\PostCmdOptions;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PostCmdHandler extends AbstractCommandHandler
+class AcceptAmendmentCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -30,23 +34,31 @@ class PostCmdHandler extends AbstractCommandHandler
          *
          * @var AbstractCommand $cmd ;
          * @var PODoc $rootEntity ;
+         * @var POSnapshot $snapshot ;
          * @var PostCmdOptions $options ;
+         *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
         // Assert::notNull($cmd->getData(), 'Input data in emty');
 
         Assert::isInstanceOf($cmd->getOptions(), PostCmdOptions::class);
+
         $options = $cmd->getOptions();
-
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, PODoc::class);
 
+        Assert::isInstanceOf($rootEntity, PODoc::class);
         $version = $options->getVersion();
 
         try {
+            /**
+             *
+             * @var POSnapshot $snapshot ;
+             * @var POSnapshot $rootSnapshot ;
+             * @var PODoc $rootEntity ;
+             */
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $rootEntity->post($options, $sharedService);
+            $rootEntity->acceptAmendment($options, $sharedService);
 
             // event dispatch
             // ================
@@ -55,9 +67,6 @@ class PostCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("PO #%s posted", $rootEntity->getId());
-            $cmd->addSuccess($m);
-
             $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
 
             // time to check version - concurency
@@ -65,10 +74,10 @@ class PostCmdHandler extends AbstractCommandHandler
 
             // revision numner has been increased.
             if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
+                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException($e->getMessage());
+            throw new OperationFailedException($e->getMessage());
         }
     }
 }

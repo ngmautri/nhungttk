@@ -13,7 +13,7 @@ abstract class CmdHandlerAbstractFactory
 
     abstract function getUpdateHeaderCmdHandler();
 
-    abstract function getAddRowCmdHandler();
+    abstract function getCreateRowCmdHandler();
 
     abstract function getUpdateRowCmdHandler();
 
@@ -22,4 +22,6 @@ abstract class CmdHandlerAbstractFactory
     abstract function getPostCmdHandler();
 
     abstract function getReverseCmdHandler();
+
+    abstract function getCloneCmdHandler();
 }

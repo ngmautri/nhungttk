@@ -2,9 +2,8 @@
 namespace Procure\Application\Command;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
-use Application\Domain\Shared\Command\AbstractCommandHandlerDecorator;
+use Application\Application\Command\Doctrine\AbstractCommandHandlerDecorator;
 use Application\Domain\Shared\Command\CommandInterface;
-use function RuntimeException\__construct as sprintf;
 use Webmozart\Assert\Assert;
 
 /**
@@ -34,12 +33,12 @@ class TransactionalCommandHandler extends AbstractCommandHandlerDecorator
             ->beginTransaction(); // suspend auto-commit
 
         try {
-            $cmd->logInfo(sprintf("Command %s running", \get_class($cmd)));
+            $cmd->logInfo(sprintf("%s running", \get_class($this->handler)));
 
             $this->handler->run($cmd);
             $cmd->getDoctrineEM()->commit(); // now commit
 
-            $cmd->logInfo(sprintf("Command %s completed in %d (ms)", \get_class($cmd), $cmd->getEstimatedDuration()));
+            $cmd->logInfo(sprintf("%s completed in %d (ms)", \get_class($this->handler), $cmd->getEstimatedDuration()));
         } catch (\Exception $e) {
             $cmd->logAlert($e->getMessage());
             $cmd->logException($e);
@@ -47,7 +46,7 @@ class TransactionalCommandHandler extends AbstractCommandHandlerDecorator
                 ->getConnection()
                 ->rollBack();
 
-            $cmd->logInfo(sprintf("%s-%s", "Transaction rollback!"), \get_class($this));
+            $cmd->logInfo(sprintf("%s-%s", "Transaction rollbac // ", \get_class($this)));
 
             throw new \RuntimeException(sprintf("%s", $e->getMessage()));
         }

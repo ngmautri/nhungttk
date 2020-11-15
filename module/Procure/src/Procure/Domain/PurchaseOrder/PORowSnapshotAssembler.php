@@ -54,6 +54,22 @@ class PORowSnapshotAssembler
 
     const EDITABLE_FIELDS = 2;
 
+    /**
+     *
+     * @param AbstractDTO $snapShot
+     * @param array $data
+     * @param array $editableProperties
+     * @return NULL|\Application\Domain\Shared\AbstractDTO
+     */
+    public static function updateSnapshotFieldsFromArray(AbstractDTO $snapShot, $data, $editableProperties = null)
+    {
+        if ($editableProperties == null) {
+            $editableProperties = self::$defaultEditableProperties;
+        }
+
+        return GenericSnapshotAssembler::updateSnapshotFieldsFromArray($snapShot, $data, $editableProperties);
+    }
+
     public static function createIndexDoc()
     {
         $entity = new PORowSnapshot();
@@ -223,15 +239,6 @@ class PORowSnapshotAssembler
             }
         }
         return $snapShot;
-    }
-
-    public static function updateSnapshotFieldsFromArray(AbstractDTO $snapShot, $data, $editableProperties = null)
-    {
-        if ($editableProperties == null) {
-            $editableProperties = self::$defaultEditableProperties;
-        }
-
-        return GenericSnapshotAssembler::updateSnapshotFieldsFromArray($snapShot, $data, $editableProperties);
     }
 
     /**

@@ -419,12 +419,13 @@ class PODoc extends GenericPO
         Assert::notNull($validationService, "Validation can not created!");
 
         $instance = new self();
+        $createdDate = new \Datetime();
+        $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
+
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $instance->setExchangeRate($fxRate);
-        $createdDate = new \Datetime();
-        $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $instance->validateHeader($validationService->getHeaderValidators());
 
         if ($instance->hasErrors()) {

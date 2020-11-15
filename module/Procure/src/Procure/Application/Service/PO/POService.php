@@ -5,6 +5,7 @@ use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
+use Procure\Application\Service\Contracts\ProcureServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
@@ -30,14 +31,73 @@ use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
  * PO Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class POService extends AbstractService
+class POService extends AbstractService implements ProcureServiceInterface
 {
 
     private $cmdRepository;
 
     private $queryRepository;
+
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
+    {
+        $po = $this->getQueryRepository()->getPODetailsById($id, $token);
+
+        if ($po == null) {
+            return null;
+        }
+
+        $factory = null;
+        $formatter = null;
+
+        switch ($outputStrategy) {
+            case SaveAsSupportedType::OUTPUT_IN_ARRAY:
+                $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
+                $factory = new DocSaveAsArray();
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_EXCEL:
+                $builder = new PoExcelBuilder();
+                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $factory = new PoSaveAsExcel($builder);
+                break;
+            case SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE:
+                $builder = new PoOpenOfficeBuilder();
+                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $factory = new PoSaveAsOpenOffice($builder);
+                break;
+
+            case SaveAsSupportedType::OUTPUT_IN_PDF:
+                $builder = new PoPdfBuilder();
+                $formatter = new PoRowFormatter(new RowNumberFormatter());
+                $factory = new PoSaveAsPdf($builder);
+                break;
+
+            default:
+                $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
+                $factory = new DocSaveAsArray();
+                break;
+        }
+
+        if ($factory !== null && $formatter !== null) {
+            $output = $factory->saveAs($po, $formatter);
+            $po->setRowsOutput($output);
+        }
+
+        return $po;
+    }
+
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    {}
+
+    public function getDocHeaderByTokenId($id, $token)
+    {}
+
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    {}
+
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
+    {}
 
     public function createFromQuotation($id, $token, CommandOptions $options)
     {

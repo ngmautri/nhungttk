@@ -48,20 +48,20 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($rootEntity, PODoc::class);
         $version = $options->getVersion();
 
-        try {
+        Assert::notEq($rootEntity->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO is already posted! %s", $rootEntity->getId()));
 
-            Assert::notEq($rootEntity->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO is already posted! %s", $rootEntity->getId()));
+        try {
 
             $snapshot = $rootEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
             $newSnapshot = POSnapshotAssembler::updateSnapshotFieldsFromArray($newSnapshot, $cmd->getData());
+            $this->setOutput($newSnapshot);
+
             $changeLog = $snapshot->compare($newSnapshot);
 
             if ($changeLog == null) {
-
-                // No Notify when posting.
-                if (! $options->getIsPosting()) {}
+                $cmd->addError("Nothing change on PO#" . $rootEntity->getId());
                 return;
             }
 
@@ -69,15 +69,6 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 "changeLog" => $changeLog
             ];
 
-            // do change
-            $newSnapshot->lastChangeBy = $options->getUserId();
-
-            /**
-             *
-             * @var POSnapshot $snapshot ;
-             * @var POSnapshot $rootSnapshot ;
-             * @var PODoc $rootEntity ;
-             */
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $newRootEntity = PODoc::updateFrom($newSnapshot, $options, $params, $sharedService);
 
@@ -100,8 +91,6 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             }
             $m = sprintf("PO #%s updated", $newRootEntity->getId());
             $cmd->addSuccess($m);
-
-            $this->setOutput($newSnapshot);
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }

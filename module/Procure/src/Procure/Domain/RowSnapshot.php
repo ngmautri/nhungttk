@@ -149,6 +149,23 @@ class RowSnapshot extends BaseRowSnapshot
         $this->unit = $this->getDocUnit();
     }
 
+    public function markAsChange($createdBy, $createdDate)
+    {
+        $this->createdOn = $createdDate;
+        $this->createdBy = $createdBy;
+
+        $this->quantity = $this->docQuantity;
+        $this->revisionNo = $this->getRevisionNo() + 1;
+
+        if ($this->token == null) {
+            $this->token = Uuid::uuid4()->toString();
+            $this->uuid = $this->getToken();
+        }
+        $this->unitPrice = $this->getDocUnitPrice();
+        $this->unit = $this->getDocUnit();
+        $this->isDraft = 1;
+    }
+
     /**
      *
      * @param int $createdBy

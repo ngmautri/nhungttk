@@ -262,17 +262,7 @@ abstract class GenericPO extends BaseDoc
         Assert::notNull($validationService, "Validation can not be created!");
 
         $createdDate = new \Datetime();
-        $snapshot->lastchangeOn = date_format($createdDate, 'Y-m-d H:i:s');
-        $snapshot->quantity = $snapshot->docQuantity;
-
-        if ($snapshot->token == null) {
-            $snapshot->token = Uuid::uuid4()->toString();
-        }
-
-        $snapshot->docType = $this->docType;
-        $snapshot->isDraft = 1;
-        $snapshot->unitPrice = $snapshot->getDocUnitPrice();
-        $snapshot->unit = $snapshot->getDocUnit();
+        $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
 
         $row = PORow::makeFromSnapshot($snapshot);
 

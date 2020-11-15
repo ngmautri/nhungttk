@@ -10,7 +10,7 @@ use Procure\Domain\Service\Contracts\FXServiceInterface;
  * FX Service
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class FXServiceImpl extends AbstractService implements FXServiceInterface
 {
@@ -46,7 +46,8 @@ class FXServiceImpl extends AbstractService implements FXServiceInterface
 
         if ($spec->isSatisfiedBy($fxRate) and $systemRate !== null) {
             if ($fxRate / $systemRate >= 1.1 || $systemRate / $fxRate >= 1.1) {
-                throw new \Exception(sprintf("Exchange rate is different than 10pct (%s/%s)", $fxRate, $systemRate));
+                return $systemRate;
+                // throw new \Exception(sprintf("Exchange rate is different than 10pct (%s/%s)", $fxRate, $systemRate));
             }
         }
 

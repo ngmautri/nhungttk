@@ -37,7 +37,7 @@ class UpdateRowCmdOptions implements CommandOptions
     public function __construct($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
     {
         Assert::notNull($rootEntity, sprintf("Root entity ID not given! %s", ""));
-        Assert::notNull($localEntity, sprintf("Local entity ID not given! %s", ""));
+        Assert::notNull($localEntity, sprintf("Local entity not given! %s", __METHOD__));
         Assert::notNull($userId, sprintf("User ID not given! %s", $userId));
         Assert::notNull($triggeredBy, sprintf("Triggernot given! %s", $triggeredBy));
 

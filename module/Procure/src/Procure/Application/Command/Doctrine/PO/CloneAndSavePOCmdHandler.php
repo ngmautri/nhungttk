@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\PO\Command;
+namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
@@ -34,7 +34,7 @@ class CloneAndSavePOCmdHandler extends AbstractCommandHandler
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::notNull($cmd->getData(), 'Input data in emty');
+        // Assert::notNull($cmd->getData(), 'Input data in emty');
         Assert::isInstanceOf($cmd->getOptions(), UpdateHeaderCmdOptions::class);
 
         $options = $cmd->getOptions();

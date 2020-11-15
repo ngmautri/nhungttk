@@ -10,6 +10,7 @@ use Inventory\Domain\Service\TrxPostingService;
 use Inventory\Domain\Service\TrxValuationService;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Psr\Log\LoggerInterface;
+use Inventory\Infrastructure\Doctrine\WhQueryRepositoryImpl;
 
 /**
  * Shared Service.
@@ -51,6 +52,7 @@ class SharedServiceFactory
         $sharedService->setValuationService($valuationService);
         $sharedService->setDomainSpecificationFactory(new InventorySpecificationFactoryImpl($doctrineEM));
         $sharedService->setLogger($logger);
+        $sharedService->setWhQueryRepository(new WhQueryRepositoryImpl($doctrineEM));
         return $sharedService;
     }
 }

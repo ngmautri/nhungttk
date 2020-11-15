@@ -199,4 +199,104 @@ class GenericSnapshotAssembler
             }
         }
     }
+
+    public static function createSnapshotFrom($obj, $snapshot)
+    {
+        if ($obj == null or $snapshot == null) {
+            return null;
+        }
+
+        $reflectionClass = new \ReflectionObject($obj);
+        $properites = $reflectionClass->getProperties();
+
+        $refObject = new \ReflectionObject($snapshot);
+
+        foreach ($properites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($snapshot, $propertyName)) {
+
+                $refProperty = $refObject->getProperty($propertyName);
+                $refProperty->setAccessible(true);
+
+                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
+                    $refProperty->setValue($snapshot, null);
+                } else {
+                    $refProperty->setValue($snapshot, $property->getValue($obj));
+                }
+            }
+        }
+
+        return $snapshot;
+    }
+
+    public static function createSnapShotFromArray($data, $snapshot)
+    {
+        foreach ($data as $property => $value) {
+            if (property_exists($snapshot, $property)) {
+                if ($value == null || $value == "") {
+                    $snapshot->$property = null;
+                } else {
+                    $snapshot->$property = $value;
+                }
+            }
+        }
+        return $snapshot;
+    }
+
+    public static function makeFromSnapshot($obj, $snapshot)
+    {
+        if ($obj == null || $snapshot == null) {
+            return;
+        }
+
+        // should use reflection object
+        $reflectionClass = new \ReflectionObject($snapshot);
+        $properites = $reflectionClass->getProperties();
+
+        $refObject = new \ReflectionObject($obj);
+
+        foreach ($properites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($obj, $propertyName)) {
+
+                $refProperty = $refObject->getProperty($propertyName);
+                $refProperty->setAccessible(true);
+
+                if ($property->getValue($snapshot) == null || $property->getValue($snapshot) == "") {
+                    $refProperty->setValue($obj, null);
+                } else {
+
+                    $refProperty->setValue($obj, $property->getValue($snapshot));
+                }
+            }
+        }
+    }
+
+    public static function makeFromArray($obj, $data)
+    {
+        Assert::object($obj);
+        Assert::isArray($data);
+
+        $refObject = new \ReflectionObject($obj);
+
+        foreach ($data as $property => $value) {
+
+            if (property_exists($obj, $property)) {
+
+                $refProperty = $refObject->getProperty($property);
+                $refProperty->setAccessible(true);
+
+                if ($value == null || $value == "") {
+                    $refProperty->setValue($obj, null);
+                } else {
+                    $refProperty->setValue($obj, $value);
+                }
+            }
+        }
+        return $obj;
+    }
 }

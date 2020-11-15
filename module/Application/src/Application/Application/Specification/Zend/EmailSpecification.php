@@ -7,7 +7,7 @@ use Zend\Validator\EmailAddress;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class EmailSpecification extends AbstractSpecification
 {

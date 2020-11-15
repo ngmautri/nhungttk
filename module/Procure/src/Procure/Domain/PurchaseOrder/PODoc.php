@@ -28,6 +28,7 @@ use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
 use Ramsey;
+use Application\Application\Contracts\GenericSnapshotAssembler;
 
 /**
  *
@@ -424,7 +425,6 @@ class PODoc extends GenericPO
         $instance->setExchangeRate($fxRate);
         $createdDate = new \Datetime();
         $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-
         $instance->validateHeader($validationService->getHeaderValidators());
 
         if ($instance->hasErrors()) {
@@ -468,7 +468,7 @@ class PODoc extends GenericPO
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
+        return GenericSnapshotAssembler::createSnapshotFrom($this, new POSnapshot());
     }
 
     /**

@@ -1,81 +1,58 @@
 <?php
 namespace Procure\Domain\PurchaseOrder;
 
-use Procure\Application\DTO\Po\PORowDTOAssembler;
+use Application\Application\Contracts\GenericSnapshotAssembler;
+use Application\Domain\Shared\AbstractDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
-use Procure\Domain\GenericRow;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PORowSnapshotAssembler
 {
 
+    private static $defaultExcludedProperties = array(
+        "id",
+        "uuid",
+        "token",
+        "checksum",
+        "createdBy",
+        "createdOn",
+        "lastChangeOn",
+        "lastChangeBy",
+        "sysNumber",
+        "company",
+        "itemType",
+        "revisionNo",
+        "currencyIso3",
+        "vendorName",
+        "docStatus",
+        "workflowStatus",
+        "transactionStatus",
+        "paymentStatus"
+    );
+
+    private static $defaultEditableProperties = array(
+        "isActive",
+        "remarks",
+        "rowNumber",
+        "item",
+        "prRow",
+        "vendorItemCode",
+        "vendorItemName",
+        "docQuantity",
+        "docUnit",
+        "docUnitPrice",
+        "conversionFactor",
+        "descriptionText",
+        "taxRate"
+    );
+
     const EXCLUDED_FIELDS = 1;
 
     const EDITABLE_FIELDS = 2;
-
-    /**
-     *
-     * @return array;
-     */
-    public static function findMissingPropertiesOfSnapshot()
-    {
-        $missingProperties = array();
-        $entity = new GenericRow();
-        $dto = new PORowSnapshot();
-
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
-    }
-
-    /**
-     *
-     * @return array;
-     */
-    public static function findMissingPropertiesOfEntity()
-    {
-        $missingProperties = array();
-
-        $entityProps = PORowDTOAssembler::createDTOProperities();
-        $dto = new GenericRow();
-
-        foreach ($entityProps as $property) {
-            $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                echo (sprintf("\n protected $%s;", $propertyName));
-                $missingProperties[] = $propertyName;
-            }
-        }
-        return $missingProperties;
-    }
-
-    /**
-     * generete fields.
-     */
-    public static function createProperities()
-    {
-        $entity = new PORowDetailsSnapshot();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "protected $" . $propertyName . ";";
-        }
-    }
 
     public static function createIndexDoc()
     {
@@ -114,18 +91,6 @@ class PORowSnapshotAssembler
             $snapshort->item = $hit->itemId; // important
         }
         return $snapshort;
-    }
-
-    public static function createFromDetailsSnapshotCode()
-    {
-        $itemSnapshot = new PORowDetailsSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
-        }
     }
 
     /**
@@ -258,6 +223,15 @@ class PORowSnapshotAssembler
             }
         }
         return $snapShot;
+    }
+
+    public static function updateSnapshotFieldsFromArray(AbstractDTO $snapShot, $data, $editableProperties = null)
+    {
+        if ($editableProperties == null) {
+            $editableProperties = self::$defaultEditableProperties;
+        }
+
+        return GenericSnapshotAssembler::updateSnapshotFieldsFromArray($snapShot, $data, $editableProperties);
     }
 
     /**

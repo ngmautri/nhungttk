@@ -22,6 +22,7 @@ use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Contracts\ProcureDocStatus;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
 /**
@@ -380,6 +381,39 @@ abstract class GenericTrx extends BaseDoc
 
         $this->addEvent($event);
         $this->logInfo(\sprintf("Trx Posted %s", __METHOD__));
+        return $this;
+    }
+
+    /**
+     *
+     * @param SharedService $sharedService
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \Inventory\Domain\Transaction\GenericTrx
+     */
+    public function store(SharedService $sharedService)
+    {
+        Assert::eq($this->getMovementFlow(), TrxFlow::WH_TRANSACTION_OUT, Translator::translate(sprintf("Flow in not correct%s", __FUNCTION__)));
+        Assert::notNull($sharedService, Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
+
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+
+        if (! $rep instanceof TrxCmdRepositoryInterface) {
+            throw new \InvalidArgumentException(Translator::translate(sprintf("TrxCmdRepositoryInterface not set! %s", __FUNCTION__)));
+        }
+
+        $this->setLogger($sharedService->getLogger());
+
+        $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
+
+        $this->validate($validationService);
+        if ($this->hasErrors()) {
+            throw new \RuntimeException($this->getErrorMessage());
+        }
+
+        $rep->store($this);
+
+        $this->logInfo(\sprintf("Trx saved %s", __METHOD__));
         return $this;
     }
 

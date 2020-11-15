@@ -181,16 +181,14 @@ class PRRow extends BaseRow
         return new PRRow();
     }
 
-    s
-
     /**
      *
      * @return mixed
      */
     public function getDraftPoQuantity()
-{
-    return $this->draftPoQuantity;
-}
+    {
+        return $this->draftPoQuantity;
+    }
 
     /**
      *

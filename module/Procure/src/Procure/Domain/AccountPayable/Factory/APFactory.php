@@ -154,12 +154,14 @@ class APFactory
 
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $snapshot->markAsChange($createdBy, $createdDate);
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-
         $validationService = ValidatorFactory::createForHeader($sharedService);
 
         $instance->validateHeader($validationService->getHeaderValidators());
@@ -167,12 +169,6 @@ class APFactory
         if ($instance->hasErrors()) {
             throw new \RuntimeException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
         }
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-
-        $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setLastchangeBy($createdBy);
 
         $instance->clearEvents();
 

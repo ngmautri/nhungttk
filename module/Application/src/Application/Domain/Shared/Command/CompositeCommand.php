@@ -4,7 +4,7 @@ namespace Application\Domain\Shared\Command;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class CompositeCommand implements CommandInterface
 {
@@ -32,11 +32,6 @@ abstract class CompositeCommand implements CommandInterface
         }
 
         foreach ($this->commands as $cmd) {
-            /**
-             *
-             * @var CommandInterface $cmd ;
-             */
-
             $cmd->execute();
         }
     }

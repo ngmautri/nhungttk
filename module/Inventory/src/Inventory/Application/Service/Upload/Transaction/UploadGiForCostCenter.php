@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UploadGiForCostCenter extends AbstractTrxRowsUpload
 {
@@ -96,4 +96,3 @@ class UploadGiForCostCenter extends AbstractTrxRowsUpload
         }
     }
 }
-    

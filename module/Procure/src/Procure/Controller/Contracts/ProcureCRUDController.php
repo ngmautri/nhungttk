@@ -4,14 +4,15 @@ namespace Procure\Controller\Contracts;
 use Application\Notification;
 use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Contracts\FormActions;
-use Application\Domain\Shared\DTOFactory;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
 use Procure\Application\Command\PO\Options\PoCreateOptions;
-use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Service\Contracts\ProcureServiceInterface;
 use Zend\View\Model\ViewModel;
+use Procure\Application\Command\Options\CreateHeaderCmdOptions;
+use Procure\Application\Command\TransactionalCommandHandler;
+use Application\Application\Command\Doctrine\GenericCommand;
 
 /**
  *
@@ -32,15 +33,6 @@ abstract class ProcureCRUDController extends AbstractGenericController
     protected $cmdHandlerFactory;
 
     protected $procureService;
-
-    /**
-     *
-     * @return \Procure\Application\Command\Contracts\CmdHandlerAbstractFactory
-     */
-    public function getCmdHandlerFactory()
-    {
-        return $this->cmdHandlerFactory;
-    }
 
     abstract protected function setBaseUrl();
 
@@ -81,31 +73,29 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
             return $viewModel;
         }
 
+        $notification = null;
         try {
 
             $data = $prg;
-            $dto = DTOFactory::createDTOFromArray($data, new PoDTO());
 
-            $userId = $this->getId();
-            $companyId = $this->getId();
-
-            $options = new PoCreateOptions($companyId, $userId, __METHOD__);
+            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
 
             $cmdHandler = $this->getCmdHandlerFactory()->getCreateHeaderCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
 
             $cmd->execute();
-            $notification = $dto->getNotification();
+            $notification = $cmd->getNotification();
         } catch (\Exception $e) {
-
             $notification = new Notification();
             $notification->addError($e->getMessage());
         }
@@ -117,11 +107,12 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'entity_id' => null,
                 'entity_token' => null,
                 'version' => null,
-                'headerDTO' => $dto,
+                'headerDTO' => $cmd->getOutput(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'sharedCollection' => $this->getSharedCollection()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -187,5 +178,23 @@ abstract class ProcureCRUDController extends AbstractGenericController
     public function setProcureService(ProcureServiceInterface $procureService)
     {
         $this->procureService = $procureService;
+    }
+
+    /**
+     *
+     * @param CmdHandlerAbstractFactory $cmdHandlerFactory
+     */
+    public function setCmdHandlerFactory(CmdHandlerAbstractFactory $cmdHandlerFactory)
+    {
+        $this->cmdHandlerFactory = $cmdHandlerFactory;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Command\Contracts\CmdHandlerAbstractFactory
+     */
+    public function getCmdHandlerFactory()
+    {
+        return $this->cmdHandlerFactory;
     }
 }

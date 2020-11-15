@@ -37,31 +37,31 @@ $( "#po_item_name" ).autocomplete({
 	   	$( "#gl_account_id" ).val("");
   	   	$( "#cost_center_id").val("");
   	 	$( "#docUnitPrice").val("");
-        
- 
-        
+
+
+
         $( "#po_row_id" ).val(ui.item.po_row_id);
         $( "#quantity" ).val(ui.item.row_quantity);
         $( "#docUnitPrice" ).val(ui.item.row_unit_price);
-        
-        $( "#item_id" ).val(ui.item.item_id);
+
+        $( "#item" ).val(ui.item.item_id);
         $( "#item_name" ).val(ui.item.item_name);
 
- 
+
         $('#item_url').text('/inventory/item/show1?tab_idx=11&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
         $('#po_row_url').text('/procure/po-row/show1?entity_id='+ui.item.po_row_id+'&token='+ui.item.token);
 
         $('#rowUnit').val(ui.item.row_unit);
         $('#po_row_uom').text(ui.item.row_unit +' = ' + ui.item.row_conversion_factor);
-         	 
-        
+
+
          //alert(ui.item.item_id);
         $('#global-notice').show();
         $('#global-notice').html('"' + ui.item.item_name + '" selected');
         $('#global-notice').fadeOut(5000);
     	$('#item_detail').show();
      	$('#po_row_detail').show();
-        
+
      	$( "#quantity" ).focus();
 
 
@@ -75,20 +75,20 @@ $( "#po_item_name" ).autocomplete({
      	if(ui.item.cost_center_id !==null){
          	// update GL account and cost center
      	   	$( "#costCenter").val(ui.item.cost_center_id);
-      	}		
+      	}
     }
     })
     .autocomplete( "instance" )._renderItem = function( ul, item ) {
     return $( "<li>" )
-    
-    
-    
-.append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>"  + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + 
+
+
+
+.append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>"  + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity +
               "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>"+ item.vendor_name +'<br>' + item.po_number + " | " + item.row_identifer_keyword  + " | " + item.manufacturer_code_key +"<span></div>" )
 
 //         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
       .appendTo( ul );
-};	
+};
 
 
 <?php

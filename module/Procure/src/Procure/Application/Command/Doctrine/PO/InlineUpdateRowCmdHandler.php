@@ -1,9 +1,9 @@
 <?php
-namespace Procure\Application\Command\PO;
+namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Notification;
 use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Domain\Shared\Command\AbstractCommandHandler;
+use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoRowUpdateOptions;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
@@ -28,7 +28,7 @@ class InlineUpdateRowCmdHandler extends AbstractCommandHandler
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
+     * @see \Application\Domain\Shared\Command\CommandHandlerInterface::run()
      */
     public function run(CommandInterface $cmd)
     {

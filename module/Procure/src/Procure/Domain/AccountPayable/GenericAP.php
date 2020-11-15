@@ -228,7 +228,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::eq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is posted %s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is posted %s", $this->getId()));
         Assert::notNull($snapshot, "Row Snapshot not founds");
         Assert::notNull($options, "Options not founds");
 

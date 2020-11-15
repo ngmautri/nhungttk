@@ -87,14 +87,35 @@ class POService extends AbstractService implements ProcureServiceInterface
         return $po;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
+     */
     public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
-    {}
+    {
+        return $this->getPODetailsById($id, $token, $outputStrategy);
+    }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocHeaderByTokenId()
+     */
     public function getDocHeaderByTokenId($id, $token)
-    {}
+    {
+        return $this->getQueryRepository()->getHeaderById($id, $token);
+    }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getRootEntityOfRow()
+     */
     public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
-    {}
+    {
+        return $this->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+    }
 
     public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
     {}

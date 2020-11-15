@@ -14,7 +14,7 @@ use Procure\Infrastructure\Mapper\PoMapper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQueryRepositoryInterface
 {
@@ -125,7 +125,7 @@ class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQuer
             return null;
         }
 
-        return PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
+        return $poDetailsSnapshot;
     }
 
     public function getById($id, $outputStragegy = null)
@@ -278,17 +278,17 @@ class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQuer
 SELECT
 *
 FROM nmt_procure_po_row
-            
+
 LEFT JOIN
 (%s)
 AS fin_vendor_invoice_row
 ON fin_vendor_invoice_row.po_row_id = nmt_procure_po_row.id
-            
+
 LEFT JOIN
 (%s)
 AS nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
-            
+
 WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by row_number";
 
         /**

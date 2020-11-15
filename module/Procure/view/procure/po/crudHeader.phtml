@@ -7,8 +7,9 @@
  */
 use Procure\Application\Helper\OptionList;
 use Procure\Domain\Shared\Constants;
+use Procure\Domain\PurchaseOrder\POSnapshot;
 
-/**@var \Procure\Application\DTO\Po\PoDTO $headerDTO ;*/
+/**@var POSnapshot $headerDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 $error_msg = "";
@@ -29,10 +30,11 @@ $wh_id = null;
 $pmtTermId = null;
 $currencyId = null;
 $incotermId = null;
+$review_url = null;
 
 if (! $headerDTO == null) {
     $log_url = sprintf($this->baseUrl . "/application/message-store/list1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/po/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $wh_id = $headerDTO->getWarehouse();
     $pmtTermId = $headerDTO->getPmtTerm();
     $currencyId = $headerDTO->getDocCurrency();
@@ -65,7 +67,7 @@ $currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), 
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -132,7 +134,7 @@ echo $form_action;
                   <input type="hidden" id="source_token" name="source_token" value="<?php
                 echo $source_token;
                 ?>" />
-                        
+
           			<?php endif;
 
             ?>
@@ -323,10 +325,11 @@ echo $paymentTerm_option;
                         <label class="control-label col-sm-2" for="inputTag"></label>
                         <div class="col-sm-3">
                            <button id="submit" onclick="submitForm('Creating_Form');" class="btn btn-default btn-sm">
-                              <i class="glyphicon glyphicon-floppy-disk"> </i>Save</button>
+                              <i class="glyphicon glyphicon-floppy-disk"> </i>
+                              Save
+                           </button>
                            <a class="btn btn-default btn-sm" href="<?php
-
-                        echo $review_url;
+                        echo ($review_url);
                         ?>">
                               <small>
                                  <i class="glyphicon glyphicon-remove"></i>
@@ -337,6 +340,7 @@ echo $paymentTerm_option;
                      </div>
                   </fieldset>
                </form>
+
             </div>
             <!-- end tab -->
          </div>
@@ -344,6 +348,7 @@ echo $paymentTerm_option;
    </div>
    <!-- /#page-content-wrapper -->
 </div>
+
 <!-- /#wrapper -->
 <script>
 

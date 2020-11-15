@@ -4,13 +4,11 @@ namespace Procure\Controller;
 use Procure\Application\Eventbus\EventBusService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Procure\Application\Service\PO\POService;
-use Procure\Application\Command\Doctrine\PO\Factory\POCmdHandlerFactory;
 
 /**
  *
  * @author nmt
- *
+ *        
  */
 class PoControllerFactory implements FactoryInterface
 {
@@ -30,13 +28,20 @@ class PoControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
+        $sv = $sm->get('Procure\Service\PoService');
+        $controller->setPoService($sv);
+
+        $sv = $sm->get('Procure\Service\PoSearchService');
+        $controller->setPoSearchService($sv);
+
+        $sv = $sm->get('Procure\Application\Service\PO\POService');
+        $controller->setPurchaseOrderService($sv);
+
+        $sv = $sm->get('Procure\Application\Reporting\PO\PoReporter');
+        $controller->setPoReporter($sv);
+
         $sv = $sm->get(EventBusService::class);
         $controller->setEventBusService($sv);
-
-        $sv = $sm->get(POService::class);
-        $controller->setProcureService($sv);
-
-        $controller->setCmdHandlerFactory(new POCmdHandlerFactory());
 
         $sv = $sm->get("ProcureLogger");
         $controller->setLogger($sv);

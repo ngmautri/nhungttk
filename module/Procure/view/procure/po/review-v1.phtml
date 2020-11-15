@@ -71,7 +71,7 @@ if (! $headerDTO == null) {
     $picture_url = sprintf($this->baseUrl . "/procure/po-attachment/get-pictures?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $attachment_url = sprintf($this->baseUrl . "/procure/po-attachment/list1?target_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $status_url = sprintf($this->baseUrl . "/procure/po/status?entity_id=%s&token=%s", $headerDTO->getId(), $headerDTO->getToken());
-    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/po/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $enable_amendment_url = sprintf($this->baseUrl . "/procure/po/enable-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $review_amendment_url = sprintf($this->baseUrl . "/procure/po/review-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 
@@ -321,17 +321,11 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                                     echo "selected"; endif ?>
 
 
-
-
-
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
-
-
-
 
 
                                  value="finalPo">Final</option>

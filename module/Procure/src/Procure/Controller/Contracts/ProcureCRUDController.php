@@ -7,8 +7,10 @@ use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Contracts\FormActions;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
+use Procure\Application\Command\Doctrine\PO\PostCmdHandler;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
+use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\Contracts\ProcureServiceInterface;
@@ -28,6 +30,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
     protected $defaultLayout;
 
+    protected $viewTemplate;
+
     protected $listTemplate;
 
     protected $ajaxLayout;
@@ -36,6 +40,15 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
     protected $procureService;
 
+    /**
+     *
+     * @return mixed
+     */
+    public function getViewTemplate()
+    {
+        return $this->viewTemplate;
+    }
+
     abstract protected function setBaseUrl();
 
     abstract protected function setDefaultLayout();
@@ -43,6 +56,172 @@ abstract class ProcureCRUDController extends AbstractGenericController
     abstract protected function setAjaxLayout();
 
     abstract protected function setListTemplate();
+
+    abstract protected function setViewTemplate();
+
+    /**
+     *
+     * @return \Zend\Http\PhpEnvironment\Response|\Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/review";
+        $form_title = "Edit Form";
+        $action = FormActions::REVIEW;
+        $viewTemplete = $this->getViewTemplate();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg($form_action, true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+
+            $this->layout("Procure/layout-fullscreen");
+
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $entity_token = $this->params()->fromQuery('entity_token');
+
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        // POSTING
+        // ====================================
+        $notification = new Notification();
+        $msg = null;
+        try {
+
+            $data = $prg;
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+            $version = $data['version'];
+
+            $rootEntity = $this->procureService->getDocDetailsByTokenId($entity_id, $entity_token);
+
+            if ($rootEntity == null) {
+                return $this->redirect()->toRoute('not_found');
+            }
+
+            $options = new PostCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = new PostCmdHandler();
+
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator);
+            $cmd->execute();
+
+            $notification = $cmd->getNotification();
+            $msg = sprintf("PO #%s is posted", $entity_id);
+            $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        } catch (\Exception $e) {
+            $this->logException($e);
+            $msg = $e->getMessage();
+            $redirectUrl = sprintf($this->getBaseUrl() . "/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        }
+
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->getErrors(),
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'entity_token' => $entity_token,
+                'rootEntity' => $rootEntity,
+                'rowOutput' => $rootEntity->getRowsOutput(),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => $form_action,
+                'form_title' => $form_title,
+                'version' => $rootEntity->getRevisionNo(),
+                'action' => $action
+            ));
+
+            $viewModel->setTemplate($viewTemplete);
+            return $viewModel;
+        }
+
+        $this->layout("layout/user/ajax");
+        $this->flashMessenger()->addMessage($msg);
+        $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+
+        $this->logInfo($msg);
+        return $this->redirect()->toUrl($redirectUrl);
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function viewAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/view";
+        $form_title = "Show Form";
+        $action = FormActions::SHOW;
+        $viewTemplete = $this->getViewTemplate();
+        $request = $this->getRequest();
+
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $viewModel = new ViewModel(array(
+            'action' => $action,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin
+        ));
+
+        $viewModel->setTemplate($viewTemplete);
+        return $viewModel;
+    }
 
     /**
      *
@@ -224,7 +403,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => $rootEntityId,
                 'entity_token' => $rootEntityToken,
-                'headerDTO' => $dto,
+                'headerDTO' => $cmd->getOutput(),
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -237,7 +416,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $rootEntityId, $rootEntityId);
+        $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $rootEntityId, $rootEntityToken);
         // $this->flashMessenger()->addMessage($redirectUrl);
 
         return $this->redirect()->toUrl($redirectUrl);
@@ -496,7 +675,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf("/procure/po/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
         $this->getLogger()->info(\sprintf("PO Row of %s is updated by #%s", $target_id, $this->getUserId()));
 
         return $this->redirect()->toUrl($redirectUrl);
@@ -622,13 +801,13 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $entity_token = $data['entity_token'];
             $version = $data['version'];
 
-            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new UpdateHeaderCmdOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+            $options = new UpdateHeaderCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
 
             $cmdHandler = $this->getCmdHandlerFactory()->getCloneCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -649,7 +828,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
-                'headerDTO' => $dto,
+                'headerDTO' => $cmd->getOutput(),
                 'version' => $rootEntity->getRevisionNo(), // get current version.
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
@@ -662,7 +841,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
+        $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         // $this->flashMessenger()->addMessage($redirectUrl);
 
         return $this->redirect()->toUrl($redirectUrl);

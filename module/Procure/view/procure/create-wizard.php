@@ -1,7 +1,7 @@
 <?php
 /**@var \Procure\Application\DTO\Po\PoDTO $headerDTO ;*/
 if ($headerDTO != NULL) {
-    $review_url = sprintf($this->baseUrl . "/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+    $review_url = sprintf($this->baseUrl . "/procure/po/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
     $add_row_url = sprintf($this->baseUrl . "/procure/po/add-row?target_id=%s&target_token=%s", $headerDTO->getId(), $headerDTO->getToken());
 }
 
@@ -28,7 +28,7 @@ else :
 
 endif;
 ?>
-	
+
 	<?php
 
 if ($current_step == "STEP2") :
@@ -75,5 +75,5 @@ else :
 
 endif;
 ?>
-	
+
 </div>

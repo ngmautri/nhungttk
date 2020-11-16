@@ -10,6 +10,7 @@ use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\Event\Ap\ApHeaderCreated;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\SharedService;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -52,27 +53,15 @@ final class APFromPO extends GenericAP
      */
     public static function createFromPo(PODoc $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $sourceObj instanceof PODoc) {
-            throw new \InvalidArgumentException("PO Entity is required");
-        }
+        Assert::isInstanceOf($sourceObj, PODoc::class, sprintf("PO Entity is required %s", __FUNCTION__));
+        Assert::Eq($sourceObj->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO document is not posted!%s", __FUNCTION__));
+        Assert::notEq($sourceObj->getDocStatus(), ProcureTrxStatus::COMPLETED, sprintf("PO document is completed!%s", __FUNCTION__));
 
         $rows = $sourceObj->getDocRows();
+        Assert::notNull($rows, sprintf("PO Entity is empty! %s", __FUNCTION__));
 
-        if ($rows == null) {
-            throw new \InvalidArgumentException("PO Entity is empty!");
-        }
+        Assert::notNull($options, sprintf("No command options is found%s", __FUNCTION__));
 
-        if ($sourceObj->getDocStatus() != ProcureDocStatus::POSTED) {
-            throw new \InvalidArgumentException("PO document is not posted!");
-        }
-
-        if ($sourceObj->getTransactionStatus() == ProcureTrxStatus::COMPLETED) {
-            throw new \InvalidArgumentException("AP Doc is completed!");
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("No Options is found");
-        }
         /**
          *
          * @var APFromPO $instance ;

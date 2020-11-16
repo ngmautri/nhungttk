@@ -11,6 +11,12 @@
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 use Application\Application\Helper\OptionHelper;
 use Procure\Application\Helper\ErrorMessage;
+use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseOrder\PORowSnapshot;
+
+/**@var POSnapshot $headerDTO ;*/
+/**@var PORowSnapshot $dto ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 
 $message_url = null;
 $review_url = null;

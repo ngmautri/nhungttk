@@ -38,6 +38,11 @@ class POCmdHandlerFactory extends CmdHandlerAbstractFactory
         return new PostCmdHandler();
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Command\Contracts\CmdHandlerAbstractFactory::getCreateRowCmdHandler()
+     */
     public function getCreateRowCmdHandler()
     {
         return new CreateRowCmdHandler();

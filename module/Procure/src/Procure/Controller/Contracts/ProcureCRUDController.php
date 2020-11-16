@@ -849,6 +849,55 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
     /**
      *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function saveAsAction()
+    {
+        $this->layout($this->getDefaultLayout());
+
+        $form_action = $this->getBaseUrl() . "/view";
+        $form_title = "Edit Form";
+        $action = FormActions::SHOW;
+        $viewTemplete = $this->getViewTemplate();
+
+        $request = $this->getRequest();
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $nmtPlugin = $this->Nmtplugin();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('entity_token');
+        $file_type = $this->params()->fromQuery('file_type');
+
+        $this->logInfo(\sprintf("Document #%s saved as format %s by #%s", $id, $file_type, $this->getUserId()));
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, $file_type);
+
+        if ($rootEntity == null) {
+            return $this->redirect()->toRoute('not_found');
+        }
+
+        $viewModel = new ViewModel(array(
+            'action' => $action,
+            'form_action' => $form_action,
+            'form_title' => $form_title,
+            'redirectUrl' => null,
+            'rootEntity' => $rootEntity,
+            'rowOutput' => $rootEntity->getRowsOutput(),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
+            'errors' => null,
+            'version' => $rootEntity->getRevisionNo(),
+            'nmtPlugin' => $nmtPlugin
+        ));
+
+        $viewModel->setTemplate($viewTemplete);
+
+        return $viewModel;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getBaseUrl()

@@ -5,7 +5,7 @@ use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
-use Procure\Application\Service\Contracts\ProcureServiceInterface;
+use Procure\Application\Service\Contracts\PoServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
@@ -33,13 +33,18 @@ use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class POService extends AbstractService implements ProcureServiceInterface
+class POService extends AbstractService implements PoServiceInterface
 {
 
     private $cmdRepository;
 
     private $queryRepository;
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenIdFromDB()
+     */
     public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
     {
         $po = $this->getQueryRepository()->getPODetailsById($id, $token);
@@ -117,9 +122,21 @@ class POService extends AbstractService implements ProcureServiceInterface
         return $this->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByIdFromDB()
+     */
     public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
     {}
 
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @param CommandOptions $options
+     * @return \Procure\Domain\PurchaseOrder\PODoc
+     */
     public function createFromQuotation($id, $token, CommandOptions $options)
     {
         $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());

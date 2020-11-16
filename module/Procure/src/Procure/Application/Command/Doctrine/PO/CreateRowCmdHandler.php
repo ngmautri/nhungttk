@@ -53,6 +53,7 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $snapshot = GenericSnapshotAssembler::createSnapShotFromArray($cmd->getData(), new PORowSnapshot());
             $snapshot->createdBy = $userId;
             $snapshot->company = $rootEntity->getCompany();
+            $this->setOutput($snapshot);
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
@@ -74,8 +75,6 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             if ($version != $currentVersion) {
                 throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
             }
-
-            $this->setOutput($localSnapshot);
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }

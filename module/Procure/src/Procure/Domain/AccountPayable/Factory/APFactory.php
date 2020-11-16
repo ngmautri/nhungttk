@@ -5,6 +5,7 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APDoc;
+use Procure\Domain\AccountPayable\APFromPO;
 use Procure\Domain\AccountPayable\APReversal;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
@@ -14,7 +15,7 @@ use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\SharedService;
 use Ramsey\Uuid\Uuid;
-use Procure\Domain\AccountPayable\APFromPO;
+use Webmozart\Assert\Assert;
 
 /**
  *

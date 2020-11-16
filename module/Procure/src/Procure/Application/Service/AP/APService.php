@@ -21,6 +21,7 @@ use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\AccountPayable\Factory\APFactory;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Application\Service\Contracts\ProcureServiceInterface;
 
 /**
  * AP Service.
@@ -28,7 +29,7 @@ use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class APService extends AbstractService
+class APService extends AbstractService implements ProcureServiceInterface
 {
 
     /**
@@ -139,8 +140,18 @@ class APService extends AbstractService
         $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
 
         $po = $rep->getOpenItems($id, $token);
+
+        if ($po == null) {
+            return null;
+        }
         $sharedService = SharedServiceFactory::createForAP($this->getDoctrineEM());
         $rootEntity = APFactory::createFromPo($po, $options, $sharedService);
         return $rootEntity;
     }
+
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
+    {}
+
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
+    {}
 }

@@ -62,7 +62,6 @@ class POSnapshotAssembler
 
     /**
      *
-     * @deprecated
      * @param POSnapshot $snapShot
      * @param PoDTO $dto
      * @param array $editableProperties
@@ -70,26 +69,10 @@ class POSnapshotAssembler
      */
     public static function updateSnapshotFieldsFromDTO(POSnapshot $snapShot, $dto, $editableProperties)
     {
-        if ($dto == null || ! $snapShot instanceof POSnapshot || $editableProperties == null)
-            return null;
-
-        $reflectionClass = new \ReflectionClass($dto);
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (property_exists($snapShot, $propertyName) && in_array($propertyName, $editableProperties)) {
-
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
-            }
+        if ($editableProperties == null) {
+            $editableProperties = self::$defaultEditableProperties;
         }
-        return $snapShot;
+        return GenericSnapshotAssembler::updateSnapshotFieldsFromDTO($snapShot, $dto, $editableProperties);
     }
 
     /**

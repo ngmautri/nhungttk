@@ -1,10 +1,9 @@
 <?php
 namespace Procure\Application\Service\PO;
 
-use Application\Application\Service\Shared\FXServiceImpl;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
+use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\Contracts\PoServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
@@ -17,12 +16,7 @@ use Procure\Application\Service\PO\Output\PoSaveAsPdf;
 use Procure\Application\Service\PO\Output\Pdf\PoPdfBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoExcelBuilder;
 use Procure\Application\Service\PO\Output\Spreadsheet\PoOpenOfficeBuilder;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\Validator\DefaultHeaderValidator;
-use Procure\Domain\PurchaseOrder\Validator\DefaultRowValidator;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\DoctrinePOCmdRepository;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
@@ -140,24 +134,10 @@ class POService extends AbstractService implements PoServiceInterface
     public function createFromQuotation($id, $token, CommandOptions $options)
     {
         $rep = new QRQueryRepositoryImpl($this->getDoctrineEM());
-
         $sourceEntity = $rep->getRootEntityByTokenId($id, $token);
+        $sharedService = SharedServiceFactory::createForPO($this->getDoctrineEM());
 
-        $headerValidators = new HeaderValidatorCollection();
-
-        $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $fxService = new FXServiceImpl();
-        $fxService->setDoctrineEM($this->getDoctrineEM());
-
-        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
-        $headerValidators->add($validator);
-
-        $rowValidators = new RowValidatorCollection();
-        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
-
-        $rootEntity = PODoc::createFromQuotation($sourceEntity, $options, $headerValidators, $rowValidators);
+        $rootEntity = PODoc::createFromQuotation($sourceEntity, $options, $sharedService);
         return $rootEntity;
     }
 

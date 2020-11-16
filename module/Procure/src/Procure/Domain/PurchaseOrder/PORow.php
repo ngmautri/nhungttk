@@ -6,9 +6,9 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\QuotationRequest\QRRow;
-use Procure\Domain\Shared\Constants;
 use Webmozart\Assert\Assert;
 
 /**
@@ -54,12 +54,7 @@ class PORow extends BaseRow
 
     public static function createFromQuoteRow(QRRow $sourceObj, CommandOptions $options)
     {
-        if (! $sourceObj instanceof QRRow) {
-            throw new InvalidArgumentException("Quotation document is required!");
-        }
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
+        Assert::isInstanceOf($sourceObj, QRRow::class, "Quotation document is required!");
 
         /**
          *
@@ -68,8 +63,8 @@ class PORow extends BaseRow
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
-        $instance->setDocType(Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE); // important.
-                                                                          // $instance->setQ($sourceObj->getId()); // Important
+        $instance->setDocType(ProcureDocType::PO_FROM_QOUTE); // important.
+                                                              // $instance->setQ($sourceObj->getId()); // Important
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();

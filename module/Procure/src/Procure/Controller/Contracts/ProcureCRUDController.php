@@ -728,7 +728,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                     $localDTO = $result["localDTO"];
                 }
 
-                $options = new CreateRowCmdOptions($rootEntity, $target_id, $target_token, $version, $this->getUserId(), __METHOD__);
+                $options = new UpdateRowCmdOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
 
                 $cmdHandler = $this->getCmdHandlerFactory()->getInlineUpdateRowCmdHandler();
                 $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);

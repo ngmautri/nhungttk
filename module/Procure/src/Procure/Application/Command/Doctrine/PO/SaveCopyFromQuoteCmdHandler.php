@@ -86,7 +86,7 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
 
             $dto->id = $rootSnapshot->getId();
             $dto->token = $rootSnapshot->getToken();
-
+            $this->setOutput($dto);
             $m = sprintf("[OK] PO # %s copied from Quote and saved!", $rootSnapshot->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {

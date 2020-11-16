@@ -9,16 +9,15 @@ use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Doctrine\PO\AcceptAmendmentCmdHandler;
 use Procure\Application\Command\Doctrine\PO\EnableAmendmentCmdHandler;
+use Procure\Application\Command\Doctrine\PO\SaveCopyFromQuoteCmdHandler;
+use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\Options\PostCmdOptions;
-use Procure\Application\Command\PO\SaveCopyFromQuoteCmdHandler;
-use Procure\Application\Command\PO\Options\CopyFromQuoteOptions;
+use Procure\Application\Command\Options\SaveCopyFromCmdOptions;
 use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
-use Procure\Application\Command\PO\Options\SaveCopyFromQuoteOptions;
 use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Service\Contracts\PoServiceInterface;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Zend\View\Model\ViewModel;
-use Procure\Application\Service\Contracts\PoServiceInterface;
-use Procure\Application\Command\Options\SaveCopyFromCmdOptions;
 
 /**
  *
@@ -259,8 +258,6 @@ class PoController extends ProcureCRUDController
     public function createFromQrAction()
     {
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        /**@var \Application\Entity\MlaUsers $u ;*/
-        /**@var PoDTO $dto ;*/
         $this->layout("Procure/layout-fullscreen");
 
         $nmtPlugin = $this->Nmtplugin();
@@ -268,10 +265,6 @@ class PoController extends ProcureCRUDController
         $form_title = "PO from Quote";
         $action = Constants::FORM_ACTION_PO_FROM_QO;
         $viewTemplete = "procure/po/crudHeader";
-
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            'email' => $this->identity()
-        ));
 
         $prg = $this->prg($form_action, true);
 
@@ -289,7 +282,7 @@ class PoController extends ProcureCRUDController
              *
              * @var PoServiceInterface $poService ;
              */
-            $options = new CopyFromQuoteOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+            $options = new CreateHeaderCmdOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
 
             $poService = $this->getProcureService();
             $rootEntity = $poService->createFromQuotation($source_id, $source_token, $options);
@@ -321,13 +314,12 @@ class PoController extends ProcureCRUDController
 
         // POSTING
         // ===============================
-
+        $notification = null;
         try {
             $data = $prg;
 
             $source_id = $data['source_id'];
             $source_token = $data['source_token'];
-            $version = $data['version'];
 
             $rootEntity = $this->getProcureService()->createFromQuotation($source_id, $source_token, $options);
 
@@ -337,11 +329,10 @@ class PoController extends ProcureCRUDController
 
             $options = new SaveCopyFromCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromQuoteCmdHandler();
-            $cmdHandlerDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator);
+            $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
-
-            $notification = $dto->getNotification();
+            $notification = $cmd->getNotification();
         } catch (\Exception $e) {
             $notification = new Notification();
             $notification->addError($e->getMessage());
@@ -355,7 +346,7 @@ class PoController extends ProcureCRUDController
                 'entity_token' => null,
                 'source_id' => $source_id,
                 'source_token' => $source_token,
-                'headerDTO' => $dto,
+                'headerDTO' => $cmd->getOutput(),
                 'version' => $dto->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,

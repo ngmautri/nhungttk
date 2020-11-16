@@ -134,30 +134,22 @@ class PODoc extends GenericPO
      *
      * @param QRDoc $sourceObj
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @throws InvalidArgumentException
+     * @param SharedService $sharedService
      * @return \Procure\Domain\PurchaseOrder\PODoc
      */
-    public static function createFromQuotation(QRDoc $sourceObj, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators)
+    public static function createFromQuotation(QRDoc $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $sourceObj instanceof QRDoc) {
-            throw new InvalidArgumentException("Quotation Entity is required");
-        }
+        Assert::isInstanceOf($sourceObj, QRDoc::class, "Quotation Entity is required");
 
         $rows = $sourceObj->getDocRows();
+        Assert::notNull($rows, "Quote Entity is empty!");
 
-        if ($rows == null) {
-            throw new InvalidArgumentException("Quote Entity is empty!");
-        }
+        Assert::eq($sourceObj->getDocStatus(), ProcureDocStatus::POSTED, "Quote document is not posted!");
+        Assert::notNull($options, "No Options is found");
 
-        if ($sourceObj->getDocStatus() !== ProcureDocStatus::POSTED) {
-            throw new InvalidArgumentException("Quote document is not posted!");
-        }
+        $validationService = ValidatorFactory::create($sharedService);
+        Assert::notNull($validationService, "Validation can not created!");
 
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
         /**
          *
          * @var PODoc $instance
@@ -166,12 +158,12 @@ class PODoc extends GenericPO
         $instance = $sourceObj->convertTo($instance);
 
         // overwrite.
-        $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_PO_FROM_QOUTE); // important.
+        $instance->setDocType(ProcureDocType::PO_FROM_QOUTE); // important.
 
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
         $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->validateHeader($headerValidators);
+        $instance->validateHeader($validationService->getHeaderValidators());
 
         foreach ($rows as $r) {
 
@@ -180,11 +172,9 @@ class PODoc extends GenericPO
              * @var PORow $r ;
              */
 
-            // ignore completed row;
-
             $localEntity = PORow::createFromQuoteRow($r, $options);
             $instance->addRow($localEntity);
-            $instance->validateRow($localEntity, $rowValidators);
+            $instance->validateRow($localEntity, $validationService->getRowValidators());
         }
         return $instance;
     }

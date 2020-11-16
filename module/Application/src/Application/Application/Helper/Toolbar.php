@@ -64,7 +64,7 @@ class Toolbar
     {
         $toolbar = "";
 
-        $review_url = sprintf("/procure/po/review1?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
+        $review_url = sprintf("/procure/po/review?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());
         $reviewBtn = \sprintf('<a class="btn btn-default btn-sm" href="%s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;%s</a>', $review_url, $view->translate("Review & Post"));
 
         $review_amendment_url = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $headerDTO->getId(), $headerDTO->getToken());

@@ -125,7 +125,7 @@ class POQueryRepositoryImpl extends AbstractDoctrineRepository implements POQuer
             return null;
         }
 
-        return $poDetailsSnapshot;
+        return PODoc::makeFromDetailsSnapshot($poDetailsSnapshot);
     }
 
     public function getById($id, $outputStragegy = null)

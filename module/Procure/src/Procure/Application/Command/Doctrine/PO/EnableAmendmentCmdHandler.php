@@ -36,7 +36,7 @@ class EnableAmendmentCmdHandler extends AbstractCommandHandler
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::notNull($cmd->getData(), 'Input data in emty');
+        // Assert::notNull($cmd->getData(), 'Input data in emty');
         Assert::isInstanceOf($cmd->getOptions(), UpdateHeaderCmdOptions::class);
 
         $options = $cmd->getOptions();

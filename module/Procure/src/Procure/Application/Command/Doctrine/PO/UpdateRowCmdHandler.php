@@ -55,6 +55,8 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
+            // \var_dump($cmd->getData());
+
             $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 

@@ -7,7 +7,7 @@
  */
 
 /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
-/**@var \Procure\Application\DTO\Po\PORowDetailsDTO $dto ;*/
+/**@var  $dto ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 use Application\Application\Helper\OptionHelper;
 use Procure\Application\Helper\ErrorMessage;
@@ -143,16 +143,17 @@ echo $error_msg;
                         ?>">
                      </div>
                      <div class="col-sm-2">
+                        <!-- handle unchecked checkbox-->
+                        <input type="hidden" name="isActive" value="0">
                         <input
                            <?php
-
                         if (! $dto == null) :
                             echo ($dto->getIsActive() == "1") ? "checked" : "";
                         else :
                             echo "checked";
                         endif;
                         ?>
-                           type="checkbox" name="isActive" value="1">
+                           type="checkbox" name="isActive" value='1'>
                         &nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
                      </div>
                   </div>

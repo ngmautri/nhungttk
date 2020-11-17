@@ -4,8 +4,6 @@ namespace Procure\Controller;
 use Application\Notification;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Domain\Shared\Constants;
-use Procure\Application\Command\GenericCmd;
-use Procure\Application\Command\TransactionalCmdHandlerDecorator;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Doctrine\PO\AcceptAmendmentCmdHandler;
 use Procure\Application\Command\Doctrine\PO\EnableAmendmentCmdHandler;
@@ -13,8 +11,7 @@ use Procure\Application\Command\Doctrine\PO\SaveCopyFromQuoteCmdHandler;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Command\Options\SaveCopyFromCmdOptions;
-use Procure\Application\Command\PO\Options\PoAmendmentEnableOptions;
-use Procure\Application\DTO\Po\PoDTO;
+use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\Contracts\PoServiceInterface;
 use Procure\Controller\Contracts\ProcureCRUDController;
 use Zend\View\Model\ViewModel;
@@ -90,7 +87,7 @@ class PoController extends ProcureCRUDController
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
 
-            $rootEntity = $this->getPurchaseOrderService()->getPODetailsById($entity_id, $entity_token);
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -189,8 +186,6 @@ class PoController extends ProcureCRUDController
         $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        /**@var \Application\Entity\MlaUsers $u ;*/
-
         $nmtPlugin = $this->Nmtplugin();
 
         // POSTING
@@ -200,21 +195,16 @@ class PoController extends ProcureCRUDController
 
         try {
 
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-
-            $userId = $u->getId();
-
             $entity_token = $_POST["entity_token"];
             $entity_id = $_POST["entity_id"];
             $version = $_POST["version"];
 
-            $rootEntity = $this->purchaseOrderService->getPODetailsById($entity_id, $entity_token);
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token);
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
 
             if ($rootEntity == null) {
                 $msg = sprintf("PO #%s is not found!", $entity_id);
+                $this->getLogger()->info($msg);
                 $this->flashMessenger()->addMessage($redirectUrl);
 
                 $data = array();
@@ -226,17 +216,19 @@ class PoController extends ProcureCRUDController
                 return $response;
             }
 
-            $options = new PoAmendmentEnableOptions($rootEntity, $entity_id, $entity_token, $version, $userId, __METHOD__);
-            $dto = new PoDTO();
+            $options = new UpdateHeaderCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
             $cmdHandler = new EnableAmendmentCmdHandler();
-            $cmdHanderDecorator = new TransactionalCmdHandlerDecorator($cmdHandler);
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
 
             $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
             $this->getLogger()->info($msg);
         } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
+
             $msg = \sprintf("Error:%s ", $e->getMessage());
             $redirectUrl = sprintf("/procure/po/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
             $notification->addError($msg);
@@ -282,7 +274,7 @@ class PoController extends ProcureCRUDController
              *
              * @var PoServiceInterface $poService ;
              */
-            $options = new CreateHeaderCmdOptions($u->getCompany()->getId(), $u->getId(), __METHOD__);
+            $options = new CreateHeaderCmdOptions($u->getCompany()->getId(), $this->getUserId(), __METHOD__);
 
             $poService = $this->getProcureService();
             $rootEntity = $poService->createFromQuotation($source_id, $source_token, $options);

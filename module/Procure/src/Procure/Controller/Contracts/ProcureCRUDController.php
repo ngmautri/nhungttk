@@ -639,6 +639,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 return $this->redirect()->toRoute('not_found');
             }
 
+            // \var_dump($data);
+
             $options = new UpdateRowCmdOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
             $cmdHandler = $this->getCmdHandlerFactory()->getUpdateRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);

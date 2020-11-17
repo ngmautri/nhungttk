@@ -151,8 +151,8 @@ class RowSnapshot extends BaseRowSnapshot
 
     public function markAsChange($createdBy, $createdDate)
     {
-        $this->createdOn = $createdDate;
-        $this->createdBy = $createdBy;
+        $this->lastchangeOns = $createdDate;
+        $this->lastchangeBy = $createdBy;
 
         $this->quantity = $this->docQuantity;
         $this->revisionNo = $this->getRevisionNo() + 1;
@@ -163,7 +163,6 @@ class RowSnapshot extends BaseRowSnapshot
         }
         $this->unitPrice = $this->getDocUnitPrice();
         $this->unit = $this->getDocUnit();
-        $this->isDraft = 1;
     }
 
     /**

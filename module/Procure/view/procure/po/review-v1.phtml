@@ -326,11 +326,47 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -811,15 +847,11 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                data: {entity_id: entity_id, entity_token:entity_token,version: version},
                url: url,
                success: function(data){
-                  /* var out = '';
-                   for (var i in data) {
-                       out += i + ": " + data[i] + "\n";
-                   }
-                    alert(out);
-        	       */
                  window.location.href= data.redirectUrl;
-
-               }
+               },
+               error: function (response, status, error) {
+                   alert(response.responseText);
+                }
          });
 
 

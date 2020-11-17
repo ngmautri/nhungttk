@@ -4,6 +4,7 @@ namespace Procure\Controller;
 use Application\Notification;
 use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Domain\Shared\Constants;
+use Application\Domain\Util\JsonErrors;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Doctrine\PO\AcceptAmendmentCmdHandler;
 use Procure\Application\Command\Doctrine\PO\EnableAmendmentCmdHandler;
@@ -219,10 +220,10 @@ class PoController extends ProcureCRUDController
             $options = new UpdateHeaderCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
             $cmdHandler = new EnableAmendmentCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
-            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
+            $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
 
-            $msg = sprintf("PO #%s is enabled for amendment", $entity_id);
+            $msg = sprintf("PO %s is enabled for amendment", $entity_id);
             $redirectUrl = sprintf("/procure/po/review-amendment?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
             $this->getLogger()->info($msg);
         } catch (\Exception $e) {
@@ -234,12 +235,15 @@ class PoController extends ProcureCRUDController
             $notification->addError($msg);
         }
         $this->flashMessenger()->addMessage($msg);
-        $data = array();
         $data['message'] = $msg;
         $data['redirectUrl'] = $redirectUrl;
+        $this->getLogger()->info(json_encode($data));
+
         $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json; charset=UTF-8');
         $response->setContent(json_encode($data));
+        $this->logInfo(\sprintf('Json Last error: %s', JsonErrors::getErrorMessage(json_last_error())));
+
         return $response;
     }
 

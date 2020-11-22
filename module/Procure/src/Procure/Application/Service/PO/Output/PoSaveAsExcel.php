@@ -11,7 +11,7 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
  * Director
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoSaveAsExcel extends AbstractDocSaveAsSpreadsheet
 {
@@ -99,6 +99,7 @@ class PoSaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $row->itemSKU,
                 $row->getItemSysNumber(),
                 $row->itemName,
+                $row->itemManufacturerModel,
                 $row->vendorItemName,
                 $row->vendorItemCode,
                 $row->docUnit,

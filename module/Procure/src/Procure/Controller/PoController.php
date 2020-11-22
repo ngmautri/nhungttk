@@ -278,7 +278,7 @@ class PoController extends ProcureCRUDController
              *
              * @var PoServiceInterface $poService ;
              */
-            $options = new CreateHeaderCmdOptions($u->getCompany()->getId(), $this->getUserId(), __METHOD__);
+            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
 
             $poService = $this->getProcureService();
             $rootEntity = $poService->createFromQuotation($source_id, $source_token, $options);
@@ -316,7 +316,7 @@ class PoController extends ProcureCRUDController
 
             $source_id = $data['source_id'];
             $source_token = $data['source_token'];
-
+            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
             $rootEntity = $this->getProcureService()->createFromQuotation($source_id, $source_token, $options);
 
             if ($rootEntity == null) {
@@ -326,7 +326,7 @@ class PoController extends ProcureCRUDController
             $options = new SaveCopyFromCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromQuoteCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
-            $cmd = new GenericCommand($this->getDoctrineEM(), $dto, $options, $cmdHandlerDecorator, $this->getEventBusService());
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
             $notification = $cmd->getNotification();
         } catch (\Exception $e) {
@@ -343,7 +343,7 @@ class PoController extends ProcureCRUDController
                 'source_id' => $source_id,
                 'source_token' => $source_token,
                 'headerDTO' => $cmd->getOutput(),
-                'version' => $dto->getRevisionNo(),
+                'version' => $rootEntity->getRevisionNo(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -354,7 +354,7 @@ class PoController extends ProcureCRUDController
             return $viewModel;
         }
 
-        $redirectUrl = sprintf("/procure/po/view?entity_token=%s&entity_id=%s", $dto->getToken(), $dto->getId());
+        $redirectUrl = sprintf("/procure/po/view?entity_token=%s&entity_id=%s", $rootEntity->getToken(), $rootEntity->getId());
         $this->flashMessenger()->addMessage($notification->successMessage(true));
 
         return $this->redirect()->toUrl($redirectUrl);

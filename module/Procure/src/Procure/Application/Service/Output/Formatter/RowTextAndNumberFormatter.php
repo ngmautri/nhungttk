@@ -7,7 +7,7 @@ use Zend\Escaper\Escaper;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowTextAndNumberFormatter extends AbstractRowFormatter
 {
@@ -90,6 +90,7 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
          */
         $row->vendorItemName = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemName());
         $row->vendorItemCode = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getVendorItemCode());
+        $row->itemManufacturerModel = sprintf('<span style="font-size:8pt; color: graytext">%s</span>', $row->getItemManufacturerModel());
 
         return $row;
     }

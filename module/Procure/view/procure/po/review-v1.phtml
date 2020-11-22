@@ -344,11 +344,23 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+
+
+
+
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
+
+
+
+
+
 
 
 
@@ -1199,41 +1211,43 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
            { title: "#", dataType: "integer", dataIndx: "rowNumber", width:10,editable: true },
       		{ title: "SKU", dataType: "string", dataIndx: "itemSKU", width:50,editable: false },
            { title: "Item", dataType: "string", dataIndx: "itemName", width:220,editable: false },
+           { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
+      <?php
+
+    if ($action == Constants::FORM_ACTION_REVIEW) :
+        ?>
+                  { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
+                  { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
+                              <?php
+
+    else :
+        ?>
+                  { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
+                  { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
+                  <?php
+
+    endif;
+    ?>
+           { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
+           { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
+           { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
+
+           { title: "ItemCode", dataType: "string", dataIndx: "itemManufacturerModel", width:100,editable: false },
+
            { title: "T", dataType: "string", dataIndx: "isFixedAsset", width:1,editable: false },
 
            { title: "Vendor Item Name", dataType: "string", dataIndx: "vendorItemName", width:180,editable: false },
            { title: "Code", dataType: "string", dataIndx: "vendorItemCode", width:100,editable: false },
 
-          	<?php
-
-        if ($action == Constants::FORM_ACTION_REVIEW) :
-            ?>
-            { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
-            { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
-                        <?php
-
-        else :
-            ?>
-            { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
-            { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
-           	<?php
-
-        endif;
-        ?>
 
 
-           { title: "Unit", dataType: "string", dataIndx: "rowUnit", width: 50,align: 'right',editable: false},
 
-           { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
-           { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
-           { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
 
            { title: "Receiving", dataType: "decimal", dataIndx: "draftGrQuantity",align: 'right', width:80,editable: false },
            { title: "Received", dataType: "decimal", dataIndx: "postedGrQuantity", align: 'right',width:70,editable: false },
            { title: "Billed qty", dataType: "decimal", dataIndx: "postedAPQuantity", align: 'right',width:70,editable: false },
            { title: "Billed Amt", dataType: "decimal", dataIndx: "billedAmount",align: 'right', width:70,editable: false },
            { title: "Open Amt", dataType: "decimal", dataIndx: "openAPAmount",align: 'right', width:90,editable: false },
-
            { title: "Standard Qty", dataType: "integer", dataIndx: "convertedStandardQuantity", width: 70,align: 'right',editable: false},
            { title: "Standard Unit", dataType: "integer", dataIndx: "convertedStandardUnitPrice", width: 70,align: 'right',editable: false},
 

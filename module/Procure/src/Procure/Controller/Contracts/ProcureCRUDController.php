@@ -695,7 +695,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         $sent_list = json_decode($_POST['sent_list'], true);
         $to_update = $sent_list['addList'];
 
-        $this->getLogger()->info(\serialize($to_update));
+        // $this->getLogger()->info(\serialize($to_update));
         $response = $this->getResponse();
 
         try {

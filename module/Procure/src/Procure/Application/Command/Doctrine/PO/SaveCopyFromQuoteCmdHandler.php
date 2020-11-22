@@ -12,6 +12,7 @@ use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
+use Procure\Domain\QuotationRequest\QRDoc;
 use Webmozart\Assert\Assert;
 
 /**
@@ -35,11 +36,13 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
          * @var PoDTO $dto ;
          * @var SaveCopyFromCmdOptions $options ;
          * @var POSnapshot $snapshot ;
-         * @var PODoc $rootEntity ;
+         * @var QRDoc $rootEntity ;
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
-        Assert::isInstanceOf($cmd->getOptions(), SaveCopyFromCmdOptions::class);
+
+        $options = $cmd->getOptions();
+        Assert::isInstanceOf($options, SaveCopyFromCmdOptions::class);
 
         $rootEntity = $options->getRootEntity();
         Assert::isInstanceOf($rootEntity, PODoc::class);

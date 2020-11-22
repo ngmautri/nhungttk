@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Exception;
 
 /**
@@ -23,6 +24,16 @@ class AbstractGenericController extends AbstractActionController
     protected $eventBusService;
 
     protected $cache;
+
+    protected function getLocale()
+    {
+        $session = new Container('locale');
+        if ($session->offsetExists('locale')) {
+            return $session->offsetGet('locale');
+        }
+
+        return 'en_EN';
+    }
 
     protected function getSharedCollection()
     {

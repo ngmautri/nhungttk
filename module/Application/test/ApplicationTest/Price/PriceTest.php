@@ -23,7 +23,7 @@ class PriceTest extends PHPUnit_Framework_TestCase
         echo "\n===\n";
 
         // echo (7500000*9900);
-        $p = MoneyParser::parseFromDecimal('1500', 'usd');
+        $p = MoneyParser::parseFromLocalizedDecimal('22.000', 'lak', 'vi_VN');
         $q = new Quantity(2, Uom::BOX());
         $price = new Price($p, $q);
         echo $price . "\n";

@@ -11,7 +11,7 @@ use Zend\View\Model\ViewModel;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrReportController extends AbstractGenericController
 {
@@ -24,6 +24,7 @@ class PrReportController extends AbstractGenericController
      */
     public function headerStatusAction()
     {
+        echo $this->getLocale();
         $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');

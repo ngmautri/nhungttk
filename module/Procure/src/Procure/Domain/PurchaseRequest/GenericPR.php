@@ -136,7 +136,7 @@ abstract class GenericPR extends BaseDoc
         $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
         if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating row #%s", $this->getId()));
+            throw new \RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
         }
 
         $params = [

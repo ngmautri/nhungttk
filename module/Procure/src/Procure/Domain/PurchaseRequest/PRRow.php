@@ -3,7 +3,10 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Quantity\Quantity;
+use Application\Domain\Shared\Uom\Uom;
 use Procure\Application\DTO\Pr\PrRowDTO;
+use Procure\Domain\Item\ValueObject\PrId;
 
 /**
  * PR Row
@@ -13,6 +16,11 @@ use Procure\Application\DTO\Pr\PrRowDTO;
  */
 class PRRow extends BaseRow
 {
+
+    // Value Object
+    private $prId;
+
+    private $prQuantity;
 
     private static $instance = null;
 
@@ -41,6 +49,12 @@ class PRRow extends BaseRow
     protected $lastUnitPrice;
 
     protected $lastCurrency;
+
+    public function createValueObject()
+    {
+        $this->prId = new PrId($this->getPr());
+        $this->prQuantity = new Quantity($this->docQuantity, new Uom($this->getDocUnit()));
+    }
 
     /**
      *

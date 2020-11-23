@@ -1,6 +1,7 @@
 <?php
 namespace Application\Domain\Shared\Identity;
 
+use Application\Domain\Shared\ValueObject;
 use Webmozart\Assert\Assert;
 
 /**
@@ -8,7 +9,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GenericId
+class GenericId extends ValueObject
 {
 
     /**
@@ -34,5 +35,20 @@ class GenericId
     public function getValue()
     {
         return $this->genericId;
+    }
+
+    public function makeSnapshot()
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\ValueObject::getAttributesToCompare()
+     */
+    public function getAttributesToCompare()
+    {
+        return [
+            $this->getValue()
+        ];
     }
 }

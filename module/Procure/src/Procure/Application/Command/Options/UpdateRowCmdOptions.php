@@ -9,7 +9,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UpdateRowCmdOptions implements CommandOptions
+class UpdateRowCmdOptions extends CmdOptions
 {
 
     private $rootEntity;
@@ -19,14 +19,6 @@ class UpdateRowCmdOptions implements CommandOptions
     private $entityId;
 
     private $entityToken;
-
-    private $version;
-
-    private $userId;
-
-    private $triggeredBy;
-
-    private $triggeredOn;
 
     /**
      *
@@ -84,41 +76,5 @@ class UpdateRowCmdOptions implements CommandOptions
     public function getEntityToken()
     {
         return $this->entityToken;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getTriggeredBy()
-    {
-        return $this->triggeredBy;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTriggeredOn()
-    {
-        return $this->triggeredOn;
     }
 }

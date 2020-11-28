@@ -350,11 +350,29 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 
 
 
+
+
+
+
+
+
+
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1217,19 +1235,19 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
     if ($action == Constants::FORM_ACTION_REVIEW) :
         ?>
                   { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: true},
-                  { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
+                  { title: "Unit Price", dataType: "string", dataIndx: "docUnitPrice", width:90, align: 'right',editable: true},
                               <?php
 
     else :
         ?>
                   { title: "Doc Qty", dataType: "string", dataIndx: "docQuantity", width: 70,align: 'right',editable: false},
-                  { title: "Unit Price", dataType: "float",  format: "#,####00", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
+                  { title: "Unit Price", dataType: "string", dataIndx: "docUnitPrice", width:90, align: 'right',editable: false},
                   <?php
 
     endif;
     ?>
            { title: "Net", dataType: "decimal", dataIndx: "netAmount", width:90, align: 'right',editable: false},
-           { title: "Tax", dataType: "integer", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
+           { title: "Tax", dataType: "decimal", dataIndx: "taxAmount", width:80, align: 'right',editable: false},
            { title: "Gross", dataType: "decimal", dataIndx: "grossAmount", width: 90,align: 'right',editable: false},
 
            { title: "ItemCode", dataType: "string", dataIndx: "itemManufacturerModel", width:100,editable: false },

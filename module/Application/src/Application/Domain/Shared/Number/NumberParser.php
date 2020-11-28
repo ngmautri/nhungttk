@@ -14,4 +14,9 @@ final class NumberParser
         $numberFormatter = new \NumberFormatter($local, \NumberFormatter::DECIMAL);
         return $numberFormatter->parse($number);
     }
+
+    public static function parseAndFormatEN($number, $local = 'en_EN')
+    {
+        return NumberFormatter::formatToEN(self::parse($number, $local));
+    }
 }

@@ -9,13 +9,13 @@ namespace Procure\Application\Service\Contracts;
 interface ProcureServiceInterface
 {
 
-    public function getDocHeaderByTokenId($id, $token);
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN');
 
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null);
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN');
 
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN');
 
-    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null);
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN');
 
-    public function getDocDetailsByIdFromDB($id, $outputStrategy = null);
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN');
 }

@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Command\Options;
 
-use Application\Domain\Shared\Command\CommandOptions;
 use Webmozart\Assert\Assert;
 
 /**
@@ -9,7 +8,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class CreateRowCmdOptions implements CommandOptions
+class CreateRowCmdOptions extends CmdOptions
 {
 
     private $rootEntity;
@@ -17,14 +16,6 @@ class CreateRowCmdOptions implements CommandOptions
     private $rootEntityId;
 
     private $rootEntityToken;
-
-    private $userId;
-
-    private $version;
-
-    private $triggeredBy;
-
-    private $triggeredOn;
 
     /**
      *
@@ -72,41 +63,5 @@ class CreateRowCmdOptions implements CommandOptions
     public function getRootEntityToken()
     {
         return $this->rootEntityToken;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getTriggeredBy()
-    {
-        return $this->triggeredBy;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTriggeredOn()
-    {
-        return $this->triggeredOn;
     }
 }

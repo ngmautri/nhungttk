@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Command\Options;
 
-use Application\Domain\Shared\Command\CommandOptions;
 use Webmozart\Assert\Assert;
 
 /**
@@ -9,29 +8,8 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SaveCopyFromCmdOptions implements CommandOptions
+class SaveCopyFromCmdOptions extends CmdOptions
 {
-
-    private $companyId;
-
-    private $userId;
-
-    private $version;
-
-    private $triggeredBy;
-
-    private $triggeredOn;
-
-    private $rootEntity;
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getRootEntity()
-    {
-        return $this->rootEntity;
-    }
 
     /**
      *
@@ -52,48 +30,14 @@ class SaveCopyFromCmdOptions implements CommandOptions
         $this->rootEntity = $rootEntity;
     }
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getCompanyId()
-    {
-        return $this->companyId;
-    }
+    private $rootEntity;
 
     /**
      *
      * @return mixed
      */
-    public function getUserId()
+    public function getRootEntity()
     {
-        return $this->userId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTriggeredBy()
-    {
-        return $this->triggeredBy;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getTriggeredOn()
-    {
-        return $this->triggeredOn;
+        return $this->rootEntity;
     }
 }

@@ -12,13 +12,20 @@ class QuantityConvertTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {}
 
-    public function testOther()
+    public function testCanConvert()
     {
         $qty = new Quantity(1, Uom::TANK());
         $uomPair = new UomPair(Uom::LITER(), $qty->getUom(), 17);
-        $result = $qty->convert($uomPair);
-        echo $qty;
-        echo "\n";
-        echo $result;
+        $expectedQty = new Quantity(17, Uom::LITER());
+
+        $this->assertTrue($expectedQty->equals($qty->convert($uomPair)));
+    }
+
+    public function testCanNotConvert()
+    {
+        $qty = new Quantity(1, Uom::TANK());
+        $uomPair = new UomPair(Uom::LITER(), Uom::LITER(), 17);
+        $this->expectException(\InvalidArgumentException::class);
+        $qty->convert($uomPair);
     }
 }

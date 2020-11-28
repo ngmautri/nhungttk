@@ -68,7 +68,8 @@ class ApSaveAsExcel extends AbstractDocSaveAsSpreadsheet
             "remark",
             "PR row",
             "PR",
-            "ItemId"
+            "ItemId",
+            "docNumber"
         );
 
         $n = 0;
@@ -107,7 +108,8 @@ class ApSaveAsExcel extends AbstractDocSaveAsSpreadsheet
                 $row->remarks,
                 $row->prRowIndentifer,
                 $row->prNumber,
-                $row->item
+                $row->item,
+                $row->docNumber
             );
 
             $n = 0;

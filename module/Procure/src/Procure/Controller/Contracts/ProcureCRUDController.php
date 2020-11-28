@@ -89,7 +89,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $entity_id = (int) $this->params()->fromQuery('entity_id');
             $entity_token = $this->params()->fromQuery('entity_token');
 
-            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token);
+            $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($entity_id, $entity_token, null, $this->getLocale());
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -125,7 +125,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $entity_token = $data['entity_token'];
             $version = $data['version'];
 
-            $rootEntity = $this->procureService->getDocDetailsByTokenId($entity_id, $entity_token);
+            $rootEntity = $this->procureService->getDocDetailsByTokenId($entity_id, $entity_token, null, $this->getLocale());
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -199,8 +199,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('entity_token');
-
-        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token);
+        $rootEntity = $this->getProcureService()->getDocDetailsByTokenId($id, $token, null, $this->getLocale());
 
         if ($rootEntity == null) {
             return $this->redirect()->toRoute('not_found');
@@ -565,7 +564,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $target_id = (int) $this->params()->fromQuery('target_id');
             $target_token = $this->params()->fromQuery('target_token');
 
-            $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token);
+            $result = $this->getProcureService()->getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $this->getLocale());
 
             $rootDTO = null;
             $localDTO = null;

@@ -92,6 +92,13 @@ class NmtApplicationCompany
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="default_locale", type="string", length=45, nullable=true)
+     */
+    private $defaultLocale;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")

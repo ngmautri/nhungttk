@@ -53,4 +53,44 @@ class QuantityTest extends PHPUnit_Framework_TestCase
         $this->expectException(\InvalidArgumentException::class);
         $qty1->add($qty2);
     }
+
+    public function testSubtract()
+    {
+        $qty1 = new Quantity(15, Uom::KILOGRAM());
+        $qty2 = new Quantity(14, Uom::KILOGRAM());
+        $this->assertEquals(new Quantity(1, Uom::KILOGRAM()), $qty1->subtract($qty2));
+    }
+
+    public function testDivide()
+    {
+        $qty1 = new Quantity(15, Uom::KILOGRAM());
+        $this->assertEquals(new Quantity(5, Uom::KILOGRAM()), $qty1->divide(3));
+    }
+
+    public function testDivideZero()
+    {
+        $qty1 = new Quantity(15, Uom::KILOGRAM());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->assertEquals(new Quantity(5, Uom::KILOGRAM()), $qty1->divide(0));
+    }
+
+    public function testDivideNegative()
+    {
+        $qty1 = new Quantity(15, Uom::KILOGRAM());
+        $this->expectException(\InvalidArgumentException::class);
+        $qty1->divide(- 1);
+    }
+
+    public function testMultiple()
+    {
+        $qty1 = new Quantity(15, Uom::KILOGRAM());
+        $this->assertEquals(new Quantity(45, Uom::KILOGRAM()), $qty1->multiply(3));
+    }
+
+    public function testMultipleNegative()
+    {
+        $qty1 = new Quantity(15, Uom::KILOGRAM());
+        $this->expectException(\InvalidArgumentException::class);
+        $qty1->multiply(0);
+    }
 }

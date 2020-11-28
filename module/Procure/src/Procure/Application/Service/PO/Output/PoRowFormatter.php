@@ -4,12 +4,13 @@ namespace Procure\Application\Service\PO\Output;
 use Procure\Application\Service\Output\Formatter\RowFormatterDecorator;
 use Procure\Domain\RowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
+use Application\Domain\Shared\Number\NumberFormatter;
 
 /**
  * PO Row Output.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PoRowFormatter extends RowFormatterDecorator
 {
@@ -46,7 +47,6 @@ class PoRowFormatter extends RowFormatterDecorator
                 $row->transactionStatus = \sprintf('&nbsp;<span style="color: graytext;">%s</span>', "Done");
             }
 
-            // $row->docUnitPrice = ($row->getDocUnitPrice() !== null ? number_format($row->getDocUnitPrice(), $decimalNo) : 0);
             // $row->unitPrice = ($row->getUnitPrice() !== null ? number_format($row->getUnitPrice(), $decimalNo) : 0);
 
             $row->billedAmount = ($row->getBilledAmount() !== null ? number_format($row->getBilledAmount(), $decimalNo) : 0);

@@ -59,6 +59,7 @@ final class Quantity implements \jsonserializable
     {
         Assert::notNull($uom, 'Uom should not be null');
         Assert::numeric($amount, 'Amount should not be numeric');
+        Assert::greaterThan($amount, 0, 'Amount should be greater then zero');
 
         $this->amount = $amount;
         $this->uom = $uom;

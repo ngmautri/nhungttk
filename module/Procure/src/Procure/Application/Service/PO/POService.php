@@ -39,7 +39,7 @@ class POService extends AbstractService implements PoServiceInterface
      * {@inheritdoc}
      * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenIdFromDB()
      */
-    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $po = $this->getQueryRepository()->getPODetailsById($id, $token);
 
@@ -91,9 +91,9 @@ class POService extends AbstractService implements PoServiceInterface
      * {@inheritdoc}
      * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
      */
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
-        return $this->getPODetailsById($id, $token, $outputStrategy);
+        return $this->getPODetailsById($id, $token, $outputStrategy, $locale);
     }
 
     /**
@@ -101,7 +101,7 @@ class POService extends AbstractService implements PoServiceInterface
      * {@inheritdoc}
      * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocHeaderByTokenId()
      */
-    public function getDocHeaderByTokenId($id, $token)
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
     {
         return $this->getQueryRepository()->getHeaderById($id, $token);
     }
@@ -111,9 +111,9 @@ class POService extends AbstractService implements PoServiceInterface
      * {@inheritdoc}
      * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getRootEntityOfRow()
      */
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
-        return $this->getPOofRow($target_id, $target_token, $entity_id, $entity_token);
+        return $this->getPOofRow($target_id, $target_token, $entity_id, $entity_token, $locale);
     }
 
     /**
@@ -121,7 +121,7 @@ class POService extends AbstractService implements PoServiceInterface
      * {@inheritdoc}
      * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByIdFromDB()
      */
-    public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN')
     {}
 
     /**
@@ -148,7 +148,7 @@ class POService extends AbstractService implements PoServiceInterface
      * @param int $entity_id
      * @param string $entity_token
      */
-    public function getPOofRow($target_id, $target_token, $entity_id, $entity_token)
+    public function getPOofRow($target_id, $target_token, $entity_id, $entity_token, $locale)
     {
         $rootEntity = null;
         $localEntity = null;
@@ -166,6 +166,10 @@ class POService extends AbstractService implements PoServiceInterface
 
             if ($localEntity !== null) {
                 $localDTO = $localEntity->makeDTOForGrid();
+                $f = new RowNumberFormatter();
+                $f->setLocale($locale);
+                $formatter = new PoRowFormatter($f);
+                $localDTO = $formatter->format($localDTO);
             }
         }
 
@@ -182,7 +186,7 @@ class POService extends AbstractService implements PoServiceInterface
      * @param int $id
      * @param int $outputStrategy
      */
-    public function getPODetailsById($id, $token = null, $outputStrategy = null)
+    public function getPODetailsById($id, $token = null, $outputStrategy = null, $locale = 'en_EN')
     {
         $po = $this->getQueryRepository()->getPODetailsById($id, $token);
 
@@ -195,7 +199,10 @@ class POService extends AbstractService implements PoServiceInterface
 
         switch ($outputStrategy) {
             case SaveAsSupportedType::OUTPUT_IN_ARRAY:
-                $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
+                $f = new RowTextAndNumberFormatter();
+                $f->setLocale($locale);
+
+                $formatter = new PoRowFormatter($f);
                 $factory = new DocSaveAsArray();
                 break;
             case SaveAsSupportedType::OUTPUT_IN_EXCEL:
@@ -216,7 +223,10 @@ class POService extends AbstractService implements PoServiceInterface
                 break;
 
             default:
-                $formatter = new PoRowFormatter(new RowTextAndNumberFormatter());
+                $f = new RowTextAndNumberFormatter();
+                $f->setLocale($locale);
+
+                $formatter = new PoRowFormatter($f);
                 $factory = new DocSaveAsArray();
                 break;
         }

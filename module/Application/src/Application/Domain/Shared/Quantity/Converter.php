@@ -36,6 +36,6 @@ final class Converter
             return new Quantity($qty->getAmount() * $uomPair->getConvertFactor(), $uomPair->getBaseUomObject());
         }
 
-        throw new \RuntimeException("Can not convert quantity");
+        throw new \InvalidArgumentException("Can not convert quantity");
     }
 }

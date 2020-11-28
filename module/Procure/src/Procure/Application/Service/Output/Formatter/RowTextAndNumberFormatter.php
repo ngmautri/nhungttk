@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Service\Output\Formatter;
 
+use Application\Domain\Shared\Number\NumberFormatter;
 use Procure\Domain\RowSnapshot;
 use Zend\Escaper\Escaper;
 
@@ -48,26 +49,26 @@ class RowTextAndNumberFormatter extends AbstractRowFormatter
         }
 
         if ($row->docUnitPrice !== null) {
-            $row->docUnitPrice = number_format($row->docUnitPrice, $decimalNo);
+            $row->docUnitPrice = NumberFormatter::format($row->docUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
         if ($row->netAmount !== null) {
-            $row->netAmount = number_format($row->netAmount, $decimalNo);
+            $row->netAmount = NumberFormatter::format($row->netAmount, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
         if ($row->taxAmount !== null) {
-            $row->taxAmount = number_format($row->taxAmount, $decimalNo);
+            $row->taxAmount = NumberFormatter::format($row->taxAmount, $this->getLocale(), $decimalNo, $decimalNo);
         }
         if ($row->grossAmount !== null) {
-            $row->grossAmount = number_format($row->grossAmount, $decimalNo);
+            $row->grossAmount = NumberFormatter::format($row->grossAmount, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
         if ($row->convertedStandardQuantity !== null) {
-            $row->convertedStandardQuantity = number_format($row->convertedStandardQuantity, $decimalNo);
+            $row->convertedStandardQuantity = NumberFormatter::format($row->convertedStandardQuantity, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
         if ($row->convertedStandardUnitPrice !== null) {
-            $row->convertedStandardUnitPrice = number_format($row->convertedStandardUnitPrice, $decimalNo);
+            $row->convertedStandardUnitPrice = NumberFormatter::format($row->convertedStandardUnitPrice, $this->getLocale(), $decimalNo, $decimalNo);
         }
 
         $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/view?entity_token=%s&entity_id=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $row->prRowIndentifer, $row->prToken, $row->pr);

@@ -2,13 +2,14 @@
 namespace Procure\Application\Service\Output\Formatter;
 
 use Procure\Domain\RowSnapshot;
+use Application\Domain\Shared\Number\NumberFormatter;
 
 /**
  * only for format number.
  * this is used when exporting excel or saving as pdf.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowNumberFormatter extends AbstractRowFormatter
 {
@@ -37,18 +38,21 @@ class RowNumberFormatter extends AbstractRowFormatter
         }
 
         if ($row->docUnitPrice !== null) {
-            $row->docUnitPrice = number_format($row->docUnitPrice, $decimalNo);
+            // $row->docUnitPrice = number_format($row->docUnitPrice, $decimalNo);
+            $row->docUnitPrice = NumberFormatter::format($row->docUnitPrice, $this->getLocale());
         }
 
         if ($row->netAmount !== null) {
-            $row->netAmount = number_format($row->netAmount, $decimalNo);
+            // / $row->netAmount = number_format($row->netAmount, $decimalNo);
+            $row->netAmount = NumberFormatter::format($row->netAmount, $this->getLocale());
         }
 
         if ($row->taxAmount !== null) {
             $row->taxAmount = number_format($row->taxAmount, $decimalNo);
         }
         if ($row->grossAmount !== null) {
-            $row->grossAmount = number_format($row->grossAmount, $decimalNo);
+            // $row->grossAmount = number_format($row->grossAmount, $decimalNo);
+            $row->grossAmount = 1;
         }
 
         if ($row->convertedStandardQuantity !== null) {

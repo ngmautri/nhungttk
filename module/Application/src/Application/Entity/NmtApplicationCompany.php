@@ -92,6 +92,13 @@ class NmtApplicationCompany
     private $uuid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="default_locale", type="string", length=45, nullable=true)
+     */
+    private $defaultLocale;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -401,6 +408,30 @@ class NmtApplicationCompany
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set defaultLocale
+     *
+     * @param string $defaultLocale
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultLocale($defaultLocale)
+    {
+        $this->defaultLocale = $defaultLocale;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultLocale
+     *
+     * @return string
+     */
+    public function getDefaultLocale()
+    {
+        return $this->defaultLocale;
     }
 
     /**

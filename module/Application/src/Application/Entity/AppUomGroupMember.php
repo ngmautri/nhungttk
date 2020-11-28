@@ -73,7 +73,7 @@ class AppUomGroupMember
     /**
      * @var string
      *
-     * @ORM\Column(name="convert_factor", type="decimal", precision=15, scale=0, nullable=true)
+     * @ORM\Column(name="convert_factor", type="decimal", precision=15, scale=4, nullable=true)
      */
     private $convertFactor;
 

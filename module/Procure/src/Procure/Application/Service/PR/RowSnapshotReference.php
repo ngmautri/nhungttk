@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Service\PR;
 
+use Application\Domain\Shared\Number\NumberParser;
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
@@ -8,7 +9,7 @@ use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class RowSnapshotReference
 {
@@ -19,7 +20,7 @@ class RowSnapshotReference
      * @param EntityManager $doctrineEM
      * @return NULL|\Procure\Domain\AccountPayable\APRowSnapshot
      */
-    public static function updateReferrence(PRRowSnapshot $snapshot, EntityManager $doctrineEM)
+    public static function updateReferrence(PRRowSnapshot $snapshot, EntityManager $doctrineEM, $locale = null)
     {
         if (! $snapshot instanceof PRRowSnapshot || ! $doctrineEM instanceof EntityManager) {
             return null;
@@ -37,6 +38,10 @@ class RowSnapshotReference
                 $snapshot->isInventoryItem = 1;
             }
         }
+
+        // parse Number
+        $snapshot->docQuantity = NumberParser::parseAndFormatEN($snapshot->getDocQuantity(), $locale);
+        $snapshot->docUnitPrice = NumberParser::parseAndFormatEN($snapshot->getDocUnitPrice(), $locale);
 
         return $snapshot;
     }

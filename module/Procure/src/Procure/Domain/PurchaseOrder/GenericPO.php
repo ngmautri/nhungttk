@@ -19,7 +19,6 @@ use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
-use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
 /**
@@ -256,6 +255,8 @@ abstract class GenericPO extends BaseDoc
         $row = PORow::makeFromSnapshot($snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
+
+        //var_dump($row);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getNotification()->errorMessage());

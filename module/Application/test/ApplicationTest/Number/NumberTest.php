@@ -24,8 +24,8 @@ class NumberTest extends PHPUnit_Framework_TestCase
 
     public function testFormatToEN()
     {
-        $p = NumberParser::parseAndFormatEN('150000.34', 'lo_LA');
-        $this->assertEquals('150,000.34', $p);
+        $p = NumberParser::parseAndFormatEN('150,000.34', 'en_EN');
+        $this->assertEquals(150000.34, $p);
         echo ($p);
     }
 
@@ -33,8 +33,16 @@ class NumberTest extends PHPUnit_Framework_TestCase
     {
         $defaultLocale = locale_get_default();
         echo $defaultLocale;
+
         $p1 = NumberFormatter::format('60.77', 'lo_LA');
         $this->assertEquals('60,77', $p1);
+    }
+
+    public function testNumber()
+    {
+        $p = NumberParser::parseAndFormatEN('150,000.34', 'en_EN');
+        echo $p;
+        $this->assertTrue(\is_numeric($p));
     }
 
     public function testSpellOut()

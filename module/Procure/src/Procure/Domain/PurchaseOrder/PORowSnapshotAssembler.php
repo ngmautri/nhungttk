@@ -46,6 +46,7 @@ class PORowSnapshotAssembler
         "docUnit",
         "docUnitPrice",
         "conversionFactor",
+        "standardConvertFactor",
         "descriptionText",
         "taxRate"
     );

@@ -7,7 +7,6 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
 use Procure\Domain\Contracts\ProcureDocType;
-use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\QuotationRequest\QRRow;
 use Webmozart\Assert\Assert;
 
@@ -20,10 +19,12 @@ use Webmozart\Assert\Assert;
 class PORow extends BaseRow
 {
 
-    private static $instance = null;
-
-    private function __construct()
-    {}
+    protected function createVO()
+    {
+        $this->createUomVO();
+        $this->createQuantityVO();
+        $this->createDocPriceVO();
+    }
 
     public static function cloneFrom(PODoc $rootDoc, PoRow $sourceObj, CommandOptions $options)
     {
@@ -138,6 +139,7 @@ class PORow extends BaseRow
         $instance = new self();
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        $instance->createVO();
         return $instance;
     }
 
@@ -315,5 +317,95 @@ class PORow extends BaseRow
     public function getOpenAPAmount()
     {
         return $this->openAPAmount;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Quantity\Quantity
+     */
+    public function getDocQuantityVO()
+    {
+        return $this->docQuantityVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPoId()
+    {
+        return $this->poId;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Uom\Uom
+     */
+    public function getDocUomVO()
+    {
+        return $this->docUomVO;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Price\Price
+     */
+    public function getDocUnitPriceVO()
+    {
+        return $this->docUnitPriceVO;
+    }
+
+    /**
+     *
+     * @return \Application\Domain\Shared\Price\Price
+     */
+    public function getNetAmountVO()
+    {
+        return $this->netAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getTaxAmountVO()
+    {
+        return $this->taxAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getGrossAmountVO()
+    {
+        return $this->grossAmountVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getItemStandardUomVO()
+    {
+        return $this->itemStandardUomVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUomPairVO()
+    {
+        return $this->uomPairVO;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getStandardQuantityVO()
+    {
+        return $this->standardQuantityVO;
     }
 }

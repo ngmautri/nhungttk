@@ -46,7 +46,7 @@ class TransactionalCommandHandler extends AbstractCommandHandlerDecorator
                 ->getConnection()
                 ->rollBack();
 
-            $cmd->logInfo(sprintf("%s-%s", "Transaction rollbac // ", \get_class($this)));
+            $cmd->logInfo(sprintf("%s-%s", "Transaction rollback // ", \get_class($this)));
 
             throw new \RuntimeException(sprintf("%s", $e->getMessage()));
         }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,10 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_fingerscan_KF2_idx", columns={"employee_code"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtHrFingerscanRepository")
+ *
  */
 class NmtHrFingerscan
 {
+
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -22,6 +25,7 @@ class NmtHrFingerscan
     private $id;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -29,6 +33,7 @@ class NmtHrFingerscan
     private $token;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="employee_id", type="integer", nullable=false)
@@ -36,6 +41,7 @@ class NmtHrFingerscan
     private $employeeId;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
@@ -43,6 +49,7 @@ class NmtHrFingerscan
     private $employeeCode;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="attendance_date", type="datetime", nullable=true)
@@ -50,6 +57,7 @@ class NmtHrFingerscan
     private $attendanceDate;
 
     /**
+     *
      * @var integer
      *
      * @ORM\Column(name="attendance_type", type="integer", nullable=true)
@@ -57,6 +65,7 @@ class NmtHrFingerscan
     private $attendanceType;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="start_time", type="time", nullable=true)
@@ -64,6 +73,7 @@ class NmtHrFingerscan
     private $startTime;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="end_time", type="time", nullable=true)
@@ -71,6 +81,7 @@ class NmtHrFingerscan
     private $endTime;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="clock_in", type="string", length=10, nullable=true)
@@ -78,6 +89,7 @@ class NmtHrFingerscan
     private $clockIn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="clock_out", type="string", length=10, nullable=true)
@@ -85,6 +97,7 @@ class NmtHrFingerscan
     private $clockOut;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
@@ -92,6 +105,7 @@ class NmtHrFingerscan
     private $createdOn;
 
     /**
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="reconciled_on", type="datetime", nullable=true)
@@ -99,6 +113,7 @@ class NmtHrFingerscan
     private $reconciledOn;
 
     /**
+     *
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
@@ -106,6 +121,7 @@ class NmtHrFingerscan
     private $remarks;
 
     /**
+     *
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -114,8 +130,6 @@ class NmtHrFingerscan
      * })
      */
     private $createdBy;
-
-
 
     /**
      * Get id

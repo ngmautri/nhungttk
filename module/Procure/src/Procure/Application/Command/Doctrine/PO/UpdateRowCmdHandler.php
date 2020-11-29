@@ -13,6 +13,7 @@ use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
+use Procure\Application\Service\PO\RowSnapshotModifier;
 
 /**
  *
@@ -45,6 +46,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
         $options = $cmd->getOptions();
 
+
         try {
             $rootEntity = $options->getRootEntity();
             $localEntity = $options->getLocalEntity();
@@ -55,10 +57,10 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            // \var_dump($cmd->getData());
-
             $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
+
+            $newSnapshot = RowSnapshotModifier::updateFrom($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
 

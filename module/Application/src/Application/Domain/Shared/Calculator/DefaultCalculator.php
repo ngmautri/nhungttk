@@ -98,7 +98,6 @@ final class DefaultCalculator implements Calculator
      */
     private function assertIntegerBounds($amount)
     {
-        \var_dump($amount);
         if ($amount > PHP_INT_MAX) {
             throw new \OverflowException('the maximum allowed integer (PHP_INT_MAX) overflowed ');
         } elseif ($amount < ~ PHP_INT_MAX) {

@@ -6,7 +6,7 @@ use Application\Notification;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractDTO
 {
@@ -20,6 +20,11 @@ abstract class AbstractDTO
     public function hasErrors()
     {
         return $this->getNotification()->hasErrors();
+    }
+
+    public function getErrorMessage($html = true)
+    {
+        return $this->getNotification()->errorMessage($html);
     }
 
     /**

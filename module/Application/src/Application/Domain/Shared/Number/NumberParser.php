@@ -15,8 +15,9 @@ final class NumberParser
         return $numberFormatter->parse($number);
     }
 
-    public static function parseAndFormatEN($number, $local = 'en_EN')
+    public static function parseAndConvertToEN($number, $local = 'en_EN')
     {
-        return NumberFormatter::formatToEN(self::parse($number, $local));
+        $numberString = NumberFormatter::formatToEN(self::parse($number, $local));
+        return self::parse($numberString);
     }
 }

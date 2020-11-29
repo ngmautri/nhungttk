@@ -4,8 +4,8 @@ namespace ProcureTest\PO\Command;
 use Doctrine\ORM\EntityManager;
 use ProcureTest\Bootstrap;
 use Procure\Domain\Exception\InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use PHPUnit_Framework_TestCase;
 
 class QueryRepTest extends PHPUnit_Framework_TestCase
 {
@@ -23,12 +23,12 @@ class QueryRepTest extends PHPUnit_Framework_TestCase
 
             $rep = new POQueryRepositoryImpl($doctrineEM);
 
-            $id = 447;
-            $token = "b4b321c1-9e40-4aba-87eb-80c03f182623";
+            $rootEntityId = 485;
+            $rootEntityToken = "0fee41a0-d63e-4de8-a98c-e3be586dca58";
 
-            $rootEntity = $rep->getPODetailsById($id, $token);
-            $row = $rootEntity->getDocRows()[0];
-            var_dump($row->calculatePriceAndQuanity());
+            $rootEntity = $rep->getPODetailsById($rootEntityId, $rootEntityToken);
+            // $row = $rootEntity->getDocRows()[0];
+            // var_dump($row->calculatePriceAndQuanity());
         } catch (InvalidArgumentException $e) {
             var_dump($e->getMessage());
         }

@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Command\Options;
 
-use Application\Domain\Shared\Command\CommandOptions;
 use Webmozart\Assert\Assert;
 
 /**
@@ -37,7 +36,7 @@ class UpdateRowCmdOptions extends CmdOptions
         $this->localEntity = $localEntity;
         $this->entityId = $entityId;
         $this->entityToken = $entityToken;
-        $this->version = $version;
+        $this->version= $version;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
     }

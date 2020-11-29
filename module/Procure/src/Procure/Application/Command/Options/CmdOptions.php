@@ -12,17 +12,17 @@ use Webmozart\Assert\Assert;
 class CmdOptions implements CommandOptions
 {
 
-    private $companyId;
+    protected $companyId;
 
-    private $userId;
+    protected $userId;
 
-    private $version;
+    protected $version;
 
-    private $triggeredBy;
+    protected $triggeredBy;
 
-    private $triggeredOn;
+    protected $triggeredOn;
 
-    private $locale = 'lo_LA';
+    protected $locale;
 
     /**
      *

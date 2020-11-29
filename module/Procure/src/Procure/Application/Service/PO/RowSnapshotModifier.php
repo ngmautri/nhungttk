@@ -28,6 +28,11 @@ class RowSnapshotModifier
 
         // updating referrence.
         if ($snapshot->getItem() > 0) {
+
+            /**
+             *
+             * @var \Application\Entity\NmtInventoryItem $entity ;
+             */
             $entity = $doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($snapshot->getItem());
 
             if ($entity->getIsFixedAsset() == 1) {
@@ -37,29 +42,46 @@ class RowSnapshotModifier
             if ($entity->getIsStocked() == 1) {
                 $snapshot->isInventoryItem = 1;
             }
+
+            $stardardUom=$entity->getStandardUom();
+            if($stardardUom!=null){
+                $snapshot->itemStandardUnitName = $stardardUom->getUomName();
+            }
+
         }
 
         // parse Number
-        if (NumberParser::parseAndConvertToEN($snapshot->getDocQuantity(), $locale) == false) {
+
+        $parsedDocQuantity = NumberParser::parseAndConvertToEN($snapshot->getDocQuantity(), $locale);
+        if ($parsedDocQuantity == false) {
             $snapshot->addError(\sprintf('Can not parse doc quantity [%s] Locale: %s', $snapshot->getDocQuantity(), $locale));
         }
 
-        if (NumberParser::parseAndConvertToEN($snapshot->getDocUnitPrice(), $locale) == false) {
+        $parsedDocUnitPrice = NumberParser::parseAndConvertToEN($snapshot->getDocUnitPrice(), $locale);
+        if ($parsedDocUnitPrice == false) {
             $snapshot->addError(\sprintf('Can not parse unit price [%s].  Locale: %s', $snapshot->getDocUnitPrice(), $locale));
         }
 
-        if (NumberParser::parseAndConvertToEN($snapshot->getStandardConvertFactor(), $locale) == false) {
+        $parsedExwUnitPrice= NumberParser::parseAndConvertToEN($snapshot->getExwUnitPrice(), $locale);
+        if ($parsedExwUnitPrice == false) {
+            $snapshot->addError(\sprintf('Can not parse Exw unit price [%s].  Locale: %s', $snapshot->getExwUnitPrice(), $locale));
+        }
+
+        $parsedStandardConvertFactor = NumberParser::parseAndConvertToEN($snapshot->getStandardConvertFactor(), $locale);
+        if ($parsedStandardConvertFactor == false) {
             $snapshot->addError(\sprintf('Can not parse conversion factor [%s] Locale: %s', $snapshot->getStandardConvertFactor(), $locale));
         }
+
 
         if ($snapshot->hasErrors()) {
             throw new \InvalidArgumentException($snapshot->getErrorMessage(false));
         }
 
-        $snapshot->docQuantity = NumberParser::parseAndConvertToEN($snapshot->getDocQuantity(), $locale);
-        $snapshot->docUnitPrice = NumberParser::parseAndConvertToEN($snapshot->getDocUnitPrice(), $locale);
-        $snapshot->standardConvertFactor = NumberParser::parseAndConvertToEN($snapshot->getStandardConvertFactor(), $locale);
-        $snapshot->conversionFactor = NumberParser::parseAndConvertToEN($snapshot->getStandardConvertFactor(), $locale);
+        $snapshot->docQuantity = $parsedDocQuantity;
+        $snapshot->docUnitPrice = $parsedDocUnitPrice;
+        $snapshot->exwUnitPrice = $parsedExwUnitPrice;
+        $snapshot->standardConvertFactor = $parsedStandardConvertFactor;
+        $snapshot->conversionFactor = $parsedStandardConvertFactor;
 
         return $snapshot;
     }

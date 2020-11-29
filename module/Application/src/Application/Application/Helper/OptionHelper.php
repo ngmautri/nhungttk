@@ -78,4 +78,32 @@ class OptionHelper implements OptionHelperInterface
         }
         return $option;
     }
+
+    public static function createUomNameOption($list, $id)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l) {
+
+            /**
+             *
+             * @var Uom $l ;
+             */
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s (%s)</option>', $l->getUomName(), ucwords($l->getUomName()), strtolower($l->getUomCode()));
+            } else {
+                if ($id == $l->getUomName()) {
+                    $option = $option . sprintf('<option selected value="%s">%s (%s)</option>', $l->getUomName(), ucwords($l->getUomName()), strtolower($l->getUomCode()));
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s (%s)</option>', $l->getUomName(), ucwords($l->getUomName()), strtolower($l->getUomCode()));
+                }
+            }
+        }
+        return $option;
+    }
 }

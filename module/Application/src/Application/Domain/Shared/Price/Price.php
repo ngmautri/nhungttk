@@ -3,14 +3,13 @@ namespace Application\Domain\Shared\Price;
 
 use Application\Domain\Shared\Calculator\DefaultCalculator;
 use Application\Domain\Shared\Calculator\Contracts\Calculator;
+use Application\Domain\Shared\Money\MoneyFormatter;
 use Application\Domain\Shared\Quantity\Quantity;
 use Application\Domain\Shared\Uom\UomPair;
 use Money\CurrencyPair;
 use Money\Money;
-use Money\Currencies\ISOCurrencies;
-use Money\Formatter\DecimalMoneyFormatter;
 use Webmozart\Assert\Assert;
-use Application\Domain\Shared\Money\MoneyFormatter;
+use Application\Domain\Shared\Number\NumberParser;
 
 /**
  *
@@ -29,6 +28,20 @@ final class Price implements \jsonserializable
     private static $calculators = [
         DefaultCalculator::class
     ];
+
+    public function getMoneyAmount(){
+        return $this->getPriceMoney()->getAmount();
+    }
+
+    public function getMoneyAmountInEn(){
+        return NumberParser::parseAndConvertToEN(MoneyFormatter::formatDecimal($this->getPriceMoney()));
+    }
+
+    public function getQuantiyAmount(){
+        return $this->getQuantity()->getAmount();
+    }
+
+
 
     /**
      *
@@ -66,12 +79,12 @@ final class Price implements \jsonserializable
         Assert::greaterThan($currencyPair->getConversionRatio(), 0, 'Exchange rate must greate zero!');
 
         $cur = $this->getPriceMoney()->getCurrency();
-        if ($currencyPair->getBaseCurrency()->equals($cur)) {
-            $m = $this->getPriceMoney()->multiply($currencyPair->getConversionRatio());
-            return new self(new Money($m->getAmount(), $currencyPair->getCounterCurrency()), $this->getQuantity());
+        if ($currencyPair->getCounterCurrency()->equals($cur)) {
+            $m = $this->getPriceMoney()->multiply(1/$currencyPair->getConversionRatio());
+            return new self(new Money($m->getAmount(), $currencyPair->getBaseCurrency()), $this->getQuantity());
         }
 
-        throw new \RuntimeException('Can not conver currency');
+        throw new \InvalidArgumentException('Can not convert currency');
     }
 
     /**

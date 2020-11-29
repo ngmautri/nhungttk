@@ -192,7 +192,7 @@ abstract class GenericPO extends BaseDoc
         $createdDate = new \Datetime();
         $snapshot->initSnapshot($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = PORow::makeFromSnapshot($snapshot);
+        $row = PORow::createFromSnapshot($this,$snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
 
@@ -409,7 +409,7 @@ abstract class GenericPO extends BaseDoc
             return;
         }
 
-        $row->calculate(); //
+        //$row->calculate(); //
     }
 
     /**

@@ -492,7 +492,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
             }
 
             $options = new CreateRowCmdOptions($rootEntity, $target_id, $target_token, $version, $this->getUserId(), __METHOD__);
-
+            $options->setLocale($this->getLocale());
             $cmdHandler = $this->getCmdHandlerFactory()->getCreateRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
@@ -575,6 +575,10 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
             if (isset($result["localDTO"])) {
                 $localDTO = $result["localDTO"];
+            }
+
+            if ($rootDTO == null || $localDTO == null) {
+                return $this->redirect()->toRoute('not_found');
             }
 
             $viewModel = new ViewModel(array(

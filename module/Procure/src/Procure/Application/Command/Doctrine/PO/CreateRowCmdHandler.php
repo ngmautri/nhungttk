@@ -7,6 +7,7 @@ use Application\Application\Contracts\GenericSnapshotAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
+use Procure\Application\Service\PO\RowSnapshotModifier;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
@@ -54,6 +55,8 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $snapshot->createdBy = $userId;
             $snapshot->company = $rootEntity->getCompany();
             $this->setOutput($snapshot);
+
+            $snapshot = RowSnapshotModifier::updateFrom($snapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);

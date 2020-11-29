@@ -19,11 +19,12 @@ use Webmozart\Assert\Assert;
 class PORow extends BaseRow
 {
 
-    protected function createVO()
+    protected function createVO(PODoc $rootDoc)
     {
         $this->createUomVO();
         $this->createQuantityVO();
-        $this->createDocPriceVO();
+        $this->createDocPriceVO($rootDoc);
+        $this->createLocalPriceVO($rootDoc);
     }
 
     public static function cloneFrom(PODoc $rootDoc, PoRow $sourceObj, CommandOptions $options)
@@ -50,6 +51,24 @@ class PORow extends BaseRow
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        return $instance;
+    }
+
+    /**
+     *
+     * @param PODoc $rootDoc
+     * @param PORowSnapshot $snapshot
+     * @return \Procure\Domain\PurchaseOrder\PORow
+     */
+    public static function createFromSnapshot(PODoc $rootDoc, PORowSnapshot $snapshot)
+    {
+        Assert::isInstanceOf($rootDoc, PODoc::class, "PO is required!");
+        Assert::isInstanceOf($snapshot, PORowSnapshot::class, "PO row snapshot is required!");
+
+        $instance = new self();
+
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        $instance->createVO($rootDoc);
         return $instance;
     }
 
@@ -139,7 +158,7 @@ class PORow extends BaseRow
         $instance = new self();
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        $instance->createVO();
+        //$instance->createVO();
         return $instance;
     }
 

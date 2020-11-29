@@ -25,7 +25,7 @@ $pr_item_name = null;
 $alert = "info";
 
 $uomList = $sharedCollection->getUomCollection();
-$uom_option = OptionHelper::createUoMOption($uomList, null);
+$uom_option = OptionHelper::createUomNameOption($uomList, null);
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -270,35 +270,31 @@ echo $error_msg;
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2"><?php
 
-                    echo $this->translate("Standard Unit");
+                    echo $this->translate("Document Unit");
                     ?></label>
                      <div class="col-sm-3">
-                        <select name="standardUom" id="standardUom_id" class="form-control input-sm">
+                        <select name="docUnit" id="docUnit" class="form-control input-sm">
                            <option value=""><?php
 
-                        echo $this->translate("Select Standard unit");
+                        echo $this->translate("Select doc unit");
                         ?></option>
                     <?php
                     echo $uom_option;
                     ?>
                </select>
                      </div>
-                  </div>
-                  <div class="form-group margin-bottom required">
-                     <label class="control-label col-sm-2" for="inputTag">Unit:</label>
-                     <div class="col-sm-3">
-                        <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit" value="<?php
 
-                        echo (! $dto == null) ? $dto->getDocUnit() : "each";
-                        ?>">
-                     </div>
-                     <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
+                      <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                      <div class="col-sm-1">
                         <input tabindex="6" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
 
                         echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
                         ?>">
                      </div>
+
+                  </div>
+                  <div class="form-group margin-bottom required">
+
                      <div class="col-sm-3">
                         <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
                      </div>

@@ -239,7 +239,7 @@ abstract class GenericAP extends BaseDoc
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = APRow::makeFromSnapshot($snapshot);
+        $row = APRow::createFromSnapshot($this, $snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
 
@@ -292,25 +292,17 @@ abstract class GenericAP extends BaseDoc
      */
     public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
-            throw new \RuntimeException(sprintf("PO is posted! %s", $this->getId()));
-        }
-
-        if ($snapshot == null) {
-            throw new \InvalidArgumentException("APRowSnapshot not found");
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("Options not found");
-        }
+        Assert::notEq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is already posted %s", $this->getId()));
+        Assert::notNull($snapshot, "Row Snapshot not founds");
+        Assert::notNull($options, "Options not founds");
 
         $validationService = ValidatorFactory::create($sharedService);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->markAsChange($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = APRow::makeFromSnapshot($snapshot);
+        $row = APRow::createFromSnapshot($this, $snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
 
@@ -503,8 +495,6 @@ abstract class GenericAP extends BaseDoc
         }
 
         $rowValidators->validate($this, $row);
-
-        $row->calculate(); // important
 
         if ($row->hasErrors()) {
             $this->addErrorArray($row->getErrors());

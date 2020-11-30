@@ -88,7 +88,6 @@ final class APFromPO extends GenericAP
              */
             $localEntity = APRow::createFromPoRow($instance, $r, $options);
             $instance->addRow($localEntity);
-
             $instance->validateRow($localEntity, $validationService->getRowValidators());
         }
         return $instance;

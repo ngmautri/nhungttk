@@ -21,6 +21,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
  */
 class GenericRow extends BaseRow
 {
+
     // Uom VO
     // ====================
     protected $docUomVO;
@@ -72,7 +73,7 @@ class GenericRow extends BaseRow
         // ==================
         $this->docUomVO = new Uom($this->getDocUnit());
         $this->itemStandardUomVO = new Uom($this->getItemStandardUnitName());
-        $this->uomPairVO = new UomPair( $this->itemStandardUomVO, $this->docUomVO,$this->getStandardConvertFactor());
+        $this->uomPairVO = new UomPair($this->itemStandardUomVO, $this->docUomVO, $this->getStandardConvertFactor());
     }
 
     protected function createQuantityVO()
@@ -81,8 +82,7 @@ class GenericRow extends BaseRow
         // ==================
         $this->docQuantityVO = new Quantity($this->docQuantity, $this->docUomVO);
         $this->itemStandardQuantityVO = $this->docQuantityVO->convert($this->uomPairVO);
-        $this->setConvertedStandardQuantity( $this->itemStandardQuantityVO->getAmount());
-
+        $this->setConvertedStandardQuantity($this->itemStandardQuantityVO->getAmount());
     }
 
     protected function createDocPriceVO(GenericDoc $rootDoc)
@@ -94,7 +94,6 @@ class GenericRow extends BaseRow
         $this->setConvertedStandardUnitPrice($this->docItemStandardUnitPriceVO->getMoneyAmountInEn());
 
         $this->docNetAmountVO = $this->docUnitPriceVO->multiply($this->docQuantityVO->getAmount());
-
 
         $this->docTaxAmountVO = 0;
         if ($this->getTaxRate() > 0) {
@@ -108,9 +107,8 @@ class GenericRow extends BaseRow
             $this->docGrossAmountVO = $this->docNetAmountVO->add($this->docTaxAmountVO);
         }
 
-        $this->setNetAmount( $this->docNetAmountVO->getMoneyAmountInEn());
+        $this->setNetAmount($this->docNetAmountVO->getMoneyAmountInEn());
         $this->setGrossAmount($this->docGrossAmountVO->getMoneyAmountInEn());
-
     }
 
     protected function createLocalPriceVO(GenericDoc $rootDoc)
@@ -118,9 +116,9 @@ class GenericRow extends BaseRow
         // Currency VO
         // ==================
         $this->docCurrencyVO = new Currency($rootDoc->getDocCurrencyISO());
-        $this->localCurrencyVO =new Currency($rootDoc->getLocalCurrencyISO());
+        $this->localCurrencyVO = new Currency($rootDoc->getLocalCurrencyISO());
 
-        $this->currencyPair = new CurrencyPair($this->localCurrencyVO, $this->docCurrencyVO, 1/$rootDoc->getExchangeRate());
+        $this->currencyPair = new CurrencyPair($this->localCurrencyVO, $this->docCurrencyVO, 1 / $rootDoc->getExchangeRate());
 
         $this->localUnitPriceVO = $this->docUnitPriceVO->convertCurrency($this->currencyPair);
         $this->localItemStandardUnitPriceVO = $this->docItemStandardUnitPriceVO->convertCurrency($this->currencyPair);
@@ -129,35 +127,7 @@ class GenericRow extends BaseRow
 
         $this->setLocalUnitPrice($this->localUnitPriceVO->getMoneyAmountInEn());
         $this->setLocalNetAmount($this->LocalNetAmountVO->getMoneyAmountInEn());
-        $this->setGrossAmount($this->localGrossAmountVO->getMoneyAmountInEn());
-    }
-
-
-
-
-    public function calculatePriceAndQuanity()
-    {
-        $docUom = new Uom($this->getDocUnit());
-        $docQuantity = new Quantity($this->getQuantity(), $docUom);
-        $docUnitQuantiy = $docQuantity->getUnitQuantity();
-
-        $baseUom = new Uom($this->getItemStandardUnitName());
-        $baseUomPair = new UomPair($baseUom, $docUom, $this->getStandardConvertFactor());
-        $this->standardQuantity = $docQuantity->convert($baseUomPair);
-
-        $docCurrency = new Currency($this->getDocCurrencyISO());
-
-        $docUnitPriceMoney = MoneyParser::parseFromDecimal($this->getUnitPrice(), $docCurrency);
-        $docUnitPrice = new Price($docUnitPriceMoney, $docUnitQuantiy);
-        $baseDocUnitPrice = $docUnitPrice->convertQuantiy($baseUomPair);
-        $this->standardUnitPriceInDocCurrency = $baseDocUnitPrice;
-
-        $locCurrency = new Currency($this->getLocalCurrencyISO());
-        $currencyPair = new CurrencyPair($docCurrency, $locCurrency, $this->getExchangeRate());
-        $localUnitPrice = $docUnitPrice->convertCurrency($currencyPair);
-        $baseLocalUnitPrice = $localUnitPrice->convertQuantiy($baseUomPair);
-        $this->standardUnitPriceInLocCurrency = $baseLocalUnitPrice->convertQuantiy($baseUomPair);
-        return $this;
+        $this->setLocalGrossAmount($this->localGrossAmountVO->getMoneyAmountInEn());
     }
 
     private $exculdedProps = [
@@ -270,8 +240,14 @@ class GenericRow extends BaseRow
         $this->setIsPosted(0);
     }
 
+    /**
+     *
+     * @deprecated
+     */
     public function calculateQuantity()
     {
+        trigger_error("Deprecated function called." . __METHOD__, E_USER_NOTICE);
+
         if ($this->hasErrors()) {
             return;
         }
@@ -345,10 +321,13 @@ class GenericRow extends BaseRow
 
     /**
      *
+     * @deprecated
      * @return void|\Procure\Domain\GenericRow
      */
     public function calculate()
     {
+        trigger_error("Deprecated function called." . __METHOD__, E_USER_NOTICE);
+
         if ($this->hasErrors()) {
             return;
         }
@@ -448,7 +427,6 @@ class GenericRow extends BaseRow
      */
     public function markAsPosted($postedBy, $postedDate)
     {
-        $this->calculate();
         $this->setLastchangeOn($postedDate);
         $this->setLastchangeBy($postedBy);
         $this->setIsPosted(1);
@@ -465,8 +443,6 @@ class GenericRow extends BaseRow
      */
     public function markAsReversed($postedBy, $postedDate)
     {
-        $this->calculate();
-
         $this->setLastchangeBy($postedBy);
         $this->setLastchangeOn($postedDate);
         $this->setIsReversed(1);
@@ -489,7 +465,9 @@ class GenericRow extends BaseRow
     {
         return SnapshotAssembler::createSnapshotFrom($this, new RowSnapshot());
     }
+
     /**
+     *
      * @return \Application\Domain\Shared\Uom\Uom
      */
     public function getDocUomVO()
@@ -498,6 +476,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Uom\Uom
      */
     public function getItemStandardUomVO()
@@ -506,6 +485,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Uom\UomPair
      */
     public function getUomPairVO()
@@ -514,6 +494,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Quantity\Quantity
      */
     public function getDocQuantityVO()
@@ -522,7 +503,8 @@ class GenericRow extends BaseRow
     }
 
     /**
-     * @return Ambigous <void, \Application\Domain\Shared\Quantity\Quantity>
+     *
+     * @return \Application\Domain\Shared\Quantity\Quantity
      */
     public function getItemStandardQuantityVO()
     {
@@ -530,6 +512,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Money\Currency
      */
     public function getDocCurrencyVO()
@@ -538,6 +521,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Money\Currency
      */
     public function getLocalCurrencyVO()
@@ -546,6 +530,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Money\CurrencyPair
      */
     public function getCurrencyPair()
@@ -554,6 +539,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getDocUnitPriceVO()
@@ -562,6 +548,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getDocItemStandardUnitPriceVO()
@@ -570,6 +557,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getDocNetAmountVO()
@@ -578,7 +566,8 @@ class GenericRow extends BaseRow
     }
 
     /**
-     * @return Ambigous <number, \Application\Domain\Shared\Price\Price>
+     *
+     * @return \Application\Domain\Shared\Price\Price
      */
     public function getDocTaxAmountVO()
     {
@@ -586,6 +575,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getDocGrossAmountVO()
@@ -594,6 +584,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalUnitPriceVO()
@@ -602,6 +593,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getLocalItemStandardUnitPriceVO()
@@ -610,6 +602,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getLocalNetAmountVO()
@@ -618,6 +611,7 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return mixed
      */
     public function getLocalTaxAmountVO()
@@ -626,11 +620,11 @@ class GenericRow extends BaseRow
     }
 
     /**
+     *
      * @return \Application\Domain\Shared\Price\Price
      */
     public function getLocalGrossAmountVO()
     {
         return $this->localGrossAmountVO;
     }
-
 }

@@ -158,7 +158,6 @@ class PORow extends BaseRow
         $instance = new self();
 
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        //$instance->createVO();
         return $instance;
     }
 

@@ -37,20 +37,18 @@ class APService extends AbstractService implements ProcureServiceInterface
      * @param int $id
      * @param string $token
      */
-    public function getDocHeaderByTokenId($id, $token)
+    public function getDocHeaderByTokenId($id, $token,$locale = 'en_EN')
     {
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
     }
 
-    /**
-     *
-     * @param int $id
-     * @param string $token
-     * @param string $outputStrategy
-     * @return NULL|\Procure\Domain\AccountPayable\APDoc
-     */
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+  /**
+   *
+   * {@inheritDoc}
+   * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
+   */
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null,$locale = 'en_EN')
     {
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
@@ -98,7 +96,7 @@ class APService extends AbstractService implements ProcureServiceInterface
         return $rootEntity;
     }
 
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token,$locale = 'en_EN')
     {
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
 
@@ -149,9 +147,9 @@ class APService extends AbstractService implements ProcureServiceInterface
         return $rootEntity;
     }
 
-    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null,$locale = 'en_EN')
     {}
 
-    public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null,$locale = 'en_EN')
     {}
 }

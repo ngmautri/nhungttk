@@ -18,6 +18,7 @@ use Procure\Domain\Exception\PoRowUpdateException;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
+use Procure\Application\Service\AP\APRowSnapshotModifier;
 
 /**
  *
@@ -111,7 +112,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
 
             // do change
 
-            $newSnapshot = RowSnapshotReference::updateReferrence($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
+            $newSnapshot = APRowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM()); // update referrence before update.
 
             $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
 

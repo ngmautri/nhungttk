@@ -15,7 +15,6 @@ use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\SharedService;
 use Ramsey\Uuid\Uuid;
-use Webmozart\Assert\Assert;
 
 /**
  *

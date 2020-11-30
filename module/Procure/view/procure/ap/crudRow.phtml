@@ -356,13 +356,13 @@ echo $wh_option;
                            </div>
                            <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                            <div class="col-sm-1">
-                              <input tabindex="6" id="conversionFactor" class="form-control input-sm" type="text" name="conversionFactor" value="<?php
+                              <input tabindex="6" id="standardConvertFactor" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
 
-                            echo (! $dto == null) ? $dto->getConversionFactor() : "1";
+                            echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
                             ?>">
                            </div>
                            <div class="col-sm-3">
-                              <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to order unit (see PR).</span>
+                              <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to item standard unit.</span>
                            </div>
                         </div>
                         <!-- ///// -->

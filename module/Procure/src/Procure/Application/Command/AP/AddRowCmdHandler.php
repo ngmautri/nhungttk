@@ -10,7 +10,7 @@ use Procure\Application\Command\AP\Options\ApRowCreateOptions;
 use Procure\Application\DTO\Ap\ApDTO;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Application\Service\AP\RowSnapshotReference;
+use Procure\Application\Service\AP\APRowSnapshotModifier;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
@@ -27,7 +27,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
+     * @see \Application\Domain\Shared\Command\AbstractCommandHandler::run()
      */
     public function run(CommandInterface $cmd)
     {
@@ -64,7 +64,7 @@ class AddRowCmdHandler extends AbstractCommandHandler
             $dto->company = $rootEntity->getCompany();
 
             $snapshot = SnapshotAssembler::createSnapShotFromArray($dto, new APRowSnapshot());
-            $snapshot = RowSnapshotReference::updateReferrence($snapshot, $cmd->getDoctrineEM());
+            $snapshot = APRowSnapshotModifier::modify($snapshot, $cmd->getDoctrineEM());
 
             $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);

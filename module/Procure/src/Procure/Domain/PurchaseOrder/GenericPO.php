@@ -192,7 +192,7 @@ abstract class GenericPO extends BaseDoc
         $createdDate = new \Datetime();
         $snapshot->initSnapshot($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = PORow::createFromSnapshot($this,$snapshot);
+        $row = PORow::createFromSnapshot($this, $snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
 
@@ -252,11 +252,9 @@ abstract class GenericPO extends BaseDoc
         $createdDate = new \Datetime();
         $snapshot->markAsChange($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = PORow::makeFromSnapshot($snapshot);
+        $row = PORow::createFromSnapshot($this, $snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
-
-        //var_dump($row);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getNotification()->errorMessage());
@@ -408,8 +406,6 @@ abstract class GenericPO extends BaseDoc
             $this->addErrorArray($row->getErrors());
             return;
         }
-
-        //$row->calculate(); //
     }
 
     /**

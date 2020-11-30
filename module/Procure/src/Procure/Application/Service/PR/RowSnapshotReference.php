@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Application\Service\PR;
 
-use Application\Domain\Shared\Number\NumberParser;
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\AccountPayable\APRowSnapshot;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
@@ -38,10 +37,6 @@ class RowSnapshotReference
                 $snapshot->isInventoryItem = 1;
             }
         }
-
-        // parse Number
-        $snapshot->docQuantity = NumberParser::parseAndFormatEN($snapshot->getDocQuantity(), $locale);
-        $snapshot->docUnitPrice = NumberParser::parseAndFormatEN($snapshot->getDocUnitPrice(), $locale);
 
         return $snapshot;
     }

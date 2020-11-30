@@ -6,10 +6,10 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Domain\GenericRow;
+use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Shared\Constants;
-use Procure\Domain\Contracts\ProcureDocType;
+use Webmozart\Assert\Assert;
 
 /**
  * AP Row
@@ -41,6 +41,30 @@ class APRow extends GenericRow
     protected $grId;
 
     protected $grToken;
+
+    protected function createVO(GenericAP $rootDoc)
+    {
+        $this->createUomVO();
+        $this->createQuantityVO();
+        $this->createDocPriceVO($rootDoc);
+        $this->createLocalPriceVO($rootDoc);
+    }
+
+    /**
+     *
+     * @param GenericAP $rootDoc
+     * @param APRowSnapshot $snapshot
+     * @return \Procure\Domain\AccountPayable\APRow
+     */
+    public static function createFromSnapshot(GenericAP $rootDoc, APRowSnapshot $snapshot)
+    {
+        Assert::isInstanceOf($rootDoc, GenericAP::class, "AP doc is required!");
+        Assert::isInstanceOf($snapshot, APRowSnapshot::class, "AP row snapshot is required!");
+        $instance = new self();
+        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        $instance->createVO($rootDoc);
+        return $instance;
+    }
 
     /**
      *
@@ -198,37 +222,6 @@ class APRow extends GenericRow
     public static function createInstance()
     {
         return new APRow();
-    }
-
-    public static function createSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-
-            if ($property->class == $reflectionClass->getName()) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
     }
 
     /**

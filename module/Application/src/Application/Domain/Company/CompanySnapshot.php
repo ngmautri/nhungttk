@@ -1,14 +1,14 @@
 <?php
 namespace Application\Domain\Company;
 
-use Application\Domain\Shared\AbstractValueObject;
+use Application\Domain\Shared\AbstractDTO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class CompanySnapshot extends AbstractValueObject
+class CompanySnapshot extends AbstractDTO
 {
 
     public $id;
@@ -33,6 +33,16 @@ class CompanySnapshot extends AbstractValueObject
 
     public $uuid;
 
+    public $defaultLocale;
+
+    public $defaultLanguage;
+
+    public $defaultFormat;
+
+    public $defaultWarehouseCode;
+
+    public $defaultCurrencyIso;
+
     public $defaultCurrency;
 
     public $createdBy;
@@ -56,11 +66,29 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getCompanyCode()
     {
         return $this->companyCode;
+    }
+
+    /**
+     *
+     * @param mixed $companyCode
+     */
+    public function setCompanyCode($companyCode)
+    {
+        $this->companyCode = $companyCode;
     }
 
     /**
@@ -74,11 +102,29 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $companyName
+     */
+    public function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getDefaultLogoId()
     {
         return $this->defaultLogoId;
+    }
+
+    /**
+     *
+     * @param mixed $defaultLogoId
+     */
+    public function setDefaultLogoId($defaultLogoId)
+    {
+        $this->defaultLogoId = $defaultLogoId;
     }
 
     /**
@@ -92,11 +138,29 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getCreatedOn()
     {
         return $this->createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
     }
 
     /**
@@ -110,11 +174,29 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $isDefault
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getToken()
     {
         return $this->token;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
     }
 
     /**
@@ -128,11 +210,29 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $lastChangeOn
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
     }
 
     /**
@@ -146,11 +246,119 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultLocale()
+    {
+        return $this->defaultLocale;
+    }
+
+    /**
+     *
+     * @param mixed $defaultLocale
+     */
+    public function setDefaultLocale($defaultLocale)
+    {
+        $this->defaultLocale = $defaultLocale;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultLanguage()
+    {
+        return $this->defaultLanguage;
+    }
+
+    /**
+     *
+     * @param mixed $defaultLanguage
+     */
+    public function setDefaultLanguage($defaultLanguage)
+    {
+        $this->defaultLanguage = $defaultLanguage;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultFormat()
+    {
+        return $this->defaultFormat;
+    }
+
+    /**
+     *
+     * @param mixed $defaultFormat
+     */
+    public function setDefaultFormat($defaultFormat)
+    {
+        $this->defaultFormat = $defaultFormat;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultWarehouseCode()
+    {
+        return $this->defaultWarehouseCode;
+    }
+
+    /**
+     *
+     * @param mixed $defaultWarehouseCode
+     */
+    public function setDefaultWarehouseCode($defaultWarehouseCode)
+    {
+        $this->defaultWarehouseCode = $defaultWarehouseCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultCurrencyIso()
+    {
+        return $this->defaultCurrencyIso;
+    }
+
+    /**
+     *
+     * @param mixed $defaultCurrencyIso
+     */
+    public function setDefaultCurrencyIso($defaultCurrencyIso)
+    {
+        $this->defaultCurrencyIso = $defaultCurrencyIso;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getDefaultCurrency()
     {
         return $this->defaultCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $defaultCurrency
+     */
+    public function setDefaultCurrency($defaultCurrency)
+    {
+        $this->defaultCurrency = $defaultCurrency;
     }
 
     /**
@@ -164,11 +372,29 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     *
+     * @param mixed $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
     }
 
     /**
@@ -182,6 +408,15 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $defaultAddress
+     */
+    public function setDefaultAddress($defaultAddress)
+    {
+        $this->defaultAddress = $defaultAddress;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getLastChangeBy()
@@ -191,10 +426,28 @@ class CompanySnapshot extends AbstractValueObject
 
     /**
      *
+     * @param mixed $lastChangeBy
+     */
+    public function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
      * @return mixed
      */
     public function getDefaultWarehouse()
     {
         return $this->defaultWarehouse;
+    }
+
+    /**
+     *
+     * @param mixed $defaultWarehouse
+     */
+    public function setDefaultWarehouse($defaultWarehouse)
+    {
+        $this->defaultWarehouse = $defaultWarehouse;
     }
 }

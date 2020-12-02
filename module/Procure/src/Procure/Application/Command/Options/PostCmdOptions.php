@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Command\Options;
 
+use Application\Domain\Company\CompanyVO;
 use Webmozart\Assert\Assert;
 
 /**
@@ -17,12 +18,14 @@ class PostCmdOptions extends CmdOptions
 
     private $rootEntityToken;
 
-    public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
+    public function __construct(CompanyVO $companyVO, $rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
+        Assert::isInstanceOf($companyVO, CompanyVO::class, sprintf("Company VO not given! %s", ''));
         Assert::notNull($rootEntity, sprintf("Root entity not found %s", __METHOD__));
         Assert::notNull($userId, sprintf("User ID not given! %s", __METHOD__));
         Assert::notNull($triggeredBy, sprintf("Trigger not found! %s", __METHOD__));
 
+        $this->companyVO = $companyVO;
         $this->rootEntity = $rootEntity;
         $this->rootEntityId = $rootEntityId;
         $this->rootEntityToken = $rootEntityToken;

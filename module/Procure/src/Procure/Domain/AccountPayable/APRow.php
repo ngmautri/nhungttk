@@ -6,6 +6,7 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Ap\ApRowDTO;
 use Procure\Domain\GenericRow;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
@@ -42,6 +43,40 @@ class APRow extends GenericRow
 
     protected $grToken;
 
+    public function markRowAsPosted(GenericAP $rootDoc, $postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+        $this->setIsPosted(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsReversed(0);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
+
+        $this->createVO($rootDoc); // createVO
+    }
+
+    public function markRowAsChanged(GenericAP $rootDoc, $postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+
+        $this->createVO($rootDoc); // createVO
+    }
+
+    public function markRowAsReversed(GenericAP $rootDoc, $postedBy, $postedDate)
+    {
+        $this->setLastchangeBy($postedBy);
+        $this->setLastchangeOn($postedDate);
+        $this->setIsReversed(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsPosted(0);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
+
+        $this->createVO($rootDoc); // createVO
+    }
+
     protected function createVO(GenericAP $rootDoc)
     {
         $this->createUomVO();
@@ -60,9 +95,10 @@ class APRow extends GenericRow
     {
         Assert::isInstanceOf($rootDoc, GenericAP::class, "AP doc is required!");
         Assert::isInstanceOf($snapshot, APRowSnapshot::class, "AP row snapshot is required!");
+
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        $instance->createVO($rootDoc);
+        $instance->createVO($rootDoc); // important
         return $instance;
     }
 
@@ -112,7 +148,7 @@ class APRow extends GenericRow
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new APRowSnapshot());
+        return APRowSnapshotAssembler::updateAllFieldsFrom(new APRowSnapshot(), $this);
     }
 
     /**
@@ -136,12 +172,9 @@ class APRow extends GenericRow
      */
     public static function createFromPoRow(APFromPO $rootDoc, PORow $sourceObj, CommandOptions $options)
     {
-        if (! $sourceObj instanceof PORow) {
-            throw new InvalidArgumentException("PO document is required!");
-        }
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
+        Assert::isInstanceOf($rootDoc, APFromPO::class, "AP-PO doc is required!");
+        Assert::isInstanceOf($sourceObj, PORow::class, "PO document  snapshot is required!");
+        Assert::notNull($options, "No command options is found");
 
         /**
          *
@@ -173,15 +206,9 @@ class APRow extends GenericRow
      */
     public static function createRowReversal(GenericAP $rootEntity, APRow $sourceObj, CommandOptions $options)
     {
-        if (! $rootEntity instanceof GenericAP) {
-            throw new InvalidArgumentException("AP document is required!");
-        }
-        if (! $sourceObj instanceof APRow) {
-            throw new InvalidArgumentException("AP document is required!");
-        }
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
+        Assert::isInstanceOf($rootEntity, GenericAP::class, "AP doc is required!");
+        Assert::isInstanceOf($sourceObj, APRow::class, "AP row is required!");
+        Assert::notNull($options, "No command options is found");
 
         /**
          *

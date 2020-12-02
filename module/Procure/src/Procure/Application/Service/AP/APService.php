@@ -12,6 +12,7 @@ use Procure\Application\Service\AP\Output\ApSaveAsPdf;
 use Procure\Application\Service\AP\Output\Pdf\ApPdfBuilder;
 use Procure\Application\Service\AP\Output\Spreadsheet\ApExcelBuilder;
 use Procure\Application\Service\AP\Output\Spreadsheet\ApOpenOfficeBuilder;
+use Procure\Application\Service\Contracts\ApServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
@@ -21,7 +22,6 @@ use Procure\Domain\AccountPayable\GenericAP;
 use Procure\Domain\AccountPayable\Factory\APFactory;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Procure\Application\Service\Contracts\ProcureServiceInterface;
 
 /**
  * AP Service.
@@ -29,7 +29,7 @@ use Procure\Application\Service\Contracts\ProcureServiceInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class APService extends AbstractService implements ProcureServiceInterface
+class APService extends AbstractService implements ApServiceInterface
 {
 
     /**
@@ -37,18 +37,18 @@ class APService extends AbstractService implements ProcureServiceInterface
      * @param int $id
      * @param string $token
      */
-    public function getDocHeaderByTokenId($id, $token,$locale = 'en_EN')
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
     {
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
     }
 
-  /**
-   *
-   * {@inheritDoc}
-   * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
-   */
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null,$locale = 'en_EN')
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
+     */
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
@@ -96,7 +96,12 @@ class APService extends AbstractService implements ProcureServiceInterface
         return $rootEntity;
     }
 
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token,$locale = 'en_EN')
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getRootEntityOfRow()
+     */
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
 
@@ -128,10 +133,24 @@ class APService extends AbstractService implements ProcureServiceInterface
 
     /**
      *
-     * @param int $id
-     * @param string $token
-     * @param CommandOptions $options
-     * @return \Procure\Domain\AccountPayable\APDoc
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenIdFromDB()
+     */
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN')
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByIdFromDB()
+     */
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN')
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ApServiceInterface::createFromPO()
      */
     public function createFromPO($id, $token, CommandOptions $options)
     {
@@ -146,10 +165,4 @@ class APService extends AbstractService implements ProcureServiceInterface
         $rootEntity = APFactory::createFromPo($po, $options, $sharedService);
         return $rootEntity;
     }
-
-    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null,$locale = 'en_EN')
-    {}
-
-    public function getDocDetailsByIdFromDB($id, $outputStrategy = null,$locale = 'en_EN')
-    {}
 }

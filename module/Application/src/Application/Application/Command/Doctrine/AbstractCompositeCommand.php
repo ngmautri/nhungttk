@@ -2,7 +2,6 @@
 namespace Application\Application\Command\Doctrine;
 
 use Application\Domain\Shared\Command\CompositeCommand;
-use Doctrine\ORM\EntityManager;
 
 /**
  *

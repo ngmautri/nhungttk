@@ -276,6 +276,38 @@ class GenericSnapshotAssembler
         }
     }
 
+    public static function updateFromSnapshotExcludeFields($obj, $snapshot, $excludedFields)
+    {
+        if ($obj == null || $snapshot == null) {
+            return;
+        }
+
+        // should use reflection object
+        $reflectionClass = new \ReflectionObject($snapshot);
+        $properites = $reflectionClass->getProperties();
+
+        $refObject = new \ReflectionObject($obj);
+
+        foreach ($properites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            if (property_exists($obj, $propertyName) && ! in_array($propertyName, $excludedFields)) {
+
+                $refProperty = $refObject->getProperty($propertyName);
+                $refProperty->setAccessible(true);
+
+                if ($property->getValue($snapshot) == null || $property->getValue($snapshot) == "") {
+                    $refProperty->setValue($obj, null);
+                } else {
+
+                    $refProperty->setValue($obj, $property->getValue($snapshot));
+                }
+            }
+        }
+    }
+
     public static function makeFromArray($obj, $data)
     {
         Assert::object($obj);

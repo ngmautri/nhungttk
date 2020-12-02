@@ -33,15 +33,15 @@ $( "#pr_item_name" ).autocomplete({
     minLength: 2,
     select: function( event, ui ) {
 
-	      $( "#pr_row_id" ).val(ui.item.hit.id);    
-          $( "#quantity" ).val(1);          
-          $( "#conversionFactor" ).val(ui.item.hit.quantity);          
+	      $( "#pr_row_id" ).val(ui.item.hit.id);
+          $( "#quantity" ).val(1);
+          $( "#standardConvertFactor" ).val(ui.item.hit.quantity);
 
-          
-          $( "#item" ).val(ui.item.hit.item);  
+
+          $( "#item" ).val(ui.item.hit.item);
           $( "#item_name" ).val(ui.item.hit.itemName);
           $('#item_url').text('/inventory/item/show1?tab_idx=1&entity_id='+ui.item.hit.item+'&token='+ui.item.hit.itemToken);
-          $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.hit.id+'&token='+ui.item.hit.token);             
+          $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.hit.id+'&token='+ui.item.hit.token);
 
           $('#global-notice').show();
           $('#global-notice').html('"' + ui.item.hit.itemName + '" selected');
@@ -50,20 +50,20 @@ $( "#pr_item_name" ).autocomplete({
           $('#item_detail').show();
           $('#pr_row_detail').show();
           $( "#quantity" ).focus();
-          $( "#target_wh_id" ).val(ui.item.hit.warehouse);  
-          
+          $( "#target_wh_id" ).val(ui.item.hit.warehouse);
+
 
            // update GL account and cost center
           if(ui.item.inventory_account_id !==null){
                	// update GL account and cost center
            	   	$( "#glAccount" ).val(ui.item.hit.itemInventoryGL);
           }
-    
+
            // update GL account and cost center
            	if(ui.item.cost_center_id !==null){
                	// update GL account and cost center
            	   	$( "#costCenter").val(ui.item.hit.itemCostCenter);
-           }		
+           }
 
           var url = '/procure/pr-row/get-row?id='+ui.item.hit.id;
 		  		$.get(url, {   	}, function(data, status) {
@@ -75,13 +75,13 @@ $( "#pr_item_name" ).autocomplete({
     })
     .autocomplete( "instance" )._renderItem = function( ul, item ) {
           var img = '<img class="img-rounded" width="75" height="75" src="'+item.item_thumbnail+'"/>';
-          var item_detail = item.hit.itemSKU +  ' | ' + item.hit.itemName 
+          var item_detail = item.hit.itemSKU +  ' | ' + item.hit.itemName
           var item_detail_html = '<span style="font-size: 9pt; padding-top:0px;">' + item_detail + '</span><br>';
           var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;">' + item.hit.itemManufacturerCode + '</span>';
           var item_detail_html = item_detail_html + '<span style="color:gray; font-size: 9pt; padding-top:0px;"> | ' + item.hit.vendorItemName + '</span>';
-          
-          var pr_detail= item.hit.docNumber + ' | Qty: ' + item.hit.quantity + ' |' + item.hit.rowName; 
-          
+
+          var pr_detail= item.hit.docNumber + ' | Qty: ' + item.hit.quantity + ' |' + item.hit.rowName;
+
           var pr_detail_html = '<span style="padding-top:7px; font-size: 9.5pt; color:navy;font-weight: bold;">' + pr_detail + '</span>';
           var n_html = '<span style="color:graytext;font-size: 8pt; border-bottom: thin solid gray; align:right">' + item.n + '</span>';
           var tbl_html = '<table style="Padding-left:5px" ><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt">' + item_detail_html + '<br><br>' + pr_detail_html + '<br>'+n_html +'</td></tr></table>'

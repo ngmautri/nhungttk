@@ -31,7 +31,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
     /**
      *
      * {@inheritdoc}
-     * @see \Application\Application\Command\AbstractDoctrineCmdHandler::run()
+     * @see \Application\Domain\Shared\Command\AbstractCommandHandler::run()
      */
     public function run(CommandInterface $cmd)
     {
@@ -87,6 +87,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 "docUnit",
                 "docUnitPrice",
                 "conversionFactor",
+                "standardConvertFactor",
                 "descriptionText",
                 "taxRate",
                 "glAccount",

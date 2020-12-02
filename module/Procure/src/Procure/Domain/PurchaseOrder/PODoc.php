@@ -336,22 +336,12 @@ class PODoc extends GenericPO
         $validationService = ValidatorFactory::create($sharedService);
         Assert::notNull($validationService, "Validation can not created!");
 
+        $snapshot->initDoc($options);
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
+
         $instance = new self();
         SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-
-        $createdDate = new \Datetime();
-        $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(ProcureDocStatus::DRAFT);
-        $instance->setDocType(ProcureDocType::PO);
-        $instance->setIsActive(1);
-        $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
-        $instance->setRevisionNo(1);
-        $instance->setDocVersion(1);
-        $instance->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
-        $instance->setToken($instance->getUuid());
 
         $instance->validateHeader($validationService->getHeaderValidators());
 
@@ -371,7 +361,7 @@ class PODoc extends GenericPO
         $rootSnapshot = $rep->storeHeader($instance, false);
         Assert::notNull($rootSnapshot, sprintf("Error occured when creating PO", $instance->getId()));
 
-        $instance->id = $rootSnapshot->getId();
+        $instance->updateIdentityFrom($rootSnapshot);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();

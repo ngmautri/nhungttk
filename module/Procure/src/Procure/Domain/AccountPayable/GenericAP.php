@@ -33,6 +33,24 @@ use Webmozart\Assert\Assert;
 abstract class GenericAP extends BaseDoc
 {
 
+    public function markDocAsChanged($postedBy, $postedDate)
+    {
+        $this->setLastchangeOn($postedDate);
+        $this->setLastchangeBy($postedBy);
+        $this->setIsPosted(0);
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsReversed(0);
+
+        /**
+         *
+         * @var APRow $row ;
+         */
+        foreach ($this->getDocRows() as $row) {
+            $row->markRowAsChanged($this, $postedBy, $postedDate);
+        }
+    }
+
     /**
      *
      * @return NULL[]|\Procure\Domain\AccountPayable\GenericAP[]
@@ -82,7 +100,7 @@ abstract class GenericAP extends BaseDoc
                 continue;
             }
 
-            $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+            $row->markRowAsPosted($this, $options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
         $this->validate($validationService, true);
@@ -117,7 +135,7 @@ abstract class GenericAP extends BaseDoc
                 continue;
             }
 
-            $row->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+            $row->markRowAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
         }
 
         $this->validate($validationService, true);
@@ -534,9 +552,9 @@ abstract class GenericAP extends BaseDoc
      * @param object $dto
      * @return NULL|object
      */
-    public function makeDTOForGrid($dto)
+    public function makeDTOForGrid()
     {
-        $dto = DTOFactory::createDTOFrom($this, $dto);
+        $dto = DTOFactory::createDTOFrom($this, new ApDTO());
         $rowDTOList = [];
         if (count($this->docRows) > 0) {
             foreach ($this->docRows as $row) {

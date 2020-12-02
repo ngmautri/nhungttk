@@ -151,564 +151,6 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     /**
      *
-     * @param mixed $id
-     */
-    protected function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     *
-     * @param mixed $token
-     */
-    protected function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
-     *
-     * @param mixed $vendorName
-     */
-    protected function setVendorName($vendorName)
-    {
-        $this->vendorName = $vendorName;
-    }
-
-    /**
-     *
-     * @param mixed $invoiceNo
-     */
-    protected function setInvoiceNo($invoiceNo)
-    {
-        $this->invoiceNo = $invoiceNo;
-    }
-
-    /**
-     *
-     * @param mixed $invoiceDate
-     */
-    protected function setInvoiceDate($invoiceDate)
-    {
-        $this->invoiceDate = $invoiceDate;
-    }
-
-    /**
-     *
-     * @param mixed $currencyIso3
-     */
-    protected function setCurrencyIso3($currencyIso3)
-    {
-        $this->currencyIso3 = $currencyIso3;
-    }
-
-    /**
-     *
-     * @param mixed $exchangeRate
-     */
-    protected function setExchangeRate($exchangeRate)
-    {
-        $this->exchangeRate = $exchangeRate;
-    }
-
-    /**
-     *
-     * @param mixed $remarks
-     */
-    protected function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     *
-     * @param mixed $createdOn
-     */
-    protected function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
-    }
-
-    /**
-     *
-     * @param mixed $currentState
-     */
-    protected function setCurrentState($currentState)
-    {
-        $this->currentState = $currentState;
-    }
-
-    /**
-     *
-     * @param mixed $isActive
-     */
-    protected function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     *
-     * @param mixed $trxType
-     */
-    protected function setTrxType($trxType)
-    {
-        $this->trxType = $trxType;
-    }
-
-    /**
-     *
-     * @param mixed $lastchangeOn
-     */
-    protected function setLastchangeOn($lastchangeOn)
-    {
-        $this->lastchangeOn = $lastchangeOn;
-    }
-
-    /**
-     *
-     * @param mixed $postingDate
-     */
-    protected function setPostingDate($postingDate)
-    {
-        $this->postingDate = $postingDate;
-    }
-
-    /**
-     *
-     * @param mixed $grDate
-     */
-    protected function setGrDate($grDate)
-    {
-        $this->grDate = $grDate;
-    }
-
-    /**
-     *
-     * @param mixed $sapDoc
-     */
-    protected function setSapDoc($sapDoc)
-    {
-        $this->sapDoc = $sapDoc;
-    }
-
-    /**
-     *
-     * @param mixed $contractNo
-     */
-    protected function setContractNo($contractNo)
-    {
-        $this->contractNo = $contractNo;
-    }
-
-    /**
-     *
-     * @param mixed $contractDate
-     */
-    protected function setContractDate($contractDate)
-    {
-        $this->contractDate = $contractDate;
-    }
-
-    /**
-     *
-     * @param mixed $quotationNo
-     */
-    protected function setQuotationNo($quotationNo)
-    {
-        $this->quotationNo = $quotationNo;
-    }
-
-    /**
-     *
-     * @param mixed $quotationDate
-     */
-    protected function setQuotationDate($quotationDate)
-    {
-        $this->quotationDate = $quotationDate;
-    }
-
-    /**
-     *
-     * @param mixed $sysNumber
-     */
-    protected function setSysNumber($sysNumber)
-    {
-        $this->sysNumber = $sysNumber;
-    }
-
-    /**
-     *
-     * @param mixed $revisionNo
-     */
-    protected function setRevisionNo($revisionNo)
-    {
-        $this->revisionNo = $revisionNo;
-    }
-
-    /**
-     *
-     * @param mixed $deliveryMode
-     */
-    protected function setDeliveryMode($deliveryMode)
-    {
-        $this->deliveryMode = $deliveryMode;
-    }
-
-    /**
-     *
-     * @param mixed $incoterm
-     */
-    protected function setIncoterm($incoterm)
-    {
-        $this->incoterm = $incoterm;
-    }
-
-    /**
-     *
-     * @param mixed $incotermPlace
-     */
-    protected function setIncotermPlace($incotermPlace)
-    {
-        $this->incotermPlace = $incotermPlace;
-    }
-
-    /**
-     *
-     * @param mixed $paymentTerm
-     */
-    protected function setPaymentTerm($paymentTerm)
-    {
-        $this->paymentTerm = $paymentTerm;
-    }
-
-    /**
-     *
-     * @param mixed $docStatus
-     */
-    protected function setDocStatus($docStatus)
-    {
-        $this->docStatus = $docStatus;
-    }
-
-    /**
-     *
-     * @param mixed $workflowStatus
-     */
-    protected function setWorkflowStatus($workflowStatus)
-    {
-        $this->workflowStatus = $workflowStatus;
-    }
-
-    /**
-     *
-     * @param mixed $transactionStatus
-     */
-    protected function setTransactionStatus($transactionStatus)
-    {
-        $this->transactionStatus = $transactionStatus;
-    }
-
-    /**
-     *
-     * @param mixed $docType
-     */
-    protected function setDocType($docType)
-    {
-        $this->docType = $docType;
-    }
-
-    /**
-     *
-     * @param mixed $paymentStatus
-     */
-    protected function setPaymentStatus($paymentStatus)
-    {
-        $this->paymentStatus = $paymentStatus;
-    }
-
-    /**
-     *
-     * @param mixed $totalDocValue
-     */
-    protected function setTotalDocValue($totalDocValue)
-    {
-        $this->totalDocValue = $totalDocValue;
-    }
-
-    /**
-     *
-     * @param mixed $totalDocTax
-     */
-    protected function setTotalDocTax($totalDocTax)
-    {
-        $this->totalDocTax = $totalDocTax;
-    }
-
-    /**
-     *
-     * @param mixed $totalDocDiscount
-     */
-    protected function setTotalDocDiscount($totalDocDiscount)
-    {
-        $this->totalDocDiscount = $totalDocDiscount;
-    }
-
-    /**
-     *
-     * @param mixed $totalLocalValue
-     */
-    protected function setTotalLocalValue($totalLocalValue)
-    {
-        $this->totalLocalValue = $totalLocalValue;
-    }
-
-    /**
-     *
-     * @param mixed $totalLocalTax
-     */
-    protected function setTotalLocalTax($totalLocalTax)
-    {
-        $this->totalLocalTax = $totalLocalTax;
-    }
-
-    /**
-     *
-     * @param mixed $totalLocalDiscount
-     */
-    protected function setTotalLocalDiscount($totalLocalDiscount)
-    {
-        $this->totalLocalDiscount = $totalLocalDiscount;
-    }
-
-    /**
-     *
-     * @param mixed $reversalBlocked
-     */
-    protected function setReversalBlocked($reversalBlocked)
-    {
-        $this->reversalBlocked = $reversalBlocked;
-    }
-
-    /**
-     *
-     * @param mixed $uuid
-     */
-    protected function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    /**
-     *
-     * @param mixed $docVersion
-     */
-    protected function setDocVersion($docVersion)
-    {
-        $this->docVersion = $docVersion;
-    }
-
-    /**
-     *
-     * @param mixed $vendor
-     */
-    protected function setVendor($vendor)
-    {
-        $this->vendor = $vendor;
-    }
-
-    /**
-     *
-     * @param mixed $pmtTerm
-     */
-    protected function setPmtTerm($pmtTerm)
-    {
-        $this->pmtTerm = $pmtTerm;
-    }
-
-    /**
-     *
-     * @param mixed $company
-     */
-    protected function setCompany($company)
-    {
-        $this->company = $company;
-    }
-
-    /**
-     *
-     * @param mixed $warehouse
-     */
-    protected function setWarehouse($warehouse)
-    {
-        $this->warehouse = $warehouse;
-    }
-
-    /**
-     *
-     * @param mixed $createdBy
-     */
-    protected function setCreatedBy($createdBy)
-    {
-        $this->createdBy = $createdBy;
-    }
-
-    /**
-     *
-     * @param mixed $lastchangeBy
-     */
-    protected function setLastchangeBy($lastchangeBy)
-    {
-        $this->lastchangeBy = $lastchangeBy;
-    }
-
-    /**
-     *
-     * @param mixed $currency
-     */
-    protected function setCurrency($currency)
-    {
-        $this->currency = $currency;
-    }
-
-    /**
-     *
-     * @param mixed $paymentMethod
-     */
-    protected function setPaymentMethod($paymentMethod)
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    /**
-     *
-     * @param mixed $localCurrency
-     */
-    protected function setLocalCurrency($localCurrency)
-    {
-        $this->localCurrency = $localCurrency;
-    }
-
-    /**
-     *
-     * @param mixed $docCurrency
-     */
-    protected function setDocCurrency($docCurrency)
-    {
-        $this->docCurrency = $docCurrency;
-    }
-
-    /**
-     *
-     * @param mixed $incoterm2
-     */
-    protected function setIncoterm2($incoterm2)
-    {
-        $this->incoterm2 = $incoterm2;
-    }
-
-    /**
-     *
-     * @param mixed $isDraft
-     */
-    protected function setIsDraft($isDraft)
-    {
-        $this->isDraft = $isDraft;
-    }
-
-    /**
-     *
-     * @param mixed $isPosted
-     */
-    protected function setIsPosted($isPosted)
-    {
-        $this->isPosted = $isPosted;
-    }
-
-    /**
-     *
-     * @param mixed $isReversed
-     */
-    protected function setIsReversed($isReversed)
-    {
-        $this->isReversed = $isReversed;
-    }
-
-    /**
-     *
-     * @param mixed $reversalDate
-     */
-    protected function setReversalDate($reversalDate)
-    {
-        $this->reversalDate = $reversalDate;
-    }
-
-    /**
-     *
-     * @param mixed $reversalReason
-     */
-    protected function setReversalReason($reversalReason)
-    {
-        $this->reversalReason = $reversalReason;
-    }
-
-    /**
-     *
-     * @param mixed $postingPeriod
-     */
-    protected function setPostingPeriod($postingPeriod)
-    {
-        $this->postingPeriod = $postingPeriod;
-    }
-
-    /**
-     *
-     * @param mixed $currentStatus
-     */
-    protected function setCurrentStatus($currentStatus)
-    {
-        $this->currentStatus = $currentStatus;
-    }
-
-    /**
-     *
-     * @param mixed $transactionType
-     */
-    protected function setTransactionType($transactionType)
-    {
-        $this->transactionType = $transactionType;
-    }
-
-    /**
-     *
-     * @param mixed $discountRate
-     */
-    protected function setDiscountRate($discountRate)
-    {
-        $this->discountRate = $discountRate;
-    }
-
-    /**
-     *
-     * @param mixed $docNumber
-     */
-    protected function setDocNumber($docNumber)
-    {
-        $this->docNumber = $docNumber;
-    }
-
-    /**
-     *
-     * @param mixed $docDate
-     */
-    protected function setDocDate($docDate)
-    {
-        $this->docDate = $docDate;
-    }
-
-    /**
-     *
      * @return mixed
      */
     public function getId()
@@ -1267,51 +709,6 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
 
     /**
      *
-     * @param mixed $baseDocId
-     */
-    protected function setBaseDocId($baseDocId)
-    {
-        $this->baseDocId = $baseDocId;
-    }
-
-    /**
-     *
-     * @param mixed $baseDocType
-     */
-    protected function setBaseDocType($baseDocType)
-    {
-        $this->baseDocType = $baseDocType;
-    }
-
-    /**
-     *
-     * @param mixed $targetDocId
-     */
-    protected function setTargetDocId($targetDocId)
-    {
-        $this->targetDocId = $targetDocId;
-    }
-
-    /**
-     *
-     * @param mixed $targetDocType
-     */
-    protected function setTargetDocType($targetDocType)
-    {
-        $this->targetDocType = $targetDocType;
-    }
-
-    /**
-     *
-     * @param mixed $clearingDocId
-     */
-    protected function setClearingDocId($clearingDocId)
-    {
-        $this->clearingDocId = $clearingDocId;
-    }
-
-    /**
-     *
      * @return mixed
      */
     public function getBaseDocId()
@@ -1353,5 +750,608 @@ abstract class AbstractDoc extends AbstractEntity implements AggregateRootInterf
     public function getClearingDocId()
     {
         return $this->clearingDocId;
+    }
+
+    /**
+     *
+     * @param mixed $id
+     */
+    protected function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $vendorName
+     */
+    protected function setVendorName($vendorName)
+    {
+        $this->vendorName = $vendorName;
+    }
+
+    /**
+     *
+     * @param mixed $invoiceNo
+     */
+    protected function setInvoiceNo($invoiceNo)
+    {
+        $this->invoiceNo = $invoiceNo;
+    }
+
+    /**
+     *
+     * @param mixed $invoiceDate
+     */
+    protected function setInvoiceDate($invoiceDate)
+    {
+        $this->invoiceDate = $invoiceDate;
+    }
+
+    /**
+     *
+     * @param mixed $currencyIso3
+     */
+    protected function setCurrencyIso3($currencyIso3)
+    {
+        $this->currencyIso3 = $currencyIso3;
+    }
+
+    /**
+     *
+     * @param mixed $exchangeRate
+     */
+    protected function setExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
+
+    /**
+     *
+     * @param mixed $remarks
+     */
+    protected function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $currentState
+     */
+    protected function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+    }
+
+    /**
+     *
+     * @param mixed $isActive
+     */
+    protected function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     *
+     * @param mixed $trxType
+     */
+    protected function setTrxType($trxType)
+    {
+        $this->trxType = $trxType;
+    }
+
+    /**
+     *
+     * @param mixed $lastchangeOn
+     */
+    protected function setLastchangeOn($lastchangeOn)
+    {
+        $this->lastchangeOn = $lastchangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $postingDate
+     */
+    protected function setPostingDate($postingDate)
+    {
+        $this->postingDate = $postingDate;
+    }
+
+    /**
+     *
+     * @param mixed $grDate
+     */
+    protected function setGrDate($grDate)
+    {
+        $this->grDate = $grDate;
+    }
+
+    /**
+     *
+     * @param mixed $sapDoc
+     */
+    protected function setSapDoc($sapDoc)
+    {
+        $this->sapDoc = $sapDoc;
+    }
+
+    /**
+     *
+     * @param mixed $contractNo
+     */
+    protected function setContractNo($contractNo)
+    {
+        $this->contractNo = $contractNo;
+    }
+
+    /**
+     *
+     * @param mixed $contractDate
+     */
+    protected function setContractDate($contractDate)
+    {
+        $this->contractDate = $contractDate;
+    }
+
+    /**
+     *
+     * @param mixed $quotationNo
+     */
+    protected function setQuotationNo($quotationNo)
+    {
+        $this->quotationNo = $quotationNo;
+    }
+
+    /**
+     *
+     * @param mixed $quotationDate
+     */
+    protected function setQuotationDate($quotationDate)
+    {
+        $this->quotationDate = $quotationDate;
+    }
+
+    /**
+     *
+     * @param mixed $sysNumber
+     */
+    protected function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $deliveryMode
+     */
+    protected function setDeliveryMode($deliveryMode)
+    {
+        $this->deliveryMode = $deliveryMode;
+    }
+
+    /**
+     *
+     * @param mixed $incoterm
+     */
+    protected function setIncoterm($incoterm)
+    {
+        $this->incoterm = $incoterm;
+    }
+
+    /**
+     *
+     * @param mixed $incotermPlace
+     */
+    protected function setIncotermPlace($incotermPlace)
+    {
+        $this->incotermPlace = $incotermPlace;
+    }
+
+    /**
+     *
+     * @param mixed $paymentTerm
+     */
+    protected function setPaymentTerm($paymentTerm)
+    {
+        $this->paymentTerm = $paymentTerm;
+    }
+
+    /**
+     *
+     * @param mixed $docStatus
+     */
+    protected function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+    }
+
+    /**
+     *
+     * @param mixed $workflowStatus
+     */
+    protected function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+    }
+
+    /**
+     *
+     * @param mixed $transactionStatus
+     */
+    protected function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+    }
+
+    /**
+     *
+     * @param mixed $docType
+     */
+    protected function setDocType($docType)
+    {
+        $this->docType = $docType;
+    }
+
+    /**
+     *
+     * @param mixed $paymentStatus
+     */
+    protected function setPaymentStatus($paymentStatus)
+    {
+        $this->paymentStatus = $paymentStatus;
+    }
+
+    /**
+     *
+     * @param mixed $totalDocValue
+     */
+    protected function setTotalDocValue($totalDocValue)
+    {
+        $this->totalDocValue = $totalDocValue;
+    }
+
+    /**
+     *
+     * @param mixed $totalDocTax
+     */
+    protected function setTotalDocTax($totalDocTax)
+    {
+        $this->totalDocTax = $totalDocTax;
+    }
+
+    /**
+     *
+     * @param mixed $totalDocDiscount
+     */
+    protected function setTotalDocDiscount($totalDocDiscount)
+    {
+        $this->totalDocDiscount = $totalDocDiscount;
+    }
+
+    /**
+     *
+     * @param mixed $totalLocalValue
+     */
+    protected function setTotalLocalValue($totalLocalValue)
+    {
+        $this->totalLocalValue = $totalLocalValue;
+    }
+
+    /**
+     *
+     * @param mixed $totalLocalTax
+     */
+    protected function setTotalLocalTax($totalLocalTax)
+    {
+        $this->totalLocalTax = $totalLocalTax;
+    }
+
+    /**
+     *
+     * @param mixed $totalLocalDiscount
+     */
+    protected function setTotalLocalDiscount($totalLocalDiscount)
+    {
+        $this->totalLocalDiscount = $totalLocalDiscount;
+    }
+
+    /**
+     *
+     * @param mixed $reversalBlocked
+     */
+    protected function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    protected function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $docVersion
+     */
+    protected function setDocVersion($docVersion)
+    {
+        $this->docVersion = $docVersion;
+    }
+
+    /**
+     *
+     * @param mixed $vendor
+     */
+    protected function setVendor($vendor)
+    {
+        $this->vendor = $vendor;
+    }
+
+    /**
+     *
+     * @param mixed $pmtTerm
+     */
+    protected function setPmtTerm($pmtTerm)
+    {
+        $this->pmtTerm = $pmtTerm;
+    }
+
+    /**
+     *
+     * @param mixed $company
+     */
+    protected function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     *
+     * @param mixed $warehouse
+     */
+    protected function setWarehouse($warehouse)
+    {
+        $this->warehouse = $warehouse;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    protected function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $lastchangeBy
+     */
+    protected function setLastchangeBy($lastchangeBy)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $currency
+     */
+    protected function setCurrency($currency)
+    {
+        $this->currency = $currency;
+    }
+
+    /**
+     *
+     * @param mixed $paymentMethod
+     */
+    protected function setPaymentMethod($paymentMethod)
+    {
+        $this->paymentMethod = $paymentMethod;
+    }
+
+    /**
+     *
+     * @param mixed $localCurrency
+     */
+    protected function setLocalCurrency($localCurrency)
+    {
+        $this->localCurrency = $localCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $docCurrency
+     */
+    protected function setDocCurrency($docCurrency)
+    {
+        $this->docCurrency = $docCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $incoterm2
+     */
+    protected function setIncoterm2($incoterm2)
+    {
+        $this->incoterm2 = $incoterm2;
+    }
+
+    /**
+     *
+     * @param mixed $isDraft
+     */
+    protected function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+    }
+
+    /**
+     *
+     * @param mixed $isPosted
+     */
+    protected function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+    }
+
+    /**
+     *
+     * @param mixed $isReversed
+     */
+    protected function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+    }
+
+    /**
+     *
+     * @param mixed $reversalDate
+     */
+    protected function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+    }
+
+    /**
+     *
+     * @param mixed $reversalReason
+     */
+    protected function setReversalReason($reversalReason)
+    {
+        $this->reversalReason = $reversalReason;
+    }
+
+    /**
+     *
+     * @param mixed $postingPeriod
+     */
+    protected function setPostingPeriod($postingPeriod)
+    {
+        $this->postingPeriod = $postingPeriod;
+    }
+
+    /**
+     *
+     * @param mixed $currentStatus
+     */
+    protected function setCurrentStatus($currentStatus)
+    {
+        $this->currentStatus = $currentStatus;
+    }
+
+    /**
+     *
+     * @param mixed $transactionType
+     */
+    protected function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+    }
+
+    /**
+     *
+     * @param mixed $discountRate
+     */
+    protected function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+    }
+
+    /**
+     *
+     * @param mixed $docNumber
+     */
+    protected function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+    }
+
+    /**
+     *
+     * @param mixed $docDate
+     */
+    protected function setDocDate($docDate)
+    {
+        $this->docDate = $docDate;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocId
+     */
+    protected function setBaseDocId($baseDocId)
+    {
+        $this->baseDocId = $baseDocId;
+    }
+
+    /**
+     *
+     * @param mixed $baseDocType
+     */
+    protected function setBaseDocType($baseDocType)
+    {
+        $this->baseDocType = $baseDocType;
+    }
+
+    /**
+     *
+     * @param mixed $targetDocId
+     */
+    protected function setTargetDocId($targetDocId)
+    {
+        $this->targetDocId = $targetDocId;
+    }
+
+    /**
+     *
+     * @param mixed $targetDocType
+     */
+    protected function setTargetDocType($targetDocType)
+    {
+        $this->targetDocType = $targetDocType;
+    }
+
+    /**
+     *
+     * @param mixed $clearingDocId
+     */
+    protected function setClearingDocId($clearingDocId)
+    {
+        $this->clearingDocId = $clearingDocId;
     }
 }

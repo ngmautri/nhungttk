@@ -2,19 +2,25 @@
 namespace Procure\Domain\AccountPayable\Factory;
 
 use Application\Application\Event\DefaultParameter;
+use Application\Domain\Company\CompanyVO;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APFromPO;
 use Procure\Domain\AccountPayable\APReversal;
 use Procure\Domain\AccountPayable\APSnapshot;
+use Procure\Domain\AccountPayable\APSnapshotAssembler;
+use Procure\Domain\AccountPayable\GenericAP;
+use Procure\Domain\AccountPayable\Repository\APCmdRepositoryInterface;
 use Procure\Domain\AccountPayable\Validator\ValidatorFactory;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Ap\ApHeaderCreated;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Service\SharedService;
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -70,13 +76,8 @@ class APFactory
      */
     public static function createFrom(APSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $snapshot instanceof APSnapshot) {
-            return null;
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("Options is null");
-        }
+        Assert::notNull($snapshot, "AP snapshot not found");
+        Assert::notNull($options, "Command options not found");
 
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
@@ -87,12 +88,9 @@ class APFactory
 
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $snapshot->setExchangeRate($fxRate);
+        $snapshot->initDoc($options);
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $snapshot->init($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        APSnapshotAssembler::updateAllFieldsFrom($instance, $snapshot);
 
         $validationService = ValidatorFactory::createForHeader($sharedService);
         $instance->validateHeader($validationService->getHeaderValidators());
@@ -132,58 +130,42 @@ class APFactory
         return $instance;
     }
 
-    /**
-     *
-     * @param APSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param SharedService $sharedService
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @return NULL|NULL|\Procure\Domain\AccountPayable\APReversal
-     */
-    public static function updateFrom(APSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    public static function updateFrom(GenericAP $rootEntity, APSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if (! $snapshot instanceof APSnapshot) {
-            return null;
-        }
+        Assert::notEq($rootEntity->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is already posted! %s", $rootEntity->getId()));
+        Assert::notNull($snapshot, "AP snapshot not found");
+        Assert::notNull($options, "Command options not found");
 
-        if ($options == null) {
-            throw new \InvalidArgumentException("Opptions is null");
-        }
-
-        $docType = $snapshot->getDocType();
-        $instance = self::createDoc($docType);
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $snapshot->setExchangeRate($fxRate);
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $snapshot->markAsChange($createdBy, $createdDate);
+        // SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        APSnapshotAssembler::updateDefaultExcludedFieldsFrom($rootEntity, $snapshot);
 
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
         $validationService = ValidatorFactory::createForHeader($sharedService);
 
-        $instance->validateHeader($validationService->getHeaderValidators());
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $rootEntity->markDocAsChanged($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $rootEntity->validate($validationService);
 
-        if ($instance->hasErrors()) {
-            throw new \RuntimeException(sprintf("%s-%s", $instance->getNotification()->errorMessage(), __FUNCTION__));
+        if ($rootEntity->hasErrors()) {
+            throw new \RuntimeException(sprintf("%s-%s", $rootEntity->getNotification()->errorMessage(), __FUNCTION__));
         }
 
-        $instance->clearEvents();
+        $rootEntity->clearEvents();
 
         /**
          *
          * @var APSnapshot $rootSnapshot
+         * @var APCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($instance, false);
+        $rootSnapshot = $rep->store($rootEntity);
 
         if ($rootSnapshot == null) {
             throw new \RuntimeException(sprintf("%s-%s", "Error orcured when creating AP!", __FUNCTION__));
         }
-
-        $instance->updateIdentityFrom($rootSnapshot);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -196,9 +178,9 @@ class APFactory
         $params = null;
 
         $event = new ApHeaderUpdated($target, $defaultParams, $params);
-        $instance->addEvent($event);
+        $rootEntity->addEvent($event);
 
-        return $instance;
+        return $rootEntity;
     }
 
     /**

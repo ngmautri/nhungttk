@@ -4,12 +4,11 @@ namespace Procure\Application\Command\Doctrine\PO;
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -43,7 +42,6 @@ class EnableAmendmentCmdHandler extends AbstractCommandHandler
         $rootEntity = $options->getRootEntity();
 
         Assert::isInstanceOf($rootEntity, PODoc::class);
-        $version = $options->getVersion();
 
         try {
 
@@ -57,15 +55,10 @@ class EnableAmendmentCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-
-            // time to check version - concurency
-            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
-
-            // revision numner has been increased.
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
-            }
+            // Check Version
+            // ==============
+            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            // ===============
         } catch (\Exception $e) {
 
             throw new \RuntimeException($e->getMessage());

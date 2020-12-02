@@ -4,14 +4,13 @@ namespace Procure\Application\Command\Doctrine\PO;
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORow;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
 use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -55,7 +54,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $editableProperties = [
+            $incluedFields = [
                 "faRemarks",
                 "remarks",
                 "rowNumber",
@@ -65,7 +64,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 "conversionFactor"
             ];
 
-            $newSnapshot = PORowSnapshotAssembler::updateSnapshotFieldsFromArray($newSnapshot, $cmd->getData(), $editableProperties);
+            $newSnapshot = PORowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
             $this->setOutput($newSnapshot);
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -91,12 +90,11 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-            // revision numner hasnt been increased.
-            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
-            }
+            // Check Version
+            // ==============
+            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            // ===============
+
             $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {

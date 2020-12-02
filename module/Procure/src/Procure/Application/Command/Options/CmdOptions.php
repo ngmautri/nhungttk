@@ -3,6 +3,7 @@ namespace Procure\Application\Command\Options;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Webmozart\Assert\Assert;
+use Application\Domain\Company\CompanyVO;
 
 /**
  *
@@ -13,6 +14,8 @@ class CmdOptions implements CommandOptions
 {
 
     protected $companyId;
+
+    protected $companyVO;
 
     protected $userId;
 
@@ -44,17 +47,17 @@ class CmdOptions implements CommandOptions
 
     /**
      *
-     * @param int $companyId
+     * @param CompanyVO $companyVO
      * @param int $userId
      * @param string $triggeredBy
      */
-    public function __construct($companyId, $userId, $triggeredBy)
+    public function __construct(CompanyVO $companyVO, $userId, $triggeredBy)
     {
-        Assert::notNull($companyId, sprintf("Company ID not given! %s", $companyId));
-        Assert::notNull($userId, sprintf("Company ID not given! %s", $userId));
-        Assert::notNull($triggeredBy, sprintf("Triggernot given! %s", $companyId));
+        Assert::isInstanceOf($companyVO, CompanyVO::class, sprintf("Company VO not given! %s", ''));
+        Assert::notNull($userId, sprintf("Usd ID not given! %s", $userId));
+        Assert::notNull($triggeredBy, sprintf("Triggernot given! %s", $triggeredBy));
 
-        $this->companyId = $companyId;
+        $this->companyVO = $companyVO;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
     }
@@ -102,5 +105,14 @@ class CmdOptions implements CommandOptions
     public function getTriggeredOn()
     {
         return $this->triggeredOn;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyVO()
+    {
+        return $this->companyVO;
     }
 }

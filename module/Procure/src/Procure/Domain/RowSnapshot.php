@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Domain;
 
+use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Repository\ItemQueryRepositoryInterface;
 use Inventory\Domain\Service\Contracts\SharedQueryServiceInterface as InventoryQueryService;
@@ -133,6 +134,27 @@ class RowSnapshot extends BaseRowSnapshot
     {
         $this->createdOn = $createdDate;
         $this->createdBy = $createdBy;
+
+        $this->quantity = $this->docQuantity;
+        $this->revisionNo = 0;
+
+        if ($this->token == null) {
+            $this->token = Uuid::uuid4()->toString();
+            $this->uuid = $this->getToken();
+        }
+
+        $this->docStatus = ProcureDocStatus::DRAFT;
+        $this->isActive = 1;
+        $this->isDraft = 1;
+        $this->unitPrice = $this->getDocUnitPrice();
+        $this->unit = $this->getDocUnit();
+    }
+
+    public function initRow(CommandOptions $options)
+    {
+        $createdDate = new \DateTime();
+        $this->createdOn = date_format($createdDate, 'Y-m-d H:i:s');
+        $this->createdBy = $options->getUserId();
 
         $this->quantity = $this->docQuantity;
         $this->revisionNo = 0;

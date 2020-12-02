@@ -250,7 +250,7 @@ echo $error_msg;
                      </div>
                      <label class="control-label col-sm-2" for="inputTag">Vendor Item Code:</label>
                      <div class="col-sm-3">
-                        <input tabindex="3" class="form-control input-sm" type="text" id="vendor_item_code" name="vendorItemCode" value="<?php
+                        <input tabindex="4" class="form-control input-sm" type="text" id="vendor_item_code" name="vendorItemCode" value="<?php
 
                         echo (! $dto == null) ? $dto->getVendorItemCode() : "";
                         ?>">
@@ -260,7 +260,7 @@ echo $error_msg;
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
                      <div class="col-sm-3">
-                        <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
+                        <input tabindex="5" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
 
                         echo (! $dto == null) ? $dto->getDocQuantity() : "";
                         ?>">
@@ -276,8 +276,8 @@ echo $error_msg;
                     echo $this->translate("Document Unit");
                     ?></label>
                      <div class="col-sm-3">
-                        <select name="docUnit" id="docUnit" class="form-control input-sm">
-                           <option value=""><?php
+                        <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
+                           <option     value=""><?php
 
                         echo $this->translate("Select doc unit");
                         ?></option>
@@ -288,7 +288,7 @@ echo $error_msg;
                      </div>
                      <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                      <div class="col-sm-1">
-                        <input tabindex="6" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
+                        <input tabindex="7" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
 
                         echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
                         ?>">
@@ -298,11 +298,10 @@ echo $error_msg;
                      </div>
                   </div>
                   <hr style="margin: 5pt 1pt 5pt 1pt;">
-
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
                      <div class="col-sm-3">
-                        <input tabindex="7" class="form-control input-sm" type="text" id="unit_price" name="docUnitPrice" value="<?php
+                        <input tabindex="8" class="form-control input-sm" type="text" id="unit_price" name="docUnitPrice" value="<?php
 
                         echo (! $dto == null) ? $dto->getDocUnitPrice() : "";
                         ?>">
@@ -317,7 +316,7 @@ echo $error_msg;
                      </div>
                      <label class="control-label col-sm-1" for="inputTag">Exw Price (info):</label>
                      <div class="col-sm-3">
-                        <input tabindex="8" class="form-control input-sm" type="text" id="exw_unit_price" name="exwUnitPrice" value="<?php
+                        <input class="form-control input-sm" type="text" id="exw_unit_price" name="exwUnitPrice" value="<?php
 
                         echo (! $dto == null) ? $dto->getExwUnitPrice() : "";
                         ?>">
@@ -343,7 +342,7 @@ echo $error_msg;
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Tax Rate:</label>
                      <div class="col-sm-3">
-                        <input tabindex="9" class="form-control input-sm" type="text" id="tax_rate" name="taxRate" value="<?php
+                        <input tabindex="10" class="form-control input-sm" type="text" id="tax_rate" name="taxRate" value="<?php
 
                         echo (! $dto == null) ? $dto->getTaxRate() : "0";
                         ?>">
@@ -374,7 +373,7 @@ echo $error_msg;
                      </div>
                      <label class="control-label col-sm-1" for="inputTag">Total Exw (info):</label>
                      <div class="col-sm-3">
-                        <input readonly tabindex="10" class="form-control input-sm" type="text" id="total_exw_price" name="totalExwPrice" value="<?php
+                        <input readonly tabindex="11" class="form-control input-sm" type="text" id="total_exw_price" name="totalExwPrice" value="<?php
 
                         echo (! $dto == null) ? $dto->getTotalExwPrice() : "";
                         ?>">
@@ -384,7 +383,7 @@ echo $error_msg;
                   <div class="form-group margin-bottom">
                      <label class="control-label col-sm-2">Remark:</label>
                      <div class="col-sm-3">
-                        <input tabindex="11" class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
+                        <input tabindex="12" class="form-control input-sm" type="text" placeholder="" name="remarks" value="<?php
 
                         echo (! $dto == null) ? $dto->getRemarks() : "";
                         ?>">
@@ -403,14 +402,14 @@ echo $error_msg;
                   <div class="form-group margin-bottom" style="margin-top: 10pt">
                      <label class="control-label col-sm-2" for="inputTag"></label>
                      <div class="col-sm-3">
-                        <a tabindex="11" class="btn btn-default btn-sm" onclick="submitForm('New_Invoice_Row');" href="javascript:;">
+                        <a tabindex="13" class="btn btn-default btn-sm" onclick="submitForm('New_Invoice_Row');" href="javascript:;">
                            <small>
                               <i class="glyphicon glyphicon-floppy-disk"></i>
                            </small>&nbsp;<?php
 
                         echo $this->translate("Save");
                         ?></a>
-                        <a tabindex="12" class="btn btn-default btn-sm" href="<?php
+                        <a tabindex="13" class="btn btn-default btn-sm" href="<?php
 
                         echo $review_url;
                         ?>">

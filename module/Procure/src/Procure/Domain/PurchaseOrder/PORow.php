@@ -6,6 +6,7 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\QuotationRequest\QRRow;
 use Webmozart\Assert\Assert;
@@ -111,7 +112,7 @@ class PORow extends BaseRow
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new PORowSnapshot());
+        return APRowSnapshotAssembler::updateAllFieldsFrom(new PORowSnapshot(), $this);
     }
 
     /**

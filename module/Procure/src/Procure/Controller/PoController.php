@@ -138,7 +138,7 @@ class PoController extends ProcureCRUDController
                 return $response;
             }
 
-            $options = new PostCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $options = new PostCmdOptions($this->getCompanyVO(), $rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
             $cmdHandler = new AcceptAmendmentCmdHandler();
 
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -217,7 +217,7 @@ class PoController extends ProcureCRUDController
                 return $response;
             }
 
-            $options = new UpdateHeaderCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $options = new UpdateHeaderCmdOptions($this->getCompanyVO(), $rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
             $cmdHandler = new EnableAmendmentCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHanderDecorator, $this->getEventBusService());
@@ -278,7 +278,7 @@ class PoController extends ProcureCRUDController
              *
              * @var PoServiceInterface $poService ;
              */
-            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
+            $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
 
             $poService = $this->getProcureService();
             $rootEntity = $poService->createFromQuotation($source_id, $source_token, $options);
@@ -316,14 +316,14 @@ class PoController extends ProcureCRUDController
 
             $source_id = $data['source_id'];
             $source_token = $data['source_token'];
-            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
+            $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
             $rootEntity = $this->getProcureService()->createFromQuotation($source_id, $source_token, $options);
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new SaveCopyFromCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__, $rootEntity);
+            $options = new SaveCopyFromCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__, $rootEntity);
             $cmdHandler = new SaveCopyFromQuoteCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());

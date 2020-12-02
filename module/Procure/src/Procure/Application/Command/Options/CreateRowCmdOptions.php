@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Command\Options;
 
+use Application\Domain\Company\CompanyVO;
 use Webmozart\Assert\Assert;
 
 /**
@@ -23,13 +24,15 @@ class CreateRowCmdOptions extends CmdOptions
      * @param int $userId
      * @param string $triggeredBy
      */
-    public function __construct($rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
+    public function __construct(CompanyVO $companyVO, $rootEntity, $rootEntityId, $rootEntityToken, $version, $userId, $triggeredBy)
     {
+        Assert::isInstanceOf($companyVO, CompanyVO::class, sprintf("Company VO not given! %s", ''));
         Assert::notNull($rootEntity, sprintf("Root Entitynot given! %s", ""));
         Assert::notNull($rootEntityId, sprintf("Root Entity ID not given! %s", $rootEntityId));
         Assert::notNull($userId, sprintf("User ID not given!%s", $userId));
         Assert::notNull($triggeredBy, sprintf("Triggernot given! %s", $triggeredBy));
 
+        $this->companyVO = $companyVO;
         $this->rootEntity = $rootEntity;
         $this->rootEntityId = $rootEntityId;
         $this->rootEntityToken = $rootEntityToken;

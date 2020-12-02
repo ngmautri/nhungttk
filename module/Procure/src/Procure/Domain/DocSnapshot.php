@@ -1,7 +1,9 @@
 <?php
 namespace Procure\Domain;
 
+use Application\Domain\Company\CompanyVO;
 use Application\Domain\Shared\Constants;
+use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 use InvalidArgumentException;
@@ -74,6 +76,33 @@ class DocSnapshot extends BaseDocSnapshot
         $this->setDocVersion(0);
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
+    }
+
+    public function initDoc(CommandOptions $options)
+    {
+        $createdDate = new \Datetime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setCreatedBy($options->getUserId());
+        $this->setDocStatus(ProcureDocStatus::DRAFT);
+
+        $this->setIsActive(1);
+        $this->setIsDraft(1);
+        $this->setIsPosted(0);
+
+        $this->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
+        $this->setRevisionNo(0);
+        $this->setDocVersion(0);
+        $this->setUuid(Uuid::uuid4()->toString());
+        $this->setToken($this->getUuid());
+
+        /**
+         *
+         * @var CompanyVO $companyVO ;
+         */
+        $companyVO = $options->getCompanyVO();
+        $this->setCompany($companyVO->getId());
+        $this->setCurrency($this->getDocCurrency());
+        $this->setLocalCurrency($companyVO->getDefaultCurrency());
     }
 
     public function markAsChange($createdBy, $createdDate)

@@ -4,14 +4,13 @@ namespace Procure\Application\Command\Doctrine\PO;
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -46,7 +45,6 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
         $rootEntity = $options->getRootEntity();
 
         Assert::isInstanceOf($rootEntity, PODoc::class);
-        $version = $options->getVersion();
 
         Assert::notEq($rootEntity->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO is already posted! %s", $rootEntity->getId()));
 
@@ -55,7 +53,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             $snapshot = $rootEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = POSnapshotAssembler::updateSnapshotFieldsFromArray($newSnapshot, $cmd->getData());
+            $newSnapshot = POSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -79,16 +77,10 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            // No Check Version when Posting when posting.
-            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-
-            // time to check version - concurency
-            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
-
-            // revision numner has been increased.
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
-            }
+            // Check Version
+            // ==============
+            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            // ===============
             $m = sprintf("PO #%s updated", $newRootEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {

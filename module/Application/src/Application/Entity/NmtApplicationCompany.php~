@@ -99,6 +99,34 @@ class NmtApplicationCompany
     private $defaultLocale;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="default_language", type="string", length=45, nullable=true)
+     */
+    private $defaultLanguage;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="default_format", type="string", length=45, nullable=true)
+     */
+    private $defaultFormat;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="default_warehouse_code", type="string", length=45, nullable=true)
+     */
+    private $defaultWarehouseCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="default_currency_ISO", type="string", length=3, nullable=true)
+     */
+    private $defaultCurrencyIso;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")

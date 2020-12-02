@@ -1,15 +1,12 @@
 <?php
 namespace Application\Domain\Company;
 
-use Application\Application\DTO\Company\CompanyDTO;
 use Application\Domain\Shared\AggregateRoot;
-use Application\Domain\Shared\DTOFactory;
-use Application\Domain\Shared\SnapshotAssembler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class AbstractCompany extends AggregateRoot
 {
@@ -48,40 +45,15 @@ class AbstractCompany extends AggregateRoot
 
     protected $defaultWarehouse;
 
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeSnapshot()
-    {
-        return SnapshotAssembler::createSnapshotFrom($this, new CompanySnapshot());
-    }
+    protected $defaultLocale;
 
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeDetailsSnapshot()
-    {
-        return SnapshotAssembler::createSnapshotFrom($this, new CompanyDetailsSnapshot());
-    }
+    protected $defaultLanguage;
 
-    public function makeDTO()
-    {
-        return DTOFactory::createDTOFrom($this, new CompanyDTO());
-    }
+    protected $defaultFormat;
 
-    /**
-     *
-     * @param CompanyDetailsSnapshot $snapshot
-     */
-    public function makeFromDetailsSnapshot(CompanyDetailsSnapshot $snapshot)
-    {
-        if (! $snapshot instanceof CompanyDetailsSnapshot)
-            return;
+    protected $defaultWarehouseCode;
 
-        SnapshotAssembler::makeFromSnapshot($this, $snapshot);
-    }
+    protected $defaultCurrencyIso;
 
     /**
      *
@@ -234,5 +206,248 @@ class AbstractCompany extends AggregateRoot
     public function getDefaultWarehouse()
     {
         return $this->defaultWarehouse;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultLocale()
+    {
+        return $this->defaultLocale;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultLanguage()
+    {
+        return $this->defaultLanguage;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultFormat()
+    {
+        return $this->defaultFormat;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultWarehouseCode()
+    {
+        return $this->defaultWarehouseCode;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getDefaultCurrencyIso()
+    {
+        return $this->defaultCurrencyIso;
+    }
+
+    /**
+     *
+     * @param mixed $id
+     */
+    protected function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     * @param mixed $companyCode
+     */
+    protected function setCompanyCode($companyCode)
+    {
+        $this->companyCode = $companyCode;
+    }
+
+    /**
+     *
+     * @param mixed $companyName
+     */
+    protected function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+    }
+
+    /**
+     *
+     * @param mixed $defaultLogoId
+     */
+    protected function setDefaultLogoId($defaultLogoId)
+    {
+        $this->defaultLogoId = $defaultLogoId;
+    }
+
+    /**
+     *
+     * @param mixed $status
+     */
+    protected function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     *
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     *
+     * @param mixed $isDefault
+     */
+    protected function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+    }
+
+    /**
+     *
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeOn
+     */
+    protected function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     *
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     *
+     * @param mixed $uuid
+     */
+    protected function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     *
+     * @param mixed $defaultCurrency
+     */
+    protected function setDefaultCurrency($defaultCurrency)
+    {
+        $this->defaultCurrency = $defaultCurrency;
+    }
+
+    /**
+     *
+     * @param mixed $createdBy
+     */
+    protected function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     *
+     * @param mixed $country
+     */
+    protected function setCountry($country)
+    {
+        $this->country = $country;
+    }
+
+    /**
+     *
+     * @param mixed $defaultAddress
+     */
+    protected function setDefaultAddress($defaultAddress)
+    {
+        $this->defaultAddress = $defaultAddress;
+    }
+
+    /**
+     *
+     * @param mixed $lastChangeBy
+     */
+    protected function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     *
+     * @param mixed $defaultWarehouse
+     */
+    protected function setDefaultWarehouse($defaultWarehouse)
+    {
+        $this->defaultWarehouse = $defaultWarehouse;
+    }
+
+    /**
+     *
+     * @param mixed $defaultLocale
+     */
+    protected function setDefaultLocale($defaultLocale)
+    {
+        $this->defaultLocale = $defaultLocale;
+    }
+
+    /**
+     *
+     * @param mixed $defaultLanguage
+     */
+    protected function setDefaultLanguage($defaultLanguage)
+    {
+        $this->defaultLanguage = $defaultLanguage;
+    }
+
+    /**
+     *
+     * @param mixed $defaultFormat
+     */
+    protected function setDefaultFormat($defaultFormat)
+    {
+        $this->defaultFormat = $defaultFormat;
+    }
+
+    /**
+     *
+     * @param mixed $defaultWarehouseCode
+     */
+    protected function setDefaultWarehouseCode($defaultWarehouseCode)
+    {
+        $this->defaultWarehouseCode = $defaultWarehouseCode;
+    }
+
+    /**
+     *
+     * @param mixed $defaultCurrencyIso
+     */
+    protected function setDefaultCurrencyIso($defaultCurrencyIso)
+    {
+        $this->defaultCurrencyIso = $defaultCurrencyIso;
     }
 }

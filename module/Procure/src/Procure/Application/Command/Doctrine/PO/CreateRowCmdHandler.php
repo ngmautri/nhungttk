@@ -3,15 +3,14 @@ namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
-use Application\Application\Contracts\GenericSnapshotAssembler;
 use Application\Domain\Shared\Command\CommandInterface;
+use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Application\Service\PO\RowSnapshotModifier;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
+use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -47,17 +46,12 @@ class CreateRowCmdHandler extends AbstractCommandHandler
 
         Assert::isInstanceOf($rootEntity, PODoc::class);
 
-        $userId = $options->getUserId();
-        $version = $options->getVersion();
-
         try {
-            $snapshot = GenericSnapshotAssembler::createSnapShotFromArray($cmd->getData(), new PORowSnapshot());
-            $snapshot->createdBy = $userId;
-            $snapshot->company = $rootEntity->getCompany();
+            $snapshot = new PORowSnapshot();
+            PORowSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
             $this->setOutput($snapshot);
 
-            $snapshot = RowSnapshotModifier::updateFrom($snapshot, $cmd->getDoctrineEM(), $options->getLocale());
-
+            $snapshot = RowSnapshotModifier::modify($snapshot, $cmd->getDoctrineEM(), $options->getLocale());
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
 
@@ -71,13 +65,10 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] PO Row # %s created", $localSnapshot->getId());
             $cmd->addSuccess($m);
 
-            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-
-            // revision numner has been increased.
-            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
-            }
+            // Check Version
+            // ==============
+            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            // ===============
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }

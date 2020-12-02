@@ -22,6 +22,20 @@ use Procure\Domain\Exception\InvalidArgumentException;
 class GenericRow extends BaseRow
 {
 
+    private $exculdedProps = [
+        "id",
+        "uuid",
+        "token",
+        "instance",
+        "sysNumber",
+        "createdBy",
+        "lastchangeBy",
+        "docId",
+        "docToken",
+        "revisionNo",
+        "docVersion"
+    ];
+
     // Uom VO
     // ====================
     protected $docUomVO;
@@ -95,13 +109,13 @@ class GenericRow extends BaseRow
 
         $this->docNetAmountVO = $this->docUnitPriceVO->multiply($this->docQuantityVO->getAmount());
 
-        $this->docTaxAmountVO = 0;
+        $this->docTaxAmountVO = null;
         if ($this->getTaxRate() > 0) {
             $tmp = $this->docNetAmountVO->multiply($this->getTaxRate());
             $this->docTaxAmountVO = $tmp->divideMoney(100);
         }
 
-        if ($this->docTaxAmountVO == 0) {
+        if ($this->docTaxAmountVO == null) {
             $this->docGrossAmountVO = $this->docNetAmountVO->multiply(1);
         } else {
             $this->docGrossAmountVO = $this->docNetAmountVO->add($this->docTaxAmountVO);
@@ -129,20 +143,6 @@ class GenericRow extends BaseRow
         $this->setLocalNetAmount($this->LocalNetAmountVO->getMoneyAmountInEn());
         $this->setLocalGrossAmount($this->localGrossAmountVO->getMoneyAmountInEn());
     }
-
-    private $exculdedProps = [
-        "id",
-        "uuid",
-        "token",
-        "instance",
-        "sysNumber",
-        "createdBy",
-        "lastchangeBy",
-        "docId",
-        "docToken",
-        "revisionNo",
-        "docVersion"
-    ];
 
     /**
      *
@@ -402,10 +402,13 @@ class GenericRow extends BaseRow
     /**
      * this should be called when validated.
      *
+     * @deprecated
      * @return \Procure\Domain\PurchaseOrder\PORow
      */
     public function refresh()
     {
+        trigger_error("Deprecated function called." . __METHOD__, E_USER_NOTICE);
+
         if ($this->hasErrors()) {
             return;
         }

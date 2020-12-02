@@ -17,6 +17,7 @@ use Procure\Application\Service\Contracts\ProcureServiceInterface;
 use Procure\Domain\GenericDoc;
 use Zend\Escaper\Escaper;
 use Zend\View\Model\ViewModel;
+use Procure\Domain\DocSnapshot;
 
 /**
  *
@@ -107,7 +108,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -116,8 +119,6 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         // POSTING
         // ====================================
-        $notification = new Notification();
-        $msg = null;
         try {
 
             $data = $prg;
@@ -131,14 +132,13 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new PostCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
-            $cmdHandler = new PostCmdHandler();
+            $options = new PostCmdOptions($this->getCompanyVO(), $rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $cmdHandler = $this->getCmdHandlerFactory()->getPostCmdHandler();
 
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator);
             $cmd->execute();
 
-            $notification = $cmd->getNotification();
             $msg = sprintf("PO #%s is posted", $entity_id);
             $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
@@ -147,10 +147,10 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $redirectUrl = sprintf($this->getBaseUrl() . "/review?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         }
 
-        if ($notification->hasErrors()) {
+        if ($cmd->getNotification()->hasErrors()) {
 
             $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
+                'errors' => $cmd->getNotification()->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => $entity_id,
                 'entity_token' => $entity_token,
@@ -161,7 +161,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'version' => $rootEntity->getRevisionNo(),
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -215,7 +217,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
             'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId()
         ));
 
         $viewModel->setTemplate($viewTemplete);
@@ -258,7 +262,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'sharedCollection' => $this->getSharedCollection()
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -270,8 +276,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
             $data = $prg;
 
-            $options = new CreateHeaderCmdOptions($this->getCompanyId(), $this->getUserId(), __METHOD__);
-
+            $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
             $cmdHandler = $this->getCmdHandlerFactory()->getCreateHeaderCmdHandler();
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
@@ -296,7 +301,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'sharedCollection' => $this->getSharedCollection()
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -306,7 +313,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         $this->flashMessenger()->addMessage($notification->successMessage(false));
 
         $header = $cmd->getOutput();
-        if ($header instanceof GenericDoc) {
+        if ($header instanceof DocSnapshot) {
             $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_token=%s&target_id=%s", $header->getToken(), $header->getId());
         } else {
             $redirectUrl = $this->getBaseUrl() . "/list";
@@ -358,7 +365,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -382,7 +391,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new UpdateHeaderCmdOptions($rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
+            $options = new UpdateHeaderCmdOptions($this->getCompanyVO(), $rootEntity, $rootEntityId, $rootEntityToken, $version, $this->getUserId(), __METHOD__);
 
             $cmdHandler = $this->getCmdHandlerFactory()->getUpdateHeaderCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -407,7 +416,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -468,7 +479,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'sharedCollection' => $this->getSharedCollection()
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -491,7 +504,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new CreateRowCmdOptions($rootEntity, $target_id, $target_token, $version, $this->getUserId(), __METHOD__);
+            $options = new CreateRowCmdOptions($this->getCompanyVO(), $rootEntity, $target_id, $target_token, $version, $this->getUserId(), __METHOD__);
             $options->setLocale($this->getLocale());
             $cmdHandler = $this->getCmdHandlerFactory()->getCreateRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -520,7 +533,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'sharedCollection' => $this->getSharedCollection()
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -595,7 +610,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'sharedCollection' => $this->getSharedCollection()
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -638,19 +655,16 @@ abstract class ProcureCRUDController extends AbstractGenericController
             }
 
             if ($rootEntity == null || $localEntity == null || $rootDTO == null || $localDTO == null) {
-                $this->flashMessenger()->addMessage($redirectUrl);
                 return $this->redirect()->toRoute('not_found');
             }
 
-            // \var_dump($data);
-
-            $options = new UpdateRowCmdOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $options = new UpdateRowCmdOptions($this->getCompanyVO(), $rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
             $options->setLocale($this->getLocale());
 
             $cmdHandler = $this->getCmdHandlerFactory()->getUpdateRowCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
-
+            $cmd->setLogger($this->getLogger());
             $cmd->execute();
             $notification = $cmd->getNotification();
         } catch (\Exception $e) {
@@ -674,7 +688,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'form_action' => $form_action,
                 'form_title' => $form_title,
                 'action' => $action,
-                'sharedCollection' => $this->getSharedCollection()
+                'sharedCollection' => $this->getSharedCollection(),
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -682,7 +698,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         }
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
-        $redirectUrl = sprintf("/procure/po/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
+        $redirectUrl = sprintf($this->getBaseUrl() . "/review?entity_id=%s&entity_token=%s", $target_id, $target_token);
         $this->getLogger()->info(\sprintf("PO Row of %s is updated by #%s", $target_id, $this->getUserId()));
 
         return $this->redirect()->toUrl($redirectUrl);
@@ -735,7 +751,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                     $localDTO = $result["localDTO"];
                 }
 
-                $options = new UpdateRowCmdOptions($rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+                $options = new UpdateRowCmdOptions($this->getCompanyVO(), $rootEntity, $localEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
 
                 $cmdHandler = $this->getCmdHandlerFactory()->getInlineUpdateRowCmdHandler();
                 $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -794,7 +810,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -814,7 +832,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 return $this->redirect()->toRoute('not_found');
             }
 
-            $options = new UpdateHeaderCmdOptions($rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
+            $options = new UpdateHeaderCmdOptions($this->getCompanyVO(), $rootEntity, $entity_id, $entity_token, $version, $this->getUserId(), __METHOD__);
 
             $cmdHandler = $this->getCmdHandlerFactory()->getCloneCmdHandler();
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
@@ -840,7 +858,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
-                'action' => $action
+                'action' => $action,
+                'localCurrencyId' => $this->getLocalCurrencyId(),
+                'defaultWarehouseId' => $this->getDefautWarehouseId()
             ));
 
             $viewModel->setTemplate($viewTemplete);
@@ -895,7 +915,9 @@ abstract class ProcureCRUDController extends AbstractGenericController
             'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'localCurrencyId' => $this->getLocalCurrencyId(),
+            'defaultWarehouseId' => $this->getDefautWarehouseId()
         ));
 
         $viewModel->setTemplate($viewTemplete);

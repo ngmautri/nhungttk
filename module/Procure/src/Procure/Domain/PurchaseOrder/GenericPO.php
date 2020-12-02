@@ -189,8 +189,7 @@ abstract class GenericPO extends BaseDoc
         $validationService = ValidatorFactory::create($sharedService);
         Assert::notNull($validationService, "Validation can not be created!");
 
-        $createdDate = new \Datetime();
-        $snapshot->initSnapshot($options->getUserId(), date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->initRow($options);
 
         $row = PORow::createFromSnapshot($this, $snapshot);
 

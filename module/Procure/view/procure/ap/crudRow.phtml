@@ -1,4 +1,5 @@
 <?php
+use Application\Application\Helper\OptionHelper;
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\OptionList;
 
@@ -21,6 +22,7 @@ $doc_wh_id = null;
 $pr_item_name = null;
 $po_item_name = null;
 $tabsList = null;
+$docUomName = null;
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -74,11 +76,16 @@ if ($dto !== null) {
     if ($dto->getPoRow() != null) {
         $po_item_name = $dto->itemName . ' || ' . $dto->getPo();
     }
+
+    $docUomName = $dto->getDocUnit();
 }
 
 if ($wh_id == null) {
     $wh_id = $doc_wh_id;
 }
+
+$uomList = $sharedCollection->getUomCollection();
+$uom_option = OptionHelper::createUomNameOption($uomList, $docUomName);
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
 $gl_option = OptionList::createGLAccountOption($nmtPlugin->glAccountList(), $gl_account);
@@ -151,9 +158,9 @@ echo $error_msg;
 
                         echo $target_token;
                         ?>" />
-                        <input type="hidden" name="version" value="<?php
+                        <input type="hidden" name="docRevisionNo" value="<?php
 
-                        echo $version;
+                        echo $docRevisionNo;
                         ?>" />
                         <input type="hidden" id="entity_id" name="entity_id" value="<?php
 
@@ -339,7 +346,6 @@ echo $wh_option;
                            <label class="control-label col-sm-2" for="inputTag">Doc Quantity:</label>
                            <div class="col-sm-3">
                               <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
-
                             echo (! $dto == null) ? $dto->getDocQuantity() : "";
                             ?>">
                            </div>
@@ -347,12 +353,23 @@ echo $wh_option;
                               <div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_factor"></div>
                            </div>
                         </div>
+                          <hr style="margin: 5pt 1pt 5pt 1pt;">
+
                         <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Unit:</label>
+                           <label class="control-label col-sm-2"><?php
+
+                        echo $this->translate("Document Unit");
+                        ?></label>
                            <div class="col-sm-3">
-                              <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit" value="<?php
-                            echo (! $dto == null) ? $dto->getDocUnit() : "each";
-                            ?>">
+                              <select  tabindex="5"  name="docUnit" id="docUnit" class="form-control input-sm">
+                                 <option value=""><?php
+
+                                echo $this->translate("Select doc unit");
+                                ?></option>
+                    <?php
+                    echo $uom_option;
+                    ?>
+               </select>
                            </div>
                            <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                            <div class="col-sm-1">

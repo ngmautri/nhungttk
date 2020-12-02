@@ -1,6 +1,7 @@
 <?php
 namespace Procure\Application\Command\Options;
 
+use Application\Domain\Company\CompanyVO;
 use Webmozart\Assert\Assert;
 
 /**
@@ -25,8 +26,9 @@ class UpdateRowCmdOptions extends CmdOptions
      * @param int $userId
      * @param string $triggeredBy
      */
-    public function __construct($rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
+    public function __construct(CompanyVO $companyVO, $rootEntity, $localEntity, $entityId, $entityToken, $version, $userId, $triggeredBy)
     {
+        Assert::isInstanceOf($companyVO, CompanyVO::class, sprintf("Company VO not given! %s", ''));
         Assert::notNull($rootEntity, sprintf("Root entity ID not given! %s", ""));
         Assert::notNull($localEntity, sprintf("Local entity not given! %s", __METHOD__));
         Assert::notNull($userId, sprintf("User ID not given! %s", $userId));
@@ -36,7 +38,7 @@ class UpdateRowCmdOptions extends CmdOptions
         $this->localEntity = $localEntity;
         $this->entityId = $entityId;
         $this->entityToken = $entityToken;
-        $this->version= $version;
+        $this->version = $version;
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
     }

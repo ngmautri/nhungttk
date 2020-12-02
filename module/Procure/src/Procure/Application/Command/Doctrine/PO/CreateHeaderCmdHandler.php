@@ -3,14 +3,12 @@ namespace Procure\Application\Command\Doctrine\PO;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
-use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandInterface;
-use Application\Infrastructure\AggregateRepository\DoctrineCompanyQueryRepository;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
-use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -41,37 +39,25 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
         try {
 
-            $companyId = $options->getCompanyId();
-            $userId = $options->getUserId();
-
-            $companyQueryRepository = new DoctrineCompanyQueryRepository($cmd->getDoctrineEM());
-            $company = $companyQueryRepository->getById($companyId);
-
-            Assert::notNull($company, "Company not found");
-
-            // ====================
-
             /**
              *
              * @var POSnapshot $snapshot ;
              * @var POSnapshot $rootSnapshot ;
              * @var PODoc $rootEntity ;
              */
-            $dto = DTOFactory::createDTOFromArray($cmd->getData(), new PoDTO());
 
-            $dto->company = $companyId;
-            $dto->createdBy = $userId;
-            $dto->currency = $dto->getDocCurrency();
-            $dto->localCurrency = $company->getDefaultCurrency();
+            $snapshot = new POSnapshot();
+            POSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $this->setOutput($snapshot); // important;
 
             $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
-            $rootEntity = PODoc::createFrom($dto, $options, $sharedService);
+            $rootEntity = PODoc::createFrom($snapshot, $options, $sharedService);
 
-            $dto->id = $rootEntity->getId();
-            $dto->token = $rootEntity->getToken();
-            $this->setOutput($dto); // important;
+            $snapshot->id = $rootEntity->getId();
+            $snapshot->token = $rootEntity->getToken();
+            $this->setOutput($snapshot); // important;
 
-            $m = sprintf("[OK] PO # %s created", $dto->getId());
+            $m = sprintf("[OK] PO # %s created", $snapshot->getId());
             $cmd->addSuccess($m);
 
             // event dispatch
@@ -81,6 +67,8 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             }
             // ================
         } catch (\Exception $e) {
+
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

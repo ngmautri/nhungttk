@@ -4,7 +4,7 @@ namespace Application;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class Notification
 {

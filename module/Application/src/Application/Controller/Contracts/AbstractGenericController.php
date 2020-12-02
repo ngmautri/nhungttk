@@ -2,12 +2,15 @@
 namespace Application\Controller\Contracts;
 
 use Application\Domain\EventBus\EventBusServiceInterface;
+use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Exception;
+use Application\Infrastructure\Mapper\CompanyMapper;
+use Application\Domain\Company\GenericCompany;
 
 /**
  *
@@ -24,6 +27,8 @@ class AbstractGenericController extends AbstractActionController
     protected $eventBusService;
 
     protected $cache;
+
+    protected $company;
 
     protected function getLocale()
     {
@@ -67,6 +72,20 @@ class AbstractGenericController extends AbstractActionController
     {
         $u = $this->getUser();
         return $u->getCompany();
+    }
+
+    protected function getCompanyVO()
+    {
+        $entity = $this->getCompany();
+        $snapshot = CompanyMapper::createSnapshot($entity);
+
+        if ($snapshot == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $c = new GenericCompany();
+        $c->constructFromDB($snapshot);
+        return $c->createValueObject();
     }
 
     protected function getCompanyId()

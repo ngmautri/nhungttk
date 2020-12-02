@@ -4,16 +4,13 @@ namespace Procure\Application\Command\Doctrine\PO;
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
-use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
+use Procure\Application\Command\Doctrine\VersionChecker;
+use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Webmozart\Assert\Assert;
-use Procure\Application\Command\Options\PostCmdOptions;
 
 /**
  *
@@ -47,7 +44,6 @@ class AcceptAmendmentCmdHandler extends AbstractCommandHandler
         $rootEntity = $options->getRootEntity();
 
         Assert::isInstanceOf($rootEntity, PODoc::class);
-        $version = $options->getVersion();
 
         try {
             /**
@@ -67,15 +63,10 @@ class AcceptAmendmentCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $queryRep = new POQueryRepositoryImpl($cmd->getDoctrineEM());
-
-            // time to check version - concurency
-            $currentVersion = $queryRep->getVersion($rootEntity->getId()) - 1;
-
-            // revision numner has been increased.
-            if ($version != $currentVersion) {
-                throw new DBUpdateConcurrencyException(sprintf("Object version has been changed from %s to %s since retrieving. Please retry! ", $version, $currentVersion));
-            }
+            // Check Version
+            // ==============
+            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            // ===============
         } catch (\Exception $e) {
             throw new OperationFailedException($e->getMessage());
         }

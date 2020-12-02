@@ -99,6 +99,34 @@ class NmtApplicationCompany
     private $defaultLocale;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="default_language", type="string", length=45, nullable=true)
+     */
+    private $defaultLanguage;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="default_format", type="string", length=45, nullable=true)
+     */
+    private $defaultFormat;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="default_warehouse_code", type="string", length=45, nullable=true)
+     */
+    private $defaultWarehouseCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="default_currency_ISO", type="string", length=3, nullable=true)
+     */
+    private $defaultCurrencyIso;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -432,6 +460,102 @@ class NmtApplicationCompany
     public function getDefaultLocale()
     {
         return $this->defaultLocale;
+    }
+
+    /**
+     * Set defaultLanguage
+     *
+     * @param string $defaultLanguage
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultLanguage($defaultLanguage)
+    {
+        $this->defaultLanguage = $defaultLanguage;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultLanguage
+     *
+     * @return string
+     */
+    public function getDefaultLanguage()
+    {
+        return $this->defaultLanguage;
+    }
+
+    /**
+     * Set defaultFormat
+     *
+     * @param string $defaultFormat
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultFormat($defaultFormat)
+    {
+        $this->defaultFormat = $defaultFormat;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultFormat
+     *
+     * @return string
+     */
+    public function getDefaultFormat()
+    {
+        return $this->defaultFormat;
+    }
+
+    /**
+     * Set defaultWarehouseCode
+     *
+     * @param string $defaultWarehouseCode
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultWarehouseCode($defaultWarehouseCode)
+    {
+        $this->defaultWarehouseCode = $defaultWarehouseCode;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultWarehouseCode
+     *
+     * @return string
+     */
+    public function getDefaultWarehouseCode()
+    {
+        return $this->defaultWarehouseCode;
+    }
+
+    /**
+     * Set defaultCurrencyIso
+     *
+     * @param string $defaultCurrencyIso
+     *
+     * @return NmtApplicationCompany
+     */
+    public function setDefaultCurrencyIso($defaultCurrencyIso)
+    {
+        $this->defaultCurrencyIso = $defaultCurrencyIso;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultCurrencyIso
+     *
+     * @return string
+     */
+    public function getDefaultCurrencyIso()
+    {
+        return $this->defaultCurrencyIso;
     }
 
     /**

@@ -33,6 +33,8 @@ use Webmozart\Assert\Assert;
 abstract class GenericAP extends BaseDoc
 {
 
+    abstract public function specify();
+
     public function markDocAsChanged($postedBy, $postedDate)
     {
         $this->setLastchangeOn($postedDate);
@@ -41,14 +43,6 @@ abstract class GenericAP extends BaseDoc
         $this->setIsActive(1);
         $this->setIsDraft(1);
         $this->setIsReversed(0);
-
-        /**
-         *
-         * @var APRow $row ;
-         */
-        foreach ($this->getDocRows() as $row) {
-            $row->markRowAsChanged($this, $postedBy, $postedDate);
-        }
     }
 
     /**
@@ -74,8 +68,6 @@ abstract class GenericAP extends BaseDoc
 
         return $subDocuments;
     }
-
-    abstract public function specify();
 
     /**
      *
@@ -199,17 +191,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function validate(ValidationServiceInterface $validationService, $isPosting = false)
     {
-        if ($validationService == null) {
-            throw new \InvalidArgumentException("Validation service not given!");
-        }
-
-        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
-            throw new \InvalidArgumentException("Headers Validators not given!");
-        }
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new \InvalidArgumentException("Rows Validators not given!");
-        }
+        Assert::notNull($validationService, "Validation service not given");
 
         // Clear Notification.
         $this->clearNotification();
@@ -252,10 +234,7 @@ abstract class GenericAP extends BaseDoc
 
         $validationService = ValidatorFactory::create($sharedService);
         $snapshot->docType = $this->getDocType();
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->initRow($options);
 
         $row = APRow::createFromSnapshot($this, $snapshot);
 
@@ -488,10 +467,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
     {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new \InvalidArgumentException("Validators not given!");
-        }
-
+        Assert::isInstanceOf($headerValidators, HeaderValidatorCollection::class, "Header Validator is required!");
         $headerValidators->validate($this);
     }
 
@@ -504,13 +480,8 @@ abstract class GenericAP extends BaseDoc
      */
     public function validateRow(APRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
-        if (! $row instanceof APRow) {
-            throw new InvalidArgumentException("AP Row not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validator not given!");
-        }
+        Assert::isInstanceOf($row, APRow::class, "AP-row doc is required!");
+        Assert::isInstanceOf($rowValidators, RowValidatorCollection::class, "Row Validator is required!");
 
         $rowValidators->validate($this, $row);
 
@@ -522,7 +493,7 @@ abstract class GenericAP extends BaseDoc
 
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new APSnapshot());
+        return APSnapshotAssembler::updateAllFieldsFrom(new APSnapshot(), $this);
     }
 
     /**
@@ -567,22 +538,5 @@ abstract class GenericAP extends BaseDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
-    }
-
-    /**
-     *
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     * @throws InvalidArgumentException
-     */
-    private function _checkParams(ValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        if ($validationService == null) {
-            throw new InvalidArgumentException('Validation service not found!');
-        }
-
-        if ($sharedService == null) {
-            throw new InvalidArgumentException('SharedService service not found');
-        }
     }
 }

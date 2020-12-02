@@ -45,6 +45,7 @@ class APRow extends GenericRow
 
     public function markRowAsPosted(GenericAP $rootDoc, $postedBy, $postedDate)
     {
+        $this->createVO($rootDoc); // createVO
         $this->setLastchangeOn($postedDate);
         $this->setLastchangeBy($postedBy);
         $this->setIsPosted(1);
@@ -52,20 +53,20 @@ class APRow extends GenericRow
         $this->setIsDraft(0);
         $this->setIsReversed(0);
         $this->setDocStatus(ProcureDocStatus::POSTED);
-
-        $this->createVO($rootDoc); // createVO
     }
 
     public function markRowAsChanged(GenericAP $rootDoc, $postedBy, $postedDate)
     {
+        $this->createVO($rootDoc); // createVO
+
         $this->setLastchangeOn($postedDate);
         $this->setLastchangeBy($postedBy);
-
-        $this->createVO($rootDoc); // createVO
     }
 
     public function markRowAsReversed(GenericAP $rootDoc, $postedBy, $postedDate)
     {
+        $this->createVO($rootDoc); // createVO
+
         $this->setLastchangeBy($postedBy);
         $this->setLastchangeOn($postedDate);
         $this->setIsReversed(1);
@@ -73,8 +74,6 @@ class APRow extends GenericRow
         $this->setIsDraft(0);
         $this->setIsPosted(0);
         $this->setDocStatus(ProcureDocStatus::REVERSED);
-
-        $this->createVO($rootDoc); // createVO
     }
 
     protected function createVO(GenericAP $rootDoc)
@@ -181,17 +180,16 @@ class APRow extends GenericRow
          * @var APRow $instance
          */
         $instance = new self();
+
         $instance = $sourceObj->convertTo($instance);
         $instance->setDocType(ProcureDocType::INVOICE_FROM_PO); // important.
         $instance->setPoRow($sourceObj->getId()); // Important
 
-        $instance->glAccount = $sourceObj->getItemInventoryGL();
-        $instance->costCenter = $sourceObj->getItemCostCenter();
-        $instance->setWarehouse($rootDoc->getWarehouse());
+        $instance->setGlAccount($sourceObj->getItemInventoryGL());
+        $instance->setCostCenter($sourceObj->getItemCostCenter());
+        $instance->setWarehouse($sourceObj->getWarehouse());
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }
@@ -218,14 +216,13 @@ class APRow extends GenericRow
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         $instance->setDocType($rootEntity->getDocType()); // important.
         $instance->setReversalDoc($sourceObj->getId()); // Important
         $instance->setInvoice($rootEntity->getId());
+
+        $instance->markAsReversed($options);
 
         return $instance;
     }

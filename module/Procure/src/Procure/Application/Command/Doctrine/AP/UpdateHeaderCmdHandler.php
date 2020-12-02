@@ -10,10 +10,9 @@ use Procure\Application\Service\SharedServiceFactory;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Factory\APFactory;
-use Procure\Domain\PurchaseOrder\PODocStatus;
-use Webmozart\Assert\Assert;
 use Procure\Domain\AccountPayable\GenericAP;
+use Procure\Domain\AccountPayable\Factory\APFactory;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -53,7 +52,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             $snapshot = $rootEntity->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $newSnapshot = APSnapshotAssembler::updateDefaultFieldsFromArray($newSnapshot, $cmd->getData());
+            $newSnapshot = APSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
 
             $changeLog = $snapshot->compare($newSnapshot);
@@ -67,7 +66,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
                 "changeLog" => $changeLog
             ];
 
-            $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
             $newRootEntity = APFactory::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
@@ -85,6 +84,8 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             $m = sprintf("AP #%s updated", $newRootEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
+
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

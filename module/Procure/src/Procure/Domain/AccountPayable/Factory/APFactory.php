@@ -2,7 +2,6 @@
 namespace Procure\Domain\AccountPayable\Factory;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Company\CompanyVO;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APDoc;
@@ -33,11 +32,6 @@ class APFactory
     public static function createEmptyObject($docType)
     {
         $instance = self::createDoc($docType);
-
-        if ($instance == null) {
-            throw new \RuntimeException(\sprintf("Could not created document %s", $docType));
-        }
-
         $instance->specify(); // important
         return $instance;
     }
@@ -82,10 +76,6 @@ class APFactory
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
 
-        if ($instance == null) {
-            throw new \RuntimeException(\sprintf("Could not created document %s", $docType));
-        }
-
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
         $snapshot->setExchangeRate($fxRate);
         $snapshot->initDoc($options);
@@ -107,11 +97,6 @@ class APFactory
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rootSnapshot = $rep->storeHeader($instance, false);
-
-        if ($rootSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error orcured when creating AP #%s", $instance->getId()));
-        }
-
         $instance->updateIdentityFrom($rootSnapshot);
 
         $target = $rootSnapshot;
@@ -140,14 +125,14 @@ class APFactory
         $snapshot->setExchangeRate($fxRate);
 
         // SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-        APSnapshotAssembler::updateDefaultExcludedFieldsFrom($rootEntity, $snapshot);
+        APSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
 
         $validationService = ValidatorFactory::createForHeader($sharedService);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $rootEntity->markDocAsChanged($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-        $rootEntity->validate($validationService);
+        $rootEntity->validateHeader($validationService->getHeaderValidators());
 
         if ($rootEntity->hasErrors()) {
             throw new \RuntimeException(sprintf("%s-%s", $rootEntity->getNotification()->errorMessage(), __FUNCTION__));
@@ -161,11 +146,7 @@ class APFactory
          * @var APCmdRepositoryInterface $rep ;
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->store($rootEntity);
-
-        if ($rootSnapshot == null) {
-            throw new \RuntimeException(sprintf("%s-%s", "Error orcured when creating AP!", __FUNCTION__));
-        }
+        $rootSnapshot = $rep->storeHeader($rootEntity);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -230,6 +211,8 @@ class APFactory
                 $doc = APFromPO::getInstance();
                 break;
         }
+        Assert::notNull($doc);
+
         return $doc;
     }
 }

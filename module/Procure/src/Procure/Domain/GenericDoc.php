@@ -1,7 +1,9 @@
 <?php
 namespace Procure\Domain;
 
+use Application\Domain\Company\CompanyVO;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
@@ -414,10 +416,11 @@ class GenericDoc extends BaseDoc
      * @param int $createdBy
      * @param string $createdDate
      */
-    protected function initDoc($createdBy, $createdDate)
+    protected function initDoc(CommandOptions $options)
     {
-        $this->setCreatedOn($createdDate);
-        $this->setCreatedBy($createdBy);
+        $createdDate = new \DateTime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setCreatedBy($options->getUserId());
         $this->setDocStatus(ProcureDocStatus::DRAFT);
 
         $this->setIsActive(1);
@@ -429,6 +432,15 @@ class GenericDoc extends BaseDoc
         $this->setDocVersion(0);
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
+
+        /**
+         *
+         * @var CompanyVO $companyVO ;
+         */
+        $companyVO = $options->getCompanyVO();
+        $this->setCompany($companyVO->getId());
+        $this->setCurrency($this->getDocCurrency());
+        $this->setLocalCurrency($companyVO->getDefaultCurrency());
     }
 
     /**

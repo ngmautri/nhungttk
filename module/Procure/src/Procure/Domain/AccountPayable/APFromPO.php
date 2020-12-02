@@ -59,7 +59,6 @@ final class APFromPO extends GenericAP
 
         $rows = $sourceObj->getDocRows();
         Assert::notNull($rows, sprintf("PO Entity is empty! %s", __FUNCTION__));
-
         Assert::notNull($options, sprintf("No command options is found%s", __FUNCTION__));
 
         /**
@@ -70,13 +69,11 @@ final class APFromPO extends GenericAP
         $instance = $sourceObj->convertTo($instance);
 
         // overwrite.
-
-        $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
         $instance->setDocType(ProcureDocType::INVOICE_FROM_PO);
         $instance->setBaseDocId($sourceObj->getId());
         $instance->setBaseDocType($sourceObj->getDocType());
+
         $validationService = ValidatorFactory::createForCopyFromPO($sharedService);
         $instance->validateHeader($validationService->getHeaderValidators());
 
@@ -104,21 +101,11 @@ final class APFromPO extends GenericAP
      */
     public function saveFromPO(APSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $this->getDocStatus() == ProcureDocStatus::DRAFT) {
-            throw new \RuntimeException(sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
-        }
+        Assert::notEq($this->getDocStatus(), ProcureTrxStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", __FUNCTION__));
+        Assert::eq($this->getDocType(), ProcureDocType::INVOICE_FROM_PO, sprintf("Doctype is not vadid! %s", __FUNCTION__));
 
-        if ($this->getDocRows() == null) {
-            throw new \RuntimeException(sprintf("Documment is empty! %s", __FUNCTION__));
-        }
-
-        if (! $this->getDocType() == ProcureDocType::INVOICE_FROM_PO) {
-            throw new \RuntimeException(sprintf("Doctype is not vadid! %s", __FUNCTION__));
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("Comnand Options not found!");
-        }
+        Assert::notNull($this->getDocRows(), sprintf("PO Entity is empty! %s", __FUNCTION__));
+        Assert::notNull($options, sprintf("No command options is found%s", __FUNCTION__));
 
         $validationService = ValidatorFactory::createForCopyFromPO($sharedService);
 

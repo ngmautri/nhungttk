@@ -150,6 +150,10 @@ class RowSnapshot extends BaseRowSnapshot
         $this->unit = $this->getDocUnit();
     }
 
+    /**
+     *
+     * @param CommandOptions $options
+     */
     public function initRow(CommandOptions $options)
     {
         $createdDate = new \DateTime();

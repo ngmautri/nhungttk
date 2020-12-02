@@ -374,8 +374,6 @@ abstract class ProcureCRUDController extends AbstractGenericController
             return $viewModel;
         }
 
-        $notification = null;
-
         try {
 
             // POSTING
@@ -397,17 +395,15 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
             $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHanderDecorator, $this->getEventBusService());
             $cmd->execute();
-
-            $notification = $cmd->getNotification();
         } catch (\Exception $e) {
-
-            $notification = new Notification();
-            $notification->addError($e->getMessage());
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
+            // left blank
         }
 
-        if ($notification->hasErrors()) {
+        if ($cmd->getNotification()->hasErrors()) {
             $viewModel = new ViewModel(array(
-                'errors' => $notification->getErrors(),
+                'errors' => $cmd->getNotification()->getErrors(),
                 'redirectUrl' => null,
                 'entity_id' => $rootEntityId,
                 'entity_token' => $rootEntityToken,
@@ -425,7 +421,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
             return $viewModel;
         }
 
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        $this->flashMessenger()->addMessage($cmd->getNotification()
+            ->successMessage(false));
         $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $rootEntityId, $rootEntityToken);
         // $this->flashMessenger()->addMessage($redirectUrl);
 

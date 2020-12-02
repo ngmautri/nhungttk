@@ -1,8 +1,8 @@
 <?php
 namespace Procure\Domain\AccountPayable;
 
-use Application\Domain\Shared\AbstractDTO;
 use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use Procure\Domain\Contracts\ProcureDocType;
 
 /**
  *
@@ -11,23 +11,6 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
  */
 class APSnapshotAssembler
 {
-
-    private static $defaultIncludedFields = array(
-        "isActive",
-        "docNumber",
-        "docDate",
-        "sapDoc",
-        "postingDate",
-        "contractDate",
-        "grDate",
-        "remarks",
-        "docCurrency",
-        "pmtTerm",
-        "warehouse",
-        "incoterm",
-        "incotermPlace",
-        "remarks"
-    );
 
     private static $defaultExcludedFields = array(
         "id",
@@ -54,55 +37,114 @@ class APSnapshotAssembler
         "docStatus"
     );
 
-    public static function updateAllFieldsFromArray(AbstractDTO $snapShot, $data)
+    public static function updateAllFieldsFromArray(APSnapshot $snapShot, $data)
     {
         return GenericObjectAssembler::updateAllFieldsFromArray($snapShot, $data);
     }
 
-    public static function updateIncludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    public static function updateIncludedFieldsFromArray(APSnapshot $snapShot, $data, $fields)
     {
         return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    public static function updateDefaultIncludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    public static function updateDefaultIncludedFieldsFromArray(APSnapshot $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::getDefaultIncludedFields($snapShot));
     }
 
-    public static function updateExcludedFieldsFromArray(AbstractDTO $snapShot, $data, $fields)
+    public static function updateExcludedFieldsFromArray(APSnapshot $snapShot, $data, $fields)
     {
         return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    public static function updateDefaultExcludedFieldsFromArray(AbstractDTO $snapShot, $data)
+    public static function updateDefaultExcludedFieldsFromArray(APSnapshot $snapShot, $data)
     {
         return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, self::$defaultExcludedFields);
     }
 
     // from Object
     // =============================
-    public static function updateAllFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function updateAllFieldsFrom(APSnapshot $snapShot, $data)
     {
         return GenericObjectAssembler::updateAllFieldsFrom($snapShot, $data);
     }
 
-    public static function updateIncludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    public static function updateIncludedFieldsFrom(APSnapshot $snapShot, $data, $fields)
     {
         return GenericObjectAssembler::updateIncludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    public static function updateDefaultFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function updateDefaultFieldsFrom(APSnapshot $snapShot, $data)
     {
-        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::$defaultIncludedFields);
+        return GenericObjectAssembler::updateIncludedFieldsFrom($snapShot, $data, self::getDefaultIncludedFields($snapShot));
     }
 
-    public static function updateExcludedFieldsFrom(AbstractDTO $snapShot, $data, $fields)
+    public static function updateExcludedFieldsFrom(APSnapshot $snapShot, $data, $fields)
     {
         return GenericObjectAssembler::updateExcludedFieldsFromArray($snapShot, $data, $fields);
     }
 
-    public static function updateDefaultExcludedFieldsFrom(AbstractDTO $snapShot, $data)
+    public static function updateDefaultExcludedFieldsFrom(APSnapshot $snapShot, $data)
     {
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
+
+    public static function updateEntityExcludedDefaultFieldsFrom(GenericAP $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
+
+    /**
+     *
+     * @param APSnapshot $snapShot
+     * @return string[]
+     */
+    private static function getDefaultIncludedFields(APSnapshot $snapShot)
+    {
+        $result = [
+            "isActive",
+            "docNumber",
+            "docDate",
+            "sapDoc",
+            "postingDate",
+            "contractDate",
+            "grDate",
+            "remarks",
+            "docCurrency",
+            "pmtTerm",
+            "warehouse",
+            "incoterm",
+            "incotermPlace",
+            "remarks"
+        ];
+
+        switch ($snapShot->getDocType()) {
+
+            // ============
+            case ProcureDocType::INVOICE:
+                // left blank
+                break;
+            case ProcureDocType::INVOICE_REVERSAL:
+                // left blank
+                break;
+            case ProcureDocType::INVOICE_FROM_PO:
+
+                $result = [
+                    "isActive",
+                    "docNumber",
+                    "docDate",
+                    "sapDoc",
+                    "postingDate",
+                    "grDate",
+                    "warehouse",
+                    "pmtTerm",
+                    "remarks",
+                    "docCurrency",
+                    "remarks"
+                ];
+                break;
+        }
+
+        return $result;
     }
 }

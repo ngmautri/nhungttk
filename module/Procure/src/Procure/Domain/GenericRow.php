@@ -2,6 +2,7 @@
 namespace Procure\Domain;
 
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Shared\Money\MoneyParser;
 use Application\Domain\Shared\Number\NumberFormatter;
 use Application\Domain\Shared\Price\Price;
@@ -213,10 +214,12 @@ class GenericRow extends BaseRow
      * @param int $createdBy
      * @param string $createdDate
      */
-    protected function initRow($createdBy, $createdDate)
+    protected function initRow(CommandOptions $options)
     {
-        $this->setCreatedOn($createdDate);
-        $this->setCreatedBy($createdBy);
+        $createdDate = new \Datetime();
+        $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setCreatedBy($options->getUserId());
+
         $this->setDocStatus(ProcureDocStatus::DRAFT);
 
         $this->setIsActive(1);
@@ -444,10 +447,12 @@ class GenericRow extends BaseRow
      * @param int $postedBy
      * @param \DateTime $postedDate
      */
-    public function markAsReversed($postedBy, $postedDate)
+    public function markAsReversed(CommandOptions $options)
     {
-        $this->setLastchangeBy($postedBy);
-        $this->setLastchangeOn($postedDate);
+        $createdDate = new \Datetime();
+        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setLastchangeBy($options->getUserId());
+
         $this->setIsReversed(1);
         $this->setIsActive(1);
         $this->setIsDraft(0);
@@ -457,6 +462,10 @@ class GenericRow extends BaseRow
 
     public function refreshRowsFromNewHeaderSnapshot(DocSnapshot $snapshot)
     {
+        // only update, if row does not have PR
+        if ($this->getPrRow() > 0) {
+            return;
+        }
         $this->setWarehouse($snapshot->getWarehouse());
     }
 

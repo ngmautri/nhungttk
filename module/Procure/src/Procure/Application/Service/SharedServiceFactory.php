@@ -7,10 +7,12 @@ use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
 use Procure\Domain\Service\APPostingService;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\POPostingService;
+use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
 use Procure\Infrastructure\Doctrine\APCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\GRCmdRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POCmdRepositoryImpl;
+use Procure\Infrastructure\Doctrine\PRCmdRepositoryImpl;
 use Webmozart\Assert\Assert;
 
 /**
@@ -62,6 +64,21 @@ class SharedServiceFactory
 
         $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
         $postingService = new POPostingService(new POCmdRepositoryImpl($doctrineEM));
+        $fxService = new FXServiceImpl();
+        $fxService->setDoctrineEM($doctrineEM);
+        $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);
+        $domainSpecsFactory = new ProcureSpecificationFactory($doctrineEM);
+        $sharedService->setDomainSpecificationFactory($domainSpecsFactory);
+
+        return $sharedService;
+    }
+
+    static public function createForPR(\Doctrine\ORM\EntityManager $doctrineEM)
+    {
+        Assert::notNull($doctrineEM, "EntityManager not found!");
+
+        $sharedSpecsFactory = new ZendSpecificationFactory($doctrineEM);
+        $postingService = new PRPostingService(new PRCmdRepositoryImpl($doctrineEM));
         $fxService = new FXServiceImpl();
         $fxService->setDoctrineEM($doctrineEM);
         $sharedService = new SharedService($sharedSpecsFactory, $fxService, $postingService);

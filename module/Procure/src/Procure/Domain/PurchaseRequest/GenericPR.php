@@ -4,20 +4,21 @@ namespace Procure\Domain\PurchaseRequest;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
-use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Pr\PrDTO;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\Event\Pr\PrRowAdded;
 use Procure\Domain\Event\Pr\PrRowUpdated;
 use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\Exception\InvalidOperationException;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\ValidationFailedException;
+use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
+use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -27,42 +28,33 @@ use Procure\Domain\Validator\RowValidatorCollection;
 abstract class GenericPR extends BaseDoc
 {
 
-    abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);
+    abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function doPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);
+    abstract protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function afterPost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);
+    abstract protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
     abstract protected function raiseEvent();
 
-    abstract protected function preReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);
+    abstract protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function doReverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);
+    abstract protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
-    abstract protected function afterReserve(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);
+    abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
 
     /**
      *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
+     * @param ValidationServiceInterface $validationService
      * @param boolean $isPosting
-     * @throws InvalidArgumentException
      * @return \Procure\Domain\PurchaseRequest\GenericPR
      */
-    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
+    public function validate(ValidationServiceInterface $validationService, $isPosting = false)
     {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
-        }
 
         // Clear Notification.
         $this->clearNotification();
 
-        $this->validateHeader($headerValidators, $isPosting);
+        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
 
         if ($this->hasErrors()) {
             return $this;
@@ -74,7 +66,7 @@ abstract class GenericPR extends BaseDoc
         }
 
         foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $rowValidators, $isPosting);
+            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
         }
 
         return $this;
@@ -83,35 +75,13 @@ abstract class GenericPR extends BaseDoc
     public function deactivateRow(PRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {}
 
-    /**
-     *
-     * @param PRRowSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param PRPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
-     */
-    public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
+    public function createRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
-            throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
-        }
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+        Assert::notNull($snapshot, "PRRowSnapshot not found");
 
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("Row Snapshot not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Options not found");
-        }
-
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        $validationService = ValidatorFactory::create($sharedService);
 
         $snapshot->docType = $this->docType;
 
@@ -119,9 +89,9 @@ abstract class GenericPR extends BaseDoc
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = PRRow::makeFromSnapshot($snapshot);
+        $row = PRRow::createFromSnapshot($this, $snapshot);
 
-        $this->validateRow($row, $rowValidators);
+        $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getNotification()->errorMessage());
@@ -132,12 +102,13 @@ abstract class GenericPR extends BaseDoc
         /**
          *
          * @var PRRowSnapshot $localSnapshot
+         * @var PrCmdRepositoryInterface $rep ;
          */
-        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
-        if ($localSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
-        }
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeRow($this, $row);
+
+        Assert::notNull($localSnapshot, sprintf("Error occured when creating PR Row #%s", $this->getId()));
 
         $params = [
             "rowId" => $localSnapshot->getId(),
@@ -163,56 +134,39 @@ abstract class GenericPR extends BaseDoc
      *
      * @param PRRowSnapshot $snapshot
      * @param CommandOptions $options
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
      * @param SharedService $sharedService
-     * @param PRPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws InvalidArgumentException
-     * @throws ValidationFailedException
-     * @throws OperationFailedException
+     * @throws \RuntimeException
      * @return \Procure\Domain\PurchaseRequest\PRRowSnapshot
      */
-    public function updateRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, $params, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
+    public function updateRowFrom(PRRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == ProcureDocStatus::POSTED) {
-            throw new InvalidOperationException(sprintf("PR is posted! %s", $this->getId()));
-        }
-
-        if ($snapshot == null) {
-            throw new InvalidArgumentException("PRRowSnapshot not found");
-        }
-
-        if ($options == null) {
-            throw new InvalidArgumentException("Options not found");
-        }
-
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+        Assert::notNull($snapshot, "PRRowSnapshot not found");
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $snapshot->markAsChange($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $validationService = ValidatorFactory::create($sharedService);
 
-        $row = PRRow::makeFromSnapshot($snapshot);
-
-        $this->validateRow($row, $rowValidators);
+        $row = PRRow::createFromSnapshot($this, $snapshot);
+        $this->validateRow($row, $validationService->getRowValidators());
 
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getNotification()->errorMessage());
+            throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
         $this->recordedEvents = array();
-
         /**
          *
          * @var PRRowSnapshot $localSnapshot
+         * @var PrCmdRepositoryInterface $rep ;
          */
-        $localSnapshot = $postingService->getCmdRepository()->storeRow($this, $row);
 
-        if ($localSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error occured when creating GR Row #%s", $this->getId()));
-        }
+        $rep = $sharedService->getPostingService()->getCmdRepository();
+        $localSnapshot = $rep->storeRow($this, $row);
+
+        Assert::notNull($localSnapshot, sprintf("Error occured when creating PR Row #%s", $this->getId()));
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -232,32 +186,26 @@ abstract class GenericPR extends BaseDoc
     /**
      *
      * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
      * @param SharedService $sharedService
-     * @param PRPostingService $postingService
-     * @throws InvalidOperationException
-     * @throws ValidationFailedException
+     * @throws \RuntimeException
      * @return \Procure\Domain\PurchaseRequest\GenericPR
      */
-    public function post(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
+    public function post(CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
-            throw new InvalidOperationException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
-        }
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is posted!%s", $this->getId()));
+        Assert::notNull($options, "command options not found");
+        $validationService = ValidatorFactory::create($sharedService);
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
-
-        $this->validate($headerValidators, $rowValidators);
+        $this->validate($validationService);
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();
 
-        $this->prePost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterPost($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->prePost($options, $validationService, $sharedService);
+        $this->doPost($options, $validationService, $sharedService);
+        $this->afterPost($options, $validationService, $sharedService);
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -276,24 +224,22 @@ abstract class GenericPR extends BaseDoc
         return $this;
     }
 
-    public function reverse(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
+    public function reverse(CommandOptions $options, SharedService $sharedService)
     {
-        if ($this->getDocStatus() !== ProcureDocStatus::POSTED) {
-            throw new InvalidOperationException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
-        }
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PR is not posted!%s", $this->getId()));
+        Assert::notNull($options, "command options not found");
 
-        $this->_checkParams($headerValidators, $rowValidators, $sharedService, $postingService);
-
-        $this->validate($headerValidators, $rowValidators);
+        $validationService = ValidatorFactory::create($sharedService);
+        $this->validate($validationService);
         if ($this->hasErrors()) {
-            throw new ValidationFailedException($this->getErrorMessage());
+            throw new \RuntimeException($this->getErrorMessage());
         }
 
         $this->clearEvents();
 
-        $this->preReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->doReverse($options, $headerValidators, $rowValidators, $sharedService, $postingService);
-        $this->afterReserve($options, $headerValidators, $rowValidators, $sharedService, $postingService);
+        $this->preReserve($options, $validationService, $sharedService);
+        $this->doReverse($options, $validationService, $sharedService);
+        $this->afterReserve($options, $validationService, $sharedService);
 
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();
@@ -377,9 +323,10 @@ abstract class GenericPR extends BaseDoc
      * @param object $dto
      * @return NULL|object
      */
-    public function makeDTOForGrid($dto)
+    public function makeDTOForGrid()
     {
-        $dto = DTOFactory::createDTOFrom($this, $dto);
+        $dto = new PrDTO();
+        DTOFactory::createDTOFrom($this, $dto);
         $rowDTOList = [];
         if (count($this->docRows) > 0) {
             foreach ($this->docRows as $row) {
@@ -392,32 +339,5 @@ abstract class GenericPR extends BaseDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
-    }
-
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param PRPostingService $postingService
-     * @throws InvalidArgumentException
-     */
-    private function _checkParams(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
-    {
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($rowValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
     }
 }

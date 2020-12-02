@@ -46,9 +46,7 @@ class GIFromPurchasingReversalRow extends TrxRow
         $instance->setFlow($rootEntity->getMovementFlow());
         $instance->setWh($instance->getWarehouse());
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }

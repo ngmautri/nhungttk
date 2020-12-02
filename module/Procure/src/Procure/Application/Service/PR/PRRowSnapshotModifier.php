@@ -2,8 +2,7 @@
 namespace Procure\Application\Service\PR;
 
 use Doctrine\ORM\EntityManager;
-use Procure\Application\Service\Share\Snapshot\GenericRowSnapshotModifier;
-use Procure\Domain\AccountPayable\APRowSnapshot;
+use Procure\Application\Service\Shared\Snapshot\GenericRowSnapshotModifier;
 use Procure\Domain\PurchaseRequest\PRRowSnapshot;
 
 /**
@@ -16,9 +15,10 @@ class PRRowSnapshotModifier
 
     /**
      *
-     * @param APRowSnapshot $snapshot
+     * @param PRRowSnapshot $snapshot
      * @param EntityManager $doctrineEM
-     * @return NULL|\Procure\Domain\AccountPayable\APRowSnapshot
+     * @param string $locale
+     * @return NULL|\Procure\Domain\PurchaseRequest\PRRowSnapshot
      */
     public static function modify(PRRowSnapshot $snapshot, EntityManager $doctrineEM, $locale = null)
     {

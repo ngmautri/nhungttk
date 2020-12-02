@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRFromTransferWarehouseRow extends TrxRow
 {
@@ -50,9 +50,7 @@ class GRFromTransferWarehouseRow extends TrxRow
         $f = '[Auto.] Ref.%s';
         $instance->setRemarks(\sprintf($f, $sourceObj->getSysNumber()));
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }
@@ -75,7 +73,7 @@ class GRFromTransferWarehouseRow extends TrxRow
         $instance = $sourceObj->convertTo($instance);
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }

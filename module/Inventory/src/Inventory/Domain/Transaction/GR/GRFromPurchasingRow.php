@@ -50,9 +50,7 @@ class GRFromPurchasingRow extends TrxRow
         // update PR and PO, AP if any
         $instance->setInvoiceRow($sourceObj->getApInvoiceRow());
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }

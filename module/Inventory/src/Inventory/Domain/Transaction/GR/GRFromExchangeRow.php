@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRFromExchangeRow extends TrxRow
 {
@@ -44,9 +44,7 @@ class GRFromExchangeRow extends TrxRow
         $instance->setWhLocation($rootEntity->getTartgetLocation());
         $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] %s %s-%s', "Recycle Bin", $rootEntity->getWarehouse(), $rootEntity->getTartgetLocation()));
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }
@@ -67,9 +65,7 @@ class GRFromExchangeRow extends TrxRow
         $instance = new self();
 
         $instance = $sourceObj->convertTo($instance);
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }

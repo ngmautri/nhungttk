@@ -68,7 +68,9 @@ class AcceptAmendmentCmdHandler extends AbstractCommandHandler
             VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
         } catch (\Exception $e) {
-            throw new OperationFailedException($e->getMessage());
+
+            $cmd->addError($e->getMessage());
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

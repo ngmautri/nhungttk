@@ -62,6 +62,8 @@ class ReverseCmdHandler extends AbstractCommandHandler
             $m = sprintf("AP #%s reversed with #%s", $rootEntity->getId(), $reversalEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
+
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

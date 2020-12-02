@@ -1,4 +1,5 @@
 <?php
+use Application\Application\Helper\OptionHelper;
 use Procure\Application\Helper\ErrorMessage;
 use Procure\Application\Helper\FormHelper;
 use Procure\Application\Helper\OptionList;
@@ -26,6 +27,7 @@ $transactionStatus = "";
 $progress_div = '';
 $alert = "info";
 $tabsList = null;
+$docUomName = null;
 
 // var_dump($headerDTO);
 if ($headerDTO != null) {
@@ -96,6 +98,8 @@ if ($dto !== null) {
     if ($dto->getEdt() !== null) {
         $default_edt = $dto->getEdt();
     }
+
+    $docUomName = $dto->getDocUnit();
 }
 
 if ($wh_id == null) {
@@ -105,6 +109,8 @@ if ($wh_id == null) {
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
 $gl_option = OptionList::createGLAccountOption($nmtPlugin->glAccountList(), $gl_account);
 $cost_center_option = OptionList::createCostCenterOption($nmtPlugin->costCenterList(), $cost_center);
+$uomList = $sharedCollection->getUomCollection();
+$uom_option = OptionHelper::createUomNameOption($uomList, $docUomName);
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
 
@@ -114,7 +120,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
 <div id="wrapper" class="toggled">
    <!-- Sidebar -->
    <div id="sidebar-wrapper" style="font-size: 9.5pt; padding-left: 20px;">
-   
+
    <?php
 
 // include (ROOT . '/module/Procure/view/procure/pr_summary.php');
@@ -143,7 +149,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -183,9 +189,9 @@ echo $error_msg;
 
                         echo $target_token;
                         ?>" />
-                        <input type="hidden" name="version" value="<?php
+                        <input type="hidden" name="docRevisionNo" value="<?php
 
-                        echo $version;
+                        echo $docRevisionNo;
                         ?>" />
                         <input type="hidden" id="entity_id" name="entity_id" value="<?php
 
@@ -290,18 +296,26 @@ echo $error_msg;
                            </div>
                         </div>
                         <div class="form-group margin-bottom required">
-                           <label class="control-label col-sm-2" for="inputTag">Unit:</label>
-                           <div class="col-sm-3">
-                              <input tabindex="5" class="form-control input-sm" type="text" name="docUnit" id="rowUnit" value="<?php
+                             <label class="control-label col-sm-2"><?php
 
-                            echo (! $dto == null) ? $dto->getDocUnit() : "each";
-                            ?>">
-                           </div>
+                            echo $this->translate("Document Unit");
+                            ?></label>
+                     <div class="col-sm-3">
+                        <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
+                           <option     value=""><?php
+
+                        echo $this->translate("Select doc unit");
+                        ?></option>
+                    <?php
+                    echo $uom_option;
+                    ?>
+               </select>
+                     </div>
                            <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                            <div class="col-sm-1">
-                              <input tabindex="6" class="form-control input-sm" type="text" name="conversionFactor" value="<?php
+                              <input tabindex="6" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
 
-                            echo (! $dto == null) ? $dto->getConversionFactor() : "1";
+                            echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
                             ?>">
                            </div>
                            <div class="col-sm-3">
@@ -397,10 +411,10 @@ echo $wh_option;
 
 $( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "#item_name" ).focus();
-  
+
     function doSearch(){
         var q =      $('#search_term_id').val();
-        var url = '/inventory/item-search/do3?q=' + q;        
+        var url = '/inventory/item-search/do3?q=' + q;
         doSearching(url,'search_result_id');
     }
 
@@ -408,7 +422,7 @@ $( "#item_name" ).focus();
 	    //See notes about 'which' and 'key'
 	    if (e.keyCode == 13) {
 		    doSearch();
-          
+
 	    }
 	}
 
@@ -417,7 +431,7 @@ $( "#item_name" ).focus();
 	   }
 
 </script>
-     
+
      <?php
     include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
     ?>

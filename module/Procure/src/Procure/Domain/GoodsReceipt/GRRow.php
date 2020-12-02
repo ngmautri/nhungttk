@@ -9,7 +9,6 @@ use Procure\Domain\GenericRow;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\Shared\Constants;
 
 /**
  * Goods Receipt Row
@@ -147,9 +146,7 @@ class GRRow extends GenericRow
 
         $instance->setDocType(\Procure\Domain\Shared\Constants::PROCURE_DOC_TYPE_GR_FROM_PO); // important.
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }
@@ -175,7 +172,7 @@ class GRRow extends GenericRow
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         // overwrite
         $instance->setApInvoiceRow($sourceObj->getId()); // important
@@ -206,7 +203,7 @@ class GRRow extends GenericRow
         // overwrite
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
         $instance->setApInvoiceRow($sourceObj->getId()); // important
         $instance->setInvoice($sourceObj->getDocId()); // important
         $instance->setDocType($rootEntity->getDocType()); // important.

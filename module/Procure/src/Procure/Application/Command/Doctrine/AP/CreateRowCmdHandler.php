@@ -74,6 +74,8 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             $m = sprintf("[OK] AP Row # %s created", $localSnapshot->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
+
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

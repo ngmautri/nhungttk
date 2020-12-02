@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\Doctrine\AP;
+namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
@@ -7,9 +7,8 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\AccountPayable\APDoc;
+use Procure\Domain\PurchaseRequest\PRDoc;
 use Webmozart\Assert\Assert;
-use Procure\Domain\GenericDoc;
 
 /**
  *
@@ -29,19 +28,21 @@ class PostCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var AbstractCommand $cmd ;
-         * @var APDoc $rootEntity ;
+         * @var PRDoc $rootEntity ;
          * @var PostCmdOptions $options ;
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
+        // Assert::notNull($cmd->getData(), 'Input data in emty');
+
         Assert::isInstanceOf($cmd->getOptions(), PostCmdOptions::class);
         $options = $cmd->getOptions();
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, GenericDoc::class);
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
 
         try {
 
-            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
             $rootEntity->post($options, $sharedService);
 
             // event dispatch
@@ -51,16 +52,16 @@ class PostCmdHandler extends AbstractCommandHandler
             }
             // ================
 
+            $m = sprintf("PO #%s posted", $rootEntity->getId());
+            $cmd->addSuccess($m);
+
             // Check Version
             // ==============
-            VersionChecker::checkAPVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
-
-            $m = sprintf("AP #%s posted", $rootEntity->getId());
-            $cmd->addSuccess($m);
         } catch (\Exception $e) {
-
             $cmd->addError($e->getMessage());
+
             throw new \RuntimeException($e->getMessage());
         }
     }

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\Doctrine\PO;
+namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
@@ -7,10 +7,11 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PORow;
-use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
+use Procure\Application\Service\PR\PRRowSnapshotModifier;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRRow;
+use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -18,7 +19,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class UpdateRowInlineCmdHandler extends AbstractCommandHandler
+class UpdateRowCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -30,12 +31,12 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
     {
         /**
          *
-         * @var PODoc $rootEntity ;
+         * @var PRDoc $rootEntity ;
          * @var UpdateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
-         * @var PORowSnapshot $snapshot ;
-         * @var PORowSnapshot $newSnapshot ;
-         * @var PORow $row ;
+         * @var PRRowSnapshot $snapshot ;
+         * @var PRRowSnapshot $newSnapshot ;
+         * @var PRRow $row ;
          *
          *
          */
@@ -44,28 +45,22 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($cmd->getOptions(), UpdateRowCmdOptions::class);
         $options = $cmd->getOptions();
 
-        try {
-            $rootEntity = $options->getRootEntity();
-            $localEntity = $options->getLocalEntity();
+        $rootEntity = $options->getRootEntity();
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
 
-            $version = $options->getVersion();
+        $localEntity = $options->getLocalEntity();
+        Assert::isInstanceOf($localEntity, PRRow::class);
+
+        try {
 
             $row = $localEntity;
             $snapshot = $row->makeSnapshot();
             $newSnapshot = clone ($snapshot);
 
-            $incluedFields = [
-                "faRemarks",
-                "remarks",
-                "rowNumber",
-                "docQuantity",
-                "docUnit",
-                "docUnitPrice",
-                "conversionFactor"
-            ];
-
-            $newSnapshot = PORowSnapshotAssembler::updateIncludedFieldsFromArray($newSnapshot, $cmd->getData(), $incluedFields);
+            $newSnapshot = PRRowSnapshotAssembler::updateDefaultIncludedFieldsFromArray($newSnapshot, $cmd->getData());
             $this->setOutput($newSnapshot);
+
+            $newSnapshot = PRRowSnapshotModifier::modify($newSnapshot, $cmd->getDoctrineEM(), $options->getLocale());
 
             $changeLog = $snapshot->compare($newSnapshot);
 
@@ -80,7 +75,7 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
                 "changeLog" => $changeLog
             ];
 
-            $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
             $rootEntity->updateRowFrom($newSnapshot, $options, $params, $sharedService);
 
             // event dispatch
@@ -92,13 +87,12 @@ class UpdateRowInlineCmdHandler extends AbstractCommandHandler
 
             // Check Version
             // ==============
-            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
-
-            $m = sprintf("PO #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
-            $cmd->addSuccess($m);
+            $cmd->addSuccess(\sprintf("PO #%s updated", $rootEntity->getId()));
         } catch (\Exception $e) {
             $cmd->addError($e->getMessage());
+
             throw new \RuntimeException($e->getMessage());
         }
     }

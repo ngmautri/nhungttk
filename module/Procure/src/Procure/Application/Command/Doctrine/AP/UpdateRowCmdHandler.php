@@ -90,6 +90,8 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             $m = sprintf("AP row #%s updated. Memory used #%s", $rootEntity->getId(), memory_get_usage());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
+
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

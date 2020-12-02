@@ -1,10 +1,9 @@
 <?php
 namespace Procure\Application\Service\PR;
 
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
-use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
 use Procure\Application\DTO\Pr\PrDTO;
+use Procure\Application\Service\Contracts\ProcureServiceInterface;
 use Procure\Application\Service\Output\DocSaveAsArray;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
 use Procure\Application\Service\Output\Formatter\RowNumberFormatter;
@@ -16,29 +15,27 @@ use Procure\Application\Service\PR\Output\SaveAsPdf;
 use Procure\Application\Service\PR\Output\Pdf\PdfBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\ExcelBuilder;
 use Procure\Application\Service\PR\Output\Spreadsheet\OpenOfficeBuilder;
-use Procure\Application\Specification\Zend\ProcureSpecificationFactory;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\Validator\Header\DefaultHeaderValidator;
-use Procure\Domain\AccountPayable\Validator\Row\DefaultRowValidator;
 use Procure\Domain\PurchaseRequest\PRDoc;
 use Procure\Domain\PurchaseRequest\PRRow;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
-use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 
 /**
  * PR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class PRService extends AbstractService
+class PRService extends AbstractService implements ProcureServiceInterface
 {
 
     const PR_KEY_CACHE = "pr_%s";
 
-    public function getDocHeaderByTokenId($id, $token)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocHeaderByTokenId()
+     */
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
     {
         $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
@@ -46,12 +43,24 @@ class PRService extends AbstractService
 
     /**
      *
-     * @param int $id
-     * @param string $token
-     * @param string $outputStrategy
-     * @return NULL|\Procure\Domain\PurchaseRequest\PRDoc
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenId()
      */
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
+    {
+
+        // Not in Cache.
+        $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
+        $rootEntity = $rep->getRootEntityById($id);
+
+        if (! $rootEntity instanceof PRDoc) {
+            return null;
+        }
+
+        return $this->_getRootEntity($rootEntity, $outputStrategy);
+    }
+
+    public function getDocDetailsByTokenId1($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $key = \sprintf(self::PR_KEY_CACHE, $id);
 
@@ -124,12 +133,10 @@ class PRService extends AbstractService
 
     /**
      *
-     * @param int $id
-     * @param string $token
-     * @param string $outputStrategy
-     * @return NULL|object
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getDocDetailsByTokenIdFromDB()
      */
-    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
 
         // Not in Cache.
@@ -149,7 +156,7 @@ class PRService extends AbstractService
      * @param string $outputStrategy
      * @return NULL|object
      */
-    public function getDocDetailsByIdFromDB($id, $outputStrategy = null)
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN')
     {
 
         // Not in Cache.
@@ -208,7 +215,12 @@ class PRService extends AbstractService
         return $rootEntity;
     }
 
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Application\Service\Contracts\ProcureServiceInterface::getRootEntityOfRow()
+     */
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
         $rep = new PRQueryRepositoryImpl($this->getDoctrineEM());
 
@@ -236,29 +248,5 @@ class PRService extends AbstractService
             "rootDTO" => $rootDTO,
             "localDTO" => $localDTO
         ];
-    }
-
-    public function createFromPO($id, $token, CommandOptions $options)
-    {
-        $rep = new POQueryRepositoryImpl($this->getDoctrineEM());
-
-        $po = $rep->getPODetailsById($id, $token);
-
-        $headerValidators = new HeaderValidatorCollection();
-
-        $sharedSpecsFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-        $procureSpecsFactory = new ProcureSpecificationFactory($this->getDoctrineEM());
-        $fxService = new FXService();
-        $fxService->setDoctrineEM($this->getDoctrineEM());
-
-        $validator = new DefaultHeaderValidator($sharedSpecsFactory, $fxService, $procureSpecsFactory);
-        $headerValidators->add($validator);
-
-        $rowValidators = new RowValidatorCollection();
-        $validator = new DefaultRowValidator($sharedSpecsFactory, $fxService);
-        $rowValidators->add($validator);
-
-        $rootEntity = APDoc::createFromPo($po, $options, $headerValidators, $rowValidators);
-        return $rootEntity;
     }
 }

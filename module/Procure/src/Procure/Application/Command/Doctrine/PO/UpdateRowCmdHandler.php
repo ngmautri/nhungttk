@@ -92,6 +92,7 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
             // ===============
             $cmd->addSuccess(\sprintf("PO #%s updated", $rootEntity->getId()));
         } catch (\Exception $e) {
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

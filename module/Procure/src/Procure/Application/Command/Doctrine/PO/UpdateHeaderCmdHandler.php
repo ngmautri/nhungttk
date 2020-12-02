@@ -12,6 +12,8 @@ use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Webmozart\Assert\Assert;
+use Procure\Domain\PurchaseOrder\GenericPO;
+use Procure\Domain\Contracts\ProcureDocStatus;
 
 /**
  *
@@ -44,9 +46,9 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
         $rootEntity = $options->getRootEntity();
 
-        Assert::isInstanceOf($rootEntity, PODoc::class);
+        Assert::isInstanceOf($rootEntity, GenericPO::class);
 
-        Assert::notEq($rootEntity->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO is already posted! %s", $rootEntity->getId()));
+        Assert::notEq($rootEntity->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO is already posted! %s", $rootEntity->getId()));
 
         try {
 
@@ -84,6 +86,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             $m = sprintf("PO #%s updated", $newRootEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

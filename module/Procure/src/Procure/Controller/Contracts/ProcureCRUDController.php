@@ -283,12 +283,11 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $cmd->setLogger($this->getLogger());
 
             $cmd->execute();
-            $notification = $cmd->getNotification();
         } catch (\Exception $e) {
-            $notification = new Notification();
-            $notification->addError($e->getMessage());
+            $this->logInfo($e->getMessage());
         }
 
+        $notification = $cmd->getNotification();
         if ($notification->hasErrors()) {
             $viewModel = new ViewModel(array(
                 'errors' => $notification->getErrors(),
@@ -541,7 +540,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
 
         $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_id=%s&target_token=%s", $target_id, $target_token);
-        $this->getLogger()->info(\sprintf("PO Row of %s is created by #%s", $target_id, $this->getUserId()));
+        $this->getLogger()->info(\sprintf("Row of %s is created by #%s", $target_id, $this->getUserId()));
 
         return $this->redirect()->toUrl($redirectUrl);
     }

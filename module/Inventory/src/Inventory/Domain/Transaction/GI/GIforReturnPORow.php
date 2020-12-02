@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIforReturnPORow extends TrxRow
 {
@@ -48,9 +48,7 @@ class GIforReturnPORow extends TrxRow
         $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] ref. %s', $sourceObj->getRowIdentifer()));
 
         // update PR and PO, AP if any
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }

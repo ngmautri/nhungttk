@@ -59,8 +59,8 @@ class UpdateHeaderAndPostCmdHandler extends AbstractCommandHandler
             $m = sprintf("AP #%s posted", $rootEntity->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
-            $cmd->addError($e->getMessage());
 
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

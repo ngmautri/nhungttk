@@ -3,10 +3,12 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
-use Application\Domain\Shared\Quantity\Quantity;
-use Application\Domain\Shared\Uom\Uom;
+use Application\Domain\Shared\Command\CommandOptions;
+use PHPUnit\Framework\Assert;
 use Procure\Application\DTO\Pr\PrRowDTO;
-use Procure\Domain\Item\ValueObject\PrId;
+use Procure\Domain\PurchaseOrder\PODoc;
+use Procure\Domain\PurchaseOrder\PORow;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  * PR Row
@@ -50,10 +52,45 @@ class PRRow extends BaseRow
 
     protected $lastCurrency;
 
-    public function createValueObject()
+    protected function createVO(PRDoc $rootDoc)
     {
-        $this->prId = new PrId($this->getPr());
-        $this->prQuantity = new Quantity($this->docQuantity, new Uom($this->getDocUnit()));
+        $this->createUomVO();
+        $this->createQuantityVO();
+    }
+
+    public static function createFromSnapshot(PRDoc $rootDoc, PRRowSnapshot $snapshot)
+    {
+        Assert::isInstanceOf($rootDoc, PRDoc::class, "PR is required!");
+        Assert::isInstanceOf($snapshot, PRRowSnapshot::class, "PR row snapshot is required!");
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->createVO($rootDoc);
+        return $instance;
+    }
+
+    public static function cloneFrom(PRDoc $rootDoc, PrRow $sourceObj, CommandOptions $options)
+    {
+        Assert::isInstanceOf($rootDoc, PRDoc::class, "PR is required!");
+        Assert::isInstanceOf($sourceObj, PrRow::class, "PR row is required!");
+        Assert::notNull($options, "No Options is found");
+
+        /**
+         *
+         * @var PrRow $instance
+         */
+        $instance = new self();
+
+        $exculdedProps = [
+            'invoice',
+            'po',
+            'rowIdentifer'
+        ];
+
+        $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
+        $instance->initRow($options);
+        return $instance;
     }
 
     /**

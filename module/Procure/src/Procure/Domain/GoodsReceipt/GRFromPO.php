@@ -6,7 +6,6 @@ use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Contracts\ProcureGoodsFlow;
 use Procure\Domain\Contracts\ProcureTrxStatus;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\GoodsReceipt\Contracts\DocInterface;
 use Procure\Domain\GoodsReceipt\Validator\ValidatorFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\SharedService;

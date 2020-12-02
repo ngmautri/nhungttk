@@ -3,7 +3,6 @@ namespace Procure\Domain\AccountPayable;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Domain\Util\Translator;
 use Procure\Application\DTO\Ap\ApDTO;

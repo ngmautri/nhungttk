@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\Doctrine\PO;
+namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
@@ -7,10 +7,11 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Application\Service\PO\RowSnapshotModifier;
+use Procure\Application\Service\PR\PRRowSnapshotModifier;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PORowSnapshot;
-use Procure\Domain\PurchaseOrder\PORowSnapshotAssembler;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRRowSnapshot;
+use Procure\Domain\PurchaseRequest\PRRowSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -33,8 +34,8 @@ class CreateRowCmdHandler extends AbstractCommandHandler
          * @var CreateRowCmdOptions $options ;
          * @var AbstractCommand $cmd ;
          * @var CreateRowCmdOptions $options ;
-         * @var PORowSnapshot $snapshot ;
-         * @var PODoc $rootEntity ;
+         * @var PRRowSnapshot $snapshot ;
+         * @var PRDoc $rootEntity ;
          *
          */
         Assert::isInstanceOf($cmd, AbstractCommand::class);
@@ -44,15 +45,15 @@ class CreateRowCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
         $rootEntity = $options->getRootEntity();
 
-        Assert::isInstanceOf($rootEntity, PODoc::class);
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
 
         try {
-            $snapshot = new PORowSnapshot();
-            PORowSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $snapshot = new PRRowSnapshot();
+            PRRowSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
             $this->setOutput($snapshot);
 
-            $snapshot = RowSnapshotModifier::modify($snapshot, $cmd->getDoctrineEM(), $options->getLocale());
-            $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
+            $snapshot = PrRowSnapshotModifier::modify($snapshot, $cmd->getDoctrineEM(), $options->getLocale());
+            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
             $localSnapshot = $rootEntity->createRowFrom($snapshot, $options, $sharedService);
 
             // event dispatch
@@ -62,15 +63,14 @@ class CreateRowCmdHandler extends AbstractCommandHandler
             }
             // ================
 
-            $m = sprintf("[OK] PO Row # %s created", $localSnapshot->getId());
+            $m = sprintf("[OK] PR Row # %s created", $localSnapshot->getId());
             $cmd->addSuccess($m);
 
             // Check Version
             // ==============
-            VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
         } catch (\Exception $e) {
-
             $cmd->addError($e->getMessage());
 
             throw new \RuntimeException($e->getMessage());

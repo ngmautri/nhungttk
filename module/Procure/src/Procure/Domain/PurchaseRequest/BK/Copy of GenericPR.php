@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Domain\PurchaseRequest;
+namespace Procure\Domain\PurchaseRequest1;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Constants;
@@ -25,7 +25,7 @@ use Procure\Domain\Validator\RowValidatorCollection;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class GenericPR extends BaseDoc
+abstract class GenericPR1 extends BaseDoc
 {
 
     abstract protected function prePost(CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService);

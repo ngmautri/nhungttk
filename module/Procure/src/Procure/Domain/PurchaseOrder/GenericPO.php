@@ -5,6 +5,7 @@ use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PoDetailsDTO;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Po\PoAmendmentAccepted;
 use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
@@ -182,7 +183,7 @@ abstract class GenericPO extends BaseDoc
      */
     public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::notEq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO is posted!%s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Po is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
         Assert::notNull($snapshot, "PORowSnapshot not found");
 

@@ -94,6 +94,11 @@ class APSnapshotAssembler
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
     }
 
+    public static function updateEntityAllFieldsFrom(GenericAP $snapShot, $data)
+    {
+        return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
+    }
+
     /**
      *
      * @param APSnapshot $snapShot

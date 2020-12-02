@@ -1,13 +1,13 @@
 <?php
-namespace Procure\Application\Command\Doctrine\PO;
+namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
 use Webmozart\Assert\Assert;
 
 /**
@@ -15,7 +15,7 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class CloneAndSavePOCmdHandler extends AbstractCommandHandler
+class CloneAndSaveCmdHandler extends AbstractCommandHandler
 {
 
     /**
@@ -28,8 +28,8 @@ class CloneAndSavePOCmdHandler extends AbstractCommandHandler
         /**
          *
          * @var AbstractCommand $cmd ;
-         * @var PODoc $rootEntity ;
-         * @var POSnapshot $snapshot ;
+         * @var PRDoc $rootEntity ;
+         * @var PRSnapshot $snapshot ;
          * @var UpdateHeaderCmdOptions $options ;
          *
          */
@@ -39,14 +39,14 @@ class CloneAndSavePOCmdHandler extends AbstractCommandHandler
         $options = $cmd->getOptions();
         $rootEntity = $options->getRootEntity();
 
-        Assert::isInstanceOf($rootEntity, PODoc::class);
+        Assert::isInstanceOf($rootEntity, PRDoc::class);
 
         try {
-            $sharedService = SharedServiceFactory::createForPO($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
             $rootSnapshot = $rootEntity->cloneAndSave($options, $sharedService);
             $this->setOutput($rootSnapshot);
 
-            $m = sprintf("[OK] PO # %s copied and saved!", $rootSnapshot->getId());
+            $m = sprintf("[OK] PR # %s copied and saved!", $rootSnapshot->getId());
             $cmd->addSuccess($m);
         } catch (\Exception $e) {
 

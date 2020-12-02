@@ -46,12 +46,8 @@ class PORow extends BaseRow
             'rowIdentifer'
         ];
 
-        // $r = new PORowSnapshot();
-        // $r->prRow
         $instance = $sourceObj->convertExcludeFieldsTo($instance, $exculdedProps);
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
         return $instance;
     }
 
@@ -89,7 +85,7 @@ class PORow extends BaseRow
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
-        $instance->initRow($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initRow($options);
 
         return $instance;
     }

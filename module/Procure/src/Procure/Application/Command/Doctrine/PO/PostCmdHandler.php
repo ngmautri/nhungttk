@@ -60,6 +60,7 @@ class PostCmdHandler extends AbstractCommandHandler
             VersionChecker::checkPOVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
         } catch (\Exception $e) {
+            $cmd->addError($e->getMessage());
             throw new \RuntimeException($e->getMessage());
         }
     }

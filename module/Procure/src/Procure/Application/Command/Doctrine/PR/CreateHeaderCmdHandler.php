@@ -1,16 +1,14 @@
 <?php
-namespace Procure\Application\Command\Doctrine\AP;
+namespace Procure\Application\Command\Doctrine\PR;
 
 use Application\Application\Command\Doctrine\AbstractCommand;
 use Application\Application\Command\Doctrine\AbstractCommandHandler;
 use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
-use Procure\Domain\AccountPayable\APDoc;
-use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\AccountPayable\APSnapshotAssembler;
-use Procure\Domain\AccountPayable\Factory\APFactory;
-use Procure\Domain\Contracts\ProcureDocType;
+use Procure\Domain\PurchaseRequest\PRDoc;
+use Procure\Domain\PurchaseRequest\PRSnapshot;
+use Procure\Domain\PurchaseRequest\PRSnapshotAssembler;
 use Webmozart\Assert\Assert;
 
 /**
@@ -43,24 +41,21 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
 
             /**
              *
-             * @var APSnapshot $snapshot ;
-             * @var APSnapshot $rootSnapshot ;
-             * @var APDoc $rootEntity ;
+             * @var PRSnapshot $snapshot ;
+             * @var PRSnapshot $rootSnapshot ;
+             * @var PRDoc $rootEntity ;
              */
 
-            $snapshot = new APSnapshot();
-            APSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $snapshot = new PRSnapshot();
+            PRSnapshotAssembler::updateAllFieldsFromArray($snapshot, $cmd->getData());
+            $this->setOutput($snapshot); // important;
 
-            $snapshot->setDocType(ProcureDocType::INVOICE);
-            $sharedService = SharedServiceFactory::createForAP($cmd->getDoctrineEM());
-            $rootEntity = APFactory::createFrom($snapshot, $options, $sharedService);
+            $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
+            $rootEntity = PRDoc::createFrom($snapshot, $options, $sharedService);
 
             $snapshot->id = $rootEntity->getId();
             $snapshot->token = $rootEntity->getToken();
             $this->setOutput($snapshot); // important;
-
-            $m = sprintf("[OK] AP Doc # %s created", $snapshot->getId());
-            $cmd->addSuccess($m);
 
             // event dispatch
             // ================
@@ -68,6 +63,9 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
             // ================
+
+            $m = sprintf("[OK] PR # %s created", $snapshot->getId());
+            $cmd->addSuccess($m);
         } catch (\Exception $e) {
 
             $cmd->addError($e->getMessage());

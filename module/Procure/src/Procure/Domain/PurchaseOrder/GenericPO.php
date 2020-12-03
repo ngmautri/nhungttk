@@ -11,15 +11,12 @@ use Procure\Domain\Event\Po\PoAmendmentEnabled;
 use Procure\Domain\Event\Po\PoPosted;
 use Procure\Domain\Event\Po\PoRowAdded;
 use Procure\Domain\Event\Po\PoRowUpdated;
-use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\Repository\POCmdRepositoryInterface;
 use Procure\Domain\PurchaseOrder\Validator\ValidatorFactory;
-use Procure\Domain\Service\POPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
 
 /**
@@ -30,42 +27,12 @@ use Webmozart\Assert\Assert;
 abstract class GenericPO extends BaseDoc
 {
 
-    abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function raiseEvent();
-
-    abstract protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    /**
-     *
-     * @param PORow $row
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param SharedService $sharedService
-     * @param POPostingService $postingService
-     */
-    public function deactivateRow(PORow $row, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    public function deactivateRow(PORow $row, CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {}
 
-    /**
-     *
-     * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
     public function enableAmendment(CommandOptions $options, SharedService $sharedService)
     {
-        Assert::eq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO can not be amended! %s", $this->getId()));
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO can not be amended! %s", $this->getId()));
         Assert::notEq($this->getTransactionStatus(), Constants::TRANSACTION_STATUS_COMPLETED, 'PO is completed');
         Assert::notNull($options, "command options not found");
 
@@ -76,7 +43,7 @@ abstract class GenericPO extends BaseDoc
         $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $this->setLastchangeBy($options->getUserId());
         $this->setDocVersion($this->getDocVersion() + 1);
-        $this->setDocStatus(PODocStatus::DOC_STATUS_AMENDING);
+        $this->setDocStatus(ProcureDocStatus::AMENDING);
 
         $this->validateHeader($validationService->getHeaderValidators());
 
@@ -114,16 +81,9 @@ abstract class GenericPO extends BaseDoc
         return $this;
     }
 
-    /**
-     *
-     * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
     public function acceptAmendment(CommandOptions $options, SharedService $sharedService)
     {
-        Assert::eq($this->getDocStatus(), PODocStatus::DOC_STATUS_AMENDING, sprintf("Document is not on amendment! %s", $this->getId()));
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::AMENDING, sprintf("Document is not on amendment! %s", $this->getId()));
         Assert::notNull($options, "command options not found");
 
         $validationService = ValidatorFactory::create($sharedService);
@@ -132,7 +92,7 @@ abstract class GenericPO extends BaseDoc
         $createdDate = new \Datetime();
         $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
         $this->setLastchangeBy($options->getUserId());
-        $this->setDocStatus(PODocStatus::DOC_STATUS_POSTED);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
 
         $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
 
@@ -173,14 +133,6 @@ abstract class GenericPO extends BaseDoc
         return $this;
     }
 
-    /**
-     *
-     * @param PORowSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
-     */
     public function createRowFrom(PORowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
         Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Po is posted!%s", $this->getId()));
@@ -231,18 +183,9 @@ abstract class GenericPO extends BaseDoc
         return $localSnapshot;
     }
 
-    /**
-     *
-     * @param PORowSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseOrder\PORowSnapshot
-     */
     public function updateRowFrom(PORowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        Assert::notEq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("PO is posted!%s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO is posted!%s", $this->getId()));
         Assert::notNull($options, "command options not found");
         Assert::notNull($snapshot, "PORowSnapshot not found");
 
@@ -287,16 +230,9 @@ abstract class GenericPO extends BaseDoc
         return $localSnapshot;
     }
 
-    /**
-     *
-     * @param CommandOptions $options
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
     public function post(CommandOptions $options, SharedService $sharedService)
     {
-        Assert::eq($this->getDocStatus(), PODocStatus::DOC_STATUS_DRAFT, sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("PO is already posted/closed or being amended! %s", $this->getId()));
         Assert::notNull($sharedService, "SharedService service not found");
         Assert::notNull($options, "Comnand Options not found!");
 
@@ -330,88 +266,6 @@ abstract class GenericPO extends BaseDoc
         return $this;
     }
 
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws InvalidArgumentException
-     * @return \Procure\Domain\PurchaseOrder\GenericPO
-     */
-    public function validate(HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, $isPosting = false)
-    {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("PO Validators not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("PO Validators not given!");
-        }
-
-        // Clear Notification.
-        $this->clearNotification();
-
-        $this->validateHeader($headerValidators, $isPosting);
-
-        if ($this->hasErrors()) {
-            return $this;
-        }
-
-        if (count($this->getDocRows()) == 0) {
-            $this->addError("Documment is empty. Please add line!");
-            return $this;
-        }
-
-        foreach ($this->docRows as $row) {
-            $this->validateRow($row, $rowValidators, $isPosting);
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param boolean $isPosting
-     */
-    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
-    {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("PO Validators not given!");
-        }
-
-        $headerValidators->validate($this);
-    }
-
-    /**
-     *
-     * @param PORow $row
-     * @param RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws InvalidArgumentException
-     */
-    public function validateRow(PORow $row, RowValidatorCollection $rowValidators, $isPosting = false)
-    {
-        if (! $row instanceof PORow) {
-            throw new InvalidArgumentException("Po Row not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validator not given!");
-        }
-
-        $rowValidators->validate($this, $row);
-
-        if ($row->hasErrors()) {
-            $this->addErrorArray($row->getErrors());
-            return;
-        }
-    }
-
-    /**
-     *
-     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
-     */
     public function makeDetailsDTO()
     {
         $dto = new PoDetailsDTO();
@@ -428,10 +282,6 @@ abstract class GenericPO extends BaseDoc
         return $dto;
     }
 
-    /**
-     *
-     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
-     */
     public function makeHeaderDTO()
     {
         $dto = new PoDetailsDTO();
@@ -439,10 +289,6 @@ abstract class GenericPO extends BaseDoc
         return $dto;
     }
 
-    /**
-     *
-     * @return NULL|\Procure\Application\DTO\Po\PoDetailsDTO
-     */
     public function makeDTOForGrid()
     {
         $dto = new PoDetailsDTO();
@@ -461,10 +307,6 @@ abstract class GenericPO extends BaseDoc
         return $dto;
     }
 
-    /**
-     *
-     * @param mixed $rowsOutput
-     */
     public function setRowsOutput($rowsOutput)
     {
         $this->rowsOutput = $rowsOutput;

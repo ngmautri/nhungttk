@@ -1,4 +1,4 @@
-ocre<?php
+<?php
 namespace Procure\Domain\PurchaseOrder;
 
 use Application\Application\Event\DefaultParameter;
@@ -29,13 +29,14 @@ use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
 use Ramsey;
 use Application\Application\Contracts\GenericSnapshotAssembler;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PODoc extends GenericPO
+final class PODoc extends GenericPO
 {
 
     // Addtional attribute.
@@ -84,9 +85,7 @@ class PODoc extends GenericPO
         $instance = $this->convertExcludeFieldsTo($instance, $exculdedProps);
 
         // overwrite.
-        $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
         $instance->setDocType(ProcureDocType::PO);
         $instance->setBaseDocId($this->getId());
         $instance->setBaseDocType($this->getDocType());
@@ -290,7 +289,7 @@ class PODoc extends GenericPO
      * {@inheritdoc}
      * @see \Procure\Domain\PurchaseOrder\GenericPO::doPost()
      */
-    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
 
         /**
@@ -492,42 +491,6 @@ class PODoc extends GenericPO
         return $instance;
     }
 
-    private function _checkInputParams(POSnapshot $snapshot, HeaderValidatorCollection $headerValidators, SharedService $sharedService, POPostingService $postingService)
-    {
-        if (! $snapshot instanceof POSnapshot) {
-            throw new InvalidArgumentException("APSnapshot not found!");
-        }
-
-        if ($headerValidators == null) {
-            throw new InvalidArgumentException("HeaderValidatorCollection not found");
-        }
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        if ($postingService == null) {
-            throw new InvalidArgumentException("postingService service not found");
-        }
-    }
-
-    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function raiseEvent()
-    {}
-
     /**
      *
      * @return mixed
@@ -552,5 +515,65 @@ class PODoc extends GenericPO
             return $this->apCollection;
         }
         return $this->apCollection;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterPost()
+     */
+    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterReserve()
+     */
+    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doReverse()
+     */
+    protected function doReverse(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::prePost()
+     */
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::preReserve()
+     */
+    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::raiseEvent()
+     */
+    protected function raiseEvent()
+    {
+        // TODO Auto-generated method stub
     }
 }

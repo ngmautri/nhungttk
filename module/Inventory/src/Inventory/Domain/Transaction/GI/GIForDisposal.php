@@ -4,7 +4,6 @@ namespace Inventory\Domain\Transaction\GI;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Transaction\GI\WhDisposalPosted;
-use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
@@ -12,11 +11,12 @@ use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIForDisposal extends GenericTrx
 {
@@ -37,7 +37,7 @@ class GIForDisposal extends GenericTrx
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\GenericTrx::doPost()
      */
-    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -85,19 +85,4 @@ class GIForDisposal extends GenericTrx
         $event = new WhDisposalPosted($target, $defaultParams, $params);
         $this->addEvent($event);
     }
-
-    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function doReverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function preReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
 }

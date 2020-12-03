@@ -98,12 +98,10 @@ class GIFromGRReversal extends AbstractGoodsIssue implements GoodsIssueInterface
 
         // Important: Update Recycle Location:
         $instance->setTartgetLocation($recycleLocation->getId());
-        $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         // overwrite.
-        $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
+        $instance->markAsPosted($options->getUserId(), $sourceObj->getPostingDate());
         $instance->setRemarks($instance->getRemarks() . \sprintf('Auto./WH-GE %s', $sourceObj->getId()));
 
         foreach ($rows as $r) {
@@ -114,7 +112,7 @@ class GIFromGRReversal extends AbstractGoodsIssue implements GoodsIssueInterface
              */
 
             $grRow = GRFromExchangeRow::createFromGIRow($instance, $r, $options);
-            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $grRow->markRowAsPosted($instance, $options);
             $instance->addRow($grRow);
         }
 

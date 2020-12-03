@@ -19,7 +19,7 @@ use Ramsey\Uuid\Uuid;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 final class QRDoc extends GenericQR
 {
@@ -146,9 +146,7 @@ final class QRDoc extends GenericQR
 
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_QUOTE);
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         $instance->clearEvents();
 

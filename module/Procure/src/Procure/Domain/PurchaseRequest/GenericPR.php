@@ -9,13 +9,11 @@ use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Event\Pr\PrPosted;
 use Procure\Domain\Event\Pr\PrRowAdded;
 use Procure\Domain\Event\Pr\PrRowUpdated;
-use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\PRPostingService;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
@@ -27,50 +25,6 @@ use Webmozart\Assert\Assert;
  */
 abstract class GenericPR extends BaseDoc
 {
-
-    abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function raiseEvent();
-
-    abstract protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService);
-
-    /**
-     *
-     * @param ValidationServiceInterface $validationService
-     * @param boolean $isPosting
-     * @return \Procure\Domain\PurchaseRequest\GenericPR
-     */
-    public function validate(ValidationServiceInterface $validationService, $isPosting = false)
-    {
-
-        // Clear Notification.
-        $this->clearNotification();
-
-        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
-
-        if ($this->hasErrors()) {
-            return $this;
-        }
-
-        if (count($this->getDocRows()) == 0) {
-            $this->addError("Documment is empty. Please add line!");
-            return $this;
-        }
-
-        foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
-        }
-
-        return $this;
-    }
 
     public function deactivateRow(PRRow $row, CommandOptions $options, HeaderValidatorCollection $headerValidators, RowValidatorCollection $rowValidators, SharedService $sharedService, PRPostingService $postingService)
     {}
@@ -260,44 +214,6 @@ abstract class GenericPR extends BaseDoc
 
     /**
      *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param boolean $isPosting
-     */
-    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
-    {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
-        }
-
-        $headerValidators->validate($this);
-    }
-
-    /**
-     *
-     * @param PRRow $row
-     * @param \Procure\Domain\Validator\RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws \Procure\Domain\Exception\InvalidArgumentException
-     */
-    public function validateRow(PRRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
-    {
-        if (! $row instanceof PRRow) {
-            throw new InvalidArgumentException("GR Row not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validator not given!");
-        }
-
-        $rowValidators->validate($this, $row);
-
-        if ($row->hasErrors()) {
-            $this->addErrorArray($row->getErrors());
-        }
-    }
-
-    /**
-     *
      * @return NULL|object
      */
     public function makeDetailsDTO()
@@ -307,10 +223,6 @@ abstract class GenericPR extends BaseDoc
         return $dto;
     }
 
-    /**
-     *
-     * @return NULL|object
-     */
     public function makeHeaderDTO()
     {
         $dto = new PrDTO();
@@ -318,11 +230,6 @@ abstract class GenericPR extends BaseDoc
         return $dto;
     }
 
-    /**
-     *
-     * @param object $dto
-     * @return NULL|object
-     */
     public function makeDTOForGrid()
     {
         $dto = new PrDTO();

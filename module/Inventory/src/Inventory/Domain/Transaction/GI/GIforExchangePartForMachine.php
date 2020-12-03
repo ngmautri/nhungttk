@@ -4,17 +4,17 @@ namespace Inventory\Domain\Transaction\GI;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Transaction\GI\WhGoodsExchangePosted;
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\AbstractGoodsIssue;
 use Inventory\Domain\Transaction\Contracts\GoodsIssueInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIforExchangePartForMachine extends AbstractGoodsIssue implements GoodsIssueInterface
 {
@@ -24,7 +24,7 @@ class GIforExchangePartForMachine extends AbstractGoodsIssue implements GoodsIss
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\AbstractGoodsIssue::afterPost()
      */
-    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         $target = $this->makeSnapshot();
         $defaultParams = new DefaultParameter();

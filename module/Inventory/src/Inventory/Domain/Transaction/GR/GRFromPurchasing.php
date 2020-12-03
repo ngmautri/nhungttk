@@ -84,8 +84,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
         $instance->setBaseDocType($sourceObj->getDocType());
 
         $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
         $instance->setRemarks($instance->getRemarks() . \sprintf('[Auto.] Ref.%s', $sourceObj->getSysNumber()));
@@ -102,7 +101,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             }
 
             $grRow = GRFromPurchasingRow::createFromPurchaseGrRow($instance, $r, $options);
-            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $grRow->markRowAsPosted($instance, $options);
             $instance->addRow($grRow);
         }
 

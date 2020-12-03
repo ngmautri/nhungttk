@@ -7,9 +7,9 @@ use Closure;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class BaseDoc extends AbstractTrx
+abstract class BaseDoc extends AbstractTrx
 {
 
     // Specific Attribute, that are not on generic doc.

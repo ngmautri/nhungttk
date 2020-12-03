@@ -4,14 +4,14 @@ namespace Inventory\Domain\Transaction;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Transaction\GR\WhGrPosted;
-use Inventory\Domain\Service\SharedService;
-use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractGoodsReceipt extends GenericTrx
 {
@@ -27,7 +27,7 @@ abstract class AbstractGoodsReceipt extends GenericTrx
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\GenericTrx::doPost()
      */
-    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -75,18 +75,73 @@ abstract class AbstractGoodsReceipt extends GenericTrx
         $this->addEvent($event);
     }
 
-    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Transaction\GenericTrx::specify()
+     */
+    public function specify()
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function doReverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterPost()
+     */
+    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterReserve()
+     */
+    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function preReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doReverse()
+     */
+    protected function doReverse(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::prePost()
+     */
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::preReserve()
+     */
+    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::raiseEvent()
+     */
+    protected function raiseEvent()
+    {
+        // TODO Auto-generated method stub
+    }
 }

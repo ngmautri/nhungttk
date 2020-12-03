@@ -4,6 +4,7 @@ namespace Procure\Domain\Service;
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory as SharedSpecFactory;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
 use Procure\Domain\Service\Contracts\PostingServiceInterface;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Shared\Specification\AbstractSpecificationFactory as DomainSpecFactory;
 use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
@@ -15,7 +16,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SharedService
+class SharedService implements SharedServiceInterface
 {
 
     protected $sharedSpecificationFactory;

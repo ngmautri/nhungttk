@@ -20,7 +20,7 @@ use InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxDoc extends GenericTrx
 {
@@ -71,9 +71,7 @@ class TrxDoc extends GenericTrx
 
         $instance->setDocType(Constants::PROCURE_DOC_TYPE_QUOTE);
 
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         $instance->clearEvents();
 

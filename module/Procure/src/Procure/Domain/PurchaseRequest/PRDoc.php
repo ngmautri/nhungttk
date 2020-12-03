@@ -13,6 +13,7 @@ use Procure\Domain\Exception\ValidationFailedException;
 use Procure\Domain\PurchaseRequest\Repository\PrCmdRepositoryInterface;
 use Procure\Domain\PurchaseRequest\Validator\ValidatorFactory;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
@@ -231,7 +232,7 @@ final class PRDoc extends GenericPR
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
      */
-    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -267,48 +268,60 @@ final class PRDoc extends GenericPR
     /**
      *
      * {@inheritdoc}
-     * @see \Procure\Domain\GoodsReceipt\GenericGR::doReverse()
+     * @see \Procure\Domain\GenericDoc::afterPost()
      */
-    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
-        /**
-         *
-         * @var PRRow $row ;
-         */
-        $postedDate = new \Datetime();
-        $this->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
-
-        foreach ($this->getDocRows() as $row) {
-
-            if ($row->getDocQuantity() == 0) {
-                continue;
-            }
-
-            $row->markAsReversed($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
-        }
-
-        $this->validate($validationService, true);
-
-        if ($this->hasErrors()) {
-            throw new \RuntimeException(sprintf("%s-%s", $this->getNotification()->errorMessage(), __FUNCTION__));
-        }
-
-        $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rep->post($this, false);
+        // TODO Auto-generated method stub
     }
 
-    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterReserve()
+     */
+    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doReverse()
+     */
+    protected function doReverse(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::prePost()
+     */
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::preReserve()
+     */
+    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::raiseEvent()
+     */
     protected function raiseEvent()
-    {}
+    {
+        // TODO Auto-generated method stub
+    }
 }

@@ -5,6 +5,7 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Ap\ApRowDTO;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\GenericRow;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
@@ -43,18 +44,6 @@ class APRow extends GenericRow
 
     protected $grToken;
 
-    public function markRowAsPosted(GenericAP $rootDoc, $postedBy, $postedDate)
-    {
-        $this->createVO($rootDoc); // createVO
-        $this->setLastchangeOn($postedDate);
-        $this->setLastchangeBy($postedBy);
-        $this->setIsPosted(1);
-        $this->setIsActive(1);
-        $this->setIsDraft(0);
-        $this->setIsReversed(0);
-        $this->setDocStatus(ProcureDocStatus::POSTED);
-    }
-
     public function markRowAsChanged(GenericAP $rootDoc, $postedBy, $postedDate)
     {
         $this->createVO($rootDoc); // createVO
@@ -76,7 +65,12 @@ class APRow extends GenericRow
         $this->setDocStatus(ProcureDocStatus::REVERSED);
     }
 
-    protected function createVO(GenericAP $rootDoc)
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericRow::createVO()
+     */
+    protected function createVO(GenericDoc $rootDoc)
     {
         $this->createUomVO();
         $this->createQuantityVO();

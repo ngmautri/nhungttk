@@ -3,7 +3,6 @@ namespace Inventory\Domain\Transaction\GI;
 
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
-use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
 use Inventory\Domain\Event\Transaction\GI\WhGiforPoReturnPosted;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
@@ -17,8 +16,10 @@ use Inventory\Domain\Transaction\Contracts\TrxStatus;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\ProcureDocStatus;
 use InvalidArgumentException;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 
 /**
  *
@@ -33,7 +34,7 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\AbstractGoodsIssue::doPost()
      */
-    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
 
         /**
@@ -136,9 +137,7 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface
         $instance->specify();
         $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
 
-        $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
         $instance->setRelevantMovementId($sourceObj->getId());
         $instance->setBaseDocId($sourceObj->getId());
         $instance->setBaseDocType($sourceObj->getMovementType());
@@ -151,7 +150,7 @@ class GIforReturnPO extends AbstractGoodsIssue implements GoodsIssueInterface
              * @var TrxRow $r ;
              */
             $grRow = GIforReturnPORow::createFromGRFromPurchasingRow($instance, $r, $options);
-            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $grRow->markRowAsPosted($instance, $options);
             $instance->addRow($grRow);
         }
 

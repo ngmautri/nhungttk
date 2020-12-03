@@ -5,6 +5,7 @@ use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Domain\Service\Contracts\PostingServiceInterface;
 use Inventory\Domain\Validator\AbstractInventorySpecificationFactory;
 use Procure\Domain\Service\Contracts\FXServiceInterface;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 
@@ -14,7 +15,7 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SharedService
+class SharedService implements SharedServiceInterface
 {
 
     protected $sharedSpecificationFactory;
@@ -30,38 +31,6 @@ class SharedService
     protected $valuationService;
 
     protected $logger;
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger = null)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *
-     * @return \Inventory\Domain\Validator\AbstractInventorySpecificationFactory
-     */
-    public function getDomainSpecificationFactory()
-    {
-        return $this->domainSpecificationFactory;
-    }
-
-    /**
-     *
-     * @param AbstractInventorySpecificationFactory $domainSpecificationFactory
-     */
-    public function setDomainSpecificationFactory(AbstractInventorySpecificationFactory $domainSpecificationFactory)
-    {
-        $this->domainSpecificationFactory = $domainSpecificationFactory;
-    }
 
     /**
      *
@@ -87,6 +56,39 @@ class SharedService
         $this->sharedSpecificationFactory = $sharedSpecificationFactory;
         $this->fxService = $fxService;
         $this->postingService = $postingService;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\Service\Contracts\SharedServiceInterface::getDomainSpecificationFactory()
+     */
+    public function getDomainSpecificationFactory()
+    {
+        return $this->domainSpecificationFactory;
+    }
+
+    /**
+     *
+     * @param AbstractInventorySpecificationFactory $domainSpecificationFactory
+     */
+    public function setDomainSpecificationFactory(AbstractInventorySpecificationFactory $domainSpecificationFactory)
+    {
+        $this->domainSpecificationFactory = $domainSpecificationFactory;
     }
 
     /**

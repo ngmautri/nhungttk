@@ -4,9 +4,14 @@ namespace Procure\Domain;
 use Application\Domain\Company\CompanyVO;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Procure\Domain\Validator\HeaderValidatorCollection;
+use Procure\Domain\Validator\RowValidatorCollection;
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 use Closure;
 use InvalidArgumentException;
 
@@ -15,8 +20,82 @@ use InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GenericDoc extends BaseDoc
+abstract class GenericDoc extends BaseDoc
 {
+
+    abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    abstract protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    abstract protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    abstract protected function raiseEvent();
+
+    abstract protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    abstract protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    /**
+     *
+     * @param ValidationServiceInterface $validationService
+     * @param boolean $isPosting
+     * @return \Procure\Domain\GenericDoc
+     */
+    public function validate(ValidationServiceInterface $validationService, $isPosting = false)
+    {
+        Assert::implementsInterface($validationService, ValidationServiceInterface::class, "Generc Doc Row not given!");
+
+        // Clear Notification.
+        $this->clearNotification();
+
+        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
+
+        if ($this->hasErrors()) {
+            return $this;
+        }
+
+        if (count($this->getDocRows()) == 0) {
+            $this->addError("Documment is empty. Please add line!");
+            return $this;
+        }
+
+        foreach ($this->docRows as $row) {
+            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param HeaderValidatorCollection $headerValidators
+     * @param boolean $isPosting
+     * @throws InvalidArgumentException
+     */
+    protected function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
+    {
+        $headerValidators->validate($this);
+    }
+
+    /**
+     *
+     * @param GenericRow $row
+     * @param RowValidatorCollection $rowValidators
+     * @param boolean $isPosting
+     */
+    protected function validateRow(GenericRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
+    {
+        Assert::isInstanceOf($row, GenericRow::class, "Generc Doc Row not given!");
+
+        $rowValidators->validate($this, $row);
+
+        if ($row->hasErrors()) {
+            $this->addErrorArray($row->getErrors());
+            return;
+        }
+    }
 
     private $exculdedProps = [
         "rowIdArray",
@@ -27,6 +106,7 @@ class GenericDoc extends BaseDoc
 
     /**
      *
+     * @deprecated
      * @param GenericRow $row
      */
     protected function calculateRowQuantity(GenericRow $row)

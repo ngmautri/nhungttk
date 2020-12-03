@@ -10,11 +10,13 @@ use Inventory\Domain\Transaction\AbstractGoodsReceipt;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
+use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRFromOpening extends AbstractGoodsReceipt implements GoodsReceiptInterface
 {
@@ -24,7 +26,7 @@ class GRFromOpening extends AbstractGoodsReceipt implements GoodsReceiptInterfac
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\AbstractGoodsReceipt::prePost()
      */
-    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
+    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         // return GenericTrx
         $target = $this;
@@ -39,11 +41,6 @@ class GRFromOpening extends AbstractGoodsReceipt implements GoodsReceiptInterfac
 
         $event = new WhOpenBalancePosted($target, $defaultParams, $params);
         $this->addEvent($event);
-    }
-
-    protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        // raise event, if needed.
     }
 
     public function specify()

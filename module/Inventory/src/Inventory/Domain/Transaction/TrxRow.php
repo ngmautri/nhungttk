@@ -4,12 +4,13 @@ namespace Inventory\Domain\Transaction;
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
+use Procure\Domain\GenericDoc;
 
 /**
  * Transaction Row
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxRow extends BaseRow
 {
@@ -20,6 +21,15 @@ class TrxRow extends BaseRow
     // ====================
 
     // ===================
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericRow::createVO()
+     */
+    protected function createVO(GenericDoc $rootDoc)
+    {}
+
     public function setCalculatedCost($cogs)
     {
         $this->setCogsLocal($cogs);
@@ -78,37 +88,5 @@ class TrxRow extends BaseRow
     public static function createInstance()
     {
         return new self();
-    }
-
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Inventory\Domain\Transaction\BaseRow";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
     }
 }

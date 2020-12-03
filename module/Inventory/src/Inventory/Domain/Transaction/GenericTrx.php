@@ -19,11 +19,9 @@ use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxStatus;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
-use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorCollection;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorCollection;
 use Procure\Domain\Contracts\ProcureDocStatus;
 use Webmozart\Assert\Assert;
-use InvalidArgumentException;
 
 /**
  *
@@ -87,61 +85,6 @@ abstract class GenericTrx extends BaseDoc
             } elseif ($this->getTotalRows() == $this->getExhaustedRows()) {
                 $this->setTransactionStatus(TrxStatus::GR_FULLY_USED);
             }
-        }
-
-        return $this;
-    }
-
-    abstract protected function prePost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function afterPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function preReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function doReverse(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
-
-    abstract protected function afterReserve(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService);
-
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws InvalidArgumentException
-     * @return \Inventory\Domain\Transaction\GenericTrx
-     */
-    public function validate(TrxValidationServiceInterface $validationService, $isPosting = false)
-    {
-        if ($validationService == null) {
-            throw new InvalidArgumentException("Validation service not given!");
-        }
-
-        if (! $validationService->getHeaderValidators() instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Headers Validators not given!");
-        }
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Headers Validators not given!");
-        }
-
-        // Clear Notification.
-        $this->clearNotification();
-
-        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
-
-        if ($this->hasErrors()) {
-            return $this;
-        }
-
-        if ($this->getDocRowsCount() == 0) {
-            $this->addError("Documment is empty. Please add line!");
-            return $this;
-        }
-
-        foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
         }
 
         return $this;
@@ -516,47 +459,6 @@ abstract class GenericTrx extends BaseDoc
 
     /**
      *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param boolean $isPosting
-     * @throws InvalidArgumentException
-     */
-    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
-    {
-        if (! $headerValidators instanceof HeaderValidatorCollection) {
-            throw new InvalidArgumentException("Validators not given!");
-        }
-
-        $headerValidators->validate($this);
-    }
-
-    /**
-     *
-     * @param TrxRow $row
-     * @param RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws InvalidArgumentException
-     */
-    public function validateRow(TrxRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
-    {
-        if (! $row instanceof TrxRow) {
-            throw new InvalidArgumentException("GR Row not given!");
-        }
-
-        if (! $rowValidators instanceof RowValidatorCollection) {
-            throw new InvalidArgumentException("Row Validator not given!");
-        }
-
-        $rowValidators->validate($this, $row);
-
-        if ($row->hasErrors()) {
-            $this->addErrorArray($row->getErrors());
-        }
-
-        $row->calculate(); //
-    }
-
-    /**
-     *
      * @return NULL|object
      */
     public function makeDetailsDTO()
@@ -597,5 +499,75 @@ abstract class GenericTrx extends BaseDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterPost()
+     */
+    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterReserve()
+     */
+    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doPost()
+     */
+    protected function doPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doReverse()
+     */
+    protected function doReverse(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::prePost()
+     */
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::preReserve()
+     */
+    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::raiseEvent()
+     */
+    protected function raiseEvent()
+    {
+        // TODO Auto-generated method stub
     }
 }

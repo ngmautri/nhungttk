@@ -16,12 +16,9 @@ use Procure\Domain\Event\Ap\ApPosted;
 use Procure\Domain\Event\Ap\ApReversed;
 use Procure\Domain\Event\Ap\ApRowAdded;
 use Procure\Domain\Event\Ap\ApRowUpdated;
-use Procure\Domain\Exception\InvalidArgumentException;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
-use Procure\Domain\Validator\HeaderValidatorCollection;
-use Procure\Domain\Validator\RowValidatorCollection;
 use Webmozart\Assert\Assert;
 
 /**
@@ -70,12 +67,10 @@ abstract class GenericAP extends BaseDoc
 
     /**
      *
-     * @param CommandOptions $options
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doPost()
      */
-    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -106,12 +101,10 @@ abstract class GenericAP extends BaseDoc
 
     /**
      *
-     * @param CommandOptions $options
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     * @throws \RuntimeException
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::doReverse()
      */
-    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -139,80 +132,6 @@ abstract class GenericAP extends BaseDoc
         $rep->post($this, true);
     }
 
-    /**
-     *
-     * @param CommandOptions $options
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     */
-    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        // left black intentionally.
-    }
-
-    /**
-     *
-     * @param CommandOptions $options
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     */
-    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        // left black intentionally.
-    }
-
-    /**
-     *
-     * @param CommandOptions $options
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     */
-    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    { // left black intentionally.
-    }
-
-    /**
-     *
-     * @param CommandOptions $options
-     * @param ValidationServiceInterface $validationService
-     * @param SharedService $sharedService
-     */
-    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    { // left black intentionally.
-    }
-
-    /**
-     *
-     * @param ValidationServiceInterface $validationService
-     * @param boolean $isPosting
-     * @throws \InvalidArgumentException
-     * @return \Procure\Domain\AccountPayable\GenericAP
-     */
-    public function validate(ValidationServiceInterface $validationService, $isPosting = false)
-    {
-        Assert::notNull($validationService, "Validation service not given");
-
-        // Clear Notification.
-        $this->clearNotification();
-
-        $this->validateHeader($validationService->getHeaderValidators(), $isPosting);
-
-        if ($this->hasErrors()) {
-            return $this;
-        }
-
-        if (count($this->getDocRows()) == 0) {
-            $this->addError("Documment is empty. Please add line!");
-            return $this;
-        }
-
-        foreach ($this->getDocRows() as $row) {
-            $this->validateRow($row, $validationService->getRowValidators(), $isPosting);
-        }
-
-        return $this;
-    }
-
     public function deactivateRow(APRow $row, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
     {}
 
@@ -227,7 +146,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function createRowFrom(APRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        Assert::notEq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is posted %s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("AP is posted %s", $this->getId()));
         Assert::notNull($snapshot, "Row Snapshot not founds");
         Assert::notNull($options, "Options not founds");
 
@@ -288,7 +207,7 @@ abstract class GenericAP extends BaseDoc
      */
     public function updateRowFrom(APRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        Assert::notEq($this->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is already posted %s", $this->getId()));
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("AP is already posted %s", $this->getId()));
         Assert::notNull($snapshot, "Row Snapshot not founds");
         Assert::notNull($options, "Options not founds");
 
@@ -458,38 +377,6 @@ abstract class GenericAP extends BaseDoc
         return $this;
     }
 
-    /**
-     *
-     * @param HeaderValidatorCollection $headerValidators
-     * @param boolean $isPosting
-     * @throws \InvalidArgumentException
-     */
-    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
-    {
-        Assert::isInstanceOf($headerValidators, HeaderValidatorCollection::class, "Header Validator is required!");
-        $headerValidators->validate($this);
-    }
-
-    /**
-     *
-     * @param APRow $row
-     * @param RowValidatorCollection $rowValidators
-     * @param boolean $isPosting
-     * @throws InvalidArgumentException
-     */
-    public function validateRow(APRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
-    {
-        Assert::isInstanceOf($row, APRow::class, "AP-row doc is required!");
-        Assert::isInstanceOf($rowValidators, RowValidatorCollection::class, "Row Validator is required!");
-
-        $rowValidators->validate($this, $row);
-
-        if ($row->hasErrors()) {
-            $this->addErrorArray($row->getErrors());
-            return;
-        }
-    }
-
     public function makeSnapshot()
     {
         return APSnapshotAssembler::updateAllFieldsFrom(new APSnapshot(), $this);
@@ -537,5 +424,48 @@ abstract class GenericAP extends BaseDoc
 
         $dto->docRowsDTO = $rowDTOList;
         return $dto;
+    }
+
+    protected function raiseEvent()
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterPost()
+     */
+    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::afterReserve()
+     */
+    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::prePost()
+     */
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::preReserve()
+     */
+    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
     }
 }

@@ -4,14 +4,14 @@ namespace Inventory\Domain\Transaction;
 use Application\Application\Event\DefaultParameter;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Transaction\Adjustment\StockQtyAdjustmentPosted;
-use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractStockAdjustment extends GenericTrx
 {
@@ -21,7 +21,7 @@ abstract class AbstractStockAdjustment extends GenericTrx
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\GenericTrx::doPost()
      */
-    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, TrxValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
 
         /**
@@ -74,9 +74,9 @@ abstract class AbstractStockAdjustment extends GenericTrx
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\GenericTrx::afterPost()
+     * @see \Inventory\Domain\Transaction\GenericTrx::specify()
      */
-    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
+    public function specify()
     {
         // TODO Auto-generated method stub
     }
@@ -84,9 +84,9 @@ abstract class AbstractStockAdjustment extends GenericTrx
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\GenericTrx::afterReserve()
+     * @see \Procure\Domain\GenericDoc::afterPost()
      */
-    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
+    protected function afterPost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
         // TODO Auto-generated method stub
     }
@@ -94,9 +94,9 @@ abstract class AbstractStockAdjustment extends GenericTrx
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\GenericTrx::doReverse()
+     * @see \Procure\Domain\GenericDoc::afterReserve()
      */
-    protected function doReverse(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
+    protected function afterReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
         // TODO Auto-generated method stub
     }
@@ -104,9 +104,9 @@ abstract class AbstractStockAdjustment extends GenericTrx
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\GenericTrx::prePost()
+     * @see \Procure\Domain\GenericDoc::doReverse()
      */
-    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
+    protected function doReverse(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
     {
         // TODO Auto-generated method stub
     }
@@ -114,9 +114,29 @@ abstract class AbstractStockAdjustment extends GenericTrx
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\GenericTrx::preReserve()
+     * @see \Procure\Domain\GenericDoc::prePost()
      */
-    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Inventory\Domain\Service\Contracts\TrxValidationServiceInterface $validationService, \Inventory\Domain\Service\SharedService $sharedService)
+    protected function prePost(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::preReserve()
+     */
+    protected function preReserve(\Application\Domain\Shared\Command\CommandOptions $options, \Procure\Domain\Service\Contracts\ValidationServiceInterface $validationService, \Procure\Domain\Service\Contracts\SharedServiceInterface $sharedService)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::raiseEvent()
+     */
+    protected function raiseEvent()
     {
         // TODO Auto-generated method stub
     }

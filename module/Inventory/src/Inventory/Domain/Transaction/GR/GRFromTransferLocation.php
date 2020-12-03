@@ -100,8 +100,7 @@ class GRFromTransferLocation extends AbstractGoodsReceipt implements GoodsReceip
         $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
 
         $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         // overwrite.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());
@@ -115,7 +114,7 @@ class GRFromTransferLocation extends AbstractGoodsReceipt implements GoodsReceip
              */
 
             $grRow = GRFromTransferWarehouseRow::createFromTORow($instance, $r, $options);
-            $grRow->markAsPosted($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $grRow->markRowAsPosted($instance, $options);
             $instance->addRow($grRow);
         }
 

@@ -6,9 +6,9 @@ use Procure\Domain\GenericRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class BaseRow extends GenericRow
+abstract class BaseRow extends GenericRow
 {
 
     // Specific Attribute, that are missing on Generic Row.

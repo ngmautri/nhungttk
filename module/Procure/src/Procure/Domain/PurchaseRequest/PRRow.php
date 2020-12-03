@@ -3,12 +3,11 @@ namespace Procure\Domain\PurchaseRequest;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use PHPUnit\Framework\Assert;
 use Procure\Application\DTO\Pr\PrRowDTO;
-use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PORow;
-use Application\Domain\Shared\Assembler\GenericObjectAssembler;
+use Procure\Domain\GenericDoc;
 
 /**
  * PR Row
@@ -52,7 +51,7 @@ class PRRow extends BaseRow
 
     protected $lastCurrency;
 
-    protected function createVO(PRDoc $rootDoc)
+    protected function createVO(GenericDoc $rootDoc)
     {
         $this->createUomVO();
         $this->createQuantityVO();

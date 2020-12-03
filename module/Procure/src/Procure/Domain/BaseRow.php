@@ -7,7 +7,7 @@ namespace Procure\Domain;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class BaseRow extends AbstractRow
+abstract class BaseRow extends AbstractRow
 {
 
     protected $standardQuantity;

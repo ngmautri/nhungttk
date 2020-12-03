@@ -84,11 +84,11 @@ class UpdateRowCmdHandler extends AbstractCommandHandler
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
             // ================
-
             // Check Version
             // ==============
             VersionChecker::checkPRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
+
             $cmd->addSuccess(\sprintf("PO #%s updated", $rootEntity->getId()));
         } catch (\Exception $e) {
             $cmd->addError($e->getMessage());

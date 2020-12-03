@@ -169,7 +169,7 @@ class PrMapper
         $entity->setWorkflowStatus($snapshot->workflowStatus);
         $entity->setTransactionStatus($snapshot->transactionStatus);
         $entity->setConvertedStockQuantity($snapshot->convertedStockQuantity);
-        $entity->setConvertedStandardQuantiy($snapshot->convertedStandardQuantiy);
+        $entity->setConvertedStandardQuantity($snapshot->convertedStandardQuantity);
         $entity->setDocQuantity($snapshot->docQuantity);
         $entity->setDocUnit($snapshot->docUnit);
         $entity->setDocType($snapshot->docType);
@@ -433,7 +433,7 @@ class PrMapper
         $snapshot->workflowStatus = $entity->getWorkflowStatus();
         $snapshot->transactionStatus = $entity->getTransactionStatus();
         $snapshot->convertedStockQuantity = $entity->getConvertedStockQuantity();
-        $snapshot->convertedStandardQuantiy = $entity->getConvertedStandardQuantiy();
+        $snapshot->convertedStandardQuantity = $entity->getConvertedStandardQuantity();
         $snapshot->docQuantity = $entity->getDocQuantity();
         $snapshot->docUnit = $entity->getDocUnit();
         $snapshot->docType = $entity->getDocType();

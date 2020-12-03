@@ -247,7 +247,8 @@ final class PRDoc extends GenericPR
                 continue;
             }
 
-            $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+            $row->markRowAsPosted($this, $options);
+
         }
 
         $this->validate($validationService, true);

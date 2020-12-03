@@ -20,7 +20,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GenericRow extends BaseRow
+abstract class GenericRow extends BaseRow
 {
 
     private $exculdedProps = [
@@ -36,6 +36,9 @@ class GenericRow extends BaseRow
         "revisionNo",
         "docVersion"
     ];
+
+    abstract protected function createVO(GenericDoc $rootDoc);
+
 
     // Uom VO
     // ====================
@@ -435,6 +438,20 @@ class GenericRow extends BaseRow
     {
         $this->setLastchangeOn($postedDate);
         $this->setLastchangeBy($postedBy);
+        $this->setIsPosted(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsReversed(0);
+        $this->setDocStatus(ProcureDocStatus::POSTED);
+    }
+
+    public function markRowAsPosted(GenericDoc $rootDoc, CommandOptions $options)
+    {
+        $this->createVO($rootDoc); // important to recalculate before posting.
+
+        $createdDate = new \Datetime();
+        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
+
         $this->setIsPosted(1);
         $this->setIsActive(1);
         $this->setIsDraft(0);

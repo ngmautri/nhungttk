@@ -6,9 +6,9 @@ use Procure\Domain\GenericRow;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class BaseRow extends GenericRow
+abstract class BaseRow extends GenericRow
 {
 
     // Specific Attribute
@@ -29,7 +29,7 @@ class BaseRow extends GenericRow
 
     protected $edt;
 
-    protected $convertedStandardQuantiy;
+    protected $convertedStandardQuantity;
 
     protected $project;
 
@@ -111,9 +111,9 @@ class BaseRow extends GenericRow
      *
      * @return mixed
      */
-    public function getConvertedStandardQuantiy()
+    public function getConvertedStandardQuantity()
     {
-        return $this->convertedStandardQuantiy;
+        return $this->convertedStandardQuantity;
     }
 
     /**
@@ -123,95 +123,5 @@ class BaseRow extends GenericRow
     public function getProject()
     {
         return $this->project;
-    }
-
-    /**
-     *
-     * @param mixed $checksum
-     */
-    protected function setChecksum($checksum)
-    {
-        $this->checksum = $checksum;
-    }
-
-    /**
-     *
-     * @param mixed $priority
-     */
-    protected function setPriority($priority)
-    {
-        $this->priority = $priority;
-    }
-
-    /**
-     *
-     * @param mixed $rowName
-     */
-    protected function setRowName($rowName)
-    {
-        $this->rowName = $rowName;
-    }
-
-    /**
-     *
-     * @param mixed $rowDescription
-     */
-    protected function setRowDescription($rowDescription)
-    {
-        $this->rowDescription = $rowDescription;
-    }
-
-    /**
-     *
-     * @param mixed $rowCode
-     */
-    protected function setRowCode($rowCode)
-    {
-        $this->rowCode = $rowCode;
-    }
-
-    /**
-     *
-     * @param mixed $rowUnit
-     */
-    protected function setRowUnit($rowUnit)
-    {
-        $this->rowUnit = $rowUnit;
-    }
-
-    /**
-     *
-     * @param mixed $conversionText
-     */
-    protected function setConversionText($conversionText)
-    {
-        $this->conversionText = $conversionText;
-    }
-
-    /**
-     *
-     * @param mixed $edt
-     */
-    protected function setEdt($edt)
-    {
-        $this->edt = $edt;
-    }
-
-    /**
-     *
-     * @param mixed $convertedStandardQuantiy
-     */
-    protected function setConvertedStandardQuantiy($convertedStandardQuantiy)
-    {
-        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
-    }
-
-    /**
-     *
-     * @param mixed $project
-     */
-    protected function setProject($project)
-    {
-        $this->project = $project;
     }
 }

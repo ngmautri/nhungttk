@@ -6,6 +6,7 @@ use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Po\PORowDTO;
 use Procure\Application\DTO\Po\PORowDetailsDTO;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\AccountPayable\APRowSnapshotAssembler;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\QuotationRequest\QRRow;
@@ -17,10 +18,15 @@ use Webmozart\Assert\Assert;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PORow extends BaseRow
+final class PORow extends BaseRow
 {
 
-    protected function createVO(PODoc $rootDoc)
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Procure\Domain\GenericRow::createVO()
+     */
+    protected function createVO(GenericDoc $rootDoc)
     {
         $this->createUomVO();
         $this->createQuantityVO();

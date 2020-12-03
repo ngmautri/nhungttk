@@ -4,9 +4,9 @@ namespace Procure\Domain\PurchaseRequest;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class BaseDoc extends AbstractPR
+abstract class BaseDoc extends AbstractPR
 {
 
     // Specific Attribute

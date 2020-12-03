@@ -107,13 +107,13 @@ final class PRDoc extends GenericPR
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($instance, false);
+        $rootSnapshot = $rep->storeHeader($instance);
 
         if ($rootSnapshot == null) {
             throw new \RuntimeException(sprintf("Error orcured when creating PR #%s", $instance->getId()));
         }
 
-        $instance->updateIdentityFrom($snapshot);
+        $instance->updateIdentityFrom($rootSnapshot);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -248,7 +248,6 @@ final class PRDoc extends GenericPR
             }
 
             $row->markRowAsPosted($this, $options);
-
         }
 
         $this->validate($validationService, true);

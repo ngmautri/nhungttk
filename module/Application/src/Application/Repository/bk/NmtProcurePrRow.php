@@ -219,7 +219,7 @@ class NmtProcurePrRow
      *
      * @var string
      *
-     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
     private $convertedStockQuantity;
 
@@ -227,9 +227,9 @@ class NmtProcurePrRow
      *
      * @var string
      *
-     * @ORM\Column(name="converted_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=18, scale=4, nullable=true)
      */
-    private $convertedStandardQuantiy;
+    private $convertedStandardQuantity;
 
     /**
      *
@@ -999,27 +999,27 @@ class NmtProcurePrRow
     }
 
     /**
-     * Set convertedStandardQuantiy
+     * Set convertedStandardQuantity
      *
-     * @param string $convertedStandardQuantiy
+     * @param string $convertedStandardQuantity
      *
      * @return NmtProcurePrRow
      */
-    public function setConvertedStandardQuantiy($convertedStandardQuantiy)
+    public function setConvertedStandardQuantity($convertedStandardQuantity)
     {
-        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
+        $this->convertedStandardQuantity = $convertedStandardQuantity;
 
         return $this;
     }
 
     /**
-     * Get convertedStandardQuantiy
+     * Get convertedStandardQuantity
      *
      * @return string
      */
-    public function getConvertedStandardQuantiy()
+    public function getConvertedStandardQuantity()
     {
-        return $this->convertedStandardQuantiy;
+        return $this->convertedStandardQuantity;
     }
 
     /**
@@ -1430,4 +1430,3 @@ class NmtProcurePrRow
         return $this->warehouse;
     }
 }
-

@@ -53,16 +53,16 @@ class CreateHeaderCmdHandler extends AbstractCommandHandler
             $sharedService = SharedServiceFactory::createForPR($cmd->getDoctrineEM());
             $rootEntity = PRDoc::createFrom($snapshot, $options, $sharedService);
 
-            $snapshot->id = $rootEntity->getId();
-            $snapshot->token = $rootEntity->getToken();
-            $this->setOutput($snapshot); // important;
-
             // event dispatch
             // ================
             if ($cmd->getEventBus() !== null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
             // ================
+
+            $snapshot->id = $rootEntity->getId();
+            $snapshot->token = $rootEntity->getToken();
+            $this->setOutput($snapshot); // important;
 
             $m = sprintf("[OK] PR # %s created", $snapshot->getId());
             $cmd->addSuccess($m);

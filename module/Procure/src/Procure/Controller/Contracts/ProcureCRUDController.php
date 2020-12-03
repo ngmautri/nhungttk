@@ -312,6 +312,7 @@ abstract class ProcureCRUDController extends AbstractGenericController
         $this->flashMessenger()->addMessage($notification->successMessage(false));
 
         $header = $cmd->getOutput();
+
         if ($header instanceof DocSnapshot) {
             $redirectUrl = sprintf($this->getBaseUrl() . "/add-row?target_token=%s&target_id=%s", $header->getToken(), $header->getId());
         } else {

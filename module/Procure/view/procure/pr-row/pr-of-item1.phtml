@@ -123,7 +123,7 @@ else :
       </tr>
    </thead>
    <tbody>
- 
+
 	 <?php
 
     $count = 0;
@@ -202,9 +202,9 @@ else :
         ?></td>
          <td><?php
 
-        if (! $a->getConvertedStandardQuantiy() == null) :
-            if (is_numeric($a->getConvertedStandardQuantiy())) :
-                echo number_format($a->getConvertedStandardQuantiy(), 2); endif;
+        if (! $a->getConvertedStandardQuantity() == null) :
+            if (is_numeric($a->getConvertedStandardQuantity())) :
+                echo number_format($a->getConvertedStandardQuantity(), 2); endif;
 
         else :
 
@@ -262,22 +262,22 @@ else :
             echo number_format($r['posted_ap_qty'], 2); endif;
 
         ?></td>
-         <td>			
+         <td>
 	<?php
 
         if ($a->getQuantity() - $r['gr_qty'] <= 0 or $a->getQuantity() - $r['stock_gr_qty'] <= 0) :
             echo $this->translate("fullly received");
 	endif;
 
-        ?>		
-		
+        ?>
+
 		<?php
 
         if ($r['gr_qty'] > 0 and $r['gr_qty'] < $a->getQuantity()) :
             echo $this->translate("partial");
 	endif;
 
-        ?>		
+        ?>
 			</td>
          <td></td>
       </tr>
@@ -322,4 +322,4 @@ $('#total_balance').html("<?php
 
 endif;
 ?>
-	
+

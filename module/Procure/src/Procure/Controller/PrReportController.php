@@ -24,7 +24,7 @@ class PrReportController extends AbstractGenericController
      */
     public function headerStatusAction()
     {
-        echo $this->getLocale();
+        // echo $this->getLocale();
         $isActive = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');

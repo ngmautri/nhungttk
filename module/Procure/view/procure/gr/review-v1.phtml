@@ -5,10 +5,11 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
+use Application\Domain\Contracts\FormActions;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Application\DTO\Gr\GrRowDTO;
 use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
-use Procure\Domain\PurchaseOrder\PODocStatus;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Shared\Constants;
 
 /**@var GrDTO $headerDTO ;*/
@@ -85,21 +86,21 @@ if (! $headerDTO == null) {
     $save_as_excel = sprintf($this->baseUrl . "/procure/gr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
     $save_as_openoffice = sprintf($this->baseUrl . "/procure/gr/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-    if ($headerDTO->getDocStatus() == PODocStatus::DOC_STATUS_DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+    if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == FormActions::REVIEW) :
         $hoverMode = "cell";
         $canPost = true;
     endif;
 
     switch ($headerDTO->getDocStatus()) {
-        case PODocStatus::DOC_STATUS_DRAFT:
+        case ProcureDocStatus::DRAFT:
             $isDraft = true;
             $canPost = true;
             break;
-        case PODocStatus::DOC_STATUS_POSTED:
+        case ProcureDocStatus::POSTED:
             $isPosted = true;
             $canAmend = true;
             break;
-        case PODocStatus::DOC_STATUS_AMENDING:
+        case ProcureDocStatus::AMENDING:
             $isAmending = true;
             $canAcceptAmendment = true;
             break;
@@ -470,11 +471,17 @@ if ($isViewing) :
                                     echo "selected"; endif ?>
 
 
+
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
+
+
 
 
                                  value="finalPo">Final</option>

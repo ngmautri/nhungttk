@@ -8,12 +8,12 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\PO\Options\PoUpdateOptions;
 use Procure\Application\DTO\Po\PoDTO;
 use Procure\Application\Service\SharedServiceFactory;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\Exception\OperationFailedException;
 use Procure\Domain\Exception\PoInvalidOperationException;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
@@ -70,7 +70,7 @@ class EditHeaderCmdHandler extends AbstractCommandHandler
 
             $notification = new Notification();
 
-            if ($rootEntity->getDocStatus() == PODocStatus::DOC_STATUS_POSTED) {
+            if ($rootEntity->getDocStatus() == ProcureDocStatus::POSTED) {
                 throw new PoInvalidOperationException(sprintf("PO is already posted! %s", $rootEntity->getId()));
             }
 

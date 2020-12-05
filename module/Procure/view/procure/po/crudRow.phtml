@@ -260,7 +260,7 @@ echo $error_msg;
                   <div class="form-group margin-bottom required">
                      <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
                      <div class="col-sm-3">
-                        <input tabindex="5" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
+                        <input tabindex="5" class="form-control input-sm" type="text" id="docQuantity" name="docQuantity" value="<?php
 
                         echo (! $dto == null) ? $dto->getDocQuantity() : "";
                         ?>">
@@ -276,7 +276,7 @@ echo $error_msg;
                     echo $this->translate("Document Unit");
                     ?></label>
                      <div class="col-sm-3">
-                        <select tabindex="5" name="docUnit" id="docUnit" class="form-control input-sm">
+                        <select tabindex="6" name="docUnit" id="docUnit" class="form-control input-sm">
                            <option     value=""><?php
 
                         echo $this->translate("Select doc unit");
@@ -288,7 +288,7 @@ echo $error_msg;
                      </div>
                      <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
                      <div class="col-sm-1">
-                        <input tabindex="7" class="form-control input-sm" type="text" name="standardConvertFactor" value="<?php
+                        <input tabindex="7" class="form-control input-sm" type="text" name="standardConvertFactor" id="standardConvertFactor" value="<?php
 
                         echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
                         ?>">
@@ -445,13 +445,13 @@ echo $error_msg;
 
 
     $('#quantity').bind('change', function() {
-       	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+       	$('#net_amount').val($('#unit_price').val() * $('#docQuantity').val());
        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
 
     });
 
     $('#unit_price').bind('change', function() {
-    	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+    	$('#net_amount').val($('#unit_price').val() * $('#docQuantity').val());
     	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
     });
 

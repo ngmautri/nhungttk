@@ -88,7 +88,7 @@ class GRFromPO extends GenericGoodsReceipt
 
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         $validationService = ValidatorFactory::create($instance->getDocType(), $sharedService);
 

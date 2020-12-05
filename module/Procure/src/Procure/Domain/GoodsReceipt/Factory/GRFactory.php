@@ -2,12 +2,13 @@
 namespace Procure\Domain\GoodsReceipt\Factory;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Shared\Constants;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Transaction\GenericTrx;
 use Procure\Domain\AccountPayable\APDoc;
+use Procure\Domain\AccountPayable\APFromPO;
 use Procure\Domain\AccountPayable\GenericAP;
+use Procure\Domain\Contracts\ProcureDocStatus;
 use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Gr\GrHeaderCreated;
 use Procure\Domain\Event\Gr\GrHeaderUpdated;
@@ -18,11 +19,14 @@ use Procure\Domain\GoodsReceipt\GRReturnFromWHReturn;
 use Procure\Domain\GoodsReceipt\GRReversal;
 use Procure\Domain\GoodsReceipt\GRReversalFromAPReserval;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
+use Procure\Domain\GoodsReceipt\GRSnapshotAssembler;
+use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
 use Procure\Domain\GoodsReceipt\Validator\ValidatorFactory;
+use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\SharedService;
-use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -79,23 +83,22 @@ class GRFactory
      * @param GRSnapshot $snapshot
      * @param CommandOptions $options
      * @param SharedService $sharedService
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return NULL|\Procure\Domain\GoodsReceipt\GenericGR
      */
     public static function createFrom(GRSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $snapshot instanceof GRSnapshot) {
-            throw new \InvalidArgumentException("GRSnapshot not found!");
-        }
+        Assert::notNull($snapshot, "GRSnapshot not found");
+        Assert::notNull($options, "Command options not found");
+
+        $snapshot->initDoc($options);
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
 
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
 
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
+        GRSnapshotAssembler::updateEntityAllFieldsFrom($instance, $snapshot);
 
         // Important
         $instance->specify();
@@ -107,18 +110,8 @@ class GRFactory
             throw new \RuntimeException($instance->getNotification()->errorMessage());
         }
 
-        $createdDate = new \Datetime();
-        $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(ProcureDocStatus::DRAFT);
-        $instance->setIsActive(1);
-        $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
-        $instance->setRevisionNo(1);
-        $instance->setDocVersion(1);
-        $instance->setUuid(Uuid::uuid4()->toString());
-        $instance->setToken($instance->getUuid());
-
-        $instance->recordedEvents = array();
-
+        $instance->clearEvents();
+        $instance->clearNotification();
         /**
          *
          * @var GRSnapshot $rootSnapshot
@@ -126,12 +119,6 @@ class GRFactory
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rootSnapshot = $rep->storeHeader($instance);
-
-        if ($rootSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error orcured when creating Goods Receipt #%s", $instance->getId()));
-        }
-
-        $instance->updateIdentityFrom($snapshot);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -146,21 +133,32 @@ class GRFactory
         $event = new GrHeaderCreated($target, $defaultParams, $params);
         $instance->addEvent($event);
 
+        $instance->updateIdentityFrom($snapshot);
         return $instance;
     }
 
-    public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
+    public static function updateFrom(GenericGR $rootEntity, GrSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
+        Assert::notNull($rootEntity, sprintf("Root entity not found!"));
+        Assert::notEq($rootEntity->getDocStatus(), ProcureDocStatus::POSTED, sprintf("GR is already posted! %s", $rootEntity->getId()));
+        Assert::notNull($snapshot, "GR snapshot not found");
+        Assert::notNull($options, "Command options not found");
+
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
+
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
 
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
+        // SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        GRSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
 
         // Important
         $instance->specify();
+
+        $createdDate = new \Datetime();
+        $createdBy = $options->getUserId();
+        $rootEntity->markDocAsChanged($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
         $validationService = ValidatorFactory::create($docType, $sharedService);
         $instance->validateHeader($validationService->getHeaderValidators());
@@ -169,10 +167,8 @@ class GRFactory
             throw new \RuntimeException($instance->getNotification()->errorMessage());
         }
 
-        $createdDate = new \Datetime();
-        $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-
-        $instance->recordedEvents = array();
+        $instance->clearEvents();
+        $instance->clearNotification();
 
         /**
          *
@@ -181,10 +177,6 @@ class GRFactory
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rootSnapshot = $rep->storeHeader($instance);
-
-        if ($rootSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error orcured when creating GR #%s", $instance->getId()));
-        }
 
         $instance->id = $rootSnapshot->getId();
 
@@ -202,6 +194,11 @@ class GRFactory
 
         $instance->addEvent($event);
         return $instance;
+    }
+
+    public static function createFromPo(PODoc $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        return APFromPO::createFromPo($sourceObj, $options, $sharedService);
     }
 
     /**
@@ -240,6 +237,7 @@ class GRFactory
             $results[] = $gr;
         }
 
+        Assert::notNull($results, 'Cant not create PO GR by Warehouse!');
         return $results;
     }
 
@@ -265,6 +263,7 @@ class GRFactory
             $results[] = $gr;
         }
 
+        Assert::notNull($results, 'Cant not create PO GR by Warehouse!');
         return $results;
     }
 
@@ -327,6 +326,9 @@ class GRFactory
                 $doc = GRReturnFromWHReturn::getInstance();
                 break;
         }
+
+        Assert::notNull($doc, 'Cant not create PO GR!');
+
         return $doc;
     }
 }

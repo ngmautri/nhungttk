@@ -11,7 +11,6 @@
     use Procure\Application\Helper\Toolbar;
     use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
     use Procure\Domain\Contracts\ProcureDocStatus;
-    use Procure\Domain\PurchaseOrder\PODocStatus;
     use Procure\Domain\Shared\Constants;
 
     /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
@@ -405,11 +404,15 @@
 
 
 
+
+
                                  value="draftPo">Draft</option>
                                  <option <?php
 
                                 if ($headerDTO->getCurrentState() == "finalPo") :
                                     echo "selected"; endif ?>
+
+
 
 
 

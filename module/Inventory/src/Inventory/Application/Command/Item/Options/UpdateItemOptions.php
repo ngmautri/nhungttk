@@ -7,7 +7,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateItemOptions implements CommandOptions
 {
@@ -122,4 +122,7 @@ class UpdateItemOptions implements CommandOptions
     {
         return $this->isPosting;
     }
+
+    public function getCompanyVO()
+    {}
 }

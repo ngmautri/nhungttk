@@ -6,7 +6,7 @@ namespace Procure\Domain\GoodsReceipt;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class BaseDoc extends AbstractGR
+abstract class BaseDoc extends AbstractGR
 {
 
     protected $targetWhList;

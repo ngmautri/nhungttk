@@ -93,7 +93,7 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
 
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
         $instance->setBaseDocId($sourceObj->getId()); // important.
         $instance->setBaseDocType($sourceObj->getDocType()); // important.
         $instance->markAsReversed($createdBy, $sourceObj->getReversalDate());

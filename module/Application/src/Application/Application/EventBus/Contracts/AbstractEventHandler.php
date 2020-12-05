@@ -4,6 +4,7 @@ namespace Application\Application\EventBus\Contracts;
 use Application\Domain\EventBus\EventBusServiceInterface;
 use Application\Domain\EventBus\Handler\EventHandlerInterface;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
+use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
@@ -11,7 +12,7 @@ use Symfony\Component\Cache\Adapter\AbstractAdapter;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 abstract class AbstractEventHandler implements EventHandlerInterface, EventHandlerPriorityInterface
 {
@@ -23,6 +24,10 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
     protected $logger;
 
     protected $cache;
+
+    protected $companyVO;
+
+    protected $userVO;
 
     /**
      *
@@ -94,5 +99,24 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
         if ($this->logger != null) {
             $this->logger->info($m);
         }
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCompanyVO()
+    {
+        $rep1 = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
+        return $rep1->getById(1)->createValueObject();
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getUserVO()
+    {
+        return $this->userVO;
     }
 }

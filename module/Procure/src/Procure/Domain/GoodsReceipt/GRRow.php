@@ -5,10 +5,11 @@ use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Application\DTO\Gr\GrRowDTO;
-use Procure\Domain\GenericRow;
+use Procure\Domain\GenericDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  * Goods Receipt Row
@@ -16,73 +17,29 @@ use Procure\Domain\PurchaseOrder\PORow;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GRRow extends GenericRow
+class GRRow extends BaseRow
 {
 
     private static $instance = null;
 
-    // Specific Attributes
-    // =================================
-    protected $grDate;
-
-    protected $reversalReason;
-
-    protected $reversalDoc;
-
-    protected $flow;
-
-    protected $gr;
-
-    protected $apInvoiceRow;
-
-    protected $poRow;
-
-    protected $poId;
-
-    protected $poToken;
-
-    protected $apId;
-
-    protected $apToken;
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPoId()
-    {
-        return $this->poId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPoToken()
-    {
-        return $this->poToken;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getApId()
-    {
-        return $this->apId;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getApToken()
-    {
-        return $this->apToken;
-    }
+    protected function createVO(GenericDoc $rootDoc)
+    {}
 
     private function __construct()
     {}
+
+    public static function createFromSnapshot(GenericGR $rootDoc, GRRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof GRRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->createVO($rootDoc);
+        return $instance;
+    }
 
     /**
      *
@@ -169,9 +126,6 @@ class GRRow extends GenericRow
          */
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
         $instance->initRow($options);
 
         // overwrite
@@ -201,8 +155,7 @@ class GRRow extends GenericRow
         $instance = new self();
         $instance = $sourceObj->convertTo($instance);
         // overwrite
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
+
         $instance->initRow($options);
         $instance->setApInvoiceRow($sourceObj->getId()); // important
         $instance->setInvoice($sourceObj->getDocId()); // important
@@ -246,100 +199,6 @@ class GRRow extends GenericRow
         return new GRRow();
     }
 
-    public static function createSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-
-            if ($property->class == $reflectionClass->getName()) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGrDate()
-    {
-        return $this->grDate;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getReversalReason()
-    {
-        return $this->reversalReason;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getReversalDoc()
-    {
-        return $this->reversalDoc;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getFlow()
-    {
-        return $this->flow;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getGr()
-    {
-        return $this->gr;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getApInvoiceRow()
-    {
-        return $this->apInvoiceRow;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getPoRow()
-    {
-        return $this->poRow;
-    }
-
     /**
      *
      * @param \Procure\Domain\GoodsReceipt\GRRow $instance
@@ -347,68 +206,5 @@ class GRRow extends GenericRow
     protected static function setInstance($instance)
     {
         GRRow::$instance = $instance;
-    }
-
-    /**
-     *
-     * @param mixed $grDate
-     */
-    protected function setGrDate($grDate)
-    {
-        $this->grDate = $grDate;
-    }
-
-    /**
-     *
-     * @param mixed $reversalReason
-     */
-    protected function setReversalReason($reversalReason)
-    {
-        $this->reversalReason = $reversalReason;
-    }
-
-    /**
-     *
-     * @param mixed $reversalDoc
-     */
-    protected function setReversalDoc($reversalDoc)
-    {
-        $this->reversalDoc = $reversalDoc;
-    }
-
-    /**
-     *
-     * @param mixed $flow
-     */
-    protected function setFlow($flow)
-    {
-        $this->flow = $flow;
-    }
-
-    /**
-     *
-     * @param mixed $gr
-     */
-    protected function setGr($gr)
-    {
-        $this->gr = $gr;
-    }
-
-    /**
-     *
-     * @param mixed $apInvoiceRow
-     */
-    protected function setApInvoiceRow($apInvoiceRow)
-    {
-        $this->apInvoiceRow = $apInvoiceRow;
-    }
-
-    /**
-     *
-     * @param mixed $poRow
-     */
-    protected function setPoRow($poRow)
-    {
-        $this->poRow = $poRow;
     }
 }

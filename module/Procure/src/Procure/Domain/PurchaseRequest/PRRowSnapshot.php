@@ -6,7 +6,7 @@ use Procure\Domain\RowSnapshot;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PRRowSnapshot extends RowSnapshot
 {
@@ -50,8 +50,6 @@ class PRRowSnapshot extends RowSnapshot
     public $conversionText;
 
     public $edt;
-
-    public $convertedStandardQuantiy;
 
     public $project;
 

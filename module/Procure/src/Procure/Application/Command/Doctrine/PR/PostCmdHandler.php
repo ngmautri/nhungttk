@@ -47,12 +47,12 @@ class PostCmdHandler extends AbstractCommandHandler
 
             // event dispatch
             // ================
-            if ($cmd->getEventBus() !== null) {
+            if ($cmd->getEventBus() != null) {
                 $cmd->getEventBus()->dispatch($rootEntity->getRecordedEvents());
             }
             // ================
 
-            $m = sprintf("PO #%s posted", $rootEntity->getId());
+            $m = sprintf("PR #%s posted", $rootEntity->getId());
             $cmd->addSuccess($m);
 
             // Check Version

@@ -5,13 +5,14 @@
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===================================
  */
+use Application\Domain\Company\CompanyVO;
 use Procure\Application\Helper\OptionList;
-use Procure\Domain\Shared\Constants;
 use Procure\Domain\PurchaseOrder\POSnapshot;
+use Procure\Domain\Shared\Constants;
 
 /**@var POSnapshot $headerDTO ;*/
 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-
+/**@var CompanyVO $companyVO ;*/
 $error_msg = "";
 
 if (count($errors) > 0) {
@@ -26,9 +27,9 @@ if (count($errors) > 0) {
 }
 
 $docStatus = null;
-$wh_id = null;
+$wh_id = $companyVO->getDefaultWarehouse();
 $pmtTermId = null;
-$currencyId = null;
+$currencyId = $companyVO->getDefaultCurrency();
 $incotermId = null;
 $review_url = null;
 

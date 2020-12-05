@@ -102,6 +102,8 @@ class PRSnapshotAssembler
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);
     }
 
+    // Entity from Object
+    // =============================
     public static function updateEntityExcludedDefaultFieldsFrom(GenericPR $snapShot, $data)
     {
         return GenericObjectAssembler::updateExcludedFieldsFrom($snapShot, $data, self::$defaultExcludedFields);

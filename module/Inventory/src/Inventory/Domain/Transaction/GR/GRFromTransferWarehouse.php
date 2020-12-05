@@ -111,7 +111,7 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
 
         $createdBy = $options->getUserId();
         $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
 
         // overwrite.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());

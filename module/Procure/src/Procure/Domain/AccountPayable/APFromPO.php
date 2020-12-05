@@ -137,10 +137,6 @@ final class APFromPO extends GenericAP
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $rootSnapshot = $rep->store($this);
 
-        if (! $rootSnapshot instanceof APSnapshot) {
-            throw new \RuntimeException(\sprintf("Errors occured when saving AP"));
-        }
-
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
         $defaultParams->setTargetId($rootSnapshot->getId());

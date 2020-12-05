@@ -7,26 +7,23 @@ use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\AccountPayable\APDoc;
 use Procure\Domain\AccountPayable\APRow;
 use Procure\Domain\Contracts\ProcureDocType;
+use Procure\Domain\Contracts\ProcureGoodsFlow;
 use Procure\Domain\Contracts\ProcureTrxStatus;
-use Procure\Domain\Event\Gr\GrHeaderCreated;
-use Procure\Domain\Event\Gr\GrHeaderUpdated;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\Event\Gr\GrReversed;
 use Procure\Domain\Exception\OperationFailedException;
-use Procure\Domain\Exception\PoInvalidArgumentException;
 use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
 use Procure\Domain\GoodsReceipt\Validator\ValidatorFactory;
 use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\Service\GrPostingService;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\Constants;
 use Procure\Domain\Shared\ProcureDocStatus;
 use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use InvalidArgumentException;
-use Ramsey;
-use Procure\Domain\Contracts\ProcureGoodsFlow;
 
 /**
  *
@@ -463,173 +460,12 @@ class GRDoc extends GenericGR
         new self();
     }
 
-    public static function createSnapshotProps()
-    {
-        $baseClass = "Procure\Domain\GoodsReceipt\BaseDoc";
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-
-        $props = $reflectionClass->getProperties();
-
-        foreach ($props as $property) {
-            // echo $property->class . "\n";
-            if ($property->class == $reflectionClass->getName() || $property->class == $baseClass) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                print "\n" . "public $" . $propertyName . ";";
-            }
-        }
-    }
-
-    public static function createAllSnapshotProps()
-    {
-        $entity = new self();
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
-        }
-    }
-
-    /**
-     *
-     * @param GRSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param GrPostingService $postingService
-     * @throws InvalidArgumentException
-     * @throws OperationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\GoodsReceipt\GRDoc
-     */
-    public static function createFrom(GRSnapshot $snapshot, CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        $instance = new self();
-        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-
-        $instance->validateHeader($headerValidators);
-
-        if ($instance->hasErrors()) {
-            throw new OperationFailedException($instance->getNotification()->errorMessage());
-        }
-
-        $createdDate = new \Datetime();
-        $instance->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
-        $instance->setDocStatus(ProcureDocStatus::DRAFT);
-        $instance->setDocType(ProcureDocType::GR);
-        $instance->setIsActive(1);
-        $instance->setSysNumber(Constants::SYS_NUMBER_UNASSIGNED);
-        $instance->setRevisionNo(1);
-        $instance->setDocVersion(1);
-        $instance->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
-        $instance->setToken($instance->getUuid());
-
-        $instance->recordedEvents = array();
-
-        /**
-         *
-         * @var GRSnapshot $rootSnapshot
-         */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
-
-        if ($rootSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
-        }
-
-        $instance->id = $rootSnapshot->getId();
-
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new GrHeaderCreated($target, $defaultParams, $params);
-        $instance->addEvent($event);
-
-        return $instance;
-    }
-
-    /**
-     *
-     * @param GrSnapshot $snapshot
-     * @param CommandOptions $options
-     * @param array $params
-     * @param HeaderValidatorCollection $headerValidators
-     * @param SharedService $sharedService
-     * @param GrPostingService $postingService
-     * @throws PoInvalidArgumentException
-     * @throws OperationFailedException
-     * @throws OperationFailedException
-     * @return \Procure\Domain\GoodsReceipt\GRDoc
-     */
-    public static function updateFrom(GrSnapshot $snapshot, CommandOptions $options, $params, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {
-        $instance = new self();
-        $instance->_checkInputParams($snapshot, $headerValidators, $sharedService, $postingService);
-
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
-
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $instance->setExchangeRate($fxRate);
-
-        $instance->validateHeader($headerValidators);
-
-        if ($instance->hasErrors()) {
-            throw new OperationFailedException($instance->getNotification()->errorMessage());
-        }
-
-        $createdDate = new \Datetime();
-        $instance->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
-
-        $instance->recordedEvents = array();
-
-        /**
-         *
-         * @var GRSnapshot $rootSnapshot
-         */
-        $rootSnapshot = $postingService->getCmdRepository()->storeHeader($instance, false);
-
-        if ($rootSnapshot == null) {
-            throw new OperationFailedException(sprintf("Error orcured when creating PO #%s", $instance->getId()));
-        }
-
-        $instance->id = $rootSnapshot->getId();
-
-        $target = $rootSnapshot;
-        $defaultParams = new DefaultParameter();
-        $defaultParams->setTargetId($rootSnapshot->getId());
-        $defaultParams->setTargetToken($rootSnapshot->getToken());
-        $defaultParams->setTargetDocVersion($rootSnapshot->getDocVersion());
-        $defaultParams->setTargetRrevisionNo($rootSnapshot->getRevisionNo());
-        $defaultParams->setTriggeredBy($options->getTriggeredBy());
-        $defaultParams->setUserId($options->getUserId());
-        $params = null;
-
-        $event = new GrHeaderUpdated($target, $defaultParams, $params);
-
-        $instance->addEvent($event);
-        return $instance;
-    }
-
     /**
      *
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
      */
-    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -645,7 +481,7 @@ class GRDoc extends GenericGR
                 continue;
             }
 
-            $row->markAsPosted($options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+            $row->markRowAsPosted($this, $options);
         }
 
         $this->validate($validationService, true);
@@ -653,6 +489,8 @@ class GRDoc extends GenericGR
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
+
+        $this->clearEvents();
 
         /**
          *
@@ -701,19 +539,4 @@ class GRDoc extends GenericGR
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $localSnapshot = $rep->post($this);
     }
-
-    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function raiseEvent()
-    {}
 }

@@ -12,7 +12,7 @@ use Procure\Infrastructure\Doctrine\PRQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateIndexOnPrSubmitted extends AbstractEventHandler
 {
@@ -23,6 +23,7 @@ class UpdateIndexOnPrSubmitted extends AbstractEventHandler
      */
     public function __invoke(PrPosted $event)
     {
+        $this->logInfo(\sprintf("PrPosted - Event Target - %s", \get_class($event->getTarget())));
         if (! $event->getTarget() instanceof PRSnapshot) {
             return;
         }
@@ -36,7 +37,7 @@ class UpdateIndexOnPrSubmitted extends AbstractEventHandler
         $indexer->setLogger($this->getLogger());
         $indexer->createDoc($entity->makeSnapshot());
 
-        $this->getLogger()->info(\sprintf("Search index for PR#%s created!", $event->getTarget()
+        $this->logInfo(\sprintf("Search index for PR#%s created!", $event->getTarget()
             ->getId()));
 
         // Clear Cache.

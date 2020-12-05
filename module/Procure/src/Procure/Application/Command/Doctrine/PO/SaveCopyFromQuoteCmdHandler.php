@@ -11,6 +11,7 @@ use Procure\Domain\PurchaseOrder\PODoc;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Webmozart\Assert\Assert;
+use Procure\Domain\QuotationRequest\QRDoc;
 
 /**
  *
@@ -44,7 +45,7 @@ class SaveCopyFromQuoteCmdHandler extends AbstractCommandHandler
         Assert::isInstanceOf($options, SaveCopyFromCmdOptions::class);
 
         $rootEntity = $options->getRootEntity();
-        Assert::isInstanceOf($rootEntity, PODoc::class);
+        Assert::isInstanceOf($rootEntity, QRDoc::class);
 
         try {
             // ====================

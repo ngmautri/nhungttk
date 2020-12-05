@@ -86,7 +86,7 @@ abstract class GenericAP extends BaseDoc
                 continue;
             }
 
-            $row->markRowAsPosted($this, $options->getUserId(), date_format($postedDate, 'Y-m-d H:i:s'));
+            $row->markRowAsPosted($this, $options);
         }
 
         $this->validate($validationService, true);

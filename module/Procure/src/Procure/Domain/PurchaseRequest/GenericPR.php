@@ -156,6 +156,7 @@ abstract class GenericPR extends BaseDoc
         }
 
         $this->clearEvents();
+        $this->clearNotification();
 
         $this->prePost($options, $validationService, $sharedService);
         $this->doPost($options, $validationService, $sharedService);

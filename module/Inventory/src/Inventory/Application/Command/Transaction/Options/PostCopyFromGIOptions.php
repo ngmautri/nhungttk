@@ -7,7 +7,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCopyFromGIOptions implements CommandOptions
 {
@@ -105,4 +105,7 @@ class PostCopyFromGIOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
+    public function getCompanyVO()
+    {}
 }

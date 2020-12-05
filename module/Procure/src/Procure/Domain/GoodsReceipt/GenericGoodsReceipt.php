@@ -3,7 +3,7 @@ namespace Procure\Domain\GoodsReceipt;
 
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\GoodsReceipt\Repository\GrCmdRepositoryInterface;
-use Procure\Domain\Service\SharedService;
+use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 
 /**
@@ -19,7 +19,7 @@ class GenericGoodsReceipt extends GenericGR
      * {@inheritdoc}
      * @see \Procure\Domain\GoodsReceipt\GenericGR::doPost()
      */
-    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
+    protected function doPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService)
     {
         /**
          *
@@ -53,24 +53,6 @@ class GenericGoodsReceipt extends GenericGR
         $rep->post($this);
     }
 
-    protected function afterPost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function preReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
     public function specify()
-    {}
-
-    protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedService $sharedService)
-    {}
-
-    protected function raiseEvent()
     {}
 }

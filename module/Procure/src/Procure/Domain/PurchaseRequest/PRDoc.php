@@ -17,6 +17,7 @@ use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  *
@@ -38,7 +39,7 @@ final class PRDoc extends GenericPR
      */
     public function makeSnapshot()
     {
-        return SnapshotAssembler::createSnapshotFrom($this, new PRSnapshot());
+        return GenericObjectAssembler::updateAllFieldsFrom(new PRSnapshot(), $this);
     }
 
     public function makeDetailsSnapshot()

@@ -7,7 +7,7 @@ use Procure\Domain\Exception\Gr\GrCreateException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateItemOptions implements CommandOptions
 {
@@ -89,4 +89,7 @@ class CreateItemOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
+    public function getCompanyVO()
+    {}
 }

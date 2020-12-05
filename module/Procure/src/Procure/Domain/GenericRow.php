@@ -39,7 +39,6 @@ abstract class GenericRow extends BaseRow
 
     abstract protected function createVO(GenericDoc $rootDoc);
 
-
     // Uom VO
     // ====================
     protected $docUomVO;
@@ -117,6 +116,9 @@ abstract class GenericRow extends BaseRow
         if ($this->getTaxRate() > 0) {
             $tmp = $this->docNetAmountVO->multiply($this->getTaxRate());
             $this->docTaxAmountVO = $tmp->divideMoney(100);
+            $this->setTaxAmount($this->docTaxAmountVO->getMoneyAmountInEn());
+        } else {
+            $this->setTaxAmount(0);
         }
 
         if ($this->docTaxAmountVO == null) {

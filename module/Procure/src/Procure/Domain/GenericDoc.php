@@ -2,7 +2,6 @@
 namespace Procure\Domain;
 
 use Application\Domain\Company\CompanyVO;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
@@ -36,6 +35,12 @@ abstract class GenericDoc extends BaseDoc
     abstract protected function doReverse(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
 
     abstract protected function afterReserve(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
+
+    /**
+     *
+     * @return DocSnapshot
+     */
+    abstract public function makeSnapshot();
 
     /**
      *
@@ -74,7 +79,7 @@ abstract class GenericDoc extends BaseDoc
      * @param boolean $isPosting
      * @throws InvalidArgumentException
      */
-    protected function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
+    public function validateHeader(HeaderValidatorCollection $headerValidators, $isPosting = false)
     {
         $headerValidators->validate($this);
     }
@@ -85,7 +90,7 @@ abstract class GenericDoc extends BaseDoc
      * @param RowValidatorCollection $rowValidators
      * @param boolean $isPosting
      */
-    protected function validateRow(GenericRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
+    public function validateRow(GenericRow $row, RowValidatorCollection $rowValidators, $isPosting = false)
     {
         Assert::isInstanceOf($row, GenericRow::class, "Generc Doc Row not given!");
 
@@ -566,14 +571,5 @@ abstract class GenericDoc extends BaseDoc
             $propertyName = $property->getName();
             print sprintf("\n public $%s;", $propertyName);
         }
-    }
-
-    /**
-     *
-     * @return NULL|object
-     */
-    public function makeSnapshot()
-    {
-        return SnapshotAssembler::createSnapshotFrom($this, new DocSnapshot());
     }
 }

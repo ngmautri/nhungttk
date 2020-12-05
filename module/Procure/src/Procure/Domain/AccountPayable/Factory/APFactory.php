@@ -16,8 +16,8 @@ use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Event\Ap\ApHeaderCreated;
 use Procure\Domain\Event\Ap\ApHeaderUpdated;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\Service\SharedService;
+use Procure\Domain\Shared\ProcureDocStatus;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
@@ -76,11 +76,12 @@ class APFactory
         $docType = $snapshot->getDocType();
         $instance = self::createDoc($docType);
 
-        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $snapshot->setExchangeRate($fxRate);
         $snapshot->initDoc($options);
 
-        APSnapshotAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
+        $snapshot->setExchangeRate($fxRate);
+
+        APSnapshotAssembler::updateEntityAllFieldsFrom($instance, $snapshot);
 
         $validationService = ValidatorFactory::createForHeader($sharedService);
         $instance->validateHeader($validationService->getHeaderValidators());
@@ -117,7 +118,8 @@ class APFactory
 
     public static function updateFrom(GenericAP $rootEntity, APSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        Assert::notEq($rootEntity->getDocStatus(), PODocStatus::DOC_STATUS_POSTED, sprintf("AP is already posted! %s", $rootEntity->getId()));
+        Assert::notNull($rootEntity, sprintf("Root entity not found!"));
+        Assert::notEq($rootEntity->getDocStatus(), ProcureDocStatus::POSTED, sprintf("AP is already posted! %s", $rootEntity->getId()));
         Assert::notNull($snapshot, "AP snapshot not found");
         Assert::notNull($options, "Command options not found");
 
@@ -128,7 +130,6 @@ class APFactory
         APSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
 
         $validationService = ValidatorFactory::createForHeader($sharedService);
-
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $rootEntity->markDocAsChanged($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));

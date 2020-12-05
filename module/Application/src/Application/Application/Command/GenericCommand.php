@@ -1,14 +1,13 @@
 <?php
 namespace Application\Application\Command;
 
-use Application\Application\Command\AbstractDoctrineCmd;
-use Application\Domain\Shared\Command\AbstractCommandHandler;
 use Application\Application\Command\Doctrine\AbstractCommand;
+use Application\Domain\Shared\Command\AbstractCommandHandler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GenericCommand extends AbstractCommand
 {

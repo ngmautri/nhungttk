@@ -21,7 +21,7 @@ use RuntimeException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterface
 {
@@ -146,13 +146,13 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
             $indexResult->setIsSuccess(False);
 
             if (! $doc instanceof PRSnapshot) {
-                throw new \InvalidArgumentException("PoSnapshot not given");
+                throw new \InvalidArgumentException("PRSnapshot not given");
             }
 
             $rows = $doc->getDocRows();
 
             if ($rows == null) {
-                throw new \InvalidArgumentException("PoSnapshot empty");
+                throw new \InvalidArgumentException("PRSnapshot empty");
             }
 
             // take long time
@@ -320,8 +320,7 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
          * $doc->addField(Field::text('docUomCode', $row->getDocUomCode()));
          * $doc->addField(Field::text('docUomDescription', $row->getDocUomDescription()));
          * $doc->addField(Field::text('itemChecksum', $row->getItemChecksum()));
-         * $doc->addField(Field::text('itemStandardUnit', $row->getItemStandardUnit()));
-         * $doc->addField(Field::text('itemStandardUnitName', $row->getItemStandardUnitName()));
+         * $doc->addField(Field::text('itemStandardUnit', $row->getItemStandardUnit())); *
          * $doc->addField(Field::text('itemStandardUnitCode', $row->getItemStandardUnitCode()));
          * $doc->addField(Field::text('itemMonitorMethod', $row->getItemMonitorMethod()));
          * $doc->addField(Field::text('pr', $row->getPr()));
@@ -442,6 +441,8 @@ class PrSearchIndexImpl extends AbstractService implements PrSearchIndexInterfac
         $doc->addField(Field::text('itemManufacturerSerial', $row->getItemManufacturerSerial()));
         $doc->addField(Field::text('itemManufacturerCode', $row->getItemManufacturerCode()));
         $doc->addField(Field::text('itemKeywords', $row->getItemKeywords()));
+        $doc->addField(Field::UnIndexed('itemStandardUnitName', $row->getItemStandardUnitName()));
+        $doc->addField(Field::UnIndexed('convertedStandardQuantity', $row->getConvertedStandardQuantity()));
 
         $output = iconv("UTF-8", "ASCII//IGNORE", $row->getItemDescription());
         $doc->addField(Field::text('itemDescription', $output));

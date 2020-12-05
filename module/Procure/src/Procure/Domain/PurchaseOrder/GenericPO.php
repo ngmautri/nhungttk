@@ -239,7 +239,7 @@ abstract class GenericPO extends BaseDoc
         $validationService = ValidatorFactory::create($sharedService);
         Assert::notNull($validationService, "Validation can not created!");
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
+        $this->validate($validationService, true);
 
         if ($this->hasErrors()) {
             throw new \RuntimeException($this->getErrorMessage());

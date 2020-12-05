@@ -12,7 +12,7 @@ use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 class PORowSnapshotAssembler
 {
 
-    private static $defaultIncludedFields = array(
+    private static $defaultExcludedFields = array(
         "id",
         "uuid",
         "token",
@@ -33,7 +33,7 @@ class PORowSnapshotAssembler
         "paymentStatus"
     );
 
-    private static $defaultExcludedFields = array(
+    private static $defaultIncludedFields = array(
         "isActive",
         "remarks",
         "rowNumber",

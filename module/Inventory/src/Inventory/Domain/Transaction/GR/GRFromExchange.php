@@ -93,7 +93,7 @@ class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterfa
         // Important: Update Recycle Location:
         $instance->setTartgetLocation($recycleLocation->getId());
         $createdBy = $options->getUserId();
-          $instance->initDoc($options));
+        $instance->initDoc($options);
 
         // overwrite.
         $instance->markAsPosted($createdBy, $sourceObj->getPostingDate());

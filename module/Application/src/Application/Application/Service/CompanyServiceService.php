@@ -9,7 +9,7 @@ use Application\Service\AbstractService;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CompanyServiceService extends AbstractService implements CompanyServiceInterface
 {
@@ -28,7 +28,7 @@ class CompanyServiceService extends AbstractService implements CompanyServiceInt
          * @var \Application\Entity\NmtApplicationCompany $company ;
          */
         $company = $this->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtBpVendor')
+            ->getRepository('Application\Entity\NmtApplicationCompany')
             ->find($companyId);
         if ($company !== null) {
             return $company->getId(0);
@@ -47,7 +47,7 @@ class CompanyServiceService extends AbstractService implements CompanyServiceInt
         $specFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $spec = $specFactory->getCurrencyExitsSpecification();
         if (! $spec->isSatisfiedBy($sourceCurrencyId) || ! $spec->isSatisfiedBy($targetCurrencyId)) {
-            throw new \Exception("Currency not exits");
+            throw new \Exception("Currency not exits!" . __FUNCTION__);
         }
 
         if ($sourceCurrencyId == $targetCurrencyId) {

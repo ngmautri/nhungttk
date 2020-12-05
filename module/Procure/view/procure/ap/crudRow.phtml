@@ -345,7 +345,7 @@ echo $wh_option;
                         <div class="form-group margin-bottom required">
                            <label class="control-label col-sm-2" for="inputTag">Doc Quantity:</label>
                            <div class="col-sm-3">
-                              <input tabindex="4" class="form-control input-sm" type="text" id="quantity" name="docQuantity" value="<?php
+                              <input tabindex="4" class="form-control input-sm" type="text" id="docQuantity" name="docQuantity" value="<?php
                             echo (! $dto == null) ? $dto->getDocQuantity() : "";
                             ?>">
                            </div>
@@ -567,13 +567,13 @@ echo $cost_center_option;
 
 
 $('#quantity').bind('change', function() {
-   	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
+   	$('#net_amount').val($('#docUnitPrice').val() * $('#docQuantity').val());
    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
 
 });
 
 $('#docUnitPrice').bind('change', function() {
-	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
+	$('#net_amount').val($('#docUnitPrice').val() * $('#docQuantity').val());
 	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
    	$('#exw_unit_price').val($('#docUnitPrice').val());
 

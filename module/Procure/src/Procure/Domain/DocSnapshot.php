@@ -99,6 +99,7 @@ class DocSnapshot extends BaseDocSnapshot
          *
          * @var CompanyVO $companyVO ;
          */
+
         $companyVO = $options->getCompanyVO();
         $this->setCompany($companyVO->getId());
         $this->setCurrency($this->getDocCurrency());

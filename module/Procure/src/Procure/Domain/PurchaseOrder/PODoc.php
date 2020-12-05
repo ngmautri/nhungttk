@@ -159,9 +159,7 @@ final class PODoc extends GenericPO
         // overwrite.
         $instance->setDocType(ProcureDocType::PO_FROM_QOUTE); // important.
 
-        $createdBy = $options->getUserId();
-        $createdDate = new \DateTime();
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
         $instance->validateHeader($validationService->getHeaderValidators());
 
         foreach ($rows as $r) {
@@ -311,7 +309,7 @@ final class PODoc extends GenericPO
             $row->markRowAsPosted($this, $options);
         }
 
-        $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators(), true);
+        $this->validate($validationService, true);
 
         if ($this->hasErrors()) {
             throw new ValidationFailedException($this->getNotification()->errorMessage());

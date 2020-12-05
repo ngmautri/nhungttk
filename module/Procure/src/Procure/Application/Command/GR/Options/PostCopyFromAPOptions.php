@@ -7,7 +7,7 @@ use Procure\Domain\Exception\InvalidArgumentException;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class PostCopyFromAPOptions implements CommandOptions
 {
@@ -21,6 +21,8 @@ class PostCopyFromAPOptions implements CommandOptions
     private $triggeredOn;
 
     private $sourceObj;
+
+    private $companyVO;
 
     /**
      *
@@ -37,7 +39,7 @@ class PostCopyFromAPOptions implements CommandOptions
      * @param int $userId
      * @param string $triggeredBy
      */
-    public function __construct($companyId, $userId, $triggeredBy, $sourceObj)
+    public function __construct($companyId, $userId, $triggeredBy, $sourceObj, $companyVO)
     {
         if ($companyId == null) {
             throw new InvalidArgumentException(sprintf("Company ID not given! %s", $companyId));
@@ -59,6 +61,7 @@ class PostCopyFromAPOptions implements CommandOptions
         $this->userId = $userId;
         $this->triggeredBy = $triggeredBy;
         $this->sourceObj = $sourceObj;
+        $this->companyVO->companyVO;
     }
 
     /**
@@ -105,4 +108,7 @@ class PostCopyFromAPOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
+    public function getCompanyVO()
+    {}
 }

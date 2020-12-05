@@ -34,8 +34,7 @@ $( "#pr_item_name" ).autocomplete({
     select: function( event, ui ) {
 
 	      $( "#pr_row_id" ).val(ui.item.hit.id);
-          $( "#quantity" ).val(1);
-          $( "#standardConvertFactor" ).val(ui.item.hit.quantity);
+          $( "#docQuantity" ).val(1);
 
 
           $( "#item" ).val(ui.item.hit.item);
@@ -49,7 +48,7 @@ $( "#pr_item_name" ).autocomplete({
 
           $('#item_detail').show();
           $('#pr_row_detail').show();
-          $( "#quantity" ).focus();
+          $( "#docQuantity" ).focus();
           $( "#target_wh_id" ).val(ui.item.hit.warehouse);
 
 
@@ -63,14 +62,19 @@ $( "#pr_item_name" ).autocomplete({
            	if(ui.item.cost_center_id !==null){
                	// update GL account and cost center
            	   	$( "#costCenter").val(ui.item.hit.itemCostCenter);
-           }
+           	}
 
-          var url = '/procure/pr-row/get-row?id='+ui.item.hit.id;
+                $( "#standardConvertFactor" ).val(ui.item.hit.docQuantity);
+
+          $('#purchase_uom_convert_factor').text('Ordered: '+ ui.item.hit.docQuantity + ' '+ ui.item.hit.docUnit + ' = ' + ui.item.hit.convertedStandardQuantity +  ' '+ ui.item.hit.itemStandardUnitName);
+
+          $('#docUnit').val(ui.item.hit.docUnit);
+
+        /*   var url = '/procure/pr-row/get-row?id='+ui.item.hit.id;
 		  		$.get(url, {   	}, function(data, status) {
-          		//alert(data.pr_convert_factor);
-          		$('#purchase_uom_convert_factor').text('Ordered: '+ data.pr_qty + ' '+ data.pr_uom + ' = ' + data.pr_converted_standard_qty +  ' '+ data.item_standard_uom);
+           		$('#purchase_uom_convert_factor').text('Ordered: '+ data.pr_qty + ' '+ data.pr_uom + ' = ' + data.pr_converted_standard_qty +  ' '+ data.item_standard_uom);
            		$('#rowUnit').val(data.pr_uom);
-           	});
+           	}); */
        }
     })
     .autocomplete( "instance" )._renderItem = function( ul, item ) {

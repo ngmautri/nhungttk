@@ -26,7 +26,7 @@ class RepTest extends PHPUnit_Framework_TestCase
             $searcher = new PrSearchQueryImpl();
             $queryFilter = new PrQueryFilter();
             // $queryFilter->setDocStatus("posted");
-            $results = $searcher->search("paint", $queryFilter);
+            $results = $searcher->search("coffee hr 70 2020", $queryFilter);
 
             $results_array = [];
 

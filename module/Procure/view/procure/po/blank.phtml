@@ -11,8 +11,8 @@
     use Procure\Application\Helper\Toolbar;
     use Procure\Application\Service\Output\Contract\SaveAsSupportedType;
     use Procure\Domain\Contracts\ProcureDocStatus;
-    use Procure\Domain\PurchaseOrder\PODocStatus;
     use Procure\Domain\Shared\Constants;
+    use Application\Domain\Contracts\FormActions;
 
     /**@var \Procure\Application\DTO\Po\PoDetailsDTO $headerDTO ;*/
     /**@var \Procure\Application\DTO\Po\PoRowDetailsDTO $rowDTO ;*/
@@ -97,7 +97,7 @@
         $save_as_excel = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_EXCEL, $headerDTO->getId(), $headerDTO->getToken());
         $save_as_openoffice = sprintf($this->baseUrl . "/procure/po/save-as?file_type=%s&entity_id=%s&entity_token=%s", SaveAsSupportedType::OUTPUT_IN_OPEN_OFFICE, $headerDTO->getId(), $headerDTO->getToken());
 
-        if ($headerDTO->getDocStatus() == PODocStatus::DRAFT && $action == Constants::FORM_ACTION_REVIEW) :
+        if ($headerDTO->getDocStatus() == ProcureDocStatus::DRAFT && $action == FormActions::REVIEW) :
             $hoverMode = "cell";
             $canPost = true;
         endif;
@@ -426,11 +426,15 @@
 
 
 
+
+
                                      value="draftPo">Draft</option>
                                      <option <?php
 
                                     if ($headerDTO->getCurrentState() == "finalPo") :
                                         echo "selected"; endif ?>
+
+
 
 
 

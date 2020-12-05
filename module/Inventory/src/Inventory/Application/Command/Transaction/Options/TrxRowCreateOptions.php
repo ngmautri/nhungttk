@@ -116,4 +116,7 @@ class TrxRowCreateOptions implements CommandOptions
     {
         return $this->triggeredOn;
     }
+
+    public function getCompanyVO()
+    {}
 }

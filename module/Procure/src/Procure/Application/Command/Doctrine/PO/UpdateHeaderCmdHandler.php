@@ -7,13 +7,12 @@ use Application\Domain\Shared\Command\CommandInterface;
 use Procure\Application\Command\Doctrine\VersionChecker;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Service\SharedServiceFactory;
+use Procure\Domain\Contracts\ProcureDocStatus;
+use Procure\Domain\PurchaseOrder\GenericPO;
 use Procure\Domain\PurchaseOrder\PODoc;
-use Procure\Domain\PurchaseOrder\PODocStatus;
 use Procure\Domain\PurchaseOrder\POSnapshot;
 use Procure\Domain\PurchaseOrder\POSnapshotAssembler;
 use Webmozart\Assert\Assert;
-use Procure\Domain\PurchaseOrder\GenericPO;
-use Procure\Domain\Contracts\ProcureDocStatus;
 
 /**
  *

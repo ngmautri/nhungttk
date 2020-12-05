@@ -85,6 +85,10 @@ class AbstractGenericController extends AbstractActionController
 
         $c = new GenericCompany();
         $c->constructFromDB($snapshot);
+
+        if ($c == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
         return $c->createValueObject();
     }
 

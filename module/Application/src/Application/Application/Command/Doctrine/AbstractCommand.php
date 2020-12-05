@@ -48,6 +48,8 @@ abstract class AbstractCommand implements CommandInterface
 
     protected $output;
 
+    protected $companyVO;
+
     /**
      *
      * @param EntityManager $doctrineEM

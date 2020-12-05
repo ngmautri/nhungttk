@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class UpdateIndexOnPrSubmittedFactory implements FactoryInterface
 {
@@ -26,7 +26,7 @@ class UpdateIndexOnPrSubmittedFactory implements FactoryInterface
         $eventBusService = $container->get(EventBusService::class);
         $service = new UpdateIndexOnPrSubmitted($doctrineEM, $eventBusService);
 
-        $sv = $container->get("AppLogger");
+        $sv = $container->get("ProcureLogger");
         $service->setLogger($sv);
 
         $sv = $container->get("AppCache");

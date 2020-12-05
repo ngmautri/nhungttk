@@ -2,6 +2,7 @@
 namespace Procure\Application\EventBus\Handler\GR;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
+use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\GR\PostCopyFromAPCmdHandler;
 use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
@@ -14,7 +15,7 @@ use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class CreateGrOnApPosted extends AbstractEventHandler
 {
@@ -28,7 +29,7 @@ class CreateGrOnApPosted extends AbstractEventHandler
         $rootSnapshot = $ev->getTarget();
 
         if (! $rootSnapshot instanceof APSnapshot) {
-            throw new OperationFailedException(\sprintf("Can not retrtrive AP Documment", " GrFromApPosted"));
+            throw new \InvalidArgumentException(\sprintf("Can not retrtrive AP Documment", " GrFromApPosted"));
         }
 
         $id = $rootSnapshot->getId();
@@ -36,7 +37,12 @@ class CreateGrOnApPosted extends AbstractEventHandler
 
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-        $options = new PostCopyFromAPOptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
+
+        $rep1 = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
+        $companyVO = $rep1->getById($rootEntity->getCompany())
+            ->createValueObject();
+
+        $options = new PostCopyFromAPOptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity, $companyVO);
 
         $dto = new GrDTO();
         $cmdHandler = new PostCopyFromAPCmdHandler();

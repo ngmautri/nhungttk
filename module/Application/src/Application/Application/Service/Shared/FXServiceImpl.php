@@ -25,7 +25,7 @@ class FXServiceImpl extends AbstractService implements FXServiceInterface
         $specFactory = new ZendSpecificationFactory($this->getDoctrineEM());
         $spec = $specFactory->getCurrencyExitsSpecification();
         if (! $spec->isSatisfiedBy($sourceCurrencyId) || ! $spec->isSatisfiedBy($targetCurrencyId)) {
-            throw new \Exception("Currency not exits");
+            throw new \Exception("Currency not exits! " . __METHOD__);
         }
 
         if ($sourceCurrencyId == $targetCurrencyId) {

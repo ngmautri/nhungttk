@@ -100,7 +100,7 @@ final class APReversal extends GenericAP implements ReversalDocInterface
         $createdDate = new \DateTime();
         $createdBy = $options->getUserId();
 
-        $instance->initDoc($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+        $instance->initDoc($options);
         $instance->markAsReversed($createdBy, $reversalDate);
         $instance->validateHeader($validationService->getHeaderValidators());
 

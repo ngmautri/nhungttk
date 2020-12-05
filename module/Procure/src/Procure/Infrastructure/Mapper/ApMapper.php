@@ -721,9 +721,10 @@ class ApMapper
 
     /**
      *
-     * @param \Doctrine\ORM\EntityManager $doctrineEM
-     * @param \Application\Entity\FinVendorInvoiceRow $entity
-     * @return NULL|\Procure\Domain\AccountPayable\APRowDetailsSnapshot
+     * @param EntityManager $doctrineEM
+     * @param FinVendorInvoiceRow $entity
+     * @param APRowSnapshot $snapshot
+     * @return NULL|string|\Procure\Domain\AccountPayable\APRowSnapshot
      */
     public static function createRowSnapshot(EntityManager $doctrineEM, FinVendorInvoiceRow $entity, $snapshot = null)
     {

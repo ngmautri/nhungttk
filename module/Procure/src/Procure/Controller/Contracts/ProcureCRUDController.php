@@ -7,17 +7,15 @@ use Application\Controller\Contracts\AbstractGenericController;
 use Application\Domain\Contracts\FormActions;
 use Procure\Application\Command\TransactionalCommandHandler;
 use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
-use Procure\Application\Command\Doctrine\PO\PostCmdHandler;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Application\Command\Options\CreateRowCmdOptions;
 use Procure\Application\Command\Options\PostCmdOptions;
 use Procure\Application\Command\Options\UpdateHeaderCmdOptions;
 use Procure\Application\Command\Options\UpdateRowCmdOptions;
 use Procure\Application\Service\Contracts\ProcureServiceInterface;
-use Procure\Domain\GenericDoc;
+use Procure\Domain\DocSnapshot;
 use Zend\Escaper\Escaper;
 use Zend\View\Model\ViewModel;
-use Procure\Domain\DocSnapshot;
 
 /**
  *
@@ -136,10 +134,10 @@ abstract class ProcureCRUDController extends AbstractGenericController
             $cmdHandler = $this->getCmdHandlerFactory()->getPostCmdHandler();
 
             $cmdHandlerDecorator = new TransactionalCommandHandler($cmdHandler);
-            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator);
+            $cmd = new GenericCommand($this->getDoctrineEM(), $data, $options, $cmdHandlerDecorator, $this->getEventBusService());
             $cmd->execute();
 
-            $msg = sprintf("PO #%s is posted", $entity_id);
+            $msg = sprintf($cmd->getNotification()->successMessage());
             $redirectUrl = sprintf($this->getBaseUrl() . "/view?entity_id=%s&entity_token=%s", $entity_id, $entity_token);
         } catch (\Exception $e) {
             $this->logException($e);
@@ -264,7 +262,8 @@ abstract class ProcureCRUDController extends AbstractGenericController
                 'action' => $action,
                 'sharedCollection' => $this->getSharedCollection(),
                 'localCurrencyId' => $this->getLocalCurrencyId(),
-                'defaultWarehouseId' => $this->getDefautWarehouseId()
+                'defaultWarehouseId' => $this->getDefautWarehouseId(),
+                'companyVO' => $this->getCompanyVO()
             ));
 
             $viewModel->setTemplate($viewTemplete);

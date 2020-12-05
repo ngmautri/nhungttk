@@ -484,8 +484,9 @@ abstract class GenericTrx extends BaseDoc
      * @param object $dto
      * @return NULL|object
      */
-    public function makeDTOForGrid($dto)
+    public function makeDTOForGrid()
     {
+        $dto = new TrxSnapshot();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         $rowDTOList = [];
         if (count($this->docRows) > 0) {

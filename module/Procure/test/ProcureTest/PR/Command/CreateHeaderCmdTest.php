@@ -16,7 +16,7 @@ use Procure\Application\Command\Doctrine\PR\CreateHeaderCmdHandler;
 use Procure\Application\Command\Options\CreateHeaderCmdOptions;
 use Procure\Domain\PurchaseRequest\PRSnapshot;
 
-class UpdateRowCmdTest extends PHPUnit_Framework_TestCase
+class CreateHeaderCmdTest extends PHPUnit_Framework_TestCase
 {
 
     /** @var EntityManager $doctrineEM ; */

@@ -22,7 +22,7 @@ use Procure\Infrastructure\Doctrine\QRQueryRepositoryImpl;
  * QR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class QRService extends AbstractService
 {
@@ -94,7 +94,7 @@ class QRService extends AbstractService
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid(new QrDTO());
+            $rootDTO = $rootEntity->makeDTOForGrid();
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 

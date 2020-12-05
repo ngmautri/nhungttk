@@ -33,7 +33,7 @@ use Exception;
  * Goods Receipt
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GRController extends AbstractGenericController
 {
@@ -282,7 +282,7 @@ class GRController extends AbstractGenericController
                 break;
         }
 
-        $headerDTO = $rootEntity->makeDTOForGrid(new TrxDTO());
+        $headerDTO = $rootEntity->makeDTOForGrid();
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,
@@ -841,7 +841,7 @@ class GRController extends AbstractGenericController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -892,7 +892,7 @@ class GRController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -959,7 +959,7 @@ class GRController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

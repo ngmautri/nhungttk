@@ -76,7 +76,7 @@ class PrController extends ProcureCRUDController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new PrDTO()),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,

@@ -114,7 +114,7 @@ class APService extends AbstractService implements ApServiceInterface
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid(new ApDTO());
+            $rootDTO = $rootEntity->makeDTOForGrid();
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 

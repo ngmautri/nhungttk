@@ -43,6 +43,11 @@ class SharedServiceFactory
         return $sharedService;
     }
 
+    /**
+     *
+     * @param \Doctrine\ORM\EntityManager $doctrineEM
+     * @return \Procure\Domain\Service\SharedService
+     */
     static public function createForGR(\Doctrine\ORM\EntityManager $doctrineEM)
     {
         Assert::notNull($doctrineEM, "EntityManager not found!");
@@ -58,6 +63,11 @@ class SharedServiceFactory
         return $sharedService;
     }
 
+    /**
+     *
+     * @param \Doctrine\ORM\EntityManager $doctrineEM
+     * @return \Procure\Domain\Service\SharedService
+     */
     static public function createForPO(\Doctrine\ORM\EntityManager $doctrineEM)
     {
         Assert::notNull($doctrineEM, "EntityManager not found!");
@@ -73,6 +83,11 @@ class SharedServiceFactory
         return $sharedService;
     }
 
+    /**
+     *
+     * @param \Doctrine\ORM\EntityManager $doctrineEM
+     * @return \Procure\Domain\Service\SharedService
+     */
     static public function createForPR(\Doctrine\ORM\EntityManager $doctrineEM)
     {
         Assert::notNull($doctrineEM, "EntityManager not found!");

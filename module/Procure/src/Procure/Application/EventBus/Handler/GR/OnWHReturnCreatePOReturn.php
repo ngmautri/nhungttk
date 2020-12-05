@@ -2,15 +2,13 @@
 namespace Procure\Application\EventBus\Handler\GR;
 
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
+use Inventory\Domain\Event\Transaction\GI\WhGiforPoReturnPosted;
 use Procure\Application\Command\GenericCmd;
 use Procure\Application\Command\GR\PostCopyFromAPCmdHandler;
 use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
 use Procure\Application\DTO\Gr\GrDTO;
 use Procure\Domain\AccountPayable\APSnapshot;
-use Procure\Domain\Event\Ap\ApPosted;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
-use Inventory\Domain\Event\Transaction\GI\WhGIforPoReturnPosted;
 
 /**
  *

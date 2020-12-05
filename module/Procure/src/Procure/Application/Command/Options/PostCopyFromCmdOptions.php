@@ -12,6 +12,8 @@ use Webmozart\Assert\Assert;
 class PostCopyFromCmdOptions extends CmdOptions
 {
 
+    private $rootEntity;
+
     /**
      *
      * @param int $companyId
@@ -30,8 +32,6 @@ class PostCopyFromCmdOptions extends CmdOptions
         $this->triggeredBy = $triggeredBy;
         $this->rootEntity = $rootEntity;
     }
-
-    private $rootEntity;
 
     /**
      *

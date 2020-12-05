@@ -233,7 +233,7 @@ class PRService extends AbstractService implements ProcureServiceInterface
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid(new PrDTO());
+            $rootDTO = $rootEntity->makeDTOForGrid();
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 

@@ -447,6 +447,11 @@ abstract class GenericRow extends BaseRow
         $this->setDocStatus(ProcureDocStatus::POSTED);
     }
 
+    /**
+     *
+     * @param GenericDoc $rootDoc
+     * @param CommandOptions $options
+     */
     public function markRowAsPosted(GenericDoc $rootDoc, CommandOptions $options)
     {
         $this->createVO($rootDoc); // important to recalculate before posting.
@@ -459,6 +464,21 @@ abstract class GenericRow extends BaseRow
         $this->setIsDraft(0);
         $this->setIsReversed(0);
         $this->setDocStatus(ProcureDocStatus::POSTED);
+    }
+
+    public function markRowAsReversed(GenericDoc $rootDoc, CommandOptions $options)
+    {
+        $this->createVO($rootDoc); // important to recalculate before posting.
+
+        $createdDate = new \Datetime();
+        $this->setLastchangeOn(date_format($createdDate, 'Y-m-d H:i:s'));
+        $this->setLastchangeBy($options->getUserId());
+
+        $this->setIsReversed(1);
+        $this->setIsActive(1);
+        $this->setIsDraft(0);
+        $this->setIsPosted(0);
+        $this->setDocStatus(ProcureDocStatus::REVERSED);
     }
 
     /**

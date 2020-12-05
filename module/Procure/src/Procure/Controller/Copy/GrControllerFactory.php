@@ -1,17 +1,14 @@
 <?php
 namespace Procure\Controller;
 
-use Procure\Application\Command\Doctrine\GR\Factory\GRCmdHandlerFactory;
-use Procure\Application\Eventbus\EventBusService;
 use Procure\Application\Reporting\GR\GrReporter;
-use Procure\Application\Service\GR\GRService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *
+ *        
  */
 class GrControllerFactory implements FactoryInterface
 {
@@ -31,15 +28,13 @@ class GrControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $sm->get(EventBusService::class);
-        $controller->setEventBusService($sv);
+        $sv = $sm->get('Procure\Service\GrService');
+        $controller->setGrService($sv);
 
-        $sv = $sm->get(GRService::class);
-        $controller->setProcureService($sv);
+        $sv = $sm->get('Procure\Application\Service\GR\GRService');
+        $controller->setGoodsReceiptService($sv);
 
-        $controller->setCmdHandlerFactory(new GRCmdHandlerFactory());
-
-        $sv = $sm->get("ProcureLogger");
+        $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);
 
         $sv = $sm->get(GrReporter::class);

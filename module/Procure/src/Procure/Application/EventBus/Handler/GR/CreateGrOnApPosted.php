@@ -1,15 +1,13 @@
 <?php
 namespace Procure\Application\EventBus\Handler\GR;
 
+use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
-use Procure\Application\Command\GenericCmd;
-use Procure\Application\Command\GR\PostCopyFromAPCmdHandler;
-use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
-use Procure\Application\DTO\Gr\GrDTO;
+use Procure\Application\Command\Doctrine\GR\PostCopyFromAPCmdHandler;
+use Procure\Application\Command\Options\PostCopyFromCmdOptions;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\Event\Ap\ApPosted;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
 
 /**
@@ -42,14 +40,13 @@ class CreateGrOnApPosted extends AbstractEventHandler
         $companyVO = $rep1->getById($rootEntity->getCompany())
             ->createValueObject();
 
-        $options = new PostCopyFromAPOptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity, $companyVO);
+        $options = new PostCopyFromCmdOptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $companyVO);
 
-        $dto = new GrDTO();
         $cmdHandler = new PostCopyFromAPCmdHandler();
-        $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
+        $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHandler, $this->getEventBusService());
         $cmd->execute();
 
-        $this->getLogger()->info(\sprintf("GR created from AP!  #%s ", $ev->getTarget()
+        $this->logInfo(\sprintf("GR created from AP!  #%s ", $ev->getTarget()
             ->getId()));
     }
 

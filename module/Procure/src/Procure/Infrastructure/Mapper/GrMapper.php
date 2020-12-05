@@ -4,8 +4,6 @@ namespace Procure\Infrastructure\Mapper;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcureGrRow;
 use Doctrine\ORM\EntityManager;
-use Procure\Domain\GoodsReceipt\GRDetailsSnapshot;
-use Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot;
 use Procure\Domain\GoodsReceipt\GRRowSnapshot;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 
@@ -472,18 +470,13 @@ class GrMapper
         return $entity;
     }
 
-    /**
-     *
-     * @param NmtProcureGr $entity
-     * @return NULL|\Procure\Domain\GoodsReceipt\GRDetailsSnapshot
-     */
     public static function createDetailSnapshot(EntityManager $doctrineEM, NmtProcureGr $entity = null)
     {
         if ($entity == null || $doctrineEM == null) {
             return null;
         }
 
-        $snapshot = new GRDetailsSnapshot();
+        $snapshot = new GRSnapshot();
 
         // =================================
         // Mapping None-Object Field
@@ -642,18 +635,13 @@ class GrMapper
         return $snapshot;
     }
 
-    /**
-     *
-     * @param NmtProcureGrRow $entity
-     * @return NULL|\Procure\Domain\GoodsReceipt\GRRowDetailsSnapshot
-     */
     public static function createRowDetailSnapshot(EntityManager $doctrineEM, NmtProcureGrRow $entity)
     {
         if ($entity == null || $doctrineEM == null) {
             return null;
         }
 
-        $snapshot = new GRRowDetailsSnapshot();
+        $snapshot = new GRRowSnapshot();
 
         // =================================
         // Mapping None-Object Field

@@ -223,21 +223,19 @@ class GRFactory
      */
     public static function postCopyFromAPByWarehouse(GenericAP $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        $results = [];
+        Assert::notNull($sourceObj, sprintf("Source object [GenericAP] not found!"));
 
         $docs = $sourceObj->generateDocumentByWarehouse();
+        Assert::notNull($docs, \sprintf("Can not create PO Goods Receipt from %s", $sourceObj->getId()));
 
-        if ($docs == null) {
-            throw new \RuntimeException(\sprintf("Can not create PO Goods Receipt from %s", $sourceObj->getId()));
-        }
-
+        $results = [];
         foreach ($docs as $doc) {
 
             $gr = GRFromAP::postCopyFromAP($doc, $options, $sharedService);
             $results[] = $gr;
         }
 
-        Assert::notNull($results, 'Cant not create PO GR by Warehouse!');
+        Assert::notNull($results, 'Can not create PO GR by Warehouse!');
         return $results;
     }
 
@@ -251,19 +249,19 @@ class GRFactory
      */
     public static function postCopyFromAPReversalByWarehouse(GenericAP $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
+        Assert::notNull($sourceObj, sprintf("Source object [GenericAP] not found!"));
+
         $results = [];
 
         $docs = $sourceObj->generateDocumentByWarehouse();
-        if ($docs == null) {
-            throw new \RuntimeException(\sprintf("Can not create PO Goods Receipt Reversal from %s", $sourceObj->getId()));
-        }
+        Assert::notNull($docs, \sprintf("Can not create PO Goods Receipt from %s", $sourceObj->getId()));
 
         foreach ($docs as $doc) {
             $gr = GRReversalFromAPReserval::postCopyFromAPReversal($doc, $options, $sharedService);
             $results[] = $gr;
         }
 
-        Assert::notNull($results, 'Cant not create PO GR by Warehouse!');
+        Assert::notNull($results, 'Can not create PO GR Reversal by Warehouse!');
         return $results;
     }
 

@@ -33,7 +33,7 @@ use Exception;
  * Opening Balance
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class ItemOpeningBalanceController extends AbstractGenericController
 {
@@ -229,7 +229,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
             return $this->redirect()->toRoute('not_found');
         }
 
-        $headerDTO = $rootEntity->makeDTOForGrid(new TrxDTO());
+        $headerDTO = $rootEntity->makeDTOForGrid();
         $viewModel = new ViewModel(array(
             'action' => $action,
             'form_action' => $form_action,
@@ -823,7 +823,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -873,7 +873,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -931,7 +931,7 @@ class ItemOpeningBalanceController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

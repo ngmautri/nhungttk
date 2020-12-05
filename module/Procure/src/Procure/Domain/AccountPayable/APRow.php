@@ -52,19 +52,6 @@ class APRow extends GenericRow
         $this->setLastchangeBy($postedBy);
     }
 
-    public function markRowAsReversed(GenericAP $rootDoc, $postedBy, $postedDate)
-    {
-        $this->createVO($rootDoc); // createVO
-
-        $this->setLastchangeBy($postedBy);
-        $this->setLastchangeOn($postedDate);
-        $this->setIsReversed(1);
-        $this->setIsActive(1);
-        $this->setIsDraft(0);
-        $this->setIsPosted(0);
-        $this->setDocStatus(ProcureDocStatus::REVERSED);
-    }
-
     /**
      *
      * {@inheritdoc}

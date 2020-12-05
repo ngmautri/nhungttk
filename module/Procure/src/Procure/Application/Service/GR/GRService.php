@@ -1,9 +1,11 @@
 <?php
 namespace Procure\Application\Service\GR;
 
+use Application\Application\Service\Shared\FXServiceImpl;
 use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Domain\Shared\Command\CommandOptions;
 use Application\Service\AbstractService;
+use Procure\Application\Service\Contracts\GrServiceInterface;
 use Procure\Application\Service\GR\Output\SaveAsOpenOffice;
 use Procure\Application\Service\GR\Output\SaveAsPdf;
 use Procure\Application\Service\GR\Output\Pdf\PdfBuilder;
@@ -23,7 +25,6 @@ use Procure\Domain\Validator\HeaderValidatorCollection;
 use Procure\Domain\Validator\RowValidatorCollection;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
 use Procure\Infrastructure\Doctrine\POQueryRepositoryImpl;
-use Application\Application\Service\Shared\FXServiceImpl;
 
 /**
  * GR Service.
@@ -31,12 +32,12 @@ use Application\Application\Service\Shared\FXServiceImpl;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GRService extends AbstractService
+class GRService extends AbstractService implements GrServiceInterface
 {
 
     private $queryRepository;
 
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
@@ -84,7 +85,7 @@ class GRService extends AbstractService
         return $rootEntity;
     }
 
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
         $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
 
@@ -162,4 +163,13 @@ class GRService extends AbstractService
         $gr = GRDoc::createFromPo($po, $options, $headerValidators, $rowValidators);
         return $gr;
     }
+
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN')
+    {}
+
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
+    {}
+
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN')
+    {}
 }

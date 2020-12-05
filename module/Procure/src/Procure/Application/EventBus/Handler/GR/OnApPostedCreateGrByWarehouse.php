@@ -1,16 +1,14 @@
 <?php
 namespace Procure\Application\EventBus\Handler\GR;
 
+use Application\Application\Command\Doctrine\GenericCommand;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
-use Procure\Application\Command\GenericCmd;
-use Procure\Application\Command\GR\PostCopyFromAPCmdHandler;
-use Procure\Application\Command\GR\Options\PostCopyFromAPOptions;
-use Procure\Application\DTO\Gr\GrDTO;
+use Application\Infrastructure\Doctrine\CompanyQueryRepositoryImpl;
+use Procure\Application\Command\Doctrine\GR\PostCopyFromAPByWarehouseCmdHandler;
+use Procure\Application\Command\Options\PostCopyFromCmdOptions;
 use Procure\Domain\AccountPayable\APSnapshot;
 use Procure\Domain\Event\Ap\ApPosted;
-use Procure\Domain\Exception\OperationFailedException;
 use Procure\Infrastructure\Doctrine\APQueryRepositoryImpl;
-use Procure\Application\Command\GR\PostCopyFromAPByWarehouseCmdHandler;
 
 /**
  *
@@ -34,15 +32,16 @@ class OnApPostedCreateGrByWarehouse extends AbstractEventHandler
 
         $id = $rootSnapshot->getId();
         $token = $rootSnapshot->getToken();
-
         $rep = new APQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
 
-        $options = new PostCopyFromAPOptions($rootEntity->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
+        $rep1 = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
+        $company = $rep1->getById($rootEntity->getCompany());
 
-        $dto = new GrDTO();
+        $options = new PostCopyFromCmdOptions($company->createValueObject(), $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
+
         $cmdHandler = new PostCopyFromAPByWarehouseCmdHandler();
-        $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
+        $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHandler, $this->getEventBusService());
         $cmd->setLogger($this->getLogger());
         $cmd->execute();
     }

@@ -1,13 +1,13 @@
 <?php
 namespace Inventory\Application\Service\Transaction;
 
-use Application\Service\AbstractService;
-use Inventory\Application\DTO\Transaction\TrxDTO;
+use Application\Application\Service\Contracts\AbstractService;
 use Inventory\Application\Export\Transaction\DocSaveAsArray;
 use Inventory\Application\Export\Transaction\LazyDocSaveAsArray;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Export\Transaction\Formatter\RowNumberFormatter;
 use Inventory\Application\Export\Transaction\Formatter\RowTextAndNumberFormatter;
+use Inventory\Application\Service\Contracts\TrxServiceInterface;
 use Inventory\Application\Service\Transaction\Output\TrxRowFormatter;
 use Inventory\Application\Service\Transaction\Output\TrxSaveAsExcel;
 use Inventory\Application\Service\Transaction\Output\TrxSaveAsOpenOffice;
@@ -22,17 +22,17 @@ use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class TrxService extends AbstractService
+class TrxService extends AbstractService implements TrxServiceInterface
 {
 
     /**
      *
-     * @param int $id
-     * @param string $token
+     * {@inheritdoc}
+     * @see \Inventory\Application\Service\Contracts\TrxServiceInterface::getDocHeaderByTokenId()
      */
-    public function getDocHeaderByTokenId($id, $token)
+    public function getDocHeaderByTokenId($id, $token, $locale = 'en_EN')
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
         return $rep->getHeaderById($id, $token);
@@ -63,12 +63,10 @@ class TrxService extends AbstractService
 
     /**
      *
-     * @param int $id
-     * @param string $token
-     * @param string $outputStrategy
-     * @return NULL|\Inventory\Domain\Transaction\TrxDoc
+     * {@inheritdoc}
+     * @see \Inventory\Application\Service\Contracts\TrxServiceInterface::getDocDetailsByTokenId()
      */
-    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null)
+    public function getDocDetailsByTokenId($id, $token, $outputStrategy = null, $locale = 'en_EN')
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getRootEntityByTokenId($id, $token);
@@ -123,7 +121,7 @@ class TrxService extends AbstractService
      * @param string $outputStrategy
      * @return NULL|\Inventory\Domain\Transaction\GenericTrx|NULL
      */
-    public function getLazyDocOutputByTokenId($id, $token, $offset, $limit, $outputStrategy)
+    public function getLazyDocOutputByTokenId($id, $token, $offset, $limit, $outputStrategy, $locale = 'en_EN')
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
         $rootEntity = $rep->getDetailLazyRootEntityByTokenId($id, $token);
@@ -166,13 +164,10 @@ class TrxService extends AbstractService
 
     /**
      *
-     * @param int $target_id
-     * @param string $target_token
-     * @param int $entity_id
-     * @param string $entity_token
-     * @return NULL[]|object[]|\Inventory\Domain\Transaction\TrxRow[]|\Inventory\Domain\Transaction\TrxDoc[]
+     * {@inheritdoc}
+     * @see \Inventory\Application\Service\Contracts\TrxServiceInterface::getRootEntityOfRow()
      */
-    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token)
+    public function getRootEntityOfRow($target_id, $target_token, $entity_id, $entity_token, $locale = 'en_EN')
     {
         $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
 
@@ -185,7 +180,7 @@ class TrxService extends AbstractService
         $rootEntity = $rep->getRootEntityByTokenId($target_id, $target_token);
 
         if (! $rootEntity == null) {
-            $rootDTO = $rootEntity->makeDTOForGrid(new TrxDTO());
+            $rootDTO = $rootEntity->makeDTOForGrid();
 
             $localEntity = $rootEntity->getRowbyTokenId($entity_id, $entity_token);
 
@@ -201,4 +196,10 @@ class TrxService extends AbstractService
             "localDTO" => $localDTO
         ];
     }
+
+    public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN')
+    {}
+
+    public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN')
+    {}
 }

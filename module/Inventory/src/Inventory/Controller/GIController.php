@@ -40,7 +40,7 @@ use Inventory\Application\Command\Transaction\CreateGIForReturnPOCmdHandler;
  * Goods Issue
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class GIController extends AbstractGenericController
 {
@@ -380,7 +380,7 @@ class GIController extends AbstractGenericController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -485,7 +485,7 @@ class GIController extends AbstractGenericController
             'redirectUrl' => null,
             'rootEntity' => $rootEntity,
             'rowOutput' => $rootEntity->getRowsOutput(),
-            'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+            'headerDTO' => $rootEntity->makeDTOForGrid(),
             'errors' => null,
             'version' => $rootEntity->getRevisionNo(),
             'nmtPlugin' => $nmtPlugin,
@@ -1027,7 +1027,7 @@ class GIController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,
@@ -1085,7 +1085,7 @@ class GIController extends AbstractGenericController
                 'entity_token' => $entity_token,
                 'rootEntity' => $rootEntity,
                 'rowOutput' => $rootEntity->getRowsOutput(),
-                'headerDTO' => $rootEntity->makeDTOForGrid(new TrxDTO()),
+                'headerDTO' => $rootEntity->makeDTOForGrid(),
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => $form_action,
                 'form_title' => $form_title,

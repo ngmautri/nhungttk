@@ -40,6 +40,8 @@ class CompanyQueryRepositoryImpl extends AbstractDoctrineRepository implements C
 
         $entityRoot = new GenericCompany();
         $entityRoot->constructFromDB($snapshot);
+
+        Assert::notNull($entityRoot);
         return $entityRoot;
     }
 

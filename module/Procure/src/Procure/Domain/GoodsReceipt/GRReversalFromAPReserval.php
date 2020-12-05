@@ -16,7 +16,7 @@ use Procure\Domain\GoodsReceipt\Validator\ValidatorFactory;
 use Procure\Domain\Service\SharedService;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
 use Procure\Domain\Shared\ProcureDocStatus;
-use function RuntimeException\__construct as sprintf;
+use Webmozart\Assert\Assert;
 
 /**
  *
@@ -61,23 +61,13 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
      */
     public static function postCopyFromAPReversal(GenericAP $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $sourceObj instanceof GenericAP) {
-            throw new \InvalidArgumentException("AP Entity is required");
-        }
+        Assert::isInstanceOf($sourceObj, GenericAP::class, sprintf("Generic AP Entity is required"));
+        Assert::eq($sourceObj->getDocStatus(), ProcureDocStatus::REVERSED, sprintf("AP is not reversed yet! %s", $sourceObj->getId()));
 
         $rows = $sourceObj->getDocRows();
+        Assert::notNull($rows, "AP reversal Entity is empty!");
 
-        if ($rows == null) {
-            throw new \InvalidArgumentException("AP Entity is empty!");
-        }
-
-        if ($sourceObj->getDocStatus() != ProcureDocStatus::REVERSED) {
-            throw new \RuntimeException(\sprintf("AP document status is not valid for this operation! %s", $sourceObj->getDocStatus()));
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("No Options is found");
-        }
+        Assert::notNull($options, "Command options not found");
 
         /**
          *
@@ -108,7 +98,7 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
              */
 
             $grRow = GrRow::copyFromApRowReserval($instance, $r, $options);
-            $grRow->markAsReversed($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
+            $grRow->markRowAsReversed($instance, $options);
             $instance->addRow($grRow);
         }
 
@@ -128,10 +118,6 @@ class GRReversalFromAPReserval extends GenericGoodsReceipt implements ReversalDo
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $snapshot = $rep->post($instance, true);
-
-        if (! $snapshot instanceof GRSnapshot) {
-            throw new \RuntimeException(sprintf("Error orcured when creating GR from AP reversal #%s", $sourceObj->getId()));
-        }
 
         $target = $snapshot;
         $defaultParams = new DefaultParameter();

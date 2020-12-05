@@ -374,11 +374,12 @@ abstract class GenericQR extends AbstractAP
 
     /**
      *
-     * @param object $dto
-     * @return NULL|object
+     * {@inheritdoc}
+     * @see \Procure\Domain\GenericDoc::makeDTOForGrid()
      */
-    public function makeDTOForGrid($dto)
+    public function makeDTOForGrid()
     {
+        $dto = new QRSnapshot();
         $dto = DTOFactory::createDTOFrom($this, $dto);
         $rowDTOList = [];
         if (count($this->docRows) > 0) {

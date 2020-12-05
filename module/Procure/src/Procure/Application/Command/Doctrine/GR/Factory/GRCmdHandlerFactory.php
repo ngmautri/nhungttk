@@ -2,13 +2,13 @@
 namespace Procure\Application\Command\Doctrine\GR\Factory;
 
 use Procure\Application\Command\Contracts\CmdHandlerAbstractFactory;
+use Procure\Application\Command\Doctrine\GR\CreateHeaderCmdHandler;
+use Procure\Application\Command\Doctrine\GR\CreateRowCmdHandler;
+use Procure\Application\Command\Doctrine\GR\PostCmdHandler;
+use Procure\Application\Command\Doctrine\GR\UpdateHeaderCmdHandler;
+use Procure\Application\Command\Doctrine\GR\UpdateRowCmdHandler;
+use Procure\Application\Command\Doctrine\GR\UpdateRowInlineCmdHandler;
 use Procure\Application\Command\Doctrine\PR\CloneAndSaveCmdHandler;
-use Procure\Application\Command\Doctrine\PR\CreateHeaderCmdHandler;
-use Procure\Application\Command\Doctrine\PR\CreateRowCmdHandler;
-use Procure\Application\Command\Doctrine\PR\PostCmdHandler;
-use Procure\Application\Command\Doctrine\PR\UpdateHeaderCmdHandler;
-use Procure\Application\Command\Doctrine\PR\UpdateRowCmdHandler;
-use Procure\Application\Command\Doctrine\PR\UpdateRowInlineCmdHandler;
 
 /**
  *

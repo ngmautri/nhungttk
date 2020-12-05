@@ -44,6 +44,12 @@ abstract class GenericDoc extends BaseDoc
 
     /**
      *
+     * @return DocSnapshot
+     */
+    abstract function makeDTOForGrid();
+
+    /**
+     *
      * @param ValidationServiceInterface $validationService
      * @param boolean $isPosting
      * @return \Procure\Domain\GenericDoc
@@ -502,6 +508,7 @@ abstract class GenericDoc extends BaseDoc
      * @param string $createdDate
      */
     protected function initDoc(CommandOptions $options)
+
     {
         $createdDate = new \DateTime();
         $this->setCreatedOn(date_format($createdDate, 'Y-m-d H:i:s'));
@@ -518,14 +525,10 @@ abstract class GenericDoc extends BaseDoc
         $this->setUuid(Uuid::uuid4()->toString());
         $this->setToken($this->getUuid());
 
-        /**
-         *
-         * @var CompanyVO $companyVO ;
-         */
-        $companyVO = $options->getCompanyVO();
-        $this->setCompany($companyVO->getId());
+        $c = $options->getCompanyVO();
+        $this->company = $c->getId();
         $this->setCurrency($this->getDocCurrency());
-        $this->setLocalCurrency($companyVO->getDefaultCurrency());
+        $this->setLocalCurrency($c->getDefaultCurrency());
     }
 
     /**

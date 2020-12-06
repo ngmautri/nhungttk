@@ -23,10 +23,11 @@ class TransferWhController extends TrxCRUDController
         $this->setTransactionTypes();
     }
 
-    protected function doRedirecting($movementType, $id, $token)
-    {
-        // do nothing.
-    }
+    protected function redirectForView($movementType, $id, $token)
+    {}
+
+    protected function redirectForCreate($data)
+    {}
 
     protected function setAjaxLayout()
     {

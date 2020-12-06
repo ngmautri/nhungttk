@@ -1,9 +1,9 @@
 <?php
 namespace Inventory\Controller;
 
-use Inventory\Application\Command\Transaction\Doctrine\Factory\TrxCmdHandlerFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Service\Transaction\TrxService;
+use Inventory\Application\Service\Upload\Transaction\TrxRowsUpload;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -23,22 +23,20 @@ class ItemOpeningBalanceControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $sm = $serviceLocator->getServiceLocator();
+        $container = $serviceLocator->getServiceLocator();
 
         $controller = new ItemOpeningBalanceController();
 
-        $sv = $sm->get('doctrine.entitymanager.orm_default');
+        $sv = $container->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $sm->get(EventBusService::class);
-        $controller->setEventBusService($sv);
-
-        $sv = $sm->get(TrxService::class);
+        $sv = $container->get(TrxService::class);
         $controller->setTrxService($sv);
 
-        $controller->setCmdHandlerFactory(new TrxCmdHandlerFactory());
+        $sv = $container->get(EventBusService::class);
+        $controller->setEventBusService($sv);
 
-        $sv = $sm->get("AppLogger");
+        $sv = $container->get("AppLogger");
         $controller->setLogger($sv);
 
         return $controller;

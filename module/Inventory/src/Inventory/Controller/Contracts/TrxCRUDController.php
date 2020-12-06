@@ -55,7 +55,9 @@ abstract class TrxCRUDController extends AbstractGenericController
         return $this->viewTemplate;
     }
 
-    abstract protected function doRedirecting($movementType, $id, $token);
+    abstract protected function redirectForView($movementType, $id, $token);
+
+    abstract protected function redirectForCreate($data);
 
     abstract protected function setBaseUrl();
 
@@ -99,7 +101,7 @@ abstract class TrxCRUDController extends AbstractGenericController
         }
 
         $movementType = $rootEntity->getMovementType();
-        $this->doRedirecting($movementType, $rootEntity->getId(), $rootEntity->getToken());
+        $this->redirectForView($movementType, $rootEntity->getId(), $rootEntity->getToken()); // redirect
 
         $viewModel = new ViewModel(array(
             'action' => $action,
@@ -172,6 +174,7 @@ abstract class TrxCRUDController extends AbstractGenericController
         try {
 
             $data = $prg;
+            $this->redirectForCreate($data); // redirect
 
             $options = new CreateHeaderCmdOptions($this->getCompanyVO(), $this->getUserId(), __METHOD__);
             $cmdHandler = $this->getCmdHandlerFactory()->getCreateHeaderCmdHandler();

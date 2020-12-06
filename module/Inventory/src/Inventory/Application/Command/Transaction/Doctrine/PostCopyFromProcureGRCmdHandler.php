@@ -42,7 +42,7 @@ class PostCopyFromProcureGRCmdHandler extends AbstractCommandHandler
 
         try {
 
-            $sharedService = SharedServiceFactory::createForGR($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
             $sharedService->setLogger($cmd->getLogger());
             $rootEntity = TransactionFactory::postCopyFromProcureGR($sourceObj, $options, $sharedService);
 

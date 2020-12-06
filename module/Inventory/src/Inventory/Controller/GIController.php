@@ -23,6 +23,37 @@ class GIController extends TrxCRUDController
         $this->setTransactionTypes();
     }
 
+    protected function redirectForView($movementType, $id, $token)
+    {
+        $redirectUrl = null;
+        switch ($movementType) {
+            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
+                $f = '/inventory/transfer-wh/view?entity_id=%s&entity_token=%s';
+                $redirectUrl = sprintf($f, $id, $token);
+                break;
+        }
+
+        if ($redirectUrl != null) {
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+    }
+
+    protected function redirectForCreate($data)
+    {
+        $redirectUrl = null;
+
+        $movementType = $data['movementType'];
+        switch ($movementType) {
+            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
+                $f = '/inventory/transfer-wh/create?sourceWH=%s&movementDate=%s';
+                $redirectUrl = sprintf($f, $data['warehouse'], $data['movementDate']);
+        }
+
+        if ($redirectUrl != null) {
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+    }
+
     protected function setAjaxLayout()
     {
         $this->ajaxLayout = 'layout/user/ajax';
@@ -51,20 +82,5 @@ class GIController extends TrxCRUDController
     protected function setTransactionTypes()
     {
         $this->transactionTypes = TrxType::getGoodIssueTrx();
-    }
-
-    protected function doRedirecting($movementType, $id, $token)
-    {
-        $redirectUrl = null;
-        switch ($movementType) {
-            case TrxType::GI_FOR_TRANSFER_WAREHOUSE:
-                $f = '/inventory/transfer-wh/view?entity_id=%s&entity_token=%s';
-                $redirectUrl = sprintf($f, $id, $token);
-                break;
-        }
-
-        if ($redirectUrl != null) {
-            return $this->redirect()->toUrl($redirectUrl);
-        }
     }
 }

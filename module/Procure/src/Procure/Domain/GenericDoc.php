@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Domain;
 
-use Application\Domain\Company\CompanyVO;
 use Application\Domain\Shared\Command\CommandOptions;
 use Procure\Domain\Service\Contracts\SharedServiceInterface;
 use Procure\Domain\Service\Contracts\ValidationServiceInterface;
@@ -21,6 +20,13 @@ use InvalidArgumentException;
  */
 abstract class GenericDoc extends BaseDoc
 {
+
+    private $exculdedProps = [
+        "rowIdArray",
+        "instance",
+        "grCollection",
+        "apCollection"
+    ];
 
     abstract protected function prePost(CommandOptions $options, ValidationServiceInterface $validationService, SharedServiceInterface $sharedService);
 
@@ -107,13 +113,6 @@ abstract class GenericDoc extends BaseDoc
             return;
         }
     }
-
-    private $exculdedProps = [
-        "rowIdArray",
-        "instance",
-        "grCollection",
-        "apCollection"
-    ];
 
     /**
      *

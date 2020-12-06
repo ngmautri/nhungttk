@@ -11,6 +11,7 @@ use Inventory\Domain\Transaction\Factory\TransactionFactory;
 use Inventory\Domain\Transaction\Repository\TrxQueryRepositoryInterface;
 use Inventory\Infrastructure\Doctrine\Helper\TrxHelper;
 use Inventory\Infrastructure\Mapper\TrxMapper;
+use Webmozart\Assert\Assert;
 use Closure;
 
 /**
@@ -86,13 +87,10 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
          * @var \Application\Entity\NmtInventoryMv $entity ;
          */
         $entity = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryMv')->findOneBy($criteria);
-        $snapshot = TrxMapper::createSnapshot($this->doctrineEM, $entity);
+        $rootSnapshot = TrxMapper::createSnapshot($this->doctrineEM, $entity);
 
-        if ($snapshot == null) {
-            return null;
-        }
-
-        return TrxDoc::constructFromSnapshot($snapshot);
+        Assert::notNull($rootSnapshot, \sprintf("Can not get transaction #%s!", $id));
+        return TransactionFactory::contructFromDB($rootSnapshot);
     }
 
     /**
@@ -122,7 +120,7 @@ class TrxQueryRepositoryImpl extends AbstractDoctrineRepository implements TrxQu
         $rows = TrxHelper::getRowsById($this->getDoctrineEM(), $id);
 
         if (count($rows) == 0) {
-            $rootEntity = TrxDoc::constructFromSnapshot($rootSnapshot);
+            $rootEntity = TransactionFactory::contructFromDB($rootSnapshot);
             return $rootEntity;
         }
 

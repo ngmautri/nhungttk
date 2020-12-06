@@ -2,18 +2,19 @@
 namespace Inventory\Domain\Transaction\Validator\Row;
 
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Inventory\Domain\Transaction\AbstractTrx;
 use Inventory\Domain\Transaction\BaseRow;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface;
+use Procure\Domain\AbstractDoc;
+use Procure\Domain\AbstractRow;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class WarehouseValidator extends AbstractValidator implements RowValidatorInterface
 {
@@ -23,7 +24,7 @@ class WarehouseValidator extends AbstractValidator implements RowValidatorInterf
      * {@inheritdoc}
      * @see \Inventory\Domain\Transaction\Validator\Contracts\RowValidatorInterface::validate()
      */
-    public function validate(AbstractTrx $rootEntity, BaseRow $localEntity)
+    public function validate(AbstractDoc $rootEntity, AbstractRow $localEntity)
     {
         if (! $rootEntity instanceof GenericTrx) {
             throw new InvalidArgumentException('GenericTrx entity not given!');

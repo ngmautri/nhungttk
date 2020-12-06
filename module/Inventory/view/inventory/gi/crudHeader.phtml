@@ -8,7 +8,7 @@ use Inventory\Application\DTO\Transaction\TrxDTO;
  *
  * @var TrxDTO $headerDTO ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
- *     
+ *
  */
 
 $entityFormInput = '';
@@ -56,16 +56,21 @@ if ($action == Constants::FORM_ACTION_WH_GI_FOR_PO) {
 
 $wh_id = null;
 $currencyId = $localCurrencyId;
+$trxType = null;
 
 if ($headerDTO != null) {
     $wh_id = $headerDTO->getWarehouse();
     if ($headerDTO->getDocCurrency() != null) {
         $currencyId = $headerDTO->getDocCurrency();
     }
+
+    $trxType = $headerDTO->getMovementType();
 }
 
 $wh_option = OptionList::createWarehouseOption($nmtPlugin->warehouseList(), $wh_id);
 $currency_option = OptionList::createCurrencyOption($nmtPlugin->currencyList(), $currencyId);
+
+$trx_option = OptionList::createGoodsIssueOption($this, $currencyId);
 
 $error_msg = ErrorMessage::showErrorMessage($errors);
 
@@ -90,7 +95,7 @@ $error_msg = ErrorMessage::showErrorMessage($errors);
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -114,7 +119,7 @@ echo $form_action;
 echo $entityFormInput;
 echo $targetFormInput;
 ?>
-                 
+
                   <fieldset>
                      <legend style="font-size: 9.5pt; color: gray;">
                         <small>
@@ -129,24 +134,12 @@ echo $targetFormInput;
                         <label class="control-label col-sm-2">Movement Type:</label>
                         <div class="col-sm-3">
                            <select name="movementType" class="form-control input-sm">
-                              <option value="">Select Movement</option>
-   	    							<?php
-            if ($transactionType !== null) :
-                foreach ($transactionType as $k => $v) :
-                    if ($headerDTO !== null) :
-                        if ($headerDTO->movementType == $k) :
-                            echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
-                        else :
-                            echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
 
-            ?>
+                              <option value="">Select Movement</option>
+                           <?php
+                        echo $trx_option;
+                        ?>
+
    					</select>
                         </div>
                         <div class="col-sm-3">
@@ -266,5 +259,5 @@ $( "#vendor_name_1" ).autocomplete({
     };
 
 $( "#vendor_name_1" ).focus();
-  
+
 </script>

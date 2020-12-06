@@ -103,12 +103,13 @@ abstract class AbstractEventHandler implements EventHandlerInterface, EventHandl
 
     /**
      *
-     * @return mixed
+     * @param int $companyId
+     * @return \Application\Domain\Company\CompanyVO
      */
-    public function getCompanyVO()
+    public function getCompanyVO($companyId)
     {
         $rep1 = new CompanyQueryRepositoryImpl($this->getDoctrineEM());
-        return $rep1->getById(1)->createValueObject();
+        return $rep1->getById($companyId)->createValueObject();
     }
 
     /**

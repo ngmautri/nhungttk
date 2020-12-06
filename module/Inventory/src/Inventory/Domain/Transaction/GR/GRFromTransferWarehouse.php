@@ -8,7 +8,6 @@ use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\AbstractGoodsReceipt;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\BackGroundTrxInterface;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
@@ -141,10 +140,6 @@ class GRFromTransferWarehouse extends AbstractGoodsReceipt implements GoodsRecei
         $snapshot = $sharedService->getPostingService()
             ->getCmdRepository()
             ->post($instance, true);
-
-        if (! $snapshot instanceof TrxSnapshot) {
-            throw new RuntimeException(sprintf("Error orcured when creating WH-TO #%s", $instance->getId()));
-        }
 
         $instance->updateIdentityFrom($snapshot);
 

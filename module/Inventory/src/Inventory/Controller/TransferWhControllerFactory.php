@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Controller;
 
+use Inventory\Application\Command\Transaction\Doctrine\Factory\TrxCmdHandlerFactory;
 use Inventory\Application\Eventbus\EventBusService;
 use Inventory\Application\Service\Transaction\TrxService;
 use Zend\ServiceManager\FactoryInterface;
@@ -9,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TransferWhControllerFactory implements FactoryInterface
 {
@@ -22,20 +23,22 @@ class TransferWhControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $container = $serviceLocator->getServiceLocator();
+        $sm = $serviceLocator->getServiceLocator();
 
         $controller = new TransferWhController();
 
-        $sv = $container->get('doctrine.entitymanager.orm_default');
+        $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $container->get(TrxService::class);
-        $controller->setTrxService($sv);
-
-        $sv = $container->get(EventBusService::class);
+        $sv = $sm->get(EventBusService::class);
         $controller->setEventBusService($sv);
 
-        $sv = $container->get("AppLogger");
+        $sv = $sm->get(TrxService::class);
+        $controller->setTrxService($sv);
+
+        $controller->setCmdHandlerFactory(new TrxCmdHandlerFactory());
+
+        $sv = $sm->get("AppLogger");
         $controller->setLogger($sv);
 
         return $controller;

@@ -8,6 +8,7 @@ use Inventory\Domain\Transaction\GI\Validator\Header\DefaultGIHeaderValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\CostCenterValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\DefaultGIRowValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\GIForMachineValidator;
+use Inventory\Domain\Transaction\GI\Validator\Row\GIForReturnPOValidator;
 use Inventory\Domain\Transaction\GI\Validator\Row\OnHandQuantityValidator;
 use Inventory\Domain\Transaction\GR\Validator\Header\DefaultGRHeaderValidator;
 use Inventory\Domain\Transaction\GR\Validator\Header\OpeningBalanceHeaderValidator;
@@ -23,9 +24,8 @@ use Inventory\Domain\Transaction\Validator\Row\DefaultRowValidator;
 use Inventory\Domain\Transaction\Validator\Row\NoneNegativePriceValidator;
 use Inventory\Domain\Transaction\Validator\Row\NoneNegativeQuantityValidator;
 use Inventory\Domain\Transaction\Validator\Row\PositiveQuantityValidator;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
-use Inventory\Application\Specification\Inventory\OnhandQuantityOfMovementSpecification;
-use Inventory\Domain\Transaction\GI\Validator\Row\GIForReturnPOValidator;
 
 /**
  *
@@ -277,6 +277,9 @@ class ValidatorFactory
             $validator->setDomainSpecificationFactory($sharedService->getDomainSpecificationFactory());
             $headerValidators->add($validator);
         }
+
+        Assert::notNull($headerValidators, "Trx header validator is null");
+        Assert::notNull($rowValidators, "Trx row validator is null");
 
         return new TrxValidationService($headerValidators, $rowValidators);
     }

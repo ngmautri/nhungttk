@@ -1,12 +1,11 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Transaction;
 
+use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Application\Command\Options\PostCopyFromCmdOptions;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Application\Command\Transaction\PostCopyFromProcureGRCmdHandler;
-use Inventory\Application\Command\Transaction\Options\PostCopyFromProcureGROptions;
-use Inventory\Application\DTO\Transaction\TrxDTO;
-use Procure\Application\Command\GenericCmd;
+use Inventory\Application\Command\Transaction\Doctrine\PostCopyFromProcureGRCmdHandler;
 use Procure\Domain\Event\Gr\GrPosted;
 use Procure\Domain\GoodsReceipt\GRSnapshot;
 use Procure\Infrastructure\Doctrine\GRQueryRepositoryImpl;
@@ -28,25 +27,25 @@ class OnProcureGrPostedCreateWhGr extends AbstractEventHandler
     {
         try {
 
-            $target = $event->getTarget();
+            $rootSnapshot = $event->getTarget();
 
-            if (! $target instanceof GRSnapshot) {
+            if (! $rootSnapshot instanceof GRSnapshot) {
                 Throw new \InvalidArgumentException("GRSnapshot not give for creating WH Trx");
             }
 
-            $rootSnapshot = $event->getTarget();
-            $id = $rootSnapshot->getId();
-            $token = $rootSnapshot->getToken();
-
             $rep = new GRQueryRepositoryImpl($this->getDoctrineEM());
-            $rootEntity = $rep->getRootEntityByTokenId($id, $token);
-            $options = new PostCopyFromProcureGROptions($rootSnapshot->getCompany(), $rootEntity->getCreatedBy(), __METHOD__, $event->getTarget());
-            $dto = new TrxDTO();
+            $rootEntity = $rep->getRootEntityByTokenId($rootSnapshot->getId(), $rootSnapshot->getToken());
+
+            $companyVO = $this->getCompanyVO($rootEntity->getCompany());
+            $options = new PostCopyFromCmdOptions($companyVO, $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
 
             $cmdHandler = new PostCopyFromProcureGRCmdHandler(); // No transactional
-            $cmd = new GenericCmd($this->getDoctrineEM(), $dto, $options, $cmdHandler, $this->getEventBusService());
+
+            $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHandler, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+
             $cmd->execute();
-            $this->logInfo(\sprintf("WH-GR created from PO-GR!  #%s ", $target->getId()));
+            $this->logInfo(\sprintf("WH-GR created from PO-GR!  #%s ", $rootSnapshot->getId()));
         } catch (\Exception $e) {
 
             // There might be nothing to receive in stock, so do not throw exception, just log it.

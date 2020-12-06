@@ -3,6 +3,7 @@ namespace Inventory\Domain\Transaction;
 
 use Application\Domain\Shared\DTOFactory;
 use Application\Domain\Shared\SnapshotAssembler;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
 use Procure\Domain\GenericDoc;
 
@@ -21,6 +22,17 @@ class TrxRow extends BaseRow
     // ====================
 
     // ===================
+    public static function createFromSnapshot(GenericDoc $rootDoc, TrxRowSnapshot $snapshot)
+    {
+        if (! $snapshot instanceof TrxRowSnapshot) {
+            return null;
+        }
+
+        $instance = new self();
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
+        $instance->createVO($rootDoc);
+        return $instance;
+    }
 
     /**
      *

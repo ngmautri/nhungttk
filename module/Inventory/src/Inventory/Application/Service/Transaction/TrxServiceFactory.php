@@ -7,7 +7,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class TrxServiceFactory implements FactoryInterface
 {
@@ -22,9 +22,6 @@ class TrxServiceFactory implements FactoryInterface
         $container = $serviceLocator;
 
         $service = new TrxService();
-
-        $sv = $container->get('ControllerPluginManager');
-        $service->setControllerPlugin($sv->get('NmtPlugin'));
 
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);

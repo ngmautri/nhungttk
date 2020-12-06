@@ -12,6 +12,7 @@ use Procure\Domain\Contracts\ProcureDocType;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Domain\PurchaseOrder\PORow;
 use Webmozart\Assert\Assert;
+use Application\Domain\Shared\Assembler\GenericObjectAssembler;
 
 /**
  * AP Row
@@ -77,7 +78,7 @@ class APRow extends GenericRow
         Assert::isInstanceOf($snapshot, APRowSnapshot::class, "AP row snapshot is required!");
 
         $instance = new self();
-        SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        GenericObjectAssembler::updateAllFieldsFrom($instance, $snapshot);
         $instance->createVO($rootDoc); // important
         return $instance;
     }

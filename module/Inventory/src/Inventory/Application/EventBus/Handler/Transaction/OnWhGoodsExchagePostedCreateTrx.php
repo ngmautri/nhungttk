@@ -1,18 +1,19 @@
 <?php
 namespace Inventory\Application\EventBus\Handler\Transaction;
 
+use Application\Application\Command\Doctrine\GenericCommand;
+use Application\Application\Command\Options\PostCopyFromCmdOptions;
 use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
-use Inventory\Application\Command\GenericCmd;
-use Inventory\Application\Command\Transaction\PostGrFromExchangeCmdHandler;
-use Inventory\Application\Command\Transaction\Options\PostGRFromExchangeOptions;
+use Inventory\Application\Command\Transaction\Doctrine\PostGrFromExchangeCmdHandler;
 use Inventory\Domain\Event\Transaction\GI\WhGoodsExchangePosted;
 use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class OnWhGoodsExchagePostedCreateTrx extends AbstractEventHandler
 {
@@ -21,20 +22,26 @@ class OnWhGoodsExchagePostedCreateTrx extends AbstractEventHandler
     {
         try {
 
-            $snapshot = $event->getTarget();
+            $rootSnapshot = $event->getTarget();
 
-            if (! $snapshot instanceof TrxSnapshot) {
+            if (! $rootSnapshot instanceof TrxSnapshot) {
                 Throw new \InvalidArgumentException("TrxSnapshot not give for creating WH Trx");
             }
 
-            $options = new PostGRFromExchangeOptions($snapshot->getCompany(), $snapshot->getCreatedBy(), __METHOD__, $event->getTarget());
-            $cmdHanlder = new PostGrFromExchangeCmdHandler();
-            $cmd = new GenericCmd($this->getDoctrineEM(), new TrxSnapshot(), $options, $cmdHanlder);
-            $cmd->setLogger($this->getLogger());
-            $cmd->execute();
+            $rep = new TrxQueryRepositoryImpl($this->getDoctrineEM());
+            $rootEntity = $rep->getRootEntityByTokenId($rootSnapshot->getId(), $rootSnapshot->getToken());
 
-            $this->logInfo(\sprintf("Receipt exchanged/damage goods created for WH-GI #%s", $event->getTarget()
-                ->getId()));
+            $companyVO = $this->getCompanyVO($rootEntity->getCompany());
+            $options = new PostCopyFromCmdOptions($companyVO, $rootEntity->getCreatedBy(), __METHOD__, $rootEntity);
+
+            $cmdHandler = new PostGrFromExchangeCmdHandler(); // No transactional
+
+            $cmd = new GenericCommand($this->getDoctrineEM(), null, $options, $cmdHandler, $this->getEventBusService());
+            $cmd->setLogger($this->getLogger());
+            $cmd->setLogger($this->getLogger());
+
+            $cmd->execute();
+            $this->logInfo(\sprintf("Receipt exchanged/damage goods created for WH-GI #%s", $rootSnapshot->getId()));
         } catch (\Exception $e) {
 
             $this->logException($e);

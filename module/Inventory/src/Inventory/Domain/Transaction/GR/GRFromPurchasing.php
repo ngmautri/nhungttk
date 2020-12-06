@@ -9,7 +9,6 @@ use Inventory\Domain\Exception\ValidationFailedException;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Service\Contracts\TrxValidationServiceInterface;
 use Inventory\Domain\Transaction\AbstractGoodsReceipt;
-use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
@@ -17,6 +16,7 @@ use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Procure\Domain\GoodsReceipt\GRRow;
 use Procure\Domain\GoodsReceipt\GenericGR;
 use Procure\Domain\Shared\ProcureDocStatus;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
 /**
@@ -51,22 +51,14 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
      */
     public static function postCopyFromProcureGR(GenericGR $sourceObj, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $sourceObj instanceof GenericGR) {
-            throw new InvalidArgumentException("GRDoc Entity is required");
-        }
+        Assert::isInstanceOf($sourceObj, GenericGR::class, sprintf("GRDoc Entity is required %s"));
+        Assert::eq($sourceObj->getDocStatus(), ProcureDocStatus::POSTED, sprintf("PO GR is not posted %s", $sourceObj->getId()));
 
         $rows = $sourceObj->getDocRows();
+        Assert::notNull($rows, "GRDoc Entity is empty!");
 
-        if ($rows == null) {
-            throw new InvalidArgumentException("GRDoc Entity is empty!");
-        }
-        if ($options == null) {
-            throw new InvalidArgumentException("No Options is found");
-        }
-
-        if ($sourceObj->getDocStatus() != ProcureDocStatus::POSTED) {
-            throw new InvalidArgumentException("GR document is not posted yet!");
-        }
+        Assert::notNull($options, "Options not founds");
+        Assert::notNull($sharedService, "Shared service not founds");
 
         /**
          *
@@ -79,7 +71,6 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
         $instance->specify(); // important.
 
         $instance->setMovementDate($sourceObj->getPostingDate());
-        $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
         $instance->setBaseDocId($sourceObj->getId());
         $instance->setBaseDocType($sourceObj->getDocType());
 
@@ -105,6 +96,7 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
             $instance->addRow($grRow);
         }
 
+        $validationService = ValidatorFactory::create($instance->getMovementType(), $sharedService);
         $instance->validate($validationService);
 
         if ($instance->hasErrors()) {
@@ -116,10 +108,6 @@ class GRFromPurchasing extends AbstractGoodsReceipt implements GoodsReceiptInter
         $snapshot = $sharedService->getPostingService()
             ->getCmdRepository()
             ->post($instance, true);
-
-        if (! $snapshot instanceof TrxSnapshot) {
-            throw new \RuntimeException(sprintf("Error orcured when creating WH-GR #%s", $instance->getId()));
-        }
 
         $target = $instance;
         $defaultParams = new DefaultParameter();

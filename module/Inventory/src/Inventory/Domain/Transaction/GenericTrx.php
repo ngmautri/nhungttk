@@ -112,23 +112,11 @@ abstract class GenericTrx extends BaseDoc
      */
     public function createRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $storeNow = true)
     {
-        if ($this->getDocStatus() == TrxDocStatus::POSTED) {
-            throw new \RuntimeException(sprintf("Trx is posted! %s", $this->getId()));
-        }
-
-        if ($snapshot == null) {
-            throw new \InvalidArgumentException("Row Snapshot not found");
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("Options not found");
-        }
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Trx is already posted %s", $this->getId()));
+        Assert::notNull($snapshot, "Row Snapshot not founds");
+        Assert::notNull($options, "Options not founds");
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new \InvalidArgumentException("Row Validators not given!");
-        }
 
         $snapshot->flow = $this->getMovementFlow();
         $snapshot->wh = $this->getWarehouse();
@@ -137,7 +125,7 @@ abstract class GenericTrx extends BaseDoc
         $createdBy = $options->getUserId();
         $snapshot->initSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = TrxRow::makeFromSnapshot($snapshot);
+        $row = TrxRow::createFromSnapshot($this, $snapshot);
 
         // \var_dump($row);
         $this->validateRow($row, $validationService->getRowValidators());
@@ -154,7 +142,7 @@ abstract class GenericTrx extends BaseDoc
 
         // saving to storage now.
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
         /**
          *
@@ -163,10 +151,6 @@ abstract class GenericTrx extends BaseDoc
          */
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $localSnapshot = $rep->storeRow($this, $row);
-
-        if ($localSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error occured when creating row #%s", $this->getId()));
-        }
 
         $params = [
             "rowId" => $localSnapshot->getId(),
@@ -205,29 +189,17 @@ abstract class GenericTrx extends BaseDoc
      */
     public function updateRowFrom(TrxRowSnapshot $snapshot, CommandOptions $options, $params, SharedService $sharedService)
     {
-        if ($this->getDocStatus() == TrxDocStatus::POSTED) {
-            throw new \RuntimeException(sprintf("Trx is posted already! %s", $this->getId()));
-        }
-
-        if ($snapshot == null) {
-            throw new \InvalidArgumentException("TrxRowSnapshot not found");
-        }
-
-        if ($options == null) {
-            throw new \InvalidArgumentException("Options not found");
-        }
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Trx is already posted %s", $this->getId()));
+        Assert::notNull($snapshot, "Row Snapshot not founds");
+        Assert::notNull($options, "Options not founds");
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService);
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new \InvalidArgumentException("Row Validators not given!");
-        }
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $snapshot->updateSnapshot($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        $row = TrxRow::makeFromSnapshot($snapshot);
+        $row = TrxRow::createFromSnapshot($this, $snapshot);
 
         $this->validateRow($row, $validationService->getRowValidators());
 
@@ -235,7 +207,7 @@ abstract class GenericTrx extends BaseDoc
             throw new \RuntimeException($this->getNotification()->errorMessage());
         }
 
-        $this->recordedEvents = array();
+        $this->clearEvents();
 
         /**
          *
@@ -244,10 +216,6 @@ abstract class GenericTrx extends BaseDoc
         $localSnapshot = $sharedService->getPostingService()
             ->getCmdRepository()
             ->storeRow($this, $row);
-
-        if ($localSnapshot == null) {
-            throw new \RuntimeException(sprintf("Error occured when updatting Trx row #%s", $this->getId()));
-        }
 
         // $target = $this->makeSnapshot(); //
 
@@ -281,13 +249,8 @@ abstract class GenericTrx extends BaseDoc
             throw new \InvalidArgumentException(Translator::translate(sprintf($f, $this->getDocType())));
         }
 
-        if ($this->getDocStatus() !== ProcureDocStatus::DRAFT) {
-            throw new \InvalidArgumentException(Translator::translate(sprintf("Document is already posted/closed or being amended! %s", __FUNCTION__)));
-        }
-
-        if ($sharedService == null) {
-            throw new \InvalidArgumentException(Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
-        }
+        Assert::notEq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("Document is already posted/closed or being amended! %s", $this->getId()));
+        Assert::notNull($options, "Options not founds");
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
 
@@ -296,7 +259,6 @@ abstract class GenericTrx extends BaseDoc
         }
 
         $this->setLogger($sharedService->getLogger());
-
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
 
         $this->validate($validationService, true);
@@ -346,7 +308,6 @@ abstract class GenericTrx extends BaseDoc
         }
 
         $this->setLogger($sharedService->getLogger());
-
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
 
         $this->validate($validationService);
@@ -370,16 +331,11 @@ abstract class GenericTrx extends BaseDoc
      */
     public function saveAfterCalculationCost(SharedService $sharedService)
     {
-        if ($this->getDocStatus() != TrxDocStatus::POSTED) {
-            throw new \InvalidArgumentException(Translator::translate(sprintf("Document should be posted ! %s", __FUNCTION__)));
-        }
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Document should be posted! %s", $this->getId()));
+        Assert::notNull($sharedService, "Shared Service not founds");
 
         if ($this->getMovementFlow() != TrxFlow::WH_TRANSACTION_OUT) {
             throw new \InvalidArgumentException(Translator::translate(sprintf("Flow in not correct%s", __FUNCTION__)));
-        }
-
-        if ($sharedService == null) {
-            throw new \InvalidArgumentException(Translator::translate(sprintf("Shared Service not set! %s", __FUNCTION__)));
         }
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
@@ -389,7 +345,6 @@ abstract class GenericTrx extends BaseDoc
         }
 
         $this->setLogger($sharedService->getLogger());
-
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
 
         $this->validate($validationService);
@@ -419,15 +374,9 @@ abstract class GenericTrx extends BaseDoc
             throw new \InvalidArgumentException(Translator::translate(sprintf($f, $this->getDocType())));
         }
 
-        if ($this->getDocStatus() !== ProcureDocStatus::POSTED) {
-            throw new \RuntimeException(Translator::translate(sprintf("Document is not posted yet! %s", __METHOD__)));
-        }
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::POSTED, sprintf("Document should be posted! %s", $this->getId()));
 
         $validationService = ValidatorFactory::create($this->getMovementType(), $sharedService, true);
-
-        if (! $validationService->getRowValidators() instanceof RowValidatorCollection) {
-            throw new \InvalidArgumentException("Row Validators not given!");
-        }
 
         $this->validate($validationService->getHeaderValidators(), $validationService->getRowValidators());
 

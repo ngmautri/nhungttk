@@ -2,13 +2,13 @@
 namespace Inventory\Domain\Transaction\Factory;
 
 use Application\Application\Event\DefaultParameter;
-use Application\Domain\Shared\SnapshotAssembler;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Event\Transaction\TrxHeaderCreated;
 use Inventory\Domain\Event\Transaction\TrxHeaderUpdated;
 use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxSnapshot;
+use Inventory\Domain\Transaction\TrxSnapshotAssembler;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
 use Inventory\Domain\Transaction\GI\GIFromGRReversal;
@@ -32,6 +32,7 @@ use Inventory\Domain\Transaction\Repository\TrxCmdRepositoryInterface;
 use Inventory\Domain\Transaction\Validator\ValidatorFactory;
 use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
 use Procure\Domain\GoodsReceipt\GenericGR;
+use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -74,52 +75,29 @@ class TransactionFactory
      */
     public static function createFrom(TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService)
     {
-        if (! $snapshot instanceof TrxSnapshot) {
-            throw new InvalidArgumentException("TrxSnapshot not found!");
-        }
+        Assert::notNull($snapshot, "AP snapshot not found");
+        Assert::notNull($options, "Command options not found");
+        Assert::notNull($sharedService, "Trx shared service options not found");
 
         $typeId = $snapshot->getMovementType();
+        $instance = self::createTrx($typeId);
 
-        if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
-            throw new InvalidArgumentException("Movemement type empty or not supported! TransactionFactory #" . $snapshot->getMovementType());
-        }
-
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        $trx = self::createTrx($typeId);
-
-        if ($trx == null) {
-            throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
-        }
-
-        $createdDate = new \Datetime();
-        $createdBy = $options->getUserId();
-        $snapshot->init($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
-
-        /**
-         *
-         * @var GenericTrx $trx
-         */
-        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
-
-        // Important
-        $trx->specify();
-
+        $snapshot->initDoc($options);
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $trx->updateExchangeRate($fxRate);
+        $snapshot->setExchangeRate($fxRate);
+
+        TrxSnapshotAssembler::updateEntityAllFieldsFrom($instance, $snapshot);
+
+        $instance->specify(); // Important
 
         $validatorService = ValidatorFactory::create($typeId, $sharedService);
+        $instance->validateHeader($validatorService->getHeaderValidators()); // validate header only.
 
-        // validate header only.
-        $trx->validateHeader($validatorService->getHeaderValidators());
-
-        if ($trx->hasErrors()) {
-            throw new \RuntimeException($trx->getNotification()->errorMessage());
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getNotification()->errorMessage());
         }
 
-        $trx->recordedEvents = array();
+        $instance->clearEvents();
 
         /**
          *
@@ -128,11 +106,7 @@ class TransactionFactory
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($trx);
-
-        if ($rootSnapshot == null) {
-            throw new RuntimeException(sprintf("Error orcured when creating trx #%s", $trx->getId()));
-        }
+        $rootSnapshot = $rep->storeHeader($instance);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -144,71 +118,54 @@ class TransactionFactory
         $params = null;
 
         $event = new TrxHeaderCreated($target, $defaultParams, $params);
-        $trx->addEvent($event);
+        $instance->addEvent($event);
 
-        $trx->updateIdentityFrom($rootSnapshot);
+        $instance->updateIdentityFrom($rootSnapshot);
 
-        return $trx;
+        return $instance;
     }
 
     /**
      *
+     * @param GenericTrx $rootEntity
      * @param TrxSnapshot $snapshot
      * @param CommandOptions $options
      * @param SharedService $sharedService
      * @param array $params
      * @throws InvalidArgumentException
      * @throws \RuntimeException
-     * @throws RuntimeException
-     * @return \Inventory\Domain\Transaction\GenericTrx
+     * @return NULL|\Inventory\Domain\Transaction\GI\GIFromPurchasingReversal
      */
-    public static function updateFrom(TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $params)
+    public static function updateFrom(GenericTrx $rootEntity, TrxSnapshot $snapshot, CommandOptions $options, SharedService $sharedService, $params)
     {
-        if (! $snapshot instanceof TrxSnapshot) {
-            throw new InvalidArgumentException("TrxSnapshot not found!");
-        }
+        Assert::notNull($rootEntity, "Trx root entity not found");
+        Assert::notNull($snapshot, "Trx new snapshot not found");
+        Assert::notNull($options, "Command options not found");
+        Assert::notNull($sharedService, "Trx shared service options not found");
 
         $typeId = $snapshot->getMovementType();
-
-        if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
-            throw new InvalidArgumentException("Movemement type empty or not supported! " . $snapshot->getMovementType());
-        }
-
-        if ($sharedService == null) {
-            throw new InvalidArgumentException("SharedService service not found");
-        }
-
-        $trx = self::createTrx($typeId);
-
-        if ($trx == null) {
-            throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
-        }
+        $instance = self::createTrx($typeId);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
         $snapshot->markAsChange($createdBy, date_format($createdDate, 'Y-m-d H:i:s'));
 
-        /**
-         *
-         * @var GenericTrx $trx
-         */
-        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
-
-        // Important
-        $trx->specify();
         $fxRate = $sharedService->getFxService()->checkAndReturnFX($snapshot->getDocCurrency(), $snapshot->getLocalCurrency(), $snapshot->getExchangeRate());
-        $trx->updateExchangeRate($fxRate);
+        $snapshot->setExchangeRate($fxRate);
+
+        // SnapshotAssembler::makeFromSnapshot($instance, $snapshot);
+        TrxSnapshotAssembler::updateEntityExcludedDefaultFieldsFrom($rootEntity, $snapshot);
 
         $validatorService = ValidatorFactory::create($typeId, $sharedService);
 
         // validate header only.
-        $trx->validateHeader($validatorService->getHeaderValidators());
+        $instance->validateHeader($validatorService->getHeaderValidators());
 
-        if ($trx->hasErrors()) {
-            throw new \RuntimeException($trx->getNotification()->errorMessage());
+        if ($instance->hasErrors()) {
+            throw new \RuntimeException($instance->getNotification()->errorMessage());
         }
 
-        $trx->recordedEvents = array();
+        $instance->clearEvents();
 
         /**
          *
@@ -217,11 +174,7 @@ class TransactionFactory
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($trx);
-
-        if ($rootSnapshot == null) {
-            throw new RuntimeException(sprintf("Error orcured when updating trx #%s", $trx->getId()));
-        }
+        $rootSnapshot = $rep->storeHeader($instance);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -232,8 +185,8 @@ class TransactionFactory
         $defaultParams->setUserId($options->getUserId());
 
         $event = new TrxHeaderUpdated($target, $defaultParams, $params);
-        $trx->addEvent($event);
-        return $trx;
+        $instance->addEvent($event);
+        return $instance;
     }
 
     /**
@@ -245,32 +198,23 @@ class TransactionFactory
      */
     public static function contructFromDB(TrxSnapshot $snapshot)
     {
-        if (! $snapshot instanceof TrxSnapshot) {
-            throw new InvalidArgumentException("TrxSnapshot not found!");
-        }
+        Assert::notNull($snapshot, "Trx snapshot not found");
 
         $typeId = $snapshot->getMovementType();
-
-        if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
-            throw new InvalidArgumentException("Movemement type empty or not supported! TransactionFactory #" . $snapshot->getMovementType());
-        }
-
-        $trx = self::createTrx($typeId);
-
-        if ($trx == null) {
-            throw new \RuntimeException(\sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
-        }
+        $instance = self::createTrx($typeId);
 
         /**
          *
          * @var GenericTrx $trx
          */
-        SnapshotAssembler::makeFromSnapshot($trx, $snapshot);
+        TrxSnapshotAssembler::updateEntityAllFieldsFrom($instance, $snapshot);
+        Assert::notNull($instance, "Trx is null");
 
         // Important
-        $trx->specify();
-        $trx->updateStatus();
-        return $trx;
+        $instance->specify();
+        $instance->updateStatus();
+
+        return $instance;
     }
 
     /**
@@ -298,10 +242,38 @@ class TransactionFactory
 
     /**
      *
+     * @param GenericTrx $sourceObj
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Inventory\Domain\Transaction\GR\GRFromExchange
+     */
+    public static function postCopyFromGI(GenericTrx $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        return GRFromExchange::postCopyFromGI($sourceObj, $options, $sharedService);
+    }
+
+    /**
+     *
+     * @param GenericTrx $sourceObj
+     * @param CommandOptions $options
+     * @param SharedService $sharedService
+     * @return \Inventory\Domain\Transaction\GR\GRFromTransferWarehouse
+     */
+    public static function postCopyFromTO(GenericTrx $sourceObj, CommandOptions $options, SharedService $sharedService)
+    {
+        return GRFromTransferWarehouse::postCopyFromTO($sourceObj, $options, $sharedService);
+    }
+
+    /**
+     *
      * @param string $typeId
      */
     private static function createTrx($typeId)
     {
+        if (! \in_array($typeId, TrxType::getSupportedTransaction())) {
+            throw new InvalidArgumentException("Movemement type empty or not supported! " . $typeId);
+        }
+
         $trx = null;
         switch ($typeId) {
 
@@ -364,6 +336,9 @@ class TransactionFactory
                 $trx = new GIFromPurchasingReversal(); // auto
                 break;
         }
+
+        Assert::notNull($trx, \sprintf("Can not create transaction #%s. Might not be supported yet", $typeId));
+
         return $trx;
     }
 }

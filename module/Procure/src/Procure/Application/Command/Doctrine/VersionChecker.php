@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Application\Command\Doctrine;
+namespace Inventory\Application\Command\Doctrine;
 
 use Doctrine\ORM\EntityManager;
 use Procure\Domain\Exception\DBUpdateConcurrencyException;

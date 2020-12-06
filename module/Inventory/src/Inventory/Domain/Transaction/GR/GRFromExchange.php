@@ -8,7 +8,6 @@ use Inventory\Domain\Service\SharedService;
 use Inventory\Domain\Transaction\AbstractGoodsReceipt;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Transaction\TrxSnapshot;
 use Inventory\Domain\Transaction\Contracts\GoodsReceiptInterface;
 use Inventory\Domain\Transaction\Contracts\TrxFlow;
 use Inventory\Domain\Transaction\Contracts\TrxType;
@@ -123,12 +122,7 @@ class GRFromExchange extends AbstractGoodsReceipt implements GoodsReceiptInterfa
         $rep = $sharedService->getPostingService()->getCmdRepository();
         $snapshot = $rep->post($instance, true);
 
-        if (! $snapshot instanceof TrxSnapshot) {
-            throw new RuntimeException(sprintf("Error orcured when creating GE-Exchange #%s", $instance->getId()));
-        }
-
         $instance->updateIdentityFrom($snapshot);
-
         return $instance;
     }
 }

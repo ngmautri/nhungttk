@@ -4,8 +4,6 @@ namespace Inventory\Domain\Transaction\GI;
 use Application\Domain\Shared\Command\CommandOptions;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Transaction\Contracts\TrxFlow;
-use Inventory\Domain\Transaction\GR\GRFromPurchasingRow;
 use Procure\Domain\GoodsReceipt\GRRow;
 use InvalidArgumentException;
 

@@ -9,7 +9,7 @@ use Procure\Domain\Validator\RowValidatorInterface;
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class NullRowValidator extends AbstractValidator implements RowValidatorInterface
 {

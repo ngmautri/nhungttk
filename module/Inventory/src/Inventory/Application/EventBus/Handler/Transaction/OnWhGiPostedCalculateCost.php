@@ -5,11 +5,9 @@ use Application\Application\EventBus\Contracts\AbstractEventHandler;
 use Application\Domain\EventBus\Handler\EventHandlerPriorityInterface;
 use Inventory\Application\Service\SharedServiceFactory;
 use Inventory\Domain\Event\Transaction\GI\WhGiPosted;
-use Inventory\Domain\Transaction\TrxRow;
-use Inventory\Domain\Transaction\TrxSnapshot;
-use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 use Inventory\Domain\Transaction\GenericTrx;
-use Inventory\Infrastructure\Doctrine\TrxCmdRepositoryImpl;
+use Inventory\Domain\Transaction\TrxRow;
+use Inventory\Infrastructure\Doctrine\TrxQueryRepositoryImpl;
 
 /**
  *

@@ -18,4 +18,6 @@ interface TrxServiceInterface
     public function getDocDetailsByTokenIdFromDB($id, $token, $outputStrategy = null, $locale = 'en_EN');
 
     public function getDocDetailsByIdFromDB($id, $outputStrategy = null, $locale = 'en_EN');
+
+    public function getLazyDocOutputByTokenId($entity_id, $entity_token, $offset, $limit, $outputStrategy);
 }

@@ -2,16 +2,16 @@
 namespace Inventory\Domain\Transaction\GR\Validator\Header;
 
 use Application\Domain\Util\Translator;
-use Inventory\Domain\Transaction\AbstractTrx;
 use Inventory\Domain\Transaction\GenericTrx;
 use Inventory\Domain\Transaction\Validator\Contracts\AbstractValidator;
 use Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface;
+use Procure\Domain\AbstractDoc;
 use InvalidArgumentException;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
 class OpeningBalanceHeaderValidator extends AbstractValidator implements HeaderValidatorInterface
 {
@@ -19,9 +19,9 @@ class OpeningBalanceHeaderValidator extends AbstractValidator implements HeaderV
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Transaction\Validator\Contracts\HeaderValidatorInterface::validate()
+     * @see \Procure\Domain\Validator\HeaderValidatorInterface::validate()
      */
-    public function validate(AbstractTrx $rootEntity)
+    public function validate(AbstractDoc $rootEntity)
     {
         if (! $rootEntity instanceof GenericTrx) {
             throw new InvalidArgumentException('GenericTrx entity not given!.');

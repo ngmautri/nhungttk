@@ -12,6 +12,8 @@ use Application\Entity\NmtInventoryItemGroup;
 use Application\Entity\NmtInventoryWarehouse;
 use Inventory\Domain\Item\Contracts\ItemType;
 use Inventory\Domain\Item\Contracts\MonitorMethod;
+use Inventory\Domain\Transaction\Contracts\TrxType;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -329,6 +331,47 @@ class OptionList
                     $option = $option . sprintf('<option selected value="%s">%s  %s</option>', $l, $v, "");
                 } else {
                     $option = $option . sprintf('<option value="%s">%s  %s</option>', $l, $v, "");
+                }
+            }
+        }
+        return $option;
+    }
+
+    public static function createGoodsIssueOption($view, $id)
+    {
+        $list = TrxType::getGoodIssueTrx();
+        return self::_createTrxTypeOption($view, $list, $id);
+    }
+
+    public static function createGoodsReceiptOption($view, $id)
+    {
+        $list = TrxType::getGoodReceiptTrx();
+        return self::_createTrxTypeOption($view, $list, $id);
+    }
+
+    public static function createTrxTypeOption($view, $id)
+    {
+        $list = TrxType::getSupportedTransaction();
+        return self::_createTrxTypeOption($view, $list, $id);
+    }
+
+    private static function _createTrxTypeOption($view, $list, $id)
+    {
+        if ($list == null) {
+            return null;
+        }
+
+        $option = "";
+
+        foreach ($list as $l => $v) {
+
+            if ($id == null) {
+                $option = $option . sprintf('<option value="%s">%s - %s</option>', $l, $l, $view->translate($v['type_name']));
+            } else {
+                if ($id == $l) {
+                    $option = $option . sprintf('<option selected value="%s">%s - %s</option>', $l, $l, $view->translate($v['type_name']));
+                } else {
+                    $option = $option . sprintf('<option value="%s">%s - %s</option>', $l, $l, $view->translate($v['type_name']));
                 }
             }
         }

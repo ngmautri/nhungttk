@@ -249,7 +249,7 @@ abstract class GenericTrx extends BaseDoc
             throw new \InvalidArgumentException(Translator::translate(sprintf($f, $this->getDocType())));
         }
 
-        Assert::notEq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("Document is already posted/closed or being amended! %s", $this->getId()));
+        Assert::eq($this->getDocStatus(), ProcureDocStatus::DRAFT, sprintf("Document is already posted/closed or being amended! %s", $this->getId()));
         Assert::notNull($options, "Options not founds");
 
         $rep = $sharedService->getPostingService()->getCmdRepository();

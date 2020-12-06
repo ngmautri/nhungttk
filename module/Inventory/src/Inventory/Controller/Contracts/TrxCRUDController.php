@@ -17,7 +17,6 @@ use Inventory\Application\Command\Contracts\CmdHandlerAbstractFactory;
 use Inventory\Application\Export\Transaction\Contracts\SaveAsSupportedType;
 use Inventory\Application\Service\Contracts\TrxServiceInterface;
 use Inventory\Application\Service\Upload\Transaction\UploadFactory;
-use Inventory\Domain\Transaction\Contracts\TrxType;
 use MLA\Paginator;
 use Procure\Domain\DocSnapshot;
 use Zend\View\Model\ViewModel;
@@ -257,7 +256,7 @@ abstract class TrxCRUDController extends AbstractGenericController
             }
 
             $movementType = $dto->getMovementType();
-            $this->doRedirecting($movementType, $dto->getId(), $dto->getToken());
+            $this->redirectForView($movementType, $dto->getId(), $dto->getToken());
 
             $viewModel = new ViewModel(array(
                 'errors' => null,
@@ -401,7 +400,7 @@ abstract class TrxCRUDController extends AbstractGenericController
             $entity_token = $data['entity_token'];
             $version = $data['version'];
 
-            $rootEntity = $this->procureService->getDocDetailsByTokenId($entity_id, $entity_token, null, $this->getLocale());
+            $rootEntity = $this->getTrxService()->getDocDetailsByTokenId($entity_id, $entity_token, null, $this->getLocale());
 
             if ($rootEntity == null) {
                 return $this->redirect()->toRoute('not_found');
@@ -785,13 +784,10 @@ abstract class TrxCRUDController extends AbstractGenericController
                 $cmdHanderDecorator = new TransactionalCommandHandler($cmdHandler);
                 $cmd = new GenericCommand($this->getDoctrineEM(), $a, $options, $cmdHanderDecorator, $this->getEventBusService());
                 $cmd->execute();
-
-                $notification = $cmd->getNotification();
             }
         } catch (\Exception $e) {
-            $notification = new Notification();
-            $notification->addError($e->getMessage());
-            $this->getLogger()->error($e->getMessage());
+            $this->logInfo($e->getMessage());
+            $this->logException($e);
         }
 
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');

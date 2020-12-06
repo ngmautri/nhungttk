@@ -40,7 +40,10 @@ class TrxRow extends BaseRow
      * @see \Procure\Domain\GenericRow::createVO()
      */
     protected function createVO(GenericDoc $rootDoc)
-    {}
+    {
+        $this->createUomVO();
+        $this->createQuantityVO();
+    }
 
     public function setCalculatedCost($cogs)
     {

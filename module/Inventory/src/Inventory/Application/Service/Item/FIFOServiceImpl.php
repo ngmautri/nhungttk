@@ -198,7 +198,8 @@ class FIFOServiceImpl extends AbstractService implements FIFOServiceInterface
             throw new \RuntimeException($m);
         }
 
-        $issuedQuantity = $row->getDocQuantity();
+        // to check this
+        $issuedQuantity = $row->getConvertedStandardQuantity();
 
         $total_onhand = 0;
         $totalIssueQty = $issuedQuantity;

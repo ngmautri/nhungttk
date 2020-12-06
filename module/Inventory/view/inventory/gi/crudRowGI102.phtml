@@ -1,5 +1,6 @@
 <?php
 use Application\Application\Helper\ErrorMessage;
+use Application\Application\Helper\OptionHelper;
 use Application\Application\Helper\OptionList;
 use Inventory\Application\DTO\Transaction\TrxDTO;
 use Inventory\Application\DTO\Transaction\TrxRowDTO;
@@ -8,7 +9,7 @@ use Inventory\Application\DTO\Transaction\TrxRowDTO;
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===========================================
- *        
+ *
  * @var TrxDTO $headerDTO ;
  * @var TrxRowDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
@@ -22,6 +23,7 @@ $review_url = null;
 $rowNumber = null;
 $alert = "info";
 $transactionTypeArray = [];
+$docUomName = null;
 
 $format = '<div class="form-group margin-bottom"><div class="col-sm-offset-2 col-sm-10">
 <button onclick="submitForm(\'%s\');" class="btn btn-default">
@@ -46,8 +48,8 @@ $hiddenFormInput = $hiddenFormInput . sprintf($format, $entity_id);
 $format = '<input type="hidden" id="entity_token" name="entity_token" value="%s">';
 $hiddenFormInput = $hiddenFormInput . sprintf($format, $entity_token);
 
-$format = '<input type="hidden" id="version" name="version" value="%s">';
-$hiddenFormInput = $hiddenFormInput . sprintf($format, $version);
+$format = '<input type="hidden" id="version" name="docRevisionNo" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $docRevisionNo);
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -61,6 +63,10 @@ if ($headerDTO !== null) {
     $view_url = sprintf($base_url . "view?entity_id=%s&entity_token=%s", $headerDTO_id, $headerDTO_token);
 
     $rowNumber = $headerDTO->getTotalRows() + 1;
+}
+
+if ($dto != null) {
+    $docUomName = $dto->getDocUnit();
 }
 
 $cost_center = null;
@@ -82,6 +88,10 @@ if ($dto !== null) {
 
 $cost_center_option = OptionList::createCostCenterOption($nmtPlugin->costCenterList(), $cost_center);
 $error_msg = ErrorMessage::showErrorMessage($errors);
+
+$uomList = $sharedCollection->getUomCollection();
+$uom_option = OptionHelper::createUomNameOption($uomList, $docUomName);
+
 $current_step = "STEP2";
 
 // =====================================================
@@ -95,8 +105,8 @@ $current_step = "STEP2";
             include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
             include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
             ?>
-    
-    
+
+
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -107,7 +117,7 @@ $current_step = "STEP2";
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -140,7 +150,7 @@ $current_step = "STEP2";
             </ul>
             <div id="general" style="font-size: 9pt">
                <!-- Tab1 -->
-               
+
                   <?php
                 echo $error_msg;
                 ?>
@@ -152,7 +162,7 @@ $current_step = "STEP2";
               <?php
             echo $hiddenFormInput;
             ?>
-         
+
          <!-- for all case: -->
                   <div id="new_row" class="collapse in">
                      <div class="form-group margin-bottom">
@@ -178,7 +188,7 @@ $current_step = "STEP2";
                               value="<?php
 
                             if (! $dto == null) :
-                                echo $dto->getItem(); 
+                                echo $dto->getItem();
                                 endif;
 
                             ?>
@@ -186,7 +196,7 @@ $current_step = "STEP2";
                            <input type="hidden" id="item" placeholder="" name="item" value="<?php
 
                         if (! $dto == null) :
-                            echo $dto->getItem(); 
+                            echo $dto->getItem();
                         endif;
 
                         ?>">
@@ -225,12 +235,33 @@ $current_step = "STEP2";
                         echo (! $dto == null) ? $dto->getDocQuantity() : "";
                         ?>">
                         </div>
-                        <label class="control-label col-sm-2" for="inputTag">Convert Factor:</label>
-                        <div class="col-sm-3">
-                           <input tabindex="6" class="form-control input-sm" type="text" id="conversionFactor" name="conversionFactor" value="<?php
+                     </div>
+                     <hr style="margin: 5pt 1pt 5pt 1pt;">
+                     <div class="form-group margin-bottom required">
+                        <label class="control-label col-sm-2"><?php
 
-                        echo (! $dto == null) ? $dto->getConversionFactor() : "1";
+                        echo $this->translate("Document Unit");
+                        ?></label>
+                        <div class="col-sm-3">
+                           <select tabindex="6" name="docUnit" id="docUnit" class="form-control input-sm">
+                              <option value=""><?php
+
+                            echo $this->translate("Select doc unit");
+                            ?></option>
+                    <?php
+                    echo $uom_option;
+                    ?>
+               </select>
+                        </div>
+                        <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
+                        <div class="col-sm-1">
+                           <input tabindex="7" class="form-control input-sm" type="text" name="standardConvertFactor" id="standardConvertFactor" value="<?php
+
+                        echo (! $dto == null) ? $dto->getStandardConvertFactor() : "1";
                         ?>">
+                        </div>
+                        <div class="col-sm-3">
+                           <span style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt" id="">Converstion to item standard unit.</span>
                         </div>
                      </div>
                      <div class="form-group margin-bottom required">
@@ -288,12 +319,12 @@ $current_step = "STEP2";
    </div>
    <!-- /#wrapper -->
    <script type="text/javascript">
-   
+
     $( "#item_name" ).focus();
     $('#quantity').bind('change', function() {
          });
    </script>
- 
+
 <?php
 include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
 ?>

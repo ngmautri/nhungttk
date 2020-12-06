@@ -31,7 +31,7 @@ class TrxRowSnapshotModifier
         GenericRowSnapshotModifier::updatePODetails($snapshot, $doctrineEM, $locale);
         GenericRowSnapshotModifier::updateGRDetails($snapshot, $doctrineEM, $locale);
         GenericRowSnapshotModifier::parseAndUpdateQuantity($snapshot, $doctrineEM, $locale);
-        GenericRowSnapshotModifier::parseAndUpdatePrice($snapshot, $doctrineEM, $locale);
+        // GenericRowSnapshotModifier::parseAndUpdatePrice($snapshot, $doctrineEM, $locale);
 
         return $snapshot;
     }

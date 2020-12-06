@@ -42,7 +42,7 @@ class PostCmdHandler extends AbstractCommandHandler
 
         try {
 
-            $sharedService = SharedServiceFactory::createForGR($cmd->getDoctrineEM());
+            $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
             $rootEntity->post($options, $sharedService);
 
             // event dispatch
@@ -57,7 +57,7 @@ class PostCmdHandler extends AbstractCommandHandler
 
             // Check Version
             // ==============
-            VersionChecker::checkGRVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
+            VersionChecker::checkTrxVersion($cmd->getDoctrineEM(), $rootEntity->getId(), $options->getVersion());
             // ===============
         } catch (\Exception $e) {
             $cmd->addError($e->getMessage());

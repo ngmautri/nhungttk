@@ -132,7 +132,6 @@ class TransactionFactory
      * @param CommandOptions $options
      * @param SharedService $sharedService
      * @param array $params
-     * @throws InvalidArgumentException
      * @throws \RuntimeException
      * @return NULL|\Inventory\Domain\Transaction\GI\GIFromPurchasingReversal
      */
@@ -144,7 +143,6 @@ class TransactionFactory
         Assert::notNull($sharedService, "Trx shared service options not found");
 
         $typeId = $snapshot->getMovementType();
-        $instance = self::createTrx($typeId);
 
         $createdDate = new \Datetime();
         $createdBy = $options->getUserId();
@@ -159,13 +157,13 @@ class TransactionFactory
         $validatorService = ValidatorFactory::create($typeId, $sharedService);
 
         // validate header only.
-        $instance->validateHeader($validatorService->getHeaderValidators());
+        $rootEntity->validateHeader($validatorService->getHeaderValidators());
 
-        if ($instance->hasErrors()) {
-            throw new \RuntimeException($instance->getNotification()->errorMessage());
+        if ($rootEntity->hasErrors()) {
+            throw new \RuntimeException($rootEntity->getNotification()->errorMessage());
         }
 
-        $instance->clearEvents();
+        $rootEntity->clearEvents();
 
         /**
          *
@@ -174,7 +172,7 @@ class TransactionFactory
          */
 
         $rep = $sharedService->getPostingService()->getCmdRepository();
-        $rootSnapshot = $rep->storeHeader($instance);
+        $rootSnapshot = $rep->storeHeader($rootEntity);
 
         $target = $rootSnapshot;
         $defaultParams = new DefaultParameter();
@@ -185,8 +183,8 @@ class TransactionFactory
         $defaultParams->setUserId($options->getUserId());
 
         $event = new TrxHeaderUpdated($target, $defaultParams, $params);
-        $instance->addEvent($event);
-        return $instance;
+        $rootEntity->addEvent($event);
+        return $rootEntity;
     }
 
     /**

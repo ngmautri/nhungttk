@@ -69,7 +69,7 @@ class UpdateHeaderCmdHandler extends AbstractCommandHandler
             ];
 
             $sharedService = SharedServiceFactory::createForTrx($cmd->getDoctrineEM());
-            $newRootEntity = TransactionFactory::updateFrom($rootEntity, $newSnapshot, $options, $params, $sharedService);
+            $newRootEntity = TransactionFactory::updateFrom($rootEntity, $newSnapshot, $options, $sharedService, $params);
 
             // event dispatch
             // ================

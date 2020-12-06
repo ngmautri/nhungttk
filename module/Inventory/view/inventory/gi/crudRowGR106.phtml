@@ -8,7 +8,7 @@ use Inventory\Application\DTO\Transaction\TrxRowDTO;
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *         ===========================================
- *        
+ *
  * @var TrxDTO $headerDTO ;
  * @var TrxRowDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
@@ -46,8 +46,8 @@ $hiddenFormInput = $hiddenFormInput . sprintf($format, $entity_id);
 $format = '<input type="hidden" id="entity_token" name="entity_token" value="%s">';
 $hiddenFormInput = $hiddenFormInput . sprintf($format, $entity_token);
 
-$format = '<input type="hidden" id="version" name="version" value="%s">';
-$hiddenFormInput = $hiddenFormInput . sprintf($format, $version);
+$format = '<input type="hidden" id="version" name="docRevisionNo" value="%s">';
+$hiddenFormInput = $hiddenFormInput . sprintf($format, $docRevisionNo);
 
 // var_dump($headerDTO);
 if ($headerDTO !== null) {
@@ -95,8 +95,8 @@ $current_step = "STEP2";
             include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
             include (ROOT . '/module/Inventory/view/inventory/trx_summary.php');
             ?>
-    
-    
+
+
    </div>
    <!-- /#sidebar-wrapper -->
    <!-- Page Content -->
@@ -107,7 +107,7 @@ $current_step = "STEP2";
                <i class="fa fa-chevron-left" aria-hidden="true"></i>
                Menu
                <span>
-         
+
          </a>
          <div id="tabs" style="font-size: 10pt">
             <ul>
@@ -140,7 +140,7 @@ $current_step = "STEP2";
             </ul>
             <div id="general" style="font-size: 9pt">
                <!-- Tab1 -->
-               
+
                   <?php
                 echo $error_msg;
                 ?>
@@ -152,7 +152,7 @@ $current_step = "STEP2";
               <?php
             echo $hiddenFormInput;
             ?>
-         
+
          <!-- for all case: -->
                   <div id="new_row" class="collapse in">
                      <div class="form-group margin-bottom">
@@ -178,7 +178,7 @@ $current_step = "STEP2";
                               value="<?php
 
                             if (! $dto == null) :
-                                echo $dto->getItem(); 
+                                echo $dto->getItem();
                                 endif;
 
                             ?>
@@ -186,7 +186,7 @@ $current_step = "STEP2";
                            <input type="hidden" id="item" placeholder="" name="item" value="<?php
 
                         if (! $dto == null) :
-                            echo $dto->getItem(); 
+                            echo $dto->getItem();
                         endif;
 
                         ?>">
@@ -288,12 +288,12 @@ $current_step = "STEP2";
    </div>
    <!-- /#wrapper -->
    <script type="text/javascript">
-   
+
     $( "#item_name" ).focus();
     $('#quantity').bind('change', function() {
          });
    </script>
- 
+
 <?php
 include (ROOT . '/module/Inventory/view/inventory/item_auto_complete.php');
 ?>
